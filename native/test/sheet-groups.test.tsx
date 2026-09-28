@@ -6,7 +6,7 @@ import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 const headers = (screen: ReturnType<typeof render>) =>
   byRole(screen, "header").map((node) => String(node.props.children));
 
-describe("Select com grupos", () => {
+describe("Select with groups", () => {
   const groups: SelectItemGroup[] = [
     {
       label: "Paraíba",
@@ -18,7 +18,7 @@ describe("Select com grupos", () => {
     { label: "Pernambuco", items: [{ label: "Recife", value: "rec" }] },
   ];
 
-  test("a folha vira seções, e cada família é anunciada como cabeçalho", () => {
+  test("the sheet becomes sections, and each family is announced as a header", () => {
     const screen = render(
       <Select items={groups} value={null} onValueChange={() => {}} label="Cidade" />,
     );
@@ -30,7 +30,7 @@ describe("Select com grupos", () => {
     expect(textOf(screen)).toContain("Recife");
   });
 
-  test("escolher dentro de um grupo entrega o valor, e o gatilho acha o rótulo no grupo", () => {
+  test("choosing inside a group delivers the value, and the trigger finds the label in the group", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Select items={groups} value="rec" onValueChange={onValueChange} label="Cidade" />,
@@ -48,7 +48,7 @@ describe("Select com grupos", () => {
     expect(onValueChange).toHaveBeenCalledWith("cg");
   });
 
-  test("multiple com grupos marca por checkbox e conta pelo total", () => {
+  test("multiple with groups checks by checkbox and counts by the total", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Select
@@ -69,7 +69,7 @@ describe("Select com grupos", () => {
     expect(onValueChange).toHaveBeenCalledWith(["jpa", "rec", "cg"]);
   });
 
-  test("lista rasa continua sem seção e sem cabeçalho de grupo", () => {
+  test("a flat list stays without sections and without group headers", () => {
     const screen = render(
       <Select
         items={[{ label: "Mensal", value: "m" }]}
@@ -84,7 +84,7 @@ describe("Select com grupos", () => {
   });
 });
 
-describe("Combobox com grupos", () => {
+describe("Combobox with groups", () => {
   const groups: ComboboxItemGroup[] = [
     {
       label: "Paraíba",
@@ -96,7 +96,7 @@ describe("Combobox com grupos", () => {
     { label: "Pernambuco", items: [{ label: "Recife", value: "rec", description: "Capital" }] },
   ];
 
-  test("a busca filtra dentro da família e some com a família vazia", () => {
+  test("the search filters within the family and removes the empty family", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Combobox items={groups} value={null} onValueChange={onValueChange} label="Cidade" />,
@@ -117,7 +117,7 @@ describe("Combobox com grupos", () => {
     expect(onValueChange).toHaveBeenCalledWith("jpa");
   });
 
-  test("sem nada em grupo nenhum, explica em vez de mostrar cabeçalho solto", () => {
+  test("with nothing in any group, it explains instead of showing a loose header", () => {
     const screen = render(
       <Combobox items={groups} value={null} onValueChange={() => {}} label="Cidade" />,
     );
@@ -128,7 +128,7 @@ describe("Combobox com grupos", () => {
     expect(textOf(screen)).toContain("Confira a grafia");
   });
 
-  test("o gatilho acha o rótulo dentro do grupo", () => {
+  test("the trigger finds the label inside the group", () => {
     const screen = render(
       <Combobox items={groups} value="cg" onValueChange={() => {}} label="Cidade" />,
     );

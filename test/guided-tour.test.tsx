@@ -72,14 +72,14 @@ afterEach(() => {
   restore = null;
 });
 
-test("fechado, nada aparece: nem balao nem mascara", () => {
+test("closed, nothing shows: neither bubble nor mask", () => {
   render(<Page />);
 
   expect(screen.queryByRole("dialog")).toBeNull();
   expect(document.querySelector("[data-tour-mask]")).toBeNull();
 });
 
-test("aberto, o balao se chama pelo titulo e se descreve pelo texto do passo", () => {
+test("open, the bubble is named by the title and described by the step text", () => {
   render(<Page />);
   openTour();
 
@@ -91,7 +91,7 @@ test("aberto, o balao se chama pelo titulo e se descreve pelo texto do passo", (
   expect(description?.textContent).toBe("Comece pelo cadastro.");
 });
 
-test("passo sem descricao nao aponta aria-describedby para um no que nao existe", () => {
+test("a step without description does not point aria-describedby to a node that does not exist", () => {
   render(<Page />);
   openTour();
 
@@ -101,7 +101,7 @@ test("passo sem descricao nao aponta aria-describedby para um no que nao existe"
   expect(dialog().hasAttribute("aria-describedby")).toBe(false);
 });
 
-test("o contador diz em que passo se esta, e o primeiro passo nao tem Voltar", () => {
+test("the counter says which step you are on, and the first step has no Voltar", () => {
   render(<Page />);
   openTour();
 
@@ -115,7 +115,7 @@ test("o contador diz em que passo se esta, e o primeiro passo nao tem Voltar", (
   expect(screen.getByRole("button", { name: "Voltar" })).toBeTruthy();
 });
 
-test("Voltar recua um passo e avisa quem escuta a troca", () => {
+test("Voltar goes back one step and notifies whoever listens to the change", () => {
   const onStepChange = mock((_: number) => {});
   render(<Page onStepChange={onStepChange} />);
   openTour();
@@ -127,7 +127,7 @@ test("Voltar recua um passo e avisa quem escuta a troca", () => {
   expect(dialog().textContent).toContain("Passo 1 de 3");
 });
 
-test("no ultimo passo o botao principal vira Concluir, que fecha e chama onFinish", () => {
+test("on the last step the main button becomes Concluir, which closes and calls onFinish", () => {
   const onFinish = mock(() => {});
   const onSkip = mock((_: number) => {});
   render(<Page onFinish={onFinish} onSkip={onSkip} />);
@@ -145,7 +145,7 @@ test("no ultimo passo o botao principal vira Concluir, que fecha e chama onFinis
   expect(document.querySelector("[data-tour-mask]")).toBeNull();
 });
 
-test("Pular tour fecha com o passo em que a pessoa desistiu, e nao conta como concluido", () => {
+test("Pular tour closes with the step where the person gave up, and does not count as finished", () => {
   const onFinish = mock(() => {});
   const onSkip = mock((_: number) => {});
   const onOpenChange = mock((_: boolean) => {});
@@ -161,7 +161,7 @@ test("Pular tour fecha com o passo em que a pessoa desistiu, e nao conta como co
   expect(screen.queryByRole("dialog")).toBeNull();
 });
 
-test("Esc pula o tour", () => {
+test("Esc skips the tour", () => {
   const onSkip = mock((_: number) => {});
   render(<Page onSkip={onSkip} />);
   openTour();
@@ -172,7 +172,7 @@ test("Esc pula o tour", () => {
   expect(screen.queryByRole("dialog")).toBeNull();
 });
 
-test("clicar na mascara nao fecha: o tour so sai por Pular, Esc ou Concluir", () => {
+test("clicking the mask does not close: the tour only leaves through Pular, Esc or Concluir", () => {
   const onSkip = mock((_: number) => {});
   render(<Page onSkip={onSkip} />);
   openTour();
@@ -187,7 +187,7 @@ test("clicar na mascara nao fecha: o tour so sai por Pular, Esc ou Concluir", ()
   expect(dialog()).toBeTruthy();
 });
 
-test("as setas andam entre os passos com o foco no balao", () => {
+test("the arrows move between steps with focus on the bubble", () => {
   render(<Page />);
   openTour();
 
@@ -198,7 +198,7 @@ test("as setas andam entre os passos com o foco no balao", () => {
   expect(dialog().textContent).toContain("Passo 1 de 3");
 });
 
-test("o foco comeca no Proximo, e volta a quem abriu o tour quando ele acaba", async () => {
+test("focus starts on Proximo, and returns to whoever opened the tour when it ends", async () => {
   render(<Page />);
   const opener = screen.getByRole("button", { name: "Fazer o tour" });
   opener.focus();
@@ -213,7 +213,7 @@ test("o foco comeca no Proximo, e volta a quem abriu o tour quando ele acaba", a
   expect(document.activeElement === opener).toBe(true);
 });
 
-test("recuar ate o primeiro passo some com o Voltar focado, e o foco cai no Proximo", async () => {
+test("going back to the first step removes the focused Voltar, and focus falls on Proximo", async () => {
   render(<Page />);
   openTour();
   await settle();
@@ -227,7 +227,7 @@ test("recuar ate o primeiro passo some com o Voltar focado, e o foco cai no Prox
   expect(document.activeElement?.textContent).toBe("Próximo");
 });
 
-test("a troca de passo e anunciada, e a abertura nao repete o que o dialogo ja diz", () => {
+test("the step change is announced, and opening does not repeat what the dialog already says", () => {
   render(<Page />);
   openTour();
 
@@ -239,7 +239,7 @@ test("a troca de passo e anunciada, e a abertura nao repete o que o dialogo ja d
   expect(status.textContent).toBe("Passo 2 de 3. Ache pelo CNPJ");
 });
 
-test("alvo que nao existe pula o passo, com aviso em desenvolvimento", () => {
+test("a target that does not exist skips the step, with a warning in development", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   render(<Page withTargets={["novo", "exportar"]} />);
   openTour();
@@ -253,7 +253,7 @@ test("alvo que nao existe pula o passo, com aviso em desenvolvimento", () => {
   warn.mockRestore();
 });
 
-test("recuando sobre um alvo que sumiu, o tour pula para tras e nao para frente", () => {
+test("going back over a target that vanished, the tour skips backwards and not forwards", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   render(<Page withTargets={["novo", "exportar"]} defaultStep={2} />);
   openTour();
@@ -264,7 +264,7 @@ test("recuando sobre um alvo que sumiu, o tour pula para tras e nao para frente"
   warn.mockRestore();
 });
 
-test("o primeiro alvo ausente abre o tour no primeiro que existe", () => {
+test("a missing first target opens the tour on the first one that exists", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   render(<Page withTargets={["busca", "exportar"]} />);
   openTour();
@@ -273,7 +273,7 @@ test("o primeiro alvo ausente abre o tour no primeiro que existe", () => {
   warn.mockRestore();
 });
 
-test("sem nenhum alvo na pagina o tour fecha sozinho, sem chamar onFinish nem onSkip", () => {
+test("with no target on the page the tour closes on its own, calling neither onFinish nor onSkip", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   const onFinish = mock(() => {});
   const onSkip = mock((_: number) => {});
@@ -291,7 +291,7 @@ test("sem nenhum alvo na pagina o tour fecha sozinho, sem chamar onFinish nem on
   warn.mockRestore();
 });
 
-test("o alvo pode vir por ref", () => {
+test("the target can come through a ref", () => {
   function WithRef() {
     const ref = useRef<HTMLButtonElement>(null);
     return (
@@ -309,7 +309,7 @@ test("o alvo pode vir por ref", () => {
   expect(screen.getByRole("button", { name: "Concluir" })).toBeTruthy();
 });
 
-test("sem interactive, uma camada so cobre a tela inteira, alvo incluido", () => {
+test("without interactive, a single layer covers the whole screen, target included", () => {
   render(<Page />);
   openTour();
 
@@ -318,7 +318,7 @@ test("sem interactive, uma camada so cobre a tela inteira, alvo incluido", () =>
   expect((blockers[0] as HTMLElement).style.inset).toBe("0");
 });
 
-test("com interactive, quatro faixas cercam o recorte e deixam o alvo clicavel", () => {
+test("with interactive, four strips surround the cutout and leave the target clickable", () => {
   render(<Page interactive />);
   openTour();
 
@@ -328,7 +328,7 @@ test("com interactive, quatro faixas cercam o recorte e deixam o alvo clicavel",
   expect(spotlight.className.split(" ")).toContain("shadow-[0_0_0_200vmax_var(--rc-overlay)]");
 });
 
-test("a mascara empilha abaixo do balao, pelos tokens de z", () => {
+test("the mask stacks below the bubble, through the z tokens", () => {
   render(<Page />);
   openTour();
 
@@ -338,7 +338,7 @@ test("a mascara empilha abaixo do balao, pelos tokens de z", () => {
   expect(positioner.className.split(" ")).toContain("z-[var(--rc-z-popover)]");
 });
 
-test("o alvo fora da vista rola para o centro, sem animacao quando o sistema pede", () => {
+test("an off-screen target scrolls to the center, without animation when the system asks", () => {
   const original = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -363,7 +363,7 @@ test("o alvo fora da vista rola para o centro, sem animacao quando o sistema ped
   expect(scroll.mock.calls[0]?.[0]).toMatchObject({ block: "center", behavior: "auto" });
 });
 
-test("o alvo ja visivel nao rola a pagina", () => {
+test("an already visible target does not scroll the page", () => {
   render(<Page />);
   const target = document.getElementById("novo")!;
   const scroll = mock(() => {});
@@ -375,7 +375,7 @@ test("o alvo ja visivel nao rola a pagina", () => {
   expect(scroll).not.toHaveBeenCalled();
 });
 
-test("labels troca os textos dos botoes e do contador", () => {
+test("labels replaces the button and counter texts", () => {
   render(
     <Page
       labels={{
@@ -392,7 +392,7 @@ test("labels troca os textos dos botoes e do contador", () => {
   expect(dialog().textContent).toContain("1/3");
 });
 
-test("reabrir sem controlar o passo recomeca do defaultStep", () => {
+test("reopening without controlling the step starts again from defaultStep", () => {
   render(<Page />);
   openTour();
   fireEvent.click(screen.getByRole("button", { name: "Próximo" }));
@@ -403,7 +403,7 @@ test("reabrir sem controlar o passo recomeca do defaultStep", () => {
   expect(dialog().textContent).toContain("Passo 1 de 3");
 });
 
-test("controlado, o passo e o do pai", () => {
+test("controlled, the step is the parent's", () => {
   function Controlled() {
     const [step, setStep] = useState(1);
     return (
@@ -412,7 +412,7 @@ test("controlado, o passo e o do pai", () => {
         <button id="busca" type="button">b</button>
         <button id="exportar" type="button">c</button>
         <Tour defaultOpen steps={STEPS} step={step} onStepChange={setStep} />
-        <output data-testid="passo">{step}</output>
+        <output data-testid="step">{step}</output>
       </RivoProvider>
     );
   }
@@ -420,11 +420,11 @@ test("controlado, o passo e o do pai", () => {
 
   expect(dialog().textContent).toContain("Passo 2 de 3");
   fireEvent.click(screen.getByRole("button", { name: "Próximo" }));
-  expect(screen.getByTestId("passo").textContent).toBe("2");
+  expect(screen.getByTestId("step").textContent).toBe("2");
   expect(dialog().textContent).toContain("Passo 3 de 3");
 });
 
-test("no celular o balao vira folha de baixo, e a mascara continua destacando o alvo", () => {
+test("on mobile the bubble becomes a bottom sheet, and the mask keeps highlighting the target", () => {
   restore = mobile(true);
   render(<Page />);
   openTour();
@@ -438,7 +438,7 @@ test("no celular o balao vira folha de baixo, e a mascara continua destacando o 
   );
 });
 
-test("na mesa o balao e flutuante e os botoes sao os compactos", () => {
+test("on desktop the bubble floats and the buttons are the compact ones", () => {
   render(<Page />);
   openTour();
 
@@ -464,7 +464,7 @@ function Vanishing() {
   );
 }
 
-test("o alvo que some com o passo aberto pula o passo, sem o tour re-renderizar", async () => {
+test("a target that vanishes with the step open skips the step, without the tour re-rendering", async () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   render(
     <RivoProvider scope="local">
@@ -487,7 +487,7 @@ test("o alvo que some com o passo aberto pula o passo, sem o tour re-renderizar"
   warn.mockRestore();
 });
 
-test("as setas nao trocam de passo com o foco num campo posto em action", () => {
+test("the arrows do not change step with focus in a field placed in action", () => {
   const withField: TourStep[] = [
     { ...STEPS[0]!, action: <input aria-label="Apelido" /> },
     STEPS[1]!,
@@ -505,7 +505,7 @@ test("as setas nao trocam de passo com o foco num campo posto em action", () => 
   expect(dialog().textContent).toContain("Passo 2 de 3");
 });
 
-test("palavra longa sem espaco quebra dentro do balao, e nao vaza", () => {
+test("a long word without spaces breaks inside the bubble, and does not overflow", () => {
   render(<Page />);
   openTour();
   expect(dialog().className.split(" ")).toContain("wrap-anywhere");

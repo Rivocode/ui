@@ -40,8 +40,8 @@ function byName(steps: ReturnType<typeof plan>, name: string) {
   return steps.find((step) => step.name === name)!;
 }
 
-describe("a receita de instalacao", () => {
-  test("cobre sete arquivos, e nenhum deles duas vezes", () => {
+describe("the install recipe", () => {
+  test("covers seven files, and none of them twice", () => {
     const names = RECIPE.map((item) => item.name);
 
     expect(names.length).toBe(7);
@@ -57,7 +57,7 @@ describe("a receita de instalacao", () => {
     ]);
   });
 
-  test("num app do Expo recem-criado escreve tudo e nao deixa arquivo vazio", () => {
+  test("in a freshly created Expo app it writes everything and leaves no empty file", () => {
     const root = app();
     try {
       const steps = apply(root);
@@ -87,7 +87,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("rodar duas vezes nao muda nada na segunda", () => {
+  test("running twice changes nothing the second time", () => {
     const root = app();
     try {
       apply(root);
@@ -100,7 +100,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("arquivo que ja existe com outro conteudo nao e reescrito sem --force", () => {
+  test("a file that already exists with other content is not rewritten without --force", () => {
     const meu = "export default { plugins: { autoprefixer: {} } };\n";
     const root = app({ "postcss.config.mjs": meu });
     try {
@@ -119,7 +119,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("chave de JSON trocada sai no relatorio com o valor antigo", () => {
+  test("a changed JSON key shows up in the report with the old value", () => {
     const root = app();
     try {
       const step = byName(plan(root), "app.json");
@@ -132,7 +132,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("o JSON do app conserva o resto e a indentacao", () => {
+  test("the app JSON keeps the rest and the indentation", () => {
     const root = app();
     writeFileSync(
       join(root, "app.json"),
@@ -152,20 +152,20 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("app.json ausente e conflito, e nao um app.json inventado", () => {
+  test("a missing app.json is a conflict, not an invented app.json", () => {
     const root = mkdtempSync(join(tmpdir(), "receita-vazia-"));
     try {
       const step = byName(plan(root), "app.json");
 
       expect(step.action).toBe("conflito");
-      expect(step.note).toContain("raiz de um app do Expo");
+      expect(step.note).toContain("root of an Expo app");
       expect(existsSync(join(root, "app.json"))).toBe(false);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   });
 
-  test("a receita v4 do NativeWind e acusada pelo nome, e o arquivo fica de pe", () => {
+  test("the NativeWind v4 recipe is flagged by name, and the file stays standing", () => {
     expect(BABEL_V4.length).toBeGreaterThan(1);
 
     for (const { mark } of BABEL_V4) {
@@ -186,7 +186,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("babel.config.js sem marca da v4 fica, e sem arquivo nenhum e o certo", () => {
+  test("babel.config.js without a v4 mark stays, and no file at all is the right thing", () => {
     const limpo = app({ "babel.config.js": 'module.exports = { presets: ["minha-coisa"] };\n' });
     try {
       const step = plan(limpo).find((one) => one.name.includes("babel"))!;
@@ -199,13 +199,13 @@ describe("a receita de instalacao", () => {
     try {
       const step = byName(plan(vazio), "babel.config.js");
       expect(step.action).toBe("mantem");
-      expect(step.note).toContain("nao existe");
+      expect(step.note).toContain("does not exist");
     } finally {
       rmSync(vazio, { recursive: true, force: true });
     }
   });
 
-  test("procura arquivo de Babel em todos os nomes que o Expo procura", () => {
+  test("looks for a Babel file under every name Expo looks for", () => {
     expect(BABEL_NAMES.length).toBeGreaterThan(10);
     expect(BABEL_NAMES).toContain("babel.config.js");
     expect(BABEL_NAMES).toContain(".babelrc");
@@ -219,7 +219,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("o global.css aponta para o pacote instalado, e nao para o monorepo", () => {
+  test("global.css points to the installed package, not to the monorepo", () => {
     const css = globalCss();
     const linhas = css.split("\n").filter((line) => line.startsWith("@"));
 
@@ -233,7 +233,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("o nativewind-env.d.ts referencia os tipos do NativeWind e o modulo de CSS", () => {
+  test("nativewind-env.d.ts references the NativeWind types and the CSS module", () => {
     const dts = nativewindEnv();
 
     expect(dts).toContain('/// <reference types="nativewind/types" />');
@@ -241,7 +241,7 @@ describe("a receita de instalacao", () => {
     expect(dts).not.toContain("nativewind/jsx-runtime");
   });
 
-  test("o nativewind-env.d.ts nasce no app e conflita se ja disser outra coisa", () => {
+  test("nativewind-env.d.ts is created in the app and conflicts if it already says something else", () => {
     const root = app();
     try {
       apply(root);
@@ -263,7 +263,7 @@ describe("a receita de instalacao", () => {
     }
   });
 
-  test("nao anda em diretorio que nao e app do Expo, e nao cria pasta", () => {
+  test("does not act in a directory that is not an Expo app, and creates no folder", () => {
     const root = mkdtempSync(join(tmpdir(), "receita-solta-"));
     mkdirSync(join(root, "src"));
     try {
@@ -277,8 +277,8 @@ describe("a receita de instalacao", () => {
   });
 });
 
-describe("os peers obrigatorios", () => {
-  test("saem do manifesto, sem os opcionais, e o do teclado esta entre eles", () => {
+describe("the required peers", () => {
+  test("they come from the manifest, without the optional ones, and the keyboard one is among them", () => {
     const manifest = JSON.parse(readFileSync(join(import.meta.dir, "../package.json"), "utf8"));
     const optional = Object.keys(manifest.peerDependenciesMeta);
     expect(optional.length).toBeGreaterThan(3);
@@ -290,7 +290,7 @@ describe("os peers obrigatorios", () => {
     );
   });
 
-  test("o app sem o controlador de teclado ouve o nome dele, e o app completo nao ouve nada", () => {
+  test("the app without the keyboard controller hears its name, and the complete app hears nothing", () => {
     const root = app();
     try {
       expect(missingPeers(root)).toEqual(REQUIRED_PEERS);

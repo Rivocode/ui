@@ -35,7 +35,7 @@ const ACEITE: SignatureValue = {
   ],
 }
 
-/** Assinar o aceite */
+/** Signing the acceptance */
 export function Sign() {
   const [assinatura, setAssinatura] = useState<SignatureValue | null>(null)
 
@@ -54,7 +54,7 @@ export function Sign() {
   )
 }
 
-/** Exportar SVG e PNG */
+/** Export SVG and PNG */
 export function Export() {
   const [assinatura, setAssinatura] = useState<SignatureValue | null>(ACEITE)
   const [png, setPng] = useState('')
@@ -89,7 +89,7 @@ export function Export() {
   )
 }
 
-/** Digitar em vez de desenhar */
+/** Type instead of draw */
 export function Typed() {
   const [assinatura, setAssinatura] = useState<SignatureValue | null>({
     kind: 'typed',
@@ -111,7 +111,7 @@ export function Typed() {
   )
 }
 
-/** Estados */
+/** States */
 export function States() {
   return (
     <div className="grid max-w-3xl gap-6 sm:grid-cols-2">

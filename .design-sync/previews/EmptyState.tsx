@@ -1,7 +1,7 @@
 import { FileText, Search } from 'lucide-react'
 import { Button, Card, EmptyState } from '@rivocode/ui'
 
-/** Primeiro uso */
+/** First use */
 export function FirstRun() {
   return (
     <Card className="max-w-lg">
@@ -15,7 +15,7 @@ export function FirstRun() {
   )
 }
 
-/** Busca sem resultado */
+/** Search with no results */
 export function SearchWithNoResult() {
   return (
     <Card className="max-w-lg">
@@ -29,7 +29,7 @@ export function SearchWithNoResult() {
   )
 }
 
-/** Primeira vez, com ilustração */
+/** First time, with illustration */
 export function FirstRunIllustration() {
   return (
     <Card className="max-w-lg">

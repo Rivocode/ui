@@ -52,7 +52,7 @@ function Article({ onBox }: { onBox: (node: HTMLDivElement | null) => void }) {
   )
 }
 
-/** Lendo os títulos da página */
+/** Reading the page's headings */
 export function ReadsHeadings() {
   const [box, setBox] = useState<HTMLDivElement | null>(null)
 
@@ -64,7 +64,7 @@ export function ReadsHeadings() {
   )
 }
 
-/** Lista pronta, sem título visível */
+/** Ready-made list, with no visible title */
 export function ReadyList() {
   const [box, setBox] = useState<HTMLDivElement | null>(null)
   const [active, setActive] = useState<string | null>(null)

@@ -3,7 +3,7 @@ import { Text } from '@rivocode/ui'
 const MOTIVO =
   'Rejeitada pela prefeitura por divergência no código de serviço informado na emissão, e devolvida para correção manual depois de duas tentativas de reenvio no mesmo dia.'
 
-/** Os tons */
+/** The tones */
 export function Tones() {
   return (
     <div className="flex flex-col gap-1">
@@ -32,7 +32,7 @@ export function Tones() {
   )
 }
 
-/** Trecho dentro da frase */
+/** Snippet inside a sentence */
 export function Inline() {
   return (
     <Text size="base" tone="muted" className="max-w-96">
@@ -45,7 +45,7 @@ export function Inline() {
   )
 }
 
-/** Cortar o que não cabe */
+/** Clip what does not fit */
 export function Clamp() {
   return (
     <div className="flex w-72 flex-col gap-3">

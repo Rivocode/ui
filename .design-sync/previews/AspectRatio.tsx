@@ -1,6 +1,6 @@
 import { AspectRatio, Card, CardContent } from '@rivocode/ui'
 
-/** Dezesseis por nove */
+/** Sixteen by nine */
 export function Widescreen() {
   return (
     <div className="w-full max-w-md">
@@ -13,7 +13,7 @@ export function Widescreen() {
   )
 }
 
-/** Num cartão de produto */
+/** In a product card */
 export function InACard() {
   return (
     <Card className="w-64 overflow-hidden">

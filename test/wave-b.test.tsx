@@ -13,23 +13,23 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("o campo com mascara pontua enquanto se digita", () => {
+test("a masked field punctuates while typing", () => {
   withTheme(<MaskedInput mask="cpf" placeholder="CPF" />);
   const field = screen.getByPlaceholderText("CPF") as HTMLInputElement;
   fireEvent.change(field, { target: { value: "12345678901" } });
   expect(field.value).toBe("123.456.789-01");
 });
 
-test("quem escuta recebe o texto pontuado e o cru", () => {
+test("the listener receives the punctuated text and the raw one", () => {
   let masked = "";
-  let cru = "";
+  let raw = "";
   withTheme(
     <MaskedInput
       mask="cnpj"
       placeholder="CNPJ"
       onValueChange={(m, c) => {
         masked = m;
-        cru = c;
+        raw = c;
       }}
     />,
   );
@@ -37,17 +37,17 @@ test("quem escuta recebe o texto pontuado e o cru", () => {
     target: { value: "12345678000199" },
   });
   expect(masked).toBe("12.345.678/0001-99");
-  expect(cru).toBe("12345678000199");
+  expect(raw).toBe("12345678000199");
 });
 
-test("o cnpj alfanumerico entra pelo campo, e o teclado deixa de ser numerico", () => {
-  let cru = "";
+test("an alphanumeric cnpj goes into the field, and the keyboard stops being numeric", () => {
+  let raw = "";
   withTheme(
     <MaskedInput
       mask="cnpj"
       placeholder="CNPJ"
       onValueChange={(_, c) => {
-        cru = c;
+        raw = c;
       }}
     />,
   );
@@ -56,20 +56,20 @@ test("o cnpj alfanumerico entra pelo campo, e o teclado deixa de ser numerico", 
 
   fireEvent.change(field, { target: { value: "12abc34501de35" } });
   expect(field.value).toBe("12.ABC.345/01DE-35");
-  expect(cru).toBe("12ABC34501DE35");
+  expect(raw).toBe("12ABC34501DE35");
 });
 
-test("molde escrito na mao com * nao abre o teclado numerico", () => {
+test("a hand-written pattern with * does not open the numeric keyboard", () => {
   withTheme(<MaskedInput mask="***-99" placeholder="Codigo" />);
   expect(screen.getByPlaceholderText("Codigo").getAttribute("inputmode")).toBeNull();
 });
 
-test("o cpf continua abrindo o teclado numerico", () => {
+test("the cpf still opens the numeric keyboard", () => {
   withTheme(<MaskedInput mask="cpf" placeholder="CPF" />);
   expect(screen.getByPlaceholderText("CPF").getAttribute("inputmode")).toBe("numeric");
 });
 
-test("o telefone troca de molde entre o fixo e o celular", () => {
+test("the phone switches pattern between landline and mobile", () => {
   withTheme(<MaskedInput mask="telefone" placeholder="Telefone" />);
   const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
 
@@ -80,33 +80,33 @@ test("o telefone troca de molde entre o fixo e o celular", () => {
   expect(field.value).toBe("(83) 98811-2233");
 });
 
-test("o telefone fixo que chega pronto ja entra com o molde certo", () => {
-  // Formulario de edicao chega preenchido do servidor, e era ai que aparecia:
-  // o onChange escolhia o molde com phonePatternFor, e o estado inicial nao.
-  // Saia "(83) 88112-233", com a pontuacao do celular num numero de oito
-  // casas. E se corrigia sozinho na primeira tecla, o que torna dificil
-  // reproduzir.
+test("a landline that arrives prefilled starts with the right pattern", () => {
+  // An edit form arrives prefilled from the server, and that is where it showed:
+  // onChange picked the pattern with phonePatternFor, and the initial state did not.
+  // It came out as "(83) 88112-233", with mobile punctuation on an eight-digit
+  // number. And it fixed itself on the first keystroke, which makes it hard to
+  // reproduce.
   withTheme(<MaskedInput mask="telefone" defaultValue="8388112233" placeholder="Telefone" />);
   const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
 
   expect(field.value).toBe("(83) 8811-2233");
 });
 
-test("o celular que chega pronto continua com nove casas", () => {
+test("a mobile number that arrives prefilled keeps nine digits", () => {
   withTheme(<MaskedInput mask="telefone" defaultValue="83988112233" placeholder="Celular" />);
   const field = screen.getByPlaceholderText("Celular") as HTMLInputElement;
 
   expect(field.value).toBe("(83) 98811-2233");
 });
 
-test("o campo de dinheiro enche da direita para a esquerda", () => {
+test("the money field fills from right to left", () => {
   withTheme(<MaskedInput mask="moeda" placeholder="Valor" />);
   const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
   fireEvent.change(field, { target: { value: "123456" } });
   expect(field.value).toBe("1.234,56");
 });
 
-test("o cru do dinheiro são os dígitos da tela, com o zero da frente", () => {
+test("the raw money value is the digits on screen, with the leading zero", () => {
   const onValueChange = mock((_masked: string, _raw: string) => {});
   withTheme(<MaskedInput mask="moeda" placeholder="Valor" onValueChange={onValueChange} />);
   const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
@@ -118,28 +118,28 @@ test("o cru do dinheiro são os dígitos da tela, com o zero da frente", () => {
   expect(onValueChange).toHaveBeenLastCalledWith("12,00", "1200");
 });
 
-test("o campo com mascara abre o teclado de numeros no celular", () => {
+test("a masked field opens the number keyboard on mobile", () => {
   withTheme(<MaskedInput mask="cpf" placeholder="CPF" />);
   expect(screen.getByPlaceholderText("CPF").getAttribute("inputmode")).toBe("numeric");
 });
 
-test("a moldura de campo aceita encosto e botao", () => {
-  let cliques = 0;
+test("the field frame accepts an addon and a button", () => {
+  let clicks = 0;
   withTheme(
     <InputGroup>
       <InputPrefix>R$</InputPrefix>
       <MaskedInput mask="moeda" placeholder="Valor" />
-      <InputAction aria-label="Limpar" onClick={() => (cliques += 1)}>
+      <InputAction aria-label="Limpar" onClick={() => (clicks += 1)}>
         x
       </InputAction>
     </InputGroup>,
   );
   expect(screen.getByText("R$")).toBeDefined();
   fireEvent.click(screen.getByLabelText("Limpar"));
-  expect(cliques).toBe(1);
+  expect(clicks).toBe(1);
 });
 
-test("a linha de lista arruma media, texto e acao", () => {
+test("the list row arranges media, text and action", () => {
   withTheme(
     <Item>
       <ItemContent>
@@ -154,10 +154,10 @@ test("a linha de lista arruma media, texto e acao", () => {
   expect(screen.getByText("Abrir")).toBeDefined();
 });
 
-test("a linha de lista vira link de verdade com render", () => {
-  // O JSDoc mandava usar `render` junto com `interactive` e a prop nao
-  // existia: quem seguiu a documentacao recebeu uma div com cor de passagem,
-  // que o teclado nao alcanca.
+test("the list row becomes a real link with render", () => {
+  // The JSDoc said to use `render` together with `interactive` and the prop did
+  // not exist: whoever followed the documentation got a div with a hover color,
+  // which the keyboard cannot reach.
   withTheme(
     <Item interactive render={<a href="/notas/4813" />}>
       <ItemContent>
@@ -171,7 +171,7 @@ test("a linha de lista vira link de verdade com render", () => {
   expect(link.className).toContain("cursor-pointer");
 });
 
-test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
+test("the breadcrumb marks where you are and does not let the last one become a link", () => {
   withTheme(
     <Breadcrumb
       items={[
@@ -187,7 +187,7 @@ test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
   expect(screen.getByRole("link", { name: "Inicio" }).tagName).toBe("A");
 });
 
-test("caminho comprido dobra o meio em reticencia", () => {
+test("a long breadcrumb folds the middle into an ellipsis", () => {
   withTheme(
     <Breadcrumb
       items={[
@@ -205,7 +205,7 @@ test("caminho comprido dobra o meio em reticencia", () => {
   expect(screen.getByText("4813")).toBeDefined();
 });
 
-test("a migalha corta o texto numa caixa de bloco, senao o truncate nao faz nada", () => {
+test("the crumb clips the text in a block box, otherwise truncate does nothing", () => {
   withTheme(
     <Breadcrumb
       items={[
@@ -216,19 +216,19 @@ test("a migalha corta o texto numa caixa de bloco, senao o truncate nao faz nada
     />,
   );
 
-  const caixas = [
-    ["ancora", screen.getByText("Notas fiscais emitidas em janeiro de 2026")],
-    ["texto", screen.getByText("4813")],
+  const boxes = [
+    ["anchor", screen.getByText("Notas fiscais emitidas em janeiro de 2026")],
+    ["text", screen.getByText("4813")],
   ] as const;
 
-  for (const [nome, node] of caixas) {
+  for (const [kind, node] of boxes) {
     const classes = node.className.split(" ");
-    expect(`${nome}: ${classes.includes("truncate")}`).toBe(`${nome}: true`);
-    expect(`${nome}: ${classes.includes("block")}`).toBe(`${nome}: true`);
+    expect(`${kind}: ${classes.includes("truncate")}`).toBe(`${kind}: true`);
+    expect(`${kind}: ${classes.includes("block")}`).toBe(`${kind}: true`);
   }
 });
 
-test("no celular o separador some junto com a migalha a esquerda dele", () => {
+test("on mobile the separator disappears along with the crumb to its left", () => {
   const { container } = withTheme(
     <Breadcrumb
       items={[
@@ -239,32 +239,32 @@ test("no celular o separador some junto com a migalha a esquerda dele", () => {
     />,
   );
 
-  const separadores = [...container.querySelectorAll('li[aria-hidden="true"]')];
-  expect(separadores.length).toBe(2);
+  const separators = [...container.querySelectorAll('li[aria-hidden="true"]')];
+  expect(separators.length).toBe(2);
 
-  expect(separadores[0]!.className.split(" ")).toContain("max-sm:hidden");
-  expect(separadores[1]!.className.split(" ")).not.toContain("max-sm:hidden");
+  expect(separators[0]!.className.split(" ")).toContain("max-sm:hidden");
+  expect(separators[1]!.className.split(" ")).not.toContain("max-sm:hidden");
 });
 
-test("a paginacao anda e trava nas pontas", () => {
+test("pagination moves and locks at the ends", () => {
   function List() {
     const [page, setPage] = useState(1);
     return <Pagination page={page} pageCount={3} onPageChange={setPage} />;
   }
   withTheme(<List />);
 
-  const anterior = screen.getByLabelText("Página anterior") as HTMLButtonElement;
-  const proxima = screen.getByLabelText("Próxima página") as HTMLButtonElement;
-  expect(anterior.disabled).toBe(true);
+  const previous = screen.getByLabelText("Página anterior") as HTMLButtonElement;
+  const next = screen.getByLabelText("Próxima página") as HTMLButtonElement;
+  expect(previous.disabled).toBe(true);
 
-  fireEvent.click(proxima);
+  fireEvent.click(next);
   expect(screen.getByLabelText("Página 2").getAttribute("aria-current")).toBe("page");
 
-  fireEvent.click(proxima);
+  fireEvent.click(next);
   expect((screen.getByLabelText("Próxima página") as HTMLButtonElement).disabled).toBe(true);
 });
 
-test("muitas paginas cabem na mesma largura, com reticencia", () => {
+test("many pages fit in the same width, with an ellipsis", () => {
   withTheme(<Pagination page={50} pageCount={100} onPageChange={() => {}} />);
   expect(screen.getAllByText("...")).toHaveLength(2);
   expect(screen.getByLabelText("Página 1")).toBeDefined();
@@ -272,7 +272,7 @@ test("muitas paginas cabem na mesma largura, com reticencia", () => {
   expect(screen.getByLabelText("Página 49")).toBeDefined();
 });
 
-test("a paginacao nao mostra reticencia quando so um numero foi pulado", () => {
+test("pagination shows no ellipsis when only one number was skipped", () => {
   withTheme(<Pagination page={4} pageCount={6} onPageChange={() => {}} />);
   expect(screen.queryByText("...")).toBeNull();
   expect(screen.getByLabelText("Página 2")).toBeDefined();

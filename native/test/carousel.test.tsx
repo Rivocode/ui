@@ -44,7 +44,7 @@ const layout = (screen: ReturnType<typeof render>, width: number) => {
   act(() => measured[0]!.props.onLayout({ nativeEvent: { layout: { width, height: 200 } } }));
 };
 
-test("a fileira leva o nome do label e desenha um slide por item", () => {
+test("the row carries the label's name and draws one slide per item", () => {
   const { screen } = carousel();
   const [name] = byType(screen, "Text").filter((node) => node.props.children === "Planos");
   expect(name).toBeDefined();
@@ -66,14 +66,14 @@ test("a fileira leva o nome do label e desenha um slide por item", () => {
   expect(byType(screen, "FlatList")[0]!.props.horizontal).toBe(true);
 });
 
-test("um por vez pagina pela largura inteira", () => {
+test("one at a time pages by the full width", () => {
   const { screen } = carousel();
   const list = byType(screen, "FlatList")[0]!;
   expect(list.props.pagingEnabled).toBe(true);
   expect(list.props.snapToInterval).toBeUndefined();
 });
 
-test("varios por vez assentam de slide em slide, com o vao", () => {
+test("several at a time snap slide by slide, with the gap", () => {
   const { screen } = carousel({ slidesPerView: 2, gap: "md" });
   layout(screen, 312);
   const list = byType(screen, "FlatList")[0]!;
@@ -81,7 +81,7 @@ test("varios por vez assentam de slide em slide, com o vao", () => {
   expect(list.props.snapToInterval).toBe(162);
 });
 
-test("proximo pede o slide seguinte, e anterior nasce desabilitado", () => {
+test("next asks for the following slide, and previous starts disabled", () => {
   const { screen, onIndexChange } = carousel();
   const [previous] = byLabel(screen, "Slide anterior");
   expect(previous!.props.accessibilityState.disabled).toBe(true);
@@ -89,7 +89,7 @@ test("proximo pede o slide seguinte, e anterior nasce desabilitado", () => {
   expect(onIndexChange).toHaveBeenLastCalledWith(1);
 });
 
-test("no ultimo, proximo desabilita; com loop, volta ao primeiro", () => {
+test("on the last one, next disables; with loop, it goes back to the first", () => {
   const first = carousel({ index: 4 });
   expect(byLabel(first.screen, "Próximo slide")[0]!.props.accessibilityState.disabled).toBe(true);
 
@@ -100,14 +100,14 @@ test("no ultimo, proximo desabilita; com loop, volta ao primeiro", () => {
   expect(looped.onIndexChange).toHaveBeenLastCalledWith(0);
 });
 
-test("sem pontos, o contador diz a posicao numa regiao viva", () => {
+test("without dots, the counter says the position in a live region", () => {
   const { screen } = carousel({ index: 1 });
   const [counter] = byLabel(screen, "Slide 2 de 5");
   expect(counter!.props.accessibilityLiveRegion).toBe("polite");
   expect(textOf(screen)).toContain("2 de 5");
 });
 
-test("os pontos sao um por posicao, marcam o atual e levam ate ela", () => {
+test("the dots are one per position, mark the current one and take you to it", () => {
   const { screen, onIndexChange } = carousel({ indicators: true, slidesPerView: 3 });
   const dots = byRole(screen, "button").filter((node) =>
     String(node.props.accessibilityLabel).startsWith("Ir para o slide"),
@@ -118,7 +118,7 @@ test("os pontos sao um por posicao, marcam o atual e levam ate ela", () => {
   expect(onIndexChange).toHaveBeenLastCalledWith(2);
 });
 
-test("o arrasto que assenta diz o slide novo a quem controla", () => {
+test("a drag that settles tells the controller the new slide", () => {
   const { screen, onIndexChange } = carousel();
   layout(screen, 300);
   const list = byType(screen, "FlatList")[0]!;
@@ -126,7 +126,7 @@ test("o arrasto que assenta diz o slide novo a quem controla", () => {
   expect(onIndexChange).toHaveBeenLastCalledWith(2);
 });
 
-test("o slide controlado rola a fileira, sem animar quando o sistema pede", () => {
+test("the controlled slide scrolls the row, without animating when the system asks", () => {
   const { screen } = carousel({ index: 2 });
   layout(screen, 300);
   expect(flatListScrolls.at(-1)).toEqual({ offset: 600, animated: true });
@@ -138,7 +138,7 @@ test("o slide controlado rola a fileira, sem animar quando o sistema pede", () =
   expect(flatListScrolls.at(-1)).toEqual({ offset: 300, animated: false });
 });
 
-test("com um slide so, nao ha controle nenhum", () => {
+test("with a single slide, there are no controls at all", () => {
   const { screen } = carousel({ items: ["Básico"], indicators: true });
   expect(byRole(screen, "button")).toHaveLength(0);
 });

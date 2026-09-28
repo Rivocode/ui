@@ -31,7 +31,7 @@ function Plain() {
   return null;
 }
 
-test("o aviso com actionProps desenha o botao de desfazer, e o clique chama quem o pediu", async () => {
+test("a toast with actionProps draws the undo button, and the click calls whoever asked for it", async () => {
   let undone = 0;
   render(
     <RivoProvider>
@@ -49,7 +49,7 @@ test("o aviso com actionProps desenha o botao de desfazer, e o clique chama quem
   await waitFor(() => expect(screen.queryByText("Nota 4816 excluída")).toBeNull());
 });
 
-test("o aviso sem actionProps nao ganha botao de acao, so o xis", async () => {
+test("a toast without actionProps gets no action button, only the close x", async () => {
   render(
     <RivoProvider>
       <Plain />

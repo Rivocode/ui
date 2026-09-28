@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 
 import { flattenPreset } from "../scripts/build-preset";
 
-test("o preset achatado leva cada arquivo que o src/preset.css importa, na ordem", async () => {
+test("the flattened preset carries every file that src/preset.css imports, in order", async () => {
   const { css, files } = await flattenPreset();
   expect(files.length).toBeGreaterThan(4);
 
@@ -16,7 +16,7 @@ test("o preset achatado leva cada arquivo que o src/preset.css importa, na ordem
   }
 });
 
-test("o preset achatado leva as regras do src/preset.css e nenhum import", async () => {
+test("the flattened preset carries the rules of src/preset.css and no import", async () => {
   const { css, rules } = await flattenPreset();
   expect(rules).toContain("[data-rc-theme]");
   expect(rules).toContain("cursor: pointer");

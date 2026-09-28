@@ -1,25 +1,26 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # Tabs
 
-Alterna paineis irmaos na mesma página.
+Switches between sibling panels on the same page.
 
-Compõe com `TabList`, `Tab` e `TabPanel`, casando `value` entre aba e painel. O
-risco que corre até a aba ativa se posiciona sozinho.
+It composes with `TabList`, `Tab` and `TabPanel`, matching `value` between tab
+and panel. The indicator that runs to the active tab positions itself.
 
-`TabList` tem `variant`, do tipo `TabVariant`. O risco embaixo, que é o padrão,
-diz "esta parte da página". A caixinha, `variant="segmented"`, diz "a mesma
-coisa, de outro jeito": largura de tela, preview e código, escuro e claro.
-Trocar uma pela outra faz o controle prometer o que ele não faz.
+`TabList` has `variant`, of type `TabVariant`. The underline, which is the
+default, says "this part of the page". The little box, `variant="segmented"`,
+says "the same thing, another way": screen width, preview and code, dark and
+light. Swapping one for the other makes the control promise what it does not
+do.
 
-## Quando não usar
+## When not to use
 
-Não use para navegação entre páginas: aba sugere que o conteúdo está ali do
-lado, não em outro endereço. Se o clique troca a URL, é link, e o lugar dele é
-a `NavigationMenu` ou a `Sidebar`.
+Do not use it for navigation between pages: a tab suggests the content is
+right there beside it, not at another address. If the click changes the URL,
+it is a link, and its place is `NavigationMenu` or `Sidebar`.
 
-## No React Native
+## In React Native
 
-Traduz pela metade, de propósito. O `Tabs` nativo é **só** a caixinha (`variant="segmented"` no web): `items`, `value`, `onValueChange`, sem `TabList`, `Tab` nem `TabPanel`. Aba que troca a seção da página não é peça no celular (é tab bar do router), e insistir numa aba desenhada por cima disso dá duas navegações concorrentes na mesma tela.
+Translates halfway, on purpose. The native `Tabs` is **only** the box (`variant="segmented"` on the web): `items`, `value`, `onValueChange`, no `TabList`, `Tab` or `TabPanel`. A tab that switches the page's section is not a piece on the phone (it is the router's tab bar), and insisting on a tab drawn on top of that gives two competing navigations on the same screen.

@@ -1,13 +1,13 @@
 /**
- * Guarda do white-label: cor so pode existir em src/tokens. Um hexadecimal
- * dentro de um componente amarra a biblioteca a uma marca, e e a coisa mais
- * facil de fazer sem perceber.
+ * White-label guard: color may only exist in src/tokens. A hexadecimal inside
+ * a component ties the library to a brand, and it is the easiest thing to do
+ * without noticing.
  *
- * A varredura cobria so `components`, `provider` e `lib`, e os quatro
- * subcaminhos - `ai`, `chart`, `form` e `dnd` - ficavam fora dela sem ninguem
- * ter decidido isso: uma cor ou um `z-10` escrito no `Kanban` passaria calado.
- * Medido no dia em que o `dnd` entrou, os quatro estavam limpos. A lista abaixo
- * e o `src/` inteiro menos `tokens`, que e o unico lugar onde a cor pode morar.
+ * The scan covered only `components`, `provider` and `lib`, and the four
+ * subpaths - `ai`, `chart`, `form` and `dnd` - stayed out of it without anyone
+ * having decided so: a color or a `z-10` written in the `Kanban` would pass
+ * silently. Measured on the day `dnd` came in, the four were clean. The list
+ * below is the whole of `src/` minus `tokens`, the only place color may live.
  */
 import { scanAtLeast } from "./scan";
 
@@ -24,11 +24,11 @@ for (const file of files) {
   const lines = (await Bun.file(file).text()).split("\n");
   lines.forEach((line, i) => {
     if (COLOR.test(line)) {
-      console.error(`${file}:${i + 1}  cor literal: ${line.trim()}`);
+      console.error(`${file}:${i + 1}  literal color: ${line.trim()}`);
       failed++;
     }
     if (Z_INDEX.test(line)) {
-      console.error(`${file}:${i + 1}  empilhamento literal: ${line.trim()}`);
+      console.error(`${file}:${i + 1}  literal stacking: ${line.trim()}`);
       failed++;
     }
   });
@@ -36,8 +36,8 @@ for (const file of files) {
 
 if (failed > 0) {
   console.error(
-    `\n${failed} violacao(oes). Cor vive em src/tokens, empilhamento usa var(--rc-z-*).`,
+    `\n${failed} violation(s). Color lives in src/tokens, stacking uses var(--rc-z-*).`,
   );
   process.exit(1);
 }
-console.log(`Guarda de cor literal ok em ${files.length} arquivo(s).`);
+console.log(`Literal color guard ok in ${files.length} file(s).`);

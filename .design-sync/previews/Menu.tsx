@@ -22,7 +22,7 @@ const COLUMNS = [
   { key: 'valor', label: 'Valor' },
 ]
 
-/** Ações da linha */
+/** Row actions */
 export function RowActions() {
   return (
     <div className="min-h-64">
@@ -54,7 +54,7 @@ export function RowActions() {
   )
 }
 
-/** Fechado */
+/** Closed */
 export function ClosedState() {
   return (
     <Menu>
@@ -67,7 +67,7 @@ export function ClosedState() {
   )
 }
 
-/** Quais colunas mostrar */
+/** Which columns to show */
 export function ColumnPicker() {
   return (
     <div className="min-h-72">
@@ -79,15 +79,16 @@ export function ColumnPicker() {
         <MenuContent>
           <MenuGroup label="Mostrar na listagem">
             {COLUMNS.map((column) => (
-              /* O menu nao fecha ao marcar: quem escolhe colunas escolhe
-                 varias de uma vez, e reabrir a cada clique era o preco do
-                 Popover com Checkbox dentro. */
+              /* The menu does not close on check: whoever picks columns picks
+                 several at once, and reopening on every click was the price
+                 of a Popover with Checkboxes inside. */
               <MenuCheckboxItem
                 key={column.key}
                 defaultChecked={column.key !== 'valor'}
-                /* A coluna que identifica a linha nao se esconde: sem ela a
-                   listagem vira uma tabela de valores sem dono. Desabilitado, e
-                   nao ausente - sumir com a opcao esconde que ela existe. */
+                /* The column that identifies the row cannot be hidden: without it
+                   the listing becomes a table of values with no owner.
+                   Disabled, not absent - removing the option hides that it
+                   exists. */
                 disabled={column.key === 'numero'}
               >
                 {column.label}
@@ -100,7 +101,7 @@ export function ColumnPicker() {
   )
 }
 
-/** Ordenar por */
+/** Sort by */
 export function SortChoice() {
   return (
     <div className="min-h-72">
@@ -111,8 +112,8 @@ export function SortChoice() {
         </MenuTrigger>
         <MenuContent>
           <MenuRadioGroup defaultValue="emissao" label="Ordenar por">
-            {/* `closeOnClick` porque escolher a ordem encerra o assunto - na
-                Base UI o padrao e o contrario, e o menu fica aberto. */}
+            {/* `closeOnClick` because choosing the order settles the matter - in
+                Base UI the default is the opposite, and the menu stays open. */}
             <MenuRadioItem value="emissao" closeOnClick>
               Data de emissão
             </MenuRadioItem>
@@ -129,7 +130,7 @@ export function SortChoice() {
   )
 }
 
-/** Com submenu */
+/** With submenu */
 export function WithSubmenu() {
   return (
     <div className="min-h-64">
@@ -138,8 +139,8 @@ export function WithSubmenu() {
         <MenuContent>
           <MenuItem>Duplicar</MenuItem>
           <MenuSubmenu>
-            {/* O lado nao se pede: o ramo abre em `inline-end` sozinho, e vira
-                para o outro lado quando nao cabe. */}
+            {/* The side is not requested: the branch opens at `inline-end` on its
+                own, and flips to the other side when it does not fit. */}
             <MenuSubmenuTrigger>Exportar</MenuSubmenuTrigger>
             <MenuContent>
               <MenuItem>XML da NF-e</MenuItem>

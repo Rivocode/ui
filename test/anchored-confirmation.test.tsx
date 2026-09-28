@@ -31,20 +31,20 @@ async function settle(ms = 40) {
   });
 }
 
-test("a pergunta sai num h2, como o DialogTitle e o AlertDialogTitle da casa", () => {
+test("the question renders in an h2, like the house DialogTitle and AlertDialogTitle", () => {
   render(<Example />);
 
   expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("Excluir a nota 4813?");
 });
 
-test("titleAs baixa o nivel da pergunta, para o painel dentro de um Card nao inverter o esboco", () => {
+test("titleAs lowers the question level, so the panel inside a Card does not invert the outline", () => {
   render(<Example titleAs="h4" />);
 
   expect(screen.getByRole("heading", { level: 4 }).textContent).toBe("Excluir a nota 4813?");
   expect(screen.queryByRole("heading", { level: 2 })).toBeNull();
 });
 
-test("a confirmacao abre ancorada, com a pergunta como nome do painel", () => {
+test("the confirmation opens anchored, with the question as the panel name", () => {
   render(<Example />);
 
   const dialog = panel();
@@ -57,14 +57,14 @@ test("a confirmacao abre ancorada, com a pergunta como nome do painel", () => {
   expect(trigger.getAttribute("aria-controls")).toBeTruthy();
 });
 
-test("o foco comeca no botao que nao faz nada", async () => {
+test("focus starts on the button that does nothing", async () => {
   render(<Example />);
   const cancelButton = screen.getByRole("button", { name: "Cancelar" });
   await settle();
   expect(document.activeElement).toBe(cancelButton);
 });
 
-test("confirmar chama a acao uma vez e fecha o painel", () => {
+test("confirming calls the action once and closes the panel", () => {
   const onConfirm = mock(() => {});
   render(<Example onConfirm={onConfirm} />);
 
@@ -74,7 +74,7 @@ test("confirmar chama a acao uma vez e fecha o painel", () => {
   expect(screen.queryByRole("alertdialog")).toBeNull();
 });
 
-test("o botao de sair fecha sem executar, e avisa quem escuta o cancelamento", () => {
+test("the exit button closes without running, and notifies the cancel listener", () => {
   const onConfirm = mock(() => {});
   const onCancel = mock(() => {});
   render(<Example onConfirm={onConfirm} onCancel={onCancel} />);
@@ -86,7 +86,7 @@ test("o botao de sair fecha sem executar, e avisa quem escuta o cancelamento", (
   expect(screen.queryByRole("alertdialog")).toBeNull();
 });
 
-test("Escape cancela, porque a saida segura e nao fazer nada", () => {
+test("Escape cancels, because the safe way out is doing nothing", () => {
   const onConfirm = mock(() => {});
   const onCancel = mock(() => {});
   render(<Example onConfirm={onConfirm} onCancel={onCancel} />);
@@ -98,7 +98,7 @@ test("Escape cancela, porque a saida segura e nao fazer nada", () => {
   expect(screen.queryByRole("alertdialog")).toBeNull();
 });
 
-test("clicar fora cancela, e a acao destrutiva continua exigindo o botao", () => {
+test("clicking outside cancels, and the destructive action still requires the button", () => {
   const onConfirm = mock(() => {});
   const onCancel = mock(() => {});
   render(<Example onConfirm={onConfirm} onCancel={onCancel} />);
@@ -112,7 +112,7 @@ test("clicar fora cancela, e a acao destrutiva continua exigindo o botao", () =>
   expect(screen.queryByRole("alertdialog")).toBeNull();
 });
 
-test("a promessa em curso segura o painel e o segundo clique nao apaga duas vezes", async () => {
+test("the pending promise holds the panel and the second click does not delete twice", async () => {
   let release: () => void = () => {};
   const remove = mock(
     () =>
@@ -140,7 +140,7 @@ test("a promessa em curso segura o painel e o segundo clique nao apaga duas veze
   expect(screen.queryByRole("alertdialog")).toBeNull();
 });
 
-test("enquanto a chamada corre, Esc nao fecha o painel por baixo dela", async () => {
+test("while the call runs, Esc does not close the panel from under it", async () => {
   let release: () => void = () => {};
   const onCancel = mock(() => {});
   render(
@@ -163,24 +163,24 @@ test("enquanto a chamada corre, Esc nao fecha o painel por baixo dela", async ()
   expect(screen.queryByRole("alertdialog")).not.toBeNull();
   expect(onCancel).not.toHaveBeenCalled();
 
-  // O Cancelar recusa o toque por `aria-disabled`, e NAO por `disabled`. A
-  // diferenca e a que separa esta peca de uma armadilha de teclado: com o
-  // atributo, os dois botoes saiam da ordem de tabulacao ao mesmo tempo, o
-  // `alertdialog` ficava com ZERO focaveis, o foco caia no `<body>` e o Tab
-  // vazava para o fundo que o Base UI marcou aria-hidden. Medido em Chrome
-  // antes do conserto: "focaveis restantes: NENHUM". E falha WCAG 2.1.2.
+  // Cancelar refuses the press through `aria-disabled`, and NOT through
+  // `disabled`. That difference is what separates this piece from a keyboard
+  // trap: with the attribute, both buttons left the tab order at the same time,
+  // the `alertdialog` was left with ZERO focusables, focus fell to `<body>` and
+  // Tab leaked into the background that Base UI marked aria-hidden. Measured in
+  // Chrome before the fix: "remaining focusables: NONE". It is a WCAG 2.1.2 failure.
   const cancel = screen.getByRole("button", { name: "Cancelar" });
   expect(cancel.getAttribute("aria-disabled")).toBe("true");
   expect(cancel.hasAttribute("disabled")).toBe(false);
 
-  // A garantia que importa, escrita como o leitor de tela a sente: sobra pelo
-  // menos um alvo de foco dentro do painel enquanto a chamada corre.
+  // The guarantee that matters, written as the screen reader feels it: at least
+  // one focus target remains inside the panel while the call runs.
   const focusable = panel().querySelectorAll(
     'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
   );
   expect(focusable.length).toBeGreaterThan(0);
 
-  // E a espera nao e silenciosa: ha regiao viva dizendo que ela corre.
+  // And the wait is not silent: there is a live region saying it is running.
   const notice = panel().querySelector('[role="status"]');
   expect(notice?.textContent).toBeTruthy();
 
@@ -189,7 +189,7 @@ test("enquanto a chamada corre, Esc nao fecha o painel por baixo dela", async ()
   });
 });
 
-test("promessa que rejeita devolve o painel, com o texto ainda na tela", async () => {
+test("a rejecting promise gives the panel back, with the text still on screen", async () => {
   let fail: (reason: Error) => void = () => {};
   render(
     <Example
@@ -216,14 +216,14 @@ test("promessa que rejeita devolve o painel, com o texto ainda na tela", async (
   expect(screen.getByRole("button", { name: "Cancelar" }).hasAttribute("disabled")).toBe(false);
 });
 
-test("a espera vinda de fora tambem trava o botao", () => {
+test("a wait coming from outside also locks the button", () => {
   render(<Example loading />);
   const confirmButton = screen.getByRole("button", { name: "Excluir" });
   expect(confirmButton.getAttribute("aria-busy")).toBe("true");
   expect(confirmButton.hasAttribute("disabled")).toBe(true);
 });
 
-test("o tom de perigo veste o vermelho de preencher, e o neutro nao", () => {
+test("the danger tone wears the filled red, and the neutral one does not", () => {
   const { unmount } = render(<Example />);
   expect(screen.getByRole("button", { name: "Excluir" }).className.split(" ")).toContain(
     "bg-danger",
@@ -236,7 +236,7 @@ test("o tom de perigo veste o vermelho de preencher, e o neutro nao", () => {
   expect(archive.className).not.toContain("bg-danger");
 });
 
-test("cada parte do painel aceita classe, sem alcancar no interno pelo seletor", () => {
+test("each part of the panel accepts a class, without reaching into internals by selector", () => {
   render(
     <Example
       className="painel-x"
@@ -264,12 +264,12 @@ test("cada parte do painel aceita classe, sem alcancar no interno pelo seletor",
   expect(panel().className).toContain("painel-x");
 });
 
-test("sem descricao o painel nao promete um texto que nao existe", () => {
+test("without a description the panel does not promise text that does not exist", () => {
   render(<Example description={undefined} />);
   expect(panel().getAttribute("aria-describedby")).toBeNull();
 });
 
-test("na tela estreita a confirmacao vira folha de baixo, com os botoes na largura toda", () => {
+test("on a narrow screen the confirmation becomes a bottom sheet, with full-width buttons", () => {
   const realMatchMedia = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -290,14 +290,14 @@ test("na tela estreita a confirmacao vira folha de baixo, com os botoes na largu
   }
 });
 
-test("o foco vai PARA o cancelar quando o confirmar entra em espera", async () => {
-  // A 0.8.0 consertou so metade: o cancelar passou a recusar por `aria-disabled`
-  // e continuou focavel, mas nada MOVIA o foco ate ele. Quem aperta o confirmar
-  // segura o foco nele, o `loading` o marca `disabled` de verdade, e o navegador
-  // larga o foco no `<body>` - o Tab seguinte sai do painel.
+test("focus moves TO cancel when confirm starts waiting", async () => {
+  // 0.8.0 fixed only half: cancel started refusing through `aria-disabled` and
+  // stayed focusable, but nothing MOVED focus to it. Whoever presses confirm
+  // holds focus on it, `loading` marks it truly `disabled`, and the browser
+  // drops focus on `<body>` - the next Tab leaves the panel.
   //
-  // O defeito so aparece em Chromium e Firefox: o WebKit segura o foco dentro
-  // sozinho, entao uma suite rodada so no Safari passa com ele de pe.
+  // The defect only shows in Chromium and Firefox: WebKit keeps focus inside on
+  // its own, so a suite run only in Safari passes with the defect standing.
   let release = () => {};
   render(
     <Example

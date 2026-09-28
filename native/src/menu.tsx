@@ -8,7 +8,7 @@ import { Text } from "./text";
 export type MenuAction = {
   label: string;
   onSelect: () => void;
-  /** `danger` pinta de vermelho a acao que remove ou cancela. */
+  /** `danger` paints red the action that removes or cancels. */
   tone?: "default" | "danger";
   disabled?: boolean;
 };
@@ -16,26 +16,28 @@ export type MenuAction = {
 export type MenuProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** O sujeito das acoes: "Nota 4813". */
+  /** The subject of the actions: "Nota 4813". */
   title: string;
   actions: MenuAction[];
   /**
-   * A area que abre o menu no toque longo - o botao direito do celular.
-   * Sem ela o menu so abre por `open`, e o gatilho fica por sua conta.
+   * The area that opens the menu on long press - the phone's right click.
+   * Without it the menu opens only through `open`, and the trigger is up to
+   * you.
    */
   children?: ReactNode;
-  /** Veste a lista de acoes dentro da folha, o mesmo no de `classNames.content`. */
+  /** Styles the list of actions inside the sheet, the same node as `classNames.content`. */
   className?: string;
   /**
-   * Classe por parte, com os nomes das pecas do web: `trigger` (a area do
-   * toque longo, que envolve os filhos, entao herde o layout deles), `content`
-   * (a lista de acoes) e `item` (cada acao).
+   * Class per part, with the names of the web components: `trigger` (the
+   * long-press area, which wraps the children, so inherit their layout),
+   * `content` (the list of actions) and `item` (each action).
    */
   classNames?: Slots<"trigger" | "content" | "item">;
   /**
-   * Os textos da peca, para trocar o idioma: `open` e o nome da acao que abre a
-   * folha pelo leitor de tela, e `hint` a dica da area do toque longo, que
-   * recebe o `title`. Passe so os que mudam.
+   * The component's texts, to change the language: `open` is the name of the
+   * action that opens the sheet from the screen reader, and `hint` the hint of
+   * the long-press area, which receives `title`. Pass only the ones that
+   * change.
    */
   labels?: Partial<MenuLabels>;
 };

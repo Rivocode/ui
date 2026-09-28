@@ -14,29 +14,28 @@ export type FormFieldRow<
   Values extends FieldValues = FieldValues,
   Name extends FieldPath<Values> = FieldPath<Values>,
 > = ControllerRenderProps<Values, Name> & {
-  /** O rótulo do `FormField`. Sem ele o controle não tem nome acessível. */
+  /** The `FormField` label. Without it the control has no accessible name. */
   accessibilityLabel: string;
-  /** Se há erro agora: é o que acende a borda vermelha do `Input`. */
+  /** Whether there is an error right now: it is what lights the red border of `Input`. */
   invalid: boolean;
 };
 
 export type FormFieldProps<Values extends FieldValues, Name extends FieldPath<Values>> = {
-  /** O caminho do campo no schema. */
+  /** The field's path in the schema. */
   name: Name;
   /**
-   * Obrigatório, ao contrário do web.
-   *
-   * Lá ele é opcional porque a Base UI ainda liga o controle a um rótulo
-   * escrito fora do `Field`. Aqui não há como ligar coisa nenhuma: sem este
-   * texto o campo fica sem nome na tela E sem nome no leitor de tela, que são
-   * as duas metades do mesmo problema.
+   * Required, unlike on the web. There it is optional because Base UI still
+   * ties the control to a label written outside the `Field`. Here there is no
+   * way to tie anything: without this text the field has no name on screen AND
+   * no name for the screen reader, which are the two halves of the same
+   * problem.
    */
   label: string;
   description?: string;
-  /** Só quando o campo vive fora de um `<Form>`. */
+  /** Only when the field lives outside a `<Form>`. */
   control?: Control<Values>;
   className?: string;
-  /** Recebe o campo pronto para o adaptador. */
+  /** Receives the field ready for the adapter. */
   children: (row: FormFieldRow<Values, Name>, state: ControllerFieldState) => ReactElement;
 };
 

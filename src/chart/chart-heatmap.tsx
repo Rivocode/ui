@@ -21,60 +21,60 @@ import { axisOrder, cellNumber, heatStep } from "../shared/chart-layout";
 
 export type ChartHeatmapProps<Cell> = Omit<ComponentProps<"div">, "children" | "color"> & {
   /**
-   * Uma linha por celula preenchida, no formato longo que a consulta devolve:
-   * `{ dia: "Seg", hora: "14h", total: 12 }`. Combinacao que nao aparece aqui
-   * vira celula vazia, e nao zero.
+   * One row per filled cell, in the long format the query returns:
+   * `{ dia: "Seg", hora: "14h", total: 12 }`. A combination that does not appear here
+   * becomes an empty cell, not zero.
    */
   data: Cell[];
-  /** De onde sai a linha da grade (o eixo vertical). */
+  /** Where the grid row comes from (the vertical axis). */
   rowKey: keyof Cell & string;
-  /** De onde sai a coluna da grade (o eixo horizontal). */
+  /** Where the grid column comes from (the horizontal axis). */
   columnKey: keyof Cell & string;
   /**
-   * De onde sai o numero. `null`, `undefined` ou numero invalido e celula
-   * vazia, desenhada com borda tracejada e sem tinta; `0` e valor, e pinta o
-   * primeiro degrau da escala.
+   * Where the number comes from. `null`, `undefined` or an invalid number is an empty
+   * cell, drawn with a dashed border and no ink; `0` is a value, and paints the
+   * first step of the scale.
    */
   valueKey: keyof Cell & string;
   /**
-   * A ordem das linhas, e as que existem mesmo sem dado nenhum. Sem ela, a
-   * ordem em que aparecem em `data`: domingo sem emissao some da grade.
+   * The order of the rows, and the ones that exist even with no data at all. Without it, the
+   * order in which they appear in `data`: a Sunday with no issuance disappears from the grid.
    */
   rows?: readonly string[];
-  /** A ordem das colunas, pela mesma regra de `rows`. */
+  /** The order of the columns, by the same rule as `rows`. */
   columns?: readonly string[];
   /**
-   * A cor do degrau mais forte. Os quatro de baixo sao ela mesma em tinta mais
-   * rala sobre o fundo. Sem ela, `var(--rc-chart-1)`; aceita qualquer
-   * `var(--rc-chart-N)`, que sao as oito medidas contra o fundo nos dois temas.
+   * The color of the strongest step. The four below are the same color in thinner
+   * ink over the background. Without it, `var(--rc-chart-1)`; accepts any
+   * `var(--rc-chart-N)`, which are the eight measured against the background in both themes.
    */
   color?: string;
   /**
-   * O intervalo da escala, `[menor, maior]`. Sem ele, de zero (ou do menor
-   * valor, se houver negativo) ate o maior valor presente. Fixe quando duas
-   * grades lado a lado precisam da mesma regua.
+   * The scale's range, `[min, max]`. Without it, from zero (or from the smallest
+   * value, if there is a negative one) up to the largest value present. Pin it when two
+   * grids side by side need the same ruler.
    */
   domain?: readonly [number, number];
-  /** Como o numero e escrito, na dica, na legenda e na tabela do leitor de tela. */
+  /** How the number is written, in the tooltip, the legend and the screen reader table. */
   format?: Format;
   /**
-   * O que a grade mede, por extenso: vira o nome do grupo e a legenda da
-   * tabela que o leitor de tela le no lugar do desenho.
+   * What the grid measures, spelled out: becomes the group's name and the caption of the
+   * table the screen reader reads in place of the drawing.
    */
   label: string;
-  /** A regua de cor embaixo da grade, do menor ao maior. Ligada por padrao. */
+  /** The color ruler below the grid, from smallest to largest. On by default. */
   legend?: boolean;
   /**
-   * Os textos da peca, para trocar o idioma: `empty` e o que a leitura diz na
-   * celula sem dado, "Sem dado" sem ele.
+   * The piece's texts, to change the language: `empty` is what the reading says for a
+   * cell with no data, "Sem dado" without it.
    */
   labels?: Partial<ChartHeatmapLabels>;
-  /** Classe por parte: `grid`, `cell`, `legend`. */
+  /** Class per part: `grid`, `cell`, `legend`. */
   classNames?: Slots<"grid" | "cell" | "legend">;
   /**
-   * O que aparece no lugar do desenho quando nao ha o que pintar: lista vazia,
-   * nenhuma celula com numero, ou todas em zero. O mesmo formato do
-   * `ChartContainer` e do `DataTable`.
+   * What appears in place of the drawing when there is nothing to paint: an empty list,
+   * no cell with a number, or all of them at zero. The same shape as
+   * `ChartContainer` and `DataTable`.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };

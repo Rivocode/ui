@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { DescriptionItem, DescriptionList, Editable } from '@rivocode/ui'
 
-/** Corrigir sem sair da tela */
+/** Fix without leaving the screen */
 export function FixInPlace() {
   const [customer, setCustomer] = useState('Clínica São Lucas')
   const [note, setNote] = useState('')

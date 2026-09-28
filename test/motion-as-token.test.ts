@@ -48,7 +48,7 @@ const FAMILIES = [...root.keys()]
   .map((name) => /^--rc-spring-([\w]+)-stiffness$/.exec(name)?.[1])
   .filter((family): family is string => family !== undefined);
 
-test("toda mola do forma.css e a conta da propria rigidez e do proprio amortecimento", () => {
+test("every spring in forma.css is the math of its own stiffness and its own damping", () => {
   expect(FAMILIES).toEqual(["spatial", "expressive", "effects"]);
 
   const wrong: string[] = [];
@@ -69,7 +69,7 @@ test("toda mola do forma.css e a conta da propria rigidez e do proprio amortecim
   expect(wrong).toEqual([]);
 });
 
-test("a mola espacial passa do alvo e volta, e a de efeito chega sem passar", () => {
+test("the spatial spring overshoots the target and comes back, and the effects spring arrives without overshooting", () => {
   const peak = (family: string) =>
     Math.max(
       ...root
@@ -84,14 +84,14 @@ test("a mola espacial passa do alvo e volta, e a de efeito chega sem passar", ()
   expect(peak("effects")).toBe(1);
 });
 
-test("toda duracao do forma.css zera quando a pessoa pede menos movimento", () => {
+test("every duration in forma.css drops to zero when the person asks for reduced motion", () => {
   const durations = [...root.keys()].filter((name) => name.startsWith("--rc-duration-"));
   expect(durations.length).toBeGreaterThanOrEqual(7);
   for (const name of durations) expect(reduced.get(name)).toBe("0ms");
   expect([...reduced.keys()].sort()).toEqual(durations.sort());
 });
 
-test("toda duracao e toda curva viram utilitario no contrato do Tailwind", () => {
+test("every duration and every curve becomes a utility in the Tailwind contract", () => {
   const durations = [...root.keys()].filter((name) => name.startsWith("--rc-duration-"));
   const curves = [...root.keys()].filter((name) => name.startsWith("--rc-ease"));
   expect(curves.length).toBeGreaterThanOrEqual(7);
@@ -115,11 +115,11 @@ async function loadStylesheet(id: string, base: string) {
   return { path, base: dirname(path), content: await Bun.file(path).text() };
 }
 
-test("o Tailwind compila a duracao e a curva pelo nome da intencao", async () => {
+test("Tailwind compiles the duration and the curve by the intent name", async () => {
   const system = await __unstable__loadDesignSystem(readFileSync("src/styles.css", "utf8"), {
     base: resolve("src"),
     loadStylesheet,
-    loadModule: () => Promise.reject(new Error("sem plugin")),
+    loadModule: () => Promise.reject(new Error("no plugin")),
   });
 
   const [fast, spatial, enter, springy] = system.candidatesToCss([
@@ -135,7 +135,7 @@ test("o Tailwind compila a duracao e a curva pelo nome da intencao", async () =>
   expect(springy).toContain("transition-timing-function: var(--rc-ease-spatial)");
 });
 
-test("o nativo recebe as curvas cubicas e os numeros da mola, e nao o linear()", async () => {
+test("native receives the cubic curves and the spring numbers, and not the linear()", async () => {
   const { tokens } = await import("../native/tokens");
   const easings = tokens.easings as Record<string, readonly number[]>;
   const scales = tokens.scales as Record<string, number>;

@@ -18,7 +18,7 @@ import {
 import { Message, ToolCall } from '@rivocode/ui/ai'
 import { useState } from 'react'
 
-/** Onboarding, uma pergunta por vez */
+/** Onboarding, one question at a time */
 export function Onboarding() {
   const [answers, setAnswers] = useState<QuestionnaireAnswers | null>(null)
 
@@ -75,7 +75,7 @@ export function Onboarding() {
   )
 }
 
-/** O agente pergunta, a pessoa responde */
+/** The agent asks, the person answers */
 export function AgentAsks() {
   const [answers, setAnswers] = useState<QuestionnaireAnswers | null>(null)
 
@@ -135,7 +135,7 @@ export function AgentAsks() {
   )
 }
 
-/** Pergunta desabilitada e erro */
+/** Disabled question and error */
 export function States() {
   return (
     <div className="flex w-full max-w-lg flex-col gap-8">

@@ -5,11 +5,11 @@ import { useMemo, useState } from "react";
 import { clampCount } from "../../shared/state";
 
 export type UseCounterOptions = {
-  /** O piso. `decrement` e `set` abaixo dele param nele, sem erro. */
+  /** The floor. `decrement` and `set` below it stop at it, without error. */
   min?: number;
-  /** O teto. `increment` e `set` acima dele param nele, sem erro. */
+  /** The ceiling. `increment` and `set` above it stop at it, without error. */
   max?: number;
-  /** Quanto `increment` e `decrement` andam por chamada. */
+  /** How much `increment` and `decrement` move per call. */
   step?: number;
 };
 

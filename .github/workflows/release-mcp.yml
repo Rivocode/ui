@@ -1,33 +1,33 @@
 name: release-mcp
 
-# Publica o @rivocode/ui-mcp quando uma tag `mcp-v*` sobe.
+# Publishes @rivocode/ui-mcp when an `mcp-v*` tag goes up.
 #
-# Terceiro pacote, terceiro workflow, no molde do release-native: o servidor
-# MCP anda na velocidade dele. Ele empacota a documentacao do DS da arvore em
-# que foi construido, entao um release do web nao obriga release daqui, e um
-# servidor novo (ferramenta nova, busca melhor) nao obriga release do web.
+# Third package, third workflow, on the release-native mold: the MCP server
+# moves at its own speed. It packs the DS documentation from the tree it was
+# built in, so a web release does not force a release here, and a new server
+# (new tool, better search) does not force a web release.
 #
-# O prefixo da tag e o que separa os gatilhos: `v0.15.0` e do web,
-# `native-v0.10.0` do nativo e `mcp-v0.1.0` daqui. Nenhum dos tres casa com o
-# padrao dos outros dois.
+# The tag prefix is what separates the triggers: `v0.15.0` is web's,
+# `native-v0.10.0` native's and `mcp-v0.1.0` this one's. None of the three
+# matches the pattern of the other two.
 on:
   push:
     tags: ["mcp-v*"]
-  # Repetir uma publicacao que falhou no meio sem criar outra tag, e, com
-  # `ensaio`, atravessar o caminho inteiro sem gastar versao nenhuma. O
-  # `tag.yml` tambem chama por aqui, porque tag empurrada com o GITHUB_TOKEN
-  # nao dispara `on: push: tags`.
+  # Repeat a publication that failed halfway without creating another tag, and,
+  # with `dry_run`, go through the whole path without spending any version.
+  # `tag.yml` also calls in through here, because a tag pushed with the
+  # GITHUB_TOKEN does not fire `on: push: tags`.
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag ja existente para publicar, como mcp-v0.1.0. Vazio so em ensaio."
+        description: "Existing tag to publish, such as mcp-v0.1.0. Empty only in a dry run."
         required: false
-      ensaio:
-        # A primeira publicacao de um pacote novo e o voo mais cego de todos:
-        # o release-native morreu quatro vezes no ultimo passo antes de alguem
-        # conseguir exercitar o caminho inteiro. O ensaio roda tudo, na mesma
-        # ordem e com os mesmos segredos, e pula so o `npm publish` real.
-        description: "Ensaio: roda o caminho inteiro e NAO publica"
+      dry_run:
+        # The first publication of a new package is the blindest flight of all:
+        # release-native died four times on the last step before anyone could
+        # exercise the whole path. The dry run runs everything, in the same
+        # order and with the same secrets, and skips only the real `npm publish`.
+        description: "Dry run: runs the whole path and does NOT publish"
         type: boolean
         default: false
 
@@ -36,10 +36,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # `id-token` e `--provenance` andam JUNTOS: um sem o outro nao publica
-      # assinado, e a falta so aparece no ultimo comando de uma publicacao que
-      # nao se desfaz. O repositorio e publico, entao o registro aceita a
-      # procedencia desde a primeira versao deste pacote.
+      # `id-token` and `--provenance` go TOGETHER: one without the other does
+      # not publish signed, and the gap only shows on the last command of a
+      # publication that cannot be undone. The repository is public, so the
+      # registry accepts provenance from this package's first version.
       id-token: write
 
     steps:
@@ -51,135 +51,137 @@ jobs:
         with:
           bun-version: latest
 
-      # O Node entra pelo `npm publish` - que autentica pela publicacao
-      # confiavel, sem .npmrc nem segredo - e pela fumaca, que roda o bin com
-      # `node`, como o `npx` de quem instala vai rodar.
+      # Node is here for `npm publish` - which authenticates through trusted
+      # publishing, with no .npmrc nor secret - and for the smoke test, which
+      # runs the bin with `node`, the way the installer's `npx` will run it.
       - uses: actions/setup-node@v7
         with:
           node-version: 24
 
-      # O `mcp/` e workspace da raiz: uma instalacao so traz o SDK do MCP para
-      # o pacote e para o teste que sobe o servidor em memoria.
+      # `mcp/` is a workspace of the root: a single install brings the MCP SDK
+      # for the package and for the test that starts the server in memory.
       - run: bun install --frozen-lockfile
 
-      # Publicacao confiavel (OIDC): o npm confia neste workflow, deste
-      # repositorio, e nao existe token guardado. Ela exige npm 11.5.1 ou mais
-      # novo, e o npm que vem com o Node pode ser mais velho. Sem ele, o
-      # `npm publish` cai no token que nao existe mais e morre com ENEEDAUTH
-      # depois de o check e o build ja terem gastado a corrida.
-      - name: Conferir o npm da publicacao confiavel
+      # Trusted publishing (OIDC): npm trusts this workflow, from this
+      # repository, and no token is stored. It requires npm 11.5.1 or newer,
+      # and the npm that ships with Node may be older. Without it, `npm publish`
+      # falls back to the token that no longer exists and dies with ENEEDAUTH
+      # after check and build have already spent the run.
+      - name: Check the npm for trusted publishing
         run: |
           npm install -g npm@latest
-          versao=$(npm --version)
-          echo "npm $versao"
-          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$versao"; then
-            echo "::error::A publicacao confiavel exige npm 11.5.1 ou mais novo, e este e o $versao."
+          version=$(npm --version)
+          echo "npm $version"
+          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$version"; then
+            echo "::error::Trusted publishing requires npm 11.5.1 or newer, and this one is $version."
             exit 1
           fi
 
-      - name: Conferir o token da procedencia
-        # O `--dry-run` do npm NAO exercita procedencia: ha um `if (!dryRun)`
-        # antes da geracao da assinatura, entao o ensaio fica verde sem provar
-        # nada. Esta variavel so existe quando `id-token: write` foi concedido
-        # ao job, e e a unica parte da procedencia que o ensaio pega.
+      - name: Check the provenance token
+        # npm's `--dry-run` does NOT exercise provenance: there is an
+        # `if (!dryRun)` before the signature is generated, so the dry run goes
+        # green without proving anything. This variable only exists when
+        # `id-token: write` was granted to the job, and it is the only part of
+        # provenance the dry run catches.
         run: |
           if [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
-            echo "::error::Sem token OIDC: o job precisa de `id-token: write` em permissions."
+            echo "::error::No OIDC token: the job needs `id-token: write` in permissions."
             exit 1
           fi
-          echo "Token OIDC presente: a publicacao sai assinada."
+          echo "OIDC token present: the publication goes out signed."
 
-      # A tag e a versao do mcp/package.json precisam contar a mesma historia:
-      # `mcp-v0.2.0` sobre um manifesto em 0.1.0 republicaria a versao velha.
-      # Em ensaio a conferencia relata e nao para, porque o ensaio costuma
-      # rodar direto da main, onde nao ha tag nenhuma para bater.
-      - name: Conferir a tag e a versao
+      # The tag and the mcp/package.json version have to tell the same story:
+      # `mcp-v0.2.0` over a manifest at 0.1.0 would republish the old version.
+      # In a dry run the check reports and does not stop, because the dry run
+      # usually runs straight from main, where there is no tag to match.
+      - name: Check the tag and the version
         env:
-          ENSAIO: ${{ inputs.ensaio }}
+          DRY_RUN: ${{ inputs.dry_run }}
           TAG: ${{ github.event.inputs.tag }}
         run: |
           pkg="mcp-v$(node -p "require('./mcp/package.json').version")"
 
-          if [ "$ENSAIO" = "true" ]; then
+          if [ "$DRY_RUN" = "true" ]; then
             if [ -z "$TAG" ]; then
-              echo "Ensaio a partir de ${{ github.ref_name }}, sobre $pkg."
+              echo "Dry run from ${{ github.ref_name }}, over $pkg."
             elif [ "$TAG" != "$pkg" ]; then
-              echo "Aviso: a tag $TAG nao bate com o mcp/package.json ($pkg)."
-              echo "Numa publicacao de verdade isto pararia aqui."
+              echo "Warning: tag $TAG does not match mcp/package.json ($pkg)."
+              echo "In a real publication this would stop here."
             else
-              echo "Ensaio sobre $pkg."
+              echo "Dry run over $pkg."
             fi
             exit 0
           fi
 
           if [ -z "$TAG" ] && [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Publicacao de verdade exige a tag no formulario."
-            echo "Para so exercitar o caminho, marque a caixa \"Ensaio\"."
+            echo "A real publication requires the tag in the form."
+            echo "To just exercise the path, check the \"Dry run\" box."
             exit 1
           fi
 
           tag="${TAG:-${{ github.ref_name }}}"
           if [ "$tag" != "$pkg" ]; then
-            echo "A tag $tag nao bate com a versao do mcp/package.json ($pkg)."
+            echo "Tag $tag does not match the mcp/package.json version ($pkg)."
             exit 1
           fi
-          echo "Publicando $pkg"
+          echo "Publishing $pkg"
 
-      # A versao pode ja estar no registro, e o npm so conta isso no fim, com um
-      # `403` que fala de permissao e nao diz o que fazer.
-      - name: Conferir se a versao ja esta publicada
+      # The version may already be in the registry, and npm only says so at the
+      # end, with a `403` that talks about permission and does not say what to do.
+      - name: Check whether the version is already published
         env:
-          ENSAIO: ${{ inputs.ensaio }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          versao=$(node -p "require('./mcp/package.json').version")
+          version=$(node -p "require('./mcp/package.json').version")
 
-          # `npm view` responde 404 para versao inexistente E para pacote
-          # inexistente, e os dois querem dizer "pode publicar". Isso importa
-          # mais aqui do que nos outros dois workflows: na primeira publicacao
-          # o pacote @rivocode/ui-mcp ainda nao existe no registro, e esta
-          # guarda tem que ser atravessada.
-          publicada=$(npm view "@rivocode/ui-mcp@$versao" version 2>/dev/null || true)
+          # `npm view` answers 404 for a missing version AND for a missing
+          # package, and both mean "go ahead and publish". That matters more
+          # here than in the other two workflows: on the first publication the
+          # @rivocode/ui-mcp package does not exist in the registry yet, and
+          # this guard has to be crossed.
+          published=$(npm view "@rivocode/ui-mcp@$version" version 2>/dev/null || true)
 
-          # Em ensaio a guarda relata e segue: o ensaio existe justamente para
-          # gastar a corrida inteira sem queimar um numero novo.
-          if [ -n "$publicada" ] && [ "$ENSAIO" = "true" ]; then
-            echo "A versao $versao ja esta no registro."
-            echo "Num lancamento de verdade isto pararia aqui; em ensaio, segue."
+          # In a dry run the guard reports and goes on: the dry run exists
+          # precisely to spend the whole run without burning a new number.
+          if [ -n "$published" ] && [ "$DRY_RUN" = "true" ]; then
+            echo "Version $version is already in the registry."
+            echo "In a real release this would stop here; in a dry run, it goes on."
             exit 0
           fi
 
-          if [ -n "$publicada" ]; then
-            echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
+          if [ -n "$published" ]; then
+            echo "The tag was created for version $version, which is already published on npm."
             echo
-            echo "O registro nao aceita republicar o mesmo numero. O que fazer:"
-            echo "  1. suba a versao em mcp/package.json e registre a mudanca"
-            echo "     em mcp/CHANGELOG.md;"
-            echo "  2. apague a tag que sobrou, aqui e no remoto:"
-            echo "     git tag -d mcp-v$versao && git push origin :mcp-v$versao"
-            echo "  3. crie a tag da versao nova, que e quem dispara este workflow."
+            echo "The registry does not accept republishing the same number. What to do:"
+            echo "  1. bump the version in mcp/package.json and record the change"
+            echo "     in mcp/CHANGELOG.md;"
+            echo "  2. delete the leftover tag, here and on the remote:"
+            echo "     git tag -d mcp-v$version && git push origin :mcp-v$version"
+            echo "  3. create the tag for the new version, which is what triggers this workflow."
             echo
-            echo "No registro hoje: latest $(npm view @rivocode/ui-mcp version 2>/dev/null || echo '?')."
+            echo "In the registry today: latest $(npm view @rivocode/ui-mcp version 2>/dev/null || echo '?')."
             exit 1
           fi
 
-          echo "A versao $versao ainda nao existe no registro."
+          echo "Version $version does not exist in the registry yet."
 
-      # O gate inteiro, e nao um pedaco: o conteudo do servidor e a
-      # documentacao do DS, e o `check` e quem segura essa documentacao contra
-      # o codigo - props, paridade, assinatura, exemplos da doc.
+      # The whole gate, not a piece of it: the server's content is the DS
+      # documentation, and `check` is what holds that documentation against the
+      # code - props, parity, signature, doc examples.
       - run: bun run check
 
-      # So o pacote daqui. O `content.json` e escrito de novo neste passo, da
-      # arvore que a tag congelou, e e ele que o tarball leva.
+      # Only this package. `content.json` is written again in this step, from
+      # the tree the tag froze, and it is what the tarball carries.
       - run: bun run build:mcp
 
-      # O servidor construido, pelo stdio, com `node`: o mesmo comando que o
-      # cliente MCP de quem instala vai rodar.
+      # The built server, over stdio, with `node`: the same command the
+      # installer's MCP client will run.
       - run: bun run smoke:mcp
 
-      # `bin` sem o arquivo publicado passa como aviso, e nao como erro, e o
-      # `content.json` fora do tarball deixaria o servidor sem nada a servir.
-      - name: Conferir o que vai no pacote
+      # A `bin` without the published file passes as a warning, not an error,
+      # and a `content.json` left out of the tarball would leave the server
+      # with nothing to serve.
+      - name: Check what goes into the package
         working-directory: mcp
         run: |
           npm pack --dry-run --json > /tmp/pack.json
@@ -193,58 +195,59 @@ jobs:
             for (const target of wanted) {
               const path = target.replace(/^\.\//, '');
               if (!files.includes(path)) {
-                console.error('Falta no tarball ' + path);
+                console.error('Missing from the tarball: ' + path);
                 process.exit(1);
               }
             }
 
-            console.log('bin, conteudo e documentos ok:', files.length, 'arquivos');
+            console.log('bin, content and documents ok:', files.length, 'files');
           "
 
-      # O caminho da publicacao inteiro, parando antes do unico passo que nao
-      # se desfaz. O `--dry-run` NAO e offline: ele pergunta ao registro, e em
-      # ensaio sobre versao ja publicada a recusa do NUMERO e a unica tolerada.
-      - name: Ensaiar a publicacao
+      # The whole publishing path, stopping before the only step that cannot be
+      # undone. `--dry-run` is NOT offline: it asks the registry, and in a dry
+      # run over an already published version the refusal of the NUMBER is the
+      # only one tolerated.
+      - name: Rehearse the publication
         working-directory: mcp
         env:
-          ENSAIO: ${{ inputs.ensaio }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set +e
-          saida=$(npm publish --access public --provenance --dry-run 2>&1)
-          codigo=$?
-          echo "$saida"
+          output=$(npm publish --access public --provenance --dry-run 2>&1)
+          code=$?
+          echo "$output"
 
-          if [ $codigo -eq 0 ]; then
+          if [ $code -eq 0 ]; then
             exit 0
           fi
 
-          if [ "$ENSAIO" = "true" ] &&
-             echo "$saida" | grep -q "cannot publish over the previously published versions"; then
+          if [ "$DRY_RUN" = "true" ] &&
+             echo "$output" | grep -q "cannot publish over the previously published versions"; then
             echo
-            echo "O registro so recusou o NUMERO: tudo antes disso passou."
+            echo "The registry only refused the NUMBER: everything before it passed."
             exit 0
           fi
 
-          exit $codigo
+          exit $code
 
-      - name: Publicar
-        if: ${{ inputs.ensaio != true }}
+      - name: Publish
+        if: ${{ inputs.dry_run != true }}
         working-directory: mcp
         run: npm publish --access public --provenance
 
-      # Um ensaio verde parece uma publicacao verde. O recado vai para o resumo
-      # da execucao, que e a primeira coisa que a pagina mostra.
-      - name: Dizer que foi ensaio
-        if: ${{ inputs.ensaio == true }}
+      # A green dry run looks like a green publication. The note goes to the
+      # run summary, which is the first thing the page shows.
+      - name: Say it was a dry run
+        if: ${{ inputs.dry_run == true }}
         run: |
-          versao=$(node -p "require('./mcp/package.json').version")
+          version=$(node -p "require('./mcp/package.json').version")
           {
-            echo "## Ensaio - NADA foi publicado"
+            echo "## Dry run - NOTHING was published"
             echo
-            echo "O caminho inteiro rodou sobre a versao \`$versao\`: install,"
-            echo "check, build do pacote, fumaca pelo stdio, empacotamento e"
-            echo "\`npm publish --dry-run\`. O unico passo pulado foi o"
-            echo "\`npm publish\` real."
+            echo "The whole path ran over version \`$version\`: install,"
+            echo "check, package build, stdio smoke test, packaging and"
+            echo "\`npm publish --dry-run\`. The only step skipped was the"
+            echo "real \`npm publish\`."
             echo
-            echo "No registro continua: latest \`$(npm view @rivocode/ui-mcp version 2>/dev/null || echo 'nenhuma')\`."
+            echo "Still in the registry: latest \`$(npm view @rivocode/ui-mcp version 2>/dev/null || echo 'none')\`."
           } | tee -a "$GITHUB_STEP_SUMMARY"

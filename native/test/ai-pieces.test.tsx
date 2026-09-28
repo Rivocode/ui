@@ -30,7 +30,7 @@ const classesOf = (node: { props: { className?: string } }) =>
   (node.props.className ?? "").split(" ");
 
 describe("PromptInput", () => {
-  test("o botao envia o texto, e campo vazio nao envia", () => {
+  test("the button sends the text, and an empty field does not send", () => {
     const onSubmit = mock<(value: string) => void>(() => {});
     const full = render(
       <PromptInput value="Quanto faturei?" onValueChange={() => {}} onSubmit={onSubmit} />,
@@ -44,7 +44,7 @@ describe("PromptInput", () => {
     expect(idle.props.disabled).toBe(true);
   });
 
-  test("o campo tem nome e repassa cada tecla", () => {
+  test("the field has a name and passes on every keystroke", () => {
     const onValueChange = mock<(value: string) => void>(() => {});
     const screen = render(
       <PromptInput value="" onValueChange={onValueChange} onSubmit={() => {}} />,
@@ -57,7 +57,7 @@ describe("PromptInput", () => {
     expect(onValueChange).toHaveBeenCalledWith("oi");
   });
 
-  test("em streaming o enviar vira parar", () => {
+  test("while streaming, send becomes stop", () => {
     const onStop = mock(() => {});
     const screen = render(
       <PromptInput
@@ -74,7 +74,7 @@ describe("PromptInput", () => {
     expect(onStop).toHaveBeenCalledTimes(1);
   });
 
-  test("desabilitado nao edita nem envia", () => {
+  test("disabled neither edits nor sends", () => {
     const screen = render(
       <PromptInput value="texto" onValueChange={() => {}} onSubmit={() => {}} disabled />,
     );
@@ -83,7 +83,7 @@ describe("PromptInput", () => {
     expect(byLabel(screen, "Enviar mensagem")[0]!.props.disabled).toBe(true);
   });
 
-  test("o contador bate no teto no tom de perigo", () => {
+  test("the counter hits the ceiling in the danger tone", () => {
     const screen = render(
       <PromptInput
         value="12345"
@@ -100,7 +100,7 @@ describe("PromptInput", () => {
     expect(classesOf(count)).toContain("text-danger-text");
   });
 
-  test("a dica e a contagem por extenso chegam ao campo pelo accessibilityHint", () => {
+  test("the hint and the spelled-out count reach the field through accessibilityHint", () => {
     const screen = render(
       <PromptInput
         value="12"
@@ -123,7 +123,7 @@ describe("PromptInput", () => {
     expect(count.props.accessibilityElementsHidden).toBe(true);
   });
 
-  test("sem showCount, a dica vai sozinha, sem contagem", () => {
+  test("without showCount, the hint goes alone, with no count", () => {
     const screen = render(
       <PromptInput value="12" onValueChange={() => {}} onSubmit={() => {}} maxLength={5} />,
     );
@@ -131,7 +131,7 @@ describe("PromptInput", () => {
     expect(hint).not.toContain("caracteres");
   });
 
-  test("bater no teto anuncia o limite uma vez, e voltar abaixo rearma", () => {
+  test("hitting the ceiling announces the limit once, and going back below re-arms it", () => {
     const spoken = AccessibilityInfo as unknown as {
       announced: readonly string[];
       clearAnnouncements: () => void;
@@ -154,7 +154,7 @@ describe("PromptInput", () => {
     expect(spoken.announced).toHaveLength(2);
   });
 
-  test("montar ja no teto nao anuncia: o aviso e da tecla que bateu nele", () => {
+  test("mounting already at the ceiling does not announce: the notice belongs to the keystroke that hit it", () => {
     const spoken = AccessibilityInfo as unknown as {
       announced: readonly string[];
       clearAnnouncements: () => void;
@@ -166,7 +166,7 @@ describe("PromptInput", () => {
     expect(spoken.announced).toHaveLength(0);
   });
 
-  test("um caractere e singular, no contador sem teto e no teto de um", () => {
+  test("one character is singular, in the counter without a ceiling and with a ceiling of one", () => {
     const hintOf = (props: { value: string; maxLength?: number }) =>
       byLabel(
         render(<PromptInput onValueChange={() => {}} onSubmit={() => {}} showCount {...props} />),
@@ -188,7 +188,7 @@ describe("PromptInput", () => {
     expect(spoken.announced).toEqual(["Limite de 1 caractere atingido."]);
   });
 
-  test("labels troca o idioma da dica, da contagem e do limite", () => {
+  test("labels changes the language of the hint, the count and the limit", () => {
     const spoken = AccessibilityInfo as unknown as {
       announced: readonly string[];
       clearAnnouncements: () => void;
@@ -220,7 +220,7 @@ describe("PromptInput", () => {
 });
 
 describe("Message", () => {
-  test("o nome de quem fala e o alinhamento saem do papel", () => {
+  test("the speaker's name and the alignment come from the role", () => {
     const screen = render(
       <>
         <Message role="user">Quanto faturei?</Message>
@@ -234,7 +234,7 @@ describe("Message", () => {
     expect(classesOf(assistant!)).not.toContain("flex-row-reverse");
   });
 
-  test("em streaming anuncia busy e esconde as acoes", () => {
+  test("while streaming it announces busy and hides the actions", () => {
     const screen = render(
       <Message role="assistant" streaming onCopy={() => {}} onRetry={() => {}}>
         Consultando
@@ -247,7 +247,7 @@ describe("Message", () => {
     expect(textOf(screen)).not.toContain("Tentar de novo");
   });
 
-  test("terminada, copiar e tentar de novo chamam quem pediu", () => {
+  test("once finished, copy and retry call the requester", () => {
     const onCopy = mock(() => {});
     const onRetry = mock(() => {});
     const screen = render(
@@ -264,7 +264,7 @@ describe("Message", () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
-  test("o erro sai em texto no tom de perigo", () => {
+  test("the error comes out as text in the danger tone", () => {
     const screen = render(<Message role="assistant" error="A resposta foi interrompida." />);
     const error = screen.root.findAll(
       (node) => node.type === "Text" && node.props.children === "A resposta foi interrompida.",
@@ -280,7 +280,7 @@ describe("Conversation", () => {
     { id: "2", role: "assistant" as const, text: "Olá" },
   ];
 
-  test("a lista e invertida, e a mais nova vem primeiro nos dados", () => {
+  test("the list is inverted, and the newest comes first in the data", () => {
     const screen = render(
       <Conversation
         items={ITEMS}
@@ -297,7 +297,7 @@ describe("Conversation", () => {
     expect(text.indexOf("Olá")).toBeLessThan(text.indexOf("Oi"));
   });
 
-  test("rolar para cima mostra o botao, e o botao volta ao fim", () => {
+  test("scrolling up shows the button, and the button goes back to the end", () => {
     flatListScrolls.length = 0;
     const screen = render(
       <Conversation
@@ -321,7 +321,7 @@ describe("Conversation", () => {
     expect(textOf(screen)).not.toContain("Ir para o fim");
   });
 
-  test("vazia, as sugestoes entregam o texto", () => {
+  test("when empty, the suggestions deliver the text", () => {
     const onSuggestion = mock<(value: string) => void>(() => {});
     const screen = render(
       <Conversation
@@ -344,7 +344,7 @@ describe("Conversation", () => {
 });
 
 describe("ToolCall", () => {
-  test("todo estado sai com texto, e o gatilho diz o nome e o estado", () => {
+  test("every state comes out with text, and the trigger says the name and the state", () => {
     const STATES = [
       ["pending", "Pendente"],
       ["running", "Rodando"],
@@ -360,12 +360,12 @@ describe("ToolCall", () => {
     }
   });
 
-  test("rodando gira e anuncia busy", () => {
+  test("running, it spins and announces busy", () => {
     const screen = render(<ToolCall name="buscar_notas" status="running" />);
     expect(byType(screen, "ActivityIndicator").length).toBeGreaterThan(0);
   });
 
-  test("aguardando aprovacao, os dois botoes chamam quem pediu", () => {
+  test("awaiting approval, both buttons call the requester", () => {
     const onApprove = mock(() => {});
     const onReject = mock(() => {});
     const screen = render(
@@ -385,7 +385,7 @@ describe("ToolCall", () => {
     expect(onReject).toHaveBeenCalledTimes(1);
   });
 
-  test("fechado esconde a entrada, e o toque abre", () => {
+  test("closed, it hides the input, and a tap opens it", () => {
     const screen = render(<ToolCall name="buscar_notas" status="done" output="3 notas" />);
     const [trigger] = byLabel(screen, "buscar_notas, Concluída");
 
@@ -394,7 +394,7 @@ describe("ToolCall", () => {
     expect(textOf(screen)).toContain("3 notas");
   });
 
-  test("o painel abre quando o estado muda para erro ou aprovacao, se ninguem controla", () => {
+  test("the panel opens when the state changes to error or approval, if nobody controls it", () => {
     for (const [status, shown] of [
       ["error", "tempo esgotado"],
       ["approval", '"valor": 1200'],
@@ -423,13 +423,13 @@ describe("ToolCall", () => {
 });
 
 describe("AILabel", () => {
-  test("sem explicacao, o leitor ouve por extenso e nao ha botao", () => {
+  test("without an explanation, the screen reader hears it spelled out and there is no button", () => {
     const screen = render(<AILabel />);
     expect(byLabel(screen, "Conteúdo gerado por IA")).toHaveLength(1);
     expect(byRole(screen, "button")).toHaveLength(0);
   });
 
-  test("com explicacao, o toque abre a folha", () => {
+  test("with an explanation, a tap opens the sheet", () => {
     const screen = render(<AILabel explanation="Resumo feito a partir das notas de agosto." />);
     expect(textOf(screen)).not.toContain("Resumo feito");
 
@@ -438,7 +438,7 @@ describe("AILabel", () => {
   });
 });
 
-test("as cinco saem de @rivocode/ui-native/ai, e nao do indice da raiz", () => {
+test("the five come from @rivocode/ui-native/ai, not from the root index", () => {
   for (const name of ["AILabel", "Conversation", "Message", "PromptInput", "ToolCall"]) {
     expect(name in root).toBe(false);
   }

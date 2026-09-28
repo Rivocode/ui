@@ -70,7 +70,7 @@ function levelOf(element: Element | null): number {
     if (expression) return resolve(expression);
     node = node.parentElement;
   }
-  throw new Error("sem z-index do elemento ate o body");
+  throw new Error("no z-index from the element up to body");
 }
 
 const inner = () => document.querySelector('[data-testid="inner"]');
@@ -283,8 +283,8 @@ function mount(node: ReactNode) {
 
 const settle = () => act(async () => new Promise((resolve) => setTimeout(resolve, 20)));
 
-describe("o que abre de dentro de uma camada fica acima dela", () => {
-  test("a matriz tem o tamanho que se espera", () => {
+describe("what opens from inside a layer sits above it", () => {
+  test("the matrix has the expected size", () => {
     expect(INNERS.length).toBeGreaterThan(9);
     expect(LAYERS.length).toBeGreaterThan(4);
     expect(Object.keys(SCALE).length).toBe(8);
@@ -293,7 +293,7 @@ describe("o que abre de dentro de uma camada fica acima dela", () => {
   for (const layer of LAYERS) {
     for (const floating of INNERS) {
       if (floating.name === "NavigationMenu" && !layer.modal) continue;
-      test(`${floating.name} dentro de ${layer.name}`, async () => {
+      test(`${floating.name} inside ${layer.name}`, async () => {
         mount(layer.wrap(floating.node));
         await settle();
 
@@ -311,7 +311,7 @@ describe("o que abre de dentro de uma camada fica acima dela", () => {
     }
   }
 
-  test("fora de qualquer camada, cada peca fica no proprio degrau e sem estilo inline", async () => {
+  test("outside any layer, each piece sits on its own step and without inline style", async () => {
     const expected: Record<string, string> = {
       Select: "dropdown",
       Combobox: "dropdown",
@@ -341,7 +341,7 @@ describe("o que abre de dentro de uma camada fica acima dela", () => {
     }
   });
 
-  test("tres camadas encaixadas sobem uma sobre a outra", async () => {
+  test("three nested layers stack one above the other", async () => {
     mount(
       <Dialog defaultOpen>
         <DialogContent data-testid="outer">
@@ -372,7 +372,7 @@ describe("o que abre de dentro de uma camada fica acima dela", () => {
   });
 });
 
-describe("o alerta aberto de dentro de um popover", () => {
+describe("the alert opened from inside a popover", () => {
   function Page() {
     const [open, setOpen] = useState(false);
     return (
@@ -380,13 +380,13 @@ describe("o alerta aberto de dentro de um popover", () => {
         <Popover defaultOpen>
           <PopoverTrigger>Abrir</PopoverTrigger>
           <PopoverContent data-testid="outer">
-            <button type="button" id="abre-alerta" onClick={() => setOpen(true)}>
+            <button type="button" id="open-alert" onClick={() => setOpen(true)}>
               excluir
             </button>
             <AlertDialog open={open} onOpenChange={setOpen}>
               <AlertDialogContent data-testid="inner" classNames={{ backdrop: "inner-backdrop" }}>
                 <AlertDialogTitle>Excluir?</AlertDialogTitle>
-                <button type="button" id="fecha-alerta" onClick={() => setOpen(false)}>
+                <button type="button" id="close-alert" onClick={() => setOpen(false)}>
                   cancelar
                 </button>
               </AlertDialogContent>
@@ -404,38 +404,38 @@ describe("o alerta aberto de dentro de um popover", () => {
     });
   }
 
-  test("fica por cima do popover, e o popover para de receber clique e foco", async () => {
+  test("sits above the popover, and the popover stops receiving click and focus", async () => {
     render(<Page />);
     await settle();
     expect(outer()!.closest("[inert]")).toBeNull();
 
-    await click("abre-alerta");
+    await click("open-alert");
     expect(inner()).not.toBeNull();
     expect(levelOf(innerBackdrop())).toBeGreaterThan(levelOf(outer()));
     expect(levelOf(inner())).toBeGreaterThan(levelOf(innerBackdrop()));
     expect(outer()!.closest("[inert]")).not.toBeNull();
     expect(inner()!.closest("[inert]")).toBeNull();
 
-    await click("fecha-alerta");
+    await click("close-alert");
     expect(outer()).not.toBeNull();
     expect(outer()!.closest("[inert]")).toBeNull();
     cleanup();
   });
 });
 
-describe("o tour cobre a camada onde mora o alvo", () => {
-  test("alvo dentro de um Dialog: a mascara fica acima do dialogo, e o balao acima da mascara", async () => {
+describe("the tour covers the layer where the target lives", () => {
+  test("target inside a Dialog: the mask sits above the dialog, and the popup above the mask", async () => {
     const page = (open: boolean) => (
       <RivoProvider scope="local">
         <Dialog defaultOpen>
           <DialogContent data-testid="outer">
             <DialogTitle>Externo</DialogTitle>
-            <button id="alvo-no-dialogo" type="button">
+            <button id="target-in-dialog" type="button">
               alvo
             </button>
           </DialogContent>
         </Dialog>
-        <Tour open={open} interactive steps={[{ target: "#alvo-no-dialogo", title: "Aqui" }]} />
+        <Tour open={open} interactive steps={[{ target: "#target-in-dialog", title: "Aqui" }]} />
       </RivoProvider>
     );
     const { rerender } = render(page(false));
@@ -452,13 +452,13 @@ describe("o tour cobre a camada onde mora o alvo", () => {
     cleanup();
   });
 
-  test("alvo fora de camada: a mascara e o balao ficam nos degraus de sempre", async () => {
+  test("target outside any layer: the mask and the popup sit on their usual steps", async () => {
     mount(
       <>
-        <button id="alvo-solto" type="button">
+        <button id="loose-target" type="button">
           alvo
         </button>
-        <Tour defaultOpen steps={[{ target: "#alvo-solto", title: "Aqui" }]} />
+        <Tour defaultOpen steps={[{ target: "#loose-target", title: "Aqui" }]} />
       </>,
     );
     await settle();
@@ -472,7 +472,7 @@ describe("o tour cobre a camada onde mora o alvo", () => {
   });
 });
 
-describe("o cartao arrastado do Kanban", () => {
+describe("the dragged Kanban card", () => {
   type Card = { id: string; title: string };
 
   function Board() {
@@ -504,7 +504,7 @@ describe("o cartao arrastado do Kanban", () => {
     return cards[1]!;
   }
 
-  test("dentro de um Sheet, passa por cima da folha", async () => {
+  test("inside a Sheet, it goes above the sheet", async () => {
     mount(
       <Sheet defaultOpen>
         <SheetContent data-testid="outer">
@@ -545,7 +545,7 @@ describe("o cartao arrastado do Kanban", () => {
       ),
     ],
   ] as const) {
-    test(`dentro de um ${name}, a seta do arrasto chega ao documento, onde o sensor escuta`, async () => {
+    test(`inside a ${name}, the drag arrow key reaches the document, where the sensor listens`, async () => {
       mount(wrap(<Board />));
       await settle();
       await pick();
@@ -563,7 +563,7 @@ describe("o cartao arrastado do Kanban", () => {
     });
   }
 
-  test("fora de camada, fica no degrau do dropdown", async () => {
+  test("outside any layer, it sits on the dropdown step", async () => {
     mount(<Board />);
     await settle();
 

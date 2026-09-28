@@ -54,7 +54,7 @@ const SEEDS = {
   },
 };
 
-const bench = mkdtempSync(join(tmpdir(), "rivocode-gerador-"));
+const bench = mkdtempSync(join(tmpdir(), "rivocode-generator-"));
 
 const run = async (name: string, palette: string, ...flags: string[]) => {
   const file = name.includes(".") ? name : `${name}.mjs`;
@@ -76,19 +76,19 @@ const run = async (name: string, palette: string, ...flags: string[]) => {
 };
 
 const source = (extra: Record<string, Record<string, string>> = {}) =>
-  `export const tema = ${JSON.stringify({
+  `export const theme = ${JSON.stringify({
     light: { ...SEEDS.light, ...extra.light },
     dark: { ...SEEDS.dark, ...extra.dark },
   })};\n`;
 
-describe("a paleta que o consumidor escreve", () => {
-  test("oito papeis por esquema bastam, e o resto e derivado", () => {
+describe("the palette the consumer writes", () => {
+  test("eight roles per scheme are enough, and the rest is derived", () => {
     expect(generator.SEEDS).toHaveLength(8);
     expect(generator.SEEDS.length + generator.DERIVED.length).toBe(generator.ROLES.length);
     for (const role of generator.DERIVED) expect(generator.EXPLAIN[role]).toBeTruthy();
   });
 
-  test("papel escrito a mao ganha do derivado, e conta como escrito", () => {
+  test("a hand-written role beats the derived one, and counts as written", () => {
     const derived = generator.derive(SEEDS.light, "light");
     const asked = generator.derive({ ...SEEDS.light, "accent-text": "#0b3fa8" }, "light");
 
@@ -98,30 +98,30 @@ describe("a paleta que o consumidor escreve", () => {
     expect(derived.colors["accent-text"]).toBe(SEEDS.light.accent);
   });
 
-  test("o alfa sai na sintaxe que o compilador nativo crava", () => {
+  test("alpha comes out in the syntax the native compiler pins down", () => {
     const { colors } = generator.derive(SEEDS.light, "light");
 
     expect(colors["accent-subtle"]).toBe("rgba(29,78,216,0.22)");
     expect(generator.withAlpha("#d4f34a", 0.14)).toBe("rgba(212,243,74,0.14)");
   });
 
-  test("a escada de alfa e a de mistura seguem o esquema medido, e nao o nome da vaga", () => {
-    const claro = generator.derive(SEEDS.light, "dark");
-    const escuro = generator.derive(SEEDS.dark, "light");
+  test("the alpha ladder and the mix ladder follow the measured scheme, and not the slot name", () => {
+    const lightInDarkSlot = generator.derive(SEEDS.light, "dark");
+    const darkInLightSlot = generator.derive(SEEDS.dark, "light");
 
     expect(generator.isDarkScheme(SEEDS.light.bg)).toBe(false);
-    expect(claro.colors.overlay).toContain("0.42");
-    expect(escuro.colors.overlay).toContain("0.62");
+    expect(lightInDarkSlot.colors.overlay).toContain("0.42");
+    expect(darkInLightSlot.colors.overlay).toContain("0.62");
   });
 
-  test("hexadecimal de tres digitos vira seis, e o resto nao passa por cor", () => {
+  test("three-digit hex becomes six, and the rest does not pass as a color", () => {
     expect(generator.normalizeHex("#ABC")).toBe("#aabbcc");
     expect(generator.normalizeHex("#2563eb")).toBe("#2563eb");
     expect(generator.normalizeHex("rebeccapurple")).toBeNull();
     expect(generator.mix("#000000", "#ffffff", 0.5)).toBe("#808080");
   });
 
-  test("a semente chega em qualquer espaco de cor, e sai em hexadecimal", () => {
+  test("the seed arrives in any color space, and comes out in hex", () => {
     expect(generator.normalizeHex("oklch(0.44 0.18 264)")).toBe("#1b46b4");
     expect(generator.normalizeHex("hsl(210 60% 45%)")).toBe("#2e73b8");
     expect(generator.normalizeHex("color(display-p3 0.4 0.6 0.8)")).toBe("#559bd1");
@@ -130,34 +130,34 @@ describe("a paleta que o consumidor escreve", () => {
   });
 });
 
-describe("o teto de dois temas", () => {
-  test("dois esquemas viram as duas vagas do light-dark()", () => {
+describe("the two-theme ceiling", () => {
+  test("two schemes become the two slots of light-dark()", () => {
     const { slots } = generator.schemesOf(SEEDS);
 
     expect(slots?.light?.accent).toBe(SEEDS.light.accent);
     expect(slots?.dark?.accent).toBe(SEEDS.dark.accent);
   });
 
-  test("um esquema so veste as duas vagas, porque tema de um esquema e escolha", () => {
+  test("a single scheme fills both slots, because a one-scheme theme is a choice", () => {
     const { slots } = generator.schemesOf({ light: SEEDS.light });
 
     expect(slots?.light).toEqual(slots?.dark ?? {});
   });
 
-  test("`light` e `dark` soltos sao os dois esquemas, e nao o primeiro deles duas vezes", async () => {
-    const solto =
+  test("loose `light` and `dark` are the two schemes, and not the first one twice", async () => {
+    const loose =
       `export const light = ${JSON.stringify(SEEDS.light)};\n` +
       `export const dark = ${JSON.stringify(SEEDS.dark)};\n`;
-    const { code, output, css } = await run("solto", solto);
+    const { code, output, css } = await run("loose", loose);
 
     expect(code).toBe(0);
     expect(css).toContain(`--color-accent: light-dark(${SEEDS.light.accent}, ${SEEDS.dark.accent});`);
     expect(css).toContain(`--color-bg: light-dark(${SEEDS.light.bg}, ${SEEDS.dark.bg});`);
-    expect(output).toContain("claro e escuro");
-    expect(output).not.toContain("fundo escuro");
+    expect(output).toContain("light and dark");
+    expect(output).not.toContain("has a dark background");
   });
 
-  test("a paleta em `.json` carrega, porque o proprio comando a oferece", async () => {
+  test("a `.json` palette loads, because the command itself offers it", async () => {
     const { code, output, css } = await run(
       "acme.json",
       JSON.stringify({ light: SEEDS.light, dark: SEEDS.dark }),
@@ -168,121 +168,121 @@ describe("o teto de dois temas", () => {
     expect(css).toContain(`--color-accent: light-dark(${SEEDS.light.accent}, ${SEEDS.dark.accent});`);
   });
 
-  test("um esquema so sai anunciado, e nao descartado calado", async () => {
+  test("a single scheme is announced, and not silently discarded", async () => {
     const { code, output, css } = await run(
-      "umso",
+      "single",
       `export const light = ${JSON.stringify(SEEDS.light)};\n`,
     );
 
     expect(code).toBe(0);
-    expect(output).toContain("um esquema so");
-    expect(output).toContain("modo claro e no escuro");
+    expect(output).toContain("a single scheme");
+    expect(output).toContain("in light and in dark mode");
     expect(css).not.toContain("light-dark(");
   });
 
-  test("tres esquemas soltos tambem nao cabem, e nao viram dois calados", async () => {
-    const tres =
+  test("three loose schemes do not fit either, and do not silently become two", async () => {
+    const threeLoose =
       `export const light = ${JSON.stringify(SEEDS.light)};\n` +
       `export const dark = ${JSON.stringify(SEEDS.dark)};\n` +
-      `export const contraste = ${JSON.stringify(SEEDS.dark)};\n`;
-    const { code, output, wrote } = await run("tres-soltos", tres);
+      `export const contrast = ${JSON.stringify(SEEDS.dark)};\n`;
+    const { code, output, wrote } = await run("three-loose", threeLoose);
 
     expect(code).toBe(1);
     expect(wrote).toBe(false);
-    expect(output).toContain("DUAS vagas");
+    expect(output).toContain("TWO slots");
   });
 
-  test("tres esquemas nao cabem, e o comando diz por que", async () => {
-    const three = `export const tema = ${JSON.stringify({
+  test("three schemes do not fit, and the command says why", async () => {
+    const three = `export const theme = ${JSON.stringify({
       light: SEEDS.light,
       dark: SEEDS.dark,
-      contraste: SEEDS.dark,
+      contrast: SEEDS.dark,
     })};\n`;
-    const { code, output, wrote } = await run("tres", three);
+    const { code, output, wrote } = await run("three", three);
 
     expect(code).toBe(1);
     expect(wrote).toBe(false);
     expect(output).toContain("light-dark()");
-    expect(output).toContain("DUAS vagas");
-    expect(output).toContain("terceiro BUNDLE");
+    expect(output).toContain("TWO slots");
+    expect(output).toContain("third BUNDLE");
   });
 });
 
-describe("o que ele recusa escrever", () => {
-  test("paleta boa gera o @theme com todos os papeis", async () => {
-    const { code, output, css } = await run("bom", source());
+describe("what it refuses to write", () => {
+  test("a good palette generates the @theme with every role", async () => {
+    const { code, output, css } = await run("good", source());
 
     expect(code).toBe(0);
-    expect(output).toContain("claro: passa");
-    expect(output).toContain("escuro: passa");
+    expect(output).toContain("light: passes");
+    expect(output).toContain("dark: passes");
     expect(css).toContain("@theme {");
     for (const role of generator.ROLES) expect(css).toContain(`  --color-${role}: `);
   });
 
-  test("par abaixo do minimo nao escreve nada, e diz o par e o numero", async () => {
-    const { code, output, wrote } = await run("ruim", source({ light: { "accent-fg": "#8ab4f8" } }));
+  test("a pair below the minimum writes nothing, and names the pair and the number", async () => {
+    const { code, output, wrote } = await run("bad", source({ light: { "accent-fg": "#8ab4f8" } }));
 
     expect(code).toBe(1);
     expect(wrote).toBe(false);
-    expect(output).toContain("Guarda de contraste:");
-    expect(output).toMatch(/accent-fg sobre accent {2}\d\.\d\d:1 \(min 4\.5\)/);
-    expect(output).toContain("Nada foi escrito");
+    expect(output).toContain("Contrast guard:");
+    expect(output).toMatch(/accent-fg on accent {2}\d\.\d\d:1 \(min 4\.5\)/);
+    expect(output).toContain("Nothing was written");
   });
 
-  test("papel derivado que reprova vem com o valor que passaria", async () => {
-    const { code, output } = await run("lima", source({ light: { accent: "#d4f34a" } }));
+  test("a derived role that fails comes with the value that would pass", async () => {
+    const { code, output } = await run("lime", source({ light: { accent: "#d4f34a" } }));
 
     expect(code).toBe(1);
-    expect(output).toContain("light.accent-text foi DERIVADO");
-    expect(output).toMatch(/`accent-text: "#[\da-f]{6}"` passaria/);
-    expect(output).toContain("nao inventa matiz nova");
+    expect(output).toContain("light.accent-text was DERIVED");
+    expect(output).toMatch(/`accent-text: "#[\da-f]{6}"` would pass/);
+    expect(output).toContain("does not invent a new hue");
   });
 
-  test("semente faltando e acusada pelo nome, com o que ela arrastaria", async () => {
+  test("a missing seed is flagged by name, with what it would drag along", async () => {
     const short = { ...SEEDS.light } as Record<string, string>;
     delete short.info;
     const { code, output, wrote } = await run(
-      "falta",
-      `export const tema = ${JSON.stringify({ light: short, dark: SEEDS.dark })};\n`,
+      "missing",
+      `export const theme = ${JSON.stringify({ light: short, dark: SEEDS.dark })};\n`,
     );
 
     expect(code).toBe(1);
     expect(wrote).toBe(false);
-    expect(output).toContain("light.info  - e semente");
+    expect(output).toContain("light.info  - is a seed");
     expect(output).toContain("light.info-subtle");
-    expect(output).toContain("sairia de: alfa de `info`");
+    expect(output).toContain("would come from: alpha of `info`");
   });
 
-  test("sem `bg` ou `fg` ele recusa antes de medir, e nao explode no meio da conta", async () => {
+  test("without `bg` or `fg` it refuses before measuring, and does not blow up mid-calculation", async () => {
     const blind = { ...SEEDS.light } as Record<string, string>;
     delete blind.bg;
     const { code, output, wrote } = await run(
-      "ancora",
-      `export const tema = ${JSON.stringify({ light: blind, dark: SEEDS.dark })};\n`,
+      "anchor",
+      `export const theme = ${JSON.stringify({ light: blind, dark: SEEDS.dark })};\n`,
     );
 
     expect(code).toBe(1);
     expect(wrote).toBe(false);
-    expect(output).toContain("ancora sem valor");
+    expect(output).toContain("anchor role(s) with no value");
     expect(output).toContain("light.bg");
     expect(output).not.toContain("TypeError");
   });
 
-  test("papel que a conta nao sabe ler recusa com o motivo, e nao com defeito", async () => {
+  test("a role the math cannot read is refused with the reason, and not with a crash", async () => {
     const { code, output, wrote } = await run(
-      "mistura",
+      "mix",
       source({ light: { accent: "color-mix(in oklab, #1d4ed8, white 20%)" } }),
     );
 
     expect(code).toBe(1);
     expect(wrote).toBe(false);
-    expect(output).toContain("nao sabe ler");
+    expect(output).toContain("cannot read");
     expect(output).toContain("color-mix()");
     expect(output).toContain("Tailwind 4");
-    expect(output).not.toContain("outra frente");
+    expect(output).toContain("converts everything to sRGB before measuring");
   });
 
-  test("semente escrita em oklch e medida, e o CSS sai em sRGB literal", async () => {
+  test("a seed written in oklch is measured, and the CSS comes out as literal sRGB", async () => {
     const { code, output, css } = await run(
       "oklch",
       source({
@@ -292,12 +292,12 @@ describe("o que ele recusa escrever", () => {
     );
 
     expect(code).toBe(0);
-    expect(output).toContain("Guarda de contraste:");
+    expect(output).toContain("Contrast guard:");
     expect(css).toContain("--color-accent: light-dark(#1b46b4, #77a2fc);");
     expect(css).not.toContain("oklch(");
   });
 
-  test("cor fora do gamut do sRGB e medida no valor cortado, e o comando avisa", async () => {
+  test("a color outside the sRGB gamut is measured at the clipped value, and the command warns", async () => {
     const { code, output } = await run(
       "gamut",
       source({
@@ -306,19 +306,19 @@ describe("o que ele recusa escrever", () => {
     );
 
     expect(code).toBe(0);
-    expect(output).toContain("tom que o sRGB nao");
+    expect(output).toContain("describe a tone sRGB cannot");
     expect(output).toContain("light.danger: oklch(0.52 0.22 20) -> #c9002e");
   });
 
-  test("papel que nao existe na versao instalada vira sugestao de nome", async () => {
-    const { code, output } = await run("errado", source({ light: { "acent-text": "#0b3fa8" } }));
+  test("a role that does not exist in the installed version becomes a name suggestion", async () => {
+    const { code, output } = await run("wrong", source({ light: { "acent-text": "#0b3fa8" } }));
 
     expect(code).toBe(1);
     expect(output).toContain("light.acent-text");
-    expect(output).toContain("quis dizer `accent-text`");
+    expect(output).toContain("did you mean `accent-text`");
   });
 
-  test("papel novo numa versao nova acusa em vez de o tema quebrar calado", () => {
+  test("a new role in a new version is flagged instead of the theme silently breaking", () => {
     const known = new Set([...generator.SEEDS, ...generator.DERIVED]);
 
     for (const role of generator.ROLES) expect(known.has(role)).toBe(true);
@@ -326,23 +326,39 @@ describe("o que ele recusa escrever", () => {
   });
 });
 
-describe("o emissor do mapa", () => {
-  test("esta escrito e desligado, e a bandeira diz por que", () => {
+describe("the map emitter", () => {
+  test("it is written and turned off, and the flag says why", () => {
     expect(generator.MAP_EMITTER.on).toBe(false);
     expect(generator.MAP_EMITTER.why).toContain("runtime");
-    expect(generator.MAP_EMITTER.why).toContain("gen:native --tema");
+    expect(generator.MAP_EMITTER.why).toContain("gen:native --theme");
   });
 
-  test("`--mapa` recusa antes de qualquer trabalho, dizendo onde ligar de volta", async () => {
-    const { code, output, wrote } = await run("mapa", source(), "--mapa");
+  test("`--map`, and its old name `--mapa`, refuse before any work, saying where to turn it back on", async () => {
+    for (const flag of ["--map", "--mapa"]) {
+      const { code, output, wrote } = await run("map", source(), flag);
 
-    expect(code).toBe(1);
-    expect(wrote).toBe(false);
-    expect(output).toContain("--mapa esta desligado");
-    expect(output).toContain("MAP_EMITTER.on");
+      expect(code).toBe(1);
+      expect(wrote).toBe(false);
+      expect(output).toContain("--map is switched off");
+      expect(output).toContain("MAP_EMITTER.on");
+    }
   });
 
-  test("o formato respeitado e o do `gen:native --tema`, e nao um inventado aqui", () => {
+  test("`--roles` and its old name `--papeis` list the seeds and the derived roles", async () => {
+    for (const flag of ["--roles", "--papeis"]) {
+      const shell = Bun.spawn([Bun.which("node") ?? "bun", GENERATOR, flag], {
+        stdout: "pipe",
+        stderr: "pipe",
+      });
+      const output = await new Response(shell.stdout).text();
+
+      expect(await shell.exited).toBe(0);
+      expect(output).toContain(`The ${generator.ROLES.length} roles of @rivocode/ui-native`);
+      expect(output).toContain(`The command derives ${generator.DERIVED.length}`);
+    }
+  });
+
+  test("the format honored is the one from `gen:native --tema`, and not one made up here", () => {
     const slots = {
       light: generator.derive(SEEDS.light, "light"),
       dark: generator.derive(SEEDS.dark, "dark"),

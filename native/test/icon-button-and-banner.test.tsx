@@ -7,7 +7,7 @@ import { act, byLabel, byRole, render, textOf } from "./helpers";
 const SIDE = { sm: 32, md: 44, lg: 48 } as const;
 
 describe("IconButton", () => {
-  test("o label e o nome, e o icone fica escondido do leitor", () => {
+  test("label is the name, and the icon stays hidden from the screen reader", () => {
     const onPress = mock(() => {});
     const screen = render(
       <IconButton label="Excluir nota" onPress={onPress}>
@@ -28,15 +28,15 @@ describe("IconButton", () => {
     expect(hidden).toBe(true);
   });
 
-  test("o tipo recusa botao de icone sem nome", () => {
-    // @ts-expect-error label e obrigatorio
+  test("the type refuses an icon button without a name", () => {
+    // @ts-expect-error label is required
     const missing = <IconButton>{null}</IconButton>;
     expect(missing).toBeDefined();
   });
 
-  test("o nome entra so pelo label, e o tipo recusa o accessibilityLabel", () => {
+  test("the name comes in only through label, and the type refuses accessibilityLabel", () => {
     const refused = (
-      // @ts-expect-error o nome do botao e o label, como no web
+      // @ts-expect-error the button's name is label, as on the web
       <IconButton label="Excluir nota" accessibilityLabel="Apagar">
         {null}
       </IconButton>
@@ -44,7 +44,7 @@ describe("IconButton", () => {
     expect(refused).toBeDefined();
   });
 
-  test("todo tamanho chega a 44 de alvo, com hitSlop so onde o desenho e menor", () => {
+  test("every size reaches a 44 target, with hitSlop only where the drawing is smaller", () => {
     for (const size of ["sm", "md", "lg"] as const) {
       const [button] = byRole(
         render(
@@ -61,7 +61,7 @@ describe("IconButton", () => {
     }
   });
 
-  test("o quadrado sai do mesmo vocabulario de classe do Button", () => {
+  test("the square comes from the same class vocabulary as Button", () => {
     const icon = byRole(
       render(
         <IconButton label="Excluir" variant="danger">
@@ -80,7 +80,7 @@ describe("IconButton", () => {
     expect(button).toContain("bg-danger");
   });
 
-  test("a funcao recebe a cor da variante e o tamanho do glifo", () => {
+  test("the function receives the variant color and the glyph size", () => {
     const seen: { color: string; size: number }[] = [];
     render(
       <IconButton label="Baixar" variant="secondary" size="lg">
@@ -94,7 +94,7 @@ describe("IconButton", () => {
     expect(seen[0]!.color).toMatch(/^#|^rgb/);
   });
 
-  test("carregando troca o icone pelo giro, trava o toque e anuncia busy", () => {
+  test("loading swaps the icon for the spinner, locks the touch and announces busy", () => {
     const screen = render(
       <IconButton label="Sincronizar" loading>
         <View testID="glifo" />
@@ -107,7 +107,7 @@ describe("IconButton", () => {
     expect(screen.root.findAllByType("ActivityIndicator" as never).length).toBeGreaterThan(0);
   });
 
-  test("desabilitado anuncia o estado", () => {
+  test("disabled announces the state", () => {
     const [button] = byLabel(
       render(
         <IconButton label="Excluir" disabled>
@@ -121,7 +121,7 @@ describe("IconButton", () => {
 });
 
 describe("Banner", () => {
-  test("warning e danger saem como alert, e o anuncio e imediato", () => {
+  test("warning and danger come out as alert, and the announcement is immediate", () => {
     for (const tone of ["warning", "danger"] as const) {
       const [root] = byRole(render(<Banner tone={tone} description="Fatura em atraso" />), "alert");
       expect(root).toBeDefined();
@@ -129,7 +129,7 @@ describe("Banner", () => {
     }
   });
 
-  test("info e success nao interrompem", () => {
+  test("info and success do not interrupt", () => {
     for (const tone of ["info", "success"] as const) {
       const screen = render(<Banner tone={tone} description="Manutenção no domingo" />);
       expect(byRole(screen, "alert")).toHaveLength(0);
@@ -138,7 +138,7 @@ describe("Banner", () => {
     }
   });
 
-  test("titulo, descricao e acoes aparecem na faixa", () => {
+  test("title, description and actions appear in the strip", () => {
     const screen = render(
       <Banner
         tone="danger"
@@ -157,7 +157,7 @@ describe("Banner", () => {
     expect(text).toContain("Pagar com Pix");
   });
 
-  test("pinta o fundo do tom e a linha de baixo, na largura toda", () => {
+  test("paints the tone background and the bottom line, across the full width", () => {
     const [root] = byRole(render(<Banner tone="warning" description="Modo de teste" />), "alert");
     const tokens = (root.props.className as string).split(" ");
     expect(tokens).toContain("bg-warning-subtle");
@@ -165,7 +165,7 @@ describe("Banner", () => {
     expect(tokens).toContain("w-full");
   });
 
-  test("onDismiss liga o xis com nome e alvo de 44", () => {
+  test("onDismiss turns on the x with a name and a 44 target", () => {
     const onDismiss = mock(() => {});
     const screen = render(<Banner description="Manutenção" onDismiss={onDismiss} />);
     const [close] = byLabel(screen, "Fechar aviso");
@@ -175,11 +175,11 @@ describe("Banner", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
-  test("sem onDismiss nao ha botao", () => {
+  test("without onDismiss there is no button", () => {
     expect(byRole(render(<Banner description="Manutenção" />), "button")).toHaveLength(0);
   });
 
-  test("o icone por funcao recebe a cor do tom e sai escondido", () => {
+  test("the icon as a function receives the tone color and comes out hidden", () => {
     const seen: { color: string; size: number }[] = [];
     const screen = render(
       <Banner

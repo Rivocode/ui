@@ -1,6 +1,6 @@
 import { Kbd } from '@rivocode/ui'
 
-/** Atalhos */
+/** Shortcuts */
 export function Shortcuts() {
   return (
     <div className="flex flex-col gap-3 text-base text-fg-muted">
@@ -17,7 +17,7 @@ export function Shortcuts() {
   )
 }
 
-/** Dentro de uma frase */
+/** Inside a sentence */
 export function InProse() {
   return (
     <p className="max-w-md text-base leading-relaxed text-fg-muted">

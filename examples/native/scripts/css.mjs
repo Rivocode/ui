@@ -81,7 +81,7 @@ function missingClasses() {
 function report() {
   const missing = missingClasses();
   for (const [token, where] of missing) {
-    console.log(`  classe "${token}" usada e nao gerada  ${where}`);
+    console.log(`  class "${token}" used and not generated  ${where}`);
   }
   return missing.size;
 }
@@ -108,7 +108,7 @@ function startWatching() {
   const rebuild = () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      console.log(`\n[${new Date().toTimeString().slice(0, 8)}] mudou, regerando`);
+      console.log(`\n[${new Date().toTimeString().slice(0, 8)}] changed, regenerating`);
       build();
     }, DEBOUNCE);
   };
@@ -119,7 +119,7 @@ function startWatching() {
     if (relevant(LIB, name)) rebuild();
   });
   watch(THEME, () => rebuild());
-  console.log(`de olho em ${relative(REPO, APP)}, ${relative(REPO, LIB)} e ${relative(REPO, THEME)}`);
+  console.log(`watching ${relative(REPO, APP)}, ${relative(REPO, LIB)} and ${relative(REPO, THEME)}`);
 }
 
 const status = build();

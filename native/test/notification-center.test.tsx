@@ -56,7 +56,7 @@ function center(props: Partial<NotificationCenterProps> = {}) {
   return { screen, onOpenChange };
 }
 
-test("o sino diz a contagem por extenso no nome, e o numero na pastilha", () => {
+test("the bell says the count spelled out in the name, and the number in the badge", () => {
   const { screen, onOpenChange } = center({ open: false });
   const [trigger] = byLabel(screen, "2 notificações não lidas");
   expect(trigger!.props.accessibilityRole).toBe("button");
@@ -65,13 +65,13 @@ test("o sino diz a contagem por extenso no nome, e o numero na pastilha", () => 
   expect(onOpenChange).toHaveBeenCalledWith(true);
 });
 
-test("sem nao lidas, o sino se chama Notificacoes e a pastilha some", () => {
+test("with no unread, the bell is called Notificacoes and the badge disappears", () => {
   const { screen } = center({ open: false, items: ITEMS.map((item) => ({ ...item, read: true })) });
   expect(byLabel(screen, "Notificações")).toHaveLength(1);
   expect(byLabel(screen, "Nenhuma notificação não lida")).toHaveLength(0);
 });
 
-test("a funcao do icone recebe a cor da variante", () => {
+test("the icon function receives the variant color", () => {
   const seen: string[] = [];
   center({
     open: false,
@@ -84,7 +84,7 @@ test("a funcao do icone recebe a cor da variante", () => {
   expect(seen[0]).toMatch(/^(#|rgb|oklch)/);
 });
 
-test("a contagem que muda e anunciada, e a primeira nao", () => {
+test("a changing count is announced, and the first one is not", () => {
   const { screen } = center({ open: false });
   expect(info.announced).toHaveLength(0);
   act(() =>
@@ -103,7 +103,7 @@ test("a contagem que muda e anunciada, e a primeira nao", () => {
   expect(info.announced).toContain("3 notificações não lidas");
 });
 
-test("a folha mostra o titulo e uma linha por notificacao, com a nao lida dita", () => {
+test("the sheet shows the title and one row per notification, with unread spoken", () => {
   const { screen } = center();
   expect(textOf(screen)).toContain("Notificações");
   expect(byType(screen, "FlatList")[0]!.props.data).toHaveLength(3);
@@ -117,7 +117,7 @@ test("a folha mostra o titulo e uma linha por notificacao, com a nao lida dita",
   expect(dots).toHaveLength(2);
 });
 
-test("tocar numa nao lida chama onItemPress, marca como lida e fecha", () => {
+test("tapping an unread one calls onItemPress, marks it read and closes", () => {
   const onItemPress = mock<(item: NotificationItem) => void>(() => {});
   const onMarkRead = mock<(id: string) => void>(() => {});
   const { screen, onOpenChange } = center({ onItemPress, onMarkRead });
@@ -128,7 +128,7 @@ test("tocar numa nao lida chama onItemPress, marca como lida e fecha", () => {
   expect(onOpenChange).toHaveBeenCalledWith(false);
 });
 
-test("marcar como lida so nas nao lidas, e marcar todas desabilita sem o que marcar", () => {
+test("mark as read only on unread ones, and mark all disables with nothing to mark", () => {
   const onMarkRead = mock<(id: string) => void>(() => {});
   const onMarkAllRead = mock(() => {});
   const { screen } = center({ onMarkRead, onMarkAllRead });
@@ -149,7 +149,7 @@ test("marcar como lida so nas nao lidas, e marcar todas desabilita sem o que mar
   expect(disabled[0]!.props.disabled).toBe(true);
 });
 
-test("o filtro de nao lidas esconde as lidas e avisa", () => {
+test("the unread filter hides the read ones and says so", () => {
   const onFilterChange = mock<(filter: string) => void>(() => {});
   const { screen } = center({ onFilterChange });
   const toggle = screen.root.findAll(
@@ -160,7 +160,7 @@ test("o filtro de nao lidas esconde as lidas e avisa", () => {
   expect(byType(screen, "FlatList")[0]!.props.data).toHaveLength(2);
 });
 
-test("vazio e carregando nao se confundem", () => {
+test("empty and loading are not confused", () => {
   const empty = center({ items: [] });
   expect(textOf(empty.screen)).toContain("Nenhuma notificação");
   expect(byType(empty.screen, "FlatList")).toHaveLength(0);
@@ -171,7 +171,7 @@ test("vazio e carregando nao se confundem", () => {
   expect(busy!.props.accessibilityState).toEqual({ busy: true });
 });
 
-test("carregar mais com hasMore, girando enquanto chega", () => {
+test("load more with hasMore, spinning while it arrives", () => {
   const onLoadMore = mock(() => {});
   const { screen } = center({ hasMore: true, onLoadMore });
   const more = screen.root.findAll(

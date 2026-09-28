@@ -9,65 +9,66 @@ import { Card, CardContent } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
-  /** O que o numero mede: "Faturado em agosto". */
+  /** What the number measures: "Faturado em agosto". */
   label: string;
-  /** O numero, ja formatado: `currencyShort(246_700)`. */
+  /** The number, already formatted: `currencyShort(246_700)`. */
   value: ReactNode;
   /**
-   * A variacao. Positivo sobe, negativo desce, e zero sai neutro: sem seta e em `text-fg-muted`.
+   * The change. Positive goes up, negative goes down, and zero is neutral: no arrow and in
+   * `text-fg-muted`.
    *
-   * A unidade e do `deltaFormat`, e nao do numero: sem ele o padrao continua
-   * sendo porcentagem.
+   * The unit belongs to `deltaFormat`, not to the number: without it the default is still
+   * a percentage.
    */
   delta?: number;
-  /** Contra o que se compara: "sobre julho". Sem ele, so a variacao. */
+  /** What it is compared against: "sobre julho". Without it, only the change. */
   deltaLabel?: string;
-  /** Explicacao curta atras de um botao de informacao. */
+  /** A short explanation behind an info button. */
   hint?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `about` e o nome do botao de
-   * informacao do `hint`, e recebe o `label`. Passe so os que mudam.
+   * The piece's texts, to change the language: `about` is the name of the `hint`
+   * info button, and receives the `label`. Pass only the ones that change.
    */
   labels?: Partial<StatLabels>;
   /**
-   * Subir e ruim aqui: vencidas, custo, inadimplencia. A seta continua
-   * apontando para onde o numero foi; o que inverte e o julgamento da cor.
+   * Going up is bad here: overdue items, cost, defaults. The arrow still
+   * points where the number went; what inverts is the color's judgment.
    */
   invert?: boolean;
   /**
-   * A tendencia embaixo do numero. Passe a `Sparkline` de
-   * `@rivocode/ui/chart`; o nucleo nao a importa porque ela traz o recharts
-   * junto, e um painel sem grafico nao deveria pagar por ele.
+   * The trend below the number. Pass the `Sparkline` from
+   * `@rivocode/ui/chart`; the core does not import it because it brings recharts
+   * along, and a dashboard without a chart should not pay for it.
    */
   chart?: ReactNode;
   /**
-   * O icone em caixa, a esquerda do rotulo. E a convencao de painel, e sem
-   * slot cada tela remontava o cartao inteiro para te-lo.
+   * The boxed icon, to the left of the label. It is the dashboard convention, and without a
+   * slot every screen rebuilt the whole card to have it.
    */
   icon?: ReactNode;
-  /** O canto direito do cartao: o menu de tres pontos, um botao de acao. */
+  /** The card's right corner: the three-dot menu, an action button. */
   actions?: ReactNode;
-  /** A faixa de baixo: meta com barra, comparacao, texto de apoio. */
+  /** The bottom strip: target with a bar, comparison, supporting text. */
   footer?: ReactNode;
   /**
-   * Como a variacao e escrita: nome de formatador da casa (`percent`,
-   * `currencyShort`, `integer`...) ou funcao propria. E o mesmo vocabulario do
-   * `Progress`, do `Meter` e do `Slider`, e o mesmo do eixo do grafico.
+   * How the change is written: the name of a house formatter (`percent`,
+   * `currencyShort`, `integer`...) or your own function. It is the same vocabulary as
+   * `Progress`, `Meter` and `Slider`, and the same as the chart axis.
    *
-   * Sem ele, `percent` - que era o unico caminho que existia, cravado no JSX.
-   * Delta em real ou em ponto-base saia com um `%` que nao era verdade, e a
-   * unica peca de numero da casa fora do vocabulario de formatacao era esta.
+   * Without it, `percent` - which was the only path that existed, hardcoded in the JSX.
+   * A delta in reais or in basis points came out with a `%` that was not true, and the
+   * only number piece in the house outside the formatting vocabulary was this one.
    *
-   * O `percent` da casa arredonda para inteiro; para casa decimal, passe a
-   * funcao: `deltaFormat={(value) => percent(value, 1)}`.
+   * The house `percent` rounds to an integer; for a decimal place, pass the
+   * function: `deltaFormat={(value) => percent(value, 1)}`.
    *
-   * O que chega ao formatador e o modulo do `delta`: quem carrega o sinal e a
-   * seta, e o texto que o leitor de tela ouve antes dele.
+   * What reaches the formatter is the absolute value of `delta`: the sign is carried by the
+   * arrow, and by the text the screen reader hears before it.
    */
   deltaFormat?: Format;
   /**
-   * A variacao como pastilha preenchida, que e a convencao dominante em
-   * painel, ou como texto com seta, que e o padrao daqui.
+   * The change as a filled pill, which is the dominant dashboard convention,
+   * or as text with an arrow, which is the default here.
    */
   deltaVariant?: "text" | "pill";
   className?: string;

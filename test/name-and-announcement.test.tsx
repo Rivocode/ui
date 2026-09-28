@@ -13,15 +13,16 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/* --- TagsInput: o rotulo e o anel ---------------------------------------- */
+/* --- TagsInput: the label and the ring ---------------------------------- */
 
 /*
- * O `TagsInput` nao era um `Field.Control`, e o `FieldLabel` ao lado dele
- * emitia `<label for="...">` apontando para um id que nao existia em lugar
- * nenhum da pagina - o unico rotulo orfao das 94 rotas do site. O nome do
- * campo caia no `placeholder`, que some no instante em que a pessoa digita: o
- * leitor de tela anunciava "Escreva e tecle Enter" no lugar de "Marcadores",
- * a `FieldDescription` nunca era anunciada e clicar no rotulo nao focava nada.
+ * `TagsInput` was not a `Field.Control`, and the `FieldLabel` next to it
+ * emitted `<label for="...">` pointing at an id that existed nowhere on the
+ * page - the only orphan label across the 94 routes of the site. The field
+ * name fell back to the `placeholder`, which vanishes the moment the person
+ * types: the screen reader announced "Escreva e tecle Enter" instead of
+ * "Marcadores", the `FieldDescription` was never announced and clicking the
+ * label focused nothing.
  */
 
 function Marcadores({ invalid }: { invalid?: boolean } = {}) {
@@ -37,7 +38,7 @@ function Marcadores({ invalid }: { invalid?: boolean } = {}) {
   );
 }
 
-test("o nome do campo de marcadores e o rotulo, e nao o placeholder", () => {
+test("the tags field name is the label, and not the placeholder", () => {
   withTheme(<Marcadores />);
 
   const field = screen.getByRole("textbox", { name: "Marcadores" });
@@ -45,7 +46,7 @@ test("o nome do campo de marcadores e o rotulo, e nao o placeholder", () => {
   expect(field.getAttribute("placeholder")).toBe("Escreva e tecle Enter");
 });
 
-test("o `for` do rotulo acha o campo, entao clicar no rotulo foca", () => {
+test("the label `for` finds the field, so clicking the label focuses it", () => {
   const { container } = withTheme(<Marcadores />);
 
   const target = container.querySelector("label")!.getAttribute("for");
@@ -55,7 +56,7 @@ test("o `for` do rotulo acha o campo, entao clicar no rotulo foca", () => {
   );
 });
 
-test("a ajuda e o erro acompanham o campo de marcadores", () => {
+test("the help and the error follow the tags field", () => {
   withTheme(<Marcadores invalid />);
   const field = screen.getByRole("textbox", { name: "Marcadores" });
 
@@ -67,19 +68,19 @@ test("a ajuda e o erro acompanham o campo de marcadores", () => {
   expect(field.getAttribute("aria-invalid")).toBe("true");
 });
 
-test("o `aria-label` proprio continua valendo fora de um Field", () => {
+test("an own `aria-label` still works outside a Field", () => {
   withTheme(<TagsInput aria-label="Palavras do filtro" value={[]} onValueChange={() => {}} />);
 
   expect(screen.getByRole("textbox", { name: "Palavras do filtro" })).toBeDefined();
 });
 
 /*
- * A moldura das fichas e uma `div`, e recebia o `focus-visible:ring-2` do
- * `inputVariants` - que `div` sem foco nunca casa. O campo de dentro ia com
- * `outline-none` e nenhum anel: era o unico controle da biblioteca que ficava
- * sem foco visivel.
+ * The chip frame is a `div`, and it got the `focus-visible:ring-2` from
+ * `inputVariants` - which a non-focusable `div` never matches. The inner field
+ * had `outline-none` and no ring: it was the only control in the library left
+ * without visible focus.
  */
-test("a moldura acende pelo campo de dentro, que e quem recebe o foco", () => {
+test("the frame lights up through the inner field, which is the one that gets focus", () => {
   const { container } = withTheme(<Marcadores />);
   const frame = container.querySelector<HTMLElement>("div.rounded-md")!;
 
@@ -87,7 +88,7 @@ test("a moldura acende pelo campo de dentro, que e quem recebe o foco", () => {
   expect(frame.className).toContain("has-[input:focus-visible]:ring-ring");
 });
 
-test("o xis da ficha tem anel proprio, para os dois nunca acenderem juntos", () => {
+test("the chip x has its own ring, so the two never light up together", () => {
   withTheme(<Marcadores />);
 
   expect(screen.getByRole("button", { name: "Remover nf-e" }).className).toContain(
@@ -95,7 +96,7 @@ test("o xis da ficha tem anel proprio, para os dois nunca acenderem juntos", () 
   );
 });
 
-/* --- Command: o nome, o expandido e o anuncio ---------------------------- */
+/* --- Command: the name, the expanded state and the announcement --------- */
 
 const GROUPS: CommandGroup[] = [
   {
@@ -107,24 +108,24 @@ const GROUPS: CommandGroup[] = [
   },
 ];
 
-test("o campo da paleta tem nome, e ele nao e o placeholder", () => {
+test("the palette field has a name, and it is not the placeholder", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
 
   const field = screen.getByRole("combobox", { name: "Paleta de comandos" });
   expect(field.getAttribute("placeholder")).toBe("Buscar comando");
 });
 
-test("o nome do campo acompanha o `title` de quem monta a paleta", () => {
+test("the field name follows the `title` given by whoever builds the palette", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} title="Ações da nota" />);
 
   expect(screen.getByRole("combobox", { name: "Ações da nota" })).toBeDefined();
 });
 
 /*
- * O `aria-expanded` era fixo em "true": a busca sem resultado deixava o foco
- * parado num combobox que afirmava estar expandido com a lista vazia.
+ * `aria-expanded` was fixed at "true": a search with no result left focus
+ * sitting on a combobox that claimed to be expanded with an empty list.
  */
-test("o expandido segue a lista, e nao fica preso em true", () => {
+test("expanded follows the list, and is not stuck at true", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
   const field = screen.getByRole("combobox");
 
@@ -135,11 +136,11 @@ test("o expandido segue a lista, e nao fica preso em true", () => {
 });
 
 /*
- * A mensagem de vazio era um `<p>` comum dentro do `role="listbox"`. Digitar
- * uma busca que nao acha nada produzia silencio: o listbox nao anuncia filho
- * novo, e nada mais mudava na tela para o leitor de tela contar.
+ * The empty message was a plain `<p>` inside the `role="listbox"`. Typing a
+ * search that finds nothing produced silence: the listbox does not announce a
+ * new child, and nothing else changed on screen for the screen reader to tell.
  */
-test("nao achar nada sai numa regiao viva, e fora da lista", () => {
+test("finding nothing goes out in a live region, outside the list", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
 
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "zzz" } });
@@ -149,7 +150,7 @@ test("nao achar nada sai numa regiao viva, e fora da lista", () => {
   expect(empty.closest("[role=listbox]")).toBeNull();
 });
 
-test("achar tambem se anuncia: a contagem entra na mesma regiao", () => {
+test("finding is announced too: the count goes into the same region", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
   const field = screen.getByRole("combobox");
 
@@ -159,15 +160,15 @@ test("achar tambem se anuncia: a contagem entra na mesma regiao", () => {
   expect(within(screen.getByRole("status")).getByText("1 resultado")).toBeDefined();
 });
 
-/* --- Slider: o rotulo nomeia o pino --------------------------------------- */
+/* --- Slider: the label names the thumb ----------------------------------- */
 
-test("o rotulo do slider nomeia o controle, sem precisar de thumbLabel", () => {
+test("the slider label names the control, without needing thumbLabel", () => {
   withTheme(<Slider defaultValue={30} max={90} label="Prazo" showValue />);
 
   expect(screen.getByRole("slider", { name: "Prazo" })).toBeDefined();
 });
 
-test("na faixa de dois pinos, cada pino guarda o nome proprio", () => {
+test("in a two-thumb range, each thumb keeps its own name", () => {
   withTheme(
     <Slider
       defaultValue={[20, 60]}
@@ -181,20 +182,20 @@ test("na faixa de dois pinos, cada pino guarda o nome proprio", () => {
   expect(screen.queryAllByRole("slider", { name: "Faixa de valor" })).toHaveLength(0);
 });
 
-/* --- PageHeader: o nivel do titulo --------------------------------------- */
+/* --- PageHeader: the title level ----------------------------------------- */
 
-test("sem dizer nada, o titulo continua um h1", () => {
+test("saying nothing, the title stays an h1", () => {
   withTheme(<PageHeader title="Notas fiscais" />);
 
   expect(screen.getByRole("heading", { level: 1, name: "Notas fiscais" })).toBeDefined();
 });
 
 /*
- * `/componentes/page-header` era a unica das 94 rotas com mais de um `h1`: o
- * titulo da pagina e os dois dos exemplos. Quem navega por titulo de nivel 1
- * caia dentro de um exemplo em vez da peca.
+ * `/componentes/page-header` was the only one of the 94 routes with more than
+ * one `h1`: the page title and the two from the examples. Whoever navigates by
+ * level 1 heading landed inside an example instead of the component.
  */
-test("`titleAs` baixa o nivel sem mexer no desenho", () => {
+test("`titleAs` lowers the level without touching the look", () => {
   withTheme(<PageHeader title="Notas fiscais" titleAs="h2" />);
 
   const heading = screen.getByRole("heading", { level: 2, name: "Notas fiscais" });
@@ -203,7 +204,7 @@ test("`titleAs` baixa o nivel sem mexer no desenho", () => {
   expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
 });
 
-test("`titleAs` tambem chega ao h3, para o cabecalho que mora fundo", () => {
+test("`titleAs` also reaches h3, for the header that lives deep", () => {
   withTheme(<PageHeader title="Ajustes" titleAs="h3" />);
 
   expect(screen.getByRole("heading", { level: 3, name: "Ajustes" })).toBeDefined();

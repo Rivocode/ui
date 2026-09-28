@@ -23,22 +23,22 @@ describe("RadioGroup", () => {
     { label: "Pix", value: "pix", description: "Cai na hora" },
   ];
 
-  test("papel de radio, checked na escolhida, e o toque escolhe", () => {
+  test("radio role, checked on the chosen one, and a tap chooses", () => {
     const onValueChange = mock(() => {});
     const screen = render(<RadioGroup items={items} value="pix" onValueChange={onValueChange} />);
 
     const radios = byRole(screen, "radio");
     expect(radios.length).toBe(2);
-    // `checked`, e nao `selected`: e o estado que o papel radio pede, o que o
-    // ColorPicker ja usava e o que o contrato do web nomeia. Com `selected`, o
-    // VoiceOver le a opcao como "selecionada" e nao anuncia marcada.
+    // `checked`, not `selected`: it is the state the radio role asks for, what
+    // ColorPicker already used and what the web contract names. With `selected`,
+    // VoiceOver reads the option as "selected" and does not announce it checked.
     expect(radios[1].props.accessibilityState.checked).toBe(true);
     expect(radios[0].props.accessibilityState.checked).toBe(false);
     expect(radios[1].props.accessibilityState.selected).toBeUndefined();
     expect(textOf(screen)).toContain("Cai na hora");
 
-    // O círculo vazado marca com `accent-text`, e não com a lima cheia: no
-    // tema claro a borda e o ponto mediam 1,21:1 sobre a página.
+    // The hollow circle marks with `accent-text`, not with the full lime: in
+    // the light theme the border and the dot measured 1.21:1 over the page.
     expect(byClass(screen, /border-accent-text/).length).toBe(1);
     expect(byClass(screen, /bg-accent-text/).length).toBe(1);
     expect(byClass(screen, /bg-accent(?![\w-])/).length).toBe(0);
@@ -54,7 +54,7 @@ describe("CheckboxGroup", () => {
     { label: "XML", value: "xml" },
   ];
 
-  test("marcar acrescenta, desmarcar retira, sem perder o resto", () => {
+  test("checking adds, unchecking removes, without losing the rest", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <CheckboxGroup items={items} value={["pdf"]} onValueChange={onValueChange} />,
@@ -69,8 +69,8 @@ describe("CheckboxGroup", () => {
   });
 });
 
-describe("onValueChange nos campos de texto", () => {
-  test("o Input e o Textarea entregam o texto no onValueChange, e o onChangeText continua chamado", () => {
+describe("onValueChange on text fields", () => {
+  test("Input and Textarea deliver the text in onValueChange, and onChangeText is still called", () => {
     for (const Field of [Input, Textarea]) {
       const onValueChange = mock((_value: string) => {});
       const onChangeText = mock((_value: string) => {});
@@ -85,7 +85,7 @@ describe("onValueChange nos campos de texto", () => {
 });
 
 describe("MaskedInput", () => {
-  test("mostra com pontuacao, entrega so digitos, e para na capacidade", () => {
+  test("shows with punctuation, delivers only digits, and stops at capacity", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <MaskedInput
@@ -102,7 +102,7 @@ describe("MaskedInput", () => {
     expect(onValueChange).toHaveBeenCalledWith("12345678000190", "12.345.678/0001-90");
   });
 
-  test("com * no molde a letra entra em caixa alta, e o teclado deixa de ser numerico", () => {
+  test("with * in the mask the letter comes in uppercase, and the keyboard stops being numeric", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <MaskedInput
@@ -121,7 +121,7 @@ describe("MaskedInput", () => {
     expect(onValueChange).toHaveBeenCalledWith("12ABC34501DE35", "12.ABC.345/01DE-35");
   });
 
-  test("so com 9 no molde o teclado continua numerico", () => {
+  test("with only 9 in the mask the keyboard stays numeric", () => {
     const screen = render(
       <MaskedInput mask="99999-999" value="58000000" onValueChange={() => {}} />,
     );
@@ -129,7 +129,7 @@ describe("MaskedInput", () => {
     expect(input.props.keyboardType).toBe("number-pad");
   });
 
-  test("o molde boleto pontua a linha de banco e troca para a de convenio quando comeca com 8", () => {
+  test("the boleto mask punctuates the bank line and switches to the utility line when it starts with 8", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <MaskedInput
@@ -152,7 +152,7 @@ describe("MaskedInput", () => {
     );
   });
 
-  test("os 44 digitos do codigo de barras colados no molde boleto ficam sem a pontuacao da linha", () => {
+  test("the 44 barcode digits pasted into the boleto mask stay without the line punctuation", () => {
     const barcode = "10499898100000214032006561000100040099726390";
     const onValueChange = mock(() => {});
     const screen = render(<MaskedInput mask="boleto" value={barcode} onValueChange={onValueChange} />);
@@ -175,7 +175,7 @@ describe("MaskedInput", () => {
     );
   });
 
-  test("aceita os nomes do web, e o 9 do molde escrito na mao e digito", () => {
+  test("accepts the web names, and the 9 of a hand-written mask is a digit", () => {
     const onValueChange = mock((_clean: string, _masked: string) => {});
     const screen = render(<MaskedInput mask="cpf" value="12345678909" onValueChange={onValueChange} />);
     const input = screen.root.findByType("TextInput" as never);
@@ -189,7 +189,7 @@ describe("MaskedInput", () => {
     expect(phone.root.findByType("TextInput" as never).props.value).toBe("(83) 3222-1111");
   });
 
-  test("cnpj e placa abrem o teclado de letra, e a letra chega em caixa alta", () => {
+  test("cnpj and placa open the letter keyboard, and the letter arrives in uppercase", () => {
     const onValueChange = mock((_clean: string, _masked: string) => {});
     const screen = render(<MaskedInput mask="placa" value="" onValueChange={onValueChange} />);
     const input = screen.root.findByType("TextInput" as never);
@@ -202,7 +202,7 @@ describe("MaskedInput", () => {
     expect(cnpj.root.findByType("TextInput" as never).props.value).toBe("12.ABC.345/01DE-35");
   });
 
-  test("telefone troca de molde na nona casa, e moeda entrega os dígitos da tela, como o cru do web", () => {
+  test("telefone switches mask at the ninth digit, and moeda delivers the on-screen digits, like the web's raw value", () => {
     const phone = render(<MaskedInput mask="telefone" value="83999998888" onValueChange={() => {}} />);
     expect(phone.root.findByType("TextInput" as never).props.value).toBe("(83) 99999-8888");
 
@@ -227,7 +227,7 @@ describe("MaskedInput", () => {
 });
 
 describe("NumberField", () => {
-  test("os passos respeitam os limites, e o campo anuncia o valor", () => {
+  test("the steps respect the limits, and the field announces the value", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <NumberField value={2} onValueChange={onValueChange} min={1} max={3} label="Parcelas" />,
@@ -242,7 +242,7 @@ describe("NumberField", () => {
     expect(byLabel(screen, "Parcelas")[0].props.accessibilityValue).toEqual({ text: "2" });
   });
 
-  test("no limite, o passo daquele lado desliga", () => {
+  test("at the limit, the step on that side turns off", () => {
     const screen = render(
       <NumberField value={3} onValueChange={() => {}} min={1} max={3} label="Parcelas" />,
     );
@@ -250,7 +250,7 @@ describe("NumberField", () => {
     expect(byLabel(screen, "Diminuir Parcelas")[0].props.disabled).toBe(false);
   });
 
-  test("o campo do meio pode encolher, senao o passo + sai da caixa", () => {
+  test("the middle field can shrink, or the + step falls out of the box", () => {
     const screen = render(<NumberField value={2} onValueChange={() => {}} label="Parcelas" />);
 
     const field = byClass(screen, /border-l/)[0]!;
@@ -260,7 +260,7 @@ describe("NumberField", () => {
 });
 
 describe("OTPField", () => {
-  test("uma caixa por digito, e onValueComplete so no ultimo", () => {
+  test("one box per digit, and onValueComplete only on the last", () => {
     const onValueComplete = mock(() => {});
     const onValueChange = mock(() => {});
     const screen = render(
@@ -284,7 +284,7 @@ describe("OTPField", () => {
     expect(onValueComplete).toHaveBeenCalledWith("1234");
   });
 
-  test("o nome do campo concorda com o numero de casas", () => {
+  test("the field name agrees with the number of digits", () => {
     const many = render(<OTPField length={4} value="" onValueChange={() => {}} />);
     expect(byLabel(many, "Código de 4 dígitos").length).toBe(1);
 
@@ -294,7 +294,7 @@ describe("OTPField", () => {
 });
 
 describe("SearchInput", () => {
-  test("o limpar so existe quando ha o que limpar, e limpa", () => {
+  test("clear only exists when there is something to clear, and clears it", () => {
     const onValueChange = mock(() => {});
     const empty = render(<SearchInput value="" onValueChange={() => {}} />);
     expect(byLabel(empty, "Limpar a busca").length).toBe(0);
@@ -306,7 +306,7 @@ describe("SearchInput", () => {
 });
 
 describe("Fieldset", () => {
-  test("legenda, descricao e os campos dentro", () => {
+  test("legend, description and the fields inside", () => {
     const screen = render(
       <Fieldset legend="Cobrança" description="Como o cliente paga.">
         <Text>campos</Text>
@@ -319,7 +319,7 @@ describe("Fieldset", () => {
 });
 
 describe("InputGroup", () => {
-  test("prefixo, sufixo e o botao com nome pela acao, tudo numa moldura so", () => {
+  test("prefix, suffix and the button named by its action, all in a single frame", () => {
     const onValueChange = mock(() => {});
     const onPress = mock(() => {});
     const screen = render(
@@ -346,7 +346,7 @@ describe("InputGroup", () => {
     expect(onPress).toHaveBeenCalled();
   });
 
-  test("invalid pinta a moldura, e o campo de dentro nao ganha borda propria", () => {
+  test("invalid paints the frame, and the inner field gets no border of its own", () => {
     const screen = render(<InputGroup value="" onValueChange={() => {}} invalid />);
     expect(byClass(screen, /border-danger/).length).toBe(1);
     const input = screen.root.findByType("TextInput" as never);
@@ -355,7 +355,7 @@ describe("InputGroup", () => {
 });
 
 describe("PasswordInput", () => {
-  test("o botao diz a acao e troca com o estado; sair do campo esconde de novo", () => {
+  test("the button says the action and changes with the state; leaving the field hides again", () => {
     const screen = render(<PasswordInput value="segredo" onValueChange={() => {}} />);
     const input = screen.root.findByType("TextInput" as never);
     expect(input.props.secureTextEntry).toBe(true);
@@ -374,7 +374,7 @@ describe("PasswordInput", () => {
 });
 
 describe("TagsInput", () => {
-  test("labels.remove da nome ao xis, como no web", () => {
+  test("labels.remove names the x, as on the web", () => {
     const named = render(
       <TagsInput value={["pix"]} onValueChange={() => {}} labels={{ remove: (tag) => `Tirar ${tag}` }} />,
     );
@@ -384,7 +384,7 @@ describe("TagsInput", () => {
     expect(byLabel(fallback, "Remover pix").length).toBe(1);
   });
 
-  test("o separador digitado fecha a ficha, e a repetida nao entra duas vezes", () => {
+  test("a typed separator closes the chip, and a repeated one does not get in twice", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <TagsInput value={["pix"]} onValueChange={onValueChange} accessibilityLabel="Etiquetas" />,
@@ -399,7 +399,7 @@ describe("TagsInput", () => {
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  test("Enter fecha sem soltar o teclado, e sair do campo fecha o que sobrou", () => {
+  test("Enter closes without dismissing the keyboard, and leaving the field closes what is left", () => {
     const onValueChange = mock(() => {});
     const screen = render(<TagsInput value={[]} onValueChange={onValueChange} />);
     const input = screen.root.findByType("TextInput" as never);
@@ -415,7 +415,7 @@ describe("TagsInput", () => {
     expect(onValueChange).toHaveBeenCalledWith(["nota"]);
   });
 
-  test("cada ficha diz o que remove, e o teto fecha o campo", () => {
+  test("each chip says what it removes, and the ceiling closes the field", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <TagsInput value={["pix", "boleto"]} onValueChange={onValueChange} max={2} />,
@@ -428,8 +428,8 @@ describe("TagsInput", () => {
   });
 });
 
-describe("o molde antigo", () => {
-  test("o MaskedInput avisa quando o molde ainda usa #, que desde a 1.0 e pontuacao fixa", () => {
+describe("the old mask", () => {
+  test("MaskedInput warns when the mask still uses #, which since 1.0 is fixed punctuation", () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
 
     try {

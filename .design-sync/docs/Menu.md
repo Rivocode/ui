@@ -1,28 +1,28 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # Menu
 
-Menu de ações, típico dos três pontinhos de uma linha de tabela.
+An action menu, the typical three dots on a table row.
 
-Compõe com `MenuTrigger`, `MenuContent`, `MenuItem`, `MenuGroup` e
-`MenuSeparator`. O título de grupo e a propriedade `label` do `MenuGroup`, não
-uma peça separada.
+Composes with `MenuTrigger`, `MenuContent`, `MenuItem`, `MenuGroup` and
+`MenuSeparator`. The group title is the `label` prop of `MenuGroup`, not a
+separate piece.
 
-O menu também escolhe, e não só age: `MenuCheckboxItem` liga e desliga uma opção
-sem fechar o painel (o "quais colunas mostrar" de uma listagem), e
-`MenuRadioGroup` com `MenuRadioItem` faz a escolha única, o "ordenar por". Os
-dois trazem o `aria-checked` de item de menu e a navegação por seta e por
-primeira letra, que um `Popover` com `Checkbox` dentro não tem.
+The menu also chooses, not just acts: `MenuCheckboxItem` toggles an option on
+and off without closing the panel (the "which columns to show" of a listing),
+and `MenuRadioGroup` with `MenuRadioItem` makes a single choice, the "sort
+by". Both bring the menu item `aria-checked` and navigation by arrow and by
+first letter, which a `Popover` with a `Checkbox` inside does not have.
 
-Quando um ramo merece painel próprio, `MenuSubmenu` com `MenuSubmenuTrigger`
-abre ao lado. E o item que navega é `MenuLinkItem`, que sai como `<a>` de
-verdade.
+When a branch deserves its own panel, `MenuSubmenu` with `MenuSubmenuTrigger`
+opens beside it. And the item that navigates is `MenuLinkItem`, which renders
+as a real `<a>`.
 
-`tone="danger"` no item que apaga. Renderiza em portal, então exige o
-`RivoProvider`.
+`tone="danger"` on the item that deletes. It renders in a portal, so it
+requires the `RivoProvider`.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Menu` - folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo; `classNames` com `trigger`, `content` e `item`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Menu` - bottom sheet with `actions`, never an anchored popup; `children` opens on long press; `classNames` with `trigger`, `content` and `item`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

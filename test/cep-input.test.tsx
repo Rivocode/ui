@@ -48,7 +48,7 @@ function field(props: Partial<PostalCodeFieldProps> = {}) {
 
 const type = (input: HTMLInputElement, text: string) => fireEvent.change(input, { target: { value: text } });
 
-test("poe a mascara 99999-999, abre o teclado numerico e pede o preenchimento do navegador", () => {
+test("applies the 99999-999 mask, opens the numeric keyboard and asks for browser autofill", () => {
   const onValueChange = mock((_masked: string, _digits: string) => {});
   const { input } = field({ onValueChange });
 
@@ -60,7 +60,7 @@ test("poe a mascara 99999-999, abre o teclado numerico e pede o preenchimento do
   expect(onValueChange).toHaveBeenLastCalledWith("58038-000", "58038000");
 });
 
-test("so busca ao completar os 8 digitos, e uma vez so", async () => {
+test("only looks up after completing the 8 digits, and only once", async () => {
   const lookup = mock(async (_postalCode: string) => null);
   const { input } = field({ lookup });
 
@@ -75,7 +75,7 @@ test("so busca ao completar os 8 digitos, e uma vez so", async () => {
   expect(lookup).toHaveBeenCalledTimes(1);
 });
 
-test("o CEP colado com ponto nao e cortado pelo navegador, e a busca roda", async () => {
+test("a CEP pasted with a dot is not truncated by the browser, and the lookup runs", async () => {
   const lookup = mock(async (_postalCode: string) => null);
   const { input } = field({ lookup });
 
@@ -87,7 +87,7 @@ test("o CEP colado com ponto nao e cortado pelo navegador, e a busca roda", asyn
   expect(lookup.mock.calls[0]![0]).toBe("01310100");
 });
 
-test("enquanto busca: giro no sufixo, aria-busy e o anuncio de espera", async () => {
+test("while looking up: spinner in the suffix, aria-busy and the waiting announcement", async () => {
   const pending = deferred<PostalAddress | null>();
   const { input, root, status } = field({ lookup: () => pending.promise });
 
@@ -104,7 +104,7 @@ test("enquanto busca: giro no sufixo, aria-busy e o anuncio de espera", async ()
   expect(root.querySelector("svg.animate-spin")).toBeNull();
 });
 
-test("achou: onAddress recebe o endereco e o CEP, e o leitor ouve que achou", async () => {
+test("found: onAddress receives the address and the CEP, and the reader hears it was found", async () => {
   const onAddress = mock((_address: PostalAddress, _postalCode: string) => {});
   const { input, root, status } = field({ lookup: async () => AURORA, onAddress });
 
@@ -116,7 +116,7 @@ test("achou: onAddress recebe o endereco e o CEP, e o leitor ouve que achou", as
   expect(input.hasAttribute("aria-invalid")).toBe(false);
 });
 
-test("nao achou: erro em portugues, ligado ao campo, e o campo se marca invalido", async () => {
+test("not found: an error in Portuguese, linked to the field, and the field marks itself invalid", async () => {
   const onAddress = mock(() => {});
   const { input, root, status } = field({ lookup: async () => null, onAddress });
 
@@ -133,7 +133,7 @@ test("nao achou: erro em portugues, ligado ao campo, e o campo se marca invalido
   expect(onAddress).not.toHaveBeenCalled();
 });
 
-test("falha de rede nao e culpa do CEP: avisa, oferece tentar de novo e nao marca invalido", async () => {
+test("a network failure is not the CEP's fault: it warns, offers retry and does not mark invalid", async () => {
   let calls = 0;
   const lookup = mock(async () => {
     calls += 1;
@@ -157,7 +157,7 @@ test("falha de rede nao e culpa do CEP: avisa, oferece tentar de novo e nao marc
   expect(root.querySelector("p")).toBeNull();
 });
 
-test("tentar de novo deixa o foco no campo, e nao no corpo da pagina", async () => {
+test("retry leaves focus on the field, and not on the page body", async () => {
   const pending = deferred<PostalAddress | null>();
   let calls = 0;
   const lookup = mock(() => {
@@ -178,7 +178,7 @@ test("tentar de novo deixa o foco no campo, e nao no corpo da pagina", async () 
   expect(document.activeElement === input).toBe(true);
 });
 
-test("com movimento reduzido, buscando tem texto visivel, porque o giro para", async () => {
+test("with reduced motion, looking up has visible text, because the spinner stops", async () => {
   const pending = deferred<PostalAddress | null>();
   const { input, root } = field({ lookup: () => pending.promise });
 
@@ -196,7 +196,7 @@ test("com movimento reduzido, buscando tem texto visivel, porque o giro para", a
   expect(root.querySelector("[data-searching]")).toBeNull();
 });
 
-test("trocar o CEP no meio da busca cancela a anterior, e a resposta velha nao entra", async () => {
+test("changing the CEP mid-lookup cancels the previous one, and the stale response does not get in", async () => {
   const first = deferred<PostalAddress | null>();
   const second = deferred<PostalAddress | null>();
   const signals: AbortSignal[] = [];
@@ -225,7 +225,7 @@ test("trocar o CEP no meio da busca cancela a anterior, e a resposta velha nao e
   expect(onAddress).toHaveBeenCalledWith(paulista, "01310100");
 });
 
-test("apagar um digito cancela a busca e limpa o aviso", async () => {
+test("deleting a digit cancels the lookup and clears the notice", async () => {
   const pending = deferred<PostalAddress | null>();
   const onStatusChange = mock((_status: string) => {});
   const { input, root } = field({ lookup: () => pending.promise, onStatusChange });
@@ -240,7 +240,7 @@ test("apagar um digito cancela a busca e limpa o aviso", async () => {
   expect(root.getAttribute("data-status")).toBe("idle");
 });
 
-test("o valor inicial nao dispara busca", async () => {
+test("the initial value does not trigger a lookup", async () => {
   const lookup = mock(async () => AURORA);
   const { input } = field({ lookup, defaultValue: "58038000" });
 
@@ -249,7 +249,7 @@ test("o valor inicial nao dispara busca", async () => {
   expect(lookup).not.toHaveBeenCalled();
 });
 
-test("dentro do Field, a descricao e o aviso descrevem o campo juntos", async () => {
+test("inside Field, the description and the notice describe the field together", async () => {
   const { input, root } = field({ lookup: async () => null });
   const description = screen.getByText("Só os números.");
 
@@ -299,7 +299,7 @@ function Address() {
   );
 }
 
-test("com o FormField, o endereco achado preenche o resto do formulario", async () => {
+test("with FormField, the found address fills the rest of the form", async () => {
   render(<Address />);
   const input = screen.getByLabelText("CEP") as HTMLInputElement;
 

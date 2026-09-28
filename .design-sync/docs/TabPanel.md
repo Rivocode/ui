@@ -1,10 +1,10 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # TabPanel
 
-O conteúdo de uma aba.
+The content of a tab.
 
-O `value` amarra painel e aba. Só o painel ativo fica no documento, então
-formulário dentro de aba escondida não entra no `Tab` do teclado.
+`value` ties panel and tab together. Only the active panel is in the document,
+so a form inside a hidden tab does not enter the keyboard's `Tab` order.

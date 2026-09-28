@@ -9,12 +9,12 @@ function button(setup: (element: HTMLButtonElement) => void = () => {}) {
   return element;
 }
 
-test("sem alvo, e com o corpo da pagina como alvo, o foco esta perdido", () => {
+test("with no target, and with the page body as target, focus is lost", () => {
   expect(focusIsLost(null)).toBe(true);
   expect(focusIsLost(document.body)).toBe(true);
 });
 
-test("alvo vivo e focavel nao conta como perdido, para nada ser roubado de quem moveu o foco", () => {
+test("a live focusable target does not count as lost, so nothing is stolen from whoever moved focus", () => {
   const alive = button();
 
   expect(focusIsLost(alive)).toBe(false);
@@ -22,14 +22,14 @@ test("alvo vivo e focavel nao conta como perdido, para nada ser roubado de quem 
   alive.remove();
 });
 
-test("alvo que saiu da arvore conta como perdido, porque nao ha para onde tabular dele", () => {
+test("a target that left the tree counts as lost, because there is nowhere to tab from it", () => {
   const gone = button();
   gone.remove();
 
   expect(focusIsLost(gone)).toBe(true);
 });
 
-test("alvo ainda ativo mas ja `disabled` conta como perdido: e a ordem do Firefox", () => {
+test("a target still active but already `disabled` counts as lost: that is the Firefox order", () => {
   const dying = button((element) => {
     element.disabled = true;
   });

@@ -1,14 +1,14 @@
 /**
- * Traz um item para dentro da parte visível do container dele, sem mexer na
- * rolagem da página.
+ * Brings an item into the visible part of its container, without touching the
+ * page scroll.
  *
- * `scrollIntoView` faria isto, mas ele acerta todos os ancestrais roláveis de
- * uma vez: a janela vai junto e o texto que a pessoa está lendo pula, mesmo
- * quando o container inteiro já estava na tela. A lista lateral das peças é
- * exatamente esse caso: fica parada na tela e rola por dentro.
+ * `scrollIntoView` would do this, but it hits every scrollable ancestor at
+ * once: the window goes along and the text the person is reading jumps, even
+ * when the whole container was already on screen. The pieces sidebar is
+ * exactly that case: it stays still on screen and scrolls inside.
  *
- * A margem é a folga que fica sobrando antes e depois do item, para ele não
- * parar colado na borda, onde não dá para ver que a lista continua.
+ * The margin is the slack left before and after the item, so it does not stop
+ * glued to the edge, where you cannot see that the list goes on.
  */
 export function revealWithin(container: HTMLElement, item: HTMLElement, margin = 24) {
   const view = container.getBoundingClientRect()

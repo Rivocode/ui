@@ -2,12 +2,12 @@ import { QRCode } from '@rivocode/ui'
 
 const LINK_DA_NOTA = 'https://nfse.rivocode.com.br/consulta/35240612345678000199550010000048131234567890'
 
-/** Link de consulta da nota */
+/** Invoice lookup link */
 export function InvoiceLink() {
   return <QRCode value={LINK_DA_NOTA} label="QR Code para consultar a nota 4813" />
 }
 
-/** Com a marca no centro */
+/** With the logo in the center */
 export function WithLogo() {
   return (
     <QRCode
@@ -19,7 +19,7 @@ export function WithLogo() {
   )
 }
 
-/** Solto na página, e mais robusto */
+/** Loose on the page, and sturdier */
 export function OnPage() {
   return (
     <div className="bg-bg p-4">

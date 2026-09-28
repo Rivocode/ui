@@ -1,52 +1,53 @@
 /**
- * O juiz da bancada da CI: compara a arvore de base com a da cabeca, as duas
- * medidas na MESMA maquina, e diz o que piorou.
+ * The CI bench's judge: compares the base tree with the head tree, both
+ * measured on the SAME machine, and says what got worse.
  *
- * A bancada existe desde 24/09/2026 e resolve um impasse que deixava o
- * `bun run a11y` e o `bun run visual` fora de qualquer CI. As duas guardas
- * medem contra uma referencia absoluta - a lista vazia de problemas, e as
- * assinaturas comitadas - e as duas referencias nao valem no ubuntu:
+ * The bench has existed since 24/09/2026 and resolves a deadlock that kept
+ * `bun run a11y` and `bun run visual` out of any CI. Both guards measure
+ * against an absolute reference - the empty list of problems, and the
+ * committed signatures - and neither reference holds on ubuntu:
  *
- * - As assinaturas nasceram no macOS. Fonte e antialias mudam entre sistemas,
- *   e a mesma arvore medida no linux sai diferente do comitado sem ninguem ter
- *   mexido em nada. Comparar la seria vermelho permanente, e vermelho
- *   permanente e desligado na segunda semana.
- * - O `bun run a11y` sai vermelho em toda arvore de hoje: ele acusa o que as
- *   pecas TEM, e a lista ainda nao zerou. No gate, ele pararia o `check` de
- *   todo mundo.
+ * - The signatures were born on macOS. Fonts and antialiasing change between
+ *   systems, and the same tree measured on linux comes out different from the
+ *   committed one without anyone having touched anything. Comparing there would
+ *   be permanent red, and permanent red gets switched off in the second week.
+ * - `bun run a11y` comes out red on every tree today: it flags what the pieces
+ *   HAVE, and the list has not reached zero yet. In the gate, it would stop
+ *   everyone's `check`.
  *
- * As saidas obvias falham cada uma de um lado. Assinatura por plataforma
- * comitada envelhece a cada Chrome novo do runner, que o GitHub troca sem
- * avisar. Tolerancia por quadrado alta o bastante para calar o antialias cala
- * junto a trilha quadrada do `Progress`, que marcava 3 de cinza numa moldura
- * de pagina (ver `check-portraits.ts`). E deixar o visual so na maquina e o
- * estado que o `check:scripts` descreve: a guarda que so roda quando alguem
- * lembra.
+ * The obvious ways out each fail on one side. A committed per-platform
+ * signature ages with every new runner Chrome, which GitHub swaps without
+ * notice. A per-square tolerance high enough to silence antialiasing also
+ * silences the square `Progress` track, which scored 3 of gray in a page frame
+ * (see `check-portraits.ts`). And leaving visual only on the machine is the
+ * state `check:scripts` describes: the guard that only runs when someone
+ * remembers.
  *
- * A comparacao DIFERENCIAL troca a referencia absoluta pela base. Mesma
- * maquina, mesmo Chrome, mesmas fontes, mesmo minuto: tudo que e plataforma
- * cancela, e o que sobra e o que o commit mudou. A plataforma nunca deixa isto
- * vermelho, e um retrato que o commit mudou nunca passa sem alguem ter aceito.
+ * The DIFFERENTIAL comparison swaps the absolute reference for the base. Same
+ * machine, same Chrome, same fonts, same minute: everything that is platform
+ * cancels out, and what is left is what the commit changed. The platform never
+ * turns this red, and a portrait the commit changed never passes without
+ * someone having accepted it.
  *
- * ## Quem aceita
+ * ## Who accepts
  *
- * Mudanca de retrato e aceita pelo mesmo gesto de sempre: quem mudou a tela
- * roda `bun run shot && bun run visual --aceitar` na maquina, olha, e comita o
- * `demo/assinaturas.json`. A entrada daquele retrato mudar entre a base e a
- * cabeca e a prova de que alguem olhou - e retrato que mudou no linux sem a
- * entrada ter mudado e mudanca que ninguem viu. A etiqueta `retrato-aceito` no
- * PR e a valvula para o caso que a regra nao cobre: diferenca que so aparece
- * no linux.
+ * A portrait change is accepted by the same gesture as always: whoever changed
+ * the screen runs `bun run shot && bun run visual --accept` on the machine,
+ * looks, and commits `demo/assinaturas.json`. That portrait's entry changing
+ * between base and head is the proof that someone looked - and a portrait that
+ * changed on linux without its entry changing is a change nobody saw. The
+ * `retrato-aceito` label on the PR is the valve for the case the rule does not
+ * cover: a difference that only shows up on linux.
  *
- * Acessibilidade nao tem aceite: problema que a cabeca tem a mais que a base e
- * regressao, e o conserto e na peca. Problema que a cabeca tem a MENOS so e
- * relatado - a lista encolher e o que se quer.
+ * Accessibility has no acceptance: a problem the head has more of than the base
+ * is a regression, and the fix is in the piece. A problem the head has FEWER of
+ * is only reported - the list shrinking is what we want.
  *
- * ## Medir e condicao
+ * ## Measuring is a precondition
  *
- * Arvore que nao mediu nada nao e arvore sem problema. Por isso ha piso de
- * paginas auditadas e de retratos comparados, e arquivo de medida que falta
- * derruba a corrida em vez de virar lista vazia.
+ * A tree that measured nothing is not a tree without problems. That is why
+ * there is a floor of audited pages and compared portraits, and a missing
+ * measurement file brings the run down instead of becoming an empty list.
  */
 import { compareSignatures } from "./portraits";
 
@@ -70,7 +71,7 @@ export function compareAccessibility(
   const problems: string[] = [];
   if (head.pages.length < floor) {
     problems.push(
-      `a cabeca auditou ${head.pages.length} pagina(s), e o piso e ${floor}: a medida se perdeu, e lista vazia de pagina nao e lista vazia de problema`,
+      `the head audited ${head.pages.length} page(s), and the floor is ${floor}: the measurement was lost, and an empty list of pages is not an empty list of problems`,
     );
   }
 
@@ -137,7 +138,7 @@ export function compareShots(input: ShotInput, floor: number): ShotVerdict {
 
     const what = diff.frame
       ? `${name} - ${diff.frame}`
-      : `${name} - ${diff.cells} de ${diff.total} quadrados, pior ${diff.worst}`;
+      : `${name} - ${diff.cells} of ${diff.total} squares, worst ${diff.worst}`;
     if (acceptedByCommit(name)) verdict.accepted.push(what);
     else verdict.unaccepted.push(what);
   }
@@ -145,7 +146,7 @@ export function compareShots(input: ShotInput, floor: number): ShotVerdict {
   for (const name of Object.keys(base.signatures).sort()) {
     if (name in head.signatures) continue;
     if (!(name in committedHead)) {
-      verdict.accepted.push(`${name} - saiu da vitrine e da assinatura comitada`);
+      verdict.accepted.push(`${name} - left the showcase and the committed signature`);
       continue;
     }
     verdict.lost.push(name);
@@ -153,7 +154,7 @@ export function compareShots(input: ShotInput, floor: number): ShotVerdict {
 
   if (verdict.compared < floor) {
     verdict.problems.push(
-      `${verdict.compared} retrato(s) comparado(s), e o piso e ${floor}: a medida se perdeu, e zero diferenca de zero retrato nao e retrato igual`,
+      `${verdict.compared} portrait(s) compared, and the floor is ${floor}: the measurement was lost, and zero difference over zero portraits is not an identical portrait`,
     );
   }
 
@@ -164,8 +165,8 @@ async function readJson<T>(path: string): Promise<T> {
   const file = Bun.file(path);
   if (!(await file.exists())) {
     console.error(
-      `${path} nao existe: um dos lados nao foi medido. A bancada nao compara` +
-        " medida com ausencia de medida, porque o resultado seria verde por falta de dado.",
+      `${path} does not exist: one of the sides was not measured. The bench does not compare` +
+        " a measurement with the absence of one, because the result would be green for lack of data.",
     );
     process.exit(1);
   }
@@ -177,8 +178,8 @@ function option(name: string) {
   const value = at === -1 ? undefined : process.argv[at + 1];
   if (!value) {
     console.error(
-      `Uso: bun run scripts/bench-comparison.ts --base <pasta> --cabeca <pasta> [--retrato-aceito]` +
-        `\nCada pasta tem acessibilidade.json, retratos.json e assinaturas.json. Faltou ${name}.`,
+      `Usage: bun run scripts/bench-comparison.ts --base <folder> --head <folder> [--portrait-accepted]` +
+        `\nEach folder has accessibility.json, portraits.json and assinaturas.json. Missing ${name}.`,
     );
     process.exit(1);
   }
@@ -190,19 +191,19 @@ const SHOT_FLOOR = 30;
 
 if (import.meta.main) {
   const baseDir = option("--base");
-  const headDir = option("--cabeca");
-  const labelAccepts = process.argv.includes("--retrato-aceito");
+  const headDir = option("--head");
+  const labelAccepts = process.argv.includes("--portrait-accepted");
 
   const accessibility = compareAccessibility(
-    await readJson<AccessibilityReport>(`${baseDir}/acessibilidade.json`),
-    await readJson<AccessibilityReport>(`${headDir}/acessibilidade.json`),
+    await readJson<AccessibilityReport>(`${baseDir}/accessibility.json`),
+    await readJson<AccessibilityReport>(`${headDir}/accessibility.json`),
     PAGE_FLOOR,
   );
 
-  const headShots = await readJson<ShotReport>(`${headDir}/retratos.json`);
+  const headShots = await readJson<ShotReport>(`${headDir}/portraits.json`);
   const shots = compareShots(
     {
-      base: await readJson<ShotReport>(`${baseDir}/retratos.json`),
+      base: await readJson<ShotReport>(`${baseDir}/portraits.json`),
       head: headShots,
       committedBase: await readJson<Signatures>(`${baseDir}/assinaturas.json`),
       committedHead: await readJson<Signatures>(`${headDir}/assinaturas.json`),
@@ -210,45 +211,45 @@ if (import.meta.main) {
     SHOT_FLOOR,
   );
 
-  const lines: string[] = ["## Bancada: base contra cabeca, na mesma maquina", ""];
+  const lines: string[] = ["## Bench: base against head, on the same machine", ""];
   const failures: string[] = [...accessibility.problems, ...shots.problems];
 
-  lines.push("### Acessibilidade", "");
-  if (accessibility.worse.length === 0) lines.push("Nenhum problema a mais que a base.");
+  lines.push("### Accessibility", "");
+  if (accessibility.worse.length === 0) lines.push("No problem beyond the base.");
   for (const { key, before, after } of accessibility.worse) {
-    lines.push(`- piorou: \`${key}\` de ${before} para ${after}`);
+    lines.push(`- worse: \`${key}\` from ${before} to ${after}`);
   }
   for (const { key, before, after } of accessibility.better) {
-    lines.push(`- melhorou: \`${key}\` de ${before} para ${after}`);
+    lines.push(`- better: \`${key}\` from ${before} to ${after}`);
   }
   if (accessibility.worse.length > 0) {
     failures.push(
-      `${accessibility.worse.length} problema(s) de acessibilidade que a base nao tinha. Rode \`bun run a11y\` na maquina: o conserto e na peca.`,
+      `${accessibility.worse.length} accessibility problem(s) the base did not have. Run \`bun run a11y\` on the machine: the fix is in the piece.`,
     );
   }
 
-  lines.push("", "### Retratos", "", `${shots.compared} retrato(s) comparado(s).`);
-  for (const what of shots.unaccepted) lines.push(`- mudou sem aceite: ${what}`);
-  for (const what of shots.accepted) lines.push(`- mudou, aceito pela assinatura comitada: ${what}`);
-  for (const name of shots.lost) lines.push(`- a cabeca nao fotografou: ${name}`);
-  for (const name of shots.fresh) lines.push(`- novo, sem base para comparar: ${name}`);
-  for (const refused of headShots.refused) lines.push(`- recusado na cabeca: ${refused}`);
+  lines.push("", "### Portraits", "", `${shots.compared} portrait(s) compared.`);
+  for (const what of shots.unaccepted) lines.push(`- changed without acceptance: ${what}`);
+  for (const what of shots.accepted) lines.push(`- changed, accepted by the committed signature: ${what}`);
+  for (const name of shots.lost) lines.push(`- the head did not shoot: ${name}`);
+  for (const name of shots.fresh) lines.push(`- new, no base to compare: ${name}`);
+  for (const refused of headShots.refused) lines.push(`- refused on the head: ${refused}`);
 
   const unacceptedCount = shots.unaccepted.length + shots.lost.length;
   if (unacceptedCount > 0) {
     if (labelAccepts) {
-      lines.push("", "A etiqueta `retrato-aceito` do PR aceita as mudancas acima.");
+      lines.push("", "The PR's `retrato-aceito` label accepts the changes above.");
     } else {
       failures.push(
-        `${unacceptedCount} retrato(s) mudaram sem a assinatura comitada mudar junto.` +
-          " Olhe na maquina e aceite: bun run shot && bun run visual --aceitar, e comite o" +
-          " demo/assinaturas.json. Diferenca que so aparece no linux: etiqueta `retrato-aceito` no PR.",
+        `${unacceptedCount} portrait(s) changed without the committed signature changing along.` +
+          " Look on the machine and accept: bun run shot && bun run visual --accept, and commit" +
+          " demo/assinaturas.json. A difference that only shows up on linux: the `retrato-aceito` label on the PR.",
       );
     }
   }
 
   if (failures.length > 0) {
-    lines.push("", "### Por que ficou vermelho", "");
+    lines.push("", "### Why it went red", "");
     for (const failure of failures) lines.push(`- ${failure}`);
   }
 

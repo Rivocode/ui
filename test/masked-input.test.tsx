@@ -20,7 +20,7 @@ function eraseBefore(input: HTMLInputElement) {
   });
 }
 
-test("digitar no meio do cpf mantem o cursor logo depois do que foi digitado", () => {
+test("typing in the middle of the cpf keeps the cursor right after what was typed", () => {
   render(<MaskedInput aria-label="CPF" mask="cpf" defaultValue="123.456.78" />);
   const input = screen.getByLabelText("CPF") as HTMLInputElement;
   input.focus();
@@ -35,7 +35,7 @@ test("digitar no meio do cpf mantem o cursor logo depois do que foi digitado", (
   expect(input.selectionStart).toBe(3);
 });
 
-test("o cursor tambem acompanha o campo controlado", () => {
+test("the cursor also follows the controlled field", () => {
   function Controlled() {
     const [value, setValue] = useState("123.456.78");
     return (
@@ -57,7 +57,7 @@ test("o cursor tambem acompanha o campo controlado", () => {
   expect(input.selectionStart).toBe(5);
 });
 
-test("apagar o telefone com backspace chega ao vazio, sem travar no fecha-parentese", () => {
+test("erasing the phone with backspace reaches empty, without getting stuck on the closing parenthesis", () => {
   render(<MaskedInput aria-label="Telefone" mask="telefone" defaultValue="11" />);
   const input = screen.getByLabelText("Telefone") as HTMLInputElement;
   input.focus();
@@ -73,7 +73,7 @@ test("apagar o telefone com backspace chega ao vazio, sem travar no fecha-parent
   expect(seen).toEqual(["(11) ", "(11)", "(11", "(1", "(", ""]);
 });
 
-test("o backspace logo depois de um literal apaga o digito anterior a ele, sem mandar o cursor para o fim", () => {
+test("backspace right after a literal erases the digit before it, without sending the cursor to the end", () => {
   const changes: string[] = [];
   render(
     <MaskedInput
@@ -95,7 +95,7 @@ test("o backspace logo depois de um literal apaga o digito anterior a ele, sem m
   expect(input.value.slice(0, input.selectionStart!).replace(/\D/g, "")).toBe("119876");
 });
 
-test("o delete logo antes de um literal apaga o digito seguinte a ele", () => {
+test("delete right before a literal erases the digit after it", () => {
   const changes: string[] = [];
   render(
     <MaskedInput
@@ -115,7 +115,7 @@ test("o delete logo antes de um literal apaga o digito seguinte a ele", () => {
   expect(changes.at(-1)).toBe("1235678901");
 });
 
-test("backspace com alt, ctrl ou cmd sobre um literal fica com o navegador, que apaga a palavra", () => {
+test("backspace with alt, ctrl or cmd over a literal is left to the browser, which erases the word", () => {
   for (const modifier of ["altKey", "ctrlKey", "metaKey"] as const) {
     const changes: string[] = [];
     const view = render(
@@ -138,7 +138,7 @@ test("backspace com alt, ctrl ou cmd sobre um literal fica com o navegador, que 
   }
 });
 
-test("o valor controlado aparece com a mascara, mesmo quando chega cru", () => {
+test("the controlled value shows up masked, even when it arrives raw", () => {
   render(<MaskedInput aria-label="CNPJ" mask="cnpj" value="11222333000181" onValueChange={() => {}} />);
 
   expect((screen.getByLabelText("CNPJ") as HTMLInputElement).value).toBe("11.222.333/0001-81");

@@ -63,27 +63,27 @@ const LABELS: ImageViewerLabels = {
 
 export type ImageViewerProps = {
   /**
-   * As imagens, na ordem da navegacao. `alt` e obrigatorio em cada uma: e o
-   * nome da miniatura e o que o leitor de tela ouve ao trocar de imagem.
+   * The images, in navigation order. `alt` is required on each one: it is the
+   * thumbnail's name and what the screen reader hears on switching images.
    */
   images: ImageViewerImage[];
-  /** A imagem aberta, contando de zero, ou `null` com o visualizador fechado. */
+  /** The open image, counting from zero, or `null` with the viewer closed. */
   index: number | null;
-  /** Chamado ao abrir pela miniatura, ao navegar e com `null` ao fechar. */
+  /** Called on opening from the thumbnail, on navigating and with `null` on closing. */
   onIndexChange: (index: number | null) => void;
-  /** Desenha a grade de miniaturas que abre o visualizador. Ligada por padrao. */
+  /** Draws the thumbnail grid that opens the viewer. On by default. */
   thumbnails?: boolean;
-  /** Da ultima, a proxima volta a primeira, e vice-versa. */
+  /** From the last one, next goes back to the first, and vice versa. */
   loop?: boolean;
-  /** O zoom maximo, em vezes o tamanho que cabe na tela. Sem ele, 4. */
+  /** The maximum zoom, in multiples of the size that fits the screen. Without it, 4. */
   maxZoom?: number;
   labels?: Partial<ImageViewerLabels>;
-  /** Veste a grade de miniaturas, o mesmo elemento que `classNames.thumbnails`. */
+  /** Styles the thumbnail grid, the same element as `classNames.thumbnails`. */
   className?: string;
   /**
-   * Classe por parte: `thumbnails` (a grade), `thumbnail` (cada miniatura
-   * tocavel), `viewer` (a tela cheia), `toolbar`, `counter`, `stage` (a area
-   * da imagem), `image` e `caption`.
+   * Class per part: `thumbnails` (the grid), `thumbnail` (each tappable
+   * thumbnail), `viewer` (the full screen), `toolbar`, `counter`, `stage` (the
+   * image area), `image` and `caption`.
    */
   classNames?: Slots<
     "thumbnails" | "thumbnail" | "viewer" | "toolbar" | "counter" | "stage" | "image" | "caption"

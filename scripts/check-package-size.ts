@@ -1,56 +1,60 @@
 /**
- * Guarda do tamanho do pacote: o que quem instala baixa, medido em gzip contra
- * um orcamento escrito.
+ * Package size guard: what the installer downloads, measured in gzip against a
+ * written budget.
  *
- * Nasceu junto com a descoberta de que importar SO o `Button` levava a
- * biblioteca quase inteira. Medido em 24/09/2026, com esbuild e com o bundler do
- * bun, num app de uma linha - `import { Button } from "@rivocode/ui"` - e os
- * peers de fora: 395 KB minificados, 129 KB em gzip, contra 307 KB em gzip de
- * `import * as tudo`. O codigo das 121 pecas saia quase todo, mas cada
- * `Dialog$1.Root`, `createContext(...)` e `cva(...)` de topo de modulo ficava,
- * porque o empacotador nao prova que leitura de propriedade e chamada nao tem
- * efeito - e eles seguravam 272 KB minificados da Base UI, a tabela da TanStack
- * e o resto. O esbuild deu o mesmo desenho: 122 KB antes, 11,7 KB depois.
+ * It was born alongside the discovery that importing ONLY the `Button` pulled
+ * in almost the whole library. Measured on 24/09/2026, with esbuild and with
+ * bun's bundler, in a one-line app - `import { Button } from "@rivocode/ui"` -
+ * and the peers left out: 395 KB minified, 129 KB gzipped, against 307 KB
+ * gzipped for `import * as everything`. The code of the 121 pieces was mostly
+ * dropped, but every top-level `Dialog$1.Root`, `createContext(...)` and
+ * `cva(...)` stayed, because the bundler cannot prove that a property read and
+ * a call have no side effect - and they held on to 272 KB minified of Base UI,
+ * the TanStack table and the rest. esbuild gave the same picture: 122 KB
+ * before, 11.7 KB after.
  *
- * O `"sideEffects": ["*.css"]` do package.json ja dizia a coisa certa, e nao
- * adiantava: ele deixa o empacotador descartar um ARQUIVO inteiro que ninguem
- * usa, e o `tsdown` juntava as pecas num `dist/index.js` so, que e sempre usado.
- * Com `unbundle` no `tsdown.config.ts` cada modulo vira um arquivo, e o mesmo
- * app caiu para 37 KB minificados, 12,3 KB em gzip. As duas metades sao
- * necessarias, e foi medido: com `unbundle` e SEM o `sideEffects`, o `Button`
- * sozinho volta a 144 KB em gzip.
+ * The `"sideEffects": ["*.css"]` of package.json already said the right thing,
+ * and it did not help: it lets the bundler drop an entire FILE nobody uses, and
+ * `tsdown` merged the pieces into a single `dist/index.js`, which is always
+ * used. With `unbundle` in `tsdown.config.ts` each module becomes a file, and
+ * the same app fell to 37 KB minified, 12.3 KB gzipped. Both halves are
+ * necessary, and it was measured: with `unbundle` and WITHOUT `sideEffects`,
+ * the `Button` alone goes back to 144 KB gzipped.
  *
- * Nenhum teste via isso, e nenhum veria: o defeito nao muda comportamento, so
- * o peso da tela de quem usa. Por isso a guarda mede o peso, e nao a forma do
- * `dist/`.
+ * No test saw this, and none would: the defect does not change behavior, only
+ * the weight of the user's screen. That is why the guard measures weight, and
+ * not the shape of `dist/`.
  *
- * ## Onde ela roda, e por que dentro do gate
+ * ## Where it runs, and why inside the gate
  *
- * O gate roda antes do `bun run build`, e o `dist/` que costuma estar ali e de
- * uma construcao anterior. Medir ele seria responder sobre outro codigo - verde
- * ou vermelho, os dois mentiriam. Entao a guarda constroi o JavaScript e a CSS
- * numa pasta propria, com o mesmo `tsdown.config.ts` e a mesma entrada do
- * Tailwind do build, passa a CSS pelo mesmo `compactCss` do `build:css`, e mede
- * o que acabou de sair. Sem o corte aqui, a guarda mediria uma CSS que ninguem
- * publica. Custa menos de um segundo, e por isso cabe no `bun run check` em
- * vez de ficar num passo da CI que a maquina de ninguem roda.
+ * The gate runs before `bun run build`, and the `dist/` usually sitting there
+ * comes from an earlier build. Measuring it would be answering about other
+ * code - green or red, both would lie. So the guard builds the JavaScript and
+ * the CSS into its own folder, with the same `tsdown.config.ts` and the same
+ * Tailwind entry as the build, runs the CSS through the same `compactCss` as
+ * `build:css`, and measures what just came out. Without that trim here, the
+ * guard would measure a CSS nobody publishes. It costs less than a second,
+ * and that is why it fits in `bun run check` instead of sitting in a CI step
+ * nobody's machine runs.
  *
- * ## O que ela mede
+ * ## What it measures
  *
- * - Cada entrada JavaScript do `exports` do package.json, lida do proprio
- *   manifesto: subcaminho novo sem orcamento e erro. O numero e o gzip de tudo
- *   que a entrada alcanca por import relativo - desde o `unbundle` o
- *   `index.js` e so reexportacao, e medir so ele seria medir uma lista de nomes.
- * - A `styles.css`, que todo mundo importa inteira.
- * - O `Button` sozinho, empacotado pelo bun com as dependencias DENTRO e so os
- *   peers de fora - e a pergunta de quem instala, e e a linha que fica vermelha
- *   no dia em que o tree-shaking quebrar de novo.
+ * - Each JavaScript entry of package.json's `exports`, read from the manifest
+ *   itself: a new subpath without a budget is an error. The number is the gzip
+ *   of everything the entry reaches by relative import - since `unbundle`,
+ *   `index.js` is only re-exports, and measuring it alone would be measuring a
+ *   list of names.
+ * - `styles.css`, which everyone imports whole.
+ * - The `Button` alone, bundled by bun with dependencies INSIDE and only the
+ *   peers left out - it is the installer's question, and it is the line that
+ *   turns red on the day tree-shaking breaks again.
  *
- * O orcamento mora em `scripts/size-budget.ts`. Ele tem piso tambem:
- * medida abaixo de 80% do limite e erro, pelo mesmo motivo das listas que so
- * encolhem - folga que sobra depois de um corte vira espaco para crescer sem
- * ninguem decidir. E o piso e o que impede esta guarda de ficar verde lendo
- * nada: leitura que se perde mede quase zero, e quase zero reprova.
+ * The budget lives in `scripts/size-budget.ts`. It has a floor too: a
+ * measurement below 80% of the limit is an error, for the same reason as the
+ * lists that only shrink - slack left over after a cut becomes room to grow
+ * without anyone deciding. And the floor is what keeps this guard from staying
+ * green while reading nothing: a reading that gets lost measures almost zero,
+ * and almost zero fails.
  */
 import { mkdirSync, rmSync } from "node:fs";
 import { dirname, join, normalize } from "node:path";
@@ -59,7 +63,7 @@ import { gzipSync } from "node:zlib";
 import { compactCss } from "./compact-css";
 import { BUDGET, BUTTON_ALONE } from "./size-budget";
 
-const OUT = "node_modules/.cache/check-tamanho";
+const OUT = "node_modules/.cache/check-size";
 const CSS_ENTRY = "src/styles.css";
 const CSS_EXPORT = "./styles.css";
 const HEADROOM = 1.1;
@@ -76,7 +80,7 @@ async function run(command: string[]) {
   const proc = Bun.spawn(command, { stdout: "pipe", stderr: "pipe" });
   const [code, stderr] = await Promise.all([proc.exited, new Response(proc.stderr).text()]);
   if (code !== 0) {
-    console.error(`${command.join(" ")} falhou:\n${stderr}`);
+    console.error(`${command.join(" ")} failed:\n${stderr}`);
     process.exit(1);
   }
 }
@@ -99,7 +103,7 @@ function importsOf(code: string) {
   return found;
 }
 
-/** Todo arquivo que a entrada alcanca por import relativo, em ordem estavel. */
+/** Every file the entry reaches by relative import, in stable order. */
 async function closure(entry: string) {
   const seen = new Set<string>([entry]);
   const queue = [entry];
@@ -111,7 +115,7 @@ async function closure(entry: string) {
       const target = normalize(join(dirname(file), request));
       if (seen.has(target)) continue;
       if (!(await Bun.file(target).exists())) {
-        console.error(`${file} importa ${request}, e ${target} nao saiu do build.`);
+        console.error(`${file} imports ${request}, and ${target} did not come out of the build.`);
         process.exit(1);
       }
       seen.add(target);
@@ -136,19 +140,19 @@ for (const [key, target] of Object.entries(manifest.exports)) {
   if (!path) continue;
 
   if (key === CSS_EXPORT) {
-    measures.push({ name: key, bytes: await gzipOf([inBuild(path)]), detail: "1 arquivo" });
+    measures.push({ name: key, bytes: await gzipOf([inBuild(path)]), detail: "1 file" });
     continue;
   }
   if (!path.endsWith(".js")) continue;
 
   const files = await closure(inBuild(path));
-  measures.push({ name: key, bytes: await gzipOf(files), detail: `${files.length} arquivo(s)` });
+  measures.push({ name: key, bytes: await gzipOf(files), detail: `${files.length} file(s)` });
 }
 
-const probe = join(OUT, "so-o-button.js");
-// O Button vai para o `globalThis`, e nao para um `export { Button }`: o bun
-// 1.3 esvazia a reexportacao de modulo marcado sem efeito colateral e devolve
-// `export{t as Button}` sem o `t` - medido, 21 bytes. A `mark` abaixo pegou.
+const probe = join(OUT, "button-only.js");
+// The Button goes to `globalThis`, and not to an `export { Button }`: bun 1.3
+// empties the re-export of a module marked side-effect free and returns
+// `export{t as Button}` without the `t` - measured, 21 bytes. The `mark` below caught it.
 await Bun.write(probe, 'import { Button } from "./index.js";\nglobalThis.rcButton = Button;\n');
 
 const peers = Object.keys(manifest.peerDependencies).flatMap((name) => [name, `${name}/*`]);
@@ -159,7 +163,7 @@ const bundled = await Bun.build({
   external: peers,
 });
 if (!bundled.success) {
-  console.error("O empacotamento do Button sozinho falhou:");
+  console.error("Bundling the Button alone failed:");
   for (const log of bundled.logs) console.error(log);
   process.exit(1);
 }
@@ -168,10 +172,10 @@ const buttonCode = await bundled.outputs[0]!.text();
 
 if (!buttonCode.includes(BUTTON_ALONE.mark)) {
   console.error(
-    `O pacote do Button sozinho nao contem "${BUTTON_ALONE.mark}".\n` +
-      "A frase e a prova de que o Button entrou no pacote medido: sem ela, o numero\n" +
-      "abaixo seria de um arquivo vazio, e passaria com folga. Aponte `mark` em\n" +
-      "scripts/size-budget.ts para uma classe que o Button ainda tenha.",
+    `The Button-alone bundle does not contain "${BUTTON_ALONE.mark}".\n` +
+      "The phrase is the proof that the Button made it into the measured bundle: without it,\n" +
+      "the number below would be of an empty file, and would pass with room to spare. Point\n" +
+      "`mark` in scripts/size-budget.ts at a class the Button still has.",
   );
   process.exit(1);
 }
@@ -179,7 +183,7 @@ if (!buttonCode.includes(BUTTON_ALONE.mark)) {
 measures.push({
   name: BUTTON_ALONE.name,
   bytes: gzipSync(buttonCode, { level: 9 }).length,
-  detail: `${(buttonCode.length / 1024).toFixed(1)} KB minificado`,
+  detail: `${(buttonCode.length / 1024).toFixed(1)} KB minified`,
 });
 
 rmSync(OUT, { recursive: true, force: true });
@@ -193,23 +197,23 @@ for (const measure of measures) {
   const budget = BUDGET[measure.name];
   if (!budget) {
     problems.push(
-      `  ${measure.name} (${kb(measure.bytes)} em gzip, ${measure.detail}) nao tem orcamento.\n` +
-        `    Escreva a linha em scripts/size-budget.ts com limite ${suggested(measure.bytes)}\n` +
-        "    e o motivo do numero.",
+      `  ${measure.name} (${kb(measure.bytes)} gzipped, ${measure.detail}) has no budget.\n` +
+        `    Write the line in scripts/size-budget.ts with limit ${suggested(measure.bytes)}\n` +
+        "    and the reason for the number.",
     );
     continue;
   }
 
   if (measure.bytes > budget.limit) {
     problems.push(
-      `  ${measure.name} pesa ${kb(measure.bytes)} em gzip (${measure.detail}), e o limite e ${kb(budget.limit)}.\n` +
-        `    O motivo escrito do limite: ${budget.why}`,
+      `  ${measure.name} weighs ${kb(measure.bytes)} gzipped (${measure.detail}), and the limit is ${kb(budget.limit)}.\n` +
+        `    The written reason for the limit: ${budget.why}`,
     );
   } else if (measure.bytes < budget.limit * FLOOR) {
     problems.push(
-      `  ${measure.name} pesa ${kb(measure.bytes)} em gzip, abaixo de ${FLOOR * 100}% do limite de ${kb(budget.limit)}.\n` +
-        `    Desca o limite para ${suggested(measure.bytes)} e reescreva o motivo. Se nada\n` +
-        "    encolheu de verdade, a leitura se perdeu - e isso e a guarda acusando a si mesma.",
+      `  ${measure.name} weighs ${kb(measure.bytes)} gzipped, below ${FLOOR * 100}% of the ${kb(budget.limit)} limit.\n` +
+        `    Lower the limit to ${suggested(measure.bytes)} and rewrite the reason. If nothing\n` +
+        "    really shrank, the reading got lost - and that is the guard flagging itself.",
     );
   }
 }
@@ -217,7 +221,7 @@ for (const measure of measures) {
 for (const name of Object.keys(BUDGET)) {
   if (!measures.some((measure) => measure.name === name)) {
     problems.push(
-      `  O orcamento cita ${name}, que nao e mais medido. Apague a linha, ou devolva a entrada ao exports.`,
+      `  The budget names ${name}, which is no longer measured. Delete the line, or put the entry back in exports.`,
     );
   }
 }
@@ -225,20 +229,20 @@ for (const name of Object.keys(BUDGET)) {
 const table = measures
   .map((measure) => {
     const limit = BUDGET[measure.name]?.limit;
-    const share = limit ? ` de ${kb(limit)} (${Math.round((measure.bytes / limit) * 100)}%)` : "";
+    const share = limit ? ` of ${kb(limit)} (${Math.round((measure.bytes / limit) * 100)}%)` : "";
     return `  ${measure.name.padEnd(16)} ${kb(measure.bytes).padStart(9)}${share}  - ${measure.detail}`;
   })
   .join("\n");
 
 if (problems.length > 0) {
-  console.error(`${table}\n\n${problems.length} problema(s) de tamanho:\n\n${problems.join("\n\n")}`);
+  console.error(`${table}\n\n${problems.length} size problem(s):\n\n${problems.join("\n\n")}`);
   console.error(
-    "\nSubir o limite e decisao, e se faz no mesmo commit que cresceu: troque o `limit`" +
-      "\nem scripts/size-budget.ts pelo numero sugerido - o medido mais 10% -" +
-      "\ne reescreva o `why` dizendo o que entrou e por que vale o peso. Um limite" +
-      "\nsem motivo novo e o mesmo que nao ter limite.",
+    "\nRaising the limit is a decision, and it is made in the same commit that grew: replace" +
+      "\n`limit` in scripts/size-budget.ts with the suggested number - the measured value plus 10% -" +
+      "\nand rewrite `why` saying what came in and why it is worth the weight. A limit" +
+      "\nwithout a new reason is the same as having no limit.",
   );
   process.exit(1);
 }
 
-console.log(`Tamanho em gzip, dentro do orcamento:\n${table}`);
+console.log(`Gzipped size, within budget:\n${table}`);

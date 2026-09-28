@@ -8,14 +8,14 @@ export type ChartEasing = `cubic-bezier(${number},${number},${number},${number})
 
 export type ChartMotion = {
   /**
-   * Espalhe em `Line`, `Bar`, `Area` e `Pie`. Liga antes de a marca montar, entao
-   * o grafico se desenha na primeira vez que aparece e anda quando o dado muda.
-   * Fica desligado enquanto o sistema pede menos movimento.
+   * Spread it on `Line`, `Bar`, `Area` and `Pie`. Turns on before the mark mounts, so
+   * the chart draws itself the first time it appears and moves when the data changes.
+   * Stays off while the system asks for reduced motion.
    */
   isAnimationActive: boolean;
-  /** Em ms, lido de `--rc-duration-slow`. Zero com "reduzir movimento". */
+  /** In ms, read from `--rc-duration-slow`. Zero with "reduce motion". */
   animationDuration: number;
-  /** A curva de `--rc-ease`, no formato que a Recharts interpreta. */
+  /** The `--rc-ease` curve, in the format Recharts understands. */
   animationEasing: ChartEasing;
 };
 

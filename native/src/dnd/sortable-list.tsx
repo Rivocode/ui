@@ -24,23 +24,23 @@ export type SortableHandleProps = GestureResponderHandlers & {
 
 export type SortableItemState = {
   /**
-   * O gesto e as acoes do leitor de tela que fazem uma `View` virar a alca.
-   * Espalhe numa `View` sua quando `handle` for `false`; com a alca da peca
-   * ligada ela ja recebeu tudo isto.
+   * The gesture and the screen reader actions that turn a `View` into the
+   * handle. Spread them on a `View` of your own when `handle` is `false`; with
+   * the component's handle on, it has already received all of this.
    */
   handleProps: SortableHandleProps;
-  /** O item esta sob o dedo agora. */
+  /** The item is under the finger right now. */
   isDragging: boolean;
-  /** A posicao do item na lista, contando do zero. */
+  /** The item's position in the list, counting from zero. */
   index: number;
 };
 
 export type SortableListMove = {
-  /** A chave do item que andou, a mesma que `getKey` devolveu. */
+  /** The key of the item that moved, the same one `getKey` returned. */
   key: string | number;
-  /** De onde ele saiu, contando do zero. */
+  /** Where it came from, counting from zero. */
   from: number;
-  /** Onde ele parou, contando do zero. */
+  /** Where it stopped, counting from zero. */
   to: number;
 };
 
@@ -50,32 +50,38 @@ export type NativeSortableListLabels = SortableListLabels & {
 };
 
 export type SortableListProps<Item> = {
-  /** Os itens, na ordem de agora. A peca e controlada: a ordem nova volta por `onReorder`. */
+  /**
+   * The items, in the current order. The component is controlled: the new order
+   * comes back through `onReorder`.
+   */
   items: readonly Item[];
-  /** A identidade de cada item. Tem que ser unica e nao pode mudar quando o item anda. */
+  /** Each item's identity. It must be unique and cannot change when the item moves. */
   getKey: (item: Item) => string | number;
-  /** O desenho de cada item. */
+  /** How each item is drawn. */
   renderItem: (item: Item, state: SortableItemState) => ReactNode;
   /**
-   * A ordem nova, ja montada, ao soltar num lugar diferente de onde o item
-   * saiu, ou a cada acao de mover do leitor de tela.
+   * The new order, already assembled, on dropping in a place different from
+   * where the item came from, or on each screen reader move action.
    */
   onReorder: (items: Item[], move: SortableListMove) => void;
-  /** O nome do item nos anuncios e no nome da alca: "Nota 1043". Sem ele, sai a chave. */
+  /**
+   * The item's name in the announcements and in the handle's name: "Nota 1043".
+   * Without it, the key is used.
+   */
   getLabel?: (item: Item) => string;
   /**
-   * Desenha a alca de 44pt no inicio de cada item, e so ela arrasta: o resto
-   * da linha continua rolando a tela. Com `false`, quem arrasta e a `View`
-   * onde voce espalhar `handleProps`.
+   * Draws the 44pt handle at the start of each item, and only it drags: the
+   * rest of the row keeps scrolling the screen. With `false`, the drag comes
+   * from the `View` where you spread `handleProps`.
    */
   handle?: boolean;
-  /** O eixo da lista. Muda o gesto, o deslocamento e o nome das acoes de mover. */
+  /** The list axis. Changes the gesture, the offset and the names of the move actions. */
   orientation?: "vertical" | "horizontal";
-  /** Trava o gesto e as acoes de mover. */
+  /** Locks the gesture and the move actions. */
   disabled?: boolean;
   /**
-   * Os textos dos anuncios, do nome da alca, da dica e das duas acoes de mover
-   * (`earlier` e `later`), para outra lingua.
+   * The texts of the announcements, the handle's name, the hint and the two
+   * move actions (`earlier` and `later`), for another language.
    */
   labels?: Partial<NativeSortableListLabels>;
   className?: string;

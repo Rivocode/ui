@@ -6,7 +6,7 @@ import { expect, test } from "bun:test";
 const IMPORT = /import\s+(?:\w+\s*,\s*)?\{([^}]*)\}\s+from\s+"react-native-svg"/g;
 const MOCK = /mock\.module\("react-native-svg",[\s\S]*?\n\}\);/g;
 
-test("todo duble do react-native-svg exporta o que o native/src importa", async () => {
+test("every react-native-svg double exports what native/src imports", async () => {
   const sources = await Array.fromAsync(new Glob("native/src/**/*.{ts,tsx}").scan("."));
   expect(sources.length).toBeGreaterThan(50);
 

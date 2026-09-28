@@ -25,7 +25,7 @@ const rootOf = (title: string) =>
     ),
   ].find((node) => node.textContent?.includes(title))!;
 
-test("o aviso alem do limite some da tela, em vez de ficar visivel e inerte", async () => {
+test("a toast beyond the limit leaves the screen, instead of staying visible and inert", async () => {
   await act(async () => {
     render(
       <RivoProvider>
@@ -43,7 +43,7 @@ test("o aviso alem do limite some da tela, em vez de ficar visivel e inerte", as
   expect(visible.hasAttribute("data-limited")).toBe(false);
 });
 
-test("o aviso sem prazo volta quando outro fecha, e o xis dele fecha", async () => {
+test("a toast without a timeout comes back when another closes, and its x closes it", async () => {
   await act(async () => {
     render(
       <RivoProvider>

@@ -1,30 +1,31 @@
 ---
-category: Ações
+category: Actions
 ---
 
 # ButtonGroup
 
-Botões que agem sobre a mesma coisa, encostados um no outro.
+Buttons that act on the same thing, pressed up against each other.
 
-Serve para ações irmãs: "emitir" com o menu de variantes colado do lado, ou a
-troca de visualização entre lista, linhas e grade.
+It is for sibling actions: "emitir" with the variants menu attached to its
+side, or switching the view between list, rows and grid.
 
-O encaixe é feito por seletor de irmãos, e não pedindo `className` em cada
-filho. Qualquer `Button`, link ou gatilho de menu entra no lugar certo sem saber
-que está num grupo. As bordas internas viram uma só, senão a divisão entre dois
-botões secundários sai com o dobro da espessura das externas.
+The fitting is done with a sibling selector, not by asking for a `className`
+on each child. Any `Button`, link or menu trigger falls into the right place
+without knowing it is in a group. The inner borders merge into one, otherwise
+the division between two secondary buttons comes out twice as thick as the
+outer ones.
 
-`orientation="vertical"` empilha, para barra lateral estreita.
+`orientation="vertical"` stacks them, for a narrow sidebar.
 
-## Quando não usar
+## When not to use
 
-Não é grupo de escolha. Se o que você quer é marcar uma opção entre várias, o
-`ToggleGroup` guarda estado e diz isso no aria; aqui são ações, e cada clique
-faz uma coisa diferente.
+It is not a choice group. If what you want is to mark one option among several,
+`ToggleGroup` keeps state and says so in the aria; here they are actions, and
+each click does something different.
 
-Botões sem relação entre si também não entram: encostados, eles prometem uma
-família que não existe. Para esses, `gap` normal.
+Unrelated buttons do not go in either: pressed together, they promise a family
+that does not exist. For those, a normal `gap`.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão - `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Does not port, by decision - `Tabs` and `ToggleGroup` cover the case; a button against a button becomes a single target for the finger. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.

@@ -1,50 +1,54 @@
 /**
- * Fase 0 do @rivocode/ui-native: os tokens saem do CSS para JSON e TS.
+ * Phase 0 of @rivocode/ui-native: the tokens go from CSS to JSON and TS.
  *
- * A fonte unica continua sendo o CSS - e nele que os guards de contraste e de
- * documentacao ja mordem. Este script DERIVA a forma que o React Native
- * consome: numeros sem "px", cores resolvidas (var() nao existe la), e so o
- * que traduz. Sombra de caixa, clamp() de marketing e empilhamento por
- * z-index sao ideias de CSS; ficam de fora com o motivo anotado.
+ * The single source is still the CSS - that is where the contrast and
+ * documentation guards already bite. This script DERIVES the shape React
+ * Native consumes: numbers without "px", resolved colors (var() does not exist
+ * there), and only what translates. Box shadow, marketing clamp() and z-index
+ * stacking are CSS ideas; they stay out with the reason noted.
  *
- * FONTE NAO TRADUZ, e este e o caso mais caro de aprender. O bloco `fonts`
- * existiu aqui e emitia "Manrope Variable", "Poppins" e "JetBrains Mono
- * Variable" - tres familias que nao existem instaladas em iOS nem Android.
- * Pior: ele resolvia com `value.split(",")[0]`, ficando com a PRIMEIRA da
- * pilha e jogando fora o fallback, que e exatamente a falha que fez o
- * `.font-mono` sair na letra padrao por versoes sem ninguem ver. No celular so
- * o app sabe o que carregou, entao a familia entra por `fonts` no
- * `RivoProvider` e nao por token. Nao devolva este bloco.
+ * FONTS DO NOT TRANSLATE, and this is the most expensive case to learn. The
+ * `fonts` block existed here and emitted "Manrope Variable", "Poppins" and
+ * "JetBrains Mono Variable" - three families that are not installed on iOS or
+ * Android. Worse: it resolved with `value.split(",")[0]`, keeping the FIRST of
+ * the stack and throwing away the fallback, which is exactly the failure that
+ * made `.font-mono` render in the default typeface for versions without anyone
+ * seeing. On a phone only the app knows what it loaded, so the family comes in
+ * through `fonts` on `RivoProvider` and not through a token. Do not bring this
+ * block back.
  *
- * Nao bastava nao emitir: o `@import "tailwindcss/theme.css"` do app traz
- * `--font-sans`, `--font-serif` e `--font-mono` de fabrica, e com eles as
- * classes `font-sans`, `font-serif` e `font-mono` compilam para a pilha de CSS
- * `ui-monospace, SFMono-Regular, Menlo, ...`, da qual o react-native-css guarda
- * a PRIMEIRA - generica que aparelho nenhum tem. A `font-display` nao compila
- * nada, e some calada. Por isso o @theme abaixo zera os tres com `initial`: sem
- * o token, nenhuma das quatro gera regra, e o `check:classes` passa a acusa-las
- * dentro de `native/src/**` como acusou o `shadow-1` do Slider.
+ * Not emitting was not enough: the app's `@import "tailwindcss/theme.css"`
+ * brings `--font-sans`, `--font-serif` and `--font-mono` out of the box, and
+ * with them the `font-sans`, `font-serif` and `font-mono` classes compile to
+ * the CSS stack `ui-monospace, SFMono-Regular, Menlo, ...`, of which
+ * react-native-css keeps the FIRST - a generic that no device has.
+ * `font-display` compiles nothing, and vanishes silently. That is why the
+ * @theme below resets the three with `initial`: without the token, none of the
+ * four generates a rule, and `check:classes` starts flagging them inside
+ * `native/src/**` as it flagged the Slider's `shadow-1`.
  *
- * DENSIDADE TAMBEM NAO TRADUZ, e a licao e a mesma do bloco acima com outro
- * disfarce. O `densities` saia daqui com as duas escalas, `comfortable` e
- * `compact`, e nenhuma peca nativa lia nenhuma das duas: alvo de toque nao
- * encolhe em tela de dedo, entao a prop `density` nunca existiu na API do
- * `RivoProvider` nativo. O que ficava no `tokens.ts` era a promessa de uma
- * escolha que o pacote nao oferece - quem lesse `tokens.densities.compact`
- * montaria uma tela inteira sobre um numero que nada aplica. As medidas da
- * confortavel entram em `scales`, junto com raio e tipografia, porque no
- * nativo elas nao sao uma densidade entre duas: sao A medida.
+ * DENSITY DOES NOT TRANSLATE EITHER, and the lesson is the same as the block
+ * above in another disguise. `densities` used to come out of here with both
+ * scales, `comfortable` and `compact`, and no native piece read either: a
+ * touch target does not shrink on a finger screen, so the `density` prop never
+ * existed in the native `RivoProvider` API. What sat in `tokens.ts` was the
+ * promise of a choice the package does not offer - whoever read
+ * `tokens.densities.compact` would build a whole screen on a number nothing
+ * applies. The comfortable measurements go into `scales`, together with radius
+ * and typography, because on native they are not one density out of two: they
+ * are THE measurement.
  *
- * O web fica como esta. La a compacta existe, e um `[data-rc-density]` vivo
- * no CSS a aplica de verdade.
+ * The web stays as it is. There the compact density exists, and a live
+ * `[data-rc-density]` in the CSS really applies it.
  *
- * `bun run check:native` roda o gerador e falha se o resultado comitado
- * divergir: mudou token no CSS, o native/ anda junto no mesmo commit.
+ * `bun run check:native` runs the generator and fails if the committed result
+ * diverges: a token changed in the CSS, native/ moves with it in the same
+ * commit.
  */
 
 const read = (path: string) => Bun.file(path).text();
 
-/** `--rc-p-lima-500: #d4f34a;` vira ["p-lima-500", "#d4f34a"]. */
+/** `--rc-p-lima-500: #d4f34a;` becomes ["p-lima-500", "#d4f34a"]. */
 function declarations(css: string) {
   const found: Array<[string, string]> = [];
   for (const match of css.matchAll(/--rc-([\w-]+):\s*([^;]+);/g)) {
@@ -53,7 +57,7 @@ function declarations(css: string) {
   return found;
 }
 
-/** `rgb(212 243 74 / 0.14)` vira `rgba(212,243,74,0.14)`, que o RN entende. */
+/** `rgb(212 243 74 / 0.14)` becomes `rgba(212,243,74,0.14)`, which RN understands. */
 function toNativeColor(value: string, palette: Map<string, string>): string | null {
   const reference = /^var\(--rc-(p-[\w-]+)\)$/.exec(value);
   if (reference) return palette.get(reference[1]) ?? null;
@@ -65,15 +69,15 @@ function toNativeColor(value: string, palette: Map<string, string>): string | nu
   return null;
 }
 
-/** `6px` vira 6; `120ms` vira 120; o resto fica de fora. */
+/** `6px` becomes 6; `120ms` becomes 120; the rest stays out. */
 const toNumber = (value: string) => {
   const match = /^([\d.]+)(?:px|ms)$/.exec(value);
   return match ? Number(match[1]) : null;
 };
 
 const paletteCss = await read("src/tokens/palette.css");
-// Escala e forma sao lidas juntas: para o nativo as duas sao a mesma coisa,
-// que e "medida que nao vem do tema de cor".
+// Scale and shape are read together: for native both are the same thing,
+// which is "a measurement that does not come from the color theme".
 const scalesCss =
   (await read("src/tokens/scales.css")) + "\n" + (await read("src/tokens/forma.css"));
 
@@ -83,12 +87,12 @@ for (const [name, value] of declarations(paletteCss)) {
 }
 
 /**
- * Divide o CSS em blocos de primeiro nivel, cabecalho + corpo. A densidade
- * compacta redefine as mesmas variaveis da confortavel no mesmo arquivo, e um
- * matchAll cego deixava a ultima vencer: o control-md saia 32 em vez de 40.
+ * Splits the CSS into top-level blocks, header + body. The compact density
+ * redefines the same variables as the comfortable one in the same file, and a
+ * blind matchAll let the last one win: control-md came out 32 instead of 40.
  *
- * Continua valendo depois de a compacta sair daqui, e agora com um segundo
- * uso: e por este recorte que o bloco dela e reconhecido para ser pulado.
+ * It still holds after compact left this output, and now with a second use:
+ * this cut is how its block is recognized so it can be skipped.
  */
 function topLevelBlocks(css: string) {
   const blocks: Array<{ header: string; body: string }> = [];
@@ -119,9 +123,9 @@ function topLevelBlocks(css: string) {
   return blocks;
 }
 
-/* As escalas que traduzem: forma, tipografia, movimento e altura de controle.
-   O `clamp()` de marketing, o z-index e os @keyframes ficam no CSS, onde
-   fazem sentido. */
+/* The scales that translate: shape, typography, motion and control height.
+   Marketing `clamp()`, z-index and @keyframes stay in the CSS, where they
+   make sense. */
 const scales: Record<string, number> = {};
 
 const easings: Record<string, [number, number, number, number]> = {};
@@ -177,7 +181,7 @@ for (const block of topLevelBlocks(scalesCss)) {
 
 const tokens = {
   $comment:
-    "Gerado por scripts/gen-native-tokens.ts a partir de src/tokens/*.css. Nao editar: rode bun run gen:native.",
+    "Generated by scripts/gen-native-tokens.ts from src/tokens/*.css. Do not edit: run bun run gen:native.",
   palette: Object.fromEntries(palette),
   scales,
   easings,
@@ -193,16 +197,16 @@ const tokens = {
 const json = `${JSON.stringify(tokens, null, 2)}\n`;
 
 /**
- * O tema para o NativeWind v5, que fala Tailwind 4 como o web: o @theme
- * gera exatamente as mesmas classes - bg-bg, text-fg-muted, rounded-md.
+ * The theme for NativeWind v5, which speaks Tailwind 4 like the web: the
+ * @theme generates exactly the same classes - bg-bg, text-fg-muted, rounded-md.
  *
- * Cada cor sai como light-dark(claro, escuro): o compilador do
- * react-native-css transforma isso numa regra condicionada a
- * prefers-color-scheme, avaliada em runtime - e Appearance.setColorScheme()
- * troca o tema inteiro sem var() viva nenhuma, que e exatamente o que o
- * inliner dele nao tolera. O provider faz esse set a partir da prop `theme`.
- * Fontes ficam de fora ate o app carrega-las com expo-font; sem a fonte
- * instalada, o nome vira erro.
+ * Each color comes out as light-dark(light, dark): the react-native-css
+ * compiler turns that into a rule conditioned on prefers-color-scheme,
+ * evaluated at runtime - and Appearance.setColorScheme() swaps the whole theme
+ * with no live var() at all, which is exactly what its inliner does not
+ * tolerate. The provider does that set from the `theme` prop. Fonts stay out
+ * until the app loads them with expo-font; without the font installed, the
+ * name becomes an error.
  */
 const dark = tokens.themes["rivocode-dark"];
 const light = tokens.themes["rivocode-light"];
@@ -224,9 +228,9 @@ const themeLines = [
   ...Object.entries(scales)
     .filter(([name]) => name.startsWith("text-"))
     .flatMap(([name, value]) => {
-      // O par --text-X--line-height e a sintaxe que o Tailwind 4 le para dar
-      // altura de linha a cada tamanho. Titulo aperta, corpo respira - os
-      // mesmos leading-tight e leading-normal do web.
+      // The --text-X--line-height pair is the syntax Tailwind 4 reads to give
+      // each size a line height. Headings tighten, body text breathes - the
+      // same leading-tight and leading-normal as the web.
       const leading = value >= 20 ? scales["leading-tight"] : scales["leading-normal"];
       return [
         `  --${name}: ${value}px;`,
@@ -240,36 +244,39 @@ const roleClasses = Object.keys(dark).join(",");
 const familyRoles = ["sans", "serif", "mono"];
 const familyReset = familyRoles.map((role) => `  --font-${role}: initial;`).join("\n");
 
-const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
+const themeCss = `/* Generated by scripts/gen-native-tokens.ts. Do not edit: run bun run gen:native. */
 
-/* So o @theme: o build do Tailwind ja o materializa em :root sozinho, e uma
-   segunda declaracao da mesma variavel derruba o inliner do compilador
-   nativo. O light-dark() vira regra de prefers-color-scheme no compilador,
-   e o provider troca o tema em runtime com Appearance.setColorScheme(). */
+/* Only the @theme: the Tailwind build already materializes it on :root by
+   itself, and a second declaration of the same variable breaks the native
+   compiler's inliner. light-dark() becomes a prefers-color-scheme rule in the
+   compiler, and the provider swaps the theme at runtime with
+   Appearance.setColorScheme(). */
 @theme {
 ${themeLines.join("\n")}
 
-  /* Familia de fonte nao vem por classe aqui, e o initial e o que faz a classe
-     DEIXAR de existir. O tailwindcss/theme.css do app traz --font-sans,
-     --font-serif e --font-mono de fabrica, e com eles font-sans, font-serif e
-     font-mono compilam para uma pilha de CSS da qual o react-native-css guarda
-     so a primeira - generica que celular nenhum tem instalada, e o texto sai na
-     letra do sistema sem nada acusar. A font-display nunca compilou nada. Sem
-     os tres tokens, as quatro classes viram candidato que o Tailwind ignora, e
-     o check:classes as pega. A familia entra pelo fonts do RivoProvider e sai
-     pela prop font do Text. */
+  /* Font family does not come through a class here, and initial is what makes
+     the class STOP existing. The app's tailwindcss/theme.css brings
+     --font-sans, --font-serif and --font-mono out of the box, and with them
+     font-sans, font-serif and font-mono compile to a CSS stack of which
+     react-native-css keeps only the first - a generic no phone has installed,
+     and the text renders in the system typeface with nothing flagging it.
+     font-display never compiled anything. Without the three tokens, the four
+     classes become candidates Tailwind ignores, and check:classes catches
+     them. The family comes in through RivoProvider's fonts and goes out
+     through Text's font prop. */
 ${familyReset}
 }
 
-/* O @source inline forca uma classe bg- por papel, mesmo papel que peca
-   nenhuma pinta de fundo. E dela que o RivoProvider LE a cor em runtime, com
-   o useCssElement: sem a regra emitida, o papel volta undefined e o grafico
-   sai na cor de outro tema. Dos 45 papeis, 23 nao tinham bg- antes desta
-   linha - entre eles os oito chart-*, que e o que o ChartDonut precisa. */
+/* The inline @source forces one bg- class per role, even a role no piece
+   paints as a background. It is from that class that RivoProvider READS the
+   color at runtime, with useCssElement: without the emitted rule, the role
+   comes back undefined and the chart renders in another theme's color. Of the
+   45 roles, 23 had no bg- before this line - among them the eight chart-*,
+   which is what ChartDonut needs. */
 @source inline("bg-{${roleClasses}}");
 `;
 
-const ts = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
+const ts = `/* Generated by scripts/gen-native-tokens.ts. Do not edit: run bun run gen:native. */
 
 export const tokens = ${JSON.stringify(tokens, null, 2)} as const;
 
@@ -277,44 +284,50 @@ export type RivoNativeTheme = keyof typeof tokens.themes;
 export type RivoNativeColorRole = keyof (typeof tokens.themes)["rivocode-dark"];
 `;
 
-// No modo check nada e escrito: compara o comitado com o que os CSS pedem
-// agora, e falha ANTES de esconder a diferenca.
+// In check mode nothing is written: it compares the committed files with
+// what the CSS asks for now, and fails BEFORE hiding the difference.
 /* ---------------------------------------------------------------------------
- * O tema de cliente
+ * The client theme
  *
- * A camada 3 do web e um arquivo CSS com os 51 papeis num seletor de tema.
- * Aqui ele vira o mapa que o `RivoProvider` do nativo veste. A fonte e a
- * mesma nos dois lados de proposito: um segundo lugar para manter a cor de um
- * cliente e como a promessa se quebra na pratica - nao por decisao, por
- * divergencia silenciosa seis meses depois.
+ * Layer 3 on the web is a CSS file with the 51 roles in one theme selector.
+ * Here it becomes the map the native `RivoProvider` wears. The source is the
+ * same on both sides on purpose: a second place to maintain a client's color
+ * is how the promise breaks in practice - not by decision, by silent
+ * divergence six months later.
  *
- *   bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+ *   bun run gen:native --theme tema-acme.css --out acme.theme.ts
  *
- * O arquivo pode trazer um seletor so, que serve aos dois esquemas, ou o par
- * `x-light` e `x-dark`, que e a convencao dos temas de casa.
+ * `--tema` and `--saida` are still accepted: the CHANGELOGs and the published
+ * theme docs quote them.
+ *
+ * The file may carry a single selector, which serves both schemes, or the
+ * `x-light` and `x-dark` pair, which is the convention of the house themes.
  * ------------------------------------------------------------------------- */
 
-const themeArg = process.argv.indexOf("--tema");
+const flagIndex = (...names: string[]) =>
+  Math.max(...names.map((name) => process.argv.indexOf(name)));
+
+const themeArg = flagIndex("--theme", "--tema");
 
 if (themeArg !== -1) {
   const source = process.argv[themeArg + 1];
   if (!source) {
-    console.error("Falta o arquivo: bun run gen:native --tema tema-acme.css");
+    console.error("Missing the file: bun run gen:native --theme tema-acme.css");
     process.exit(1);
   }
 
-  const outArg = process.argv.indexOf("--saida");
+  const outArg = flagIndex("--out", "--saida");
   const target = outArg !== -1 ? process.argv[outArg + 1]! : source.replace(/\.css$/, ".theme.ts");
   const css = await read(source);
 
-  /** Cada bloco `[data-rc-theme="x"] { ... }` do arquivo, por nome. */
+  /** Each `[data-rc-theme="x"] { ... }` block in the file, by name. */
   const blocks = new Map<string, string>();
   for (const block of css.matchAll(/\[data-rc-theme=["']([\w-]+)["']\]\s*\{([\s\S]*?)\}/g)) {
     blocks.set(block[1]!, block[2]!);
   }
 
   if (blocks.size === 0) {
-    console.error(`Nenhum [data-rc-theme="..."] em ${source}: e ele que declara a camada 3.`);
+    console.error(`No [data-rc-theme="..."] in ${source}: it is what declares layer 3.`);
     process.exit(1);
   }
 
@@ -327,9 +340,9 @@ if (themeArg !== -1) {
     return colors;
   };
 
-  // `acme-light` e `acme-dark` sao o mesmo tema em dois esquemas; um nome
-  // solto veste os dois, porque um tema de um esquema so e uma escolha
-  // legitima - e melhor do que inventar o outro por conta propria.
+  // `acme-light` and `acme-dark` are the same theme in two schemes; a lone
+  // name dresses both, because a single-scheme theme is a legitimate choice -
+  // and better than inventing the other one on our own.
   const names = [...blocks.keys()];
   const base = names[0]!.replace(/-(light|dark)$/, "");
   const light = blocks.get(`${base}-light`) ?? blocks.get(base) ?? blocks.get(names[0]!)!;
@@ -342,23 +355,23 @@ if (themeArg !== -1) {
 
   await Bun.write(
     target,
-    `/* Gerado de ${source} por bun run gen:native --tema. Nao editar. */\n` +
+    `/* Generated from ${source} by bun run gen:native --theme. Do not edit. */\n` +
       `type ThemeMap = { light: Record<string, string>; dark: Record<string, string> };\n\n` +
       `export const ${base.replace(/-/g, "")}Theme: ThemeMap = ${JSON.stringify(map, null, 2)};\n`,
   );
 
-  console.log(`${target}: ${Object.keys(map.light).length} papeis, claro e escuro.`);
+  console.log(`${target}: ${Object.keys(map.light).length} roles, light and dark.`);
   console.log(
-    "\nO mapa nao e prop de nada: o `RivoProvider` nao recebe mais objeto de tema.\n" +
-      "Para vestir a tela, sobrescreva os papeis --color-* num @theme do global.css do app e\n" +
-      "recompile com `npx rivocode-ui-native-css`. O provider le os 45 papeis do CSS compilado,\n" +
-      "entao a classe e a cor que a peca le por JS passam a dizer a mesma coisa.\n" +
-      "Este arquivo continua servindo de conferencia de papel faltando.",
+    "\nThe map is not a prop of anything: `RivoProvider` no longer takes a theme object.\n" +
+      "To dress the screen, override the --color-* roles in an @theme of the app's global.css and\n" +
+      "recompile with `npx rivocode-ui-native-css`. The provider reads the 45 roles from the compiled CSS,\n" +
+      "so the class and the color the piece reads through JS say the same thing.\n" +
+      "This file still serves as a check for missing roles.",
   );
   if (missing.length > 0) {
-    // Papel faltando nao e detalhe: a peca que o pede herda a cor da RivoCode,
-    // e isso so aparece na tela do cliente, meses depois.
-    console.error(`\n${missing.length} papel(eis) sem valor no tema: ${missing.join(", ")}`);
+    // A missing role is not a detail: the piece that asks for it inherits the
+    // RivoCode color, and that only shows up on the client's screen, months later.
+    console.error(`\n${missing.length} role(s) without a value in the theme: ${missing.join(", ")}`);
     process.exit(1);
   }
   process.exit(0);
@@ -368,10 +381,10 @@ if (process.argv.includes("--check")) {
   const committedJson = await read("native/tokens.json").catch(() => "");
   const committedTheme = await read("native/theme.css").catch(() => "");
   if (committedJson !== json || committedTheme !== themeCss) {
-    console.error("native/ divergiu dos CSS. Rode: bun run gen:native");
+    console.error("native/ diverged from the CSS. Run: bun run gen:native");
     process.exit(1);
   }
-  console.log("native/ em dia com os CSS.");
+  console.log("native/ up to date with the CSS.");
   process.exit(0);
 }
 
@@ -380,9 +393,9 @@ await Bun.write("native/tokens.ts", ts);
 await Bun.write("native/theme.css", themeCss);
 
 console.log(
-  `native/tokens.json e tokens.ts: ${palette.size} cores cruas, ${
+  `native/tokens.json and tokens.ts: ${palette.size} raw colors, ${
     Object.keys(scales).length
-  } escalas, 2 temas.`,
+  } scales, 2 themes.`,
 );
 
 export {};

@@ -1,10 +1,10 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # CardContent
 
-O corpo do cartão.
+The body of the card.
 
-Tem respiro próprio nas laterais, então não precisa de outro `padding` por
-fora. Vários seguidos empilham sem grudar.
+It has its own side spacing, so it needs no extra `padding` around it. Several
+in a row stack without sticking together.

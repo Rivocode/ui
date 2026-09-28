@@ -53,7 +53,7 @@ function onPhone<T>(run: () => T): T {
   }
 }
 
-test("cada regiao sai no landmark certo, uma vez cada", () => {
+test("each region renders in the right landmark, once each", () => {
   shell();
   expect(screen.getAllByRole("banner")).toHaveLength(1);
   expect(screen.getAllByRole("navigation")).toHaveLength(1);
@@ -66,7 +66,7 @@ test("cada regiao sai no landmark certo, uma vez cada", () => {
   expect(screen.getByRole("main").textContent).toContain("Notas fiscais");
 });
 
-test("a barra lateral da casa nao vira um segundo complementary", () => {
+test("the house sidebar does not become a second complementary", () => {
   const { container } = shell({ aside: undefined });
   expect(screen.queryAllByRole("complementary")).toHaveLength(0);
   const sidebar = container.querySelector("aside")!;
@@ -74,7 +74,7 @@ test("a barra lateral da casa nao vira um segundo complementary", () => {
   expect(sidebar.querySelector("nav")).not.toBeNull();
 });
 
-test("o link de pular e o primeiro foco da pagina e leva o foco ao main", () => {
+test("the skip link is the first focus on the page and takes focus to main", () => {
   const { container } = shell();
   const skip = screen.getByRole("link", { name: "Pular para o conteúdo" });
   const focusable = container.querySelectorAll("a[href], button");
@@ -88,14 +88,14 @@ test("o link de pular e o primeiro foco da pagina e leva o foco ao main", () => 
   expect(document.activeElement).toBe(main);
 });
 
-test("o link de pular so aparece com foco", () => {
+test("the skip link only appears on focus", () => {
   shell();
   const tokens = screen.getByRole("link", { name: "Pular para o conteúdo" }).className.split(" ");
   expect(tokens).toContain("sr-only");
   expect(tokens).toContain("focus:not-sr-only");
 });
 
-test("mainId fixa o alvo do link", () => {
+test("mainId sets the link target", () => {
   shell({ mainId: "conteudo" });
   expect(screen.getByRole("main").id).toBe("conteudo");
   expect(screen.getByRole("link", { name: "Pular para o conteúdo" }).getAttribute("href")).toBe(
@@ -103,7 +103,7 @@ test("mainId fixa o alvo do link", () => {
   );
 });
 
-test("o cabecalho gruda no topo e traz o botao da barra quando ha barra", () => {
+test("the header sticks to the top and brings the sidebar button when there is a sidebar", () => {
   shell();
   const banner = screen.getByRole("banner");
   const tokens = banner.className.split(" ");
@@ -113,14 +113,14 @@ test("o cabecalho gruda no topo e traz o botao da barra quando ha barra", () => 
   expect(banner.querySelector("button[aria-expanded]")).not.toBeNull();
 });
 
-test("sem barra lateral, sem navegacao e sem botao de abrir", () => {
+test("without a sidebar, no navigation and no open button", () => {
   shell({ sidebar: undefined });
   expect(screen.queryByRole("navigation")).toBeNull();
   expect(screen.queryByRole("button", { name: /menu/ })).toBeNull();
   expect(screen.getByRole("banner").textContent).toContain("RivoCode");
 });
 
-test("sem header, sem sidebar, sem aside e sem footer, sobra so o main", () => {
+test("without header, sidebar, aside and footer, only main is left", () => {
   shell({ header: undefined, sidebar: undefined, aside: undefined, footer: undefined });
   expect(screen.queryByRole("banner")).toBeNull();
   expect(screen.queryByRole("complementary")).toBeNull();
@@ -128,7 +128,7 @@ test("sem header, sem sidebar, sem aside e sem footer, sobra so o main", () => {
   expect(screen.getByRole("main")).toBeDefined();
 });
 
-test("container poe o conteudo num Container da casa, e sem ele o conteudo encosta", () => {
+test("container puts the content in a house Container, and without it the content touches the edges", () => {
   const { unmount } = shell({ container: true });
   const inner = screen.getByRole("main").firstElementChild!;
   expect(inner.className.split(" ")).toContain("max-w-6xl");
@@ -138,12 +138,12 @@ test("container poe o conteudo num Container da casa, e sem ele o conteudo encos
   expect(screen.getByRole("main").firstElementChild!.className.split(" ")).toContain("max-w-3xl");
 });
 
-test("sem container, o filho e filho direto do main", () => {
+test("without container, the child is a direct child of main", () => {
   shell();
   expect(screen.getByRole("main").firstElementChild!.tagName).toBe("H1");
 });
 
-test("contained troca a janela pela caixa do pai, e a altura de quem chama vence", () => {
+test("contained swaps the window for the parent box, and the caller's height wins", () => {
   const { container, unmount } = shell({ contained: true });
   const tokens = container.querySelector("[data-rc-sidebar]")!.className.split(" ");
   expect(tokens).toContain("h-full");
@@ -158,21 +158,21 @@ test("contained troca a janela pela caixa do pai, e a altura de quem chama vence
   expect(sized).not.toContain("h-full");
 });
 
-test("sem contained, a casca ocupa a janela", () => {
+test("without contained, the shell fills the window", () => {
   const { container } = shell();
   const tokens = container.querySelector("[data-rc-sidebar]")!.className.split(" ");
   expect(tokens).toContain("min-h-dvh");
   expect(tokens).not.toContain("overflow-hidden");
 });
 
-test("labels troca os textos", () => {
+test("labels replaces the texts", () => {
   shell({ labels: { skipLink: "Ir ao conteúdo", navigation: "Menu", aside: "Ajuda" } });
   expect(screen.getByRole("link", { name: "Ir ao conteúdo" })).toBeDefined();
   expect(screen.getByRole("navigation", { name: "Menu" })).toBeDefined();
   expect(screen.getByRole("complementary", { name: "Ajuda" })).toBeDefined();
 });
 
-test("no celular a barra vira a folha do Sidebar, fechada, e o botao do cabecalho a abre", () => {
+test("on mobile the sidebar becomes the Sidebar sheet, closed, and the header button opens it", () => {
   onPhone(() => {
     shell();
     expect(screen.queryByRole("navigation")).toBeNull();
@@ -183,7 +183,7 @@ test("no celular a barra vira a folha do Sidebar, fechada, e o botao do cabecalh
   });
 });
 
-test("controlado: open e onOpenChange passam ao SidebarProvider", () => {
+test("controlled: open and onOpenChange pass through to SidebarProvider", () => {
   let asked: boolean | undefined;
   const { container } = shell({ open: false, onOpenChange: (next) => (asked = next) });
   expect(container.querySelector("[data-rc-sidebar]")!.getAttribute("data-rc-sidebar")).toBe(

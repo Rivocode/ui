@@ -45,13 +45,12 @@ import { Grid2x2, List, Plus, Users } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * Clientes
+ * Customers
  *
- * A tela que faltava na demonstracao. Ela existe para carregar as pecas que um
- * painel e uma listagem nunca alcancam: uma arvore para os segmentos, um
- * combobox para busca com texto livre, um intervalo de datas, um menu de
- * contexto na linha, um popover com o limite de credito, e um estado vazio que
- * diz o que fazer em seguida.
+ * The screen the demo was missing. It exists to carry the pieces a dashboard
+ * and a listing never reach: a tree for the segments, a combobox for free-text
+ * search, a date range, a row context menu, a popover with the credit limit,
+ * and an empty state that says what to do next.
  * ------------------------------------------------------------------------- */
 
 type Customer = {
@@ -149,7 +148,7 @@ const SEGMENTS: TreeNode[] = [
 
 const SEARCHABLE = CUSTOMERS.map((customer) => ({ value: customer.id, label: customer.name }))
 
-/** Na árvore quem vale é a folha, então o estado é a lista de folhas. */
+/** In the tree the leaf is what counts, so the state is the list of leaves. */
 const LEAVES = ['publico', 'industria', 'saude', 'varejo']
 
 const initials = (name: string) =>
@@ -254,16 +253,17 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
   const [picked, setPicked] = useState<string | null>(null)
   const [range, setRange] = useState<IsoDateRange | null>(null)
   const [view, setView] = useState<'list' | 'grid'>('list')
-  // Controlada e já aberta: uma árvore que abre fechada esconde justamente o
-  // que a coluna existe para mostrar.
+  // Controlled and already open: a tree that starts closed hides exactly what
+  // the column exists to show.
   const [open, setOpen] = useState<string[]>(['todos', 'servicos'])
 
   const found = useMemo(
     () =>
       CUSTOMERS.filter((customer) => {
         if (picked && customer.id !== picked) return false
-        // Marcar "Serviços" marca Saúde e Varejo: a árvore já resolve isso, e
-        // aqui só sobra perguntar se a folha do cliente está na lista.
+        // Checking "Serviços" checks Saúde and Varejo: the tree already handles
+        // that, and all that is left here is asking whether the customer's
+        // leaf is in the list.
         return segment.includes(customer.segment)
       }),
     [segment, picked],
@@ -276,10 +276,10 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
   }
 
   return (
-    // `[&>*]:min-w-0` nao e enfeite: numa trilha automatica, a largura da
-    // coluna vira o maior min-content entre os itens, e a listagem larga
-    // arrasta o cartao de segmentos junto para fora da tela. Deixando o item
-    // encolher, a tabela volta a rolar dentro da propria caixa.
+    // `[&>*]:min-w-0` is not decoration: in an auto track, the column width
+    // becomes the largest min-content among the items, and the wide listing
+    // drags the segments card off screen along with it. Letting the item
+    // shrink, the table goes back to scrolling inside its own box.
     <div className="grid gap-4 lg:grid-cols-[16rem_1fr] [&>*]:min-w-0">
       <Card className="max-lg:order-2">
         <CardHeader>
@@ -366,8 +366,8 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
         ) : view === 'list' ? (
           <Card>
             <CardContent className="px-2 py-2">
-              {/* Botão direito na linha abre as ações: é onde a mão já está
-                  quando se navega uma lista. */}
+              {/* A right click on the row opens the actions: that is where the
+                  hand already is when navigating a list. */}
               {found.map((customer) => (
                 <CustomerRow
                   key={customer.id}

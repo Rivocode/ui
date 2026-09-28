@@ -11,9 +11,10 @@ import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 const dark = tokens.themes["rivocode-dark"];
 
 /**
- * As marcas do desenho sao os unicos nos com cor inline na arvore: a cor vem
- * do token como VALOR, e nao como classe, entao procurar por backgroundColor
- * acha exatamente as barras ou os segmentos - e de quebra confere a cor.
+ * The drawing's marks are the only nodes with an inline color in the tree: the
+ * color comes from the token as a VALUE, not as a class, so looking for
+ * backgroundColor finds exactly the bars or the segments - and checks the
+ * color as a bonus.
  */
 function marks(screen: ReactTestRenderer): ReactTestInstance[] {
   return screen.root.findAll(
@@ -24,7 +25,7 @@ function marks(screen: ReactTestRenderer): ReactTestInstance[] {
   );
 }
 
-/** O contorno nativo do web: no telefone a largura so existe depois do layout. */
+/** The native workaround for the web: on the phone the width only exists after layout. */
 function layout(screen: ReactTestRenderer, width: number) {
   const [box] = screen.root.findAll(
     (node) => typeof node.type === "string" && typeof node.props?.onLayout === "function",
@@ -33,34 +34,34 @@ function layout(screen: ReactTestRenderer, width: number) {
 }
 
 describe("Sparkline", () => {
-  test("a barra desenha uma marca por ponto, sem precisar medir", () => {
+  test("the bar draws one mark per point, without needing to measure", () => {
     const screen = render(<Sparkline variant="bar" data={[3, 1, 4, 1, 5]} />);
     expect(marks(screen)).toHaveLength(5);
   });
 
-  test("a linha so desenha depois de medir, e sai um segmento a menos que os pontos", () => {
+  test("the line only draws after measuring, with one segment fewer than the points", () => {
     const screen = render(<Sparkline data={[3, 1, 4, 1, 5]} />);
-    // Antes do onLayout nao ha largura, e meio desenho pisca torto na tela.
+    // Before onLayout there is no width, and half a drawing flickers crooked on screen.
     expect(marks(screen)).toHaveLength(0);
     layout(screen, 96);
     expect(marks(screen)).toHaveLength(4);
   });
 
-  test("some do leitor de tela, porque o numero ao lado dela ja foi lido", () => {
+  test("it is hidden from the screen reader, because the number beside it was already read", () => {
     const silent = render(<Sparkline variant="bar" data={[1, 2, 3]} />);
     const [box] = silent.root.findAll(
       (node) => typeof node.type === "string" && node.props?.accessibilityElementsHidden === true,
     );
     expect(box.props.importantForAccessibility).toBe("no-hide-descendants");
 
-    // Com rotulo ela vira a informacao, e precisa ser lida como imagem.
+    // With a label it becomes the information, and has to be read as an image.
     const spoken = render(<Sparkline variant="bar" data={[1, 2, 3]} label="Vendas subindo" />);
     const [labelled] = byLabel(spoken, "Vendas subindo");
     expect(labelled.props.accessibilityRole).toBe("image");
     expect(labelled.props.accessibilityElementsHidden).toBeUndefined();
   });
 
-  test("com rotulo e um elemento so para o leitor, e sem dado nao anuncia desenho vazio", () => {
+  test("with a label it is a single element for the screen reader, and without data it does not announce an empty drawing", () => {
     for (const variant of ["line", "bar"] as const) {
       const spoken = render(<Sparkline variant={variant} data={[1, 2, 3]} label="Vendas" />);
       expect(byLabel(spoken, "Vendas")[0]!.props.accessible).toBe(true);
@@ -76,7 +77,7 @@ describe("Sparkline", () => {
     }
   });
 
-  test("trend auto pinta de sucesso na subida e de perigo na queda", () => {
+  test("trend auto paints success on the rise and danger on the fall", () => {
     const rising = render(<Sparkline variant="bar" trend="auto" data={[1, 9]} />);
     expect(marks(rising)[0].props.style.backgroundColor).toBe(dark["success-text"]);
 
@@ -84,7 +85,7 @@ describe("Sparkline", () => {
     expect(marks(falling)[0].props.style.backgroundColor).toBe(dark["danger-text"]);
   });
 
-  test("sem trend ela usa o acento, e o papel de token requested vence", () => {
+  test("without trend it uses the accent, and a requested token role wins", () => {
     const byDefault = render(<Sparkline variant="bar" data={[1, 9]} />);
     expect(byDefault.root && marks(byDefault)[0].props.style.backgroundColor).toBe(
       dark["accent-text"],
@@ -96,12 +97,12 @@ describe("Sparkline", () => {
     expect(marks(requested)[0].props.style.backgroundColor).toBe(dark["chart-3"]);
   });
 
-  test("serie vazia ou flat nao quebra nem divide por zero", () => {
+  test("an empty or flat series neither breaks nor divides by zero", () => {
     expect(marks(render(<Sparkline variant="bar" data={[]} />))).toHaveLength(0);
 
     const singlePoint = render(<Sparkline data={[7]} />);
     layout(singlePoint, 96);
-    // Um ponto so nao e tendencia: nao ha segmento para desenhar.
+    // A single point is not a trend: there is no segment to draw.
     expect(marks(singlePoint)).toHaveLength(0);
 
     const flat = render(<Sparkline data={[4, 4, 4]} />);
@@ -110,13 +111,13 @@ describe("Sparkline", () => {
     expect(tops.every((value: number) => Number.isFinite(value))).toBe(true);
   });
 
-  test("os segmentos se encontram: o fim de um e o comeco do proximo", () => {
+  test("the segments meet: the end of one is the start of the next", () => {
     const screen = render(<Sparkline data={[3, 1, 4, 1, 5]} height={32} />);
     layout(screen, 96);
 
-    // Girar View e desenhar a mao: se o pivo ou o angulo estiver errado, a
-    // polilinha abre buraco entre os pontos e ninguem ve isso num teste de
-    // contagem. Aqui a ponta de cada segmento tem de cair sobre a proxima.
+    // Rotating a View is drawing by hand: if the pivot or the angle is wrong,
+    // the polyline opens gaps between the points and nobody sees it in a count
+    // test. Here the tip of each segment has to land on the next one.
     const parts = marks(screen).map((node) => {
       const style = node.props.style as {
         left: number;
@@ -135,9 +136,9 @@ describe("Sparkline", () => {
     });
 
     expect(parts).toHaveLength(4);
-    // A conta acima so vale se o pivo do giro for a borda esquerda no meio da
-    // altura; com o pivo no centro cada segmento anda meio comprimento e a
-    // polilinha desanda sem que a aritmetica do teste perceba.
+    // The math above only holds if the rotation pivot is the left edge at half
+    // the height; with the pivot at the center each segment shifts half a
+    // length and the polyline falls apart without the test arithmetic noticing.
     marks(screen).forEach((node) => {
       expect(node.props.style.transformOrigin).toEqual([0, 1, 0]);
     });
@@ -146,8 +147,8 @@ describe("Sparkline", () => {
       expect(part.start.y).toBeCloseTo(parts[index]!.end.y, 6);
     });
 
-    // E o eixo aponta para onde deve: subir de valor sobe na tela, ou seja,
-    // cai no `top`, que no nativo cresce para baixo.
+    // And the axis points where it should: a rising value rises on screen,
+    // that is, it lowers `top`, which on native grows downward.
     const rising = render(<Sparkline data={[1, 9]} height={32} />);
     layout(rising, 96);
     const [only] = marks(rising);
@@ -155,7 +156,7 @@ describe("Sparkline", () => {
     expect(parseFloat(only!.props.style.transform[0].rotate)).toBeLessThan(0);
   });
 
-  test("preenche o slot `chart` do Stat sem roubar a leitura do numero", () => {
+  test("fills the Stat's `chart` slot without stealing the reading of the number", () => {
     const screen = render(
       <Stat
         label="Faturamento"
@@ -165,11 +166,11 @@ describe("Sparkline", () => {
       />,
     );
 
-    // O motivo de a peca existir: o slot estava vazio esperando por ela.
+    // The reason the piece exists: the slot was empty, waiting for it.
     expect(marks(screen)).toHaveLength(6);
     expect(textOf(screen)).toContain("R$ 82,4 mil");
 
-    // E o desenho continua mudo: quem le a tela ouve o numero, nao a barra.
+    // And the drawing stays silent: whoever reads the screen hears the number, not the bar.
     const hidden = screen.root.findAll(
       (node) => typeof node.type === "string" && node.props?.accessibilityElementsHidden === true,
     );
@@ -184,11 +185,11 @@ describe("Tracker", () => {
     { tone: "warning" as const, label: "12/08 · 1 falha" },
   ];
 
-  test("a dica por quadrado nao porta: nao ha portal, nem Pressable por periodo", () => {
+  test("the per-square tooltip does not port: there is no portal, nor a Pressable per period", () => {
     const screen = render(<Tracker data={DATA} label="Emissões dos últimos 3 dias" />);
 
-    // Nenhum alvo de toque por quadrado - 4px de alvo seria promessa que o
-    // dedo nao cumpre. O alvo e a faixa inteira, e ela e ajustavel.
+    // No touch target per square - a 4px target would be a promise the finger
+    // cannot keep. The target is the whole strip, and it is adjustable.
     expect(screen.root.findAll((node) => node.props?.accessibilityRole === "button").length).toBe(
       0,
     );
@@ -199,12 +200,12 @@ describe("Tracker", () => {
     expect(byClass(screen, /bg-warning/).length).toBe(1);
   });
 
-  test("a linha de baixo comeca no periodo mais recente, e o espaco ja esta reservado", () => {
+  test("the bottom line starts at the most recent period, and the space is already reserved", () => {
     const screen = render(<Tracker data={DATA} label="Emissões" />);
     expect(textOf(screen)).toContain("12/08 · 1 falha");
   });
 
-  test("a faixa e uma parada so, e o leitor de tela anda periodo a periodo", () => {
+  test("the strip is a single stop, and the screen reader moves period by period", () => {
     const screen = render(<Tracker data={DATA} label="Emissões" />);
 
     const [faixa] = byRole(screen, "adjustable");
@@ -218,19 +219,19 @@ describe("Tracker", () => {
     );
     expect(textOf(screen)).toContain("11/08 · 3 falhas");
 
-    // A ponta segura: nao ha periodo antes do primeiro.
+    // The end holds: there is no period before the first.
     act(() => faixa.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
     act(() => faixa.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
     expect(byRole(screen, "adjustable")[0].props.accessibilityValue.text).toBe(
       "1 de 3: 10/08 · sem falha",
     );
 
-    // E o texto de baixo nao e lido duas vezes: a faixa ja o anuncia.
+    // And the bottom text is not read twice: the strip already announces it.
     const [linha] = byClass(screen, /text-xs text-fg-muted/);
     expect(linha.props.accessibilityElementsHidden).toBe(true);
   });
 
-  test("a marca do periodo lido so aparece depois de medir a faixa", () => {
+  test("the mark of the read period only appears after the strip is measured", () => {
     const screen = render(<Tracker data={DATA} label="Emissões" />);
     expect(byClass(screen, /w-0\.5/).length).toBe(0);
 
@@ -238,11 +239,11 @@ describe("Tracker", () => {
     act(() => faixa.props.onLayout({ nativeEvent: { layout: { width: 300, height: 44 } } }));
 
     const [marca] = byClass(screen, /w-0\.5/);
-    // Terceiro de tres numa faixa de 300: meio do ultimo terco, menos o fio.
+    // Third of three in a 300 strip: middle of the last third, minus the line.
     expect(marca.props.style.left).toBe(2 * 100 + 50 - 1);
   });
 
-  test("as celulas e a agulha nao pegam o toque, para o locationX ser da faixa", () => {
+  test("the cells and the needle do not take the touch, so locationX belongs to the strip", () => {
     const screen = render(<Tracker data={DATA} label="Emissões" />);
     const [faixa] = byRole(screen, "adjustable");
     act(() => faixa!.props.onLayout({ nativeEvent: { layout: { width: 300, height: 44 } } }));
@@ -253,7 +254,7 @@ describe("Tracker", () => {
     for (const node of inside) expect(node.props.pointerEvents).toBe("none");
   });
 
-  test("dado que chega depois da montagem abre no periodo mais recente", () => {
+  test("data that arrives after mounting opens at the most recent period", () => {
     const screen = render(<Tracker data={[]} label="Emissões" />);
     act(() =>
       screen.update(
@@ -267,7 +268,7 @@ describe("Tracker", () => {
     );
   });
 
-  test("sem dado nao desenha faixa nenhuma", () => {
+  test("without data it draws no strip at all", () => {
     expect(textOf(render(<Tracker data={[]} label="Emissões" />)).trim()).toBe("");
   });
 });

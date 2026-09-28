@@ -1,53 +1,53 @@
 ---
-category: Tipografia
+category: Typography
 ---
 
 # Text
 
-Parágrafo ou trecho de texto, vestido com os papéis da casa: `size` na escala
-de `xs` a `lg`, `tone` entre os papéis de texto do tema, e `weight`.
+A paragraph or a run of text, dressed in the house roles: `size` on the scale
+from `xs` to `lg`, `tone` among the theme's text roles, and `weight`.
 
 ```tsx
 <Text size="sm" tone="muted">Atualizado há 2 minutos.</Text>
 ```
 
-Sai num `<p>`. O `render` troca o elemento sem mudar o desenho:
-`render={<span />}` para o trecho dentro de uma frase, `render={<div />}` para
-o bloco que contém outro bloco, que um `<p>` não pode conter.
+It comes out in a `<p>`. `render` swaps the element without changing the
+design: `render={<span />}` for a run inside a sentence, `render={<div />}` for
+a block that contains another block, which a `<p>` cannot contain.
 
-**Sem `size`, sem `tone` e sem `weight`, o texto herda de quem o cerca.** É o
-que faz o trecho funcionar: um valor em negrito dentro de uma frase `sm` fica
-`sm`, e fica da cor da frase se não pedir outra. O custo é que o parágrafo
-solto também herda, e o corpo da página é o do seu app; passe `size` no
-parágrafo de fora.
+**With no `size`, no `tone` and no `weight`, the text inherits from whatever
+surrounds it.** That is what makes the inline run work: a bold value inside an
+`sm` sentence stays `sm`, and stays the sentence's color unless it asks for
+another. The cost is that a loose paragraph also inherits, and the page body is
+your app's; pass `size` on the outer paragraph.
 
-Os tons são os papéis de texto do tema, e só eles: `neutral` é o texto
-corrido, `muted` o secundário, `subtle` a legenda, `accent` o destaque da
-marca, e `success`, `warning`, `danger` e `info` são os `-text` de cada
-estado, os que se leem sobre o fundo da página. Os de preenchimento
-(`bg-danger` e parentes) não entram, porque não têm contraste como texto.
+The tones are the theme's text roles, and only those: `neutral` is running
+text, `muted` the secondary, `subtle` the caption, `accent` the brand
+highlight, and `success`, `warning`, `danger` and `info` are the `-text` of
+each state, the ones that read over the page background. The fill ones
+(`bg-danger` and relatives) are not included, because they have no contrast as
+text.
 
-`truncate` corta em uma linha, e `lineClamp` corta depois de 1 a 6 linhas;
-quando os dois vêm, `lineClamp` vence. O texto cortado continua inteiro no
-DOM: o leitor de tela ouve tudo, e quem vê precisa de um `title` ou de um
-`Tooltip` para ler o resto.
+`truncate` cuts to one line, and `lineClamp` cuts after 1 to 6 lines; when both
+are given, `lineClamp` wins. The cut text stays whole in the DOM: the screen
+reader hears everything, and whoever sees it needs a `title` or a `Tooltip` to
+read the rest.
 
-## Quando não usar
+## When not to use
 
-- **Nome de arquivo, comando ou chave de JSON no meio da frase:** `Code`. Ele
-  muda a letra para a de largura fixa e marca o trecho como código; um `Text`
-  com `font-mono` parece igual e não diz o que é.
-- **Uma tecla ou um atalho:** `Kbd`. Ele desenha a tecla e diz o nome dela a
-  quem ouve a tela; `Text` em negrito escrito "Ctrl+K" não faz nenhuma das
-  duas coisas.
-- **Título de seção:** `Heading`. Texto grande não entra no esboço da página,
-  e quem navega por título não o encontra.
-- **Rótulo de campo:** `FieldLabel`, que se liga ao controle.
+- **A file name, a command or a JSON key in the middle of a sentence:** `Code`.
+  It changes the font to fixed-width and marks the run as code; a `Text` with
+  `font-mono` looks the same and does not say what it is.
+- **A key or a shortcut:** `Kbd`. It draws the key and says its name to whoever
+  listens to the screen; a bold `Text` reading "Ctrl+K" does neither.
+- **A section heading:** `Heading`. Large text does not enter the page outline,
+  and whoever navigates by headings does not find it.
+- **A field label:** `FieldLabel`, which ties itself to the control.
 
-## No React Native
+## In React Native
 
-Traduz, e o `Text` nativo é o mesmo primitivo que as outras peças do pacote já vestem, agora com `size`, `tone`, `weight`, `truncate` e `lineClamp`, os mesmos nomes e os mesmos valores do web. `truncate` e `lineClamp` viram `numberOfLines`.
+Translates, and the native `Text` is the same primitive the package's other pieces already wear, now with `size`, `tone`, `weight`, `truncate` and `lineClamp`, the same names and the same values as the web. `truncate` and `lineClamp` become `numberOfLines`.
 
-**Sem as props novas, ele herda, como no web.** Um `Text` dentro de outro `Text` leva o corpo e a cor do de fora, e é isso que faz o trecho em negrito no meio da frase funcionar. A diferença está no topo: o React Native não herda cor de `View`, então o parágrafo de fora sem `tone` sai na cor padrão do aparelho, e não na do tema. Passe `tone` no `Text` de fora.
+**Without the new props, it inherits, as on the web.** A `Text` inside another `Text` takes the outer one's size and color, and that is what makes a bold snippet in the middle of a sentence work. The difference is at the top: React Native does not inherit color from `View`, so an outer paragraph without `tone` comes out in the device's default color, not the theme's. Pass `tone` on the outer `Text`.
 
-Não há `render`: o elemento do celular é sempre `Text`, e o bloco é uma `View` em volta.
+There is no `render`: the phone's element is always `Text`, and a block is a `View` around it.

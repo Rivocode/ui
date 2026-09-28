@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@rivocode/ui'
 import { AILabel } from '@rivocode/ui/ai'
 
-/** Selo */
+/** Badge */
 export function Seal() {
   return (
     <div className="flex items-center gap-3">
@@ -12,7 +12,7 @@ export function Seal() {
   )
 }
 
-/** Com explicação */
+/** With explanation */
 export function WithExplanation() {
   return (
     <Card className="w-full max-w-md">

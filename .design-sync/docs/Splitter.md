@@ -1,88 +1,89 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Splitter
 
-Duas áreas com uma divisória que se arrasta: lista à esquerda e detalhe à
-direita, árvore e conteúdo, tabela e inspetor.
+Two areas with a divider that can be dragged: list on the left and detail on
+the right, tree and content, table and inspector.
 
-A divisória é um `separator` de verdade, com valor, mínimo e máximo, e anda
-pelas setas: `Home` e `End` vão aos extremos. Arrastar com o mouse é metade da
-peça: sem teclado, quem não usa ponteiro fica preso na proporção que o
-desenvolvedor escolheu, e essa proporção costuma ser a que serve para a tela de
-quem escreveu.
+The divider is a real `separator`, with value, minimum and maximum, and it moves
+with the arrows: `Home` and `End` go to the extremes. Dragging with the mouse is
+half the piece: without the keyboard, whoever does not use a pointer is stuck
+with the proportion the developer chose, and that proportion is usually the one
+that suits the screen of whoever wrote it.
 
-O alvo da divisória tem 25px enquanto a linha desenha 1. O número vem da WCAG
-2.5.8 (Target Size Minimum, AA), que pede 24: um `::after` transparente estica
-12px para cada lado, e o desenho não engorda um pixel. Ele já esticou 6px, o
-alvo media 13px, e era a única mira abaixo de 24 do catálogo inteiro. Uma
-divisória fácil de pegar é a diferença entre a peça funcionar e a pessoa
-desistir dela.
+The divider's target is 25px while the line draws 1. The number comes from WCAG
+2.5.8 (Target Size Minimum, AA), which asks for 24: a transparent `::after`
+stretches 12px to each side, and the drawing does not gain a pixel. It used to
+stretch 6px, the target measured 13px, and it was the only aim below 24 in the
+whole catalog. A divider that is easy to grab is the difference between the
+piece working and the person giving up on it.
 
-A divisória diz a medida com unidade. `aria-valuenow` sozinho faz o leitor de
-tela anunciar "50" pelado, que não é medida de coisa nenhuma; o `aria-valuetext`
-diz "50%". E ela aponta para o lado que mede, por `aria-controls`: o valor
-descreve sempre o primeiro lado, e sem a referência não há como saber qual dos
-dois é.
+The divider states the size with a unit. `aria-valuenow` alone makes the screen
+reader announce a bare "50", which is not a measure of anything;
+`aria-valuetext` says "50%". And it points to the side it measures, through
+`aria-controls`: the value always describes the first side, and without the
+reference there is no way to know which of the two it is.
 
-O nome mora no `separator`, e não na moldura. `label` nomeia o nó que tem o
-papel, porque é ele que o leitor de tela expõe; um `aria-label` escrito por quem
-chama cai no mesmo lugar e vence o `label`. Antes ele parava na `div` externa,
-que o Chrome guarda como um nó `generic` nomeado e nenhum leitor anuncia.
+The name lives on the `separator`, not on the frame. `label` names the node that
+has the role, because that is what the screen reader exposes; an `aria-label`
+written by the caller lands in the same place and beats `label`. Before, it
+stopped at the outer `div`, which Chrome keeps as a named `generic` node and no
+reader announces.
 
-No celular os dois lados empilham e a divisória some. Duas colunas de 190px não
-são duas colunas: são duas listas ilegíveis, e arrastar uma borda de 4px com o
-dedo não é gesto que exista.
+On the phone both sides stack and the divider disappears. Two 190px columns are
+not two columns: they are two unreadable lists, and dragging a 4px edge with a
+finger is not a gesture that exists.
 
-## A 200% de zoom a divisória some, e isso é a resposta
+## At 200% zoom the divider disappears, and that is the answer
 
-Zoom de 200% numa tela de 1280 deixa a viewport efetiva em 640px, que é o que a
-peça já trata como estreito. Medido no Chrome a 640px e a 400px: a moldura vira
-`flex-direction: column` e a alça sai em `display: none`.
+200% zoom on a 1280 screen leaves the effective viewport at 640px, which is what
+the piece already treats as narrow. Measured in Chrome at 640px and at 400px:
+the frame becomes `flex-direction: column` and the handle goes to
+`display: none`.
 
-É desenho, e não defeito. `display: none` tira a alça do ciclo de tabulação
-junto com o desenho, então não sobra parada órfã nem alvo invisível. E o
-controle perdeu o trabalho no mesmo movimento em que sumiu: empilhados, os dois
-lados aparecem inteiros, um embaixo do outro, e não há proporção para negociar
-entre eles. A WCAG 1.4.10 cobra o conteúdo e a função alcançáveis a 320px, e o
-conteúdo fica.
+It is design, not a defect. `display: none` removes the handle from the tab
+cycle along with the drawing, so there is no orphan stop and no invisible
+target left. And the control lost its job in the same move in which it
+disappeared: stacked, both sides show whole, one below the other, and there is
+no proportion to negotiate between them. WCAG 1.4.10 requires content and
+function to be reachable at 320px, and the content stays.
 
-Também não há aviso de que o controle sumiu, e isso é escolha. Anunciar o
-desaparecimento de um controle que deixou de ter função é ruído numa região
-viva, e o tamanho fica congelado no valor que estava: nada se perde ao voltar
-para a largura de mesa.
+There is also no notice that the control disappeared, and that is a choice.
+Announcing the disappearance of a control that no longer has a function is
+noise in a live region, and the size stays frozen at the value it had: nothing
+is lost on going back to desktop width.
 
-Na orientação `vertical` a alça não some em largura nenhuma, porque empilhado já
-é o desenho dela.
+In the `vertical` orientation the handle does not disappear at any width,
+because stacked is already its design.
 
-## Sentido da escrita
+## Writing direction
 
-Em `dir="rtl"` a divisória vira junto. O `start` passa a ser o lado direito, o
-arraste mede a partir da borda onde a leitura começa e as setas andam para o
-lado que a pessoa vê: `→` empurra a divisória para a direita, `←` para a
-esquerda, mesmo que o número de `size` ande no sentido contrário. `Home` e
-`End` continuam lógicos: o mínimo e o máximo do primeiro lado, e não a esquerda
-e a direita.
+In `dir="rtl"` the divider flips along. `start` becomes the right side, dragging
+measures from the edge where reading begins and the arrows move toward the side
+the person sees: `→` pushes the divider to the right, `←` to the left, even if
+the `size` number moves in the opposite direction. `Home` and `End` stay
+logical: the minimum and maximum of the first side, not left and right.
 
-A direção vem do `RivoProvider`, e não de um `dir` escrito à mão num elemento
-acima da peça. É o mesmo `dir` que o resto do catálogo lê, e sem ele a
-divisória espelharia o desenho sem espelhar a conta: arrastar o ponteiro 120px
-para a direita a moveria 118px para a esquerda.
+The direction comes from `RivoProvider`, not from a `dir` written by hand on an
+element above the piece. It is the same `dir` the rest of the catalog reads,
+and without it the divider would mirror the drawing without mirroring the math:
+dragging the pointer 120px to the right would move it 118px to the left.
 
-## Quando não usar
+## When not to use
 
-O `Splitter` é montado por cima do `ResizablePanelGroup`, e é a forma curta
-dele para o caso mais comum: **duas** áreas, a proporção como um número só, o
-empilhar do celular já decidido. Quando a tela pede mais que isso, use a
-família direto: três ou mais áreas, grupo dentro de grupo, painel que recolhe
-(`collapsible`, com `Enter` na divisória), limite de máximo diferente para cada
-lado ou layout guardado entre sessões (`autoSaveId`).
+`Splitter` is built on top of `ResizablePanelGroup`, and it is its short form
+for the most common case: **two** areas, the proportion as a single number,
+the phone stacking already decided. When the screen asks for more than that,
+use the family directly: three or more areas, a group inside a group, a panel
+that collapses (`collapsible`, with `Enter` on the divider), a different
+maximum for each side or a layout saved between sessions (`autoSaveId`).
 
-Para esconder e mostrar uma área inteira, use `Collapsible` ou a `Sidebar`: o
-splitter existe para quando as duas áreas ficam visíveis ao mesmo tempo e a
-proporção entre elas é a decisão.
+To hide and show a whole area, use `Collapsible` or `Sidebar`: the splitter
+exists for when both areas stay visible at the same time and the proportion
+between them is the decision.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão - duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Does not port, by decision - two areas side by side do not fit on a narrow screen; on the phone the list and the detail are two router screens. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.

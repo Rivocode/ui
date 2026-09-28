@@ -13,13 +13,14 @@ import { EmptyState } from "../src/components/empty-state";
 import { Tree, type TreeNode } from "../src/components/tree";
 
 /*
- * As cinco divergencias que a auditoria mediu entre as pecas de DADO e as de
- * ESTRUTURA. Nenhuma quebrava nada sozinha: o custo era quem escrevia a tela
- * descobrir, peca a peca, que o mesmo dado tinha nome diferente em cada uma -
- * e, no caso do vazio do grafico, que o estado que ele pediu nunca ia aparecer.
+ * The five divergences the audit measured between the DATA pieces and the
+ * STRUCTURE pieces. None broke anything alone: the cost was the screen author
+ * finding out, piece by piece, that the same data had a different name in each
+ * one - and, in the chart empty case, that the state they asked for would
+ * never appear.
  *
- * Os nomes divergentes responderam por alias durante a 0.6 e sairam na 0.7:
- * cada teste daqui guarda agora o unico nome que restou para cada dado.
+ * The divergent names answered through aliases during 0.6 and left in 0.7:
+ * each test here now guards the only name left for each piece of data.
  */
 
 const withTheme = (node: React.ReactNode) =>
@@ -36,7 +37,7 @@ const DEPARTMENTS: TreeNode[] = [
   },
 ];
 
-test("a arvore fala o vocabulario do catalogo: value e onValueChange", () => {
+test("the tree speaks the catalog vocabulary: value and onValueChange", () => {
   function Screen() {
     const [ids, setIds] = useState<string[]>([]);
     return (
@@ -58,10 +59,10 @@ test("a arvore fala o vocabulario do catalogo: value e onValueChange", () => {
   expect(screen.getByText("Escolhidos: contas-pagar")).toBeDefined();
 });
 
-test("sem ninguem controlando, a arvore guarda a propria escolha", () => {
-  // A escolha era obrigatoria: uma arvore que so precisava abrir e fechar
-  // exigia um useState de quem a montava, e o TreeSelect - que a embrulha - ja
-  // aceitava a mesma coisa opcional.
+test("with nobody controlling it, the tree keeps its own choice", () => {
+  // The choice was required: a tree that only needed to open and close
+  // demanded a useState from whoever mounted it, and TreeSelect - which wraps
+  // it - already accepted the same thing as optional.
   withTheme(
     <Tree items={DEPARTMENTS} defaultValue={["contas-pagar"]} multiple open={["financeiro"]} />,
   );
@@ -82,7 +83,7 @@ const INVOICES: Invoice[] = [
 
 const COLUMNS: Column<Invoice>[] = [{ key: "customer", header: "Cliente" }];
 
-test("a tabela fala o mesmo vocabulario da arvore", () => {
+test("the table speaks the same vocabulary as the tree", () => {
   let chosen: string[] = [];
 
   withTheme(
@@ -101,7 +102,7 @@ test("a tabela fala o mesmo vocabulario da arvore", () => {
   expect(chosen).toEqual(["2"]);
 });
 
-test("a selecao da tabela obedece o value, como a arvore obedece o dela", () => {
+test("the table selection obeys value, as the tree obeys its own", () => {
   withTheme(
     <DataTable
       data={INVOICES}
@@ -116,7 +117,7 @@ test("a selecao da tabela obedece o value, como a arvore obedece o dela", () => 
   expect(within(row).getByRole("checkbox").getAttribute("aria-checked")).toBe("true");
 });
 
-test("o vazio do grafico oferece a saida, como o da tabela", () => {
+test("the chart empty state offers the way out, like the table's", () => {
   withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
@@ -137,11 +138,11 @@ test("o vazio do grafico oferece a saida, como o da tabela", () => {
   expect(screen.getByRole("button", { name: "Emitir nota" })).toBeDefined();
 });
 
-test("o vazio do grafico conta os pontos do proprio grafico, sem a prop data", () => {
-  // O defeito antigo: a condicao era `empty && data && data.length === 0`, e
-  // quem passava o `empty` sem o `data` - que e opcional, e cuja lista ja esta
-  // escrita no `<LineChart data={...}>` uma linha abaixo - nunca via o estado
-  // vazio, sem erro nenhum. O grafico desenhava eixos sobre o nada.
+test("the chart empty state counts the chart's own points, without the data prop", () => {
+  // The old defect: the condition was `empty && data && data.length === 0`,
+  // and whoever passed `empty` without `data` - which is optional, and whose
+  // list is already written in `<LineChart data={...}>` one line below - never
+  // saw the empty state, with no error at all. The chart drew axes over nothing.
   withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
@@ -157,7 +158,7 @@ test("o vazio do grafico conta os pontos do proprio grafico, sem a prop data", (
   expect(screen.getByText("Sem notas no periodo")).toBeDefined();
 });
 
-test("com pontos, o grafico desenha em vez de mostrar o vazio", () => {
+test("with points, the chart draws instead of showing the empty state", () => {
   withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
@@ -173,9 +174,9 @@ test("com pontos, o grafico desenha em vez de mostrar o vazio", () => {
   expect(screen.queryByText("Sem notas no periodo")).toBeNull();
 });
 
-test("empty sem ponto nenhum para contar avisa em desenvolvimento", () => {
-  // Nao falha: derrubar a tela por um estado que talvez nunca ocorra seria
-  // pior que o silencio. Mas o silencio era o defeito, entao ela fala.
+test("empty with no point to count warns in development", () => {
+  // It does not fail: bringing the screen down over a state that may never
+  // occur would be worse than silence. But silence was the defect, so it speaks.
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   try {
@@ -185,8 +186,8 @@ test("empty sem ponto nenhum para contar avisa em desenvolvimento", () => {
         empty={{ title: "Sem notas", description: "Escolha outro intervalo." }}
         className="h-40"
       >
-        {/* Nem `data` aqui, nem no filho: e o caso em que a moldura nao tem
-            como contar. */}
+        {/* No `data` here, nor on the child: the case where the container has
+            no way to count. */}
         <svg />
       </ChartContainer>,
     );
@@ -200,7 +201,7 @@ test("empty sem ponto nenhum para contar avisa em desenvolvimento", () => {
   }
 });
 
-test("sem empty nao ha o que avisar", () => {
+test("without empty there is nothing to warn about", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   try {
@@ -210,7 +211,7 @@ test("sem empty nao ha o que avisar", () => {
       </ChartContainer>,
     );
 
-    // So os nossos: a propria recharts reclama do 0x0 do happy-dom por aqui.
+    // Only ours: recharts itself complains about happy-dom's 0x0 around here.
     const ours = warn.mock.calls.filter((call) => String(call[0]).includes("[rivocode/ui]"));
     expect(ours.length).toBe(0);
   } finally {
@@ -219,12 +220,12 @@ test("sem empty nao ha o que avisar", () => {
 });
 
 /**
- * A cor com que a `Sparkline` desenha, lida da arvore de elementos.
+ * The color the `Sparkline` draws with, read from the element tree.
  *
- * O desenho nao chega ao DOM: o `ResponsiveContainer` mede 0x0 no happy-dom e
- * a recharts nao emite nada - o mesmo motivo que `chart-new-pieces.test.tsx` ja
- * registra. A peca nao usa hook nenhum, entao chama-la como funcao devolve a
- * arvore inteira, e o `stroke` esta la.
+ * The drawing does not reach the DOM: `ResponsiveContainer` measures 0x0 in
+ * happy-dom and recharts emits nothing - the same reason
+ * `chart-new-pieces.test.tsx` already records. The piece uses no hook, so
+ * calling it as a function returns the whole tree, and the `stroke` is there.
  */
 function strokeOf(node: unknown): string | undefined {
   if (!isValidElement(node)) return undefined;
@@ -239,23 +240,23 @@ function strokeOf(node: unknown): string | undefined {
   return undefined;
 }
 
-test("a sparkline pinta pela tendencia com trend", () => {
-  // `tone` e a escala semantica de cor no catalogo inteiro - success, danger,
-  // warning, info. So aqui ela queria dizer "pinte pela direcao", e com outros
-  // valores; o nome desta peca diz o que ela faz.
+test("the sparkline paints by direction with trend", () => {
+  // `tone` is the semantic color scale across the whole catalog - success,
+  // danger, warning, info. Only here did it mean "paint by direction", and with
+  // other values; the name on this piece says what it does.
   const descending = [9, 7, 4, 2];
 
   expect(strokeOf(Sparkline({ data: descending, trend: "auto" }))).toBe("var(--rc-danger)");
   expect(strokeOf(Sparkline({ data: [2, 4, 7, 9], trend: "auto" }))).toBe("var(--rc-success)");
 
-  // Sem pedir a direcao, o acento do tema: a cor nao pode virar julgamento
-  // sozinha, porque em custo subir e ruim.
+  // Without asking for direction, the theme accent: color cannot become a
+  // judgment by itself, because for costs going up is bad.
   expect(strokeOf(Sparkline({ data: descending, trend: "none" }))).toBe("var(--rc-accent)");
 });
 
-test("o estado vazio aceita no no titulo, como as irmas dele", () => {
-  // `title` era `string`, e `PageHeader` e `Timeline` ja aceitavam no: nao
-  // dava para por um numero formatado nem um <strong> no meio da frase.
+test("the empty state accepts a node as title, like its siblings", () => {
+  // `title` was `string`, and `PageHeader` and `Timeline` already accepted a
+  // node: there was no way to put a formatted number or a <strong> mid-sentence.
   withTheme(
     <EmptyState
       title={
@@ -270,7 +271,7 @@ test("o estado vazio aceita no no titulo, como as irmas dele", () => {
   expect(screen.getByText("março").tagName).toBe("STRONG");
 });
 
-test("o filtro de periodo consegue limitar aos exercicios abertos", () => {
+test("the period filter can limit to the open fiscal years", () => {
   withTheme(
     <DateRangePicker
       defaultValue={{ from: new Date(2026, 2, 3), to: new Date(2026, 2, 10) }}
@@ -295,7 +296,7 @@ test("o filtro de periodo consegue limitar aos exercicios abertos", () => {
   expect(document.querySelectorAll('[data-outside="true"]').length).toBeGreaterThan(0);
 });
 
-test("a barra das setas do calendario deixa o clique chegar ao mes e ao ano, e so as setas o recebem", () => {
+test("the calendar arrow bar lets the click reach the month and the year, and only the arrows receive it", () => {
   withTheme(<Calendar defaultMonth={new Date(2026, 2, 1)} />);
   const previous = screen.getByRole("button", { name: "Ir para o mês anterior" });
   const nav = previous.parentElement!;
@@ -308,7 +309,7 @@ test("a barra das setas do calendario deixa o clique chegar ao mes e ao ano, e s
   expect(screen.getByLabelText("Escolha o mês").getAttribute("role")).toBe("combobox");
 });
 
-test("a caixa do select e uma coluna, e a lista de dentro encolhe e rola quando a caixa tem altura maxima", () => {
+test("the select box is a column, and the inner list shrinks and scrolls when the box has a max height", () => {
   withTheme(<Calendar defaultMonth={new Date(2026, 2, 1)} />);
   act(() => {
     fireEvent.click(screen.getByLabelText("Escolha o ano"));

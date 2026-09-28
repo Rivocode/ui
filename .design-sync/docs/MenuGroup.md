@@ -1,11 +1,11 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # MenuGroup
 
-Um grupo de itens com título.
+A group of items with a title.
 
-O rótulo vem junto no `label` de propósito: a Base UI exige que ele viva dentro
-de um grupo, e expor as duas peças separadas só criava uma forma de usar errado
-que quebra na tela, não no teste de tipo.
+The label comes along in `label` on purpose: Base UI requires it to live inside
+a group, and exposing the two pieces separately only created a way to misuse it
+that breaks on screen, not in the type check.

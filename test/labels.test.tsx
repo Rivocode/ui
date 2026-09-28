@@ -11,13 +11,13 @@ function withTheme(node: React.ReactNode) {
 }
 
 /*
- * O texto passado como filho costumava sumir sem aviso: a caixa era so a
- * caixa, e quem escrevia `<Checkbox>Aceito</Checkbox>` via um quadradinho solto
- * na tela e nenhum erro em lugar nenhum. Estes testes existem para isso nao
- * voltar.
+ * Text passed as a child used to vanish without warning: the box was just the
+ * box, and whoever wrote `<Checkbox>Aceito</Checkbox>` saw a lone little square
+ * on screen and no error anywhere. These tests exist so that does not come
+ * back.
  */
 
-test("a caixa com texto sai dentro de um label, e o clique no texto marca", () => {
+test("a checkbox with text renders inside a label, and clicking the text checks it", () => {
   withTheme(<Checkbox>ISS retido na fonte</Checkbox>);
 
   const box = screen.getByRole("checkbox", { name: "ISS retido na fonte" });
@@ -27,12 +27,12 @@ test("a caixa com texto sai dentro de um label, e o clique no texto marca", () =
   expect(screen.getByRole("checkbox").getAttribute("data-checked")).not.toBeNull();
 });
 
-test("sem texto ela continua sendo so a caixa, para quem monta o arranjo", () => {
+test("without text it stays just the box, for whoever builds the arrangement", () => {
   const { container } = withTheme(<Checkbox aria-label="Marcar" />);
   expect(container.querySelector("label")).toBeNull();
 });
 
-test("o circulo com texto tambem marca pelo texto", () => {
+test("a radio with text is also checked by its text", () => {
   withTheme(
     <RadioGroup defaultValue="produto">
       <Radio value="servico">Prestação de serviço</Radio>
@@ -46,7 +46,7 @@ test("o circulo com texto tambem marca pelo texto", () => {
   ).not.toBeNull();
 });
 
-test("a chave com texto liga pelo texto", () => {
+test("a switch with text turns on by its text", () => {
   withTheme(<Switch>Enviar o XML junto com o PDF</Switch>);
 
   fireEvent.click(screen.getByText("Enviar o XML junto com o PDF"));
@@ -54,36 +54,36 @@ test("a chave com texto liga pelo texto", () => {
 });
 
 /*
- * WCAG 1.4.11: o que identifica um controle precisa de 3:1 contra o fundo. Nos
- * tokens quem carrega essa promessa e o --rc-border-strong; --rc-border segue
- * sendo a divisoria decorativa, que nao identifica nada. Estes testes existem
- * para um campo nao voltar a se desenhar com a borda de divisoria.
+ * WCAG 1.4.11: whatever identifies a control needs 3:1 against the background.
+ * In the tokens the one carrying that promise is --rc-border-strong; --rc-border
+ * stays the decorative divider, which identifies nothing. These tests exist so
+ * a field does not go back to drawing itself with the divider border.
  */
 
 import { Field, FieldLabel, Input } from "../src/components/field";
 import { InputGroup } from "../src/components/input-group";
 import { SelectTrigger, Select } from "../src/components/select";
 
-test("o campo se desenha com a fronteira de controle, e nao com a divisoria", () => {
+test("the field draws itself with the control border, and not with the divider", () => {
   withTheme(<Input aria-label="Razao social" />);
   const field = screen.getByLabelText("Razao social");
 
   expect(field.className).toContain("border-border-strong");
 });
 
-test("a moldura de campo com encosto tambem", () => {
+test("so does the field frame with an addon", () => {
   withTheme(
     <InputGroup>
       <Input aria-label="Valor" />
     </InputGroup>,
   );
-  // A moldura e quem desenha a borda; o campo dentro dela vai sem borda propria.
+  // The frame draws the border; the field inside it goes without its own border.
   const frame = screen.getByLabelText("Valor").parentElement!;
 
   expect(frame.className).toContain("border-border-strong");
 });
 
-test("o gatilho do select tambem", () => {
+test("so does the select trigger", () => {
   withTheme(
     <Select>
       <SelectTrigger aria-label="Situacao" />
@@ -93,11 +93,11 @@ test("o gatilho do select tambem", () => {
   expect(screen.getByLabelText("Situacao").className).toContain("border-border-strong");
 });
 
-test("dentro de um campo, cada circulo se chama pelo proprio texto", () => {
-  // O Field passa o proprio rotulo a todo controle que mora dentro dele, e
-  // para um controle isso esta certo. Num grupo de escolha unica nao: o leitor
-  // de tela anunciava "Forma de pagamento" para Pix e para Boleto igualmente,
-  // e quem depende dele nao tinha como distinguir as opcoes.
+test("inside a field, each radio is named by its own text", () => {
+  // Field passes its own label to every control living inside it, and for a
+  // single control that is right. In a single-choice group it is not: the
+  // screen reader announced "Forma de pagamento" for Pix and for Boleto alike,
+  // and whoever depends on it had no way to tell the options apart.
   withTheme(
     <Field>
       <FieldLabel>Forma de pagamento</FieldLabel>
@@ -110,14 +110,14 @@ test("dentro de um campo, cada circulo se chama pelo proprio texto", () => {
 
   expect(screen.getByRole("radio", { name: "Pix" })).toBeDefined();
   expect(screen.getByRole("radio", { name: "Boleto" })).toBeDefined();
-  // O grupo continua sendo o dono do rotulo do campo.
+  // The group remains the owner of the field label.
   expect(screen.getByRole("radiogroup", { name: "Forma de pagamento" })).toBeDefined();
 });
 
-test("a caixa e a chave continuam se chamando pelo proprio texto no campo", () => {
-  // Aqui herdar o rotulo do campo tambem seria errado, mas por outra razao:
-  // com um controle so, o nome do campo e o nome do controle, e os dois textos
-  // se somariam - "ISS retido ISS retido".
+test("the checkbox and the switch keep their own text as name inside the field", () => {
+  // Inheriting the field label would be wrong here too, but for another reason:
+  // with a single control, the field name is the control name, and the two
+  // texts would add up - "ISS retido ISS retido".
   withTheme(
     <Field>
       <FieldLabel>Impostos</FieldLabel>

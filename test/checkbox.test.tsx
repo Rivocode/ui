@@ -3,22 +3,22 @@ import { render, screen } from "@testing-library/react";
 
 import { Checkbox } from "../src/components/checkbox";
 
-test("sai com papel de caixa de marcar", () => {
+test("renders with the checkbox role", () => {
   render(<Checkbox aria-label="Selecionar linha" />);
   expect(screen.getByRole("checkbox", { name: "Selecionar linha" })).toBeDefined();
 });
 
-test("marcada anuncia que esta marcada", () => {
+test("when checked it announces it is checked", () => {
   render(<Checkbox aria-label="x" checked />);
   expect(screen.getByRole("checkbox").getAttribute("aria-checked")).toBe("true");
 });
 
-test('o estado misto existe, que e o "alguns selecionados" do selecionar todos', () => {
+test('the mixed state exists, which is the "some selected" of select all', () => {
   render(<Checkbox aria-label="x" indeterminate />);
   expect(screen.getByRole("checkbox").getAttribute("aria-checked")).toBe("mixed");
 });
 
-test("o desenho de dentro muda entre marcada e mista", () => {
+test("the inner drawing changes between checked and mixed", () => {
   const { unmount } = render(<Checkbox aria-label="x" checked />);
   expect(document.querySelector("[data-rc-check]")?.getAttribute("data-rc-check")).toBe("checked");
   unmount();
@@ -29,20 +29,20 @@ test("o desenho de dentro muda entre marcada e mista", () => {
   );
 });
 
-test("usa o acento do tema quando marcada, sem cor literal", () => {
+test("uses the theme accent when checked, without a literal color", () => {
   render(<Checkbox aria-label="x" checked />);
   const box = screen.getByRole("checkbox");
   const classes = box.className.split(" ");
-  // O `not-data-disabled` entra no seletor de proposito: sem ele o
-  // `data-[indeterminate]` vencia o desabilitado, por ordem alfabetica.
+  // `not-data-disabled` goes into the selector on purpose: without it
+  // `data-[indeterminate]` beat the disabled state, by alphabetical order.
   expect(classes).toContain("data-[checked]:not-data-disabled:bg-accent-text");
   expect(classes).toContain("data-[checked]:not-data-disabled:border-accent-text");
-  // A lima cheia media 1,21:1 sobre a pagina no tema claro, e a fronteira da
-  // caixa marcada sumia: sobrava o tique flutuando, sem caixa em volta.
+  // The solid lime measured 1.21:1 over the page in the light theme, and the
+  // checked box boundary vanished: the tick was left floating, with no box around.
   expect(classes).not.toContain("data-[checked]:not-data-disabled:bg-accent");
   expect(classes).not.toContain("data-[checked]:not-data-disabled:border-accent");
-  // O tique acompanha: dentro do preenchimento escuro ele se le em
-  // `surface-raised`, e o grafite de `accent-fg` nao se leria mais.
+  // The tick follows: inside the dark fill it reads in `surface-raised`, and
+  // the graphite of `accent-fg` would no longer be readable.
   expect(classes).toContain("data-[checked]:not-data-disabled:text-surface-raised");
   expect(classes).not.toContain("data-[checked]:not-data-disabled:text-accent-fg");
   expect(box.className).not.toMatch(/#[0-9a-f]{3,6}/i);

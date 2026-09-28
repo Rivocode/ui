@@ -1,14 +1,15 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # TooltipContent
 
-O balão da dica.
+The tooltip's bubble.
 
-`side` diz o lado preferido, `align` o alinhamento no eixo dele e `sideOffset` a
-distância até o gatilho (as mesmas três props das outras peças que flutuam, com
-a mesma folga padrão de 6px). A Base UI vira sozinha quando não cabe.
+`side` says the preferred side, `align` the alignment on its axis and
+`sideOffset` the distance to the trigger (the same three props as the other
+floating pieces, with the same default offset of 6px). Base UI flips on its own
+when it does not fit.
 
-Texto curto, uma dica que precisa de duas frases é uma `FieldDescription` no
-lugar errado.
+Short text; a tooltip that needs two sentences is a `FieldDescription` in the
+wrong place.

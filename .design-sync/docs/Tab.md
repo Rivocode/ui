@@ -1,3 +1,3 @@
 ---
-category: Navegação
+category: Navigation
 ---

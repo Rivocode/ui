@@ -14,13 +14,13 @@ export type ChartLegendContentProps = {
   config?: ChartConfig;
   className?: string;
   /**
-   * As series escondidas agora. Passe junto com `onToggle` para a legenda
-   * virar filtro.
+   * The series hidden right now. Pass it together with `onToggle` for the legend
+   * to become a filter.
    */
   hidden?: readonly string[];
   /**
-   * Chamado com a chave da serie clicada. Com ele a legenda vira botao; sem
-   * ele ela continua sendo so texto, e nao finge ser clicavel.
+   * Called with the key of the clicked series. With it the legend becomes a button; without
+   * it the legend stays plain text, and does not pretend to be clickable.
    */
   onToggle?: (key: string) => void;
 };

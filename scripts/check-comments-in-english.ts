@@ -1,41 +1,41 @@
 /**
- * Guarda de idioma no comentario.
+ * Language guard for comments.
  *
- * A irma do `check:names`, e a metade que faltava. Aquela cobra o lado do
- * identificador - ingles, sempre. Este cobra o outro: comentario, JSDoc e texto
- * de interface em portugues, que e onde o portugues serve.
+ * The sibling of `check:names`, and the half that was missing. That one
+ * enforces the identifier side - English, always. This one enforces the
+ * other: comments and JSDoc in English, like the rest of the internal
+ * material. The text that goes to the SCREEN stays in Portuguese, and it is
+ * not a comment, so this guard never reads it.
  *
- * A regra estava escrita desde sempre, no `CLAUDE.md` e no topo do
- * `check-names-in-english.ts`, e nada a cobrava. Entao quatro areas inteiras
- * foram escritas em ingles sem que ninguem fosse avisado: `apps/docs/src/**`,
- * `src/chart/chart-axis.tsx`, `src/lib/format.ts` e `scripts/accents.ts`. Nao
- * foi descuido de uma tarde - sao centenas de linhas, e o arquivo que explica a
- * ACENTUACAO DO PORTUGUES abria com um paragrafo em ingles. Regra que so mora
- * na documentacao e sugestao.
+ * It was born the other way around. Until 28/09/2026 the house wrote its
+ * comments in Portuguese, and this file flagged English: four whole areas had
+ * been written in English with nobody warned - `apps/docs/src/**`,
+ * `src/chart/chart-axis.tsx`, `src/lib/format.ts` and `scripts/accents.ts` -,
+ * because a rule that only lives in the documentation is a suggestion. When
+ * the owner moved everything internal to English, the guard kept its shape and
+ * swapped its dictionary: the incident it protects against is the same, a
+ * language decision that nothing enforces.
  *
- * ## Por que ela consegue perguntar "isto e ingles?"
+ * ## Why it can ask "is this Portuguese?"
  *
- * Nao consegue, e nao tenta. Adivinhar idioma por vocabulario e o caminho do
- * falso positivo: metade do vocabulario tecnico daqui e ingles de propria
- * vontade - `overflow`, `sticky`, `flex`, `viewport`, `tooltip` -, e um
- * comentario perfeitamente portugues que cite `min-width` seria acusado.
- * Guarda que grita a toa e desligada na semana seguinte.
+ * It cannot, and it does not try. Guessing a language by vocabulary is the
+ * road to false positives: a comment that cites a Brazilian term - CPF, boleto,
+ * Pix, a screen label like "Salvar" - is still an English comment.
  *
- * O que ela olha e a CLASSE FECHADA: artigo, pronome, preposicao, verbo de
- * ligacao. `the`, `this`, `which`, `because`, `would`, `without`. Sao poucas,
- * nao crescem, ninguem as inventa, e nenhuma delas e nome de propriedade de
- * CSS, de metodo de API ou de pacote. Uma frase em ingles nao passa duas linhas
- * sem usar varias; uma frase em portugues nao usa nenhuma.
+ * What it looks at is the CLOSED CLASS: article, pronoun, preposition,
+ * conjunction. `que`, `nao`, `para`, `quando`, `porque`, `uma`. They are few,
+ * they do not grow, nobody invents them, and none of them is a CSS property, an
+ * API method or a package name. A Portuguese sentence does not go two lines
+ * without several of them; an English sentence uses none.
  *
- * Duas palavras DIFERENTES no mesmo comentario e o corte. Uma so seria o
- * `// so no Safari`, ou o nome de um pacote. Duas ja e sintaxe inglesa.
- *
- * Medido antes de entrar no gate: 322 arquivos, 19 comentarios acusados, todos
- * ingles de verdade, nenhum falso positivo.
+ * Two DIFFERENT words in the same comment is the cut. One could be a quoted
+ * label. Two is already Portuguese syntax. Quoted text and code between
+ * backticks are removed before counting, because that is where screen text is
+ * cited on purpose.
  */
 import { scanAtLeast } from "./scan";
 
-/** As mesmas areas do `check:names`: tudo que e codigo nosso. */
+/** The same areas as `check:names`: everything that is our code. */
 const AREAS: [area: string, floor: number][] = [
   ["src/**/*.{ts,tsx}", 80],
   ["scripts/**/*.ts", 20],
@@ -50,53 +50,46 @@ const AREAS: [area: string, floor: number][] = [
 ];
 
 /**
- * A classe fechada do ingles.
+ * The Portuguese closed class.
  *
- * Escolhidas por uma pergunta so: esta palavra pode aparecer sozinha, fora de
- * uma frase, como nome de coisa? `list`, `row`, `name`, `code` e `width` podem,
- * e por isso ficaram de fora por mais uteis que parecessem. `the` e `whether`
- * nao podem, e e disso que a guarda vive.
+ * Chosen by a single question: can this word show up alone, outside a
+ * sentence, as the name of a thing? `data`, `valor`, `nome` and `campo` can,
+ * and they were left out however useful they looked. `que` and `porque`
+ * cannot, and that is what the guard lives on. `com` needs the lookbehind
+ * because of `.com` in a URL.
  */
-const ENGLISH =
-  /\b(?:the|this|that|which|because|would|should|there|these|those|when|while|with|from|into|their|they|them|whether|without|instead|already|rather|about|though|although|before|after|between|every|another|anything|nothing|something|itself|themselves|is|are|was|were|been|being|have|has|had|does|did|what|why|how|who|whose|only|also|just|even|still|than|then|here)\b/gi;
+const PORTUGUESE =
+  /(?<![.\w])(?:que|nao|não|para|quando|porque|uma|com|sem|pelo|pela|pelos|pelas|dos|das|esta|este|isso|isto|ser|sao|são|tem|mas|onde|entao|então|tambem|também|ainda|cada|depois|aqui|fica|deve|pode|sobre|ela|ele|seu|sua|voce|você|mesmo|mesma|antes|porém|porem|nunca|sempre|agora)(?![\wÀ-ÿ])/gi;
 
 /**
- * O que fala SOBRE o ingles.
+ * What talks ABOUT Portuguese.
  *
- * Esta guarda carrega a lista de palavras inglesas como dado, e o `check:names`
- * carrega a explicacao de por que `pagina` vazou para a doc. Acusa-los seria a
- * guarda mordendo a propria lista.
+ * This guard carries the list of Portuguese words as data, `check:names`
+ * carries the suffixes and the words that leak into identifiers, and
+ * `scripts/accents.ts` carries the accent dictionary. Flagging them would be
+ * the guard biting its own list.
  */
-const DICTIONARIES = /check-comentarios-em-portugues|check-nomes-em-ingles/;
+const DICTIONARIES = /check-comments-in-english|check-names-in-english|scripts\/accents\.ts/;
 
 /**
- * A divida que ficou para depois. Hoje: nenhuma.
+ * The debt left for later. Today: none.
  *
- * Ela nasceu com dois arquivos - `apps/docs/src/pages/home.tsx` e
- * `apps/docs/vite.config.ts` -, o resto da mesma divida das quatro areas que
- * fizeram esta guarda existir. Os outros foram traduzidos na passagem que criou
- * este arquivo, e estes dois nao porque outra mao estava dentro deles na mesma
- * hora. Foram pagos depois: o que explicava decisao virou portugues, o que
- * repetia a linha de baixo saiu.
- *
- * A lista continua aqui vazia porque o mecanismo e que importa, e nao as
- * linhas: a proxima colisao entre a guarda e um arquivo em obra tem onde ser
- * anotada sem que ninguem precise reinventar o acordo. O acordo e que ela SO
- * ENCOLHE - entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
- * E o que impede esta lista de virar o lugar onde o ingles mora.
+ * The list stays here empty because the mechanism is what matters, not the
+ * lines: the next collision between the guard and a file under construction
+ * has a place to be written down without anyone reinventing the agreement.
+ * The agreement is that it ONLY SHRINKS - an entry that no longer flags is an
+ * error, and the guard says to delete the line. That is what keeps this list
+ * from becoming the place where Portuguese lives.
  */
 const DEBT = new Set<string>([]);
 
-/**
- * Tira do comentario o que e codigo citado.
- *
- * `` `overflow: hidden` `` e um bloco ```tsx dentro de um JSDoc sao ingles de
- * propria vontade, e sao exatamente onde o vocabulario tecnico aparece. Sem
- * este corte, um exemplo de uso dentro do JSDoc entraria na conta pelo que ele
- * demonstra, e nao pelo que a prosa diz.
- */
-const withoutCode = (comment: string) =>
-  comment.replace(/```[\s\S]*?```/g, " ").replace(/`[^`\n]*`/g, " ");
+/** Removes what is cited, not written: code between backticks and quoted text. */
+const withoutCitations = (comment: string) =>
+  comment
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`\n]*`/g, " ")
+    .replace(/"[^"\n]*"/g, " ")
+    .replace(/'[^'\n]*'/g, " ");
 
 const found: string[] = [];
 const paid = new Set<string>();
@@ -107,9 +100,11 @@ for (const [area, floor] of AREAS) {
 
     const text = await Bun.file(file).text();
 
-    for (const hit of text.matchAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g)) {
+    for (const hit of text.matchAll(/\/\*[\s\S]*?\*\/|(?<![:"'`\w])\/\/[^\n]*/g)) {
       const words = [
-        ...new Set((withoutCode(hit[0]).match(ENGLISH) ?? []).map((word) => word.toLowerCase())),
+        ...new Set(
+          (withoutCitations(hit[0]).match(PORTUGUESE) ?? []).map((word) => word.toLowerCase()),
+        ),
       ];
       if (words.length < 2) continue;
 
@@ -126,31 +121,31 @@ for (const [area, floor] of AREAS) {
 }
 
 if (found.length > 0) {
-  console.error(`${found.length} comentario(s) em ingles:\n`);
+  console.error(`${found.length} comment(s) in Portuguese:\n`);
   for (const item of found) console.error(item);
   console.error(
-    "\nA biblioteca escreve para a tela em portugues e programa em ingles." +
-      "\nO identificador vai em ingles; o comentario e o JSDoc, nao - e o JSDoc" +
-      "\nde prop sai na tabela de props que o site publica." +
-      "\n\nPortugues SEM acento no comentario; o texto que vai para a tela leva.",
+    "\nThe library writes to the screen in Portuguese and programs in English." +
+      "\nIdentifiers, comments and JSDoc go in English - and a prop's JSDoc ships" +
+      "\nin the props table the site publishes." +
+      "\n\nScreen text stays in Portuguese, with accents, and it is not a comment.",
   );
   process.exit(1);
 }
 
 const stale = [...DEBT].filter((item) => !paid.has(item));
 if (stale.length > 0) {
-  console.error(`${stale.length} linha(s) de divida que nao acusam mais nada:\n`);
+  console.error(`${stale.length} debt line(s) that no longer flag anything:\n`);
   for (const item of stale) console.error(`  "${item}",`);
   console.error(
-    "\nO arquivo foi traduzido, e a divida foi paga. Apague essa(s) linha(s) do" +
-      "\n`DEBT` em scripts/check-comments-in-english.ts - lista de excecao" +
-      "\nque nao encolhe vira o lugar onde o ingles se esconde.",
+    "\nThe file was translated, and the debt was paid. Delete these line(s) from" +
+      "\n`DEBT` in scripts/check-comments-in-english.ts - an exception list that" +
+      "\ndoes not shrink becomes the place where Portuguese hides.",
   );
   process.exit(1);
 }
 
 console.log(
   DEBT.size === 0
-    ? "Todo comentario em portugues, e nenhuma divida declarada."
-    : `Todo comentario em portugues, fora as ${DEBT.size} dividas ja declaradas.`,
+    ? "Every comment in English, and no declared debt."
+    : `Every comment in English, except the ${DEBT.size} debts already declared.`,
 );

@@ -17,7 +17,7 @@ const quiet = () => spyOn(console, "error").mockImplementation(() => {});
 const ours = (error: ReturnType<typeof spyOn<Console, "error">>) =>
   error.mock.calls.map((call) => String(call[0])).filter((line) => line.includes("[rivocode/ui]"));
 
-test("a Base UI crua ainda derruba a arvore fora do Field, entao o conserto tem o que impedir", () => {
+test("raw Base UI still brings the tree down outside Field, so the fix has something to prevent", () => {
   const complaint = spyOn(console, "error").mockImplementation(() => {});
 
   expect(() => render(<BaseField.Label>Email</BaseField.Label>)).toThrow("FieldRootContext");
@@ -29,7 +29,7 @@ test("a Base UI crua ainda derruba a arvore fora do Field, entao o conserto tem 
   complaint.mockRestore();
 });
 
-test("o rotulo solto desenha um label e a tela continua de pe", () => {
+test("the loose label draws a label and the screen stays up", () => {
   const error = quiet();
 
   render(<FieldLabel htmlFor="avulso">Email</FieldLabel>);
@@ -42,7 +42,7 @@ test("o rotulo solto desenha um label e a tela continua de pe", () => {
   error.mockRestore();
 });
 
-test("a descricao solta desenha um paragrafo e a tela continua de pe", () => {
+test("the loose description draws a paragraph and the screen stays up", () => {
   const error = quiet();
 
   render(<FieldDescription>Somente numeros</FieldDescription>);
@@ -54,21 +54,21 @@ test("a descricao solta desenha um paragrafo e a tela continua de pe", () => {
   error.mockRestore();
 });
 
-test("o erro solto com match desenha a mensagem, e sem match nao desenha nada", () => {
+test("the loose error with match draws the message, and without match draws nothing", () => {
   const error = quiet();
 
-  const solto = render(<FieldError match>Email obrigatorio</FieldError>);
-  const mensagem = screen.getByText("Email obrigatorio");
-  expect(mensagem.className.split(" ")).toContain("text-danger-text");
-  solto.unmount();
+  const loose = render(<FieldError match>Email obrigatorio</FieldError>);
+  const message = screen.getByText("Email obrigatorio");
+  expect(message.className.split(" ")).toContain("text-danger-text");
+  loose.unmount();
 
-  const calado = render(<FieldError>Email obrigatorio</FieldError>);
-  expect(calado.container.textContent).toBe("");
+  const silent = render(<FieldError>Email obrigatorio</FieldError>);
+  expect(silent.container.textContent).toBe("");
 
   error.mockRestore();
 });
 
-test("o campo solto dentro de outra peca nao apaga o que esta em volta", () => {
+test("the loose field inside another piece does not wipe what is around it", () => {
   const error = quiet();
 
   const { container } = render(
@@ -85,7 +85,7 @@ test("o campo solto dentro de outra peca nao apaga o que esta em volta", () => {
   error.mockRestore();
 });
 
-test("cada parte solta grita o proprio nome no console de desenvolvimento", () => {
+test("each loose part shouts its own name in the development console", () => {
   const error = quiet();
 
   render(
@@ -105,7 +105,7 @@ test("cada parte solta grita o proprio nome no console de desenvolvimento", () =
   error.mockRestore();
 });
 
-test("parte dentro do Field nao reclama, entao o aviso nao vira ruido", () => {
+test("a part inside Field does not complain, so the warning does not become noise", () => {
   const error = quiet();
 
   render(
@@ -133,7 +133,7 @@ test("parte dentro do Field nao reclama, entao o aviso nao vira ruido", () => {
   error.mockRestore();
 });
 
-test("o controle solto nao lanca e por isso nao ganha aviso nem substituto", () => {
+test("the loose control does not throw and so gets neither a warning nor a substitute", () => {
   const error = quiet();
 
   const { container } = render(
@@ -149,13 +149,12 @@ test("o controle solto nao lanca e por isso nao ganha aviso nem substituto", () 
   error.mockRestore();
 });
 
-test("a reclamacao diz a peca, o conserto e sai acentuada, porque quem le e gente", () => {
+test("the complaint names the piece and the fix, and is written in English, because it reaches the developer and not the screen", () => {
   const complaint = missingFieldRootComplaint("FieldLabel");
 
-  expect(complaint).toContain("<FieldLabel>");
-  expect(complaint).toContain("<Field");
-  expect(complaint).toContain("árvore");
-  expect(complaint).toContain("não");
-  expect(complaint).toContain("página");
-  expect(complaint.split(" ")).not.toContain("arvore");
+  expect(complaint.startsWith("[rivocode/ui] <FieldLabel> outside <Field>")).toBe(true);
+  expect(complaint).toContain('<Field name="something">');
+  expect(complaint).toContain("whole tree");
+  expect(complaint).toContain("page goes blank");
+  expect(complaint).not.toMatch(/árvore|página|não/);
 });

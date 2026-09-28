@@ -1,18 +1,19 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # PreviewCard
 
-O cartao que aparece ao pousar sobre um link: quem e o cliente, o que é aquela
-nota, o resumo do termo.
+The card that appears when hovering over a link: who the customer is, what
+that invoice is, the summary of the term.
 
-**Não e `Tooltip`.** A dica explica um botão em poucas palavras e some ao sair;
-o cartao mostra conteúdo que da para ler com calma, e por isso ele espera antes
-de abrir e demora a fechar, para o ponteiro chegar até ele.
+**It is not a `Tooltip`.** The tooltip explains a button in a few words and
+disappears on leave; the card shows content that can be read calmly, and that
+is why it waits before opening and takes its time to close, so the pointer can
+reach it.
 
-Nada que só exista aqui e alcancavel por toque, então o cartao nunca pode ser o
-único caminho para uma informação.
+Nothing that exists only here is reachable by touch, so the card can never be
+the only path to a piece of information.
 
 ```tsx
 <PreviewCard>
@@ -24,6 +25,6 @@ Nada que só exista aqui e alcancavel por toque, então o cartao nunca pode ser 
 </PreviewCard>
 ```
 
-## No React Native
+## In React Native
 
-Não porta, por decisão - aparece ao pousar o ponteiro, e não há pousar no toque. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Does not port, by decision - it appears on resting the pointer, and there is no resting on touch. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.

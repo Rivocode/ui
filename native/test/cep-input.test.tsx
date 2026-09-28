@@ -42,7 +42,7 @@ function mount(props: Omit<PostalCodeFieldProps, "value" | "onValueChange">) {
 }
 
 describe("PostalCodeField", () => {
-  test("mostra a mascara, guarda so os digitos e abre o teclado numerico", async () => {
+  test("shows the mask, keeps only the digits and opens the numeric keyboard", async () => {
     const onValueChange = mock((_digits: string, _masked: string) => {});
     const screen = render(
       <PostalCodeField value="58038000" onValueChange={onValueChange} lookup={async () => null} />,
@@ -57,7 +57,7 @@ describe("PostalCodeField", () => {
     expect(onValueChange).toHaveBeenLastCalledWith("5803800", "58038-00");
   });
 
-  test("so busca ao completar os 8 digitos, e anuncia a espera e o achado", async () => {
+  test("only looks up once the 8 digits are complete, and announces the wait and the result", async () => {
     const pending = deferred<PostalAddress | null>();
     const lookup = mock((_code: string) => pending.promise);
     const onAddress = mock((_address: PostalAddress, _code: string) => {});
@@ -78,7 +78,7 @@ describe("PostalCodeField", () => {
     expect(spoken.announced).toEqual(["Buscando endereço…", "Endereço encontrado."]);
   });
 
-  test("nao achou: aviso em portugues e campo invalido", async () => {
+  test("not found: a notice in Portuguese and an invalid field", async () => {
     const { screen, input, type } = mount({ lookup: async () => null });
 
     await type("99999999");
@@ -88,7 +88,7 @@ describe("PostalCodeField", () => {
     expect(spoken.announced.at(-1)).toMatch(/^CEP não encontrado/);
   });
 
-  test("falha de rede: aviso neutro, campo nao invalido, e o botao tenta de novo", async () => {
+  test("network failure: a neutral notice, the field not invalid, and the button retries", async () => {
     let calls = 0;
     const lookup = mock(async () => {
       calls += 1;
@@ -110,7 +110,7 @@ describe("PostalCodeField", () => {
     expect(textOf(screen)).not.toContain("Não foi possível buscar o CEP");
   });
 
-  test("trocar o CEP no meio cancela a busca anterior, e a resposta velha nao entra", async () => {
+  test("changing the CEP midway cancels the previous lookup, and the stale response does not get in", async () => {
     const first = deferred<PostalAddress | null>();
     const second = deferred<PostalAddress | null>();
     const answers = [first, second];

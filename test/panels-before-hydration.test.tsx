@@ -19,7 +19,7 @@ function separatorsOf(html: string) {
   return [...host.querySelectorAll<HTMLElement>("[role=separator]")];
 }
 
-test("no servidor, o painel sem medida fica com o que o defaultSize do vizinho deixa", () => {
+test("on the server, the panel without a size gets what the neighbor's defaultSize leaves", () => {
   const html = renderToString(
     <ResizablePanelGroup>
       <ResizablePanel defaultSize={30}>A</ResizablePanel>
@@ -31,7 +31,7 @@ test("no servidor, o painel sem medida fica com o que o defaultSize do vizinho d
   expect(panelsOf(html)).toEqual(["30 1 0%", "70 1 0%"]);
 });
 
-test("no servidor, o que sobra se divide igual entre os paineis sem medida", () => {
+test("on the server, what is left is split evenly among the panels without a size", () => {
   const html = renderToString(
     <ResizablePanelGroup>
       <ResizablePanel defaultSize={40}>A</ResizablePanel>
@@ -45,7 +45,7 @@ test("no servidor, o que sobra se divide igual entre os paineis sem medida", () 
   expect(panelsOf(html)).toEqual(["40 1 0%", "30 1 0%", "30 1 0%"]);
 });
 
-test("no servidor, o layout controlado vence o defaultSize", () => {
+test("on the server, the controlled layout beats defaultSize", () => {
   const html = renderToString(
     <ResizablePanelGroup layout={[25, 75]}>
       <ResizablePanel defaultSize={60}>A</ResizablePanel>
@@ -57,7 +57,7 @@ test("no servidor, o layout controlado vence o defaultSize", () => {
   expect(panelsOf(html)).toEqual(["25 1 0%", "75 1 0%"]);
 });
 
-test("no servidor, o Splitter controlado sai na medida pedida, e nao meio a meio", () => {
+test("on the server, the controlled Splitter comes out at the requested size, not half and half", () => {
   const html = renderToString(<Splitter label="Lista e detalhe" start="A" end="B" size={30} />);
   expect(panelsOf(html)).toEqual(["30 1 0%", "70 1 0%"]);
 
@@ -65,7 +65,7 @@ test("no servidor, o Splitter controlado sai na medida pedida, e nao meio a meio
   expect(panelsOf(plain)).toEqual(["50 1 0%", "50 1 0%"]);
 });
 
-test("no servidor, a divisoria ja entra no Tab e ja diz a medida e os limites", () => {
+test("on the server, the separator is already in the Tab order and already states its size and limits", () => {
   const html = renderToString(<Splitter label="Lista e detalhe" start="A" end="B" size={30} />);
   const [separator] = separatorsOf(html);
 
@@ -76,10 +76,10 @@ test("no servidor, a divisoria ja entra no Tab e ja diz a medida e os limites", 
   expect(separator!.getAttribute("aria-valuetext")).toBe("30%");
 });
 
-test("no servidor, cada divisoria de tres paineis mede o painel antes dela e aponta para ele", () => {
+test("on the server, each separator of three panels measures the panel before it and points to it", () => {
   const html = renderToString(
     <ResizablePanelGroup>
-      <ResizablePanel id="arvore" defaultSize={20}>
+      <ResizablePanel id="tree" defaultSize={20}>
         A
       </ResizablePanel>
       <ResizableHandle />
@@ -87,7 +87,7 @@ test("no servidor, cada divisoria de tres paineis mede o painel antes dela e apo
         B
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel id="inspetor" minSize={15}>
+      <ResizablePanel id="inspector" minSize={15}>
         C
       </ResizablePanel>
     </ResizablePanelGroup>,
@@ -95,13 +95,13 @@ test("no servidor, cada divisoria de tres paineis mede o painel antes dela e apo
   const [first, second] = separatorsOf(html);
 
   expect(first!.getAttribute("aria-valuenow")).toBe("20");
-  expect(first!.getAttribute("aria-controls")).toBe("arvore");
+  expect(first!.getAttribute("aria-controls")).toBe("tree");
   expect(second!.getAttribute("aria-valuenow")).toBe("50");
   expect(second!.getAttribute("aria-controls")).toBe("editor");
   expect(second!.getAttribute("aria-valuemax")).toBe("65");
 });
 
-test("a hidratacao encontra no cliente o mesmo que o servidor desenhou", async () => {
+test("hydration finds on the client the same thing the server drew", async () => {
   const tree: ReactNode = (
     <ResizablePanelGroup>
       <ResizablePanel defaultSize={30}>A</ResizablePanel>

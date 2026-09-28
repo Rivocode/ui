@@ -1,12 +1,12 @@
-# Gráficos: `@rivocode/ui/chart`
+# Charts: `@rivocode/ui/chart`
 
-Não vem no pacote principal. É dependência opcional, e chega pelo mesmo
-provider. Instale junto: `recharts`.
+It does not come in the main package. It is an optional dependency, and it
+arrives through the same provider. Install alongside: `recharts`.
 
-Recharts vestida pelo tema. A cor de cada série vem do `config` e vira variável
-com o nome da série. **A altura é sua, por classe: gráfico sem altura some** - e a
-moldura acusa isso no console em desenvolvimento, quando mede largura e nenhuma
-altura.
+Recharts dressed by the theme. Each series' color comes from `config` and
+becomes a variable named after the series. **The height is yours, by class: a
+chart without height disappears** - and the frame reports it in the console in
+development, when it measures a width and no height.
 
 ```tsx
 import {
@@ -27,55 +27,58 @@ const config: ChartConfig = { billed: { label: 'Faturado' } }
 </ChartContainer>
 ```
 
-`ChartXAxis` e `ChartYAxis` já vêm sem a linha grossa e sem o tracinho de 2015.
-O `format` aceita `currency`, `currencyShort`, `compact`, `integer`, `percent`,
-`monthShort`, `dayMonth`, ou uma função sua. Os nove estão reunidos em
-`formatters`, e **saem também pela raiz** `@rivocode/ui`: formatar dinheiro numa
-célula de tabela não é assunto de gráfico, e importar do subcaminho do gráfico
-para escrever um `Stat` traz a recharts junto sem necessidade.
+`ChartXAxis` and `ChartYAxis` already come without the thick line and without
+the 2015 tick mark. `format` accepts `currency`, `currencyShort`, `compact`,
+`integer`, `percent`, `monthShort`, `dayMonth`, or a function of yours. All nine
+are gathered in `formatters`, and **also come out of the root** `@rivocode/ui`:
+formatting money in a table cell is not a chart matter, and importing from the
+chart subpath to write a `Stat` drags recharts along for no reason.
 
-`compact` abrevia com símbolo, `12,4K`, `1,2M`, que é a convenção de painel e
-cabe em menos pixel, e num eixo largura é espaço tirado do gráfico.
-`compactWords` e `currencyShortWords` escrevem `12,4 mil`, que lê melhor em
-texto corrido. **Não misture as duas na mesma tela.**
+`compact` abbreviates with a symbol, `12,4K`, `1,2M`, which is the dashboard
+convention and fits in fewer pixels, and on an axis width is space taken from
+the chart. `compactWords` and `currencyShortWords` write `12,4 mil`, which
+reads better in running text. **Do not mix the two on the same screen.**
 
-**Dinheiro sai abreviado.** `currencyShort` em indicador, tabela, eixo, legenda
-e dica. O `currency`, por extenso, fica para onde o centavo é o assunto: o valor
-que a pessoa confirma antes de emitir, e o comprovante depois.
+**Money comes out abbreviated.** `currencyShort` in indicators, tables, axes,
+legends and tooltips. `currency`, spelled out, is for where the cent is the
+subject: the amount the person confirms before issuing, and the receipt
+afterwards.
 
-| Peça | Para que |
+| Piece | What for |
 |---|---|
-| `ChartAreaGradient` + `areaGradient(id, série)` | Gradiente de área. **O `id` é seu, e precisa ser único na página** |
-| `ChartDonut` | Rosca com o total no buraco e a lista de fatias embaixo |
-| `ChartRadial` | O arco de uma medida só: meta, cota, conversão |
-| `ChartGauge` | Medidor de 0 a `max` com faixas (`bands`) que julgam o número: em dia, atenção, crítico |
-| `ChartHeatmap` | Grade de linha por coluna em que a cor diz o tamanho: emissões por dia e hora |
-| `ChartFunnel` | As etapas de um caminho, com a taxa de conversão escrita entre elas |
-| `ChartTreemap` | Área proporcional por categoria, com o rótulo que some quando não cabe |
-| `Sparkline` | A linha miúda que cabe dentro de um indicador |
-| `ChartLegend` + `ChartLegendContent` | A legenda, com o nome que está no `config` |
-| `useSeriesToggle` | A legenda vira filtro: clicar esconde a série |
-| `useChartMotion` | Duração e curva dos tokens, e "reduzir movimento", para marca fora da moldura |
+| `ChartAreaGradient` + `areaGradient(id, series)` | Area gradient. **The `id` is yours, and it has to be unique on the page** |
+| `ChartDonut` | Donut with the total in the hole and the list of slices below |
+| `ChartRadial` | The arc of a single measure: goal, quota, conversion |
+| `ChartGauge` | Gauge from 0 to `max` with bands (`bands`) that judge the number: on track, attention, critical |
+| `ChartHeatmap` | Row-by-column grid where color tells the size: issuances by day and hour |
+| `ChartFunnel` | The stages of a path, with the conversion rate written between them |
+| `ChartTreemap` | Area proportional to each category, with the label that disappears when it does not fit |
+| `Sparkline` | The tiny line that fits inside an indicator |
+| `ChartLegend` + `ChartLegendContent` | The legend, with the name that is in `config` |
+| `useSeriesToggle` | The legend becomes a filter: clicking hides the series |
+| `useChartMotion` | Duration and curve from the tokens, and "reduce motion", for a mark outside the frame |
 
-Também saem daqui radar, dispersão, polar e `LabelList`. O `Tooltip` e o
-`Legend` da Recharts **não**: os nossos já embrulham os dois.
+Radar, scatter, polar and `LabelList` also come out of here. Recharts'
+`Tooltip` and `Legend` do **not**: ours already wrap both.
 
-A Recharts não anima por CSS, ela interpola em JS, e nenhum token a alcança
-sozinho. **O `ChartContainer` resolve isso por você**: toda marca dentro dele sai
-com a duração de `--rc-duration-slow`, a curva de `--rc-ease`, e a animação
-ligada antes de a marca montar, e desligada com "reduzir movimento". **Na
-primeira vez que aparece com dados, o gráfico se desenha**: a barra cresce da
-base, a linha e a área se revelam, e quando o dado muda cada marca anda do valor
-velho ao novo. Sair do esqueleto, do erro ou do vazio para os dados também
-entra desenhando. Não escreva `isAnimationActive` nem `animationDuration` na
-marca. `isAnimationActive={false}` escrito à mão continua valendo, para a marca
-que tem de ficar parada.
+Recharts does not animate through CSS, it interpolates in JS, and no token
+reaches it on its own. **`ChartContainer` solves this for you**: every mark
+inside it comes out with the `--rc-duration-slow` duration, the `--rc-ease`
+curve, and the animation turned on before the mark mounts, and off with "reduce
+motion". **The first time it appears with data, the chart draws itself**: the
+bar grows from the base, the line and the area reveal themselves, and when the
+data changes each mark moves from the old value to the new one. Going from the
+skeleton, the error or the empty state to the data also enters drawing. Do not
+write `isAnimationActive` or `animationDuration` on the mark.
+`isAnimationActive={false}` written by hand still holds, for the mark that has
+to stay still.
 
-No servidor o gráfico não desenha: a Recharts só pinta depois de medir a
-caixa, então o HTML do SSR sai com a moldura, e o desenho nasce no cliente, já
-entrando. Não há o que piscar, porque não havia desenho antes.
+On the server the chart does not draw: Recharts only paints after measuring the
+box, so the SSR HTML comes out with the frame, and the drawing is born on the
+client, already entering. There is nothing to flash, because there was no
+drawing before.
 
-Fora da moldura, espalhe o `useChartMotion()`, que devolve o mesmo trio:
+Outside the frame, spread `useChartMotion()`, which returns the same trio:
 
 ```tsx
 const motion = useChartMotion()
@@ -83,19 +86,20 @@ const motion = useChartMotion()
 <Line dataKey="paid" stroke="var(--color-paid)" {...motion} />
 ```
 
-`ChartDonut` e `ChartRadial` entram varrendo do zero e andam até o valor novo
-sozinhas. A `Sparkline` entra só esmaecendo, em `--rc-duration-base`, e não anda
-na troca de dados: numa tabela ela aparece às dezenas, e vinte linhas se
-desenhando ao mesmo tempo são uma onda atravessando a tela.
+`ChartDonut` and `ChartRadial` enter sweeping from zero and move to the new
+value on their own. `Sparkline` only fades in, at `--rc-duration-base`, and
+does not move on data change: in a table it appears by the dozen, and twenty
+rows drawing themselves at the same time are a wave crossing the screen.
 
-`areaGradient` é função pura de propósito. A primeira versão tirava o `id` de um
-contexto, e o `fill` de `<Area>` é avaliado no render de fora, onde esse contexto
-ainda não existe, quem escrevia o óbvio levava erro em tempo de execução.
+`areaGradient` is a pure function on purpose. The first version took the `id`
+from a context, and `<Area>`'s `fill` is evaluated in the outer render, where
+that context does not exist yet; whoever wrote the obvious got a runtime error.
 
-## Heatmap, medidor, funil e treemap
+## Heatmap, gauge, funnel and treemap
 
-Os quatro são desenho próprio, sem Recharts, e **não entram no
-`ChartContainer`**: carregando, erro e vazio vêm do `QueryBoundary` em volta.
+The four are drawn in-house, without Recharts, and **do not go into
+`ChartContainer`**: loading, error and empty come from the `QueryBoundary`
+around them.
 
 ```tsx
 import { ChartFunnel, ChartGauge, ChartHeatmap, ChartTreemap } from '@rivocode/ui/chart'
@@ -106,14 +110,16 @@ import { ChartFunnel, ChartGauge, ChartHeatmap, ChartTreemap } from '@rivocode/u
 <ChartTreemap data={porServico} valueKey="total" nameKey="codigo" label="Faturamento por serviço" className="h-72" />
 ```
 
-- **`ChartHeatmap`**: o `data` é longo, uma linha por célula. Combinação que
-  não vem é **célula vazia** (borda tracejada), e `0` é valor (primeiro degrau):
-  não troque um pelo outro. `rows` e `columns` dão a ordem e trazem a linha sem
-  registro. `domain` fixa a régua quando duas grades se comparam. `label` é
-  obrigatório: vira a legenda da tabela escondida que o leitor de tela lê.
-- **`ChartGauge`** julga, o `ChartRadial` mede contra meta, o `Meter` só diz
-  quanto. Use o medidor quando a faixa tem nome e subir pode ser pior.
-- **`ChartFunnel`**: etapas que são subconjunto uma da outra. Sem isso não há
-  conversão, e é barra deitada.
-- **`ChartTreemap`**: acima de seis categorias, onde a rosca para de informar. A
-  altura é sua, por classe (padrão `h-64`).
+- **`ChartHeatmap`**: `data` is long-form, one row per cell. A combination that
+  does not come is an **empty cell** (dashed border), and `0` is a value (first
+  step): do not swap one for the other. `rows` and `columns` give the order and
+  bring in the row without records. `domain` fixes the scale when two grids are
+  compared. `label` is required: it becomes the caption of the hidden table the
+  screen reader reads.
+- **`ChartGauge`** judges, `ChartRadial` measures against a goal, `Meter` only
+  says how much. Use the gauge when the band has a name and going up can be
+  worse.
+- **`ChartFunnel`**: stages that are subsets of one another. Without that there
+  is no conversion, and it is a horizontal bar.
+- **`ChartTreemap`**: above six categories, where the donut stops informing. The
+  height is yours, by class (default `h-64`).

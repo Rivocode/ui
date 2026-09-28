@@ -1,24 +1,25 @@
 /**
- * Devolve o acento a prosa em portugues das docs.
+ * Restores the accents to Portuguese prose.
  *
- * O catalogo foi escrito sem acento, e sem acento ele le como desleixo numa
- * pagina feita para cliente. O codigo fica intocado: bloco cercado, trecho
- * entre crases e o que se parece com identificador guardam seus bytes exatos,
- * porque `nao` dentro de um nome de prop nao e erro de digitacao.
+ * The catalog was written without accents, and without them it reads as
+ * sloppiness on a page made for a client. Code is left untouched: fenced
+ * blocks, backtick spans and whatever looks like an identifier keep their exact
+ * bytes, because `nao` inside a prop name is not a typo.
  *
- * O caso `e` -> `é` nao se resolve por dicionario, porque um e conjuncao e o
- * outro e o verbo. Ele passa so por regra de contexto, e o que a regra nao
- * reconhece fica como esta e sai reportado para uma pessoa ler.
+ * The `e` -> `é` case is not solved by dictionary, because one is the
+ * conjunction and the other is the verb. It goes only through context rules,
+ * and whatever the rules do not recognize stays as is and is reported for a
+ * person to read.
  */
 
 /**
- * O dicionario de acentos do repositorio.
+ * The repository's accent dictionary.
  *
- * Exportado porque ha um segundo leitor: a guarda `test/accents.test.ts`, que
- * cobra o acento no texto que a biblioteca escreve na TELA. Ela mantinha uma
- * lista propria de vinte e duas palavras, e uma lista de vinte e duas dentro
- * de uma casa que ja tinha uma de duzentas e oitenta e uma so podia envelhecer
- * pior - foi assim que "Navegacao" chegou a interface.
+ * Exported because there is a second reader: the `test/accents.test.ts` guard,
+ * which demands accents in the text the library writes on the SCREEN. It kept
+ * its own list of twenty-two words, and a list of twenty-two inside a house
+ * that already had one of two hundred and eighty could only age worse - that
+ * is how "Navegacao" reached the interface.
  */
 export const WORDS: Record<string, string> = {
   nao: "não",
@@ -310,9 +311,10 @@ export const WORDS: Record<string, string> = {
   independencia: "independência",
 };
 
-/* Onde `e` e o verbo, e nao a conjuncao. Cada regra descreve um contorno em que
- * a leitura nao e ambigua: depois de ponto, antes de artigo, e assim por
- * diante. O que nao casar fica como esta, errar para menos e recuperavel. */
+/* Where `e` is the verb and not the conjunction. Each rule describes a context
+ * in which the reading is not ambiguous: after a period, before an article, and
+ * so on. Whatever does not match stays as is; erring on the side of less is
+ * recoverable. */
 const VERB: Array<[RegExp, string]> = [
   [/\bnao e\b/g, "não é"],
   [/\bque e\b/g, "que é"],
@@ -334,10 +336,10 @@ const VERB: Array<[RegExp, string]> = [
   [/\be de proposito\b/g, "é de propósito"],
 ];
 
-/** Aplica uma funcao so na prosa, deixando bloco e trecho de codigo intocados. */
+/** Applies a function only to prose, leaving code blocks and code spans untouched. */
 function proseOnly(text: string, apply: (chunk: string) => string) {
-  // O destino de um link entra na lista de trechos intocados junto com o
-  // codigo: acentuar `/instalacao` quebra o endereco em silencio.
+  // A link target joins the list of untouched spans along with code:
+  // accenting `/instalacao` silently breaks the address.
   const parts = text.split(/(```[\s\S]*?```|`[^`\n]*`|<[^>]+>|\]\([^)]*\)|https?:\/\/\S+)/g);
   return parts.map((part, index) => (index % 2 === 0 ? apply(part) : part)).join("");
 }
@@ -364,7 +366,7 @@ export function addAccents(text: string) {
   });
 }
 
-/** As linhas onde um `e` solto sobreviveu, para uma pessoa ler. */
+/** The lines where a stray `e` survived, for a person to read. */
 export function pendingLines(text: string) {
   const lines: string[] = [];
   proseOnly(text, (chunk) => {

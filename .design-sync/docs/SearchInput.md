@@ -1,20 +1,22 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # SearchInput
 
-O campo de busca com a lupa no lugar: o arranjo que toda listagem montava na
-mão com `position: absolute`.
+The search field with the magnifying glass in place: the arrangement every
+listing used to build by hand with `position: absolute`.
 
-Sai como `<input type="search">`, então o leitor de tela anuncia "busca" e o
-Esc limpa. Sem `onClear`, o Esc passa pelo mesmo caminho da digitação: o
-`onChange` e o `onValueChange` recebem o texto vazio, e o campo controlado
-limpa quando o estado de quem usa aceita. Com `onClear`, limpar é com ele.
+It comes out as `<input type="search">`, so the screen reader announces
+"search" and Esc clears it. Without `onClear`, Esc goes down the same path as
+typing: `onChange` and `onValueChange` receive the empty text, and the
+controlled field clears when the user's state accepts it. With `onClear`,
+clearing is up to it.
 
-`onValueChange` entrega o texto a cada tecla, como no `Input` e no
-`SearchInput` do React Native. Com ele, o campo controlado é `value` mais `onValueChange`, sem tirar o texto
-de dentro do evento. O `onChange` do DOM continua chamado junto.
+`onValueChange` delivers the text on every keystroke, as in `Input` and in the
+React Native `SearchInput`. With it, the controlled field is `value` plus
+`onValueChange`, without pulling the text out of the event. The DOM `onChange`
+is still called alongside.
 
 ```tsx
 const [filter, setFilter] = useState("");
@@ -22,13 +24,14 @@ const [filter, setFilter] = useState("");
 <SearchInput aria-label="Buscar nota" value={filter} onValueChange={setFilter} />
 ```
 
-`shortcut` mostra o atalho num `Kbd` dentro do campo (`"mod+k"` sai ⌘K no Mac
-e Ctrl K no resto). Só o desenho: registrar o atalho é trabalho de quem monta
-a tela, porque é ela que sabe o que mais escuta teclado.
+`shortcut` shows the shortcut in a `Kbd` inside the field (`"mod+k"` comes out
+as ⌘K on the Mac and Ctrl K elsewhere). Only the drawing: registering the
+shortcut is the job of whoever builds the screen, because it is the screen that
+knows what else listens to the keyboard.
 
-Combina com o `filter` do `DataTable`: o campo fica onde a tela pedir e a
-tabela só recebe o texto.
+It pairs with `DataTable`'s `filter`: the field sits wherever the screen asks
+and the table only receives the text.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `SearchInput` - `value` e `onValueChange` obrigatórios. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `SearchInput` - `value` and `onValueChange` required. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

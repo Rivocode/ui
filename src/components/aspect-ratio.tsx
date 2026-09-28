@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "../lib/cn";
 
 export type AspectRatioProps = ComponentPropsWithoutRef<"div"> & {
-  /** Largura dividida por altura. `16 / 9`, `1`, `4 / 3`. */
+  /** Width divided by height. `16 / 9`, `1`, `4 / 3`. */
   ratio?: number;
 };
 

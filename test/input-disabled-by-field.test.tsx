@@ -29,21 +29,21 @@ function Form({ disabled }: { disabled: boolean }) {
   );
 }
 
-test("o Field desabilitado tira do envio o valor dos campos com input escondido", () => {
+test("a disabled Field drops from submission the value of fields with a hidden input", () => {
   const { container } = render(<Form disabled />);
   const sent = [...new FormData(container.querySelector("form")!).keys()];
 
   for (const name of ["hora", "preco", "tags"]) expect(sent).not.toContain(name);
 });
 
-test("o Field habilitado continua enviando os mesmos campos", () => {
+test("an enabled Field keeps submitting the same fields", () => {
   const { container } = render(<Form disabled={false} />);
   const sent = [...new FormData(container.querySelector("form")!).keys()];
 
   expect(sent).toEqual(expect.arrayContaining(["hora", "preco", "tags", "senha"]));
 });
 
-test("o olho da senha pega o disabled do Field", () => {
+test("the password eye picks up the Field disabled state", () => {
   render(<Form disabled />);
   const eye = screen.getByRole("button", { name: "Mostrar senha" }) as HTMLButtonElement;
 

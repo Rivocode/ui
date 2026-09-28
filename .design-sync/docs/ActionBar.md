@@ -1,13 +1,13 @@
 ---
-category: Ações
+category: Actions
 ---
 
 # ActionBar
 
-A barra das ações **em lote**: aparece quando há itens selecionados, diz
-quantos são, oferece o que dá para fazer com todos eles de uma vez e deixa
-limpar a seleção. Exportar vinte notas, cancelar três boletos, reenviar os
-recibos de uma semana.
+The bar for **bulk** actions: it appears when there are selected items, says
+how many there are, offers what can be done with all of them at once and lets
+the selection be cleared. Exporting twenty invoices, cancelling three boletos,
+resending a week's receipts.
 
 ```tsx
 const [selected, setSelected] = useState<string[]>([])
@@ -26,32 +26,33 @@ const [selected, setSelected] = useState<string[]>([])
 </ActionBar>
 ```
 
-A barra não guarda estado nenhum. `count` diz quantos estão marcados, e é o
-`length` do `value` do `DataTable`; `onClear` é quem zera a seleção. Com o
-`DataTable` controlado, o "Limpar seleção" desmarca a tabela na mesma hora,
-porque os dois leem o mesmo estado.
+The bar keeps no state at all. `count` says how many are checked, and it is the
+`length` of the `DataTable`'s `value`; `onClear` is what resets the selection.
+With a controlled `DataTable`, "Limpar seleção" unchecks the table at the same
+moment, because both read the same state.
 
-## Quando aparece
+## When it appears
 
-Acima de zero ela entra, subindo do pé da área; em zero ela sai. A entrada usa
-a curva de entrada dos tokens de movimento (`--rc-ease-enter`, na duração
-`base`) e a saída usa a de saída (`--rc-ease-exit`, na `fast`), então quem pediu
-ao sistema para reduzir movimento vê a barra aparecer e sumir sem deslize.
+Above zero it enters, rising from the bottom of the area; at zero it leaves.
+The entrance uses the enter curve of the motion tokens (`--rc-ease-enter`, at
+the `base` duration) and the exit uses the exit one (`--rc-ease-exit`, at
+`fast`), so whoever asked the system to reduce motion sees the bar appear and
+disappear without sliding.
 
-Enquanto sai, ela continua dizendo o último número (e não "0 selecionados") até
-terminar de sumir. Fechada, ela fica inerte: nenhum botão dela recebe foco nem
-clique.
+While it leaves, it keeps saying the last number (and not "0 selecionados")
+until it has finished disappearing. Closed, it is inert: none of its buttons
+receives focus or clicks.
 
-## A contagem, dita em voz alta
+## The count, said out loud
 
-A frase sai no plural certo e com o número no formato brasileiro: "1
-selecionado", "3 selecionados", "1.234 selecionados". Ela é também anunciada
-numa região viva educada, que existe antes da primeira seleção (região montada
-junto com o texto não é anunciada por leitor de tela nenhum). Quando a seleção
-zera, o que se ouve é "Seleção limpa".
+The sentence comes out with the right plural and with the number in Brazilian
+format: "1 selecionado", "3 selecionados", "1.234 selecionados". It is also
+announced in a polite live region, which exists before the first selection (a
+region mounted together with its text is not announced by any screen reader).
+When the selection goes back to zero, what is heard is "Seleção limpa".
 
-`labels.selected` recebe a contagem e devolve a frase, para quem quer dar nome
-ao item e acertar o gênero:
+`labels.selected` takes the count and returns the sentence, for whoever wants
+to name the item and get the grammatical gender right:
 
 ```tsx
 <ActionBar
@@ -65,19 +66,22 @@ ao item e acertar o gênero:
 </ActionBar>
 ```
 
-## Onde ela gruda
+## Where it sticks
 
-`position="sticky"`, o padrão, gruda no pé da área que a contém: ponha a barra
-logo depois da tabela, dentro do mesmo bloco. Enquanto está aberta ela ocupa
-lugar embaixo da tabela, então a paginação nunca fica escondida atrás dela.
+`position="sticky"`, the default, sticks to the bottom of the area that
+contains it: put the bar right after the table, inside the same block. While it
+is open it takes up room below the table, so the pagination is never hidden
+behind it.
 
-`position="fixed"` gruda no pé da janela, acima da área segura do celular, e não
-ocupa lugar nenhum. É para listagem que ocupa a tela inteira; numa tela com
-mais de uma área, a `sticky` diz melhor de qual lista ela fala.
+`position="fixed"` sticks to the bottom of the window, above the phone's safe
+area, and takes up no room at all. It is for a listing that takes the whole
+screen; on a screen with more than one area, `sticky` says better which list it
+is talking about.
 
-Como a `fixed` não ocupa lugar, ela pode cobrir o controle que recebe o foco
-pelo Tab no pé da tela, e o navegador não rola para tirá-lo de baixo dela.
-Reserve a altura da barra na rolagem da página enquanto ela está aberta:
+Since `fixed` takes up no room, it can cover the control that receives focus
+via Tab at the bottom of the screen, and the browser does not scroll to get it
+out from under the bar. Reserve the bar's height in the page scroll while it is
+open:
 
 ```css
 html {
@@ -85,52 +89,52 @@ html {
 }
 ```
 
-Com Tailwind é a classe `scroll-pb-24` no `html`. Se a página rola dentro de um
-contêiner, a regra vai nele, e não no `html`. Os `6rem` cobrem a barra de uma
-linha com a área segura; com ações que quebram em duas linhas no celular, suba
-o valor.
+With Tailwind it is the `scroll-pb-24` class on `html`. If the page scrolls
+inside a container, the rule goes on it, not on `html`. The `6rem` covers a
+one-line bar with the safe area; with actions that wrap onto two lines on a
+phone, raise the value.
 
-Os botões dentro dela quebram o rótulo longo em mais de uma linha em vez de
-empurrar a página para o lado, então a barra cabe em 320px, que é a tela de
-quem usa zoom de 400%.
+The buttons inside it wrap a long label onto more than one line instead of
+pushing the page sideways, so the bar fits in 320px, which is the screen of
+someone using 400% zoom.
 
-Nos dois casos ela empilha em `--rc-z-sticky`: fica acima do conteúdo que rola
-e abaixo de menu, diálogo e aviso.
+In both cases it stacks at `--rc-z-sticky`: above the scrolling content and
+below menus, dialogs and toasts.
 
-## O foco
+## Focus
 
-Quando a barra sai com o foco dentro dela (depois do "Limpar seleção", ou de
-uma ação que zera a seleção), o foco não cai no começo da página: ele volta
-para onde estava antes de entrar na barra, que quase sempre é o checkbox da
-última linha marcada. Se aquilo sumiu da tela, ele fica na raiz da barra, no
-mesmo ponto da leitura. `finalFocus` manda para outro lugar, como o bloco da
-tabela. Foco que estava fora da barra não é tocado.
+When the bar leaves with focus inside it (after "Limpar seleção", or after an
+action that resets the selection), focus does not fall to the top of the page:
+it returns to where it was before entering the bar, which is almost always the
+checkbox of the last checked row. If that disappeared from the screen, it stays
+on the bar's root, at the same reading point. `finalFocus` sends it somewhere
+else, such as the table block. Focus that was outside the bar is not touched.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `bar` (o painel), `count`, `actions` e
-`clear`.
+`classNames` reaches each node by name: `bar` (the panel), `count`, `actions`
+and `clear`.
 
-## Quando não usar
+## When not to use
 
-- **Ação de uma linha só** mora na própria linha, num `Menu` da coluna de
-  ações. A `ActionBar` é para o que se faz com vários de uma vez; com um item só
-  ela aparece, mas quem clicou na linha esperava a ação ali.
-- **Controles que ficam sempre na tela**, como filtro, busca e exportar tudo,
-  são `Toolbar`. A `Toolbar` está lá desde o começo e anda por seta; a
-  `ActionBar` só existe enquanto há seleção.
-- **Confirmar o que a ação fez** é `Toast`. A barra não diz "3 notas
-  canceladas": quem chamou limpa a seleção, a barra sai, e o `Toast` conta o
-  resultado.
-- **Ação destrutiva em lote** não roda direto do botão da barra: ela abre um
-  `AlertDialog` dizendo quantos itens vão embora.
+- **A single-row action** lives on the row itself, in a `Menu` in the actions
+  column. `ActionBar` is for what is done with several at once; with a single
+  item it appears, but whoever clicked the row expected the action there.
+- **Controls that are always on screen**, such as filter, search and export
+  all, are `Toolbar`. `Toolbar` is there from the start and moves by arrow key;
+  `ActionBar` only exists while there is a selection.
+- **Confirming what the action did** is `Toast`. The bar does not say "3 notas
+  canceladas": the caller clears the selection, the bar leaves, and the `Toast`
+  tells the result.
+- **A destructive bulk action** does not run straight from the bar's button: it
+  opens an `AlertDialog` saying how many items are going away.
 
-## No React Native
+## In React Native
 
-Traduz, com o mesmo `count`, o mesmo `onClear` e a mesma frase no plural certo. As ações entram como filhas, e o texto dos botões é o do `Button` nativo.
+Translates, with the same `count`, the same `onClear` and the same sentence with the right plural. The actions come in as children, and the buttons' text is the native `Button`'s.
 
-**Ela gruda acima da área segura de baixo.** O pacote não depende do `react-native-safe-area-context`, então a altura da barra do sistema entra por `bottomInset`: `bottomInset={useSafeAreaInsets().bottom}`. A barra fica por cima da lista, em `absolute`, e quem a monta deixa o respiro no fim da lista para a última linha não ficar embaixo dela.
+**It sticks above the bottom safe area.** The package does not depend on `react-native-safe-area-context`, so the height of the system bar comes in through `bottomInset`: `bottomInset={useSafeAreaInsets().bottom}`. The bar sits on top of the list, in `absolute`, and whoever mounts it leaves breathing room at the end of the list so the last row does not end up under it.
 
-**A contagem é anunciada.** A frase sai pelo anúncio do leitor de tela do sistema, e a barra entra subindo e sai descendo com os tokens de movimento, sem deslize quando o sistema pede para reduzir movimento.
+**The count is announced.** The sentence goes out through the system screen reader's announcement, and the bar slides up on entering and down on leaving with the motion tokens, with no slide when the system asks to reduce motion.
 
-As partes vestem pelo mesmo `classNames` do web: `bar`, `count` e `clear`, e o `className` veste o mesmo painel de `bar`. `actions` não existe aqui: as ações são filhas diretas do painel, sem caixa própria.
+The parts are styled through the same `classNames` as the web: `bar`, `count` and `clear`, and `className` styles the same panel as `bar`. `actions` does not exist here: the actions are direct children of the panel, with no box of their own.

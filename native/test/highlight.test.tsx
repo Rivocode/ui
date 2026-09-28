@@ -9,14 +9,14 @@ const marks = (screen: ReturnType<typeof render>) =>
   byClass(screen, MARK).map((node) => node.props.children);
 
 describe("Highlight", () => {
-  test("o termo sem acento acha o trecho acentuado, e o texto sai inteiro", () => {
+  test("the unaccented term finds the accented stretch, and the text comes out whole", () => {
     const screen = render(<Highlight query="sao">Clínica São Lucas</Highlight>);
 
     expect(marks(screen)).toEqual(["São"]);
     expect(textOf(screen)).toBe("Clínica São Lucas");
   });
 
-  test("varios termos, e caixa nao importa", () => {
+  test("several terms, and case does not matter", () => {
     const screen = render(
       <Highlight query={["NOTA", "paga"]}>Nota fiscal cancelada, nota paga</Highlight>,
     );
@@ -24,14 +24,14 @@ describe("Highlight", () => {
     expect(marks(screen)).toEqual(["Nota", "nota", "paga"]);
   });
 
-  test("termo vazio nao destaca nada", () => {
+  test("an empty term highlights nothing", () => {
     const screen = render(<Highlight query="  ">Recife</Highlight>);
 
     expect(marks(screen)).toEqual([]);
     expect(textOf(screen)).toBe("Recife");
   });
 
-  test("o trecho achado veste o fundo cheio de atencao com a tinta dele, e nao o fundo sutil", () => {
+  test("the found stretch wears the full attention background with its own ink, not the subtle background", () => {
     const screen = render(
       <Highlight query="pix" classNames={{ mark: "rc-mark" }} tone="muted">
         Pague por Pix

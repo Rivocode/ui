@@ -31,7 +31,7 @@ function mount(props: Parameters<typeof Controlled>[0] = {}) {
 }
 
 describe("CurrencyInput", () => {
-  test("a digitacao entra pela direita, sai em centavos, e o R$ fica ao lado", () => {
+  test("typing enters from the right, comes out in cents, and R$ stays beside it", () => {
     const onCents = mock((_cents: number | null) => {});
     const { screen, input, type } = mount({ onCents });
 
@@ -44,7 +44,7 @@ describe("CurrencyInput", () => {
     expect(onCents).toHaveBeenLastCalledWith(123456);
   });
 
-  test("apagar tudo devolve null", () => {
+  test("deleting everything returns null", () => {
     const onCents = mock((_cents: number | null) => {});
     const { input, erase } = mount({ onCents, start: 5 });
 
@@ -54,7 +54,7 @@ describe("CurrencyInput", () => {
     expect(onCents).toHaveBeenLastCalledWith(null);
   });
 
-  test("colar por cima de tudo le o texto colado como valor, pela selecao de antes", () => {
+  test("pasting over everything reads the pasted text as the value, through the previous selection", () => {
     const onCents = mock((_cents: number | null) => {});
     const { input, select, replace } = mount({ onCents, start: 123450 });
 
@@ -68,7 +68,7 @@ describe("CurrencyInput", () => {
     expect(input().props.value).toBe("1.234,56");
   });
 
-  test("com allowNegative o - poe e tira o sinal, e o teclado ganha a pontuacao", () => {
+  test("with allowNegative the - adds and removes the sign, and the keyboard gets punctuation", () => {
     const onCents = mock((_cents: number | null) => {});
     const { input, type } = mount({ onCents, allowNegative: true });
 
@@ -83,13 +83,13 @@ describe("CurrencyInput", () => {
     expect(input().props.value).toBe("0,05");
   });
 
-  test("sem allowNegative o sinal nao entra", () => {
+  test("without allowNegative the sign does not get in", () => {
     const { input, type } = mount({ start: 500 });
     type("-");
     expect(input().props.value).toBe("5,00");
   });
 
-  test("fora de min e max o campo se marca invalido, sem corrigir o valor", () => {
+  test("outside min and max the field marks itself invalid, without correcting the value", () => {
     const { input, replace } = mount({ min: 1000, max: 50000 });
 
     replace("5,00");
@@ -100,7 +100,7 @@ describe("CurrencyInput", () => {
     expect(input().props.className.split(" ")).not.toContain("border-danger");
   });
 
-  test("no iOS, o cursor de depois da colagem chegando antes do texto nao vira digitacao", () => {
+  test("on iOS, the post-paste cursor arriving before the text does not become typing", () => {
     const { input, select, replace } = mount({ start: 123456 });
 
     select(0, 8);
@@ -109,14 +109,14 @@ describe("CurrencyInput", () => {
     expect(input().props.value).toBe("10,00");
   });
 
-  test("sem evento de selecao, colar por cima de tudo e lido como colagem inteira", () => {
+  test("without a selection event, pasting over everything is read as a full paste", () => {
     const { input, replace } = mount({ start: 123456 });
 
     replace("16");
     expect(input().props.value).toBe("16,00");
   });
 
-  test("a selecao gravada so vale para o texto que estava na tela quando ela chegou", () => {
+  test("the recorded selection only applies to the text that was on screen when it arrived", () => {
     const onValueChange = mock((_cents: number | null) => {});
     let setOutside: (cents: number) => void = () => {};
     function Outside() {
@@ -135,7 +135,7 @@ describe("CurrencyInput", () => {
     expect(onValueChange).toHaveBeenLastCalledWith(5678901);
   });
 
-  test("apagar a virgula ou digitar um so digito por cima de tudo continua sendo digitacao", () => {
+  test("deleting the comma or typing a single digit over everything is still typing", () => {
     const { input, replace } = mount({ start: 123456 });
 
     replace("1.23456");
@@ -145,7 +145,7 @@ describe("CurrencyInput", () => {
     expect(input().props.value).toBe("0,05");
   });
 
-  test("colar texto que nao e valor, ou valor grande demais, deixa o que estava", () => {
+  test("pasting text that is not a value, or a value too large, keeps what was there", () => {
     const onCents = mock((_cents: number | null) => {});
     const { input, select, replace } = mount({ start: 500, onCents });
 

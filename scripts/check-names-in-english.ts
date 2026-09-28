@@ -1,44 +1,45 @@
 /**
- * Guarda de idioma no codigo.
+ * Language guard for code.
  *
- * A biblioteca escreve para a tela em portugues e programa em ingles, e as
- * duas coisas se misturavam: `PropsDeSelect` ao lado de `ButtonProps`,
- * `const selecao` dentro de um arquivo cujo tipo se chama `RowSelectionState`.
- * Quem chega no arquivo precisa trocar de idioma no meio da linha, e o nome
- * publico saia com meia traducao - o que ja custou duas renomeacoes com
- * quebra de contrato.
+ * The library writes to the screen in Portuguese and programs in English, and
+ * the two used to get mixed: `PropsDeSelect` next to `ButtonProps`,
+ * `const selecao` inside a file whose type is called `RowSelectionState`.
+ * Whoever opens the file has to switch languages mid-line, and the public name
+ * shipped half translated - which already cost two renames that broke the
+ * contract.
  *
- * A regra: identificador em ingles, sempre. Comentario, JSDoc e texto de
- * interface seguem em portugues, que e onde o portugues serve.
+ * The rule: identifiers in English, always. Screen text stays in Portuguese,
+ * which is where Portuguese serves.
  *
- * ## O que ela olha
+ * ## What it looks at
  *
- * A primeira versao so casava DECLARACAO - `const x`, `function x`, `type X` -
- * e por isso deixou passar as tres formas mais comuns de um nome nascer sem
- * palavra-chave na frente:
+ * The first version only matched DECLARATIONS - `const x`, `function x`,
+ * `type X` - and so it let through the three most common ways a name is born
+ * without a keyword in front:
  *
- *   - desestruturacao: `const [selection, setSelecaoInterna] = useState()`;
- *   - resto: `const { onChange, ...resto } = field`;
- *   - parametro, inclusive o de uma assinatura publica.
+ *   - destructuring: `const [selection, setSelecaoInterna] = useState()`;
+ *   - rest: `const { onChange, ...resto } = field`;
+ *   - parameter, including the one in a public signature.
  *
- * O terceiro foi o caro. `onPageChange: (pagina: number) => void` e prop
- * publica: o nome do parametro entra no `.d.ts`, sai na tabela de props que o
- * compilador gera e VAZOU para a documentacao publicada, onde qualquer um le
- * `(pagina: number) => void` numa biblioteca cuja API e em ingles.
+ * The third was the expensive one. `onPageChange: (pagina: number) => void` is
+ * a public prop: the parameter name goes into the `.d.ts`, comes out in the
+ * props table the compiler generates and LEAKED into the published
+ * documentation, where anyone reads `(pagina: number) => void` in a library
+ * whose API is in English.
  *
- * ## Como ela sabe que a palavra e portuguesa
+ * ## How it knows the word is Portuguese
  *
- * Por dois caminhos, e o segundo existe porque o primeiro nao escala. A lista
- * abaixo conhece as palavras que este repositorio ja usou - ela nao sabe
- * portugues, e nunca vai saber: `lado`, `busca` e `visto` so entram nela
- * depois de alguem escreve-las. O sufixo cobre o resto sem lista: nenhuma
- * palavra inglesa termina em `-acao`, `-mento`, `-dade`, `-agem`, `-encia` ou
- * `-ivel`, entao `paginacao`, `deslocamento` e `disponivel` sao pegos na
- * primeira vez que aparecem.
+ * Two ways, and the second exists because the first does not scale. The list
+ * below knows the words this repository has already used - it does not know
+ * Portuguese, and never will: `lado`, `busca` and `visto` only get in after
+ * someone writes them. The suffix covers the rest without a list: no English
+ * word ends in `-acao`, `-mento`, `-dade`, `-agem`, `-encia` or `-ivel`, so
+ * `paginacao`, `deslocamento` and `disponivel` are caught the first time they
+ * show up.
  */
 import { scanAtLeast } from "./scan";
 
-/** Onde vale a regra: tudo que e codigo nosso. */
+/** Where the rule applies: everything that is our code. */
 const AREAS: [area: string, floor: number][] = [
   ["src/**/*.{ts,tsx}", 80],
   ["scripts/**/*.ts", 20],
@@ -52,9 +53,9 @@ const AREAS: [area: string, floor: number][] = [
 ];
 
 /**
- * As palavras portuguesas que ja apareceram como identificador aqui. Sem
- * acento de proposito: identificador nao carrega acento, e e assim que elas
- * foram escritas.
+ * The Portuguese words that have already shown up as identifiers here. Without
+ * accents on purpose: identifiers carry no accents, and that is how they were
+ * written.
  */
 const PORTUGUESE = [
   "abertos",
@@ -213,55 +214,57 @@ const PORTUGUESE = [
 ];
 
 /**
- * As terminacoes que so o portugues produz.
+ * The endings only Portuguese produces.
  *
- * Serve para a palavra que ninguem listou ainda, que e a maioria delas. Nao ha
- * palavra inglesa terminada em `-acao`, `-mento`, `-dade`, `-agem`, `-encia`,
- * `-ancia`, `-ismo`, `-avel`, `-ivel` ou `-inho`, entao o falso positivo aqui
- * e teorico, e o que se ganha e concreto: `SEM_PAGINACAO`, `deslocamento` e
- * `disponivel` foram pegos na primeira vez que apareceram, sem que ninguem
- * tivesse previsto nenhuma das tres.
+ * It serves the word nobody has listed yet, which is most of them. No English
+ * word ends in `-acao`, `-mento`, `-dade`, `-agem`, `-encia`, `-ancia`,
+ * `-ismo`, `-avel`, `-ivel` or `-inho`, so the false positive here is
+ * theoretical, and the gain is concrete: `SEM_PAGINACAO`, `deslocamento` and
+ * `disponivel` were caught the first time they showed up, without anyone
+ * having foreseen any of the three.
  *
- * Minimo de seis letras para o sufixo nao engolir palavra curta - `made`
- * termina em `-ade` mas nao em `-dade`, e a margem sai barata.
+ * Six letters minimum so the suffix does not swallow a short word - `made`
+ * ends in `-ade` but not in `-dade`, and the margin comes cheap.
  */
 const PORTUGUESE_ENDING =
   /(?:acao|acoes|icao|icoes|ancia|encia|dade|mento|agem|ismo|avel|ivel|veis|inho|inha)$/;
 
 /**
- * A divida que ficou para depois. Hoje: nenhuma.
+ * The debt left for later. Today: none.
  *
- * Ela nasceu com 22 linhas - nomes que a guarda ampliada passou a acusar em
- * arquivos que outro agente estava reescrevendo na mesma hora. Deixar a guarda
- * desligada ate a poeira baixar seria perder a guarda; renomear por cima do
- * trabalho alheio seria perder o trabalho. Entao a divida ficou escrita, com
- * endereco, e foi paga inteira depois.
+ * It was born with 22 lines - names the widened guard started flagging in
+ * files another agent was rewriting at the same time. Leaving the guard off
+ * until the dust settled would mean losing the guard; renaming on top of
+ * someone else's work would mean losing the work. So the debt was written
+ * down, with an address, and was paid in full later.
  *
- * A lista continua aqui vazia porque o mecanismo e que importa, e nao as
- * linhas: a proxima colisao entre a guarda e um arquivo em obra tem onde ser
- * anotada sem que ninguem precise reinventar o acordo. O acordo e que ela SO
- * ENCOLHE - entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
- * E o que impede esta lista de virar o lugar onde os nomes em portugues moram.
+ * The list stays here empty because the mechanism is what matters, not the
+ * lines: the next collision between the guard and a file under construction
+ * has a place to be noted without anyone reinventing the agreement. The
+ * agreement is that it ONLY SHRINKS - an entry that no longer flags anything
+ * is an error, and the guard says to delete the line. That is what keeps this
+ * list from becoming the place where Portuguese names live.
  */
 const DEBT = new Set<string>([]);
 
 /**
- * Os arquivos que falam SOBRE o portugues.
+ * The files that talk ABOUT Portuguese.
  *
- * Um dicionario de acentuacao tem `acao: "acao"` como dado, e nao como nome de
- * variavel - acusa-lo seria a guarda mordendo a propria lista. Sao poucos e
- * sao sempre os mesmos: os que traduzem, os que acentuam, e ela mesma.
+ * An accent dictionary has `acao: "acao"` as data, not as a variable name -
+ * flagging it would be the guard biting its own list. They are few and always
+ * the same: the ones that translate, the ones that add accents, and the guard
+ * itself.
  */
-const DICTIONARIES = /check-nomes-em-ingles|acentuar\.ts|acentos\.test/;
+const DICTIONARIES = /check-names-in-english|scripts\/accents\.ts|accents\.test/;
 
 /**
- * Apaga do codigo tudo que e prosa, preservando o tamanho.
+ * Erases everything that is prose from the code, preserving its length.
  *
- * Comentario, string e texto solto de JSX sao portugues por contrato, e sao
- * exatamente onde as palavras da lista aparecem de proposito. Apagar por
- * substituicao de mesmo comprimento - espaco por caractere, quebra de linha
- * intacta - mantem cada byte no lugar, e por isso o numero da linha continua
- * sendo o do arquivo de verdade.
+ * Comments, strings and loose JSX text are where Portuguese is allowed - screen
+ * text is Portuguese by contract - and they are exactly where the listed words
+ * show up on purpose. Erasing by same-length substitution - a space per
+ * character, line breaks intact - keeps every byte in place, and so the line
+ * number is still the real file's.
  */
 function withoutProse(code: string) {
   const chars = code.split("");
@@ -273,8 +276,8 @@ function withoutProse(code: string) {
     erase(hit.index!, hit.index! + hit[0].length);
   for (const hit of code.matchAll(/\/\/[^\n]*/g)) erase(hit.index!, hit.index! + hit[0].length);
 
-  // Em duas passadas: string so e string depois que o comentario saiu, senao
-  // uma aspa dentro de comentario abriria uma que nunca fecha.
+  // In two passes: a string is only a string after the comment is gone,
+  // otherwise a quote inside a comment would open one that never closes.
   let clean = chars.join("");
   const inner = clean.split("");
   const eraseInner = (from: number, to: number) => {
@@ -287,8 +290,8 @@ function withoutProse(code: string) {
 
   clean = inner.join("");
   const last = clean.split("");
-  // Texto solto de JSX: o que fica entre `>` e `<` sem chave no meio. Sem isto
-  // o `<p>Nenhuma pagina encontrada</p>` de um retorno vira acusacao.
+  // Loose JSX text: what sits between `>` and `<` with no brace in between.
+  // Without this the `<p>Nenhuma pagina encontrada</p>` of a return is flagged.
   for (const hit of clean.matchAll(/>([^<>{}]*)</g)) {
     for (let at = hit.index! + 1; at < hit.index! + hit[0].length - 1; at++) {
       if (last[at] !== "\n") last[at] = " ";
@@ -299,36 +302,36 @@ function withoutProse(code: string) {
 }
 
 /**
- * O que vem depois dos dois pontos e um TIPO, e nao um valor.
+ * What comes after the colon is a TYPE, not a value.
  *
- * E o que separa `pagina: number` - parametro, nome de gente - de
- * `numero: "NF-001"` - chave de um objeto de dados, que pode e deve estar em
- * portugues quando o dado esta. Sem esta pergunta a guarda acusaria toda
- * fixture do demo, e ninguem leria a saida dela de novo.
+ * It is what separates `pagina: number` - a parameter, a name for people -
+ * from `numero: "NF-001"` - the key of a data object, which may and should be
+ * in Portuguese when the data is. Without this question the guard would flag
+ * every demo fixture, and nobody would read its output again.
  */
 const TYPE_AHEAD =
   /^\s*(?:readonly\s+)?(?:[A-Z([]|string\b|number\b|boolean\b|unknown\b|any\b|never\b|void\b|null\b|undefined\b|symbol\b|bigint\b|object\b|this\b|keyof\b|typeof\b|new\b)/;
 
-/** Cada jeito de um nome nascer, e como arrancar o nome de dentro dele. */
+/** Each way a name is born, and how to pull the name out of it. */
 const BINDINGS = [
   /** `const x`, `function x`, `type X`. */
   {
-    kind: "declaracao",
+    kind: "declaration",
     pattern: /\b(?:const|let|var|function|type|interface|class|enum)\s+([A-Za-z_$][\w$]*)/g,
   },
-  /** `(pagina: number) => void`, e todo campo de tipo. */
-  { kind: "assinatura", pattern: /([A-Za-z_$][\w$]*)\s*\??\s*:/g, typed: true },
-  /** `...resto`, no parametro e na desestruturacao. */
-  { kind: "resto", pattern: /\.\.\.([A-Za-z_$][\w$]*)/g },
-  /** `const [a, setB] =` e `const { a, b: c } =`. */
-  { kind: "padrao", pattern: /(?:const|let|var)\s*([[{][^=\n]*?[\]}])\s*=/g, split: true },
+  /** `(pagina: number) => void`, and every type field. */
+  { kind: "signature", pattern: /([A-Za-z_$][\w$]*)\s*\??\s*:/g, typed: true },
+  /** `...resto`, in the parameter and in destructuring. */
+  { kind: "rest", pattern: /\.\.\.([A-Za-z_$][\w$]*)/g },
+  /** `const [a, setB] =` and `const { a, b: c } =`. */
+  { kind: "pattern", pattern: /(?:const|let|var)\s*([[{][^=\n]*?[\]}])\s*=/g, split: true },
 ] as const;
 
 /**
- * A palavra tem que casar inteira, e nao por pedaco: `Format` nao e `forma`,
- * `AlertDialog` nao e `alerta`, e `formatDate` nao e `data`. Casar por pedaco
- * transforma a guarda num gerador de falso positivo, e guarda que grita a toa
- * e desligada na semana seguinte.
+ * The word has to match whole, not by piece: `Format` is not `forma`,
+ * `AlertDialog` is not `alerta`, and `formatDate` is not `data`. Matching by
+ * piece turns the guard into a false-positive generator, and a guard that
+ * cries wolf is turned off the following week.
  */
 function portugueseWordIn(name: string): string | null {
   const parts = name
@@ -346,8 +349,9 @@ function portugueseWordIn(name: string): string | null {
 }
 
 /**
- * `const { pageIndex: atual, ...resto }` da `atual` e `resto`: o nome local e
- * o depois dos dois pontos quando ha renome, e a chave quando nao ha.
+ * `const { pageIndex: atual, ...resto }` gives `atual` and `resto`: the local
+ * name is the one after the colon when there is a rename, and the key when
+ * there is not.
  */
 function namesInPattern(pattern: string) {
   return pattern
@@ -402,31 +406,31 @@ for (const [area, floor] of AREAS) {
 }
 
 if (found.length > 0) {
-  console.error(`${found.length} identificador(es) em portugues:\n`);
+  console.error(`${found.length} Portuguese identifier(s):\n`);
   for (const item of found) console.error(item);
   console.error(
-    "\nA biblioteca escreve para a tela em portugues e programa em ingles." +
-      "\nComentario e texto de interface seguem em portugues; o nome, nao." +
-      "\n\nEm prop publica isso nao para no arquivo: o nome do parametro entra no" +
-      "\n`.d.ts`, na tabela de props e na documentacao que o site publica.",
+    "\nThe library writes to the screen in Portuguese and programs in English." +
+      "\nScreen text stays in Portuguese; the name does not." +
+      "\n\nIn a public prop this does not stop at the file: the parameter name goes into" +
+      "\nthe `.d.ts`, the props table and the documentation the site publishes.",
   );
   process.exit(1);
 }
 
 const stale = [...DEBT].filter((item) => !paid.has(item));
 if (stale.length > 0) {
-  console.error(`${stale.length} linha(s) de divida que nao acusam mais nada:\n`);
+  console.error(`${stale.length} debt line(s) that no longer flag anything:\n`);
   for (const item of stale) console.error(`  "${item}",`);
   console.error(
-    "\nO nome foi renomeado, e a divida foi paga. Apague essa(s) linha(s) do" +
-      "\n`DEBT` em scripts/check-names-in-english.ts - lista de excecao que nao" +
-      "\nencolhe vira o lugar onde o proximo nome em portugues se esconde.",
+    "\nThe name was renamed, and the debt was paid. Delete these line(s) from" +
+      "\n`DEBT` in scripts/check-names-in-english.ts - an exception list that does" +
+      "\nnot shrink becomes the place where the next Portuguese name hides.",
   );
   process.exit(1);
 }
 
 console.log(
   DEBT.size === 0
-    ? "Todo identificador em ingles, e nenhuma divida declarada."
-    : `Todo identificador em ingles, fora as ${DEBT.size} dividas ja declaradas.`,
+    ? "Every identifier in English, and no declared debt."
+    : `Every identifier in English, except the ${DEBT.size} debts already declared.`,
 );

@@ -56,7 +56,7 @@ function press(screen: ReactTestRenderer, label: string) {
   const button = byRole(screen, "button").find(
     (node) => node.findAll((child) => child.props?.children === label).length > 0,
   );
-  if (!button) throw new Error(`sem botão "${label}"`);
+  if (!button) throw new Error(`no button "${label}"`);
   act(() => button.props.onPress());
 }
 
@@ -70,14 +70,14 @@ afterEach(() => {
   AccessibilityInfo.clearAnnouncements();
 });
 
-test("fechado nao monta nada", () => {
+test("closed mounts nothing", () => {
   const screen = render(
     <Tour steps={steps()} open={false} onOpenChange={() => {}} step={0} onStepChange={() => {}} />,
   );
   expect(textOf(screen)).not.toContain("Crie um cliente");
 });
 
-test("aberto, a folha mostra o contador, o titulo como cabecalho e o texto", () => {
+test("open, the sheet shows the counter, the title as a header and the text", () => {
   const screen = render(<Harness />);
   expect(textOf(screen)).toContain("Passo 1 de 3");
   expect(textOf(screen)).toContain("Comece pelo cadastro.");
@@ -86,13 +86,13 @@ test("aberto, a folha mostra o contador, o titulo como cabecalho e o texto", () 
   expect(hasButton(screen, "Voltar")).toBe(false);
 });
 
-test("o leitor de tela nao vaza para a tela de tras", () => {
+test("the screen reader does not leak to the screen behind", () => {
   const screen = render(<Harness />);
   const modal = byType(screen, "View").filter((node) => node.props.accessibilityViewIsModal);
   expect(modal).toHaveLength(1);
 });
 
-test("a mascara cerca o alvo medido, com folga, e deixa o recorte vazio", () => {
+test("the mask surrounds the measured target, with slack, and leaves the cutout empty", () => {
   const screen = render(<Harness />);
   const bands = byType(screen, "View").filter((node) =>
     String(node.props.className ?? "").split(" ").includes("bg-overlay"),
@@ -105,7 +105,7 @@ test("a mascara cerca o alvo medido, com folga, e deixa o recorte vazio", () => 
   expect(right).toEqual({ top: 94, height: 56, left: 146 });
 });
 
-test("Proximo e Voltar andam e avisam o pai, e a troca e anunciada", () => {
+test("Proximo and Voltar move and notify the parent, and the change is announced", () => {
   const onStepChange = mock((_: number) => {});
   const screen = render(<Harness onStepChange={onStepChange} />);
 
@@ -118,12 +118,12 @@ test("Proximo e Voltar andam e avisam o pai, e a troca e anunciada", () => {
   expect(textOf(screen)).toContain("Passo 1 de 3");
 });
 
-test("a abertura nao anuncia: o cabecalho ja diz", () => {
+test("opening does not announce: the header already says it", () => {
   render(<Harness />);
   expect(AccessibilityInfo.announced).toHaveLength(0);
 });
 
-test("no ultimo passo Concluir fecha e chama onFinish, e nao onSkip", () => {
+test("on the last step Concluir closes and calls onFinish, not onSkip", () => {
   const onFinish = mock(() => {});
   const onSkip = mock((_: number) => {});
   const screen = render(<Harness initialStep={2} onFinish={onFinish} onSkip={onSkip} />);
@@ -136,7 +136,7 @@ test("no ultimo passo Concluir fecha e chama onFinish, e nao onSkip", () => {
   expect(textOf(screen)).not.toContain("Exporte a lista");
 });
 
-test("Pular tour fecha com o passo da desistencia", () => {
+test("Pular tour closes with the step where it was given up", () => {
   const onSkip = mock((_: number) => {});
   const onOpenChange = mock((_: boolean) => {});
   const screen = render(<Harness initialStep={1} onSkip={onSkip} onOpenChange={onOpenChange} />);
@@ -147,7 +147,7 @@ test("Pular tour fecha com o passo da desistencia", () => {
   expect(onOpenChange).toHaveBeenCalledWith(false);
 });
 
-test("o voltar do Android pula o tour", () => {
+test("Android back skips the tour", () => {
   const onSkip = mock((_: number) => {});
   const screen = render(<Harness onSkip={onSkip} />);
   const [modal] = byType(screen, "Modal");
@@ -157,7 +157,7 @@ test("o voltar do Android pula o tour", () => {
   expect(onSkip).toHaveBeenCalledWith(0);
 });
 
-test("ref vazio pula o passo, com aviso em desenvolvimento", () => {
+test("an empty ref skips the step, with a warning in development", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   const screen = render(<Harness list={steps([1])} />);
 
@@ -165,11 +165,11 @@ test("ref vazio pula o passo, com aviso em desenvolvimento", () => {
 
   expect(textOf(screen)).toContain("Passo 3 de 3");
   expect(warn).toHaveBeenCalledTimes(1);
-  expect(String(warn.mock.calls[0]?.[0])).toContain("passo 2");
+  expect(String(warn.mock.calls[0]?.[0])).toContain("step 2");
   warn.mockRestore();
 });
 
-test("sem alvo nenhum o tour fecha sem chamar onFinish nem onSkip", () => {
+test("with no target at all the tour closes without calling onFinish or onSkip", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   const onFinish = mock(() => {});
   const onSkip = mock((_: number) => {});
@@ -190,7 +190,7 @@ test("sem alvo nenhum o tour fecha sem chamar onFinish nem onSkip", () => {
   warn.mockRestore();
 });
 
-test("labels troca os textos", () => {
+test("labels changes the texts", () => {
   const screen = render(
     <Harness labels={{ next: "Next", counter: (position, total) => `${position}/${total}` }} />,
   );
@@ -204,7 +204,7 @@ function bands(screen: ReactTestRenderer) {
     .map((node) => node.props.style);
 }
 
-test("o recorte desconta onde a raiz do Modal comeca na janela, e nao cai pela barra de status", () => {
+test("the cutout subtracts where the Modal root starts in the window, and does not drop by the status bar", () => {
   let screen!: ReactTestRenderer;
   act(() => {
     screen = create(
@@ -228,7 +228,7 @@ test("o recorte desconta onde a raiz do Modal comeca na janela, e nao cai pela b
   act(() => screen.unmount());
 });
 
-test("ref sem measureInWindow pula o passo com aviso, e nao deixa o tour mudo e invisivel", () => {
+test("a ref without measureInWindow skips the step with a warning, and does not leave the tour silent and invisible", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   const onOpenChange = mock((_: boolean) => {});
   const list = steps();
@@ -237,7 +237,7 @@ test("ref sem measureInWindow pula o passo com aviso, e nao deixa o tour mudo e 
 
   expect(textOf(screen)).toContain("Passo 2 de 3");
   expect(warn).toHaveBeenCalledTimes(1);
-  expect(String(warn.mock.calls[0]?.[0])).toContain("passo 1");
+  expect(String(warn.mock.calls[0]?.[0])).toContain("step 1");
   warn.mockRestore();
 });
 
@@ -247,7 +247,7 @@ function sheet(screen: ReactTestRenderer) {
   )!;
 }
 
-test("com o alvo na metade de baixo, a folha sobe para cima e nao cobre a barra de abas", () => {
+test("with the target in the bottom half, the sheet moves up and does not cover the tab bar", () => {
   const TAB = { x: 0, y: 780, width: 390, height: 56 };
   const list: TourStep[] = [{ target: target(TAB), title: "As abas" }];
   const screen = render(<Harness list={list} />);
@@ -259,7 +259,7 @@ test("com o alvo na metade de baixo, a folha sobe para cima e nao cobre a barra 
   expect(classes).not.toContain("bottom-0");
 });
 
-test("com o alvo na metade de cima, a folha continua embaixo", () => {
+test("with the target in the top half, the sheet stays at the bottom", () => {
   const screen = render(<Harness />);
   const root = byType(screen, "View").find((node) => node.props.accessibilityViewIsModal)!;
   act(() => root.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width: 390, height: 844 } } }));

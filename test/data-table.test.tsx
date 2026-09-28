@@ -6,10 +6,10 @@ import { CSS_COMPOSED_PAIRS } from "../src/lib/contrast";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * Os invariantes velhos (erro vence carregando, vazio so depois da consulta,
- * guard do clique na linha) vivem em wave-c.test.tsx e continuam valendo sem
- * uma linha editada: e a prova de que o motor novo nao quebrou a API.
- * Aqui entram so as capacidades novas.
+ * The old invariants (error beats loading, empty only after the query, the row
+ * click guard) live in wave-c.test.tsx and still hold without a single edited
+ * line: that is the proof the new engine did not break the API.
+ * Only the new capabilities come in here.
  */
 
 type Invoice = { id: string; number: string; customer: string; amount: number };
@@ -34,21 +34,21 @@ function table(props: Partial<React.ComponentProps<typeof DataTable<Invoice>>> =
       <DataTable
         data={INVOICES}
         columns={props.columns ?? COLUMNS}
-        rowKey={(nota) => nota.id}
+        rowKey={(invoice) => invoice.id}
         {...props}
       />
     </RivoProvider>,
   );
 }
 
-/** Os textos da primeira celula de cada linha do corpo, na ordem visivel. */
+/** The text of the first cell of each body row, in visible order. */
 function firstColumn(container: HTMLElement) {
   return [...container.querySelectorAll("tbody tr")].map(
     (row) => row.querySelector("td")?.textContent ?? "",
   );
 }
 
-test("clicar no cabecalho ordena, clicar de novo inverte, e a terceira vez desfaz", () => {
+test("clicking the header sorts, clicking again reverses, and the third time undoes", () => {
   const { container } = table();
   const header = screen.getByRole("button", { name: /valor/i });
 
@@ -62,7 +62,7 @@ test("clicar no cabecalho ordena, clicar de novo inverte, e a terceira vez desfa
   expect(firstColumn(container)).toEqual(["4813", "4814", "4815", "4816", "4817"]);
 });
 
-test("o th anuncia a direcao com aria-sort", () => {
+test("the th announces the direction with aria-sort", () => {
   table();
   const th = screen.getByRole("columnheader", { name: /valor/i });
   expect(th.getAttribute("aria-sort")).toBeNull();
@@ -74,20 +74,20 @@ test("o th anuncia a direcao com aria-sort", () => {
   expect(th.getAttribute("aria-sort")).toBe("descending");
 });
 
-test("coluna sem sortable nao vira botao", () => {
+test("a column without sortable does not become a button", () => {
   table();
   expect(screen.queryByRole("button", { name: /cliente/i })).toBeNull();
 });
 
-test("a coluna com cell usa value para ordenar", () => {
+test("a column with cell uses value to sort", () => {
   const columns: Column<Invoice>[] = [
     { key: "number", header: "Numero" },
     {
       key: "amount",
       header: "Valor",
       sortable: true,
-      value: (nota) => nota.amount,
-      cell: (nota) => <span>{`R$ ${nota.amount}`}</span>,
+      value: (invoice) => invoice.amount,
+      cell: (invoice) => <span>{`R$ ${invoice.amount}`}</span>,
     },
   ];
   const { container } = table({ columns: columns });
@@ -96,12 +96,12 @@ test("a coluna com cell usa value para ordenar", () => {
   expect(firstColumn(container)).toEqual(["4817", "4816", "4814", "4815", "4813"]);
 });
 
-test("o filtro acha sem acento e sem caixa", () => {
+test("the filter matches ignoring accents and case", () => {
   const { container } = table({ filter: "ótica" });
   expect(firstColumn(container)).toEqual(["4816"]);
 });
 
-test("o filtro sem resultado explica, sem roubar o EmptyState da consulta vazia", () => {
+test("a filter with no result explains, without stealing the empty-query EmptyState", () => {
   table({
     filter: "zzz",
     empty: { title: "Nenhuma nota", description: "Emita a primeira." },
@@ -110,7 +110,7 @@ test("o filtro sem resultado explica, sem roubar o EmptyState da consulta vazia"
   expect(screen.queryByText("Nenhuma nota")).toBeNull();
 });
 
-test("pageSize corta a lista e o rodape conta o todo", () => {
+test("pageSize cuts the list and the footer counts the whole", () => {
   const { container } = table({ pageSize: 2 });
   expect(firstColumn(container)).toEqual(["4813", "4814"]);
   expect(screen.getByText(/1–2 de 5/)).toBeDefined();
@@ -120,12 +120,12 @@ test("pageSize corta a lista e o rodape conta o todo", () => {
   expect(screen.getByText(/3–4 de 5/)).toBeDefined();
 });
 
-test("sem pageSize nao ha rodape", () => {
+test("without pageSize there is no footer", () => {
   table();
   expect(screen.queryByRole("navigation")).toBeNull();
 });
 
-test("filtrar volta para a primeira pagina", async () => {
+test("filtering goes back to the first page", async () => {
   const { container, rerender } = table({ pageSize: 2 });
   fireEvent.click(screen.getByRole("button", { name: /próxima página/i }));
   expect(firstColumn(container)).toEqual(["4815", "4816"]);
@@ -135,19 +135,19 @@ test("filtrar volta para a primeira pagina", async () => {
       <DataTable
         data={INVOICES}
         columns={COLUMNS}
-        rowKey={(nota) => nota.id}
+        rowKey={(invoice) => invoice.id}
         pageSize={2}
         filter="48"
       />
     </RivoProvider>,
   );
-  // O reset de pagina do motor sai numa microtask; na app ele ja aconteceu
-  // antes de qualquer olho ver, aqui o teste espera a fila esvaziar.
+  // The engine's page reset runs in a microtask; in the app it already happened
+  // before any eye could see, here the test waits for the queue to drain.
   await act(async () => {});
   expect(firstColumn(container)).toEqual(["4813", "4814"]);
 });
 
-test("buscar depois de virar a pagina desenha a primeira pagina do filtro", async () => {
+test("searching after turning the page draws the first page of the filter", async () => {
   const { container, rerender } = table({ pageSize: 2 });
   fireEvent.click(screen.getByRole("button", { name: "Página 3" }));
   expect(firstColumn(container)).toEqual(["4817"]);
@@ -157,7 +157,7 @@ test("buscar depois de virar a pagina desenha a primeira pagina do filtro", asyn
       <DataTable
         data={INVOICES}
         columns={COLUMNS}
-        rowKey={(nota) => nota.id}
+        rowKey={(invoice) => invoice.id}
         pageSize={2}
         filter="Aurora"
       />
@@ -171,7 +171,7 @@ test("buscar depois de virar a pagina desenha a primeira pagina do filtro", asyn
   await act(async () => {});
 });
 
-test("reordenar depois de virar a pagina desenha a primeira pagina da ordem", async () => {
+test("re-sorting after turning the page draws the first page of the order", async () => {
   const { container } = table({ pageSize: 2 });
   fireEvent.click(screen.getByRole("button", { name: "Página 3" }));
   expect(firstColumn(container)).toEqual(["4817"]);
@@ -184,7 +184,7 @@ test("reordenar depois de virar a pagina desenha a primeira pagina da ordem", as
   await act(async () => {});
 });
 
-test("a mensagem de vazio cala quando o modelo filtrado ainda tem linha", async () => {
+test("the empty message stays silent when the filtered model still has rows", async () => {
   const { container, rerender } = table({ pageSize: 2, filter: "48" });
   fireEvent.click(screen.getByRole("button", { name: "Página 3" }));
   expect(firstColumn(container)).toEqual(["4817"]);
@@ -194,7 +194,7 @@ test("a mensagem de vazio cala quando o modelo filtrado ainda tem linha", async 
       <DataTable
         data={INVOICES.slice(0, 2)}
         columns={COLUMNS}
-        rowKey={(nota) => nota.id}
+        rowKey={(invoice) => invoice.id}
         pageSize={2}
         filter="48"
       />
@@ -206,16 +206,16 @@ test("a mensagem de vazio cala quando o modelo filtrado ainda tem linha", async 
   await act(async () => {});
 });
 
-test("selecionar uma linha devolve a chave do rowKey", () => {
-  let selecionadas: string[] = [];
-  table({ selectable: true, onValueChange: (keys) => (selecionadas = keys) });
+test("selecting a row returns the rowKey key", () => {
+  let selectedKeys: string[] = [];
+  table({ selectable: true, onValueChange: (keys) => (selectedKeys = keys) });
 
   const row = screen.getByText("Padaria Aurora").closest("tr")!;
   fireEvent.click(within(row).getByRole("checkbox"));
-  expect(selecionadas).toEqual(["3"]);
+  expect(selectedKeys).toEqual(["3"]);
 });
 
-test("a linha selecionada se pinta, e o fundo dela tem o contraste do texto medido", () => {
+test("the selected row is painted, and its background has the text contrast measured", () => {
   table({ selectable: true, value: ["2"] });
 
   const chosen = screen.getByText("Transportes Cabo Branco").closest("tr")!;
@@ -237,19 +237,19 @@ test("a linha selecionada se pinta, e o fundo dela tem o contraste do texto medi
   }
 });
 
-test("o checkbox do cabecalho seleciona a pagina visivel, nao o mundo", () => {
-  let selecionadas: string[] = [];
+test("the header checkbox selects the visible page, not the world", () => {
+  let selectedKeys: string[] = [];
   table({
     selectable: true,
     pageSize: 2,
-    onValueChange: (keys) => (selecionadas = keys),
+    onValueChange: (keys) => (selectedKeys = keys),
   });
 
   fireEvent.click(screen.getByRole("checkbox", { name: /selecionar todas/i }));
-  expect(selecionadas.toSorted()).toEqual(["1", "2"]);
+  expect(selectedKeys.toSorted()).toEqual(["1", "2"]);
 });
 
-test("selecao controlada obedece a prop", () => {
+test("controlled selection obeys the prop", () => {
   table({ selectable: true, value: ["2"] });
 
   const row = screen.getByText("Transportes Cabo Branco").closest("tr")!;
@@ -257,40 +257,40 @@ test("selecao controlada obedece a prop", () => {
   expect(checkbox.getAttribute("aria-checked")).toBe("true");
 });
 
-test("linha clicavel e selecao convivem: o clique no checkbox nao abre a linha", () => {
-  let aberta: Invoice | undefined;
-  table({ selectable: true, onRowClick: (nota) => (aberta = nota) });
+test("clickable row and selection coexist: clicking the checkbox does not open the row", () => {
+  let opened: Invoice | undefined;
+  table({ selectable: true, onRowClick: (invoice) => (opened = invoice) });
 
   const row = screen.getByText("Padaria Aurora").closest("tr")!;
   fireEvent.click(within(row).getByRole("checkbox"));
-  expect(aberta).toBeUndefined();
+  expect(opened).toBeUndefined();
 
   fireEvent.click(screen.getByText("Padaria Aurora"));
-  expect(aberta?.id).toBe("3");
+  expect(opened?.id).toBe("3");
 });
 
-test("a coluna que ordena sai na mesma caixa da que nao ordena", () => {
-  // O th ja pede uppercase, e a folha do navegador zera text-transform em
-  // controle de formulario: a coluna com sortable renderiza um button dentro,
-  // e a linha saia com caixa misturada - "Numero" ao lado de "CLIENTE".
+test("a sorting column renders in the same case as one that does not sort", () => {
+  // The th already asks for uppercase, and the browser stylesheet resets
+  // text-transform on form controls: the sortable column renders a button
+  // inside, and the row came out in mixed case - "Numero" next to "CLIENTE".
   const { container } = table();
 
   const header = container.querySelector("th") as HTMLElement;
-  const botao = container.querySelector("th button") as HTMLElement;
+  const sortButton = container.querySelector("th button") as HTMLElement;
 
   expect(header.className).toContain("uppercase");
-  expect(botao.className).toContain("uppercase");
+  expect(sortButton.className).toContain("uppercase");
 });
 
 /* ------------------------------------------------------------------------ *
- * O caminho do meio: muita linha, sem mandar a pessoa para o servidor
+ * The middle path: many rows, without sending the person to the server
  * ------------------------------------------------------------------------ */
 
 /*
- * O happy-dom nao faz layout, entao toda medida sai zero e o virtualizador
- * concluiria que nao cabe linha nenhuma. O duble abaixo da altura a moldura e
- * a linha - e so isso: quem decide quantas linhas entram continua sendo o
- * @tanstack/react-virtual.
+ * happy-dom does no layout, so every measure comes out zero and the
+ * virtualizer would conclude no row fits. The stub below gives a height to the
+ * frame and the row - and only that: what decides how many rows go in is
+ * still @tanstack/react-virtual.
  */
 const VIEWPORT_HEIGHT = 400;
 const ROW_HEIGHT = 40;
@@ -300,8 +300,8 @@ beforeAll(() => {
   for (const name of ["offsetHeight", "offsetWidth"]) {
     MEASURED.set(name, Object.getOwnPropertyDescriptor(HTMLElement.prototype, name));
   }
-  // O virtualizador mede a moldura pelo `offsetHeight`, que no happy-dom e
-  // sempre zero: sem o duble ele conclui que nao cabe linha nenhuma.
+  // The virtualizer measures the frame by `offsetHeight`, which in happy-dom
+  // is always zero: without the stub it concludes no row fits.
   Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
     configurable: true,
     get(this: HTMLElement) {
@@ -331,20 +331,20 @@ const LOG: Invoice[] = Array.from({ length: 500 }, (_, index) => ({
 const bodyRows = (container: HTMLElement) =>
   [...container.querySelectorAll("tbody tr")].filter((row) => !row.hasAttribute("aria-hidden"));
 
-test("sem pedir nada, quinhentas linhas continuam saindo inteiras", () => {
+test("without asking for anything, five hundred rows still render in full", () => {
   const { container } = table({ data: LOG });
   expect(bodyRows(container).length).toBe(500);
   expect(container.querySelector("[data-rc-viewport]")).toBeNull();
 });
 
-test("com altura maxima, a moldura que rola e o bloco de posicao do sr-only das celulas", () => {
+test("with a max height, the scrolling frame is the positioning block for the cells' sr-only", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
   const tokens = container.querySelector("[data-rc-viewport]")!.className.split(" ");
   expect(tokens).toContain("overflow-auto");
   expect(tokens).toContain("relative");
 });
 
-test("com virtual, so um punhado de linhas vai para o DOM", () => {
+test("with virtual, only a handful of rows goes to the DOM", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 
   const rendered = bodyRows(container).length;
@@ -352,7 +352,7 @@ test("com virtual, so um punhado de linhas vai para o DOM", () => {
   expect(rendered).toBeLessThan(60);
 });
 
-test("virtualizada, ela continua sendo uma <table> de verdade", () => {
+test("virtualized, it is still a real <table>", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 
   expect(container.querySelectorAll("table").length).toBe(1);
@@ -363,15 +363,15 @@ test("virtualizada, ela continua sendo uma <table> de verdade", () => {
   }
 });
 
-test("a tabela virtualizada diz quantas linhas existem, e onde cada uma esta", () => {
+test("the virtualized table says how many rows exist, and where each one is", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 
-  // 500 linhas de dado mais a de cabecalho.
+  // 500 data rows plus the header one.
   expect(container.querySelector("table")!.getAttribute("aria-rowcount")).toBe("501");
   expect(bodyRows(container)[0]!.getAttribute("aria-rowindex")).toBe("2");
 });
 
-test("os espacadores nao se passam por linha de dado", () => {
+test("the spacers do not pass for data rows", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 
   const spacers = [...container.querySelectorAll("tbody tr[aria-hidden='true']")];
@@ -379,7 +379,7 @@ test("os espacadores nao se passam por linha de dado", () => {
   for (const spacer of spacers) expect(spacer.textContent).toBe("");
 });
 
-test("o cabecalho gruda no topo da moldura que rola", () => {
+test("the header sticks to the top of the scrolling frame", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 
   const head = container.querySelector("thead")!;
@@ -387,17 +387,17 @@ test("o cabecalho gruda no topo da moldura que rola", () => {
   expect(head.className).toContain("z-[var(--rc-z-sticky)]");
 });
 
-test("a moldura ganha altura e rolagem propria", () => {
+test("the frame gets a height and its own scrolling", () => {
   const { container } = table({ data: LOG, maxHeight: 320 });
 
   const viewport = container.querySelector("[data-rc-viewport]") as HTMLElement;
   expect(viewport).toBeTruthy();
   expect(viewport.style.maxHeight).toBe("320px");
-  // Sem `virtual`, a rolagem e so rolagem: as linhas continuam todas la.
+  // Without `virtual`, scrolling is just scrolling: all the rows are still there.
   expect(bodyRows(container).length).toBe(500);
 });
 
-test("virtualizada, ordenar continua valendo - que e o motivo de ela existir", () => {
+test("virtualized, sorting still works - which is the reason it exists", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 
   expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9000");
@@ -408,7 +408,7 @@ test("virtualizada, ordenar continua valendo - que e o motivo de ela existir", (
   expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9499");
 });
 
-test("virtualizada, filtrar continua valendo e a contagem acompanha", () => {
+test("virtualized, filtering still works and the count follows", () => {
   const { container } = table({
     data: LOG,
     virtual: true,
@@ -424,7 +424,7 @@ function withProvider(node: React.ReactNode) {
   return <RivoProvider scope="local">{node}</RivoProvider>;
 }
 
-test("quando data encolhe abaixo da pagina aberta, a tabela volta para a ultima que existe", () => {
+test("when data shrinks below the open page, the table goes back to the last one that exists", () => {
   const props = { columns: COLUMNS, rowKey: (invoice: Invoice) => invoice.id, pageSize: 2 };
   const { container, rerender } = render(withProvider(<DataTable data={INVOICES} {...props} />));
 
@@ -437,29 +437,29 @@ test("quando data encolhe abaixo da pagina aberta, a tabela volta para a ultima 
   expect(screen.getByText(/3–3 de 3/)).toBeDefined();
 });
 
-test("a selecao nao controlada poda a chave da linha que saiu de data", () => {
-  const vistas: string[][] = [];
+test("uncontrolled selection prunes the key of the row that left data", () => {
+  const seen: string[][] = [];
   const props = {
     columns: COLUMNS,
     rowKey: (invoice: Invoice) => invoice.id,
     selectable: true,
-    onValueChange: (keys: string[]) => vistas.push(keys),
+    onValueChange: (keys: string[]) => seen.push(keys),
   };
   const { rerender } = render(withProvider(<DataTable data={INVOICES} {...props} />));
 
   fireEvent.click(within(screen.getByText("Padaria Aurora").closest("tr")!).getByRole("checkbox"));
   fireEvent.click(within(screen.getByText("Otica Central").closest("tr")!).getByRole("checkbox"));
-  expect(vistas.at(-1)).toEqual(["3", "4"]);
+  expect(seen.at(-1)).toEqual(["3", "4"]);
 
   act(() => {
     rerender(
       withProvider(<DataTable data={INVOICES.filter((invoice) => invoice.id !== "3")} {...props} />),
     );
   });
-  expect(vistas.at(-1)).toEqual(["4"]);
+  expect(seen.at(-1)).toEqual(["4"]);
 
   fireEvent.click(within(screen.getByText("Acougue do Ze").closest("tr")!).getByRole("checkbox"));
-  expect(vistas.at(-1)).toEqual(["4", "5"]);
+  expect(seen.at(-1)).toEqual(["4", "5"]);
 });
 
 type Person = { id: string; name: string; score: number | null | undefined };
@@ -484,7 +484,7 @@ function people() {
   );
 }
 
-test("a ordem de texto segue o portugues: acento junto da letra, caixa ignorada, numero pelo valor", () => {
+test("text order follows Portuguese: accent with its letter, case ignored, numbers by value", () => {
   const { container } = people();
   fireEvent.click(screen.getByRole("button", { name: /nome/i }));
   expect(firstColumn(container)).toEqual([
@@ -497,7 +497,7 @@ test("a ordem de texto segue o portugues: acento junto da letra, caixa ignorada,
   ]);
 });
 
-test("vazio fica no fim nos dois sentidos, e nao conta como zero", () => {
+test("empty stays at the end in both directions, and does not count as zero", () => {
   const { container } = people();
   const header = screen.getByRole("button", { name: /pontos/i });
 

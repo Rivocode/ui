@@ -1,71 +1,74 @@
 /**
- * Guarda das fronteiras de peer OPCIONAL, nos DOIS pacotes.
+ * Guard of the OPTIONAL peer boundaries, in BOTH packages.
  *
- * Nasceu para o grafico - e o nome do arquivo ainda diz isso -, mas o
- * invariante nunca foi do grafico: e de todo subcaminho que existe porque um
- * peer nao pode ser cobrado de quem nao o usa. Quem so quer botao e tabela
- * instala `@rivocode/ui` e nao paga os ~180kB do `@rivocode/ui/chart`; quem so
- * quer um `Button` no celular instala `@rivocode/ui-native` e nao precisa
- * ligar o react-native-svg, o expo-clipboard nem o expo-document-picker ao
- * projeto nativo, que la custam build e nao so bytes. O preco desse arranjo e
- * sempre o mesmo: nenhum modulo alcancado pelo indice da raiz pode importar o
- * peer, nem direto nem por dentro de uma peca do subcaminho.
+ * It was born for the chart - and the file name still says so -, but the
+ * invariant was never the chart's: it belongs to every subpath that exists
+ * because a peer cannot be charged to whoever does not use it. Whoever only
+ * wants a button and a table installs `@rivocode/ui` and does not pay the
+ * ~180kB of `@rivocode/ui/chart`; whoever only wants a `Button` on the phone
+ * installs `@rivocode/ui-native` and does not need to link react-native-svg,
+ * expo-clipboard or expo-document-picker to the native project, where they
+ * cost a build and not just bytes. The price of this arrangement is always
+ * the same: no module reached by the root index may import the peer, neither
+ * directly nor through a piece of the subpath.
  *
- * O invariante vivia so em prosa - um comentario em `src/components/stat.tsx`
- * explicando por que o Stat nao usa a Sparkline. Um `import { Sparkline } from
- * "../chart/sparkline"` escrito ali compila, passa no `check` inteiro, entra
- * no bundle, e so falha na maquina de quem instalou sem a recharts: modulo nao
- * encontrado, em tempo de execucao, sem erro de build nosso para culpar. E o
- * pior tipo de quebra - a que a nossa suite nao pode sentir, porque aqui a
- * recharts esta instalada como devDependency.
+ * The invariant lived only in prose - a comment in `src/components/stat.tsx`
+ * explaining why Stat does not use Sparkline. An `import { Sparkline } from
+ * "../chart/sparkline"` written there compiles, passes the whole `check`,
+ * goes into the bundle, and only fails on the machine of whoever installed
+ * without recharts: module not found, at runtime, with no build error of ours
+ * to blame. It is the worst kind of breakage - the kind our suite cannot feel,
+ * because here recharts is installed as a devDependency.
  *
- * Sao duas regras por fronteira, e a segunda e que fecha a porta de verdade:
+ * There are two rules per boundary, and the second is the one that really
+ * shuts the door:
  *
- *   1. O peer so entra no diretorio do subcaminho.
- *   2. O diretorio do subcaminho so e importado de dentro dele mesmo -
- *      importar a Sparkline arrasta a recharts junto, e o passo 1 nao veria
- *      nada.
+ *   1. The peer only enters the subpath's directory.
+ *   2. The subpath's directory is only imported from inside itself -
+ *      importing Sparkline drags recharts along, and step 1 would see
+ *      nothing.
  *
- * A guarda le import, e nao texto. `grep -rn recharts src/` acusaria o
- * comentario do Stat, que e justamente quem explica a regra; guarda que acusa
- * a propria documentacao dela morre na primeira semana.
+ * The guard reads imports, not text. `grep -rn recharts src/` would flag the
+ * Stat comment, which is precisely what explains the rule; a guard that flags
+ * its own documentation dies in the first week.
  *
- * **A tabela abaixo e a peca inteira, e ela existe para crescer.** Nem o
- * nativo, nem o formulario, nem as duas fronteiras do Expo ganharam script
- * proprio: o invariante e o mesmo, a leitura de import e a mesma, e duas
- * guardas iguais divergem na primeira correcao que so uma delas recebe. A
- * prova disso e o furo que a primeira versao tinha e que a tabela fechou em
- * todas de uma vez - veja `inside()`. Subcaminho novo com peer novo e uma
- * linha aqui, e nada mais.
+ * **The table below is the whole piece, and it exists to grow.** Neither
+ * native, nor the form, nor the two Expo boundaries got their own script: the
+ * invariant is the same, the import reading is the same, and two identical
+ * guards diverge at the first fix only one of them receives. The proof is the
+ * hole the first version had and that the table closed in all of them at once
+ * - see `inside()`. A new subpath with a new peer is one line here, and
+ * nothing more.
  *
- * **Subcaminho sem peer tambem mora aqui.** O `@rivocode/ui/ai` e o
- * `@rivocode/ui-native/ai` nao custam dependencia nenhuma: o que eles custam e
- * PESO. O `PromptInput`, a `Conversation` e o `ToolCall` so servem a app que
- * conversa com um modelo, e o metro nao sacode arvore - importar um `Button` do
- * indice nativo compila tudo o que o indice alcanca, no aparelho de quem nunca
- * vai abrir um chat. A regra 2 e a mesma, e e ela que segura a porta: nada de
- * fora do diretorio importa dele. Por isso `peer` e opcional na tabela - a
- * linha sem ele guarda so a segunda regra, e o `why` diz o que se perde.
+ * **A subpath without a peer lives here too.** `@rivocode/ui/ai` and
+ * `@rivocode/ui-native/ai` cost no dependency at all: what they cost is
+ * WEIGHT. `PromptInput`, `Conversation` and `ToolCall` only serve an app that
+ * talks to a model, and metro does not shake trees - importing a `Button`
+ * from the native index compiles everything the index reaches, on the device
+ * of someone who will never open a chat. Rule 2 is the same, and it is the one
+ * that holds the door: nothing from outside the directory imports from it.
+ * That is why `peer` is optional in the table - a line without it guards only
+ * the second rule, and `why` says what is lost.
  *
- * Uma nota sobre o nome do arquivo: ele continua `check-fronteira-do-chart`
- * porque o script se chama `check:chart` no package.json da raiz, e renomear
- * um sem o outro deixa o comando morto. Leia "chart" como "o primeiro
- * subcaminho que precisou disto".
+ * A note on the file name: it is `check-chart-boundary` because the script is
+ * called `check:chart` in the root package.json, and renaming one without the
+ * other leaves the command dead. Read "chart" as "the first subpath that
+ * needed this".
  */
 import { scanAtLeast } from "./scan";
 
 type Frontier = {
-  /** O nome publicado, para a mensagem dizer de quem se fala. */
+  /** The published name, so the message says who it is about. */
   pkg: string;
-  /** A raiz do codigo do pacote. */
+  /** The root of the package's code. */
   core: string;
-  /** O diretorio do subcaminho, com barra no fim. */
+  /** The subpath's directory, with a trailing slash. */
   dir: string;
-  /** O especificador publico do subcaminho. */
+  /** The subpath's public specifier. */
   entry: string;
-  /** O peer opcional - ou os peers - que nao podem vazar. Sem ele, so a regra 2. */
+  /** The optional peer - or peers - that must not leak. Without it, only rule 2. */
   peer?: RegExp;
-  /** Por que ele nao pode vazar, em uma linha. */
+  /** Why it must not leak, in one line. */
   why: string;
 };
 
@@ -76,7 +79,7 @@ const FRONTIERS: Frontier[] = [
     dir: "src/chart/",
     entry: "@rivocode/ui/chart",
     peer: /^recharts(\/|$)/,
-    why: "A recharts e peer opcional: quem instalou so o @rivocode/ui nao a tem.",
+    why: "recharts is an optional peer: whoever installed only @rivocode/ui does not have it.",
   },
   {
     pkg: "@rivocode/ui",
@@ -85,8 +88,8 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui/form",
     peer: /^(react-hook-form|@hookform\/resolvers|zod)(\/|$)/,
     why:
-      "O react-hook-form, o zod e o resolver sao peers opcionais: quem instalou\n" +
-      "    so o @rivocode/ui monta um Input sem nenhum dos tres.",
+      "react-hook-form, zod and the resolver are optional peers: whoever installed\n" +
+      "    only @rivocode/ui builds an Input without any of the three.",
   },
   {
     pkg: "@rivocode/ui-native",
@@ -95,8 +98,8 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui-native/chart",
     peer: /^react-native-svg(\/|$)/,
     why:
-      "O react-native-svg e peer opcional, e no celular ele nao e so bytes: e\n" +
-      "    modulo nativo, que o app precisa ligar e reconstruir.",
+      "react-native-svg is an optional peer, and on the phone it is not just bytes: it is\n" +
+      "    a native module, which the app has to link and rebuild.",
   },
   {
     pkg: "@rivocode/ui-native",
@@ -105,9 +108,9 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui-native/form",
     peer: /^(react-hook-form|@hookform\/resolvers|zod)(\/|$)/,
     why:
-      "O react-hook-form, o zod e o resolver sao peers opcionais, e o metro\n" +
-      "    resolve import por arquivo: no indice da raiz, quem so quer um Button\n" +
-      "    teria de instalar os tres.",
+      "react-hook-form, zod and the resolver are optional peers, and metro\n" +
+      "    resolves imports per file: in the root index, whoever only wants a Button\n" +
+      "    would have to install all three.",
   },
   {
     pkg: "@rivocode/ui",
@@ -116,9 +119,9 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui/editor",
     peer: /^@tiptap\//,
     why:
-      "O Tiptap e peer opcional - @tiptap/react, /pm, /core, /starter-kit e\n" +
-      "    /extensions -, e o ProseMirror por baixo dele pesa mais que o resto do\n" +
-      "    formulario inteiro. Quem monta um Input nao instala editor nenhum.",
+      "Tiptap is an optional peer - @tiptap/react, /pm, /core, /starter-kit and\n" +
+      "    /extensions -, and the ProseMirror underneath weighs more than the rest of\n" +
+      "    the whole form. Whoever builds an Input installs no editor at all.",
   },
   {
     pkg: "@rivocode/ui-native",
@@ -127,8 +130,8 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui-native/clipboard",
     peer: /^expo-clipboard(\/|$)/,
     why:
-      "O expo-clipboard e peer opcional e modulo nativo do Expo: quem nao copia\n" +
-      "    nada nao deve ter de instalar e reconstruir por causa dele.",
+      "expo-clipboard is an optional peer and an Expo native module: whoever copies\n" +
+      "    nothing should not have to install and rebuild because of it.",
   },
   {
     pkg: "@rivocode/ui-native",
@@ -137,9 +140,9 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui-native/file-upload",
     peer: /^expo-document-picker(\/|$)/,
     why:
-      "O expo-document-picker e peer opcional e modulo nativo do Expo. Ele tem\n" +
-      "    caminho SEPARADO do clipboard de proposito: quem copia uma chave de\n" +
-      "    NF-e nao anexa arquivo, e um indice comum aos dois cobraria os dois.",
+      "expo-document-picker is an optional peer and an Expo native module. It has a\n" +
+      "    path SEPARATE from clipboard on purpose: whoever copies an NF-e key\n" +
+      "    attaches no file, and an index shared by both would charge for both.",
   },
   {
     pkg: "@rivocode/ui",
@@ -148,8 +151,8 @@ const FRONTIERS: Frontier[] = [
     entry: "@rivocode/ui/dnd",
     peer: /^@dnd-kit\//,
     why:
-      "O @dnd-kit/core e o @dnd-kit/sortable sao peers opcionais: quem nao\n" +
-      "    reordena lista nem monta quadro nao instala nenhum dos dois.",
+      "@dnd-kit/core and @dnd-kit/sortable are optional peers: whoever neither\n" +
+      "    reorders lists nor builds boards installs neither of them.",
   },
   {
     pkg: "@rivocode/ui",
@@ -157,9 +160,9 @@ const FRONTIERS: Frontier[] = [
     dir: "src/ai/",
     entry: "@rivocode/ui/ai",
     why:
-      "O subcaminho de IA nao tem peer: o que ele custa e peso. Quem monta tela\n" +
-      "    de nota fiscal nao carrega o campo de prompt, a conversa e o cartao de\n" +
-      "    ferramenta por ter importado um Button.",
+      "The AI subpath has no peer: what it costs is weight. Whoever builds an invoice\n" +
+      "    screen does not load the prompt field, the conversation and the tool\n" +
+      "    card for having imported a Button.",
   },
   {
     pkg: "@rivocode/ui-native",
@@ -167,9 +170,9 @@ const FRONTIERS: Frontier[] = [
     dir: "native/src/dnd/",
     entry: "@rivocode/ui-native/dnd",
     why:
-      "O subcaminho de arrastar no nativo nao tem peer - o gesto e o PanResponder\n" +
-      "    do core -, e existe para a linha de import ser a mesma do web. Nada de\n" +
-      "    fora entra la, senao o indice da raiz passa a compilar a lista junto.",
+      "The native drag subpath has no peer - the gesture is core's PanResponder -,\n" +
+      "    and it exists so the import line is the same as on the web. Nothing from\n" +
+      "    outside goes in there, or the root index starts compiling the list along.",
   },
   {
     pkg: "@rivocode/ui-native",
@@ -177,22 +180,22 @@ const FRONTIERS: Frontier[] = [
     dir: "native/src/ai/",
     entry: "@rivocode/ui-native/ai",
     why:
-      "O subcaminho de IA nao tem peer, e no celular o peso e maior que no web:\n" +
-      "    o metro nao sacode arvore, e tudo o que o indice da raiz alcanca e\n" +
-      "    compilado no app de quem so queria um Button.",
+      "The AI subpath has no peer, and on the phone the weight is bigger than on the web:\n" +
+      "    metro does not shake trees, and everything the root index reaches is\n" +
+      "    compiled into the app of whoever only wanted a Button.",
   },
 ];
 
-/** O que este arquivo importa, ja sem comentario e ja resolvido. */
+/** What this file imports, with comments stripped and already resolved. */
 function importsOf(file: string, code: string) {
-  // Comentario e prosa: `stat.tsx` cita a recharts para explicar por que nao a
-  // usa, e a citacao nao e import.
+  // A comment is prose: `stat.tsx` mentions recharts to explain why it does not
+  // use it, and the mention is not an import.
   const source = code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
 
   const found: { specifier: string; line: number }[] = [];
 
-  // Cobre `import x from "m"`, `import "m"`, `export * from "m"`,
-  // `import("m")` e `require("m")` - as cinco formas de um modulo entrar.
+  // Covers `import x from "m"`, `import "m"`, `export * from "m"`,
+  // `import("m")` and `require("m")` - the five ways a module gets in.
   for (const hit of source.matchAll(/(?:\bfrom|\bimport|\brequire)\s*\(?\s*["']([^"']+)["']/g)) {
     found.push({
       specifier: hit[1]!,
@@ -202,8 +205,8 @@ function importsOf(file: string, code: string) {
 
   return found.map((entry) => ({
     ...entry,
-    // `../chart/sparkline` a partir de `src/components/stat.tsx` e
-    // `src/chart/sparkline`: sem resolver, um `../` a mais passaria batido.
+    // `../chart/sparkline` from `src/components/stat.tsx` is
+    // `src/chart/sparkline`: without resolving, one extra `../` would slip by.
     resolved: entry.specifier.startsWith(".")
       ? new URL(entry.specifier, `file:///${file}`).pathname.slice(1)
       : entry.specifier,
@@ -211,14 +214,14 @@ function importsOf(file: string, code: string) {
 }
 
 /**
- * O caminho cai dentro do diretorio do subcaminho?
+ * Does the path fall inside the subpath's directory?
  *
- * O `startsWith(dir)` sozinho tem um furo, e e o furo do import mais natural
- * que existe: `import { ChartDonut } from "./chart"` a partir do indice da
- * raiz resolve para `src/chart` - sem a barra final, porque o especificador
- * aponta o DIRETORIO e quem poe o `/index` e o resolvedor de modulos, nao nos.
- * `"src/chart".startsWith("src/chart/")` e falso, entao a forma que qualquer
- * um escreveria primeiro era a unica que passava.
+ * `startsWith(dir)` alone has a hole, and it is the hole of the most natural
+ * import there is: `import { ChartDonut } from "./chart"` from the root index
+ * resolves to `src/chart` - without the trailing slash, because the specifier
+ * points at the DIRECTORY and whoever adds `/index` is the module resolver,
+ * not us. `"src/chart".startsWith("src/chart/")` is false, so the form anyone
+ * would write first was the only one that passed.
  */
 const inside = (resolved: string, dir: string) =>
   resolved === dir.slice(0, -1) || resolved.startsWith(dir);
@@ -234,14 +237,14 @@ for (const frontier of FRONTIERS) {
 
     for (const { specifier, resolved, line } of importsOf(path, code)) {
       if (frontier.peer?.test(specifier)) {
-        breaches.push(`  ${path}:${line}  importa "${specifier}"\n    ${frontier.why}`);
+        breaches.push(`  ${path}:${line}  imports "${specifier}"\n    ${frontier.why}`);
         continue;
       }
 
       if (inside(resolved, frontier.dir) || resolved === frontier.entry) {
         breaches.push(
-          `  ${path}:${line}  importa "${specifier}"\n` +
-            `    Tudo em ${frontier.dir} arrasta o subcaminho junto, mesmo que a peca nao pareca.\n` +
+          `  ${path}:${line}  imports "${specifier}"\n` +
+            `    Everything in ${frontier.dir} drags the subpath along, even if the piece does not look like it.\n` +
             `    ${frontier.why}`,
         );
       }
@@ -250,16 +253,16 @@ for (const frontier of FRONTIERS) {
 }
 
 if (breaches.length > 0) {
-  console.error(`${breaches.length} import(s) atravessando fronteira de subcaminho:\n`);
+  console.error(`${breaches.length} import(s) crossing a subpath boundary:\n`);
   for (const item of breaches) console.error(item);
   console.error(
-    "\nO nucleo dos dois pacotes tem que continuar montando sem o peer instalado." +
-      "\n\nSe a peca precisa mesmo do peer, ela pertence ao diretorio dele e sai" +
-      "\npelo subcaminho. Se e o nucleo que precisa, refaca a parte sem o peer -" +
-      "\ne o que o `Stat` faz no web, e o que a `Sparkline` nativa faz com `View`;" +
-      "\nos comentarios das duas explicam por que." +
-      "\n\nNada aqui quebra o build: quebra a instalacao de quem nao tem o peer," +
-      "\ncom 'module not found' em producao e nenhum erro nosso para culpar.",
+    "\nThe core of both packages has to keep building without the peer installed." +
+      "\n\nIf the piece really needs the peer, it belongs in the peer's directory and ships" +
+      "\nthrough the subpath. If it is the core that needs it, redo the part without the peer -" +
+      "\nit is what `Stat` does on the web, and what the native `Sparkline` does with `View`;" +
+      "\nthe comments of both explain why." +
+      "\n\nNothing here breaks the build: it breaks the install of whoever lacks the peer," +
+      "\nwith 'module not found' in production and no error of ours to blame.",
   );
   process.exit(1);
 }
@@ -267,9 +270,9 @@ if (breaches.length > 0) {
 console.log(
   FRONTIERS.map((frontier) =>
     frontier.peer
-      ? `${frontier.pkg}: o peer nao sai de ${frontier.dir}`
-      : `${frontier.pkg}: ${frontier.dir} nao tem peer`,
+      ? `${frontier.pkg}: the peer does not leave ${frontier.dir}`
+      : `${frontier.pkg}: ${frontier.dir} has no peer`,
   ).join(
-    ", e ninguem de fora entra la.\n",
-  ) + ", e ninguem de fora entra la.",
+    ", and nobody from outside goes in there.\n",
+  ) + ", and nobody from outside goes in there.",
 );

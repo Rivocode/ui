@@ -1,28 +1,28 @@
 /**
- * As props de cada peca, lidas do compilador.
+ * The props of each piece, read from the compiler.
  *
- * A tabela de props e a parte da documentacao que apodrece primeiro, e ate
- * aqui ela saia de um snapshot de `.d.ts` que o sync do bundle deixou para
- * tras: o arquivo dizia `from @rivocode/ui@0.1.0`, e o site publicava as props
- * daquela versao. O que se perdia era sistematico, e nao caso a caso - o
- * snapshot nao trazia callback nenhum, entao metade das pecas controladas
- * aparecia sem `onValueChange`, sem `onOpenChange`, sem `onCheckedChange`. E
- * peca que mudou de forma desde entao aparecia como "nao tem prop propria",
- * tendo.
+ * The props table is the part of the documentation that rots first, and until
+ * here it came from a `.d.ts` snapshot the bundle sync left behind: the file
+ * said `from @rivocode/ui@0.1.0`, and the site published that version's props.
+ * What got lost was systematic, not case by case - the snapshot carried no
+ * callback at all, so half of the controlled pieces showed up without
+ * `onValueChange`, without `onOpenChange`, without `onCheckedChange`. And a
+ * piece that changed shape since then showed up as "has no own props" while
+ * having them.
  *
- * Aqui quem responde e o proprio checker: para cada export que e componente,
- * o tipo do primeiro parametro, sem o que vem de `@types/react` - que e o
- * elemento raiz, e mora numa linha so no fim da tabela.
+ * Here the checker itself answers: for each export that is a component, the
+ * type of the first parameter, minus what comes from `@types/react` - which is
+ * the root element, and lives in a single line at the end of the table.
  *
- * `--check` falha quando o JSON versionado divergir dos tipos, e e ele que
- * entra no `bun run check`: assim a doc nao pode mais divergir em silencio.
+ * `--check` fails when the versioned JSON diverges from the types, and it is
+ * what goes into `bun run check`: so the doc can no longer diverge silently.
  */
 import { API, SignatureKind, SymbolFlags } from "typescript/unstable/async";
 
-const RAIZ = process.cwd();
+const ROOT = process.cwd();
 const TARGET = "apps/docs/src/component-props.json";
 
-/** As entradas publicas do pacote. O que nao sai por elas nao e documentavel. */
+/** The package's public entry points. What does not go out through them is not documentable. */
 const ENTRY_POINTS = [
   "src/index.ts",
   "src/form/index.ts",
@@ -33,12 +33,12 @@ const ENTRY_POINTS = [
 ];
 
 /**
- * O que todo componente repassa ao elemento raiz. Fica numa linha so no fim da
- * tabela, em vez de repetido em 165 paginas.
+ * What every component forwards to the root element. It stays in a single line
+ * at the end of the table, instead of repeated on 165 pages.
  */
 const FORWARDED = new Set(["className", "style", "id", "children"]);
 
-const OWN_SOURCE = `${RAIZ}/src/`.toLowerCase();
+const OWN_SOURCE = `${ROOT}/src/`.toLowerCase();
 
 const isOwnSource = (path: string) =>
   path.toLowerCase().startsWith(OWN_SOURCE) && !path.includes("/node_modules/");
@@ -49,27 +49,27 @@ export type CatalogProp = {
   required: boolean;
   note?: string;
   /**
-   * A versao em que a prop apareceu no catalogo.
+   * The version in which the prop appeared in the catalog.
    *
-   * Nao e escrita a mao: `--desde <versao>` carimba, no lancamento, tudo que
-   * ainda nao tem carimbo. Assim a primeira versao em que a prop existiu e a
-   * que fica registrada, e ninguem precisa lembrar de anotar - lembrar e
-   * exatamente o que ninguem faz.
+   * It is not written by hand: `--since <version>` stamps, at release time,
+   * everything that has no stamp yet. So the first version in which the prop
+   * existed is the one recorded, and nobody has to remember to note it -
+   * remembering is exactly what nobody does.
    *
-   * Prop sem carimbo e prop que ainda nao saiu em versao nenhuma.
+   * A prop without a stamp is a prop that has not shipped in any version yet.
    */
   since?: string;
 };
 
 export type CatalogPiece = {
-  /** Se ela aceita os atributos do elemento raiz alem das props proprias. */
+  /** Whether it accepts the root element's attributes besides its own props. */
   forwardsRoot: boolean;
   props: CatalogProp[];
 };
 
 /**
- * `boolean | undefined` numa linha que ja tem a coluna "Obrigatoria: nao" diz
- * a mesma coisa duas vezes, e a segunda ocupa a largura que o tipo precisa.
+ * `boolean | undefined` in a row that already has the "Required: no" column
+ * says the same thing twice, and the second takes the width the type needs.
  */
 function withoutUndefined(type: string, optional: boolean): string {
   if (!optional) return type;
@@ -94,7 +94,7 @@ function unionParts(type: string): string[] {
   return parts.filter(Boolean);
 }
 
-/** Uma linha so, sem quebra: a tabela da doc e a do site nao aceitam paragrafo. */
+/** A single line, no break: the doc table and the site table take no paragraph. */
 function firstSentence(text: string): string | undefined {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean) return undefined;
@@ -103,8 +103,8 @@ function firstSentence(text: string): string | undefined {
 }
 
 /**
- * Os carimbos que ja existem, lidos do proprio JSON comitado. Sem isto cada
- * geracao apagaria a memoria de quando cada prop nasceu.
+ * The stamps that already exist, read from the committed JSON itself. Without
+ * this each generation would erase the memory of when each prop was born.
  */
 const previous: Record<string, CatalogPiece> = await Bun.file(TARGET)
   .json()
@@ -114,26 +114,27 @@ const stamped = (piece: string, prop: string) =>
   previous[piece]?.props.find((current) => current.name === prop)?.since;
 
 async function readCatalog(): Promise<Record<string, CatalogPiece>> {
-  const api = new API({ cwd: RAIZ });
-  const snapshot = await api.updateSnapshot({ openProjects: [`${RAIZ}/tsconfig.json`] });
-  const projeto = (await snapshot.getProjects())[0];
-  if (!projeto) throw new Error("Nao consegui abrir o projeto do tsconfig.json.");
+  const api = new API({ cwd: ROOT });
+  const snapshot = await api.updateSnapshot({ openProjects: [`${ROOT}/tsconfig.json`] });
+  const project = (await snapshot.getProjects())[0];
+  if (!project) throw new Error("Could not open the tsconfig.json project.");
 
-  const { checker, program } = projeto;
+  const { checker, program } = project;
   const catalog: Record<string, CatalogPiece> = {};
   const collisions: string[] = [];
 
-  for (const entrada of ENTRY_POINTS) {
-    const file = await program.getSourceFile(`${RAIZ}/${entrada}`);
-    if (!file) throw new Error(`Nao achei ${entrada}.`);
+  for (const entryPoint of ENTRY_POINTS) {
+    const file = await program.getSourceFile(`${ROOT}/${entryPoint}`);
+    if (!file) throw new Error(`Could not find ${entryPoint}.`);
 
     const module = await checker.getSymbolAtLocation(file);
-    if (!module) throw new Error(`${entrada} nao resolveu como modulo.`);
+    if (!module) throw new Error(`${entryPoint} did not resolve as a module.`);
 
     for (const [key, symbol] of await module.getExports()) {
       const name = String(key);
-      // Componente comeca com maiuscula. Hook e utilitario tem outra forma de
-      // documentacao, e forcar os dois na mesma tabela mente sobre os dois.
+      // A component starts with a capital letter. Hooks and utilities have
+      // another form of documentation, and forcing both into the same table
+      // lies about both.
       if (!/^[A-Z]/.test(name) || catalog[name]) continue;
 
       const type = await checker.getTypeOfSymbol(symbol);
@@ -194,9 +195,9 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
       if (read === 0) continue;
 
       const props: CatalogProp[] = [...merged].map(([propName, entry]) => {
-        // O carimbo e memoria, e nao derivado do tipo: o compilador nao sabe
-        // quando a prop nasceu, entao ele sobrevive de uma geracao a outra
-        // vindo do proprio JSON comitado.
+        // The stamp is memory, not derived from the type: the compiler does not
+        // know when the prop was born, so it survives from one generation to
+        // the next by coming from the committed JSON itself.
         const since = stamped(name, propName);
         return {
           name: propName,
@@ -207,8 +208,8 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
         };
       });
 
-      // Obrigatoria antes de opcional, e alfabetica dentro de cada grupo: o
-      // que quem chama precisa passar vem antes do que pode passar.
+      // Required before optional, and alphabetical within each group: what the
+      // caller must pass comes before what it may pass.
       props.sort((a, b) =>
         a.required === b.required ? a.name.localeCompare(b.name) : a.required ? -1 : 1,
       );
@@ -221,13 +222,13 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
 
   if (collisions.length) {
     console.error(
-      `${collisions.length} prop(s) propria(s) colidem com um atributo herdado de mesmo nome, e o tipo publicado vira a intersecao dos dois. Tire a chave da base com Omit:`,
+      `${collisions.length} own prop(s) collide with an inherited attribute of the same name, and the published type becomes the intersection of both. Remove the key from the base with Omit:`,
     );
     for (const collision of collisions) console.error(`  ${collision}`);
     process.exit(1);
   }
 
-  // Ordenado, para o arquivo nao trocar de linha a cada rodada e sujar o diff.
+  // Sorted, so the file does not reorder lines on each run and dirty the diff.
   return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
 }
 
@@ -235,18 +236,18 @@ if (import.meta.main) {
   const catalog = await readCatalog();
 
   /*
-   * O carimbo de lancamento.
+   * The release stamp.
    *
-   * `bun run gen:props --desde 0.5.0` escreve a versao em toda prop que ainda
-   * nao tem uma. E o unico momento em que a informacao existe: durante o
-   * desenvolvimento ninguem sabe em que versao a prop vai sair, e adivinhar
-   * produz um numero errado que a doc publica com confianca.
+   * `bun run gen:props --since 0.5.0` writes the version into every prop that
+   * does not have one yet. It is the only moment the information exists:
+   * during development nobody knows in which version the prop will ship, and
+   * guessing produces a wrong number the doc publishes with confidence.
    */
-  const stampArg = process.argv.indexOf("--desde");
+  const stampArg = process.argv.indexOf("--since");
   if (stampArg !== -1) {
     const version = process.argv[stampArg + 1];
     if (!version) {
-      console.error("Falta a versao: bun run gen:props --desde 0.5.0");
+      console.error("Missing the version: bun run gen:props --since 0.5.0");
       process.exit(1);
     }
 
@@ -260,7 +261,7 @@ if (import.meta.main) {
     }
 
     await Bun.write(TARGET, `${JSON.stringify(catalog, null, 2)}\n`);
-    console.log(`${stampedNow} prop(s) carimbada(s) com ${version}.`);
+    console.log(`${stampedNow} prop(s) stamped with ${version}.`);
     process.exit(0);
   }
   const text = `${JSON.stringify(catalog, null, 2)}\n`;
@@ -272,7 +273,7 @@ if (import.meta.main) {
       .catch(() => "");
 
     if (current !== text) {
-      console.error(`${TARGET} divergiu dos tipos. Rode: bun run gen:props`);
+      console.error(`${TARGET} diverged from the types. Run: bun run gen:props`);
 
       const before: Record<string, CatalogPiece> = current ? JSON.parse(current) : {};
       for (const [piece, data] of Object.entries(catalog)) {
@@ -281,17 +282,17 @@ if (import.meta.main) {
         const removed = [...previous].filter(
           (p) => !data.props.some((current) => current.name === p),
         );
-        if (added.length) console.error(`  ${piece}: entrou ${added.join(", ")}`);
-        if (removed.length) console.error(`  ${piece}: saiu ${removed.join(", ")}`);
+        if (added.length) console.error(`  ${piece}: added ${added.join(", ")}`);
+        if (removed.length) console.error(`  ${piece}: removed ${removed.join(", ")}`);
       }
       process.exit(1);
     }
 
     const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
-    console.log(`props em dia: ${Object.keys(catalog).length} pecas, ${total} props.`);
+    console.log(`props up to date: ${Object.keys(catalog).length} pieces, ${total} props.`);
   } else {
     await Bun.write(TARGET, text);
     const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
-    console.log(`${TARGET}: ${Object.keys(catalog).length} pecas, ${total} props.`);
+    console.log(`${TARGET}: ${Object.keys(catalog).length} pieces, ${total} props.`);
   }
 }

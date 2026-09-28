@@ -10,19 +10,19 @@ import { Command, type CommandGroup } from "../src/components/command";
 import { NumberField } from "../src/components/number-field";
 
 /*
- * O atrito que a auditoria mediu: nada aqui estava quebrado, e cada item
- * custava uma ida ao .d.ts que a documentacao deveria ter poupado.
+ * The friction the audit measured: nothing here was broken, and each item
+ * cost a trip to the .d.ts that the documentation should have saved.
  */
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("a barra de menus tem gatilho proprio, com o estilo dentro da peca", () => {
-  // O MenuTrigger sai sem estilo de proposito, porque o uso comum dele e
-  // render={<Button/>} e duas fontes de estilo brigariam. Quem paga por isso e
-  // a Menubar: o exemplo da doc repetia as mesmas cinco classes em cada item,
-  // e toda barra da organizacao ia repetir de novo.
+test("the menu bar has its own trigger, with the style inside the piece", () => {
+  // The MenuTrigger ships unstyled on purpose, because its common use is
+  // render={<Button/>} and two style sources would fight. The one who pays for
+  // it is the Menubar: the doc example repeated the same five classes on each
+  // item, and every bar in the organization would repeat them again.
   withTheme(
     <Menubar>
       <Menu>
@@ -39,9 +39,9 @@ test("a barra de menus tem gatilho proprio, com o estilo dentro da peca", () => 
   expect(trigger.className).toContain("hover:bg-accent-subtle");
 });
 
-test("a moldura de campo acompanha os tres tamanhos do campo", () => {
-  // O Input tem sm, md e lg; a moldura cravava a altura media, entao um campo
-  // pequeno dentro dela saia com o respiro do medio.
+test("the field frame follows the three field sizes", () => {
+  // The Input has sm, md and lg; the frame hardcoded the medium height, so a
+  // small field inside it came out with the medium padding.
   withTheme(
     <InputGroup size="sm">
       <InputPrefix>R$</InputPrefix>
@@ -53,18 +53,18 @@ test("a moldura de campo acompanha os tres tamanhos do campo", () => {
   expect(frame.className).toContain("--rc-control-sm");
 });
 
-test("o campo de numero acompanha os tres tamanhos", () => {
-  // Mesmo defeito da moldura, um arquivo adiante: a altura estava cravada no
-  // Group e o `h-full` do input derrubava a que o inputVariants trazia, entao
-  // `size="sm"` mudava fonte e respiro e a caixa continuava media.
+test("the number field follows the three sizes", () => {
+  // Same defect as the frame, one file over: the height was hardcoded on the
+  // Group and the input's `h-full` overrode the one inputVariants brought, so
+  // `size="sm"` changed font and padding and the box stayed medium.
   withTheme(<NumberField size="sm" aria-label="Parcelas" defaultValue={3} />);
 
   const frame = screen.getByLabelText("Parcelas").closest("div")!;
   expect(frame.className).toContain("--rc-control-sm");
 });
 
-test("as palavras que acham o item podem ser uma lista", () => {
-  // O JSDoc descrevia uma lista de palavras e o tipo aceitava uma string so.
+test("the words that find the item can be a list", () => {
+  // The JSDoc described a list of words and the type accepted a single string.
   const groups: CommandGroup[] = [
     {
       label: "Ir para",

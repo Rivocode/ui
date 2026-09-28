@@ -8,7 +8,7 @@ import {
 
 const CIDADES = ['Joao Pessoa', 'Campina Grande', 'Cabedelo', 'Bayeux', 'Patos']
 
-/** Busca com texto livre */
+/** Search with free text */
 export function FreeTextSearch() {
   return (
     <div className="min-h-64 w-80">

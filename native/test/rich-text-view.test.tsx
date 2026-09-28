@@ -19,8 +19,8 @@ const hostTexts = (screen: ReturnType<typeof render>) =>
 
 const opened = () => (Linking as unknown as { opened: string[] }).opened;
 
-describe("RichTextView nativo", () => {
-  test("o titulo se anuncia como cabecalho, no tamanho do Heading", () => {
+describe("native RichTextView", () => {
+  test("the title announces itself as a header, at the Heading size", () => {
     const screen = render(<RichTextView value={SAVED} />);
     const [heading] = byRole(screen, "header");
 
@@ -29,7 +29,7 @@ describe("RichTextView nativo", () => {
     expect(textOf(screen)).toContain("Resumo da nota");
   });
 
-  test("as marcas viram estilo de Text, e o link abre pelo Linking", () => {
+  test("the marks become Text style, and the link opens through Linking", () => {
     const screen = render(<RichTextView value={SAVED} />);
     const texts = hostTexts(screen);
 
@@ -43,14 +43,14 @@ describe("RichTextView nativo", () => {
     expect(opened()).toContain("https://rivocode.com.br/notas/42");
   });
 
-  test("lista numerada comeca do start, e a marcada usa ponto", () => {
+  test("a numbered list starts from start, and a bulleted one uses a dot", () => {
     const text = textOf(render(<RichTextView value={SAVED} />));
 
     expect(text).toContain("• consultoria");
     expect(text).toContain("3. terceiro");
   });
 
-  test("a citacao sai no tom apagado, com a borda a esquerda", () => {
+  test("the quote comes out in the muted tone, with the border on the left", () => {
     const screen = render(<RichTextView value={SAVED} />);
     const quote = hostTexts(screen).find(
       (node) => [node.props.children].flat().join("") === "Pago no Pix.",
@@ -59,7 +59,7 @@ describe("RichTextView nativo", () => {
     expect(tokens(quote)).toContain("text-fg-muted");
   });
 
-  test("link com javascript: perde o endereco, e script nao entra", () => {
+  test("a javascript: link loses its address, and script does not get in", () => {
     const screen = render(
       <RichTextView value={'<p><a href="javascript:alert(1)">clique</a></p><script>alert(2)</script>'} />,
     );
@@ -68,7 +68,7 @@ describe("RichTextView nativo", () => {
     expect(textOf(screen)).toBe("clique");
   });
 
-  test("o JSON do editor monta o mesmo texto que o HTML", () => {
+  test("the editor JSON assembles the same text as the HTML", () => {
     const json = {
       type: "doc",
       content: [
@@ -85,7 +85,7 @@ describe("RichTextView nativo", () => {
     );
   });
 
-  test("vazio nao desenha nada, e o empty aparece no lugar", () => {
+  test("empty draws nothing, and empty appears in its place", () => {
     const blank = render(<RichTextView value="<p></p>" />);
     expect(hostTexts(blank)).toEqual([]);
     expect(textOf(render(<RichTextView value="" empty="Sem descrição." />))).toBe("Sem descrição.");

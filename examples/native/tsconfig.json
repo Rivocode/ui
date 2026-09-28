@@ -2,19 +2,19 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    // Os fontes de native/ moram fora deste app e nao tem node_modules
-    // proprio (o metro resolve via nodeModulesPaths); estas linhas ensinam o
-    // MESMO caminho ao tsc. Mapear "react" aqui seria desastre - o Expo
-    // aplica paths no runtime -, mas as tres abaixo apontam para o proprio
-    // pacote do app, entao runtime e tipos concordam.
+    // The sources in native/ live outside this app and have no node_modules
+    // of their own (metro resolves through nodeModulesPaths); these lines
+    // teach tsc the SAME path. Mapping "react" here would be a disaster - Expo
+    // applies paths at runtime -, but the ones below point to the app's own
+    // package, so runtime and types agree.
     //
-    // Sem elas, todo import de peer feito de dentro de native/src procura em
-    // /ui/node_modules, onde nenhum dos tres existe, e o tsc reprova o
-    // provider e o grafico por um erro que nao e deles. O nativewind ja
-    // falhava assim desde que o catalogo dobrou; o react-native-svg entrou
-    // junto quando o grafico chegou, e os dois modulos do Expo quando o
-    // Clipboard e o FileUpload chegaram - um peer opcional por subcaminho, e
-    // cada um precisa da propria linha aqui.
+    // Without them, every peer import made from inside native/src looks in
+    // /ui/node_modules, where none of them exists, and tsc rejects the
+    // provider and the chart for an error that is not theirs. nativewind
+    // already failed like this once the catalog doubled; react-native-svg came
+    // along when the chart arrived, and the two Expo modules when Clipboard
+    // and FileUpload arrived - one optional peer per subpath, and each one
+    // needs its own line here.
     "paths": {
       "react-native": ["./node_modules/react-native"],
       "nativewind": ["./node_modules/nativewind"],

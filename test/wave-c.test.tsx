@@ -32,61 +32,61 @@ function table(props: Partial<React.ComponentProps<typeof DataTable<Invoice>>> =
   );
 }
 
-test("a tabela mostra os dados quando eles chegam", () => {
+test("the table shows the data when it arrives", () => {
   table();
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
   expect(screen.getByText("R$ 940,00")).toBeDefined();
 });
 
-test("carregando, ela mostra o formato do que vem, e nao os dados velhos", () => {
+test("while loading, it shows the shape of what is coming, and not the stale data", () => {
   const { container } = table({ isLoading: true, skeletonRows: 3 });
   expect(screen.queryByText("Clinica Sao Lucas")).toBeNull();
   expect(container.querySelectorAll(".animate-pulse").length).toBe(9);
 });
 
-test("sem dados nenhum, ela ja entra carregando", () => {
+test("with no data at all, it starts in loading", () => {
   const { container } = table({ data: undefined });
   expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
 });
 
-test("o erro vence o carregando, e oferece nova tentativa", () => {
-  let tentativas = 0;
-  table({ isError: true, isLoading: true, onRetry: () => (tentativas += 1) });
+test("error beats loading, and offers a retry", () => {
+  let retries = 0;
+  table({ isError: true, isLoading: true, onRetry: () => (retries += 1) });
 
   expect(screen.getByRole("alert")).toBeDefined();
   fireEvent.click(screen.getByText("Tentar de novo"));
-  expect(tentativas).toBe(1);
+  expect(retries).toBe(1);
 });
 
-test("a lista vazia explica o vazio e oferece saida", () => {
+test("the empty list explains the emptiness and offers a way out", () => {
   table({ data: [] });
   expect(screen.getByText("Nenhuma nota")).toBeDefined();
   expect(screen.getByText("Emita a primeira para ela aparecer.")).toBeDefined();
 });
 
-test("o vazio nao aparece enquanto a consulta esta em pe", () => {
+test("the empty state does not show while the query is in flight", () => {
   table({ data: [], isLoading: true });
   expect(screen.queryByText("Nenhuma nota")).toBeNull();
 });
 
-test("a linha avisa quem clicou nela", () => {
-  let clicada: Invoice | undefined;
-  table({ onRowClick: (nota) => (clicada = nota) });
+test("the row notifies whoever clicked it", () => {
+  let clicked: Invoice | undefined;
+  table({ onRowClick: (invoice) => (clicked = invoice) });
   fireEvent.click(screen.getByText("Clinica Sao Lucas"));
-  expect(clicada?.number).toBe("4813");
+  expect(clicked?.number).toBe("4813");
 });
 
-const PASSOS: Step[] = [
+const STEPS: Step[] = [
   { id: "dados", title: "Dados" },
   { id: "itens", title: "Itens" },
   { id: "revisao", title: "Revisao" },
 ];
 
 function Wizard() {
-  const wizard = useWizard(PASSOS);
+  const wizard = useWizard(STEPS);
   return (
     <RivoProvider scope="local">
-      <Steps steps={PASSOS} step={wizard.step} onStepChange={wizard.goTo} />
+      <Steps steps={STEPS} step={wizard.step} onStepChange={wizard.goTo} />
       <p>Agora: {wizard.current?.title}</p>
       <button onClick={() => wizard.next()}>Avancar</button>
       <button onClick={() => wizard.next(() => false)}>Avancar travado</button>
@@ -95,7 +95,7 @@ function Wizard() {
   );
 }
 
-test("o assistente anda e volta", () => {
+test("the wizard moves forward and back", () => {
   render(<Wizard />);
   expect(screen.getByText("Agora: Dados")).toBeDefined();
 
@@ -106,13 +106,13 @@ test("o assistente anda e volta", () => {
   expect(screen.getByText("Agora: Dados")).toBeDefined();
 });
 
-test("checagem que reprova segura o passo", () => {
+test("a failing check holds the step", () => {
   render(<Wizard />);
   fireEvent.click(screen.getByText("Avancar travado"));
   expect(screen.getByText("Agora: Dados")).toBeDefined();
 });
 
-test("dois cliques em avancar durante a checagem assincrona andam um passo so", async () => {
+test("two clicks on next during the async check advance a single step", async () => {
   let release!: (ok: boolean) => void;
   let calls = 0;
   const validate = () => {
@@ -122,7 +122,7 @@ test("dois cliques em avancar durante a checagem assincrona andam um passo so", 
     });
   };
   function Hurried() {
-    const wizard = useWizard(PASSOS);
+    const wizard = useWizard(STEPS);
     return (
       <>
         <p>Agora: {wizard.current?.title}</p>
@@ -140,15 +140,15 @@ test("dois cliques em avancar durante a checagem assincrona andam um passo so", 
   expect(screen.getByText("Agora: Itens")).toBeDefined();
 });
 
-test("a regua marca o passo atual e so deixa voltar", () => {
+test("the ruler marks the current step and only allows going back", () => {
   render(<Wizard />);
   fireEvent.click(screen.getByText("Avancar"));
 
-  const botoes = screen.getAllByRole("button").filter((b) => b.getAttribute("aria-current"));
-  expect(botoes[0]!.textContent).toContain("Itens");
+  const buttons = screen.getAllByRole("button").filter((b) => b.getAttribute("aria-current"));
+  expect(buttons[0]!.textContent).toContain("Itens");
 
   const dataStep = screen.getByText("Dados").closest("button") as HTMLButtonElement;
-  const passoDeRevisao = screen.getByText("Revisao").closest("button") as HTMLButtonElement;
+  const reviewStep = screen.getByText("Revisao").closest("button") as HTMLButtonElement;
   expect(dataStep.disabled).toBe(false);
-  expect(passoDeRevisao.disabled).toBe(true);
+  expect(reviewStep.disabled).toBe(true);
 });

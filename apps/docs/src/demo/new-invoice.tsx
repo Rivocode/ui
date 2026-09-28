@@ -44,8 +44,8 @@ export function NewInvoice() {
   const wizard = useWizard(STEPS)
   const toast = useToast()
   const [confirming, setConfirming] = useState(false)
-  // A mascara devolve as duas grafias; a crua e do que um total e feito, e e a
-  // que iria para o servidor.
+  // The mask returns both spellings; the raw one is what a total is made of,
+  // and it is the one that would go to the server.
   const [amount, setAmount] = useState('328000')
   const [kind, setKind] = useState('service')
 

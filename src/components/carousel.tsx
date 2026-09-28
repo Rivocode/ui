@@ -54,52 +54,52 @@ const LABELS: CarouselLabels = {
 
 export type CarouselProps = Omit<ComponentPropsWithoutRef<"section">, "children"> & {
   /**
-   * O nome do carrossel, obrigatorio: vira o `aria-label` da regiao, que o
-   * leitor de tela anuncia junto com "carrossel". Diga o assunto ("Planos"),
-   * e nao o formato.
+   * The carousel's name, required: becomes the region's `aria-label`, which the
+   * screen reader announces along with "carrossel". State the subject ("Planos"),
+   * not the format.
    */
   label: string;
-  /** Os slides, um filho por slide. Cada filho ganha o papel e o rotulo "Slide 2 de 5". */
+  /** The slides, one child per slide. Each child gets the role and the label "Slide 2 de 5". */
   children?: ReactNode;
   /**
-   * Quantos slides cabem lado a lado. Numero fixo, objeto por largura de tela
-   * (`{ base: 1, sm: 2, lg: 3 }`, com os pontos do Tailwind, e o que falta
-   * herda do menor), ou `"auto"`, em que a largura de cada slide sai da
-   * classe dele (`classNames.slide` ou o proprio filho). Sem ele, um por vez.
+   * How many slides fit side by side. A fixed number, an object per screen width
+   * (`{ base: 1, sm: 2, lg: 3 }`, with the Tailwind breakpoints, and what is missing
+   * inherits from the smaller one), or `"auto"`, in which each slide's width comes from
+   * its class (`classNames.slide` or the child itself). Without it, one at a time.
    */
   slidesPerView?: number | Partial<Record<"base" | "sm" | "md" | "lg" | "xl", number>> | "auto";
-  /** O vao entre os slides, lido de `--rc-gap-*`: encolhe com a densidade. */
+  /** The gap between slides, read from `--rc-gap-*`: shrinks with density. */
   gap?: "none" | "sm" | "md" | "lg";
-  /** O slide da frente, controlado. Conta de zero. Use com `onIndexChange`. */
+  /** The front slide, controlled. Counts from zero. Use with `onIndexChange`. */
   index?: number;
-  /** O slide da frente ao montar, quando ninguem controla. */
+  /** The front slide on mount, when nobody controls it. */
   defaultIndex?: number;
   /**
-   * Chamado quando o slide da frente muda: pelos botoes, pelo teclado, pelos
-   * indicadores ou pelo arrasto, quando a rolagem assenta.
+   * Called when the front slide changes: by the buttons, the keyboard, the
+   * indicators or the drag, when the scroll settles.
    */
   onIndexChange?: (index: number) => void;
-  /** Mostra os botoes anterior e proximo. Ligado por padrao. */
+  /** Shows the previous and next buttons. On by default. */
   controls?: boolean;
-  /** Mostra um indicador por posicao, que tambem leva ate ela. Desligado por padrao. */
+  /** Shows one indicator per position, which also takes you to it. Off by default. */
   indicators?: boolean;
-  /** Do ultimo, o proximo volta ao primeiro, e vice-versa. Desligado por padrao. */
+  /** From the last one, next goes back to the first, and vice versa. Off by default. */
   loop?: boolean;
   /**
-   * Avanca sozinho: `true` a cada 5 segundos, ou o intervalo em milissegundos.
-   * Desligado por padrao. Ligado, aparece o botao de pausa, e a rotacao para
-   * com o ponteiro em cima e com o foco dentro. Quando o sistema pede para
-   * reduzir movimento ela nasce parada, e so anda se a pessoa apertar
-   * retomar, com o slide trocando sem deslizar. Sempre volta ao primeiro
-   * depois do ultimo.
+   * Advances on its own: `true` every 5 seconds, or the interval in milliseconds.
+   * Off by default. When on, the pause button appears, and rotation stops
+   * with the pointer over it and with focus inside. When the system asks to
+   * reduce motion it starts stopped, and only moves if the person presses
+   * resume, with the slide switching without sliding. Always goes back to the first
+   * after the last.
    */
   autoplay?: boolean | number;
   /**
-   * Os textos que o leitor de tela ouve, para trocar o idioma ou o termo:
-   * `slide` e `indicator` recebem a posicao e o total, `previous`, `next`,
-   * `pause` e `play` sao os botoes, e `roleDescription` e
-   * `slideRoleDescription` sao o nome do papel da regiao e de cada slide.
-   * Passe so os que mudam.
+   * The texts the screen reader hears, to change the language or the term:
+   * `slide` and `indicator` receive the position and the total, `previous`, `next`,
+   * `pause` and `play` are the buttons, and `roleDescription` and
+   * `slideRoleDescription` are the role name of the region and of each slide.
+   * Pass only the ones that change.
    */
   labels?: Partial<CarouselLabels>;
   classNames?: Slots<

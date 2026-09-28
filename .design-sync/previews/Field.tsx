@@ -1,6 +1,6 @@
 import { Field, FieldDescription, FieldError, FieldLabel, Input } from '@rivocode/ui'
 
-/** Básico */
+/** Basic */
 export function Basic() {
   return (
     <div className="flex max-w-sm flex-col gap-4">
@@ -13,7 +13,7 @@ export function Basic() {
   )
 }
 
-/** Com erro */
+/** With error */
 export function WithError() {
   return (
     <div className="max-w-sm">
@@ -26,7 +26,7 @@ export function WithError() {
   )
 }
 
-/** Tamanhos */
+/** Sizes */
 export function Sizes() {
   return (
     <div className="flex max-w-sm flex-col gap-4">
@@ -46,7 +46,7 @@ export function Sizes() {
   )
 }
 
-/** Desabilitado */
+/** Disabled */
 export function Disabled() {
   return (
     <div className="max-w-sm">

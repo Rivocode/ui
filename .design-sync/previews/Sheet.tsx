@@ -1,6 +1,6 @@
 import { Button, Sheet, SheetClose, SheetContent, SheetDescription, SheetHandle, SheetTitle, SheetTrigger } from '@rivocode/ui'
 
-/** Folha de baixo */
+/** Bottom sheet */
 export function BottomSheet() {
   return (
     <div className="min-h-80">
@@ -20,7 +20,7 @@ export function BottomSheet() {
   )
 }
 
-/** Lateral */
+/** Side sheet */
 export function SideSheet() {
   return (
     <Sheet side="left">

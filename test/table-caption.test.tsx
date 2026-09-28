@@ -13,19 +13,19 @@ import {
 } from "../src/components/table";
 
 /*
- * Quem monta a Table a mao escrevia o titulo numa <p> acima dela. Nada quebra,
- * e o leitor de tela anuncia "tabela, 3 colunas, 2 linhas" e mais nada: texto
- * vizinho nao nomeia elemento nenhum, e numa tela com duas tabelas as duas
- * chegam sem nome.
+ * Whoever assembled the Table by hand wrote the title in a <p> above it. Nothing
+ * breaks, and the screen reader announces "table, 3 columns, 2 rows" and nothing
+ * else: neighboring text names no element, and on a screen with two tables both
+ * arrive without a name.
  *
- * O que estes testes guardam e o nome: que a legenda sai num <caption> dentro
- * da mesma <table>, e que e dali que o nome acessivel dela vem - inclusive
- * quando a legenda esta escondida da tela.
+ * What these tests guard is the name: that the caption renders as a <caption>
+ * inside the same <table>, and that its accessible name comes from there - even
+ * when the caption is hidden from the screen.
  */
 
-const LEGENDA = "Pagamentos recebidos em junho de 2025";
+const CAPTION = "Pagamentos recebidos em junho de 2025";
 
-function tabela(caption: ReactNode = <TableCaption>{LEGENDA}</TableCaption>) {
+function renderTable(caption: ReactNode = <TableCaption>{CAPTION}</TableCaption>) {
   return render(
     <Table>
       {caption}
@@ -45,34 +45,34 @@ function tabela(caption: ReactNode = <TableCaption>{LEGENDA}</TableCaption>) {
   );
 }
 
-test("a legenda sai como <caption> dentro da mesma <table>", () => {
-  const { container } = tabela();
+test("the caption renders as a <caption> inside the same <table>", () => {
+  const { container } = renderTable();
 
   const caption = container.querySelector("caption");
   expect(caption).not.toBeNull();
-  expect(caption!.textContent).toBe(LEGENDA);
-  // Dentro da <table>, e nao na <div> de rolagem que o Table desenha em volta:
-  // e o parentesco que faz dela o nome, e nao um paragrafo qualquer.
+  expect(caption!.textContent).toBe(CAPTION);
+  // Inside the <table>, and not in the scrolling <div> the Table draws around it:
+  // the parentage is what makes it the name, and not just any paragraph.
   expect(caption!.parentElement).toBe(container.querySelector("table"));
 });
 
-test("a legenda e o nome acessivel da tabela", () => {
-  tabela();
+test("the caption is the table's accessible name", () => {
+  renderTable();
 
-  expect(screen.getByRole("table", { name: LEGENDA })).toBeDefined();
+  expect(screen.getByRole("table", { name: CAPTION })).toBeDefined();
 });
 
-test("sem legenda a tabela chega sem nome, que e o caso que a peca conserta", () => {
-  tabela(null);
+test("without a caption the table arrives without a name, which is the case the component fixes", () => {
+  renderTable(null);
 
-  expect(screen.queryByRole("table", { name: LEGENDA })).toBeNull();
+  expect(screen.queryByRole("table", { name: CAPTION })).toBeNull();
   expect(screen.getByRole("table").getAttribute("aria-label")).toBeNull();
 });
 
-test("um titulo acima da tabela nao nomeia a tabela", () => {
+test("a heading above the table does not name the table", () => {
   render(
     <>
-      <h3>{LEGENDA}</h3>
+      <h3>{CAPTION}</h3>
       <Table>
         <TableBody>
           <TableRow>
@@ -83,40 +83,40 @@ test("um titulo acima da tabela nao nomeia a tabela", () => {
     </>,
   );
 
-  expect(screen.getByRole("heading", { name: LEGENDA })).toBeDefined();
-  expect(screen.queryByRole("table", { name: LEGENDA })).toBeNull();
+  expect(screen.getByRole("heading", { name: CAPTION })).toBeDefined();
+  expect(screen.queryByRole("table", { name: CAPTION })).toBeNull();
 });
 
-test("escondida da tela, a legenda continua nomeando", () => {
-  const { container } = tabela(<TableCaption className="sr-only">{LEGENDA}</TableCaption>);
+test("hidden from the screen, the caption still names", () => {
+  const { container } = renderTable(<TableCaption className="sr-only">{CAPTION}</TableCaption>);
 
   expect(container.querySelector("caption")!.className).toContain("sr-only");
-  expect(screen.getByRole("table", { name: LEGENDA })).toBeDefined();
+  expect(screen.getByRole("table", { name: CAPTION })).toBeDefined();
 });
 
-test("a legenda nao entra na contagem de linhas da tabela", () => {
-  tabela();
+test("the caption does not enter the table's row count", () => {
+  renderTable();
 
-  // O <caption> nao e <tr>: se ele virasse linha, toda tabela com legenda
-  // passaria a anunciar uma linha a mais do que tem.
+  // <caption> is not <tr>: if it became a row, every table with a caption
+  // would announce one row more than it has.
   expect(screen.getAllByRole("row")).toHaveLength(2);
 });
 
-test("a legenda alinha a esquerda, e nao no centro que o navegador da", () => {
-  const { container } = tabela();
+test("the caption aligns left, and not to the center the browser gives", () => {
+  const { container } = renderTable();
 
   expect(container.querySelector("caption")!.className).toContain("text-left");
 });
 
-test("a classe de quem usa vence a do TableCaption", () => {
-  const { container } = tabela(<TableCaption className="caption-bottom">{LEGENDA}</TableCaption>);
+test("the consumer's class beats the TableCaption one", () => {
+  const { container } = renderTable(<TableCaption className="caption-bottom">{CAPTION}</TableCaption>);
 
   const caption = container.querySelector("caption")!;
   expect(caption.className).toContain("caption-bottom");
   expect(caption.className).not.toContain("caption-top");
 });
 
-test("a legenda sai pelo indice publico do pacote", async () => {
+test("the caption is exported from the package's public index", async () => {
   const index = await import("../src/index");
 
   expect(index.TableCaption).toBe(TableCaption);

@@ -5,64 +5,47 @@ import { anchor } from "../apps/docs/src/anchor";
 import { findParent } from "../apps/docs/src/parts";
 import { renderMarkdown } from "../apps/docs/src/render-markdown";
 
-/*
- * Uma pagina, um id por secao.
- *
- * O indice da direita e montado lendo os `h2[id]` da pagina, e o React
- * identifica cada linha dele pelo id. Dois titulos iguais na mesma pagina
- * viravam duas chaves iguais, e a lista parava de se reconciliar: a peca que
- * repetia o titulo deixava linhas orfas no indice, que sobreviviam a
- * navegacao e se acumulavam nas pecas seguintes ate a pagina ser recarregada.
- *
- * `Button` era a peca que disparava: o doc dela e o do `ButtonGroup`, mostrado
- * na mesma pagina, escrevem os dois `## No React Native`. O endereco `#`
- * tambem so podia levar a um dos dois.
- */
 
 const ROOT = ".design-sync";
 
 const names = readdirSync(`${ROOT}/docs`)
-  .filter((arquivo) => arquivo.endsWith(".md"))
-  .map((arquivo) => arquivo.replace(/\.md$/, ""));
+  .filter((file) => file.endsWith(".md"))
+  .map((file) => file.replace(/\.md$/, ""));
 
 const bodyOf = async (name: string) => {
   const raw = await Bun.file(`${ROOT}/docs/${name}.md`).text();
-  // Fora o frontmatter e o `# Nome`, que a pagina imprime por conta dela.
   return raw.replace(/^---\n[\s\S]*?\n---\n/, "").replace(/^\s*#\s+\S.*\n+/, "");
 };
 
 const idsOf = (html: string) => [...html.matchAll(/<h\d id="([^"]+)"/g)].map((match) => match[1]);
 
-test("dois titulos iguais no mesmo documento nao disputam o mesmo id", () => {
-  const html = renderMarkdown("## Quando usar\n\ntexto\n\n## Quando usar\n");
+test("two equal headings in the same document do not compete for the same id", () => {
+  const html = renderMarkdown("## When to use\n\ntext\n\n## When to use\n");
 
-  expect(idsOf(html)).toEqual(["quando-usar", "quando-usar-2"]);
+  expect(idsOf(html)).toEqual(["when-to-use", "when-to-use-2"]);
 });
 
-test("o documento de uma parte assina o id com o nome da parte", () => {
-  const html = renderMarkdown("## No React Native\n", { idPrefix: "button-group" });
+test("a part's document signs the id with the part name", () => {
+  const html = renderMarkdown("## In React Native\n", { idPrefix: "button-group" });
 
-  expect(idsOf(html)).toEqual(["button-group-no-react-native"]);
+  expect(idsOf(html)).toEqual(["button-group-in-react-native"]);
 });
 
-test("o titulo de uma parte desce um nivel, porque mora dentro do h3 dela", () => {
-  const html = renderMarkdown("## No React Native\n", { headingOffset: 2 });
+test("a part's heading goes down a level, because it lives inside its h3", () => {
+  const html = renderMarkdown("## In React Native\n", { headingOffset: 2 });
 
   expect(html).toContain("<h4 ");
 });
 
-test("sem a assinatura, a pagina de Button escreveria o mesmo id duas vezes", async () => {
-  // O caso que quebrou, guardado: os dois docs que a pagina de `Button`
-  // mostra escrevem `## No React Native`, e sem prefixo os dois pedem o
-  // mesmo endereco.
+test("without the signature, the Button page would write the same id twice", async () => {
   const button = idsOf(renderMarkdown(await bodyOf("Button")));
   const group = idsOf(renderMarkdown(await bodyOf("ButtonGroup")));
 
-  expect(button.filter((id) => group.includes(id))).toEqual(["no-react-native"]);
+  expect(button.filter((id) => group.includes(id))).toEqual(["in-react-native"]);
 });
 
-test("nenhuma pagina de peca repete um id de heading", async () => {
-  const repetidos: string[] = [];
+test("no piece page repeats a heading id", async () => {
+  const repeated: string[] = [];
 
   expect(names.length).toBeGreaterThan(150);
 
@@ -71,11 +54,10 @@ test("nenhuma pagina de peca repete um id de heading", async () => {
 
     const parts = names.filter((other) => findParent(other, names) === name);
     const ids = [
-      // As secoes que a pagina escreve por conta dela.
-      "quando-usar",
+      "when-to-use",
       ...idsOf(renderMarkdown(await bodyOf(name))),
       "api",
-      ...(parts.length ? ["partes"] : []),
+      ...(parts.length ? ["the-parts"] : []),
       ...(
         await Promise.all(
           parts.map(async (part) => [
@@ -91,12 +73,12 @@ test("nenhuma pagina de peca repete um id de heading", async () => {
       ).flat(),
     ];
 
-    const vistos = new Set<string>();
+    const seen = new Set<string>();
     for (const id of ids) {
-      if (vistos.has(id)) repetidos.push(`${name}#${id}`);
-      vistos.add(id);
+      if (seen.has(id)) repeated.push(`${name}#${id}`);
+      seen.add(id);
     }
   }
 
-  expect(repetidos).toEqual([]);
+  expect(repeated).toEqual([]);
 });

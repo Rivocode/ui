@@ -1,13 +1,13 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Carousel
 
-Uma fileira de slides que a pessoa percorre de lado: planos lado a lado,
-novidades da semana, fotos de um imóvel. A rolagem é a do próprio navegador,
-com _scroll-snap_ do CSS: o arrasto no toque, a roda do mouse na horizontal e o
-trackpad já funcionam sem biblioteca nenhuma, e cada slide assenta na borda.
+A row of slides the person moves through sideways: plans side by side, the
+week's news, photos of a property. The scrolling is the browser's own, with CSS
+_scroll-snap_: touch dragging, the horizontal mouse wheel and the trackpad
+already work without any library, and each slide settles at the edge.
 
 ```tsx
 <Carousel label="Planos" indicators>
@@ -17,16 +17,17 @@ trackpad já funcionam sem biblioteca nenhuma, e cada slide assenta na borda.
 </Carousel>
 ```
 
-Cada filho vira um slide. O `label` é obrigatório: ele dá nome à região, que o
-leitor de tela anuncia como "carrossel", e cada slide sai como um grupo "slide"
-com o rótulo "Slide 2 de 5". É o padrão de carrossel da APG, com os termos em
-português.
+Each child becomes a slide. `label` is required: it names the region, which the
+screen reader announces as "carrossel", and each slide renders as a "slide"
+group labeled "Slide 2 de 5". It is the APG carousel pattern, with the terms in
+Portuguese.
 
-## Quantos por vez
+## How many at a time
 
-`slidesPerView` diz quantos slides cabem lado a lado. Um número fixa a conta; um
-objeto muda com a largura da tela, com os mesmos pontos do Tailwind (`sm`, `md`,
-`lg`, `xl`), e o ponto que falta herda do menor:
+`slidesPerView` says how many slides fit side by side. A number fixes the
+count; an object changes with the screen width, with the same Tailwind
+breakpoints (`sm`, `md`, `lg`, `xl`), and a missing breakpoint inherits from
+the smaller one:
 
 ```tsx
 <Carousel label="Planos" slidesPerView={{ base: 1, sm: 2, lg: 3 }}>
@@ -36,9 +37,10 @@ objeto muda com a largura da tela, com os mesmos pontos do Tailwind (`sm`, `md`,
 </Carousel>
 ```
 
-Com `slidesPerView="auto"`, quem decide a largura é a classe do slide, por
-`classNames.slide` ou pelo próprio filho. É o caso da fileira de cartões de
-largura fixa que mostra a ponta do próximo, e a ponta é o convite para arrastar:
+With `slidesPerView="auto"`, the slide's class decides the width, via
+`classNames.slide` or the child itself. It is the case of the row of
+fixed-width cards that shows the edge of the next one, and that edge is the
+invitation to drag:
 
 ```tsx
 <Carousel label="Planos" slidesPerView="auto" classNames={{ slide: 'w-56' }}>
@@ -48,32 +50,33 @@ largura fixa que mostra a ponta do próximo, e a ponta é o convite para arrasta
 </Carousel>
 ```
 
-`gap` é o vão entre os slides, lido de `--rc-gap-*`: encolhe na densidade
-compacta.
+`gap` is the space between slides, read from `--rc-gap-*`: it shrinks in the
+compact density.
 
-## Navegar
+## Navigating
 
-Os botões anterior e próximo vêm ligados, embaixo da fileira, e são o
-`IconButton` da casa. No primeiro slide o anterior desabilita, e no último o
-próximo; com `loop`, o próximo do último volta ao primeiro. `controls={false}`
-tira os dois, para quando só o arrasto basta.
+The previous and next buttons come on, below the row, and they are the house
+`IconButton`. On the first slide the previous one is disabled, and on the last
+one the next; with `loop`, the next from the last goes back to the first.
+`controls={false}` removes both, for when dragging alone is enough.
 
-`indicators` liga um ponto por posição. O ponto do slide da frente fica mais
-largo e na cor de destaque, e cada ponto é um botão que leva até a posição, com
-o rótulo "Ir para o slide 3 de 5". Com vários por vez, as posições são as que
-a rolagem alcança: cinco slides de três em três dão três pontos.
+`indicators` turns on one dot per position. The dot of the front slide is wider
+and in the highlight color, and each dot is a button that goes to that
+position, labeled "Ir para o slide 3 de 5". With several at a time, the
+positions are the ones the scrolling reaches: five slides three at a time give
+three dots.
 
-Com o foco no carrossel, as setas andam um slide, e `Home` e `End` vão às
-pontas. Dentro de um campo do slide, a seta continua sendo do campo.
+With focus on the carousel, the arrows move one slide, and `Home` and `End` go
+to the ends. Inside a field in the slide, the arrow still belongs to the field.
 
-Quando o slide da frente muda, uma região viva educada diz "Slide 3 de 5". Ela
-fica calada enquanto a rotação automática anda, para o leitor de tela não
-narrar sozinho.
+When the front slide changes, a polite live region says "Slide 3 de 5". It
+stays silent while automatic rotation runs, so the screen reader does not
+narrate on its own.
 
-## Controlado
+## Controlled
 
-`index` e `onIndexChange`, contando de zero. `onIndexChange` é chamado pelos
-botões, pelo teclado, pelos pontos e pelo arrasto, quando a rolagem assenta:
+`index` and `onIndexChange`, counting from zero. `onIndexChange` is called by
+the buttons, the keyboard, the dots and dragging, when the scrolling settles:
 
 ```tsx
 const [index, setIndex] = useState(0)
@@ -83,55 +86,58 @@ const [index, setIndex] = useState(0)
 </Carousel>
 ```
 
-## Rotação automática
+## Automatic rotation
 
-**Desligada por padrão, e é para continuar assim.** Conteúdo que anda sozinho
-disputa a atenção com o que a pessoa está lendo, e texto que some antes de
-terminar de ser lido é a falha mais comum desta peça.
+**Off by default, and it should stay that way.** Content that moves on its own
+competes for attention with what the person is reading, and text that
+disappears before it has been read is this component's most common failure.
 
-Quando a rotação é mesmo a intenção, `autoplay` liga: `true` a cada 5 segundos,
-ou o intervalo em milissegundos. A peça cumpre a 2.2.2 da WCAG sozinha:
+When rotation really is the intent, `autoplay` turns it on: `true` every 5
+seconds, or the interval in milliseconds. The component meets WCAG 2.2.2 on its
+own:
 
-- o botão de pausa aparece junto dos controles, e é ele que diz "Pausar a
-  rotação" ou "Retomar a rotação";
-- a rotação para com o ponteiro em cima e com o foco em qualquer ponto do
-  carrossel, e volta quando os dois saem;
-- quando o sistema pede para reduzir movimento, ela não começa: o botão nasce
-  oferecendo retomar, e só anda se a pessoa pedir. O pedido dela vence a
-  preferência do sistema, que continua valendo no resto: o slide troca sem
-  deslizar.
+- the pause button appears with the controls, and it is what says "Pausar a
+  rotação" or "Retomar a rotação";
+- rotation stops with the pointer over it and with focus anywhere in the
+  carousel, and resumes when both leave;
+- when the system asks to reduce motion, it does not start: the button is born
+  offering to resume, and it only moves if the person asks. Their request wins
+  over the system preference, which still holds for the rest: the slide changes
+  without sliding.
 
-Com `defaultIndex`, o carrossel já monta no slide pedido, sem deslizar desde o
-primeiro.
+With `defaultIndex`, the carousel mounts on the requested slide, without
+sliding from the first.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `viewport` (a fileira que rola), `slide`
-(cada slide), `footer` (a linha dos controles), `previous`, `next`, `pause`,
-`indicators` (o grupo dos pontos) e `indicator` (cada ponto).
+`classNames` reaches each node by name: `viewport` (the row that scrolls),
+`slide` (each slide), `footer` (the controls row), `previous`, `next`, `pause`,
+`indicators` (the group of dots) and `indicator` (each dot).
 
-`labels` troca os textos que o leitor de tela ouve: `slide` e `indicator` são
-funções da posição e do total; `previous`, `next`, `pause` e `play` são texto.
+`labels` changes the texts the screen reader hears: `slide` and `indicator` are
+functions of the position and the total; `previous`, `next`, `pause` and `play`
+are text.
 
-## Quando não usar
+## When not to use
 
-- **Conteúdo que a pessoa compara** é `Tabs`, ou tudo à vista. O carrossel
-  mostra uma parte por vez, e quem compara o plano Profissional com o Empresa
-  precisa dos dois na tela ao mesmo tempo; nas `Tabs`, ao menos o nome de cada
-  opção fica à vista o tempo todo.
-- **Quando tudo cabe na tela** é `Grid`. Esconder atrás de uma seta o que
-  caberia numa grade de três colunas só custa um clique a quem quer ver.
-- **Para a informação que importa.** Os slides depois do primeiro são pouco
-  vistos: aviso que a pessoa precisa ler é `Banner` ou `Alert`, e não o terceiro
-  slide de uma rotação.
+- **Content the person compares** is `Tabs`, or everything in view. The
+  carousel shows one part at a time, and whoever compares the Profissional plan
+  with the Empresa one needs both on screen at the same time; with `Tabs`, at
+  least the name of each option stays in view the whole time.
+- **When everything fits on the screen** it is `Grid`. Hiding behind an arrow
+  what would fit in a three-column grid only costs a click for whoever wants to
+  see.
+- **For information that matters.** Slides after the first are rarely seen: a
+  notice the person needs to read is `Banner` or `Alert`, not the third slide of
+  a rotation.
 
-## No React Native
+## In React Native
 
-Traduz sobre a `FlatList` horizontal do core: com um slide por vez ela pagina pela largura inteira (`pagingEnabled`), e com mais de um assenta de slide em slide (`snapToInterval`). O arrasto é o do próprio sistema, e `onIndexChange` chega quando a rolagem assenta.
+Translates on top of the core's horizontal `FlatList`: with one slide at a time it pages by the full width (`pagingEnabled`), and with more than one it settles slide by slide (`snapToInterval`). The drag is the system's own, and `onIndexChange` arrives when the scroll settles.
 
-**A lista vem por `items` e `renderItem`, e o `index` é controlado**, como em todo o pacote nativo. `slidesPerView` é um número só: a largura do telefone não muda no meio da tela, e o objeto por largura e o `"auto"` do web não atravessam.
+**The list comes through `items` and `renderItem`, and the `index` is controlled**, as in the whole native package. `slidesPerView` is a single number: the phone's width does not change in the middle of the screen, and the web's per-width object and `"auto"` do not cross over.
 
-**Não há `autoplay`.** No toque, a fileira que anda sozinha briga com o dedo que está prestes a arrastar, e o botão de pausa ficaria a um polegar de distância do conteúdo que se move. Sem os pontos, um contador "2 de 5" fica entre os botões, numa região viva educada que diz o slide novo ao leitor de tela.
+**There is no `autoplay`.** On touch, a row that moves on its own fights the finger that is about to drag, and the pause button would sit a thumb's width away from the content that moves. Without the dots, a "2 de 5" counter sits between the buttons, in a polite live region that tells the screen reader the new slide.
 
 ```tsx
 <Carousel
@@ -143,4 +149,4 @@ Traduz sobre a `FlatList` horizontal do core: com um slide por vez ela pagina pe
 />
 ```
 
-As partes vestem pelo mesmo `classNames` do web: `viewport`, `slide`, `footer`, `previous`, `next`, `indicators` e `indicator`. `pause` não existe aqui, porque não há `autoplay`.
+The parts are styled through the same `classNames` as the web: `viewport`, `slide`, `footer`, `previous`, `next`, `indicators` and `indicator`. `pause` does not exist here, because there is no `autoplay`.

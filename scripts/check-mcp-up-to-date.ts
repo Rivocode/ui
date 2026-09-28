@@ -1,19 +1,20 @@
 /**
- * O MCP leva a documentacao da arvore em que foi construido, e so a publicacao
- * dele a atualiza.
+ * The MCP carries the documentation of the tree it was built from, and only
+ * its own publication updates it.
  *
- * Em 26/09/2026 a biblioteca saiu em 1.1.2, 1.1.3, 1.1.4 e 1.2.0 sem nenhuma
- * versao nova do `@rivocode/ui-mcp`: quem usava o MCP continuou com a
- * documentacao da 1.1.1, sem o guia de arquitetura, sem o `render` do
- * `SidebarMenuItem` e sem o `forValue` do `MaskedInput`. Nada acusou, porque
- * o MCP publicado nao e lido por guarda nenhuma e o conteudo dele e gerado no
- * build.
+ * On 26/09/2026 the library shipped 1.1.2, 1.1.3, 1.1.4 and 1.2.0 without any
+ * new version of `@rivocode/ui-mcp`: whoever used the MCP kept the 1.1.1
+ * documentation, without the architecture guide, without the `render` of
+ * `SidebarMenuItem` and without the `forValue` of `MaskedInput`. Nothing
+ * flagged it, because the published MCP is read by no guard and its content is
+ * generated at build time.
  *
- * A regra: a secao do topo do CHANGELOG do MCP diz de que versao da biblioteca
- * e do nativo ela leva a documentacao, com os nomes entre crases e o numero
- * logo depois. Subir a versao de um dos dois pacotes sem abrir uma secao nova
- * no MCP deixa esta guarda vermelha no mesmo commit - e a secao nova, com o
- * `version` do `mcp/package.json`, e o que faz o `tag.yml` publicar o MCP.
+ * The rule: the top section of the MCP CHANGELOG says which version of the
+ * library and of native it carries the documentation of, with the names in
+ * backticks and the number right after. Bumping the version of either package
+ * without opening a new section in the MCP turns this guard red in the same
+ * commit - and the new section, with the `version` of `mcp/package.json`, is
+ * what makes `tag.yml` publish the MCP.
  */
 const web = (await Bun.file("package.json").json()) as { version: string };
 const native = (await Bun.file("native/package.json").json()) as { version: string };
@@ -22,7 +23,7 @@ const changelog = await Bun.file("mcp/CHANGELOG.md").text();
 
 const top = /^## (\S+)\n([\s\S]*?)(?=^## |\s*$(?![\s\S]))/m.exec(changelog);
 if (!top) {
-  console.error("mcp/CHANGELOG.md sem secao `## <versao>`.");
+  console.error("mcp/CHANGELOG.md has no `## <version>` section.");
   process.exit(1);
 }
 
@@ -30,7 +31,7 @@ const [, heading, body] = top;
 const problems: string[] = [];
 
 if (heading !== mcp.version) {
-  problems.push(`a secao do topo e ${heading}, e o mcp/package.json diz ${mcp.version}`);
+  problems.push(`the top section is ${heading}, and mcp/package.json says ${mcp.version}`);
 }
 
 for (const [name, version] of [
@@ -41,22 +42,22 @@ for (const [name, version] of [
   if (said !== version) {
     problems.push(
       said
-        ? `a secao ${heading} leva a documentacao de ${name} ${said}, e o pacote esta em ${version}`
-        : `a secao ${heading} nao diz de que versao de ${name} leva a documentacao (esperado \`${name}\` ${version})`,
+        ? `section ${heading} carries the documentation of ${name} ${said}, and the package is at ${version}`
+        : `section ${heading} does not say which version of ${name} it carries the documentation of (expected \`${name}\` ${version})`,
     );
   }
 }
 
 if (problems.length > 0) {
-  console.error("O MCP ficou para tras da documentacao que ele empacota:\n");
+  console.error("The MCP fell behind the documentation it packages:\n");
   for (const problem of problems) console.error(`  - ${problem}`);
   console.error(
-    "\nAbra uma secao nova no topo de mcp/CHANGELOG.md, com a versao do mcp/package.json\n" +
-      "subida junto, dizendo `@rivocode/ui` e `@rivocode/ui-native` com os numeros de agora.",
+    "\nOpen a new section at the top of mcp/CHANGELOG.md, with the version in mcp/package.json\n" +
+      "bumped along, naming `@rivocode/ui` and `@rivocode/ui-native` with the current numbers.",
   );
   process.exit(1);
 }
 
-console.log(`MCP ${mcp.version} leva a documentacao de @rivocode/ui ${web.version} e @rivocode/ui-native ${native.version}.`);
+console.log(`MCP ${mcp.version} carries the documentation of @rivocode/ui ${web.version} and @rivocode/ui-native ${native.version}.`);
 
 export {};

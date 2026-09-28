@@ -8,16 +8,6 @@ const PACKAGE = JSON.parse(readFileSync(resolve(HERE, "..", "package.json"), "ut
 
 export const SPEC = PACKAGE.name;
 
-/**
- * Os nomes de arquivo de configuração do Babel que o Expo procura na raiz do
- * app, na mesma ordem do `loadBabelConfig` do `@expo/metro-config`. Achado
- * nenhum, ele cai no `babel-preset-expo` sozinho, e é assim que o app tem que
- * ficar: no SDK 57 esse preset mora em `node_modules/expo/node_modules` e NÃO
- * resolve da raiz do app, então um `babel.config.js` escrito à mão com
- * `presets: ["babel-preset-expo"]` derruba o bundle inteiro com
- * `MODULE_NOT_FOUND` antes do primeiro módulo. Por isso este comando não
- * escreve arquivo de Babel nenhum: ele olha se existe um e diz o que fazer.
- */
 export const BABEL_NAMES = [
   ".babelrc",
   ".babelrc.js",
@@ -34,16 +24,9 @@ export const BABEL_NAMES = [
   "babel.config.mts",
 ];
 
-/**
- * Os dois trechos da receita v4 do NativeWind, que continuam sendo o primeiro
- * resultado de busca e não valem mais: `jsxImportSource` faz o JSX sair como
- * `require("nativewind/jsx-runtime")`, que a v5 não tem, e o preset
- * `nativewind/babel` adiciona o plugin de worklets que o `babel-preset-expo`
- * já adiciona sozinho quando acha o reanimated instalado.
- */
 export const BABEL_V4 = [
-  { mark: /["']?jsxImportSource["']?\s*:\s*["']nativewind["']/, why: 'o JSX passa a exigir `nativewind/jsx-runtime`, que a v5 nao tem: o metro morre em resolucao, longe do arquivo que causou' },
-  { mark: /["']nativewind\/babel["']/, why: "o `babel-preset-expo` ja liga o plugin de worklets sozinho quando acha o reanimated: aqui ele entra duas vezes" },
+  { mark: /["']?jsxImportSource["']?\s*:\s*["']nativewind["']/, why: 'JSX starts requiring `nativewind/jsx-runtime`, which v5 does not have: metro dies at resolution, far from the file that caused it' },
+  { mark: /["']nativewind\/babel["']/, why: "`babel-preset-expo` already turns on the worklets plugin by itself when it finds reanimated: here it goes in twice" },
 ];
 
 export const REQUIRED_PEERS = Object.keys(PACKAGE.peerDependencies ?? {}).filter(
@@ -66,22 +49,8 @@ export const USER_INTERFACE_STYLE = "automatic";
 
 export const METRO_WRAPPER = "withNativewind";
 
-/**
- * As quatro palavras que o scanner do Tailwind encontra no código das peças e
- * confunde com utilitário: `shadow` vem da chave do `cn.ts`, `invert` e
- * `filter` de props do Stat e do DataList, `transform` do estilo do sparkline.
- * `.shadow` redeclara `--tw-shadow` e derruba o compilador nativo.
- */
 export const BLOCKED = ["shadow", "invert", "filter", "transform"];
 
-/**
- * O que o `.d.ts` do app tem que dizer. A referência é exigência do NativeWind,
- * e não defeito nosso: sem ela `className` não existe nas props de `View`,
- * `Text` e `Pressable`, e como este pacote publica FONTE, o `tsc` do app
- * reprova o catálogo inteiro por um erro que não é dele — `skipLibCheck` não
- * salva, porque ele só pula `.d.ts`. O `declare module` é do `generated.css`,
- * que o `App.tsx` importa no topo.
- */
 export const TYPES_REFERENCE = "nativewind/types";
 
 export const CSS_MODULE = "*.css";
@@ -130,12 +99,6 @@ export function postcssConfig() {
   ].join("\n");
 }
 
-/**
- * A receita inteira, na ordem em que o comando a escreve. `kind` separa o
- * arquivo que nasce inteiro do JSON do app, que só recebe uma chave: app.json
- * e package.json já existem em todo projeto do Expo, e reescrevê-los apaga o
- * projeto de quem rodou o comando.
- */
 export const RECIPE = [
   { name: "babel.config.js", kind: "babel" },
   { name: "postcss.config.mjs", kind: "file", body: postcssConfig },
@@ -177,17 +140,6 @@ function indentOf(text) {
   return found ? found[1].length : 2;
 }
 
-/**
- * O que o comando FARIA, arquivo por arquivo, sem escrever nada. Cada item sai
- * com `action` em `escreve`, `mantem`, `conflito` ou `sobrescreve`, e uma
- * linha de relatório pronta.
- *
- * A assimetria entre os dois `kind` é a regra de segurança: arquivo que nasce
- * inteiro e já existe com outro conteúdo vira `conflito` e só cede a
- * `--force`, porque reescrever um babel.config.js apaga a configuração de
- * outra biblioteca e o app quebra longe daqui. Chave de JSON é uma linha
- * nomeada, e vira `sobrescreve` com o valor antigo e o novo no relatório.
- */
 export function plan(root, { force = false, spec = SPEC } = {}) {
   const steps = [];
 
@@ -201,7 +153,7 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
         steps.push({
           name: item.name,
           action: "mantem",
-          note: "nao existe, e e assim que tem que ser",
+          note: "does not exist, and that is how it has to be",
         });
         continue;
       }
@@ -216,7 +168,7 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
         steps.push({
           name: found.join(", "),
           action: "mantem",
-          note: "existe e nao traz a receita v4",
+          note: "exists and does not carry the v4 recipe",
         });
         continue;
       }
@@ -236,20 +188,20 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
       const body = item.body(spec);
 
       if (!existsSync(file)) {
-        steps.push({ name: item.name, action: "escreve", body, note: "criado" });
+        steps.push({ name: item.name, action: "escreve", body, note: "created" });
         continue;
       }
 
       const current = readFileSync(file, "utf8");
       if (current === body) {
-        steps.push({ name: item.name, action: "mantem", note: "ja esta na receita" });
+        steps.push({ name: item.name, action: "mantem", note: "already matches the recipe" });
       } else if (force) {
-        steps.push({ name: item.name, action: "sobrescreve", body, note: "reescrito por --force" });
+        steps.push({ name: item.name, action: "sobrescreve", body, note: "rewritten by --force" });
       } else {
         steps.push({
           name: item.name,
           action: "conflito",
-          note: "ja existe e o conteudo difere",
+          note: "already exists and the content differs",
         });
       }
       continue;
@@ -259,7 +211,7 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
       steps.push({
         name: item.name,
         action: "conflito",
-        note: "nao existe: rode o comando na raiz de um app do Expo",
+        note: "does not exist: run the command at the root of an Expo app",
       });
       continue;
     }
@@ -270,7 +222,7 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
     const key = item.path.join(".");
 
     if (same(current, item.value)) {
-      steps.push({ name: item.name, action: "mantem", note: `${key} ja esta na receita` });
+      steps.push({ name: item.name, action: "mantem", note: `${key} already matches the recipe` });
       continue;
     }
 
@@ -278,7 +230,7 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
     const body = `${JSON.stringify(json, null, indentOf(text))}\n`;
 
     if (current === undefined) {
-      steps.push({ name: item.name, action: "escreve", body, note: `${key} adicionado` });
+      steps.push({ name: item.name, action: "escreve", body, note: `${key} added` });
     } else {
       steps.push({
         name: item.name,
@@ -294,15 +246,15 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
 
 const WHY = {
   "postcss.config.mjs":
-    "sem ele o Tailwind nao roda no passe de CSS do metro: o arquivo entra cru no bundle, com as vars do tema e nenhum utilitario, e a tela renderiza sem estilo, sem erro e sem pista.",
-  "metro.config.js": "`withNativewind(config)`, que troca o transformador do metro pelo do react-native-css.",
+    "without it Tailwind does not run in metro's CSS pass: the file goes into the bundle raw, with the theme vars and no utility, and the screen renders unstyled, with no error and no clue.",
+  "metro.config.js": "`withNativewind(config)`, which swaps metro's transformer for the react-native-css one.",
   "global.css":
-    "a fonte do CSS. O app nao a importa: importa o `generated.css` que o `rivocode-ui-native-css` escreve a partir dela.",
+    "the CSS source. The app does not import it: it imports the `generated.css` that `rivocode-ui-native-css` writes from it.",
   "nativewind-env.d.ts":
-    '`/// <reference types="nativewind/types" />`, senao `className` nao existe nas props de View, Text e Pressable e o tsc do app reprova a nossa fonte inteira - e o skipLibCheck dele nao salva, porque so pula .d.ts.',
-  "app.json": "`userInterfaceStyle` em `automatic`, senao o iOS prende a aparencia no claro e o tema escuro nunca chega.",
+    '`/// <reference types="nativewind/types" />`, otherwise `className` does not exist in the props of View, Text and Pressable and the app\'s tsc fails our whole source - and its skipLibCheck does not help, because it only skips .d.ts.',
+  "app.json": "`userInterfaceStyle` set to `automatic`, otherwise iOS locks the appearance to light and the dark theme never arrives.",
   "package.json":
-    "`browserslist` moderno, senao o passe web do Expo reescreve o `light-dark()` dos tokens num polyfill de vars orfas e a compilacao morre com \"Specifier, found ()\".",
+    "a modern `browserslist`, otherwise Expo's web pass rewrites the tokens' `light-dark()` into a polyfill of orphan vars and compilation dies with \"Specifier, found ()\".",
 };
 
 const MARKS = { escreve: "+", sobrescreve: "~", mantem: "=", conflito: "!" };
@@ -314,13 +266,13 @@ function main() {
   const root = resolve(argv.find((one) => !one.startsWith("--")) ?? ".");
 
   if (!existsSync(root)) {
-    console.error(`${root} nao existe.`);
+    console.error(`${root} does not exist.`);
     process.exit(1);
   }
 
   const steps = plan(root, { force });
 
-  console.log(`Receita do ${SPEC} em ${basename(root)}/:\n`);
+  console.log(`${SPEC} recipe in ${basename(root)}/:\n`);
 
   for (const step of steps) {
     if (step.body !== undefined && !dry) writeFileSync(resolve(root, step.name), step.body);
@@ -331,18 +283,18 @@ function main() {
 
   if (stale.length > 0) {
     console.error(
-      "\nO arquivo de Babel do app traz a receita v4 do NativeWind, que na v5" +
-        "\nquebra longe daqui:\n" +
+      "\nThe app's Babel file carries the NativeWind v4 recipe, which on v5" +
+        "\nbreaks far from here:\n" +
         stale
           .flatMap((step) => step.babel)
           .map(({ name, why }) => `    ${name}: ${why}.`)
           .join("\n") +
-        "\n\n    Um app do Expo 57 nao precisa de arquivo de Babel: sem nenhum, o" +
-        "\n    `@expo/metro-config` cai no `babel-preset-expo` e liga o plugin de" +
-        "\n    worklets sozinho. Apague as linhas da v4; se nao sobrar mais nada," +
-        "\n    apague o arquivo. Nao o troque por um `presets: [\"babel-preset-expo\"]`" +
-        "\n    escrito a mao: no SDK 57 esse preset nao resolve da raiz do app, e o" +
-        "\n    bundle morre com MODULE_NOT_FOUND antes do primeiro modulo.",
+        "\n\n    An Expo 57 app does not need a Babel file: with none," +
+        "\n    `@expo/metro-config` falls back to `babel-preset-expo` and turns on the" +
+        "\n    worklets plugin by itself. Delete the v4 lines; if nothing else is left," +
+        "\n    delete the file. Do not replace it with a hand-written" +
+        "\n    `presets: [\"babel-preset-expo\"]`: on SDK 57 that preset does not resolve" +
+        "\n    from the app root, and the bundle dies with MODULE_NOT_FOUND before the first module.",
     );
   }
 
@@ -350,12 +302,12 @@ function main() {
 
   if (clashes.length > 0) {
     console.error(
-      `\n${clashes.length} arquivo(s) intocado(s), porque o app ja diz outra coisa ali:\n` +
+      `\n${clashes.length} file(s) left untouched, because the app already says something else there:\n` +
         clashes.map((step) => `    ${step.name}: ${WHY[step.name]}`).join("\n\n") +
-        "\n\n    Concilie a mao, ou rode de novo com `--force` para a receita" +
-        "\n    vencer. `--force` reescreve o arquivo inteiro: em babel.config.js" +
-        "\n    e postcss.config.mjs isso apaga config de outra biblioteca, e o" +
-        "\n    app quebra num lugar que nao parece ter relacao com este comando.",
+        "\n\n    Reconcile by hand, or run again with `--force` for the recipe" +
+        "\n    to win. `--force` rewrites the whole file: in babel.config.js" +
+        "\n    and postcss.config.mjs that erases another library's config, and the" +
+        "\n    app breaks somewhere that does not seem related to this command.",
     );
   }
 
@@ -363,28 +315,28 @@ function main() {
 
   if (missing.length > 0) {
     console.error(
-      `\nFalta${missing.length > 1 ? "m" : ""} ${missing.length} peer(s) obrigatorio(s) no package.json:\n` +
+      `\n${missing.length} required peer(s) missing from package.json:\n` +
         missing.map((name) => `    ${name}`).join("\n") +
         `\n\n    npx expo install ${missing.join(" ")}\n` +
-        "\n    O `expo install` escolhe a versao do seu SDK. Sem o" +
-        "\n    react-native-keyboard-controller o RivoProvider nao monta: e dele o" +
-        "\n    KeyboardProvider que o provider traz dentro.",
+        "\n    `expo install` picks the version for your SDK. Without" +
+        "\n    react-native-keyboard-controller the RivoProvider does not mount: the" +
+        "\n    KeyboardProvider the provider carries inside comes from it.",
     );
   } else {
-    console.log(`\n  = peers obrigatorios    os ${REQUIRED_PEERS.length} estao no package.json`);
+    console.log(`\n  = required peers       all ${REQUIRED_PEERS.length} are in package.json`);
   }
 
   if (clashes.length + stale.length + missing.length > 0) process.exit(1);
 
   if (dry) {
-    console.log("\n`--dry-run`: nada foi escrito.");
+    console.log("\n`--dry-run`: nothing was written.");
     return;
   }
 
   console.log(
-    "\nFalta o CSS pre-compilado, e ele nao sai daqui porque depende do seu\n" +
-      "codigo: rode `npx rivocode-ui-native-css` e importe o `generated.css`\n" +
-      "no topo do App.tsx, acima do provider.",
+    "\nThe precompiled CSS is still missing, and it does not come from here because it\n" +
+      "depends on your code: run `npx rivocode-ui-native-css` and import `generated.css`\n" +
+      "at the top of App.tsx, above the provider.",
   );
 }
 

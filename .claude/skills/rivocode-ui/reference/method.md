@@ -1,114 +1,120 @@
-# O método: do pedido à tela que se pode mostrar
+# The method: from the request to a screen you can show
 
-Os outros arquivos ensinam o sistema. Este diz a **ordem**, e o que se confere
-no fim de cada passo.
+The other files teach the system. This one says the **order**, and what is
+checked at the end of each step.
 
-Tela bonita quase nunca é tela escrita melhor: é a mesma tela, passada mais
-vezes. O que separa uma interface que parece desenhada de uma que parece gerada
-não é talento nem token novo, é ter feito seis passadas em vez de uma.
+A beautiful screen is almost never a better-written screen: it is the same
+screen, gone over more times. What separates an interface that looks designed
+from one that looks generated is not talent nor a new token, it is having made
+six passes instead of one.
 
-## Conteúdo
+## Contents
 
-- O laço, em seis passos
-- Passo 1: a direção, numa frase
-- Passo 2: o esqueleto
-- Passo 3: o conteúdo verdadeiro
-- Passo 4: as quatro passadas de acabamento
-- Passo 5: olhar, nos dois temas e nas duas densidades
-- Passo 6: medir
-- O que faz uma tela parecer gerada
-- O que faz uma tela parecer atual
-- A conferência final
+- The loop, in six steps
+- Step 1: the direction, in one sentence
+- Step 2: the skeleton
+- Step 3: the real content
+- Step 4: the four finishing passes
+- Step 5: look, in both themes and both densities
+- Step 6: measure
+- What makes a screen look generated
+- What makes a screen look current
+- The final check
 
-## O laço, em seis passos
+## The loop, in six steps
 
-| Passo | A pergunta que ele responde | Só termina quando |
+| Step | The question it answers | Only ends when |
 |---|---|---|
-| 1. Direção | que tela é esta, e para quem | cabe numa frase escrita |
-| 2. Esqueleto | onde as coisas ficam | é um dos quatro de `layout.md`, sem mistura |
-| 3. Conteúdo | o que está escrito nelas | o texto e os números são verdadeiros |
-| 4. Acabamento | ritmo, tom, forma, movimento | as quatro passadas rodaram separadas |
-| 5. Olhar | como está de fato | foi vista nos dois temas e nas duas densidades |
-| 6. Medir | o que o olho não vê | contraste, foco e teclado conferidos |
+| 1. Direction | what screen is this, and for whom | it fits in one written sentence |
+| 2. Skeleton | where things go | it is one of the four in `layout.md`, unmixed |
+| 3. Content | what is written in them | the text and the numbers are real |
+| 4. Finish | rhythm, tone, shape, motion | the four passes ran separately |
+| 5. Look | how it actually is | it was seen in both themes and both densities |
+| 6. Measure | what the eye does not see | contrast, focus and keyboard checked |
 
-Pular o 1 produz a média de todas as telas possíveis. Pular o 5 é o único
-defeito desta lista que já chegou ao npm.
+Skipping 1 produces the average of all possible screens. Skipping 5 is the only
+defect on this list that has already reached npm.
 
-## Passo 1: a direção, numa frase
+## Step 1: the direction, in one sentence
 
-Antes da primeira linha, escreva uma frase que decida três coisas: **quem usa,
-quanta cerimônia, e qual esqueleto**. "Painel de operação, denso, para quem
-olha o dia inteiro" e "primeira tela do produto, com respiro, para quem chegou
-agora" produzem telas diferentes com as mesmas peças.
+Before the first line, write a sentence that decides three things: **who uses
+it, how much ceremony, and which skeleton**. "Operations dashboard, dense, for
+someone who looks at it all day" and "the product's first screen, with
+breathing room, for someone who just arrived" produce different screens with
+the same pieces.
 
-Sem a frase, cada decisão isolada sai razoável e o conjunto sai sem
-personalidade — que é exatamente o que se reconhece como gerado.
+Without the sentence, each isolated decision comes out reasonable and the whole
+comes out without personality - which is exactly what gets recognized as
+generated.
 
-A frase não é enfeite: ela já decide.
+The sentence is not decoration: it already decides.
 
-| Quando a frase diz | Fica decidido |
+| When the sentence says | It is decided |
 |---|---|
-| operação, o dia inteiro, muita linha | `density="compact"`, esqueleto 1 ou 2, entrada só do que chega (a das peças), nenhuma na moldura, sombra só no que flutua |
-| cadastro, uma vez por semana | `density="comfortable"`, esqueleto 3, `max-w-3xl` centralizado |
-| painel, para decidir | esqueleto 4, `font-display` no número, indicador antes de gráfico |
-| marca, primeira visita | respiro dobrado, `animate-rise` escalonado, `shadow-glow` num CTA só |
+| operations, all day, many rows | `density="compact"`, skeleton 1 or 2, entrance only for what arrives (the pieces' own), none on the frame, shadow only on what floats |
+| registration, once a week | `density="comfortable"`, skeleton 3, `max-w-3xl` centered |
+| dashboard, for deciding | skeleton 4, `font-display` on the number, indicator before chart |
+| brand, first visit | doubled breathing room, staggered `animate-rise`, `shadow-glow` on a single CTA |
 
-**Uma direção por tela.** Painel de operação com hero animado não é as duas
-coisas, é nenhuma.
+**One direction per screen.** An operations dashboard with an animated hero is
+not both things, it is neither.
 
-## Passo 2: o esqueleto
+## Step 2: the skeleton
 
-Escolha um dos quatro de `layout.md` e monte só a estrutura: `Card` vazio,
-grid, cabeçalho, barra. Ainda sem conteúdo final, mas já com a **quantidade
-real** — quatro indicadores se são quatro, doze linhas se a tabela mostra doze.
+Pick one of the four in `layout.md` and build only the structure: empty `Card`,
+grid, header, bar. Still without final content, but already with the **real
+quantity** - four indicators if there are four, twelve rows if the table shows
+twelve.
 
-Estrutura montada com três linhas de exemplo desaba quando chegam trinta, e o
-que desaba é sempre a mesma coisa: `min-w-0` que faltou, filtro sem
-`flex-wrap`, coluna que estica a página inteira.
+A structure built with three sample rows collapses when thirty arrive, and what
+collapses is always the same thing: a missing `min-w-0`, a filter without
+`flex-wrap`, a column that stretches the whole page.
 
-## Passo 3: o conteúdo verdadeiro
+## Step 3: the real content
 
-Texto inventado esconde exatamente o que a passada seguinte precisa ver.
+Invented text hides exactly what the next pass needs to see.
 
-- **Português real**, nunca "Lorem" nem "Título 1". Frase falsa tem tamanho
-  falso, e o quebra-linha da frase verdadeira aparece só na produção.
-- **Números feios**: `R$ 1.284.930,00` e não `R$ 1.000,00`. Nome de quarenta
-  caracteres ao lado de um de quatro. É o que revela o alinhamento e o corte.
-- **Dinheiro abreviado** com `currencyShort` em indicador, eixo, legenda e
-  dica. Nunca digitado como `R$ 12,4K`: isso mostra o resultado e esconde o
-  mecanismo.
-- **Os quatro finais** — dados, carregando, erro e vazio. Entregar só o caminho
-  feliz é entregar metade da tela, e a metade que falta é a que o usuário vê no
-  pior dia dele.
+- **Real Portuguese**, never "Lorem" or "Título 1". A fake sentence has a fake
+  length, and the real sentence's line break only shows up in production.
+- **Ugly numbers**: `R$ 1.284.930,00` and not `R$ 1.000,00`. A forty-character
+  name next to a four-character one. That is what reveals alignment and
+  truncation.
+- **Abbreviated money** with `currencyShort` in indicators, axes, legends and
+  tooltips. Never typed as `R$ 12,4K`: that shows the result and hides the
+  mechanism.
+- **The four endings** - data, loading, error and empty. Delivering only the
+  happy path is delivering half the screen, and the missing half is the one the
+  user sees on their worst day.
 
-## Passo 4: as quatro passadas de acabamento
+## Step 4: the four finishing passes
 
-Uma passada é uma varredura do arquivo inteiro fazendo **uma** pergunta. Quatro
-passadas separadas acham o que uma leitura "geral" não acha, porque a pergunta
-geral não tem resposta errada.
+A pass is a sweep of the whole file asking **one** question. Four separate
+passes find what a "general" reading does not, because the general question has
+no wrong answer.
 
-| Passada | A pergunta, literal | O que ela costuma achar |
+| Pass | The question, literally | What it usually finds |
 |---|---|---|
-| Ritmo | quantos valores de espaço diferentes existem neste arquivo? | seis ou sete; deviam ser três |
-| Tom | o que a pessoa veio ler está em `text-fg`, e só ele? | tudo em `text-fg`, ou tudo em `text-fg-muted` |
-| Forma | o raio de dentro é menor que o de fora? | `rounded-lg` dentro de `rounded-lg` |
-| Movimento | quantas coisas se mexem quando a tela abre? | três; devia ser uma, ou nenhuma |
+| Rhythm | how many different spacing values exist in this file? | six or seven; there should be three |
+| Tone | is what the person came to read in `text-fg`, and only that? | everything in `text-fg`, or everything in `text-fg-muted` |
+| Shape | is the inner radius smaller than the outer one? | `rounded-lg` inside `rounded-lg` |
+| Motion | how many things move when the screen opens? | three; there should be one, or none |
 
-A passada de ritmo é a que mais muda a tela por linha alterada. Padronizar seis
-espaçamentos em três (`gap-2`, `gap-4`, `space-y-6`) conserta a sensação de
-"quase certo" que nenhum defeito específico explicava.
+The rhythm pass is the one that changes the screen most per line changed.
+Standardizing six spacings into three (`gap-2`, `gap-4`, `space-y-6`) fixes the
+"almost right" feeling that no specific defect explained.
 
-## Passo 5: olhar, nos dois temas e nas duas densidades
+## Step 5: look, in both themes and both densities
 
-É o passo que se pula, e o único que pega o que teste nenhum pega.
+It is the step that gets skipped, and the only one that catches what no test
+catches.
 
 ```bash
 bun run demo && bun run serve
 ```
 
-São quatro estados, e todos os quatro: `rivocode-dark` e `rivocode-light`,
-cada um em `comfortable` e em `compact`. No projeto que consome, alterne no
-`RivoProvider` e olhe:
+There are four states, and all four: `rivocode-dark` and `rivocode-light`, each
+in `comfortable` and in `compact`. In the consuming project, switch on
+`RivoProvider` and look:
 
 ```tsx
 <RivoProvider theme="rivocode-light" density="compact">
@@ -116,85 +122,88 @@ cada um em `comfortable` e em `compact`. No projeto que consome, alterne no
 </RivoProvider>
 ```
 
-O que só aparece olhando:
+What only shows up by looking:
 
-- sombra que separa no claro e some no escuro, onde quem separa é a borda;
-- texto que cabe em `comfortable` e quebra em `compact`;
-- contraste que a conta aprova e o olho recusa, em texto miúdo sobre `subtle`;
-- gráfico sem altura, que some sem erro;
-- a segunda ação em `bg-accent` ao lado da primeira, que só se nota vendo.
+- a shadow that separates in light and disappears in dark, where the border
+  does the separating;
+- text that fits in `comfortable` and wraps in `compact`;
+- contrast the math approves and the eye rejects, in tiny text on `subtle`;
+- a chart without height, which disappears without an error;
+- the second action in `bg-accent` next to the first, which is only noticed by
+  seeing.
 
-Sete peças desta biblioteca foram publicadas no npm sem ninguém ter olhado para
-nenhuma delas. Passaram em mais de mil testes. O passo que manda olhar foi
-pulado, e nada acusou.
+Seven pieces of this library were published to npm without anyone having
+looked at any of them. They passed more than a thousand tests. The step that
+says to look was skipped, and nothing flagged it.
 
-## Passo 6: medir
+## Step 6: measure
 
-O olho não mede contraste e não navega por teclado.
+The eye does not measure contrast and does not navigate by keyboard.
 
 ```bash
 npx rivocode-ui check-theme caminho/do/tema.css
 ```
 
-Depois, na tela pronta:
+Then, on the finished screen:
 
-- **Teclado até o fim.** `Tab` da primeira ao última parada, sem cair em
-  armadilha e sem parada invisível. Anel de foco visível em todas.
-- **Nome acessível** em todo controle: botão só de ícone tem `aria-label`,
-  campo tem rótulo de verdade e não `placeholder`.
-- **Ordem de títulos** sem salto: um `h1`, e nada de `h2` seguido de `h4`.
-- **Cor nunca sozinha.** Toda situação sinalizada por tom leva a palavra junto.
+- **Keyboard to the end.** `Tab` from the first to the last stop, without
+  falling into a trap and without an invisible stop. A visible focus ring on
+  all of them.
+- **Accessible name** on every control: an icon-only button has `aria-label`, a
+  field has a real label and not a `placeholder`.
+- **Heading order** without jumps: one `h1`, and no `h2` followed by `h4`.
+- **Never color alone.** Every status signaled by tone carries the word along.
 
-`reference/a11y.md` tem a lista completa. Estes quatro são os que reprovam mais.
+`reference/a11y.md` has the full list. These four are the ones that fail most.
 
-## O que faz uma tela parecer gerada
+## What makes a screen look generated
 
-São sinais, não erros — cada um passa no `tsc` e no teste.
+These are signs, not errors - each one passes `tsc` and the tests.
 
-- Tudo no mesmo tom e no mesmo tamanho: sem hierarquia, o olho não sabe onde
-  começar.
-- Dois botões em `bg-accent` lado a lado: nenhuma ação é a primária.
-- `Card` dentro de `Card` para destacar: as duas camadas se achatam.
-- Seis valores de espaçamento sem motivo.
-- Ícones de dois conjuntos na mesma tela, ou emoji no lugar de ícone.
-- Só o caminho feliz, sem carregando, erro e vazio.
-- Valor por extenso onde cabia abreviado, estourando a coluna.
-- Tudo animado, ou animação em produto de operação.
-- Tudo centralizado, inclusive o que se lê em fila.
-- Texto de interface em inglês misturado ao português.
+- Everything in the same tone and the same size: without hierarchy, the eye
+  does not know where to start.
+- Two buttons in `bg-accent` side by side: no action is the primary one.
+- `Card` inside `Card` to highlight: the two layers flatten.
+- Six spacing values for no reason.
+- Icons from two sets on the same screen, or an emoji instead of an icon.
+- Only the happy path, without loading, error and empty.
+- A spelled-out value where the abbreviated one fit, overflowing the column.
+- Everything animated, or animation in an operations product.
+- Everything centered, including what is read in a row.
+- Interface text in English mixed with Portuguese.
 
-## O que faz uma tela parecer atual
+## What makes a screen look current
 
-O gosto de agora, escrito nos tokens que já existem aqui:
+Today's taste, written in the tokens that already exist here:
 
-- **Superfície e borda no lugar de sombra pesada.** `bg-surface` sobre `bg-bg`
-  com `border-border` sustenta a separação nos dois temas; `shadow-2` fica para
-  o que de fato flutua.
-- **Um número grande e o resto quieto.** `font-display` com
-  `tracking-display` em `text-3xl` no valor que a tela existe para mostrar, e
-  `text-fg-muted` em tudo que o explica.
-- **Respiro largo entre seções, apertado dentro do controle.** `space-y-6`
-  entre assuntos e `gap-2` entre ícone e texto, sem nada no meio.
-- **Destaque por `bg-accent-subtle`**, não por mais uma camada de superfície
-  nem por borda mais grossa.
-- **Um gesto de movimento por tela**, e no lugar certo: `animate-rise`
-  escalonado na entrada de uma landing, nada num painel.
-- **Dado antes de desenho.** Indicador em cima porque responde em um segundo;
-  o gráfico embaixo porque pede dez.
-- **Estreito primeiro de verdade**, com a versão de celular escrita antes e
-  `sm:`/`lg:` por cima.
+- **Surface and border instead of a heavy shadow.** `bg-surface` on `bg-bg`
+  with `border-border` holds the separation in both themes; `shadow-2` is for
+  what really floats.
+- **One big number and the rest quiet.** `font-display` with
+  `tracking-display` in `text-3xl` on the value the screen exists to show, and
+  `text-fg-muted` on everything that explains it.
+- **Wide breathing room between sections, tight inside the control.**
+  `space-y-6` between subjects and `gap-2` between icon and text, with nothing
+  in between.
+- **Emphasis by `bg-accent-subtle`**, not by one more surface layer nor by a
+  thicker border.
+- **One motion gesture per screen**, and in the right place: staggered
+  `animate-rise` on a landing's entrance, nothing on a dashboard.
+- **Data before drawing.** The indicator on top because it answers in one
+  second; the chart below because it asks for ten.
+- **Truly narrow first**, with the phone version written first and
+  `sm:`/`lg:` on top.
 
-## A conferência final
+## The final check
 
-Antes de dizer que a tela está pronta:
+Before saying the screen is ready:
 
-- [ ] A direção do passo 1 ainda descreve o que está na tela.
-- [ ] Nenhuma cor literal, nenhum `z-index` numérico, nenhuma altura cravada em
-      controle.
-- [ ] Toda peça usada existe no catálogo, e nenhuma prop foi inventada.
-- [ ] Os quatro finais de toda listagem e de todo gráfico.
-- [ ] Três valores de espaçamento, três tons de texto, uma ação primária.
-- [ ] `min-w-0` em todo item de grid ou flex com conteúdo largo dentro.
-- [ ] Vista nos dois temas e nas duas densidades.
-- [ ] Percorrida por teclado, com foco visível do começo ao fim.
-- [ ] `tsc` limpo.
+- [ ] The step 1 direction still describes what is on the screen.
+- [ ] No literal color, no numeric `z-index`, no hardcoded control height.
+- [ ] Every piece used exists in the catalog, and no prop was invented.
+- [ ] The four endings of every listing and every chart.
+- [ ] Three spacing values, three text tones, one primary action.
+- [ ] `min-w-0` on every grid or flex item with wide content inside.
+- [ ] Seen in both themes and both densities.
+- [ ] Walked through by keyboard, with visible focus from start to end.
+- [ ] Clean `tsc`.

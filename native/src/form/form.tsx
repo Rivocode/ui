@@ -11,19 +11,19 @@ import {
 import { cn } from "../cn";
 
 export type FormHandle = {
-  /** Valida e chama o `onSubmit` com os valores já convertidos pelo schema. */
+  /** Validates and calls `onSubmit` with the values already converted by the schema. */
   submit: () => void;
-  /** Enquanto o `onSubmit` não devolve: é o `loading` do `Button`. */
+  /** While `onSubmit` has not returned: it is the `Button` `loading`. */
   isSubmitting: boolean;
 };
 
 export type FormProps<Values extends FieldValues, Parsed extends FieldValues> = {
-  /** O retorno do `useZodForm` ou do `useForm`. */
+  /** The return of `useZodForm` or `useForm`. */
   form: UseFormReturn<Values, unknown, Parsed>;
-  /** Chamado com os valores já validados e convertidos pelo schema. */
+  /** Called with the values already validated and converted by the schema. */
   onSubmit: SubmitHandler<Parsed>;
   className?: string;
-  /** Os campos. Como função, recebe o enviar e o "enviando". */
+  /** The fields. As a function, it receives submit and the "submitting" state. */
   children: ReactNode | ((handle: FormHandle) => ReactNode);
 };
 

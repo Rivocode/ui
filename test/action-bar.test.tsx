@@ -27,7 +27,7 @@ function bar(props: Partial<ActionBarProps> = {}) {
 
 const tokens = (element: Element) => (element.getAttribute("class") ?? "").split(" ");
 
-test("com zero selecionados a barra fica fora de cena: inerte, invisivel e sem anuncio", () => {
+test("with zero selected the bar stays offstage: inert, invisible and silent", () => {
   const { region, status, root } = bar();
 
   expect(region.hasAttribute("inert")).toBe(true);
@@ -37,7 +37,7 @@ test("com zero selecionados a barra fica fora de cena: inerte, invisivel e sem a
   expect(status.textContent).toBe("");
 });
 
-test("acima de zero ela entra, e diz a contagem com o plural certo", () => {
+test("above zero it enters, and states the count with the right plural", () => {
   const { region, again, root } = bar({ count: 1 });
 
   expect(region.hasAttribute("inert")).toBe(false);
@@ -53,7 +53,7 @@ test("acima de zero ela entra, e diz a contagem com o plural certo", () => {
   expect(within(region).getByText("1.234 selecionados")).toBeDefined();
 });
 
-test("a regiao viva existe antes da selecao, e anuncia a contagem e a limpeza", () => {
+test("the live region exists before the selection, and announces the count and the clearing", () => {
   const { status, again, container } = bar();
 
   again({ count: 2 });
@@ -65,7 +65,7 @@ test("a regiao viva existe antes da selecao, e anuncia a contagem e a limpeza", 
   expect(status.textContent).toBe("Seleção limpa");
 });
 
-test("ao sair, a barra continua dizendo o ultimo numero, e nao zero", () => {
+test("on leaving, the bar keeps showing the last number, and not zero", () => {
   const { region, again } = bar({ count: 4 });
 
   again({ count: 0 });
@@ -73,7 +73,7 @@ test("ao sair, a barra continua dizendo o ultimo numero, e nao zero", () => {
   expect(within(region).queryByText("0 selecionados")).toBeNull();
 });
 
-test("o Limpar seleção so existe com onClear, e chama quem controla", () => {
+test("the Limpar seleção button only exists with onClear, and calls the controller", () => {
   const onClear = mock(() => {});
   const first = bar({ count: 2 });
   expect(within(first.region).queryByRole("button", { name: "Limpar seleção" })).toBeNull();
@@ -84,7 +84,7 @@ test("o Limpar seleção so existe com onClear, e chama quem controla", () => {
   expect(onClear).toHaveBeenCalledTimes(1);
 });
 
-test("as acoes entram como filhas, dentro da regiao nomeada", () => {
+test("actions come in as children, inside the named region", () => {
   bar({
     count: 2,
     children: (
@@ -98,7 +98,7 @@ test("as acoes entram como filhas, dentro da regiao nomeada", () => {
   expect(within(region).getByRole("button", { name: "Exportar" })).toBeDefined();
 });
 
-test("quando a barra sai com o foco dentro, o foco vai para a raiz dela", () => {
+test("when the bar leaves with focus inside, focus goes to its root", () => {
   const { region, again, root } = bar({ count: 2, onClear: () => {} });
 
   const clear = within(region).getByRole("button", { name: "Limpar seleção" });
@@ -109,7 +109,7 @@ test("quando a barra sai com o foco dentro, o foco vai para a raiz dela", () => 
   expect(document.activeElement).toBe(root);
 });
 
-test("sem finalFocus, o foco volta para onde estava antes de entrar na barra", () => {
+test("without finalFocus, focus returns to where it was before entering the bar", () => {
   const checkbox = document.createElement("button");
   document.body.appendChild(checkbox);
   const { region, again, root } = bar({ count: 1, onClear: () => {} });
@@ -123,7 +123,7 @@ test("sem finalFocus, o foco volta para onde estava antes de entrar na barra", (
   checkbox.remove();
 });
 
-test("com finalFocus, o foco vai para onde quem usa mandou", () => {
+test("with finalFocus, focus goes where the consumer said", () => {
   const target = document.createElement("button");
   document.body.appendChild(target);
   const finalFocus = createRef<HTMLElement>();
@@ -137,7 +137,7 @@ test("com finalFocus, o foco vai para onde quem usa mandou", () => {
   target.remove();
 });
 
-test("foco fora da barra nao e roubado quando ela sai", () => {
+test("focus outside the bar is not stolen when it leaves", () => {
   const outside = document.createElement("input");
   document.body.appendChild(outside);
   const { again } = bar({ count: 1 });
@@ -149,7 +149,7 @@ test("foco fora da barra nao e roubado quando ela sai", () => {
   outside.remove();
 });
 
-test("entra com a curva de entrada e sai com a de saida, pelos tokens de movimento", () => {
+test("enters with the enter curve and leaves with the exit curve, through the motion tokens", () => {
   const { region, root, again } = bar({ count: 1 });
 
   for (const node of [region, root]) {
@@ -166,7 +166,7 @@ test("entra com a curva de entrada e sai com a de saida, pelos tokens de movimen
   }
 });
 
-test("empilha pelo token, sticky por padrao e fixed quando pedido", () => {
+test("stacks by the token, sticky by default and fixed when asked", () => {
   const sticky = bar({ count: 1 });
   expect(tokens(sticky.root)).toContain("z-[var(--rc-z-sticky)]");
   expect(tokens(sticky.root)).toContain("sticky");
@@ -179,7 +179,7 @@ test("empilha pelo token, sticky por padrao e fixed quando pedido", () => {
   expect(tokens(fixed.root)).toContain("bottom-[max(1rem,env(safe-area-inset-bottom))]");
 });
 
-test("labels nomeia o item, e classNames alcanca cada parte", () => {
+test("labels names the item, and classNames reaches each part", () => {
   const { region, status } = bar({
     count: 2,
     onClear: () => {},
@@ -231,7 +231,7 @@ function Screen() {
   );
 }
 
-test("com o DataTable: marcar linha abre a barra, e limpar desmarca a tabela", () => {
+test("with the DataTable: checking a row opens the bar, and clearing unchecks the table", () => {
   const { container } = render(<Screen />);
   const region = container.querySelector("[role='region']") as HTMLElement;
 
@@ -249,7 +249,7 @@ test("com o DataTable: marcar linha abre a barra, e limpar desmarca a tabela", (
   }
 });
 
-test("rotulo longo quebra dentro do botao, e a barra nao alarga a pagina a 320px", () => {
+test("a long label wraps inside the button, and the bar does not widen the page at 320px", () => {
   bar({
     count: 3,
     onClear: () => {},

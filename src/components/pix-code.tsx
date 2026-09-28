@@ -38,26 +38,40 @@ const LABELS: PixCodeLabels = {
 };
 
 export type PixCodeProps = Omit<ComponentProps<"div">, "children"> & {
-  /** O Pix copia e cola inteiro, como o PSP ou o `buildPixPayload` devolvem. O CRC e conferido, e o espaco em volta sai antes do QR e do copiar. */
+  /**
+   * The whole Pix copy-and-paste code, as the PSP or `buildPixPayload` returns it. The CRC is
+   * checked, and surrounding whitespace is removed before the QR and the copy.
+   */
   payload: string;
   /**
-   * O valor em reais que aparece em destaque. Sem ele, o do proprio codigo,
-   * e so no QR estatico: no dinamico o manual do BCB manda ignorar o campo 54.
+   * The amount in reais shown prominently. Without it, the one in the code itself,
+   * and only in a static QR: in a dynamic one the BCB manual says to ignore field 54.
    */
   amount?: number;
-  /** O nome do recebedor como a tela deve mostrar, com acento. Sem ele, o gravado no codigo, que o EMV guarda em ASCII e sem acento. */
+  /**
+   * The receiver's name as the screen should show it, with accents. Without it, the one recorded in
+   * the code, which EMV stores in ASCII and without accents.
+   */
   receiver?: string;
-  /** Troca o QR por um aviso e tira o copiar: codigo vencido nao se oferece para pagar. */
+  /**
+   * Replaces the QR with a notice and removes the copy: an expired code is not offered for payment.
+   */
   expired?: boolean;
-  /** Enquanto a cobranca e gerada: marca de lugar no QR e no texto, com `aria-busy`, e o aviso na regiao viva. */
+  /**
+   * While the charge is generated: placeholder in the QR and the text, with `aria-busy`, and the
+   * notice in the live region.
+   */
   loading?: boolean;
-  /** Liga o botao de gerar outro codigo, no aviso de expirado. */
+  /** Turns on the button to generate another code, in the expired notice. */
   onRenew?: () => void;
-  /** O lado do QR em px. */
+  /** The QR's side in px. */
   size?: number;
-  /** Os textos da peca, para quem precisa de outro idioma ou outro tom. `loading`, `ready` e `expired` sao ditos pela regiao viva. */
+  /**
+   * The piece's texts, for those who need another language or another tone. `loading`, `ready` and
+   * `expired` are spoken by the live region.
+   */
   labels?: Partial<PixCodeLabels>;
-  /** Classe por parte: `code`, `amount`, `receiver`, `payload`, `copy`. */
+  /** Class per part: `code`, `amount`, `receiver`, `payload`, `copy`. */
   classNames?: Slots<"code" | "amount" | "receiver" | "payload" | "copy">;
 };
 

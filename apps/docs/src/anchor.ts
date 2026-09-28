@@ -1,8 +1,8 @@
 /**
- * O `id` de um titulo, e o `#` que aponta para ele.
+ * A heading's `id`, and the `#` that points to it.
  *
- * O acento cai primeiro: `Instalação` vira `instalacao`, que sobrevive a ser
- * colado num chat, num terminal ou numa mensagem de commit.
+ * Accents go first: `Instalação` becomes `instalacao`, which survives being
+ * pasted into a chat, a terminal or a commit message.
  */
 export const anchor = (text: string) =>
   text

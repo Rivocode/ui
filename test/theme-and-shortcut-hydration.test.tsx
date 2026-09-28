@@ -44,7 +44,7 @@ async function hydrate(ui: ReactNode, html: string) {
   return { host, errors };
 }
 
-test("o tema do sistema hidrata igual ao servidor e so depois segue a preferencia clara", async () => {
+test("the system theme hydrates equal to the server and only then follows the light preference", async () => {
   const ui = (
     <RivoProvider theme="system" scope="local">
       <p>conteudo</p>
@@ -63,7 +63,7 @@ test("o tema do sistema hidrata igual ao servidor e so depois segue a preferenci
   );
 });
 
-test("o atalho sai na forma neutra no servidor e vira o simbolo do Mac depois de montar", async () => {
+test("the shortcut renders in the neutral form on the server and becomes the Mac symbol after mount", async () => {
   platform("MacIntel");
   const ui = <Kbd keys="mod+k" />;
 
@@ -79,7 +79,7 @@ test("o atalho sai na forma neutra no servidor e vira o simbolo do Mac depois de
   expect(host.querySelector("[role=img]")!.getAttribute("aria-label")).toBe("Command mais K");
 });
 
-test("fora do Mac o atalho continua Ctrl depois de montar", async () => {
+test("outside the Mac the shortcut stays Ctrl after mount", async () => {
   platform("Win32");
   const ui = <Kbd keys="mod+k" />;
   const { host, errors } = await hydrate(ui, renderToString(ui));

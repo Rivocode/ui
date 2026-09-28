@@ -39,15 +39,16 @@ function CheckMark() {
 
 export type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "children"> & {
   /**
-   * O texto ao lado. Com ele, a caixa sai dentro de um `<label>`, entao clicar
-   * no texto tambem marca.
+   * The text beside it. With it, the box is rendered inside a `<label>`, so clicking
+   * the text also checks it.
    *
-   * Sem ele, sai so a caixa, e o arranjo fica com quem monta a tela. Use assim
-   * quando o rotulo tiver estrutura: um `<strong>` com descricao embaixo, um
-   * link no meio da frase.
+   * Without it, only the box is rendered, and the arrangement is up to whoever builds the screen.
+   * Use it that way
+   * when the label has structure: a `<strong>` with a description below, a
+   * link in the middle of the sentence.
    */
   children?: ReactNode;
-  /** Classe por parte: `box`, `indicator`, `label`. */
+  /** Class per part: `box`, `indicator`, `label`. */
   classNames?: Slots<"box" | "indicator" | "label">;
 };
 

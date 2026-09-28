@@ -1,52 +1,54 @@
 /**
- * As props de cada peca do pacote NATIVO, lidas do compilador.
+ * The props of each piece of the NATIVE package, read from the compiler.
  *
- * O web ja tinha a sua tabela em `apps/docs/src/component-props.json`, e o
- * nativo nao tinha nenhuma. A falta aparecia escrita numa guarda: o
- * `check:skill` exclui `reference/native.md` da conferencia de props com o
- * bilhete "enquanto o @rivocode/ui-native nao gerar tabela propria, este
- * arquivo fica de fora". Enquanto isso for verdade, tudo que a doc do nativo
- * afirma sobre prop e afirmacao que ninguem confere.
+ * The web already had its table in `apps/docs/src/component-props.json`, and
+ * native had none. The gap was written down in a guard: `check:skill` excluded
+ * `reference/native.md` from the props check with the note "while
+ * @rivocode/ui-native does not generate its own table, this file stays out".
+ * As long as that is true, everything the native doc claims about a prop is a
+ * claim nobody checks.
  *
- * Este arquivo gera a tabela que faltava. Quem a consome hoje e o
- * `scripts/native-signature.ts`, que compara as duas assinaturas peca a peca.
+ * This file generates the missing table. Its consumer today is
+ * `scripts/native-signature.ts`, which compares the two signatures piece by
+ * piece.
  *
- * ## Por que ele NAO entra no `bun run check`
+ * ## Why it is NOT part of `bun run check`
  *
- * Pelo mesmo motivo do `check:native:types`, e o motivo esta no
- * `native/tsconfig.check.json`: react e react-native sao peers, e o unico
- * lugar do repositorio onde estao instalados e `examples/native`, que nao e
- * workspace. `bun install --frozen-lockfile` na raiz nunca o instala.
+ * For the same reason as `check:native:types`, and the reason is in
+ * `native/tsconfig.check.json`: react and react-native are peers, and the only
+ * place in the repository where they are installed is `examples/native`, which
+ * is not a workspace. `bun install --frozen-lockfile` at the root never
+ * installs it.
  *
- * E nao e que ele falharia sem eles - seria pior, ele passaria MENTINDO.
- * Medido em 28/08/2026, apontando o tsconfig para um mundo sem react-native:
- * as 82 pecas continuaram saindo, e dez perderam props. `Omit<TextInputProps,
- * ...> & { value; onValueChange }` com `TextInputProps` sem resolver colapsa,
- * e o `PasswordInput` apareceu com uma prop so. Uma tabela dessas no gate
- * seria uma guarda verde medindo o vazio.
+ * And it is not that it would fail without them - it would be worse, it would
+ * pass while LYING. Measured on 28/08/2026, pointing the tsconfig at a world
+ * without react-native: the 82 pieces kept coming out, and ten lost props.
+ * `Omit<TextInputProps, ...> & { value; onValueChange }` with `TextInputProps`
+ * unresolved collapses, and `PasswordInput` showed up with a single prop. A
+ * table like that in the gate would be a green guard measuring nothing.
  *
- * Por isso o desenho e o mesmo dos tokens nativos: a tabela e ARTEFATO
- * COMITADO. Quem gera precisa do app de exemplo instalado, e quem confere so
- * precisa do JSON. O `--check` roda no job `nativo` da CI, ao lado do
- * `check:native:types`, que ja instala `examples/native`.
+ * That is why the design is the same as the native tokens: the table is a
+ * COMMITTED ARTIFACT. Whoever generates it needs the example app installed,
+ * and whoever checks it only needs the JSON. `--check` runs in the CI `nativo`
+ * job, next to `check:native:types`, which already installs `examples/native`.
  *
- * Rodar de novo:
+ * To run again:
  *
- *   bun install --frozen-lockfile          dentro de examples/native
- *   bun run gen:props:native               escreve
- *   bun run check:props:native             so confere, para a CI
+ *   bun install --frozen-lockfile          inside examples/native
+ *   bun run gen:props:native               writes
+ *   bun run check:props:native             only checks, for CI
  */
 import { API, SignatureKind, SymbolFlags } from "typescript/unstable/async";
 
 import { countAtLeast } from "./scan";
 
-const RAIZ = process.cwd();
+const ROOT = process.cwd();
 const TARGET = "apps/docs/src/native-props.json";
 const PROJECT = "native/tsconfig.check.json";
 
 const isOwnSource = (path: string) => path.includes("/native/src/") && !path.includes("/node_modules/");
 
-/** Os sete indices do pacote. Os mesmos que a tabela de paridade mede. */
+/** The package's seven indexes. The same ones the parity table measures. */
 const ENTRY_POINTS = [
   "native/src/index.ts",
   "native/src/form/index.ts",
@@ -58,12 +60,12 @@ const ENTRY_POINTS = [
 ];
 
 /**
- * O piso de pecas e de props.
+ * The floor of pieces and props.
  *
- * Sem ele o modo `--check` compara vazio com vazio no dia em que o tsconfig
- * mudar de nome ou o `paths` do exemplo parar de resolver, e sai verde. E a
- * mesma familia de defeito que o `scripts/scan.ts` descreve, so que aqui
- * quem varre e o compilador.
+ * Without it `--check` mode compares empty with empty on the day the tsconfig
+ * is renamed or the example's `paths` stops resolving, and comes out green. It
+ * is the same family of defect `scripts/scan.ts` describes, except that here
+ * the one scanning is the compiler.
  */
 const PIECE_FLOOR = 60;
 const PROP_FLOOR = 250;
@@ -76,7 +78,7 @@ export type NativeProp = {
 };
 
 export type NativePiece = {
-  /** O indice por onde a peca sai: a raiz, `/form`, `/chart`, `/clipboard`, `/file-upload`, `/ai`, `/dnd`. */
+  /** The index the piece ships through: the root, `/form`, `/chart`, `/clipboard`, `/file-upload`, `/ai`, `/dnd`. */
   entry: string;
   props: NativeProp[];
 };
@@ -95,21 +97,21 @@ function firstSentence(text: string): string | undefined {
 }
 
 export async function readNativeCatalog(): Promise<Record<string, NativePiece>> {
-  const api = new API({ cwd: RAIZ });
-  const snapshot = await api.updateSnapshot({ openProjects: [`${RAIZ}/${PROJECT}`] });
+  const api = new API({ cwd: ROOT });
+  const snapshot = await api.updateSnapshot({ openProjects: [`${ROOT}/${PROJECT}`] });
   const project = (await snapshot.getProjects())[0];
-  if (!project) throw new Error(`Nao consegui abrir o projeto de ${PROJECT}.`);
+  if (!project) throw new Error(`Could not open the ${PROJECT} project.`);
 
   const { checker, program } = project;
   const catalog: Record<string, NativePiece> = {};
   const collisions: string[] = [];
 
   for (const entry of ENTRY_POINTS) {
-    const file = await program.getSourceFile(`${RAIZ}/${entry}`);
-    if (!file) throw new Error(`Nao achei ${entry}.`);
+    const file = await program.getSourceFile(`${ROOT}/${entry}`);
+    if (!file) throw new Error(`Could not find ${entry}.`);
 
     const module = await checker.getSymbolAtLocation(file);
-    if (!module) throw new Error(`${entry} nao resolveu como modulo.`);
+    if (!module) throw new Error(`${entry} did not resolve as a module.`);
 
     for (const [key, symbol] of await module.getExports()) {
       const name = String(key);
@@ -127,10 +129,10 @@ export async function readNativeCatalog(): Promise<Record<string, NativePiece>> 
       const props: NativeProp[] = [];
 
       for (const prop of await checker.getPropertiesOfType(parameter)) {
-        // O que a peca declara, e nao o que ela herda de `ViewProps` e
-        // `TextInputProps`: sao centenas de props de plataforma que dizem o
-        // mesmo em toda peca, e o recorte e o mesmo que o catalogo do web faz
-        // com o `@types/react`.
+        // What the piece declares, not what it inherits from `ViewProps` and
+        // `TextInputProps`: those are hundreds of platform props that say the
+        // same thing on every piece, and the cut is the same one the web
+        // catalog makes with `@types/react`.
         const paths = prop.declarations.map((declaration) => String(declaration.path ?? ""));
         if (!paths.some(isOwnSource)) continue;
         if (paths.some((path) => !isOwnSource(path))) collisions.push(`${name}.${prop.name}`);
@@ -162,7 +164,7 @@ export async function readNativeCatalog(): Promise<Record<string, NativePiece>> 
 
   if (collisions.length) {
     console.error(
-      `${collisions.length} prop(s) propria(s) colidem com uma prop herdada de mesmo nome, e o tipo publicado vira a intersecao dos dois. Tire a chave da base com Omit:`,
+      `${collisions.length} own prop(s) collide with an inherited prop of the same name, and the published type becomes the intersection of both. Remove the key from the base with Omit:`,
     );
     for (const collision of collisions) console.error(`  ${collision}`);
     process.exit(1);
@@ -176,8 +178,8 @@ if (import.meta.main) {
   const pieces = Object.keys(catalog).length;
   const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
 
-  countAtLeast("pecas do pacote nativo", pieces, PIECE_FLOOR);
-  countAtLeast("props do pacote nativo", total, PROP_FLOOR);
+  countAtLeast("native package pieces", pieces, PIECE_FLOOR);
+  countAtLeast("native package props", total, PROP_FLOOR);
 
   const text = `${JSON.stringify(catalog, null, 2)}\n`;
 
@@ -187,7 +189,7 @@ if (import.meta.main) {
       .catch(() => "");
 
     if (current !== text) {
-      console.error(`${TARGET} divergiu dos tipos. Rode: bun run gen:props:native`);
+      console.error(`${TARGET} diverged from the types. Run: bun run gen:props:native`);
 
       const before: Record<string, NativePiece> = current ? JSON.parse(current) : {};
       for (const [piece, data] of Object.entries(catalog)) {
@@ -196,15 +198,15 @@ if (import.meta.main) {
         const removed = [...previous].filter(
           (prop) => !data.props.some((current) => current.name === prop),
         );
-        if (added.length) console.error(`  ${piece}: entrou ${added.join(", ")}`);
-        if (removed.length) console.error(`  ${piece}: saiu ${removed.join(", ")}`);
+        if (added.length) console.error(`  ${piece}: added ${added.join(", ")}`);
+        if (removed.length) console.error(`  ${piece}: removed ${removed.join(", ")}`);
       }
       process.exit(1);
     }
 
-    console.log(`props do nativo em dia: ${pieces} pecas, ${total} props.`);
+    console.log(`native props up to date: ${pieces} pieces, ${total} props.`);
   } else {
     await Bun.write(TARGET, text);
-    console.log(`${TARGET}: ${pieces} pecas, ${total} props.`);
+    console.log(`${TARGET}: ${pieces} pieces, ${total} props.`);
   }
 }

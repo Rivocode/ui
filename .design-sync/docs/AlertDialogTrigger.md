@@ -1,11 +1,12 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # AlertDialogTrigger
 
-O que abre a confirmação.
+What opens the confirmation.
 
-Costuma ser o botão de excluir da linha ou do rodapé. Passe `render` com ele em
-vez de aninhar um botão dentro de outro, e deixe o texto do gatilho dizer o
-que vai acontecer, porque "Excluir" prepara a pergunta que vem, e "Ok" não.
+It is usually the delete button of the row or of the footer. Pass `render` with
+it instead of nesting one button inside another, and let the trigger's text say
+what is going to happen, because "Excluir" sets up the question that follows,
+and "Ok" does not.

@@ -1,8 +1,8 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # SheetTrigger
 
-O que abre a folha. Use `render` para emprestar o gatilho a um `Button`, em vez
-de aninhar um botão dentro de outro.
+What opens the sheet. Use `render` to lend the trigger to a `Button`, instead
+of nesting one button inside another.

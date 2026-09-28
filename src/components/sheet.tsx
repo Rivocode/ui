@@ -17,7 +17,7 @@ const SideContext = createContext<SheetSide>("bottom");
 const SWIPE = { bottom: "down", left: "left", right: "right" } as const;
 
 export type SheetProps = Omit<ComponentProps<typeof BaseDrawer.Root>, "swipeDirection"> & {
-  /** De onde a folha entra. O gesto de fechar segue o lado. */
+  /** Where the sheet comes in from. The close gesture follows the side. */
   side?: SheetSide;
   children: ReactNode;
 };
@@ -65,8 +65,8 @@ const PANEL_SIDE: Record<SheetSide, string> = {
 
 export type SheetContentProps = ComponentProps<typeof BaseDrawer.Popup> & {
   /**
-   * Classe por parte: `backdrop`, `viewport`. A tarja e irma do painel dentro
-   * do portal, entao nem `className` nem variante de descendente alcancam ela.
+   * Class per part: `backdrop`, `viewport`. The backdrop is a sibling of the panel inside
+   * the portal, so neither `className` nor a descendant variant reaches it.
    */
   classNames?: Slots<"backdrop" | "viewport">;
 };

@@ -5,19 +5,19 @@ export type QuestionnaireAnswers = Record<string, string | string[]>;
 export type QuestionnaireShortcuts = "letters" | "numbers";
 
 export type QuestionnaireLabels = {
-  /** A frase de cima: recebe a posicao, contando de um, e o total. */
+  /** The top sentence: receives the position, counting from one, and the total. */
   progress: (current: number, total: number) => string;
   previous: string;
   skip: string;
   next: string;
   submit: string;
-  /** O erro da pergunta obrigatoria sem resposta. */
+  /** The error for a required question with no answer. */
   required: string;
-  /** O erro da pergunta opcional que nao foi respondida nem pulada. */
+  /** The error for an optional question that was neither answered nor skipped. */
   unanswered: string;
-  /** O nome falado do campo livre que fica ao lado das opcoes. */
+  /** The spoken name of the free field that sits beside the options. */
   other: string;
-  /** A marca ao lado do titulo da pergunta que aceita pular. */
+  /** The mark beside the title of a question that can be skipped. */
   optional: string;
 };
 

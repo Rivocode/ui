@@ -30,8 +30,8 @@ import { ChartContainer } from "../src/chart/chart";
 import { ColorPicker } from "../src/color-picker";
 import { act, byLabel, byRole, render, textOf } from "./helpers";
 
-describe("o texto que a peca escreve sozinha sai de labels", () => {
-  test("Dialog e Sheet: o fundo que fecha se chama labels.close", () => {
+describe("the text a piece writes on its own comes from labels", () => {
+  test("Dialog and Sheet: the closing backdrop is named by labels.close", () => {
     const dialog = render(
       <Dialog open onOpenChange={() => {}} title="Nota" labels={{ close: "Close" }} />,
     );
@@ -44,7 +44,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(sheet, "Close sheet")).toHaveLength(1);
   });
 
-  test("SearchInput: o xis que limpa se chama labels.clear", () => {
+  test("SearchInput: the clearing x is named by labels.clear", () => {
     const screen = render(
       <SearchInput value="acme" onValueChange={() => {}} labels={{ clear: "Clear search" }} />,
     );
@@ -52,7 +52,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Limpar a busca")).toHaveLength(0);
   });
 
-  test("NumberField: os botoes de passo recebem o label e devolvem o nome", () => {
+  test("NumberField: the step buttons receive the label and return the name", () => {
     const screen = render(
       <NumberField
         value={2}
@@ -69,7 +69,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Diminuir Installments")).toHaveLength(0);
   });
 
-  test("Editable: a acao, a dica, o vazio e o cancelar saem de labels", () => {
+  test("Editable: the action, the hint, the empty state and cancel come from labels", () => {
     const screen = render(
       <Editable
         value=""
@@ -87,7 +87,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(textOf(screen)).not.toContain("Cancelar");
   });
 
-  test("DataList: a nova tentativa e a caixa de cada linha saem de labels", () => {
+  test("DataList: the retry and each row's checkbox come from labels", () => {
     const failed = render(
       <DataList
         data={undefined}
@@ -114,7 +114,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(selectable, "Select row")).toHaveLength(1);
   });
 
-  test("QueryBoundary: a espera generica se chama labels.loading", () => {
+  test("QueryBoundary: the generic wait is named by labels.loading", () => {
     const screen = render(
       <QueryBoundary data={undefined} isLoading labels={{ loading: "Loading" }}>
         {() => null}
@@ -124,7 +124,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Carregando")).toHaveLength(0);
   });
 
-  test("ColorPicker: o conjunto e o campo de texto saem de labels", () => {
+  test("ColorPicker: the set and the text field come from labels", () => {
     const screen = render(
       <ColorPicker
         value="#112233"
@@ -136,7 +136,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Hex code").length).toBeGreaterThan(0);
   });
 
-  test("Link e Banner: a dica de saida e o xis saem de labels", () => {
+  test("Link and Banner: the exit hint and the x come from labels", () => {
     const link = render(
       <Link href="https://exemplo.com" external labels={{ external: "Opens outside the app." }}>
         Portal
@@ -151,7 +151,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(banner, "Dismiss")).toHaveLength(1);
   });
 
-  test("PromptInput: os botoes de enviar e parar saem de labels", () => {
+  test("PromptInput: the send and stop buttons come from labels", () => {
     const idle = render(
       <PromptInput
         value="oi"
@@ -175,7 +175,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
   });
 
 
-  test("ColorPicker: cada amostra em texto puro se chama labels.swatch", () => {
+  test("ColorPicker: each plain-text swatch is named by labels.swatch", () => {
     const screen = render(
       <ColorPicker
         value=""
@@ -189,7 +189,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Cor #112233")).toHaveLength(0);
   });
 
-  test("ColorPicker: dentro de um Field o label so nomeia, e o rotulo na tela e um so", () => {
+  test("ColorPicker: inside a Field the label only names, and there is a single label on screen", () => {
     const loose = render(<ColorPicker value="" onValueChange={() => {}} label="Brand color" />);
     expect(textOf(loose).split("Brand color").length - 1).toBe(1);
 
@@ -202,7 +202,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(inside, "Brand color")).toHaveLength(1);
   });
 
-  test("Calendar: as setas, o mes e as iniciais saem de labels", () => {
+  test("Calendar: the arrows, the month and the initials come from labels", () => {
     const screen = render(
       <Calendar
         value="2026-09-10"
@@ -222,7 +222,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(textOf(screen)).not.toContain("Setembro");
   });
 
-  test("DateRangePicker: os botoes e o aviso da folha saem de labels", () => {
+  test("DateRangePicker: the buttons and the sheet notice come from labels", () => {
     const screen = render(
       <DateRangePicker
         value={null}
@@ -245,7 +245,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Previous month")).toHaveLength(1);
   });
 
-  test("Select, Combobox e TreeSelect: o resumo e o botao da folha saem de labels", () => {
+  test("Select, Combobox and TreeSelect: the summary and the sheet button come from labels", () => {
     const items = [
       { label: "Norte", value: "n" },
       { label: "Sul", value: "s" },
@@ -292,7 +292,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(textOf(tree)).not.toContain("Aplicar");
   });
 
-  test("Autocomplete: a dica, a contagem falada e o botao saem de labels", () => {
+  test("Autocomplete: the hint, the spoken count and the button come from labels", () => {
     const screen = render(
       <Autocomplete
         items={["Recife", "Olinda"]}
@@ -309,7 +309,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(textOf(screen)).toContain("Done");
   });
 
-  test("Tree: voltar, marcar tudo, o galho e a dica saem de labels", () => {
+  test("Tree: back, check all, the branch and the hint come from labels", () => {
     const screen = render(
       <Tree
         multiple
@@ -332,7 +332,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(byLabel(screen, "Back to Root")).toHaveLength(1);
   });
 
-  test("Slider, Rating e Tracker: as acoes de ajuste saem de labels", () => {
+  test("Slider, Rating and Tracker: the adjust actions come from labels", () => {
     const actionsOf = (screen: ReturnType<typeof render>) =>
       byRole(screen, "adjustable")[0]!.props.accessibilityActions.map(
         (action: { label: string }) => action.label,
@@ -363,7 +363,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(actionsOf(tracker)).toEqual(["Next day", "Previous day"]);
   });
 
-  test("Menu: a acao e a dica do toque longo saem de labels", () => {
+  test("Menu: the long-press action and hint come from labels", () => {
     const screen = render(
       <Menu
         open={false}
@@ -382,7 +382,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     ]);
   });
 
-  test("Steps e RelativeTime: a contagem e a distancia saem de labels", () => {
+  test("Steps and RelativeTime: the count and the distance come from labels", () => {
     const steps = render(
       <Steps
         steps={[
@@ -407,7 +407,7 @@ describe("o texto que a peca escreve sozinha sai de labels", () => {
     expect(textOf(time)).toContain("3 hours ago");
   });
 
-  test("ChartContainer: o nome montado das series sai de labels.name", () => {
+  test("ChartContainer: the assembled series name comes from labels.name", () => {
     const chart = render(
       <ChartContainer
         config={{ total: { label: "Revenue" } }}

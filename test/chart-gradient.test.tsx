@@ -4,29 +4,29 @@ import { render } from "@testing-library/react";
 import { ChartAreaGradient, areaGradient } from "../src/chart/chart-gradient";
 
 /*
- * O nome do gradiente e do quem chama, e nao nosso. A primeira versao disto
- * tirava um id unico do contexto do `ChartContainer`, o que parecia mais seguro
- * e escondia uma armadilha: o `fill` de `<Area>` e avaliado no render do
- * componente de fora, onde aquele contexto ainda nao existe.
+ * The gradient name belongs to the caller, and not to us. The first version of
+ * this took a unique id from the `ChartContainer` context, which looked safer
+ * and hid a trap: the `fill` of `<Area>` is evaluated in the render of the
+ * outer component, where that context does not exist yet.
  */
 
-test("o `fill` aponta para o gradiente declarado, sem precisar de contexto", () => {
+test("`fill` points to the declared gradient, without needing context", () => {
   const { container } = render(<ChartAreaGradient id="faturamento" series={["billed"]} />);
-  const gradiente = container.querySelector("linearGradient")!;
+  const gradient = container.querySelector("linearGradient")!;
 
-  expect(areaGradient("faturamento", "billed")).toBe(`url(#${gradiente.id})`);
+  expect(areaGradient("faturamento", "billed")).toBe(`url(#${gradient.id})`);
 });
 
-test("a cor sai da variavel da serie, entao ela acompanha o tema", () => {
+test("the color comes from the series variable, so it follows the theme", () => {
   const { container } = render(<ChartAreaGradient id="x" series={["billed"]} />);
-  const paradas = [...container.querySelectorAll("stop")];
+  const stops = [...container.querySelectorAll("stop")];
 
-  expect(paradas.map((p) => p.getAttribute("stop-color"))).toEqual([
+  expect(stops.map((p) => p.getAttribute("stop-color"))).toEqual([
     "var(--color-billed)",
     "var(--color-billed)",
   ]);
 });
 
-test("nomes diferentes dao gradientes diferentes, que e o que separa dois graficos", () => {
+test("different names give different gradients, which is what separates two charts", () => {
   expect(areaGradient("faturamento", "billed")).not.toBe(areaGradient("emissao", "billed"));
 });

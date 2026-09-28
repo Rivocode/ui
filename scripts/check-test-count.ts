@@ -1,38 +1,38 @@
 /**
- * Guarda da contagem de testes que a home exibe.
+ * Guard for the test count the home page displays.
  *
- * Dos quatro numeros da vitrine, tres saem do catalogo em tempo de build e
- * envelhecem sozinhos; o dos testes era o unico cravado a mao, e por isso o
- * unico que mentia. Ja mentiu duas vezes: ficou em 292 depois de a suite
- * passar de 292, e em 348 enquanto ela chegava a 552. Ninguem viu porque
- * numero errado nao quebra build - ele so fica ali, na primeira tela que
- * alguem le antes de decidir adotar a biblioteca, alegando menos garantia do
- * que a que existe.
+ * Of the four showcase numbers, three come from the catalog at build time and
+ * age on their own; the test one was the only one hard-coded by hand, and so the
+ * only one that lied. It has lied twice already: it stayed at 292 after the
+ * suite went past 292, and at 348 while it was reaching 552. Nobody saw it
+ * because a wrong number does not break a build - it just sits there, on the
+ * first screen someone reads before deciding to adopt the library, claiming
+ * less assurance than there is.
  *
- * O caminho obvio - contar no build do site - nao serve: a contagem so existe
- * depois de a suite rodar, e por um digito o deploy da Vercel pagaria a suite
- * inteira a cada push. Entao o numero fica versionado na propria home, e quem
- * o mantem honesto e esta guarda, que roda no `bun run check` junto com as
- * outras.
+ * The obvious route - counting in the site build - does not work: the count only
+ * exists after the suite runs, and for one digit the Vercel deploy would pay for
+ * the whole suite on every push. So the number stays versioned in the home page
+ * itself, and what keeps it honest is this guard, which runs in `bun run check`
+ * with the others.
  *
- * O que o numero significa: a suite da raiz inteira, `test/` (web) e
- * `native/test/`. E o mesmo `bun test` que o check roda no fim, e por isso o
- * rotulo na home fala das duas metades.
+ * What the number means: the whole root suite, `test/` (web) and
+ * `native/test/`. It is the same `bun test` the check runs at the end, and that
+ * is why the label on the home page speaks of both halves.
  */
 import { $ } from "bun";
 
 /**
- * As duas pastas da suite, e so elas.
+ * The suite's two folders, and only them.
  *
- * Sem o escopo, a guarda contava a ARVORE DE TRABALHO: qualquer pasta de
- * rascunho na raiz com um `*.test.tsx` entrava na conta. Em 27/08 uma bancada
- * de auditoria com tres arquivos fez a guarda pedir `TESTS = 1081` quando a
- * suite rastreada tinha 1074, e quem obedecesse gravaria na home um numero
- * inventado por um diretorio que nem esta no git. E o incidente que esta
- * guarda existe para impedir, cometido pela propria guarda.
+ * Without the scope, the guard counted the WORKING TREE: any scratch folder at
+ * the root with a `*.test.tsx` entered the count. On 27/08 an audit bench with
+ * three files made the guard ask for `TESTS = 1081` when the tracked suite had
+ * 1074, and whoever obeyed would have written on the home page a number made up
+ * by a directory that is not even in git. It is the incident this guard exists
+ * to prevent, committed by the guard itself.
  *
- * As duas pastas sao as que o JSDoc do topo sempre declarou como significado
- * do numero. O codigo e que nao dizia isso.
+ * The two folders are the ones the top JSDoc always declared as the meaning of
+ * the number. It was the code that did not say so.
  */
 const SUITES = ["test/", "native/test/"];
 
@@ -40,19 +40,19 @@ const HOME_FILE = "apps/docs/src/pages/home.tsx";
 const HOME_CONST = "TESTS";
 
 /**
- * Conta sem executar.
+ * Counts without running.
  *
- * `-t` com um padrao que nao casa com nada faz o bun percorrer os arquivos,
- * declarar cada teste e pular todos - ele responde "skipping N tests", que e
- * exatamente o N que queremos, por uma fracao do tempo da suite (~2s contra
- * ~9s). Importa porque esta guarda entra numa corrente que ja termina em `bun
- * test`: cobrar a suite duas vezes seria pagar caro para conferir um digito.
+ * `-t` with a pattern that matches nothing makes bun walk the files, declare
+ * each test and skip them all - it answers "skipping N tests", which is exactly
+ * the N we want, for a fraction of the suite's time (~2s against ~9s). It
+ * matters because this guard sits in a chain that already ends in `bun test`:
+ * charging for the suite twice would be paying dearly to check one digit.
  *
- * O bun sai com codigo de erro quando o filtro nao casa - o que aqui e o caso
- * esperado, e nao falha - e escreve a linha no stderr.
+ * bun exits with an error code when the filter does not match - which here is
+ * the expected case, and not a failure - and writes the line to stderr.
  */
 async function countSkipping() {
-  const run = await $`bun test ${SUITES} -t ___sem-correspondencia___`.nothrow().quiet();
+  const run = await $`bun test ${SUITES} -t ___no-match___`.nothrow().quiet();
   const output = run.stderr.toString() + run.stdout.toString();
 
   const tests = /skipping (\d+) tests?/.exec(output);
@@ -63,12 +63,12 @@ async function countSkipping() {
 }
 
 /**
- * O plano B: rodar a suite de verdade e ler o rodape dela.
+ * Plan B: run the suite for real and read its footer.
  *
- * A frase que o modo acima le e do relatorio de um filtro vazio, e nao um
- * contrato do bun - uma versao nova pode reescreve-la. Se isso acontecer,
- * a guarda fica lenta antes de ficar errada, que e a ordem certa: uma guarda
- * que passa a nao encontrar o que procura e pior do que uma que demora.
+ * The sentence the mode above reads is from the report of an empty filter, and
+ * not a bun contract - a new version may rewrite it. If that happens, the guard
+ * gets slow before it gets wrong, which is the right order: a guard that stops
+ * finding what it looks for is worse than one that takes a while.
  */
 async function countRunning() {
   const run = await $`bun test ${SUITES}`.nothrow().quiet();
@@ -83,10 +83,10 @@ async function countRunning() {
 const counted = (await countSkipping()) ?? (await countRunning());
 
 if (!counted) {
-  console.error("Nao consegui contar os testes: o `bun test` mudou o formato do relatorio.");
+  console.error("Could not count the tests: `bun test` changed its report format.");
   console.error(
-    "\nAjuste as duas expressoes em scripts/check-test-count.ts para o" +
-      "\ntexto novo. Enquanto isso, o numero da home fica sem quem o confira.",
+    "\nAdjust the two expressions in scripts/check-test-count.ts to the" +
+      "\nnew text. Meanwhile, the home page number has nobody checking it.",
   );
   process.exit(1);
 }
@@ -95,11 +95,11 @@ const home = await Bun.file(HOME_FILE).text();
 const declared = new RegExp(`^const ${HOME_CONST} = (\\d+)$`, "m").exec(home);
 
 if (!declared) {
-  console.error(`Nao achei \`const ${HOME_CONST} = <numero>\` em ${HOME_FILE}.`);
+  console.error(`Did not find \`const ${HOME_CONST} = <number>\` in ${HOME_FILE}.`);
   console.error(
-    "\nA guarda encontra o numero por essa linha exata. Se ele mudou de nome ou" +
-      "\nde forma, ela para de conferir sem reclamar - que e como o digito velho" +
-      "\nsobreviveu antes.",
+    "\nThe guard finds the number by that exact line. If it changed name or" +
+      "\nshape, the guard stops checking without complaining - which is how the old" +
+      "\ndigit survived before.",
   );
   process.exit(1);
 }
@@ -108,15 +108,15 @@ const written = Number(declared[1]);
 
 if (written !== counted.tests) {
   console.error(
-    `A home anuncia ${written} testes, e a suite da raiz tem ${counted.tests}` +
-      ` em ${counted.files} arquivos.\n`,
+    `The home page announces ${written} tests, and the root suite has ${counted.tests}` +
+      ` in ${counted.files} files.\n`,
   );
-  console.error(`Regrave em ${HOME_FILE}:\n\n  const ${HOME_CONST} = ${counted.tests}\n`);
+  console.error(`Rewrite in ${HOME_FILE}:\n\n  const ${HOME_CONST} = ${counted.tests}\n`);
   console.error(
-    "E a primeira coisa que alguem le sobre o quanto a biblioteca e testada:" +
-      "\ndeixar o digito velho e prometer menos - ou mais - do que existe.",
+    "It is the first thing someone reads about how well the library is tested:" +
+      "\nleaving the old digit is promising less - or more - than there is.",
   );
   process.exit(1);
 }
 
-console.log(`${counted.tests} testes em ${counted.files} arquivos, e e o numero que a home exibe.`);
+console.log(`${counted.tests} tests in ${counted.files} files, and that is the number the home page displays.`);

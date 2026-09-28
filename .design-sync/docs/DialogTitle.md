@@ -1,11 +1,12 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # DialogTitle
 
-O título do diálogo.
+The dialog's title.
 
-Não é enfeite: a Base UI liga ele no `aria-labelledby` do painel, e um diálogo
-sem título é anunciado como "diálogo" e nada mais. Se o desenho não pede
-título visível, mantenha a peça e esconda com `sr-only`.
+It is not decoration: Base UI wires it into the panel's `aria-labelledby`, and
+a dialog without a title is announced as "dialog" and nothing more. If the
+design does not call for a visible title, keep the piece and hide it with
+`sr-only`.

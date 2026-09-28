@@ -41,8 +41,8 @@ function drawn(screen: ReactTestRenderer) {
   return Array.isArray(root) ? root : (root?.children ?? null);
 }
 
-describe("a resposta na mao", () => {
-  test("quem desenha e o filho, sem embrulho nenhum", () => {
+describe("the response in hand", () => {
+  test("the child is what draws, with no wrapper at all", () => {
     const screen = render(<QueryBoundary data={INVOICES}>{list}</QueryBoundary>);
 
     const bare = render(list(INVOICES));
@@ -52,7 +52,7 @@ describe("a resposta na mao", () => {
     expect(views(screen)).toBe(views(bare));
   });
 
-  test("o filho em funcao recebe o dado sem o undefined que a tela tinha que afastar", () => {
+  test("a function child receives the data without the undefined the screen had to fend off", () => {
     let seen: Invoice[] | undefined;
 
     render(
@@ -67,7 +67,7 @@ describe("a resposta na mao", () => {
     expect(seen).toHaveLength(2);
   });
 
-  test("o filho tambem pode ser no, para quem nao precisa do dado", () => {
+  test("the child can also be a node, for whoever does not need the data", () => {
     const screen = render(
       <QueryBoundary isLoading={false}>
         <Text>A folha inteira</Text>
@@ -78,8 +78,8 @@ describe("a resposta na mao", () => {
   });
 });
 
-describe("a espera", () => {
-  test("sem resposta e sem isLoading, a peca ja entra carregando", () => {
+describe("the wait", () => {
+  test("without a response and without isLoading, the piece already starts loading", () => {
     const screen = render(<QueryBoundary<Invoice[]>>{list}</QueryBoundary>);
 
     expect(skeletons(screen)).toHaveLength(3);
@@ -87,13 +87,13 @@ describe("a espera", () => {
     expect(byLabel(screen, "Carregando")).toHaveLength(1);
   });
 
-  test("com filho em funcao, a resposta que nao veio e espera mesmo com isLoading falso", () => {
+  test("with a function child, a response that did not come is a wait even with isLoading false", () => {
     const screen = render(<QueryBoundary<Invoice[]> isLoading={false}>{list}</QueryBoundary>);
 
     expect(busy(screen)).toHaveLength(1);
   });
 
-  test("com filho em no, o isLoading manda sozinho", () => {
+  test("with a node child, isLoading rules alone", () => {
     const screen = render(
       <QueryBoundary isLoading={false}>
         <Text>A folha inteira</Text>
@@ -103,7 +103,7 @@ describe("a espera", () => {
     expect(busy(screen)).toHaveLength(0);
   });
 
-  test("carregando, ela nao mostra os dados velhos", () => {
+  test("while loading, it does not show the old data", () => {
     const screen = render(
       <QueryBoundary data={INVOICES} isLoading>
         {list}
@@ -113,13 +113,13 @@ describe("a espera", () => {
     expect(textOf(screen)).not.toContain("Clínica São Lucas");
   });
 
-  test("skeletonRows muda quantas linhas a espera generica segura", () => {
+  test("skeletonRows changes how many rows the generic wait holds", () => {
     const screen = render(<QueryBoundary<Invoice[]> skeletonRows={5}>{list}</QueryBoundary>);
 
     expect(skeletons(screen)).toHaveLength(5);
   });
 
-  test("o esqueleto de quem chama substitui as linhas genericas, e fala por si", () => {
+  test("the caller's skeleton replaces the generic rows, and speaks for itself", () => {
     const screen = render(
       <QueryBoundary isLoading skeleton={<Text>Buscando as notas</Text>}>
         <Text>A folha inteira</Text>
@@ -132,8 +132,8 @@ describe("a espera", () => {
   });
 });
 
-describe("o erro", () => {
-  test("vence o carregando, e oferece nova tentativa", () => {
+describe("the error", () => {
+  test("wins over loading, and offers a retry", () => {
     let retries = 0;
     const screen = render(
       <QueryBoundary
@@ -155,7 +155,7 @@ describe("o erro", () => {
     expect(retries).toBe(1);
   });
 
-  test("sem errorTitle e sem errorMessage, o aviso tem as duas linhas de sempre", () => {
+  test("without errorTitle and errorMessage, the notice has the usual two lines", () => {
     const screen = render(
       <QueryBoundary isError>
         <Text>A folha inteira</Text>
@@ -167,7 +167,7 @@ describe("o erro", () => {
     expect(byRole(screen, "alert")).toHaveLength(1);
   });
 
-  test("sem onRetry o erro fala sozinho, sem botao que nao leva a lugar nenhum", () => {
+  test("without onRetry the error speaks alone, with no button that leads nowhere", () => {
     const screen = render(
       <QueryBoundary isError>
         <Text>A folha inteira</Text>
@@ -178,8 +178,8 @@ describe("o erro", () => {
   });
 });
 
-describe("o vazio", () => {
-  test("a resposta vazia explica o vazio e oferece saida", () => {
+describe("the empty state", () => {
+  test("an empty response explains the emptiness and offers a way out", () => {
     const screen = render(
       <QueryBoundary
         data={[] as Invoice[]}
@@ -197,7 +197,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).toContain("Emitir nota");
   });
 
-  test("nao aparece enquanto a consulta esta em pe", () => {
+  test("does not appear while the query is in flight", () => {
     const screen = render(
       <QueryBoundary
         data={[] as Invoice[]}
@@ -211,7 +211,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).not.toContain("Nenhuma nota");
   });
 
-  test("tambem nao aparece antes de a resposta chegar", () => {
+  test("also does not appear before the response arrives", () => {
     const screen = render(
       <QueryBoundary<Invoice[]>
         empty={{ title: "Nenhuma nota", description: "Emita a primeira para ela aparecer." }}
@@ -223,7 +223,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).not.toContain("Nenhuma nota");
   });
 
-  test("resposta nula conta como vazia, e nao como espera", () => {
+  test("a null response counts as empty, not as a wait", () => {
     const screen = render(
       <QueryBoundary<Invoice | null>
         data={null}
@@ -236,7 +236,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).toContain("Nota apagada");
   });
 
-  test("nula sem empty e com filho em funcao, a peca nao desenha nada", () => {
+  test("null without empty and with a function child, the piece draws nothing", () => {
     const screen = render(
       <QueryBoundary<Invoice | null> data={null}>
         {(invoice) => <Text>{invoice.customer}</Text>}
@@ -246,7 +246,7 @@ describe("o vazio", () => {
     expect(drawn(screen)).toBeNull();
   });
 
-  test("sem empty, a lista vazia cai nos filhos, que desenham o vazio deles", () => {
+  test("without empty, an empty list falls through to the children, who draw their own empty state", () => {
     const screen = render(
       <QueryBoundary data={[] as Invoice[]}>
         {(invoices) => (invoices.length === 0 ? <Text>Zero notas</Text> : list(invoices))}
@@ -256,7 +256,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).toContain("Zero notas");
   });
 
-  test("isEmpty decide o vazio quando a resposta nao e lista", () => {
+  test("isEmpty decides emptiness when the response is not a list", () => {
     const screen = render(
       <QueryBoundary
         data={{ items: [] as Invoice[], total: 0 }}
@@ -270,7 +270,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).toContain("Nenhuma nota");
   });
 
-  test("isEmpty falso vence a contagem, para a lista que veio vazia de proposito", () => {
+  test("a false isEmpty wins over the count, for a list that came empty on purpose", () => {
     const screen = render(
       <QueryBoundary
         data={[] as Invoice[]}
@@ -284,7 +284,7 @@ describe("o vazio", () => {
     expect(textOf(screen)).toContain("A folha inteira");
   });
 
-  test("a peca avisa quando pediram um vazio que nunca poderia aparecer", () => {
+  test("the piece warns when an empty state was asked for that could never appear", () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
 
     try {
@@ -305,8 +305,8 @@ describe("o vazio", () => {
   });
 });
 
-describe("a moldura", () => {
-  test("a classe veste os tres finais, e nao os filhos", () => {
+describe("the frame", () => {
+  test("the class dresses the three endings, not the children", () => {
     const loading = render(
       <QueryBoundary className="min-h-40" isLoading>
         <Text>A folha inteira</Text>

@@ -229,7 +229,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
       </Card>
 
       <p className="mt-10 mb-4 font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        os tres estados que sempre faltam
+        the three states that are always missing
       </p>
 
       <div className="grid gap-4 lg:grid-cols-3">

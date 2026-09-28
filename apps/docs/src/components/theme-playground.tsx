@@ -2,32 +2,32 @@ import { Badge, Button, Card, CardContent, Input, RivoProvider } from '@rivocode
 import { useEffect, useRef, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * O laboratorio de tema
+ * The theme lab
  *
- * A mesma arvore, os dois temas, mais os tokens lidos do navegador em vez de
- * copiados para uma tabela. Lista de amostra digitada a mao se afasta do CSS no
- * primeiro ajuste; esta nao consegue, porque ela pergunta o valor ao elemento.
+ * The same tree, both themes, plus the tokens read from the browser instead of
+ * copied into a table. A hand-typed swatch list drifts from the CSS at the
+ * first tweak; this one cannot, because it asks the element for the value.
  * ------------------------------------------------------------------------- */
 
 const ROLES: Array<{ token: string; role: string }> = [
-  { token: '--rc-bg', role: 'fundo da página' },
-  { token: '--rc-surface', role: 'cartão, painel, campo' },
-  { token: '--rc-surface-raised', role: 'o que salta do resto' },
-  { token: '--rc-fg', role: 'texto principal' },
-  { token: '--rc-fg-muted', role: 'texto de apoio' },
-  { token: '--rc-fg-subtle', role: 'rótulo, legenda' },
-  { token: '--rc-accent', role: 'preenchimento da marca' },
-  { token: '--rc-accent-fg', role: 'texto sobre o acento' },
-  { token: '--rc-accent-text', role: 'acento que se lê no fundo' },
-  { token: '--rc-border', role: 'linha' },
-  { token: '--rc-success', role: 'deu certo' },
-  { token: '--rc-warning', role: 'atenção' },
-  { token: '--rc-danger', role: 'erro, destrutivo' },
+  { token: '--rc-bg', role: 'page background' },
+  { token: '--rc-surface', role: 'card, panel, field' },
+  { token: '--rc-surface-raised', role: 'what stands out from the rest' },
+  { token: '--rc-fg', role: 'main text' },
+  { token: '--rc-fg-muted', role: 'supporting text' },
+  { token: '--rc-fg-subtle', role: 'label, caption' },
+  { token: '--rc-accent', role: 'brand fill' },
+  { token: '--rc-accent-fg', role: 'text on the accent' },
+  { token: '--rc-accent-text', role: 'accent readable on the background' },
+  { token: '--rc-border', role: 'line' },
+  { token: '--rc-success', role: 'it worked' },
+  { token: '--rc-warning', role: 'attention' },
+  { token: '--rc-danger', role: 'error, destructive' },
 ]
 
 const THEMES = [
-  { value: 'rivocode-dark', label: 'Escuro' },
-  { value: 'rivocode-light', label: 'Claro' },
+  { value: 'rivocode-dark', label: 'Dark' },
+  { value: 'rivocode-light', label: 'Light' },
 ] as const
 
 type Theme = (typeof THEMES)[number]['value']
@@ -41,8 +41,8 @@ export function ThemePlayground() {
     const node = stage.current
     if (!node) return
 
-    // Lido depois da pintura: o atributo de tema tem que estar no elemento
-    // antes de o valor computado querer dizer alguma coisa.
+    // Read after paint: the theme attribute has to be on the element before
+    // the computed value means anything.
     const frame = requestAnimationFrame(() => {
       const computed = getComputedStyle(node)
       const read: Record<string, string> = {}
@@ -55,9 +55,9 @@ export function ThemePlayground() {
 
   return (
     <section className="mt-10">
-      <h2 className="font-display text-xl text-fg">Ver nos dois temas</h2>
+      <h2 className="font-display text-xl text-fg">See it in both themes</h2>
       <p className="mt-2 text-fg-muted">
-        As mesmas peças, e os tokens lidos do navegador, não uma tabela copiada à mão.
+        The same pieces, and the tokens read from the browser, not a table copied by hand.
       </p>
 
       <div className="mt-4 overflow-hidden rounded-lg border border-border">
@@ -88,9 +88,9 @@ export function ThemePlayground() {
 
             <Card>
               <CardContent className="space-y-3">
-                <p className="text-fg">Uma superfície, com texto e campo dentro.</p>
+                <p className="text-fg">A surface, with text and a field inside.</p>
                 <p className="text-sm text-fg-muted">
-                  O apoio usa outro papel de texto, e continua legível nos dois temas.
+                  Supporting text uses another text role, and stays readable in both themes.
                 </p>
                 <Input placeholder="Buscar cliente" />
               </CardContent>

@@ -15,31 +15,31 @@ import type { CalendarPassthrough } from "./date-picker";
 import { inputVariants } from "./field";
 
 export type DateRange = {
-  /** O primeiro dia. */
+  /** The first day. */
   from: Date;
-  /** O ultimo dia. Igual ao `from` num periodo de um dia so. */
+  /** The last day. Equal to `from` in a one-day period. */
   to: Date;
 };
 
 export type IsoDateRange = {
-  /** O primeiro dia, em `aaaa-mm-dd`. */
+  /** The first day, in `aaaa-mm-dd`. */
   from: string;
-  /** O ultimo dia, em `aaaa-mm-dd`. */
+  /** The last day, in `aaaa-mm-dd`. */
   to: string;
 };
 
 type DateRangePickerDateValue = {
   /**
-   * O intervalo escolhido, quando quem usa controla o estado. Com `Date`, o
-   * vazio e `undefined`, porque `null` no `value` escolhe o formato em texto:
-   * guarde `DateRange | null` e passe `value={periodo ?? undefined}`.
+   * The chosen range, when the consumer controls the state. With a `Date`, the
+   * empty value is `undefined`, because `null` in `value` picks the text format:
+   * store `DateRange | null` and pass `value={periodo ?? undefined}`.
    */
   value?: DateRange;
-  /** O intervalo inicial, quando o componente controla o proprio estado. */
+  /** The initial range, when the component controls its own state. */
   defaultValue?: DateRange;
   /**
-   * Chamado com o intervalo fechado nas duas pontas, ou com `null` quando a
-   * escolha esvazia. O intervalo pela metade fica no calendario e nunca sai.
+   * Called with the range closed at both ends, or with `null` when the
+   * selection empties. A half-finished range stays in the calendar and never goes out.
    */
   onValueChange?: (range: DateRange | null) => void;
 };
@@ -58,31 +58,31 @@ type DateRangePickerIsoValue =
 
 type DateRangePickerBase = Omit<ComponentProps<"button">, "value" | "defaultValue" | "onChange"> &
   CalendarPassthrough & {
-    /** Texto do gatilho quando nao ha intervalo. */
+    /** Trigger text when there is no range. */
     placeholder?: string;
-    /** Tamanho do gatilho, o mesmo vocabulario do Input. */
+    /** The trigger's size, the same vocabulary as Input. */
     size?: "sm" | "md" | "lg";
-    /** O primeiro dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. */
+    /** The first accepted day, inclusive, as a `Date` or `aaaa-mm-dd`. */
     min?: Date | string;
-    /** O ultimo dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. */
+    /** The last accepted day, inclusive, as a `Date` or `aaaa-mm-dd`. */
     max?: Date | string;
-    /** Quantos meses o calendario mostra lado a lado. No celular e sempre um. */
+    /** How many months the calendar shows side by side. On the phone it is always one. */
     numberOfMonths?: number;
-    /** Dias que nao podem ser escolhidos. */
+    /** Days that cannot be picked. */
     disabledDays?: CalendarProps["disabled"];
     /**
-     * Rodape com Limpar e Aplicar. Ligado por padrao, ao contrario do
-     * `DatePicker`, porque periodo pede dois cliques: o primeiro ja fecha um
-     * periodo de um dia e o segundo estica ate o fim, entao sem confirmar o
-     * `onValueChange` sai duas vezes e um filtro recarrega a listagem duas
-     * vezes. Desligado, nao ha Limpar: clicar de novo no periodo de um dia e o
-     * que esvazia.
+     * Footer with Limpar and Aplicar. On by default, unlike
+     * `DatePicker`, because a period takes two clicks: the first already closes a
+     * one-day period and the second stretches it to the end, so without confirming,
+     * `onValueChange` fires twice and a filter reloads the listing twice.
+     * When off, there is no Limpar: clicking the one-day period again is
+     * what empties it.
      */
     confirm?: boolean;
     /**
-     * Os textos da peca, para trocar o idioma: `title` e o titulo do painel,
-     * `clear` e `apply` os dois botoes do rodape do `confirm`. Os nomes dos
-     * meses e dos dias vem do `locale`. Passe so os que mudam.
+     * The piece's texts, to change the language: `title` is the panel's title,
+     * `clear` and `apply` the two buttons of the `confirm` footer. The
+     * month and day names come from `locale`. Pass only the ones that change.
      */
     labels?: Partial<DateRangePickerLabels>;
   };

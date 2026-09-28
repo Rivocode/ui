@@ -1,19 +1,20 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # SelectContent
 
-A lista flutuante do select.
+The select's floating list.
 
-Nasce com a largura do gatilho e rola sozinha quando não cabe na tela. O portal
-usa o contêiner do `RivoProvider`, então o tema vale dentro dela.
+It is born with the trigger's width and scrolls on its own when it does not fit
+on the screen. The portal uses `RivoProvider`'s container, so the theme applies
+inside it.
 
-`side`, `align` e `sideOffset` posicionam o painel, como nas outras peças que
-flutuam. **Pedir qualquer um dos três troca o modo de posicionamento**: por
-padrão a lista se sobrepõe ao gatilho para alinhar o item escolhido com o texto
-dele, e nesse modo não há lado nem folga a respeitar. Quem não pede nada
-continua com o alinhamento pelo item.
+`side`, `align` and `sideOffset` position the panel, as in the other floating
+pieces. **Asking for any of the three changes the positioning mode**: by
+default the list overlaps the trigger to align the chosen item with its text,
+and in that mode there is no side or offset to respect. Whoever asks for none
+keeps the item alignment.
 
 ```tsx
 <SelectContent side="top" align="start">

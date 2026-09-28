@@ -1,4 +1,4 @@
-/* Gerado de src/hooks/common/debounced-value.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/hooks/common/debounced-value.ts by bun run gen:shared. Do not edit. */
 
 "use client";
 

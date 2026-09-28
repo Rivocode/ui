@@ -1,23 +1,23 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # ContextMenu
 
-O menu do botão direito.
+The right-click menu.
 
-O conteúdo e o mesmo do `Menu`: use `MenuContent`, `MenuItem`, `MenuGroup` e
-`MenuSeparator` dentro dele. Só o gatilho muda, porque aqui quem abre e a área
-inteira, e não um botão.
+The content is the same as `Menu`'s: use `MenuContent`, `MenuItem`, `MenuGroup`
+and `MenuSeparator` inside it. Only the trigger changes, because here what
+opens it is the whole area, not a button.
 
-**Nunca deixe uma ação existir só aqui.** Quem navega por teclado depende da
-tecla de menu, que nem todo teclado tem, e num navegador de celular não ha botão
-direito. Ele acelera o que já esta em outro lugar, no menu de ações da linha,
-por exemplo.
+**Never let an action exist only here.** Keyboard users depend on the menu key,
+which not every keyboard has, and a phone browser has no right button. It
+speeds up what is already somewhere else, in the row's actions menu, for
+example.
 
-No React Native o mesmo caso existe, e o gesto muda: o `Menu` do
-`@rivocode/ui-native` abre no toque longo da área que você passar como
-`children`. A seção do fim desta pagina diz como.
+In React Native the same case exists, and the gesture changes: the `Menu` of
+`@rivocode/ui-native` opens on a long press on the area you pass as
+`children`. The section at the end of this page explains how.
 
 ```tsx
 <ContextMenu>
@@ -33,6 +33,6 @@ No React Native o mesmo caso existe, e o gesto muda: o `Menu` do
 </ContextMenu>
 ```
 
-## No React Native
+## In React Native
 
-Vira `Menu`, e não peça nova: o menu do botão direito é, no celular, o toque longo, e quem abre a folha de ações já é o `Menu`. Passe a área alvo como `children` dele — o que no web é o `ContextMenuTrigger` — e ela chama `onOpenChange(true)` no toque longo, com `classNames.trigger` para o layout que os filhos exigem. Quem navega por leitor de tela entra pela mesma porta: a área expõe a ação `longpress`, que o VoiceOver e o TalkBack oferecem no menu de ações, então o gesto nunca é o único caminho.
+Becomes `Menu`, not a new piece: the right-click menu is, on the phone, the long press, and what opens the action sheet is already `Menu`. Pass the target area as its `children` — what on the web is `ContextMenuTrigger` — and it calls `onOpenChange(true)` on long press, with `classNames.trigger` for the layout the children require. Screen reader users enter through the same door: the area exposes the `longpress` action, which VoiceOver and TalkBack offer in the actions menu, so the gesture is never the only path.

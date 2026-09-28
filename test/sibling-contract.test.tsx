@@ -25,31 +25,31 @@ import { VirtualList } from "../src/components/virtual-list";
 import { LOADED_ANNOUNCEMENT, LOADING_ANNOUNCEMENT } from "../src/lib/loading-announcement";
 
 /*
- * As quatro divergencias que a auditoria mediu entre pecas IRMAS de
- * formulario. Nenhuma estava quebrada: cada uma cobrava um preco diferente
- * para fazer a mesma coisa duas telas adiante.
+ * The four divergences the audit measured between SIBLING form components.
+ * None was broken: each charged a different price to do the same thing two
+ * screens later.
  *
- * O que este arquivo guarda e o contrato, e nao o desenho: que `defaultValue`
- * funciona sem `value`, que a classe de cada parte cai no no certo, e que o
- * botao de remover tem nome de verdade.
+ * What this file guards is the contract, and not the styling: that
+ * `defaultValue` works without `value`, that each part's class lands on the
+ * right node, and that the remove button has a real name.
  */
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/** A parte vestida, conferindo que a classe caiu no no certo e nao na raiz. */
+/** The dressed part, checking that the class landed on the right node and not on the root. */
 function wears(container: HTMLElement, marker: string, base: string) {
   const target = container.ownerDocument.querySelector(`.${marker}`);
   expect(target).not.toBeNull();
   expect(target!.className).toContain(base);
 }
 
-/* --- 1. controlado-obrigatorio virou o par das cinco irmas --------------- */
+/* --- 1. controlled-only became the pair of the five siblings ------------ */
 
-test("o TagsInput guarda a propria lista quando so recebe defaultValue", () => {
-  // Um filtro de tela nao envia nada e nao guarda nada: pagar um `useState`
-  // para existir era o preco que so esta peca cobrava.
+test("TagsInput keeps its own list when it only receives defaultValue", () => {
+  // A screen filter submits nothing and stores nothing: paying a `useState` just
+  // to exist was the price only this component charged.
   withTheme(<TagsInput aria-label="Palavras do filtro" defaultValue={["nf-e"]} />);
 
   const field = screen.getByLabelText("Palavras do filtro");
@@ -60,7 +60,7 @@ test("o TagsInput guarda a propria lista quando so recebe defaultValue", () => {
   expect(screen.getByText("urgente")).toBeDefined();
 });
 
-test("o xis tira a ficha tambem com a lista por conta da peca", () => {
+test("the x removes the chip also when the component owns the list", () => {
   withTheme(<TagsInput aria-label="Marcadores" defaultValue={["nf-e", "urgente"]} />);
 
   fireEvent.click(screen.getByRole("button", { name: "Remover urgente" }));
@@ -69,7 +69,7 @@ test("o xis tira a ficha tambem com a lista por conta da peca", () => {
   expect(screen.getByText("nf-e")).toBeDefined();
 });
 
-test("tirar a ficha leva o foco para o xis da vizinha, e sem vizinha para o campo", () => {
+test("removing a chip moves focus to the neighbor's x, and without a neighbor to the field", () => {
   withTheme(<TagsInput aria-label="Marcadores" defaultValue={["nf-e", "urgente", "prefeitura"]} />);
 
   const first = screen.getByRole("button", { name: "Remover nf-e" });
@@ -86,9 +86,9 @@ test("tirar a ficha leva o foco para o xis da vizinha, e sem vizinha para o camp
   expect(document.activeElement).toBe(screen.getByLabelText("Marcadores"));
 });
 
-test("com `value`, quem manda continua sendo de fora", () => {
-  // O par nao pode ter virado "o defaultValue vence": passar `value` e dizer
-  // que a lista mora no app, e a peca nao pode desenhar outra.
+test("with `value`, the outside is still in charge", () => {
+  // The pair must not have become "defaultValue wins": passing `value` says the
+  // list lives in the app, and the component must not draw another one.
   withTheme(
     <TagsInput
       aria-label="Marcadores"
@@ -107,7 +107,7 @@ test("com `value`, quem manda continua sendo de fora", () => {
   expect(screen.queryByText("ignorada")).toBeNull();
 });
 
-test("o Editable guarda o proprio texto quando so recebe defaultValue", () => {
+test("Editable keeps its own text when it only receives defaultValue", () => {
   withTheme(<Editable defaultValue="Clínica São Lucas" label="Cliente" />);
 
   fireEvent.click(screen.getByRole("button", { name: /Clínica São Lucas/ }));
@@ -118,7 +118,7 @@ test("o Editable guarda o proprio texto quando so recebe defaultValue", () => {
   expect(screen.getByRole("button", { name: /Clínica Aurora/ })).toBeDefined();
 });
 
-test("o Editable solto ainda desfaz no Escape", () => {
+test("an uncontrolled Editable still reverts on Escape", () => {
   withTheme(<Editable defaultValue="Clínica São Lucas" label="Cliente" />);
 
   fireEvent.click(screen.getByRole("button", { name: /Clínica São Lucas/ }));
@@ -129,9 +129,9 @@ test("o Editable solto ainda desfaz no Escape", () => {
   expect(screen.getByRole("button", { name: /Clínica São Lucas/ })).toBeDefined();
 });
 
-/* --- 2. um nome so para o botao de remover ------------------------------- */
+/* --- 2. a single name for the remove button ----------------------------- */
 
-test("a ficha do TagsInput diz o que se remove, por `labels`", () => {
+test("the TagsInput chip says what is removed, through `labels`", () => {
   withTheme(
     <TagsInput
       aria-label="Marcadores"
@@ -156,17 +156,17 @@ function chips(chip: (customer: string) => React.ReactNode) {
   );
 }
 
-test("o xis da ficha do Combobox nomeia a ficha, sem pedir nada", () => {
-  // Era o caso mais grave dos quatro: `aria-label="Remover"` cravado no
-  // componente, sem prop nenhuma - nao havia como traduzir nem como dizer o
-  // que se remove, e tres fichas se anunciavam "Remover, Remover, Remover".
+test("the Combobox chip x names the chip, without asking for anything", () => {
+  // It was the worst of the four: `aria-label="Remover"` hardcoded in the
+  // component, with no prop at all - there was no way to translate it nor to say
+  // what is removed, and three chips announced "Remover, Remover, Remover".
   chips((customer) => <ComboboxChip key={customer}>{customer}</ComboboxChip>);
 
   expect(screen.getByRole("button", { name: "Remover Clinica Sao Lucas" })).toBeDefined();
   expect(screen.getByRole("button", { name: "Remover Transportes Cabo Branco" })).toBeDefined();
 });
 
-test("a ficha que nao e texto cai no proprio aria-label", () => {
+test("a chip that is not text falls back to its own aria-label", () => {
   chips((customer) => (
     <ComboboxChip key={customer} aria-label={customer}>
       <span>{customer}</span>
@@ -176,7 +176,7 @@ test("a ficha que nao e texto cai no proprio aria-label", () => {
   expect(screen.getByRole("button", { name: "Remover Clinica Sao Lucas" })).toBeDefined();
 });
 
-test("o xis da ficha do Combobox aceita outro verbo, por `labels`", () => {
+test("the Combobox chip x accepts another verb, through `labels`", () => {
   chips((customer) => (
     <ComboboxChip key={customer} labels={{ remove: (label) => `Tirar ${label} da seleção` }}>
       {customer}
@@ -186,15 +186,15 @@ test("o xis da ficha do Combobox aceita outro verbo, por `labels`", () => {
   expect(screen.getByRole("button", { name: "Tirar Clinica Sao Lucas da seleção" })).toBeDefined();
 });
 
-test("trocar um nome do Clipboard nao apaga o outro", () => {
-  // O objeto exigia os dois: quem trocava so o verbo perdia a confirmacao, e o
-  // TypeScript e que cobrava - agora cada nome tem o proprio padrao.
+test("changing one Clipboard name does not erase the other", () => {
+  // The object required both: whoever changed only the verb lost the
+  // confirmation, and TypeScript enforced it - now each name has its own default.
   withTheme(<Clipboard value="4813" labels={{ copy: "Copiar a chave" }} />);
 
   expect(screen.getByRole("button", { name: "Copiar a chave" })).toBeDefined();
 });
 
-test("trocar um nome do PasswordInput nao apaga o outro", () => {
+test("changing one PasswordInput name does not erase the other", () => {
   withTheme(<PasswordInput aria-label="Senha" labels={{ show: "Revelar a senha" }} />);
 
   const eye = screen.getByRole("button", { name: "Revelar a senha" });
@@ -203,9 +203,9 @@ test("trocar um nome do PasswordInput nao apaga o outro", () => {
   expect(screen.getByRole("button", { name: "Esconder senha" })).toBeDefined();
 });
 
-/* --- 3. a moldura da senha ganhou nome de parte -------------------------- */
+/* --- 3. the password frame got a part name ------------------------------ */
 
-test("a senha veste moldura, campo e botao pelo nome", () => {
+test("the password dresses frame, field and button by name", () => {
   const { container } = withTheme(
     <PasswordInput
       aria-label="Senha"
@@ -218,22 +218,23 @@ test("a senha veste moldura, campo e botao pelo nome", () => {
   expect(container.ownerDocument.querySelector(".campo-p")!.tagName).toBe("INPUT");
   expect(container.ownerDocument.querySelector(".olho-p")!.tagName).toBe("BUTTON");
 
-  // A moldura e a moldura: a classe dela nao pode escorregar para o campo, que
-  // e onde o `className` solto cai.
+  // The frame is the frame: its class must not slip onto the field, which is
+  // where the loose `className` lands.
   expect(screen.getByLabelText("Senha").className).not.toContain("moldura-p");
 });
 
-test("o className da senha continua vestindo o campo, e nao a moldura", () => {
-  // A peca e a unica do catalogo em que a raiz nao e o alvo do `className`.
-  // Mudar isso agora trocaria em silencio a largura de toda tela de login.
+test("the password className still dresses the field, and not the frame", () => {
+  // This is the only component in the catalog where the root is not the
+  // `className` target. Changing that now would silently change the width of
+  // every login screen.
   withTheme(<PasswordInput aria-label="Senha" className="campo-velho" />);
 
   expect(screen.getByLabelText("Senha").className).toContain("campo-velho");
 });
 
-/* --- 4. os tres controles da mesma lista -------------------------------- */
+/* --- 4. the three controls of the same list ----------------------------- */
 
-test("o circulo do Radio tem nome de fora, como a caixa do Checkbox", () => {
+test("the Radio circle has an outside name, like the Checkbox box", () => {
   const { container } = withTheme(
     <RadioGroup defaultValue="pix">
       <Radio value="pix" classNames={{ circle: "circulo-r" }}>
@@ -246,9 +247,9 @@ test("o circulo do Radio tem nome de fora, como a caixa do Checkbox", () => {
   expect(container.ownerDocument.querySelector(".circulo-r")!.getAttribute("role")).toBe("radio");
 });
 
-test("os tres controles poem o mesmo respiro entre o controle e o rotulo", () => {
-  // Eles aparecem lado a lado na mesma tela de formulario, e o Checkbox usava
-  // `gap-2` contra o `gap-3` dos outros dois: os rotulos nao alinhavam.
+test("the three controls put the same gap between control and label", () => {
+  // They show up side by side on the same form screen, and Checkbox used
+  // `gap-2` against the `gap-3` of the other two: the labels did not line up.
   withTheme(
     <>
       <Checkbox>ISS retido</Checkbox>
@@ -265,10 +266,10 @@ test("os tres controles poem o mesmo respiro entre o controle e o rotulo", () =>
   }
 });
 
-test("nenhum dos tres desabilita por opacidade", () => {
-  // `opacity-60` rebaixa borda, marca e texto de uma vez, e o `check:contrast`
-  // nao mede opacidade: o par aprovado no arquivo de tema podia reprovar na
-  // tela sem nada acusar.
+test("none of the three disables through opacity", () => {
+  // `opacity-60` lowers border, mark and text all at once, and `check:contrast`
+  // does not measure opacity: a pair approved in the theme file could fail on
+  // screen without anything flagging it.
   const { container } = withTheme(
     <>
       <Checkbox disabled>ISS retido</Checkbox>
@@ -285,11 +286,12 @@ test("nenhum dos tres desabilita por opacidade", () => {
     expect(`${role}: ${control.className.includes("data-[disabled]:cursor-not-allowed")}`).toBe(
       `${role}: true`,
     );
-    // A borda desce um degrau nos tres, e nao dois. Quando este teste nasceu a
-    // decisao era nao mexer nela - `--rc-border` some a 1,30:1 contra o
-    // preenchimento, e `border-strong` deixa travado igual a vivo -, e a saida
-    // era nao ter saida. O `--rc-border-disabled` nasceu para essa faixa do
-    // meio no mesmo dia, entao a regra passa a ser a oposta: quem trava, desce.
+    // The border goes down one step in all three, and not two. When this test
+    // was born the decision was not to touch it - `--rc-border` vanishes at
+    // 1.30:1 against the fill, and `border-strong` makes disabled look like
+    // enabled -, and the way out was to have no way out. `--rc-border-disabled`
+    // was born for that middle band the same day, so the rule became the
+    // opposite: whatever is disabled goes down.
     expect(`${role}: ${control.className.includes("data-[disabled]:border-border-disabled")}`).toBe(
       `${role}: true`,
     );
@@ -299,9 +301,9 @@ test("nenhum dos tres desabilita por opacidade", () => {
   }
 });
 
-test("a marca dos tres apaga junto com o controle", () => {
-  // Sem isso a marca fica branca sobre a superficie apagada e some - e no
-  // Switch o pino e o unico lugar onde se le se a chave esta ligada.
+test("the mark of all three fades along with the control", () => {
+  // Without this the mark stays white on the faded surface and disappears - and
+  // on the Switch the thumb is the only place to read whether it is on.
   const { container } = withTheme(
     <>
       <Checkbox defaultChecked disabled aria-label="ISS" />
@@ -323,11 +325,11 @@ test("a marca dos tres apaga junto com o controle", () => {
   }
 });
 
-test("o acento so pinta o controle vivo, sem depender da ordem das classes", () => {
-  // O Tailwind emite as variantes `data-[...]` em ordem alfabetica, entao
-  // `data-[disabled]` vencia `data-[checked]` por sorte e PERDIA para
-  // `data-[indeterminate]`: a caixa de selecionar-todas desabilitada, em
-  // estado misto, saia pintada de acento cheio.
+test("the accent only paints the enabled control, without depending on class order", () => {
+  // Tailwind emits the `data-[...]` variants in alphabetical order, so
+  // `data-[disabled]` beat `data-[checked]` by luck and LOST to
+  // `data-[indeterminate]`: a disabled select-all box, in a mixed state, came
+  // out painted in full accent.
   const { container } = withTheme(
     <Checkbox indeterminate disabled aria-label="Selecionar todas" />,
   );
@@ -339,13 +341,13 @@ test("o acento so pinta o controle vivo, sem depender da ordem das classes", () 
   expect(classes).not.toContain("data-[indeterminate]:not-data-disabled:bg-accent");
 });
 
-/* --- 5. as irmas dos finais de uma consulta ------------------------------
+/* --- 5. the siblings of a query's endings --------------------------------
  *
- * Sao CINCO desde 27/08, e nao quatro: o EventCalendar nasceu ja com os
- * quatro finais. A tabela abaixo e o que impede a sexta de nascer torta, e
- * por isso ela se chama pelo papel e nao pelo numero - um numero no nome
- * envelhece na primeira peca nova, e foi o que aconteceu com o JSDoc que
- * dizia "as quatro pecas de consulta".
+ * There are FIVE since 08/27, and not four: EventCalendar was born already
+ * with the four endings. The table below is what keeps the sixth from being
+ * born crooked, and that is why it is named by role and not by number - a
+ * number in the name ages with the first new component, and that is what
+ * happened to the JSDoc that said "the four query components".
  * ----------------------------------------------------------------------- */
 
 type Invoice = { id: string; customer: string };
@@ -407,7 +409,7 @@ const SISTERS: Record<string, (query: Query) => ReactNode> = {
 
 const sisters = Object.entries(SISTERS);
 
-test("as irmas trocam o nome do botao de nova tentativa por `labels.retry`", () => {
+test("the siblings swap the retry button name through `labels.retry`", () => {
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isError: true, onRetry: () => {}, labels: { retry: "Try again" } }));
     const named = within(view.container).queryByRole("button", { name: "Try again" });
@@ -417,7 +419,7 @@ test("as irmas trocam o nome do botao de nova tentativa por `labels.retry`", () 
   }
 });
 
-test("as quatro dizem o MESMO padrao quando ninguem passa `labels.retry`", () => {
+test("the four say the SAME default when nobody passes `labels.retry`", () => {
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isError: true, onRetry: () => {} }));
     const named = within(view.container).queryByRole("button", { name: "Tentar de novo" });
@@ -427,7 +429,7 @@ test("as quatro dizem o MESMO padrao quando ninguem passa `labels.retry`", () =>
   }
 });
 
-test("o botao das quatro executa o `onRetry`, e nao so aparece", () => {
+test("the button of all four runs `onRetry`, and does not just show up", () => {
   for (const [name, sister] of sisters) {
     let retries = 0;
     const view = withTheme(sister({ isError: true, onRetry: () => (retries += 1) }));
@@ -439,7 +441,7 @@ test("o botao das quatro executa o `onRetry`, e nao so aparece", () => {
   }
 });
 
-test("a espera das quatro sai numa regiao viva com texto, e nao so em `aria-busy`", () => {
+test("the waiting state of all four comes out in a live region with text, and not only in `aria-busy`", () => {
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isLoading: true }));
     const region = view.container.querySelector("[data-rc-status]");
@@ -451,7 +453,7 @@ test("a espera das quatro sai numa regiao viva com texto, e nao so em `aria-busy
   }
 });
 
-test("a espera e a chegada falam o que `labels.loading` e `labels.loaded` mandam", () => {
+test("waiting and arrival say what `labels.loading` and `labels.loaded` dictate", () => {
   const labels = { loading: "Loading…", loaded: "Content loaded" };
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isLoading: true, labels }));
@@ -466,7 +468,7 @@ test("a espera e a chegada falam o que `labels.loading` e `labels.loaded` mandam
   }
 });
 
-test("a chegada do dado fala pelo MESMO no, que nao se remonta com o conteudo", () => {
+test("data arrival speaks through the SAME node, which is not remounted with the content", () => {
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isLoading: true }));
     const before = view.container.querySelector("[data-rc-status]");

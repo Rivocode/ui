@@ -27,7 +27,7 @@ async function open(theme: "rivocode-light" | "rivocode-dark") {
 const tokensOf = (element: Element) => element.getAttribute("class")!.split(" ");
 
 for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
-  test(`no ${theme}, a tela cheia abre no palco escuro, e nao no fundo do tema`, async () => {
+  test(`in ${theme}, fullscreen opens on the dark stage, and not on the theme background`, async () => {
     const dialog = await open(theme);
     const classes = tokensOf(dialog);
     expect(classes).toContain("bg-media-stage");
@@ -37,7 +37,7 @@ for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
   });
 }
 
-test("os controles vestem o palco, e nenhum papel de tema sobra neles", async () => {
+test("the controls wear the stage, and no theme role is left on them", async () => {
   const dialog = await open("rivocode-light");
   const names = ["Diminuir o zoom", "Aumentar o zoom", "Fechar", "Imagem anterior", "Próxima imagem"];
   for (const name of names) {
@@ -66,7 +66,7 @@ test("os controles vestem o palco, e nenhum papel de tema sobra neles", async ()
   expect(dialog.textContent).toContain("Recepção");
 });
 
-test("o contador, a legenda e o erro leem o texto do palco", async () => {
+test("the counter, the caption and the error read the stage text", async () => {
   const dialog = await open("rivocode-light");
   const counter = [...dialog.querySelectorAll("p")].find((node) => node.textContent === "1 de 2")!;
   expect(tokensOf(counter)).toContain("text-media-fg-muted");
@@ -83,7 +83,7 @@ test("o contador, a legenda e o erro leem o texto do palco", async () => {
   expect(tokensOf(alert)).toContain("text-media-fg-muted");
 });
 
-test("o palco mora em scales.css, mede os pares, e nenhum tema o declara", async () => {
+test("the stage lives in scales.css, measures its pairs, and no theme declares it", async () => {
   const palette = await Bun.file("src/tokens/palette.css").text();
   const scales = await Bun.file("src/tokens/scales.css").text();
   const fixed = readTokens(palette + "\n" + scales);
@@ -102,7 +102,7 @@ test("o palco mora em scales.css, mede os pares, e nenhum tema o declara", async
   }
 });
 
-test("a guarda reprova palco claro e controle mais escuro que o palco", () => {
+test("the guard rejects a light stage and a control darker than the stage", () => {
   const good = {
     stage: "#0b0d0f",
     control: "#14171a",
@@ -111,12 +111,12 @@ test("a guarda reprova palco claro e controle mais escuro que o palco", () => {
     border: "#8b9199",
     disabled: "#5b6169",
   };
-  expect(checkMediaStage("boa", good).every((finding) => finding.ok)).toBe(true);
-  expect(checkMediaStage("clara", { ...good, stage: "#fbfbfa" }).some((f) => !f.ok)).toBe(true);
+  expect(checkMediaStage("good", good).every((finding) => finding.ok)).toBe(true);
+  expect(checkMediaStage("light", { ...good, stage: "#fbfbfa" }).some((f) => !f.ok)).toBe(true);
   expect(
-    checkMediaStage("invertida", { ...good, fg: "#0b0d0f", stage: "#000000" }).some((f) => !f.ok),
+    checkMediaStage("inverted", { ...good, fg: "#0b0d0f", stage: "#000000" }).some((f) => !f.ok),
   ).toBe(true);
-  expect(checkMediaStage("sem papel", { ...good, border: undefined }).some((f) => !f.ok)).toBe(
+  expect(checkMediaStage("missing role", { ...good, border: undefined }).some((f) => !f.ok)).toBe(
     true,
   );
 });

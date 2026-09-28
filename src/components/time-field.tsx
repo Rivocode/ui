@@ -52,21 +52,33 @@ export type TimeFieldProps = Omit<
   ComponentProps<typeof Input>,
   "value" | "defaultValue" | "onChange" | "onValueChange" | "size" | "min" | "max" | "step" | "name"
 > & {
-  /** A hora escolhida, em 24h e sempre `"HH:MM"`. Campo vazio e `""`. */
+  /** The chosen time, in 24h and always `"HH:MM"`. An empty field is `""`. */
   value?: string;
-  /** A hora inicial de quem nao controla o valor de fora. */
+  /** The initial time for whoever does not control the value from outside. */
   defaultValue?: string;
-  /** Chamado so com hora inteira: `"08:30"`, ou `""` quando o campo esvazia. Texto pela metade nao avisa ninguem. */
+  /**
+   * Called only with a whole time: `"08:30"`, or `""` when the field empties. Half-typed text
+   * notifies nobody.
+   */
   onValueChange?: (value: string) => void;
-  /** Tamanho do campo, o mesmo vocabulario do Input. No celular o campo nunca fica abaixo de 44px, que e o alvo do dedo. */
+  /**
+   * The field's size, the same vocabulary as Input. On the phone the field is never below 44px,
+   * which is the finger target.
+   */
   size?: "sm" | "md" | "lg";
-  /** Quantos minutos o passo anda, pousando na grade. Anda pelas setas no teclado e pelos botoes de mais e de menos no celular. Nao recusa hora digitada fora dela. */
+  /**
+   * How many minutes the step moves, landing on the grid. Moves by the arrows on the keyboard and
+   * by the plus and minus buttons on the phone. Does not refuse a typed time outside it.
+   */
   step?: number;
-  /** Primeira hora da janela, em `"HH:MM"`. Antes dela o campo se marca invalido. */
+  /** First time of the window, in `"HH:MM"`. Before it the field marks itself invalid. */
   min?: string;
-  /** Ultima hora da janela, em `"HH:MM"`. Depois dela o campo se marca invalido. */
+  /** Last time of the window, in `"HH:MM"`. After it the field marks itself invalid. */
   max?: string;
-  /** Some no formulario nativo com a hora inteira, e nunca com o texto pela metade. Dentro de `<Field name>`, sem ele, vale o nome do Field. Desabilitado, fica fora. */
+  /**
+   * Goes up in the native form with the whole time, never with half-typed text. Inside `<Field
+   * name>`, without it, the Field's name applies. When disabled, it stays out.
+   */
   name?: string;
 };
 

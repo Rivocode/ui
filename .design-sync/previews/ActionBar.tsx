@@ -23,7 +23,7 @@ const COLUMNS: Column<Invoice>[] = [
   { key: 'amount', header: 'Valor', align: 'right' },
 ]
 
-/** Com a seleção do DataTable */
+/** With the DataTable selection */
 export function WithDataTable() {
   const [selected, setSelected] = useState<string[]>(['2', '3'])
 
@@ -51,7 +51,7 @@ export function WithDataTable() {
   )
 }
 
-/** Com o nome do item */
+/** With the item's name */
 export function NamedItems() {
   const [selected, setSelected] = useState<string[]>(['1'])
   const table = useRef<HTMLDivElement>(null)

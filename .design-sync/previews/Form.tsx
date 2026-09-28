@@ -7,7 +7,7 @@ const schema = z.object({
   dueAt: z.date('Escolha a data'),
 })
 
-/** Emitir nota */
+/** Issue an invoice */
 export function IssueInvoice() {
   const form = useZodForm(schema, {
     defaultValues: { email: 'financeiro@rivocode.com', dueAt: new Date(2026, 2, 3) },

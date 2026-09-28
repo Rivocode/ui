@@ -8,18 +8,18 @@ import { slugify } from '@/slug'
 export { importPathOf } from '@/parts'
 
 /* ---------------------------------------------------------------------------
- * O catalogo
+ * The catalog
  *
- * Nada aqui e escrito a mao. As docs e os exemplos ja moram na pasta que
- * alimenta o sync do claude.ai/design, e sao exatamente esses arquivos que este
- * site serve. Documentacao mantida como copia separada comeca a mentir na
- * primeira prop renomeada, e nenhum teste quebra para avisar.
+ * Nothing here is written by hand. The docs and the examples already live in
+ * the folder that feeds the claude.ai/design sync, and those are exactly the
+ * files this site serves. Documentation kept as a separate copy starts lying
+ * at the first renamed prop, and no test breaks to warn about it.
  *
- * O que entra no chunk de entrada e so o indice - nome, familia e lede -, que
- * e o que a lista lateral desenha. Corpo e fonte de exemplo sao glob PREGUICOSO
- * de proposito: com `eager: true` os cento e cinquenta e sete corpos mais as
- * fontes dos previews viravam 1,77 MB de entrada, e a capa so pintava depois de
- * o navegador parsear todos eles. Ver o `catalogIndex` em `vite.config.ts`.
+ * What goes into the entry chunk is only the index - name, family and lede -,
+ * which is what the sidebar draws. Body and example source are LAZY globs on
+ * purpose: with `eager: true` the hundred and fifty-seven bodies plus the
+ * preview sources became 1.77 MB of entry, and the cover only painted after
+ * the browser parsed all of them. See `catalogIndex` in `vite.config.ts`.
  * ------------------------------------------------------------------------- */
 
 const DOC_BODIES = import.meta.glob('../../../.design-sync/docs/*.md', {
@@ -38,11 +38,11 @@ const EXAMPLE_SOURCES = import.meta.glob('../../../.design-sync/previews/*.tsx',
 }) as Record<string, () => Promise<string>>
 
 /**
- * Uma promessa por arquivo, e nao uma por chamada.
+ * One promise per file, not one per call.
  *
- * O `use()` do React reencontra o mesmo dado pela identidade da promessa: com
- * uma nova a cada render, a pagina suspendia, montava, pedia de novo e
- * suspendia outra vez, sem nunca assentar.
+ * React's `use()` finds the same data again by the promise's identity: with a
+ * new one on every render, the page suspended, mounted, asked again and
+ * suspended once more, never settling.
  */
 function once<T>(load: () => Promise<T>) {
   let pending: Promise<T> | null = null
@@ -51,20 +51,20 @@ function once<T>(load: () => Promise<T>) {
 
 export type Entry = {
   name: string
-  /** Endereco da pagina: `ToggleGroup` mora em `/componentes/toggle-group`. */
+  /** The page address: `ToggleGroup` lives at `/componentes/toggle-group`. */
   slug: string
   family: string
-  /** A primeira frase da doc, para a lista e para a busca. */
+  /** The doc's first sentence, for the list and for search. */
   summary: string
-  /** Carrega a prosa da doc sob demanda: so a pagina aberta precisa dela. */
+  /** Loads the doc prose on demand: only the open page needs it. */
   loadBody: () => Promise<string>
-  /** Carrega o modulo do exemplo sob demanda. Ausente quando nao ha preview. */
+  /** Loads the example module on demand. Absent when there is no preview. */
   loadExamples?: () => Promise<Record<string, ComponentType>>
-  /** Carrega a fonte do exemplo, mostrada ao lado do que ela desenha. */
+  /** Loads the example source, shown next to what it draws. */
   loadSource?: () => Promise<string>
-  /** O nome da peca que esta compoe, quando ela e parte de outra. */
+  /** The name of the piece this one composes, when it is part of another. */
   partOf?: string
-  /** As pecas que compoem esta, documentadas na mesma pagina. */
+  /** The pieces that compose this one, documented on the same page. */
   parts?: Entry[]
 }
 
@@ -86,22 +86,23 @@ const sourceByName = new Map(
 )
 
 /**
- * Toda peca, partes incluidas, na ordem em que a barra lateral as le.
+ * Every piece, parts included, in the order the sidebar reads them.
  *
- * Quem cria a entrada e a doc, e nao ha segunda fonte: peca que saia com
- * exemplo e sem doc caia aqui numa familia propria, "Sem documento", e esse
- * ramo sumiu porque o caso nao pode mais acontecer. O `bun run check:doc` cruza
- * os exports com `.design-sync/docs/` nos dois sentidos, entao export sem
- * pagina reprova no gate antes de chegar ao site.
+ * The doc is what creates the entry, and there is no second source: a piece
+ * that shipped with an example and no doc used to land here in a family of
+ * its own, "No document", and that branch is gone because the case can no
+ * longer happen. `bun run check:doc` crosses the exports with
+ * `.design-sync/docs/` in both directions, so an export without a page fails
+ * the gate before it reaches the site.
  */
 const ALL: Entry[] = DOC_INDEX.map((doc) => ({
   name: doc.name,
   slug: slugify(doc.name),
   family: doc.family,
   summary: doc.summary,
-  // O indice sai do mesmo `readdirSync` que este glob ve, entao a falta seria
-  // um arquivo apagado entre o build e o request: a pagina abre sem prosa em
-  // vez de estourar.
+  // The index comes from the same `readdirSync` this glob sees, so a miss would
+  // be a file deleted between the build and the request: the page opens
+  // without prose instead of blowing up.
   loadBody: bodyByName.get(doc.name) ?? once(async () => ''),
   loadExamples: exampleByName.get(doc.name),
   loadSource: sourceByName.get(doc.name),
@@ -118,26 +119,26 @@ for (const entry of ALL) {
   owner.parts = [...(owner.parts ?? []), entry]
 }
 
-/** So as pecas de topo. Parte mora dentro da pagina de quem a compoe. */
+/** Only the top-level pieces. A part lives inside the page of whoever composes it. */
 export const ENTRIES: Entry[] = ALL.filter((entry) => !entry.partOf)
 
-/* As familias seguem o caminho de quem monta uma tela: primeiro a moldura,
- * depois o que entra nela, depois o que responde de volta. */
+/* The families follow the path of someone building a screen: first the frame,
+ * then what goes into it, then what answers back. */
 const FAMILY_ORDER = [
-  'Fundação',
-  'Tipografia',
-  'Ações',
-  'Formulário',
-  'Estrutura',
-  'Navegação',
-  'Sobreposição',
+  'Foundation',
+  'Typography',
+  'Actions',
+  'Forms',
+  'Structure',
+  'Navigation',
+  'Overlays',
   'Feedback',
-  'Gráfico',
-  'IA',
-  'Geral',
+  'Charts',
+  'AI',
+  'General',
 ]
 
-/** Familia que ninguem lembrou de ordenar vai por ultimo, nunca primeiro. */
+/** A family nobody remembered to rank goes last, never first. */
 const rankOf = (family: string) => {
   const index = FAMILY_ORDER.indexOf(family)
   return index === -1 ? FAMILY_ORDER.length : index
@@ -150,34 +151,34 @@ export const FAMILIES = [...new Set(ENTRIES.map((entry) => entry.family))].sort(
 export const entriesOfFamily = (family: string) =>
   ENTRIES.filter((entry) => entry.family === family)
 
-/** Aceita o slug, e o nome cru da peca para link escrito a mao. */
+/** Accepts the slug, and the raw piece name for hand-written links. */
 export const findEntry = (address: string) => {
   const wanted = address.toLowerCase()
   const found = ALL.find((entry) => entry.slug === wanted || entry.name.toLowerCase() === wanted)
   if (!found) return undefined
 
-  // O endereco de uma parte leva a pagina de quem a compoe: e la que ela esta.
+  // A part's address leads to the page of whoever composes it: that is where it is.
   if (found.partOf) return ALL.find((entry) => entry.name === found.partOf)
   return found
 }
 
-/** Quantas pecas tem exemplo que roda, e nao so texto. */
+/** How many pieces have an example that runs, and not just text. */
 export const WITH_EXAMPLE = ENTRIES.filter((entry) => entry.loadExamples).length
 
 /**
- * Pede de uma vez tudo que a pagina vai ler.
+ * Requests at once everything the page is going to read.
  *
- * Cada `use()` so dispara o proprio download quando o React chega nele, e o
- * React so chega no proximo depois que o anterior resolve: os exemplos da peca,
- * os de cada parte, a prosa e a tabela de props viravam uma fila de uma
- * requisicao por vez. Medido no Select com a rede do Lighthouse (150 ms de
- * ida e volta), eram oito chunks de 1 KB em fila, 1,4 s so de espera, e o JSON
- * de props so saia depois de todos. Como cada loader guarda a promessa, os
- * `use()` de baixo recebem estas mesmas, ja em voo.
+ * Each `use()` only fires its own download when React reaches it, and React
+ * only reaches the next one after the previous resolves: the piece's examples,
+ * those of each part, the prose and the props table became a queue of one
+ * request at a time. Measured on Select with Lighthouse's network (150 ms
+ * round trip), it was eight 1 KB chunks in a queue, 1.4 s of waiting alone,
+ * and the props JSON only left after all of them. Since each loader keeps its
+ * promise, the `use()` calls below receive these same ones, already in flight.
  *
- * Quem chama e a casca, e nao a pagina: a pagina e um chunk preguicoso, e
- * pedindo dali os dados so saiam depois de ela chegar. Da casca, eles descem
- * junto com ela.
+ * The caller is the shell, not the page: the page is a lazy chunk, and asking
+ * from there meant the data only left after it arrived. From the shell, they
+ * come down together with it.
  */
 export function preloadPage(address: string) {
   const entry = findEntry(address)
@@ -185,8 +186,9 @@ export function preloadPage(address: string) {
 
   for (const item of [entry, ...(entry.parts ?? [])]) {
     const pending = [item.loadBody(), item.loadExamples?.(), item.loadSource?.(), pieceOf(item.name)]
-    // A falha e de quem le a promessa, pelo `use()` e pela fronteira; aqui ela
-    // so nao pode virar rejeicao solta antes de alguem chegar.
+    // The failure belongs to whoever reads the promise, through `use()` and the
+    // boundary; here it just must not become a loose rejection before anyone
+    // gets there.
     for (const promise of pending) promise?.catch(() => {})
   }
 }

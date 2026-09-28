@@ -2,11 +2,12 @@ import { Breadcrumb, Button, PageHeader } from '@rivocode/ui'
 import { Download, Plus } from 'lucide-react'
 
 /*
- * Os exemplos saem em `h2`: a página da peça já tem o `h1` dela, e dois
- * títulos de nível 1 fariam quem navega por título cair num exemplo.
+ * The examples render as `h2`: the component's page already has its own
+ * `h1`, and two level-1 headings would drop whoever navigates by heading into
+ * an example.
  */
 
-/** Padrão */
+/** Default */
 export function Default() {
   return (
     <PageHeader
@@ -35,7 +36,7 @@ export function Default() {
   )
 }
 
-/** Só o título */
+/** Title only */
 export function TitleOnly() {
   return <PageHeader className="w-full" title="Ajustes" titleAs="h2" />
 }

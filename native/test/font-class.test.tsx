@@ -37,7 +37,7 @@ async function nativeCompiler() {
   const system = await __unstable__loadDesignSystem(ENTRY, {
     base: resolve("native"),
     loadStylesheet,
-    loadModule: () => Promise.reject(new Error("sem plugin")),
+    loadModule: () => Promise.reject(new Error("no plugin")),
   });
   return (token: string) => system.candidatesToCss([token])[0];
 }
@@ -53,7 +53,7 @@ function warned(run: () => void): string[] {
 }
 
 function aboutFamily(messages: string[]): string[] {
-  return messages.filter((message) => message.includes("família de fonte"));
+  return messages.filter((message) => message.includes("font family"));
 }
 
 function familyOf(node: ReactTestInstance): unknown {
@@ -68,8 +68,8 @@ function firstText(screen: ReactTestRenderer): ReactTestInstance {
   return screen.root.findAll((node) => node.type === "Text")[0]!;
 }
 
-describe("a classe de familia de fonte no nativo", () => {
-  test("nenhuma das quatro gera regra, e as de peso continuam gerando", async () => {
+describe("the font family class on native", () => {
+  test("none of the four generates a rule, and the weight ones keep generating", async () => {
     const compiles = await nativeCompiler();
 
     for (const token of FAMILY) {
@@ -81,7 +81,7 @@ describe("a classe de familia de fonte no nativo", () => {
     }
   });
 
-  test("a lista que o aviso conhece e exatamente a que o compilador recusa", async () => {
+  test("the list the warning knows is exactly the one the compiler refuses", async () => {
     const compiles = await nativeCompiler();
 
     expect(familyClassesIn(FAMILY.join(" "))).toEqual(FAMILY);
@@ -91,7 +91,7 @@ describe("a classe de familia de fonte no nativo", () => {
     expect(familyClassesIn(WEIGHT.join(" "))).toEqual([]);
   });
 
-  test("uma peça com font-display reclama, e a reclamação nomeia o caminho que funciona", () => {
+  test("a piece with font-display complains, and the complaint names the path that works", () => {
     const messages = aboutFamily(warned(() => render(<Code className="font-display">app.json</Code>)));
 
     expect(messages.length).toBe(1);
@@ -100,14 +100,14 @@ describe("a classe de familia de fonte no nativo", () => {
     expect(messages[0]).toContain("prop `font`");
   });
 
-  test("o Text cru também reclama, e ele não passa pelo cn", () => {
+  test("the raw Text also complains, and it does not go through cn", () => {
     const messages = aboutFamily(warned(() => render(<Text className="font-mono">Nota emitida</Text>)));
 
     expect(messages.length).toBe(1);
     expect(messages[0]).toContain("font-mono");
   });
 
-  test("classe de peso não reclama, e continua na peça", () => {
+  test("a weight class does not complain, and stays on the piece", () => {
     let screen!: ReactTestRenderer;
     const messages = aboutFamily(
       warned(() => {
@@ -119,7 +119,7 @@ describe("a classe de familia de fonte no nativo", () => {
     expect(String(firstText(screen).props.className).split(" ")).toContain("font-semibold");
   });
 
-  test("a classe não troca a família: quem troca é a prop, e por isso o aviso existe", () => {
+  test("the class does not change the family: the prop does, and that is why the warning exists", () => {
     const fonts = { sans: "Manrope", display: "Poppins", mono: "JetBrainsMono" };
 
     const byClass = render(<Text className="font-display">Faturamento</Text>, { fonts });
@@ -129,11 +129,11 @@ describe("a classe de familia de fonte no nativo", () => {
     expect(familyOf(firstText(byProp))).toBe("Poppins");
   });
 
-  test("a reclamação sai acentuada, como todo texto que chega a quem usa", () => {
+  test("the complaint is written in English, like every developer-facing message", () => {
     const message = familyClassWarning(["font-display"]);
 
-    expect(message).toContain("família");
-    expect(message).toContain("silêncio");
-    expect(message).toContain("peças");
+    expect(message).toContain("font family");
+    expect(message).toContain("silently");
+    expect(message).toContain("native package");
   });
 });

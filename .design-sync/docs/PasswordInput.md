@@ -1,25 +1,27 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # PasswordInput
 
-Campo de senha com o olho que revela.
+A password field with the eye that reveals it.
 
-Existe como peça porque todo projeto reconstrói este par, e reconstrói com o
-mesmo defeito: o botão dizendo o estado em vez da ação. "Senha visível" não diz
-o que acontece ao clicar, e quem navega por leitor de tela decide pelo verbo.
-Aqui o nome do botão é sempre a ação: "Mostrar senha", "Esconder senha".
+It exists as a piece because every project rebuilds this pair, and rebuilds it
+with the same defect: the button stating the state instead of the action.
+"Password visible" does not say what happens on click, and a screen reader user
+decides by the verb. Here the button's name is always the action: "Mostrar
+senha", "Esconder senha".
 
-Revelar é um gesto momentâneo: sair do campo esconde de novo. Deixar a senha na
-tela depois que a pessoa foi para outro lugar é o que faz alguém ser lido por
-cima do ombro numa mesa compartilhada.
+Revealing is a momentary gesture: leaving the field hides it again. Leaving the
+password on screen after the person has moved elsewhere is what gets someone
+read over the shoulder at a shared desk.
 
-## Vestir por parte
+## Styling by part
 
-O `className` veste o **campo**, e não a moldura. É a única peça do catálogo em
-que a raiz não é o alvo dele, e mudar isso agora trocaria em silêncio a largura
-de toda tela de login que já existe. Então a moldura ganhou nome próprio:
+`className` dresses the **field**, and not the frame. It is the only piece in
+the catalog where the root is not its target, and changing that now would
+silently change the width of every login screen that already exists. So the
+frame got a name of its own:
 
 ```tsx
 <PasswordInput
@@ -28,19 +30,19 @@ de toda tela de login que já existe. Então a moldura ganhou nome próprio:
 />
 ```
 
-Os dois nomes que o leitor de tela ouve no botão entram por `labels`, e cada um
-tem o próprio padrão. Trocar só um não apaga o outro:
+The two names the screen reader hears on the button come through `labels`, and
+each has its own default. Changing only one does not erase the other:
 
 ```tsx
 <PasswordInput aria-label="Senha" labels={{ show: 'Revelar a senha' }} />
 ```
 
-## Quando não usar
+## When not to use
 
-Para código de verificação de seis dígitos, use `OTPField`. Ele separa as
-casas, aceita colar o código inteiro e não esconde nada, porque o código é para
-ser lido em voz alta do celular.
+For a six-digit verification code, use `OTPField`. It separates the slots,
+accepts pasting the whole code and hides nothing, because the code is meant to
+be read aloud from the phone.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `PasswordInput` - o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo; `classNames` com `wrapper`, `input` e `action`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `PasswordInput` - the button changes its name with the state (`labels.show`/`labels.hide`), and leaving the field hides it again; `classNames` with `wrapper`, `input` and `action`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

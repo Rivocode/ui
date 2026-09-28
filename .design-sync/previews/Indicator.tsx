@@ -1,7 +1,7 @@
 import { Bell } from 'lucide-react'
 import { IconButton, Indicator } from '@rivocode/ui'
 
-/** Avisos não lidos */
+/** Unread notices */
 export function UnreadNotifications() {
   return (
     <div className="flex items-center gap-6">

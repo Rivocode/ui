@@ -39,91 +39,91 @@ const native: Catalog = {
   },
 };
 
-/** Sem o `Spinner`, cuja variante divergente e o assunto do bloco de varredura. */
-const soMeter = (catalog: Catalog): Catalog => ({ Meter: catalog.Meter! });
+/** Without `Spinner`, whose diverging variant is the subject of the sweep block. */
+const onlyMeter = (catalog: Catalog): Catalog => ({ Meter: catalog.Meter! });
 
 const only = (rows: Signature["rows"], piece = "Meter", nativePiece?: string) =>
   validate(
     { [piece]: { ...(nativePiece ? { nativePiece } : {}), rows } },
-    soMeter(web),
-    soMeter(native),
+    onlyMeter(web),
+    onlyMeter(native),
   );
 
-describe("a tabela de assinatura so passa quando descreve o codigo", () => {
-  test("a linha certa passa", () => {
+describe("the signature table only passes when it describes the code", () => {
+  test("the right row passes", () => {
     expect(
-      only([{ web: "format", native: "valueLabel", note: "o texto vai pronto" }]),
+      only([{ web: "format", native: "valueLabel", note: "the text goes ready-made" }]),
     ).toHaveLength(0);
   });
 
-  test("prop que nao existe no web e acusada", () => {
+  test("a prop that does not exist on web is flagged", () => {
     const problems = only([{ web: "formato", native: "valueLabel", note: "x" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("nao tem a prop `formato` no web");
+    expect(problems[0]).toContain("does not have the prop `formato` on the web");
   });
 
-  test("prop que nao existe no nativo e acusada", () => {
+  test("a prop that does not exist on native is flagged", () => {
     const problems = only([{ web: "format", native: "valorEscrito", note: "x" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("nao tem a prop `valorEscrito` no nativo");
+    expect(problems[0]).toContain("does not have the prop `valorEscrito` on native");
   });
 
-  test("linha que diz `so no web` sobre prop que o nativo TEM e acusada", () => {
+  test("a row saying `web only` about a prop native HAS is flagged", () => {
     const problems = only([{ web: "value", native: null, note: "x" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("TEM essa prop");
+    expect(problems[0]).toContain("HAS that prop");
   });
 
-  test("renomeacao com as duas props vivas no nativo e acusada", () => {
+  test("a rename with both props alive on native is flagged", () => {
     const problems = only([{ web: "value", native: "valueLabel", note: "x" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("tem as DUAS");
+    expect(problems[0]).toContain("has BOTH");
   });
 
-  test("mesmo nome com a MESMA assinatura dos dois lados e acusado", () => {
+  test("same name with the SAME signature on both sides is flagged", () => {
     const problems = only([{ web: "value", native: "value", note: "x" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("MESMA assinatura");
+    expect(problems[0]).toContain("the SAME signature");
   });
 
-  test("mesmo nome com obrigatoriedade diferente passa", () => {
-    expect(only([{ web: "label", native: "label", note: "vira obrigatoria" }])).toHaveLength(0);
+  test("same name with different requiredness passes", () => {
+    expect(only([{ web: "label", native: "label", note: "becomes required" }])).toHaveLength(0);
   });
 
-  test("peca que nao esta no catalogo do nativo e acusada", () => {
+  test("a piece missing from the native catalog is flagged", () => {
     const problems = only([{ web: "format", native: null, note: "x" }], "Meter", "Medidor");
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("nao esta no catalogo de la");
+    expect(problems[0]).toContain("which is not in that catalog");
   });
 
-  test("nota com quebra de linha e acusada, porque nota e celula de tabela", () => {
-    const problems = only([{ web: "format", native: "valueLabel", note: "uma\nduas" }]);
+  test("a note with a line break is flagged, because a note is a table cell", () => {
+    const problems = only([{ web: "format", native: "valueLabel", note: "one\ntwo" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("quebra de linha");
+    expect(problems[0]).toContain("line break");
   });
 
-  test("linha a mao repetindo a frase derivada de `size` e acusada", () => {
-    const problems = only([{ web: "size", native: null, note: "uma altura so" }]);
+  test("a hand-written row repeating the phrase derived from `size` is flagged", () => {
+    const problems = only([{ web: "size", native: null, note: "a single height" }]);
     expect(problems).toHaveLength(1);
-    expect(problems[0]).toContain("frase derivada");
+    expect(problems[0]).toContain("derived sentence");
   });
 
-  test("variante que existe de um lado so sem linha e acusada", () => {
+  test("a variant that exists on one side only without a row is flagged", () => {
     const problems = validate({}, web, native);
     expect(problems).toHaveLength(1);
     expect(problems[0]).toContain("Spinner.size");
-    expect(problems[0]).toContain("variante que existe de um lado so");
+    expect(problems[0]).toContain("a variant that exists on one side only");
   });
 });
 
-describe("o que a guarda deriva sozinha", () => {
-  test("`literals` so responde para uniao de literais", () => {
+describe("what the guard derives on its own", () => {
+  test("`literals` only answers for a union of literals", () => {
     expect([...literals('"sm" | "md" | undefined')!]).toEqual(['"sm"', '"md"']);
     expect(literals("string")).toBeUndefined();
     expect(literals("number | undefined")).toBeUndefined();
   });
 
-  test("`variantGaps` acha a variante que so um lado tem", () => {
+  test("`variantGaps` finds the variant only one side has", () => {
     const gaps = variantGaps(web, native);
     expect(gaps).toHaveLength(1);
     expect(gaps[0]!.piece).toBe("Spinner");
@@ -131,12 +131,12 @@ describe("o que a guarda deriva sozinha", () => {
     expect(gaps[0]!.onlyNative).toEqual(['"large"', '"small"']);
   });
 
-  test("`sizeGone` acha quem perde `size` e ignora quem mantem", () => {
+  test("`sizeGone` finds who loses `size` and ignores who keeps it", () => {
     expect(sizeGone(web, native)).toEqual(["Meter"]);
   });
 });
 
-describe("o classNames que nao atravessa inteiro", () => {
+describe("the classNames that does not cross over whole", () => {
   const slotWeb: Catalog = {
     Checkbox: {
       props: [
@@ -175,7 +175,7 @@ describe("o classNames que nao atravessa inteiro", () => {
     },
   };
 
-  test("`parts` le as duas formas que o compilador escreve", () => {
+  test("`parts` reads both forms the compiler writes", () => {
     expect([...parts('Partial<Record<"a" | "b", string>>')!]).toEqual(['"a"', '"b"']);
     expect([...parts("{ item?: string | undefined; handle?: string | undefined; }")!]).toEqual([
       '"item"',
@@ -184,31 +184,31 @@ describe("o classNames que nao atravessa inteiro", () => {
     expect(parts("Partial<ClassNames>")).toBeUndefined();
   });
 
-  test("`slotGaps` acha a prop que falta e a parte que falta, e ignora o conjunto igual", () => {
+  test("`slotGaps` finds the missing prop and the missing part, and ignores an equal set", () => {
     expect(slotGaps(slotWeb, slotNative)).toEqual([
       { piece: "Checkbox", absent: true, onlyWeb: [], onlyNative: [] },
       { piece: "Switch", absent: false, onlyWeb: ['"thumb"'], onlyNative: [] },
     ]);
   });
 
-  test("sem linha, as duas lacunas reprovam", () => {
+  test("without a row, both gaps fail", () => {
     const problems = validate({}, slotWeb, slotNative);
     expect(problems).toHaveLength(2);
-    expect(problems[0]).toContain("`Checkbox.classNames` existe no web e o nativo nao tem");
-    expect(problems[1]).toContain("so no web: \"thumb\"");
+    expect(problems[0]).toContain("`Checkbox.classNames` exists on the web and native does not have");
+    expect(problems[1]).toContain("web only: \"thumb\"");
   });
 
-  test("a linha tem que nomear a parte que falta", () => {
+  test("the row has to name the missing part", () => {
     const vague = validate(
-      { Switch: { rows: [{ web: "classNames", native: "classNames", note: "o pino e da plataforma" }] } },
+      { Switch: { rows: [{ web: "classNames", native: "classNames", note: "the knob belongs to the platform" }] } },
       { Switch: slotWeb.Switch! },
       { Switch: slotNative.Switch! },
     );
     expect(vague).toHaveLength(1);
-    expect(vague[0]).toContain("a nota nao nomeia `thumb`");
+    expect(vague[0]).toContain("the note does not name `thumb`");
 
     const named = validate(
-      { Switch: { rows: [{ web: "classNames", native: "classNames", note: "sem `thumb`" }] } },
+      { Switch: { rows: [{ web: "classNames", native: "classNames", note: "without `thumb`" }] } },
       { Switch: slotWeb.Switch! },
       { Switch: slotNative.Switch! },
     );
@@ -216,8 +216,8 @@ describe("o classNames que nao atravessa inteiro", () => {
   });
 });
 
-describe("a tabela publicada", () => {
-  test("descreve o codigo de verdade dos dois pacotes", async () => {
+describe("the published table", () => {
+  test("describes the real code of both packages", async () => {
     const real = (await Bun.file("apps/docs/src/component-props.json").json()) as Catalog;
     const realNative = (await Bun.file("apps/docs/src/native-props.json").json()) as Catalog;
 
@@ -226,7 +226,7 @@ describe("a tabela publicada", () => {
     expect(validate(SIGNATURES, real, realNative)).toEqual([]);
   });
 
-  test("a regra do classNames le as partes dos dois lados, e so o Calendar do web fica sem leitura", async () => {
+  test("the classNames rule reads the parts on both sides, and only the web Calendar stays unread", async () => {
     const real = (await Bun.file("apps/docs/src/component-props.json").json()) as Catalog;
     const realNative = (await Bun.file("apps/docs/src/native-props.json").json()) as Catalog;
     const slotsOf = (catalog: Catalog, piece: string) =>
@@ -243,7 +243,7 @@ describe("a tabela publicada", () => {
     expect(unread).toEqual(["Calendar"]);
   });
 
-  test("cobre os casos que custaram a tarde de quem portou a tela e que ainda divergem", () => {
+  test("covers the cases that cost an afternoon to whoever ported the screen and that still diverge", () => {
     const cases: [string, string | null, string | null][] = [
       ["SearchInput", "onClear", null],
       ["MaskedInput", "value", "value"],
@@ -259,7 +259,7 @@ describe("a tabela publicada", () => {
   });
 });
 
-test("nenhum callback do nativo nasce da soma de duas assinaturas que brigam", async () => {
+test("no native callback is born from the sum of two clashing signatures", async () => {
   const realNative = (await Bun.file("apps/docs/src/native-props.json").json()) as Catalog;
   const props = Object.entries(realNative).flatMap(([piece, entry]) =>
     entry.props.map((prop) => ({ piece, ...prop })),

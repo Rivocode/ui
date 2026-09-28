@@ -1,20 +1,20 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # TableFooter
 
-O rodapé da tabela, num `<tfoot>` de verdade. É onde mora a linha de totais.
+The table's footer, in a real `<tfoot>`. It is where the totals row lives.
 
-Toda listagem financeira daqui termina em "Total: R$ 248,3K", e até agora essa
-linha era uma `<div>` embaixo da tabela. Uma `<div>` não participa do algoritmo
-de layout de tabela: ela não conhece a largura de nenhuma coluna, então o total
-nunca fica debaixo do valor que ele soma. E, numa tabela com moldura própria,
-ela rola embora junto com o conteúdo.
+Every financial listing here ends in "Total: R$ 248,3K", and until now that row
+was a `<div>` below the table. A `<div>` does not take part in the table layout
+algorithm: it knows the width of no column, so the total never sits below the
+value it sums. And, in a table with its own frame, it scrolls away along with
+the content.
 
-Dentro da tabela as duas coisas se resolvem sozinhas: a célula divide a largura
-com a coluna, e o rodapé pode grudar embaixo pelo mesmo mecanismo com que o
-`TableHeader` gruda em cima.
+Inside the table both things solve themselves: the cell shares its width with
+the column, and the footer can stick to the bottom through the same mechanism
+with which `TableHeader` sticks to the top.
 
 ```tsx
 <Table>
@@ -29,25 +29,26 @@ com a coluna, e o rodapé pode grudar embaixo pelo mesmo mecanismo com que o
 </Table>
 ```
 
-O peso é proposital: o rodapé é resumo, e resumo não pode se ler como mais uma
-linha de dado.
+The weight is intentional: the footer is a summary, and a summary cannot read
+as one more data row.
 
-**O dinheiro sai abreviado**, como no resto da casa: `currencyShort`, e não o
-valor por extenso. O `currency` fica para onde o centavo é o assunto: o valor
-que a pessoa confirma antes de emitir, e o comprovante depois.
+**Money comes out abbreviated**, as in the rest of the house: `currencyShort`,
+not the full value. `currency` is for where the cent is the subject: the amount
+the person confirms before issuing, and the receipt afterwards.
 
-Para grudar o rodapé numa tabela que rola por dentro, o `sticky` vai na classe,
-com o degrau de empilhamento da família:
+To stick the footer in a table that scrolls inside, `sticky` goes in the class,
+with the family's stacking step:
 
 ```tsx
 <TableFooter className="sticky bottom-0 z-[var(--rc-z-sticky)] bg-surface">
 ```
 
-O fundo não é opcional: sem ele a linha que passa por baixo aparece através do
-rodapé.
+The background is not optional: without it the row passing underneath shows
+through the footer.
 
-## Quando não usar
+## When not to use
 
-Numa listagem que vem de uma consulta, não monte o `<tfoot>` à mão: o
-`DataTable` produz a linha sozinho, a partir do `total` de cada coluna, e ali
-ele já sabe quais linhas somar, qual coluna esconder no celular e quando grudar.
+In a listing that comes from a query, do not build the `<tfoot>` by hand:
+`DataTable` produces the row on its own, from each column's `total`, and there
+it already knows which rows to sum, which column to hide on the phone and when
+to stick.

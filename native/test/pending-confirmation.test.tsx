@@ -41,22 +41,22 @@ function deferred() {
 
 const tokens = (node: { props: { className?: string } }) => (node.props.className ?? "").split(" ");
 
-describe("AlertDialog: tom", () => {
-  test("o padrão continua destrutivo", () => {
+describe("AlertDialog: tone", () => {
+  test("the default stays destructive", () => {
     const { action } = mount();
     expect(tokens(action())).toContain("bg-danger");
     expect(tokens(action())).not.toContain("bg-accent");
   });
 
-  test("tone neutral pinta o botão primário, para o que se desfaz", () => {
+  test("tone neutral paints the primary button, for what can be undone", () => {
     const { action } = mount({ tone: "neutral" });
     expect(tokens(action())).toContain("bg-accent");
     expect(tokens(action())).not.toContain("bg-danger");
   });
 });
 
-describe("AlertDialog: ação que devolve promessa", () => {
-  test("ação que devolve outro valor fecha na hora, como antes da promessa", () => {
+describe("AlertDialog: an action that returns a promise", () => {
+  test("an action that returns another value closes at once, as before the promise", () => {
     const onConfirm = mock(() => 42);
     const { onOpenChange, action } = mount({ onConfirm });
 
@@ -67,7 +67,7 @@ describe("AlertDialog: ação que devolve promessa", () => {
     expect(action().props.accessibilityState.busy).toBe(false);
   });
 
-  test("segura o modal aberto, trava o botão e anuncia a espera até resolver", async () => {
+  test("holds the modal open, locks the button and announces the wait until it resolves", async () => {
     const running = deferred();
     const onConfirm = mock(() => running.promise);
     const { onOpenChange, action, cancel } = mount({ onConfirm });
@@ -91,13 +91,13 @@ describe("AlertDialog: ação que devolve promessa", () => {
     expect(action().props.accessibilityState.busy).toBe(false);
   });
 
-  test("promessa que rejeita devolve o modal ao estado anterior, aberto", async () => {
+  test("a rejecting promise returns the modal to its previous state, open", async () => {
     const running = deferred();
     const { onOpenChange, action, cancel } = mount({ onConfirm: () => running.promise });
 
     act(() => action().props.onPress());
     await act(async () => {
-      running.reject(new Error("falhou"));
+      running.reject(new Error("failed"));
       await running.promise.catch(() => {});
     });
 
@@ -106,7 +106,7 @@ describe("AlertDialog: ação que devolve promessa", () => {
     expect(cancel().props.accessibilityState.disabled).toBe(false);
   });
 
-  test("voltar do sistema durante a espera não fecha, e diz por quê", () => {
+  test("system back during the wait does not close, and says why", () => {
     const running = deferred();
     const { screen, onOpenChange, action } = mount({ onConfirm: () => running.promise });
 
@@ -118,14 +118,14 @@ describe("AlertDialog: ação que devolve promessa", () => {
     expect(spoken.announced).toContain("Não dá para cancelar enquanto a ação está em andamento.");
   });
 
-  test("fora da espera, o voltar do sistema fecha como sempre", () => {
+  test("outside the wait, system back closes as always", () => {
     const { screen, onOpenChange } = mount();
     const [modal] = byType(screen, "Modal");
     act(() => modal!.props.onRequestClose());
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
-  test("loading de fora também trava, e labels.busy troca o que se ouve", () => {
+  test("an outside loading also locks, and labels.busy changes what is heard", () => {
     const onConfirm = mock(() => {});
     const { action } = mount({ loading: true, labels: { busy: "Cancelando a nota 4813." }, onConfirm });
 
@@ -135,14 +135,14 @@ describe("AlertDialog: ação que devolve promessa", () => {
     expect(onConfirm).not.toHaveBeenCalled();
   });
 
-  test("fechado, a espera não fala nada", () => {
+  test("closed, the wait says nothing", () => {
     mount({ open: false, loading: true });
     expect(spoken.announced).toEqual([]);
   });
 });
 
-describe("AlertDialog: saída sem confirmar", () => {
-  test("o botão de cancelar e o voltar do sistema chamam o onCancel", () => {
+describe("AlertDialog: leaving without confirming", () => {
+  test("the cancel button and system back call onCancel", () => {
     const onCancel = mock(() => {});
     const { screen, cancel } = mount({ onCancel });
 
@@ -154,14 +154,14 @@ describe("AlertDialog: saída sem confirmar", () => {
     expect(onCancel).toHaveBeenCalledTimes(2);
   });
 
-  test("confirmar não chama o onCancel", () => {
+  test("confirming does not call onCancel", () => {
     const onCancel = mock(() => {});
     const { action } = mount({ onCancel });
     act(() => action().props.onPress());
     expect(onCancel).not.toHaveBeenCalled();
   });
 
-  test("durante a espera o voltar não chama o onCancel, e o aviso sai de labels.blocked", () => {
+  test("during the wait back does not call onCancel, and the notice comes from labels.blocked", () => {
     const onCancel = mock(() => {});
     const running = deferred();
     const { screen, action } = mount({
@@ -178,7 +178,7 @@ describe("AlertDialog: saída sem confirmar", () => {
     expect(spoken.announced).toContain("Espere a nota ser cancelada.");
   });
 
-  test("sem labels, os botões dizem Cancelar e Confirmar, como o Popconfirm do web", () => {
+  test("without labels, the buttons say Cancelar and Confirmar, like the web Popconfirm", () => {
     const screen = render(
       <AlertDialog
         open

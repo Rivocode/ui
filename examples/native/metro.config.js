@@ -3,21 +3,21 @@ const { withNativewind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
-// O app importa componentes e tokens de native/ na raiz do repositório: o
-// Metro precisa observar essa pasta, e o nodeModulesPaths faz os imports
-// dela (react, react-native) caírem no node_modules DESTE app - um React
-// só, sem symlink. O symlink antigo dava o mesmo efeito no metro, mas
-// desviava o "react" dos testes em native/test para a cópia do Expo, e
-// dois Reacts quebram todo hook.
+// The app imports components and tokens from native/ at the repository root:
+// Metro has to watch that folder, and nodeModulesPaths makes its imports
+// (react, react-native) land in THIS app's node_modules - a single React, with
+// no symlink. The old symlink had the same effect in metro, but diverted the
+// "react" of the tests in native/test to Expo's copy, and two Reacts break
+// every hook.
 //
-// A troca de tema em runtime anda por light-dark(): o compilador nativo a
-// transforma em regra de prefers-color-scheme e o provider troca via
-// Appearance.setColorScheme(). Para isso o `browserslist` do package.json
-// crava navegadores modernos: sem ele, o passe web que o Expo roda antes do
-// compilador reescreve light-dark() no polyfill var(--lightningcss-*), que
-// referencia vars nunca declaradas e mata a compilação ("Specifier, found").
-// Vars vivas continuam impossíveis; o patch em patches/ segue aguardando o
-// upstream para esse caso.
+// Switching themes at runtime goes through light-dark(): the native compiler
+// turns it into a prefers-color-scheme rule and the provider switches via
+// Appearance.setColorScheme(). For that, the `browserslist` in package.json
+// pins modern browsers: without it, the web pass Expo runs before the compiler
+// rewrites light-dark() into the var(--lightningcss-*) polyfill, which
+// references vars never declared and kills the compilation ("Specifier,
+// found"). Live vars are still impossible; the patch in patches/ is still
+// waiting on upstream for that case.
 config.watchFolders = [__dirname, `${__dirname}/../../native`];
 config.resolver.nodeModulesPaths = [`${__dirname}/node_modules`];
 

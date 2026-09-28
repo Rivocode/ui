@@ -1,31 +1,32 @@
 /* ---------------------------------------------------------------------------
- * O texto de um documento, lido dos dois lados
+ * The text of a document, read from both sides
  *
- * A pagina le o `.md` no navegador e o indice do catalogo le o mesmo `.md` no
- * build. Enquanto cada lado tinha a sua copia destas tres funcoes, a lede da
- * lista lateral e a do indice podiam divergir sem nada acusar - e a lede e o
- * unico texto do documento que o site carrega antes de a peca ser aberta.
+ * The page reads the `.md` in the browser and the catalog index reads the same
+ * `.md` at build time. While each side had its own copy of these three
+ * functions, the lede in the sidebar and the one in the index could drift
+ * apart with nothing flagging it - and the lede is the only text of the
+ * document the site loads before the piece is opened.
  * ------------------------------------------------------------------------- */
 
-/** Separa o `---` do topo do corpo. Sem frontmatter, a familia e "Geral". */
+/** Splits the top `---` from the body. Without frontmatter, the family is "General". */
 export function splitFrontmatter(raw: string) {
   const front = /^---\n([\s\S]*?)\n---\n/.exec(raw)
-  if (!front) return { family: 'Geral', body: raw }
+  if (!front) return { family: 'General', body: raw }
   return {
-    family: /category:\s*(.+)/.exec(front[1])?.[1].trim() ?? 'Geral',
+    family: /category:\s*(.+)/.exec(front[1])?.[1].trim() ?? 'General',
     body: raw.slice(front[0].length),
   }
 }
 
 /**
- * A doc abre com o proprio `# Nome`, que a pagina ja imprime como titulo.
- * Mantido no `.md` cru: arquivo servido sozinho precisa de titulo.
+ * The doc opens with its own `# Name`, which the page already prints as the
+ * title. Kept in the raw `.md`: a file served on its own needs a title.
  */
 export function dropLeadingHeading(body: string) {
   return body.replace(/^\s*#\s+\S.*\n+/, '')
 }
 
-/** A primeira linha de prosa depois do titulo, sem marcacao. */
+/** The first line of prose after the title, without markup. */
 export function firstSentence(body: string) {
   const line = body
     .split('\n')

@@ -6,7 +6,7 @@ import { tokens } from "../tokens";
 import { render, renderError, textOf } from "./helpers";
 
 describe("RivoProvider", () => {
-  test("useRivo fora do provider explica o que faltou", () => {
+  test("useRivo outside the provider explains what was missing", () => {
     function Orphan() {
       useRivo();
       return null;
@@ -14,8 +14,8 @@ describe("RivoProvider", () => {
     expect(renderError(<Orphan />)).toContain("RivoProvider");
   });
 
-  test("a prop theme vira o esquema de cor do aparelho", () => {
-    // É este set que reavalia todo light-dark() compilado nas classes.
+  test("the theme prop becomes the device color scheme", () => {
+    // It is this set that re-evaluates every light-dark() compiled into the classes.
     render(<Text>x</Text>, { theme: "rivocode-light" });
     expect(Appearance.getColorScheme()).toBe("light");
 
@@ -23,31 +23,31 @@ describe("RivoProvider", () => {
     expect(Appearance.getColorScheme()).toBe("dark");
 
     render(<Text>x</Text>, { theme: "system" });
-    // "unspecified" devolve a decisão ao aparelho: o dublê registra null.
+    // "unspecified" hands the decision back to the device: the double records null.
     expect(Appearance.getColorScheme()).toBe(null);
   });
 
-  test("não há densidade: alvo de toque não encolhe, e o contexto não carrega escala nenhuma", () => {
+  test("there is no density: touch targets do not shrink, and the context carries no scale at all", () => {
     function Probe() {
       return <Text>{Object.keys(useRivo()).sort().join(",")}</Text>;
     }
     expect(textOf(render(<Probe />)).trim()).toBe("colors,theme");
   });
 
-  test("quem lê cor por fora das classes recebe o tema resolvido", () => {
+  test("whoever reads color outside the classes gets the resolved theme", () => {
     function Probe() {
       const { theme } = useRivo();
       return <Text>{theme}</Text>;
     }
     expect(textOf(render(<Probe />, { theme: "rivocode-light" }))).toContain("rivocode-light");
-    // system resolve pelo aparelho; o dublê responde dark por padrão.
+    // system resolves through the device; the double answers dark by default.
     render(<Text>x</Text>, { theme: "rivocode-dark" });
     expect(textOf(render(<Probe />, { theme: "system" }))).toContain("rivocode-dark");
   });
 });
 
-describe("Field e Input", () => {
-  test("o erro vence a descrição, como no web", () => {
+describe("Field and Input", () => {
+  test("the error wins over the description, as on the web", () => {
     const both = render(
       <Field label="CNPJ" description="A máscara é do campo." error="CNPJ inválido">
         <Input />
@@ -57,7 +57,7 @@ describe("Field e Input", () => {
     expect(textOf(both)).not.toContain("A máscara é do campo.");
   });
 
-  test("o placeholder lê com a cor do tema em vigor", () => {
+  test("the placeholder reads with the current theme's color", () => {
     const screen = render(
       <Field label="x">
         <Input placeholder="00.000.000/0000-00" />
@@ -68,7 +68,7 @@ describe("Field e Input", () => {
     expect(input.props.placeholderTextColor).toBe(tokens.themes["rivocode-light"]["fg-subtle"]);
   });
 
-  test("a borda acende no foco e o invalid vence o foco", () => {
+  test("the border lights up on focus and invalid wins over focus", () => {
     const screen = render(
       <Field label="x">
         <Input />

@@ -7,47 +7,47 @@ import { Dialog, DialogClose, DialogContent, DialogTitle } from "../src/componen
 import { Sheet, SheetContent, SheetTitle } from "../src/components/sheet";
 
 /* ---------------------------------------------------------------------------
- * O fundo escondido do leitor tem que sair tambem do alcance do teclado
+ * The background hidden from the screen reader must also leave keyboard reach
  *
- * Medido no navegador com o dialogo aberto: o `#root` recebia `aria-hidden` e
- * nao recebia `inert`. Metade da barreira de pe e pior do que nenhuma: na
- * segunda volta do Tab o foco alcancava controle real da pagina de tras - o
- * botao de busca da barra lateral, um link de navegacao - e esse controle
- * estava `aria-hidden`, entao o leitor de tela se recusava a anuncia-lo. A
- * pessoa dava Tab, o foco ia para algum lugar, e nada era dito. Foco no nada.
- * O Firefox passava; Chromium e WebKit falhavam, que e diferenca de como cada
- * motor trata foco em subarvore com `aria-hidden`.
+ * Measured in the browser with the dialog open: `#root` got `aria-hidden` and
+ * did not get `inert`. Half a barrier standing is worse than none: on the
+ * second Tab round focus reached real controls of the page behind - the
+ * sidebar search button, a navigation link - and that control was
+ * `aria-hidden`, so the screen reader refused to announce it. The person
+ * pressed Tab, focus went somewhere, and nothing was said. Focus on nothing.
+ * Firefox passed; Chromium and WebKit failed, which is a difference in how each
+ * engine treats focus inside an `aria-hidden` subtree.
  *
- * Quem esconde e a Base UI, no `markOthers` do gerenciador de foco: ela sabe
- * aplicar `inert`, mas o `FloatingFocusManager` so pede `ariaHidden`. Nao ha
- * prop para pedir os dois, entao a barreira e completada aqui.
+ * The one hiding it is Base UI, in the focus manager's `markOthers`: it knows
+ * how to apply `inert`, but `FloatingFocusManager` only asks for `ariaHidden`.
+ * There is no prop to ask for both, so the barrier is completed here.
  *
- * O que estes testes nao alcancam: o happy-dom nao tem foco de navegador nem
- * respeita `inert` na ordem do Tab. Aqui se prova que o atributo esta no
- * elemento certo, no momento certo, e sai quando o painel fecha - nao que o
- * Tab pare de alcancar o fundo, que e coisa de motor de navegador.
+ * What these tests do not reach: happy-dom has no browser focus and does not
+ * honor `inert` in the Tab order. Here we prove the attribute is on the right
+ * element, at the right moment, and leaves when the panel closes - not that
+ * Tab stops reaching the background, which is a browser engine matter.
  * ------------------------------------------------------------------------- */
 
 /**
- * Espera o tique em que a barreira se completa.
+ * Waits for the tick in which the barrier is completed.
  *
- * A Base UI so esconde o fundo alguns commits depois do painel montar, e quem
- * espelha isso responde num microtask. Sem esta espera o teste mede o instante
- * anterior ao conserto, e nao o conserto.
+ * Base UI only hides the background a few commits after the panel mounts, and
+ * whatever mirrors that responds in a microtask. Without this wait the test
+ * measures the instant before the fix, and not the fix.
  */
 async function settle() {
   await Promise.resolve();
 }
 
 /**
- * O fundo da pagina: o irmao do container de portal que a Base UI escondeu do
- * leitor de tela ao abrir o painel.
+ * The page background: the sibling of the portal container that Base UI hid
+ * from the screen reader when the panel opened.
  */
 function background() {
   return document.querySelector<HTMLElement>('body > div[aria-hidden="true"]');
 }
 
-test("com o dialogo aberto o fundo sai do alcance do teclado", async () => {
+test("with the dialog open the background leaves keyboard reach", async () => {
   render(
     <RivoProvider scope="local">
       <Dialog defaultOpen>
@@ -65,7 +65,7 @@ test("com o dialogo aberto o fundo sai do alcance do teclado", async () => {
   expect(page!.hasAttribute("inert")).toBe(true);
 });
 
-test("com a confirmacao aberta o fundo sai do alcance do teclado", async () => {
+test("with the confirmation open the background leaves keyboard reach", async () => {
   render(
     <RivoProvider scope="local">
       <AlertDialog defaultOpen>
@@ -83,7 +83,7 @@ test("com a confirmacao aberta o fundo sai do alcance do teclado", async () => {
   expect(page!.hasAttribute("inert")).toBe(true);
 });
 
-test("com a folha aberta o fundo sai do alcance do teclado", async () => {
+test("with the sheet open the background leaves keyboard reach", async () => {
   render(
     <RivoProvider scope="local">
       <Sheet defaultOpen>
@@ -101,7 +101,7 @@ test("com a folha aberta o fundo sai do alcance do teclado", async () => {
   expect(page!.hasAttribute("inert")).toBe(true);
 });
 
-test("fechado o dialogo, a pagina volta inteira", async () => {
+test("once the dialog closes, the page comes back whole", async () => {
   render(
     <RivoProvider scope="local">
       <Dialog defaultOpen>
@@ -118,7 +118,7 @@ test("fechado o dialogo, a pagina volta inteira", async () => {
 
   fireEvent.click(screen.getByText("Fechar"));
 
-  // Uma barreira que nao se desfaz e pior do que a que nunca existiu: a pagina
-  // ficaria viva na tela e morta para o teclado.
+  // A barrier that is not undone is worse than one that never existed: the page
+  // would stay alive on screen and dead to the keyboard.
   expect(document.querySelector("[inert]")).toBeNull();
 });

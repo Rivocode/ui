@@ -9,8 +9,8 @@ import {
 
 const pages = Array.from({ length: 20 }, (_, index) => `pagina-${index}`);
 
-describe("acessibilidade", () => {
-  test("problema a mais que a base e regressao, e a menos so e relatado", () => {
+describe("accessibility", () => {
+  test("a problem more than the base is a regression, and one fewer is only reported", () => {
     const verdict = compareAccessibility(
       { pages, problems: { "dados | axe color-contrast": 2, "novas | reflow a 320px": 1 } },
       { pages, problems: { "dados | axe color-contrast": 3, "ia | alvo button \"Enviar\"": 1 } },
@@ -25,7 +25,7 @@ describe("acessibilidade", () => {
     expect(verdict.problems).toEqual([]);
   });
 
-  test("a mesma divida dos dois lados passa", () => {
+  test("the same debt on both sides passes", () => {
     const same = { pages, problems: { "dados | axe color-contrast": 2 } };
     const verdict = compareAccessibility(same, same, 15);
 
@@ -33,7 +33,7 @@ describe("acessibilidade", () => {
     expect(verdict.problems).toEqual([]);
   });
 
-  test("cabeca que auditou menos paginas que o piso reprova, mesmo sem problema nenhum", () => {
+  test("a head that audited fewer pages than the floor fails, even with no problem at all", () => {
     const verdict = compareAccessibility(
       { pages, problems: { "dados | axe color-contrast": 2 } },
       { pages: [], problems: {} },
@@ -42,7 +42,7 @@ describe("acessibilidade", () => {
 
     expect(verdict.worse).toEqual([]);
     expect(verdict.problems).toHaveLength(1);
-    expect(verdict.problems[0]).toContain("auditou 0 pagina(s)");
+    expect(verdict.problems[0]).toContain("audited 0 page(s)");
   });
 });
 
@@ -62,8 +62,8 @@ function input(overrides: Partial<ShotInput> = {}): ShotInput {
   };
 }
 
-describe("retratos", () => {
-  test("nada mudou: compara todos e nao acusa", () => {
+describe("shots", () => {
+  test("nothing changed: compares all and reports nothing", () => {
     const verdict = compareShots(input(), 30);
 
     expect(verdict.compared).toBe(40);
@@ -71,22 +71,22 @@ describe("retratos", () => {
     expect(verdict.problems).toEqual([]);
   });
 
-  test("diferenca dentro do ruido nao conta", () => {
+  test("a difference within the noise does not count", () => {
     const head = shots(many, 104);
     const verdict = compareShots(input({ head: { signatures: head, refused: [] } }), 30);
 
     expect(verdict.unaccepted).toEqual([]);
   });
 
-  test("retrato que mudou sem a assinatura comitada mudar e mudanca que ninguem viu", () => {
+  test("a shot that changed without the committed signature changing is a change nobody saw", () => {
     const head = { ...shots(many, 100), "pagina-3": Array.from({ length: 576 }, () => 180) };
     const verdict = compareShots(input({ head: { signatures: head, refused: [] } }), 30);
 
-    expect(verdict.unaccepted).toEqual(["pagina-3 - 576 de 576 quadrados, pior 80"]);
+    expect(verdict.unaccepted).toEqual(["pagina-3 - 576 of 576 squares, worst 80"]);
     expect(verdict.accepted).toEqual([]);
   });
 
-  test("a entrada comitada que mudou junto e o aceite", () => {
+  test("the committed entry that changed along with it is the acceptance", () => {
     const head = { ...shots(many, 100), "pagina-3": Array.from({ length: 576 }, () => 180) };
     const committedHead = { ...shots(many, 50), "pagina-3": Array.from({ length: 576 }, () => 51) };
     const verdict = compareShots(
@@ -95,10 +95,10 @@ describe("retratos", () => {
     );
 
     expect(verdict.unaccepted).toEqual([]);
-    expect(verdict.accepted).toEqual(["pagina-3 - 576 de 576 quadrados, pior 80"]);
+    expect(verdict.accepted).toEqual(["pagina-3 - 576 of 576 squares, worst 80"]);
   });
 
-  test("moldura de secao com outro tamanho nao se compara quadrado a quadrado", () => {
+  test("a section frame with another size is not compared square by square", () => {
     const name = "secao-controles-chave-rivocode-dark";
     const base = { ...shots(many, 100), [name]: [10, 4, 1, 2, 3, 4] };
     const head = { ...shots(many, 100), [name]: [12, 4, 1, 2, 3, 4, 5, 6, 7, 8] };
@@ -107,10 +107,10 @@ describe("retratos", () => {
       30,
     );
 
-    expect(verdict.unaccepted).toEqual([`${name} - a moldura foi de 10x4 para 12x4 celulas`]);
+    expect(verdict.unaccepted).toEqual([`${name} - the frame went from 10x4 to 12x4 cells`]);
   });
 
-  test("retrato que a cabeca nao tirou e perda, a menos que tenha saido da assinatura comitada", () => {
+  test("a shot the head did not take is a loss, unless it left the committed signature", () => {
     const head = shots(many.slice(0, 38), 100);
     const committedHead = shots([...many.slice(0, 38), "pagina-38"], 50);
     const verdict = compareShots(
@@ -119,10 +119,10 @@ describe("retratos", () => {
     );
 
     expect(verdict.lost).toEqual(["pagina-38"]);
-    expect(verdict.accepted).toEqual(["pagina-39 - saiu da vitrine e da assinatura comitada"]);
+    expect(verdict.accepted).toEqual(["pagina-39 - left the showcase and the committed signature"]);
   });
 
-  test("retrato novo nao tem base, e nao conta como comparado", () => {
+  test("a new shot has no base, and does not count as compared", () => {
     const head = { ...shots(many, 100), "pagina-nova": [1] };
     const verdict = compareShots(input({ head: { signatures: head, refused: [] } }), 30);
 
@@ -130,7 +130,7 @@ describe("retratos", () => {
     expect(verdict.compared).toBe(40);
   });
 
-  test("comparar menos retratos que o piso reprova, mesmo sem diferenca", () => {
+  test("comparing fewer shots than the floor fails, even without a difference", () => {
     const verdict = compareShots(
       input({
         base: { signatures: {}, refused: [] },
@@ -141,6 +141,6 @@ describe("retratos", () => {
 
     expect(verdict.unaccepted).toEqual([]);
     expect(verdict.problems).toHaveLength(1);
-    expect(verdict.problems[0]).toContain("0 retrato(s) comparado(s)");
+    expect(verdict.problems[0]).toContain("0 portrait(s) compared");
   });
 });

@@ -62,7 +62,7 @@ const load = (screen: ReturnType<typeof render>, position: number) =>
 const press = (screen: ReturnType<typeof render>, label: string) =>
   act(() => byLabel(screen, label)[0]!.props.onPress());
 
-test("a grade nomeia cada miniatura pelo alt, e o toque abre a imagem", () => {
+test("the grid names each thumbnail by its alt, and a tap opens the image", () => {
   const onIndexChange = mock<(index: number | null) => void>(() => {});
   const screen = render(<Controlled onIndexChange={onIndexChange} />);
   expect(byType(screen, "Modal")).toHaveLength(0);
@@ -80,7 +80,7 @@ test("a grade nomeia cada miniatura pelo alt, e o toque abre a imagem", () => {
   expect(textOf(screen)).toContain("Recepção com vista para a avenida");
 });
 
-test("anterior e proximo navegam e travam nas pontas; com loop dao a volta", () => {
+test("previous and next navigate and stop at the ends; with loop they wrap around", () => {
   const screen = render(<Controlled start={0} />);
   expect(byLabel(screen, "Imagem anterior")[0]!.props.accessibilityState.disabled).toBe(true);
   press(screen, "Próxima imagem");
@@ -91,7 +91,7 @@ test("anterior e proximo navegam e travam nas pontas; com loop dao a volta", () 
   expect(textOf(looped)).toContain("1 de 8");
 });
 
-test("o xis e o voltar do sistema fecham com null", () => {
+test("the x and the system back close with null", () => {
   const onIndexChange = mock<(index: number | null) => void>(() => {});
   const screen = render(<Controlled start={1} onIndexChange={onIndexChange} />);
   press(screen, "Fechar");
@@ -103,7 +103,7 @@ test("o xis e o voltar do sistema fecham com null", () => {
   expect(onIndexChange).toHaveBeenLastCalledWith(null);
 });
 
-test("enquanto carrega, o giro diz o que espera e o zoom nao liga; se falha, diz isso", () => {
+test("while loading, the spinner says what it waits for and zoom does not turn on; if it fails, it says so", () => {
   const screen = render(<Controlled start={0} />);
   expect(byLabel(screen, "Carregando a imagem")).toHaveLength(1);
   expect(byLabel(screen, "Aumentar o zoom")[0]!.props.accessibilityState.disabled).toBe(true);
@@ -117,7 +117,7 @@ test("enquanto carrega, o giro diz o que espera e o zoom nao liga; se falha, diz
   expect(byRole(broken, "alert")[0]!.props.children).toBe("Não foi possível carregar a imagem.");
 });
 
-test("a vizinha que termina de carregar depois nao devolve o giro para cima da foto aberta", () => {
+test("a neighbor that finishes loading later does not bring the spinner back over the open photo", () => {
   const screen = render(<Controlled start={0} />);
   load(screen, 0);
   load(screen, 1);
@@ -129,7 +129,7 @@ test("a vizinha que termina de carregar depois nao devolve o giro para cima da f
   expect(byLabel(screen, "Carregando a imagem")).toHaveLength(0);
 });
 
-test("mais e menos mexem no zoom, e o menos trava no tamanho que cabe", () => {
+test("plus and minus change the zoom, and minus stops at the size that fits", () => {
   const screen = render(<Controlled start={0} />);
   load(screen, 0);
   expect(byLabel(screen, "Diminuir o zoom")[0]!.props.accessibilityState.disabled).toBe(true);
@@ -139,7 +139,7 @@ test("mais e menos mexem no zoom, e o menos trava no tamanho que cabe", () => {
   expect(scaleOf(screen, 0)).toBe(1);
 });
 
-test("o toque duplo dobra o zoom, e o segundo volta", () => {
+test("a double tap doubles the zoom, and the second one reverts", () => {
   const screen = render(<Controlled start={0} />);
   load(screen, 0);
   const tapper = () => byType(screen, "Pressable").find((node) => node.props.accessible === false)!;
@@ -151,7 +151,7 @@ test("o toque duplo dobra o zoom, e o segundo volta", () => {
   expect(scaleOf(screen, 0)).toBe(1);
 });
 
-test("a pinca de dois dedos aproxima, e para no maxZoom", () => {
+test("a two-finger pinch zooms in, and stops at maxZoom", () => {
   const screen = render(<Controlled start={0} maxZoom={3} />);
   load(screen, 0);
   const responder = panResponders.at(-1)!;
@@ -170,7 +170,7 @@ test("a pinca de dois dedos aproxima, e para no maxZoom", () => {
   expect(scaleOf(screen, 0)).toBe(3);
 });
 
-test("com zoom a fileira nao rola, para o dedo arrastar a foto e nao trocar de foto", () => {
+test("with zoom the row does not scroll, so the finger drags the photo and does not change photo", () => {
   const screen = render(<Controlled start={0} />);
   load(screen, 0);
   const list = () => byType(screen, "FlatList")[0]!;
@@ -179,7 +179,7 @@ test("com zoom a fileira nao rola, para o dedo arrastar a foto e nao trocar de f
   expect(list().props.scrollEnabled).toBe(false);
 });
 
-test("deslizar pagina, e a pagina que assenta vira a imagem aberta", () => {
+test("swiping pages, and the page that settles becomes the open image", () => {
   const onIndexChange = mock<(index: number | null) => void>(() => {});
   const screen = render(<Controlled start={0} onIndexChange={onIndexChange} />);
   const stage = screen.root.findAll(
@@ -195,13 +195,13 @@ test("deslizar pagina, e a pagina que assenta vira a imagem aberta", () => {
   expect(onIndexChange).toHaveBeenLastCalledWith(2);
 });
 
-test("carrega antes as duas vizinhas", () => {
+test("preloads the two neighbors", () => {
   render(<Controlled start={3} />);
   expect(prefetched).toContain(PHOTOS[2]!.src);
   expect(prefetched).toContain(PHOTOS[4]!.src);
 });
 
-test("sem imagens, nao desenha nada; sem grade, so o index abre", () => {
+test("without images, draws nothing; without a grid, only index opens", () => {
   const empty = render(<Controlled images={[]} start={0} />);
   expect(byType(empty, "Modal")).toHaveLength(0);
   expect(byType(empty, "Image")).toHaveLength(0);
@@ -210,8 +210,8 @@ test("sem imagens, nao desenha nada; sem grade, so o index abre", () => {
   expect(byRole(bare, "imagebutton")).toHaveLength(0);
 });
 
-test("o tipo recusa imagem sem alt", () => {
-  // @ts-expect-error alt e obrigatorio
+test("the type refuses an image without alt", () => {
+  // @ts-expect-error alt is required
   const missing: ImageViewerImage = { src: "https://exemplo.com.br/sala.jpg" };
   expect(missing).toBeDefined();
 });

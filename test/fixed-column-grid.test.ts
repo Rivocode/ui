@@ -13,7 +13,7 @@ function fixedGrids(source: string) {
   return blocks;
 }
 
-test("a vitrine do painel nao poe Badge, que nao quebra, numa Grid de colunas fixas", () => {
+test("the dashboard showcase does not put a Badge, which does not wrap, in a fixed-column Grid", () => {
   const source = readFileSync(`${ROOT}demo/painel.tsx`, "utf8");
   expect(source).toContain("<Grid");
   expect(source).toContain("<Badge");
@@ -31,7 +31,7 @@ test("a vitrine do painel nao poe Badge, que nao quebra, numa Grid de colunas fi
   expect(/\bminItemWidth=|\bwrap\b/.test(tag)).toBe(true);
 });
 
-test("a pagina do Grid avisa que coluna fixa nao protege conteudo que nao quebra", () => {
+test("the Grid page warns that a fixed column does not protect content that does not wrap", () => {
   const page = readFileSync(`${ROOT}.design-sync/docs/Grid.md`, "utf8");
-  expect(page).toContain("não protege conteúdo que não quebra");
+  expect(page).toContain("does not protect content that does not wrap");
 });

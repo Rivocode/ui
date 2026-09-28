@@ -11,16 +11,16 @@ import * as pkg from "../src/index";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * Os blocos de `/blocos` sao para copiar. A promessa da pagina e que o arquivo
- * colado num projeto que so tem o @rivocode/ui, o zod e o lucide compila e
- * monta - e a promessa quebra sem barulho no dia em que alguem escreve
- * `import { ... } from '@/demo/data'` para economizar uma constante: o site
- * continua funcionando, porque o alias existe la, e quem copia leva um import
- * que nao resolve.
+ * The blocks at `/blocos` are meant to be copied. The page's promise is that
+ * the file pasted into a project that only has @rivocode/ui, zod and lucide
+ * compiles and mounts - and the promise breaks silently the day someone writes
+ * `import { ... } from '@/demo/data'` to save a constant: the site keeps
+ * working, because the alias exists there, and whoever copies takes an import
+ * that does not resolve.
  *
- * Tres perguntas, uma por teste: de onde cada bloco importa, se cada um monta
- * de verdade com a biblioteca da fonte, e se a lista, a pasta e o markdown
- * para agents falam dos mesmos arquivos.
+ * Three questions, one per test: where each block imports from, whether each
+ * one really mounts with the library from source, and whether the list, the
+ * folder and the markdown for agents talk about the same files.
  */
 
 const DIR = "apps/docs/src/blocks";
@@ -29,7 +29,7 @@ mock.module("@rivocode/ui", () => pkg);
 mock.module("@rivocode/ui/form", () => form);
 mock.module("@rivocode/ui/chart", () => chart);
 
-test("todo bloco importa so da biblioteca, do zod, do lucide e do react", () => {
+test("every block imports only from the library, zod, lucide and react", () => {
   const files = readdirSync(DIR).filter((file) => file.endsWith(".tsx"));
   expect(files.length).toBeGreaterThanOrEqual(5);
 
@@ -40,14 +40,14 @@ test("todo bloco importa so da biblioteca, do zod, do lucide e do react", () => 
     expect(imports, file).toContain("@rivocode/ui");
     for (const origin of imports) {
       expect(`${file}: ${origin}`).toBe(
-        `${file}: ${BLOCK_IMPORTS.includes(origin) ? origin : "origem fora da lista"}`,
+        `${file}: ${BLOCK_IMPORTS.includes(origin) ? origin : "origin not in the list"}`,
       );
     }
     expect(source, file).toMatch(/^export default function [A-Z]\w+\(/m);
   }
 });
 
-test("a lista de blocos, a pasta e o markdown para agents falam dos mesmos arquivos", () => {
+test("the block list, the folder and the markdown for agents talk about the same files", () => {
   const files = readdirSync(DIR)
     .filter((file) => file.endsWith(".tsx"))
     .map((file) => file.replace(/\.tsx$/, ""));
@@ -68,7 +68,7 @@ test("a lista de blocos, a pasta e o markdown para agents falam dos mesmos arqui
   }
 });
 
-test("todo bloco monta com a biblioteca da fonte e escreve o proprio titulo", async () => {
+test("every block mounts with the library from source and writes its own title", async () => {
   expect(BLOCK_LIST.length).toBeGreaterThanOrEqual(5);
 
   let mounted = 0;
@@ -115,7 +115,7 @@ async function mountBlock(file: string, theme: "rivocode-dark" | "rivocode-light
   return render(createElement(RivoProvider, { theme, children: createElement(Block) }));
 }
 
-test("as quatro paginas de erro estao na lista, marcadas como erro, e cada uma diz o que fazer", async () => {
+test("the four error pages are in the list, marked as errors, and each one says what to do", async () => {
   const listed = BLOCK_LIST.filter((block) => block.errorPage).map((block) => block.file);
   expect(listed.sort()).toEqual(ERROR_PAGES.map((page) => page.file).sort());
 
@@ -139,18 +139,18 @@ test("as quatro paginas de erro estao na lista, marcadas como erro, e cada uma d
   expect(mounted).toBe(ERROR_PAGES.length);
 });
 
-test("o markdown da pagina de erro nao cobra os quatro finais de listagem", () => {
+test("the error page markdown does not require the four listing endings", () => {
   const served = agentFiles();
   let checked = 0;
   for (const block of BLOCK_LIST) {
     const markdown = served.get(`blocos/${block.slug}.md`) ?? "";
-    expect(markdown.includes("mantenha os quatro finais"), block.slug).toBe(!block.errorPage);
+    expect(markdown.includes("keep the four end states"), block.slug).toBe(!block.errorPage);
     checked++;
   }
   expect(checked).toBe(BLOCK_LIST.length);
 });
 
-test("a busca da 404 e um formulario de busca com nome, e o codigo da 500 tem botao de copiar", async () => {
+test("the 404 search is a named search form, and the 500 code has a copy button", async () => {
   const first = await mountBlock("not-found");
   const search = first.container.querySelector('form[role="search"]');
   expect(search).not.toBeNull();
@@ -165,7 +165,7 @@ test("a busca da 404 e um formulario de busca com nome, e o codigo da 500 tem bo
   second.unmount();
 });
 
-test("pedir acesso na 403 confirma na tela e leva o foco para a confirmacao", async () => {
+test("requesting access on the 403 confirms on screen and moves focus to the confirmation", async () => {
   const screen = await mountBlock("forbidden");
 
   await act(async () => {

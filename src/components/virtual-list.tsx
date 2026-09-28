@@ -20,91 +20,91 @@ export type VirtualListHandle = {
 
 export type VirtualListProps<Item> = {
   items: Item[] | undefined;
-  /** O que cada item mostra. Recebe o indice para a numeracao visivel. */
+  /** What each item shows. Receives the index for the visible numbering. */
   renderItem: (item: Item, index: number) => ReactNode;
   /**
-   * Identidade do item, e nao so chave de React: e por ela que a altura medida
-   * segue o item quando a lista reordena ou filtra.
+   * The item's identity, and not just a React key: it is how the measured height
+   * follows the item when the list reorders or filters.
    */
   itemKey: (item: Item, index: number) => string;
 
   /**
-   * Altura maxima da moldura. Numero vira pixel.
+   * Max height of the frame. A number becomes pixels.
    *
-   * Obrigatoria, ao contrario da irma do `DataTable`: sem altura nao ha o que
-   * caber, e uma lista virtualizada sem moldura desenha um item so.
+   * Required, unlike its `DataTable` sibling: without a height there is nothing to
+   * fit, and a virtualized list without a frame draws a single item.
    */
   maxHeight: number | string;
 
   /**
-   * O palpite de altura de um item, em pixel, ou uma funcao por indice.
+   * The estimated height of an item, in pixels, or a function per index.
    *
-   * E o que sustenta a barra de rolagem antes de o item existir. Com `measure`
-   * ligado ele so precisa estar perto; com `measure` desligado ele e a lei, e
-   * item mais alto que isto sobrepoe o de baixo.
+   * It is what holds up the scrollbar before the item exists. With `measure`
+   * on it only needs to be close; with `measure` off it is the law, and an
+   * item taller than this overlaps the one below.
    */
   itemHeight?: number | ((index: number) => number);
   /**
-   * Cada item desenhado devolve a altura real, e a rolagem se corrige.
+   * Each drawn item reports its real height, and the scroll corrects itself.
    *
-   * Ligado de saida, porque e o que segura texto que quebra em duas linhas a
-   * 390px. Desligue quando a altura for cravada por CSS: economiza um
-   * observador por item visivel.
+   * On out of the box, because it is what holds text that wraps into two lines at
+   * 390px. Turn it off when the height is fixed by CSS: it saves one
+   * observer per visible item.
    */
   measure?: boolean;
-  /** Quantos itens desenhar alem da moldura, de cada lado. */
+  /** How many items to draw beyond the frame, on each side. */
   overscan?: number;
-  /** Respiro entre um item e o proximo, em pixel. */
+  /** Gap between one item and the next, in pixels. */
   gap?: number;
 
   isLoading?: boolean;
   isError?: boolean;
-  /** Sem isto, o erro nao oferece nova tentativa. */
+  /** Without this, the error offers no retry. */
   onRetry?: () => void;
-  /** O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar". */
+  /** The title of the error notice. Without it, "Nao foi possivel carregar". */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
-   * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
-   * porque "nenhum resultado" transfere para a pessoa o trabalho de descobrir
-   * por que.
+   * What appears when the query comes back empty. The description is required
+   * because "nenhum resultado" hands the person the work of finding out
+   * why.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
-  /** Quantos itens falsos o carregando mostra. */
+  /** How many placeholder items the loading state shows. */
   skeletonItems?: number;
 
   /**
-   * O nome da lista para o leitor de tela. Sem ele, ela sai sem nome - e a
-   * moldura, que e alvo de tabulacao, sai como uma parada sem nome tambem.
+   * The list's name for the screen reader. Without it, the list has no name - and the
+   * frame, which is a tab target, is also an unnamed stop.
    *
-   * A lista de dentro repete este nome com a contagem real colada: o leitor
-   * conta os filhos que estao no DOM e anuncia "lista com 15 itens" numa lista
-   * de quatro mil, e o nome e o unico lugar onde cabe desmentir isso. Quem
-   * escreve essa contagem e `labels.count`.
+   * The inner list repeats this name with the real count attached: the reader
+   * counts the children that are in the DOM and announces "lista com 15 itens" on a list
+   * of four thousand, and the name is the only place where that can be corrected.
+   * What writes that count is `labels.count`.
    */
   label?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
-   * `onRetry` - a mesma chave em todas as pecas que resolvem os quatro finais
-   * -, e `count` a contagem que entra no nome da lista, colada ao `label`. Sem
-   * o `count`, a contagem sai em portugues grudada num `label` ja traduzido.
-   * O padrao concorda com o singular: "1 item", e nao "1 itens".
-   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
-   * sai e quando ela volta. Passe so os que mudam.
+   * The piece's texts, to change the language: `retry` is the button that runs
+   * `onRetry` - the same key in every piece that handles the four endings
+   * -, and `count` the count that goes into the list's name, attached to `label`. Without
+   * `count`, the count comes out in Portuguese stuck to an already translated `label`.
+   * The default agrees with the singular: "1 item", and not "1 itens".
+   * `loading` and `loaded` are what the screen reader hears when the query
+   * goes out and when it comes back. Pass only the ones that change.
    */
   labels?: Partial<VirtualListLabels>;
   className?: string;
   /**
-   * Classe por parte: `list` e a faixa de altura total que rola por dentro da
-   * moldura, `item` e a caixa posicionada de cada item. Evita o `[&>div>div]`,
-   * que acopla a tela de quem usa a arvore interna da peca.
+   * Class per part: `list` is the full-height strip that scrolls inside the
+   * frame, `item` is each item's positioned box. Avoids `[&>div>div]`,
+   * which couples the consumer's screen to the piece's internal tree.
    */
   classNames?: Slots<"list" | "item">;
   /**
-   * Recebe um `VirtualListHandle`, com `scrollToIndex(index, { align })`.
+   * Receives a `VirtualListHandle`, with `scrollToIndex(index, { align })`.
    *
-   * E o unico jeito de chegar num item que nao esta no DOM: sem elemento, o
-   * `scrollIntoView` nao tem o que alcancar.
+   * It is the only way to reach an item that is not in the DOM: with no element,
+   * `scrollIntoView` has nothing to reach.
    */
   ref?: Ref<VirtualListHandle>;
 };

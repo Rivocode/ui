@@ -24,14 +24,13 @@ import {
 } from "../src/components/select";
 
 /*
- * A lista longa que tem familias de verdade: natureza de operacao por tipo, UF
- * por regiao, plano de contas.
+ * The long list that has real families: operation nature by type, state by
+ * region, chart of accounts.
  *
- * O `Combobox` agrupava desde cedo e o `Select` nao, e as duas aparecem na
- * mesma tela de filtro - a mesma lista saia agrupada de um lado e plana do
- * outro. O cabecalho tambem tinha que se ler como cabecalho: o do Combobox era
- * a peca crua da Base UI, sem estilo, e tinha o tamanho e a cor de mais uma
- * opcao.
+ * `Combobox` grouped from early on and `Select` did not, and both show up on
+ * the same filter screen - the same list came out grouped on one side and flat
+ * on the other. The header also had to read as a header: the Combobox one was
+ * the raw Base UI part, unstyled, with the size and color of one more option.
  */
 
 function withTheme(node: React.ReactNode) {
@@ -66,7 +65,7 @@ function GroupedSelect() {
   );
 }
 
-test("o grupo do Select carrega o nome dele por dentro, e nao ao lado", () => {
+test("the Select group carries its name inside it, and not beside it", () => {
   withTheme(<GroupedSelect />);
 
   const [outgoing] = screen.getAllByRole("group");
@@ -76,7 +75,7 @@ test("o grupo do Select carrega o nome dele por dentro, e nao ao lado", () => {
   expect(outgoing!.contains(title)).toBe(true);
 });
 
-test("agrupar nao esconde opcao nenhuma, nem troca o que o gatilho mostra", () => {
+test("grouping hides no option, nor changes what the trigger shows", () => {
   withTheme(<GroupedSelect />);
 
   expect(screen.getAllByRole("option")).toHaveLength(3);
@@ -85,10 +84,10 @@ test("agrupar nao esconde opcao nenhuma, nem troca o que o gatilho mostra", () =
   );
 });
 
-test("o cabecalho do grupo nao se le como opcao, nas tres listas", () => {
-  // Ele e menor, mais claro e em caixa alta - o mesmo titulo do `MenuGroup`.
-  // Sem isso "Saída" tinha o tamanho e a cor de "Venda de mercadoria", e a
-  // lista parecia ter uma opcao a mais que nao clicava.
+test("the group header does not read as an option, in all three lists", () => {
+  // It is smaller, lighter and uppercase - the same title as `MenuGroup`.
+  // Without it "Saída" had the size and color of "Venda de mercadoria", and the
+  // list looked like it had one extra option that did not click.
   withTheme(<GroupedSelect />);
 
   const title = screen.getByText("Saída");
@@ -97,9 +96,9 @@ test("o cabecalho do grupo nao se le como opcao, nas tres listas", () => {
   expect(title.getAttribute("role")).not.toBe("option");
 });
 
-test("a linha entre grupos nao entra na contagem que o leitor de tela anuncia", () => {
-  // `role="presentation"`, e nao o `role="separator"` do MenuSeparator: um no
-  // com papel proprio no meio de uma lista de opcoes quebra o "opcao 3 de 12".
+test("the line between groups does not enter the count the screen reader announces", () => {
+  // `role="presentation"`, and not the `role="separator"` of MenuSeparator: a
+  // node with its own role in the middle of an option list breaks "option 3 of 12".
   const { container } = withTheme(<GroupedSelect />);
 
   const line = container.ownerDocument.querySelector('[role="listbox"] [role="presentation"]')!;
@@ -131,7 +130,7 @@ function GroupedCombobox() {
   );
 }
 
-test("o cabecalho do Combobox veste o mesmo titulo do Select", () => {
+test("the Combobox header wears the same title as the Select", () => {
   withTheme(<GroupedCombobox />);
 
   const first = screen.getByText("Paraíba");
@@ -141,7 +140,7 @@ test("o cabecalho do Combobox veste o mesmo titulo do Select", () => {
   expect(first.className).toBe(second.className);
 });
 
-test("a linha do Combobox e a mesma linha do Select", () => {
+test("the Combobox line is the same line as the Select", () => {
   const { container } = withTheme(<GroupedCombobox />);
 
   const line = container.ownerDocument.querySelector('[role="listbox"] [role="presentation"]')!;
@@ -149,25 +148,25 @@ test("a linha do Combobox e a mesma linha do Select", () => {
   expect(line.className.split(" ")).toContain("bg-border");
 });
 
-test("a classe de quem usa vence a do cabecalho e a da linha", () => {
+test("the consumer class wins over the header and line classes", () => {
   const { container } = withTheme(
     <Select items={NATURES} defaultOpen>
       <SelectTrigger aria-label="Natureza">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup className="grupo-x">
+        <SelectGroup className="group-x">
           <SelectGroupLabel className="text-fg">Saída</SelectGroupLabel>
           <SelectItem value="5102">Venda de mercadoria</SelectItem>
         </SelectGroup>
-        <SelectSeparator className="linha-x" />
+        <SelectSeparator className="line-x" />
       </SelectContent>
     </Select>,
   );
 
-  expect(container.ownerDocument.querySelector(".grupo-x")!.getAttribute("role")).toBe("group");
-  expect(container.ownerDocument.querySelector(".linha-x")).not.toBeNull();
-  // `tailwind-merge` desfaz o conflito: sobra a cor de quem chama, e nao as duas.
+  expect(container.ownerDocument.querySelector(".group-x")!.getAttribute("role")).toBe("group");
+  expect(container.ownerDocument.querySelector(".line-x")).not.toBeNull();
+  // `tailwind-merge` resolves the conflict: the caller color remains, not both.
   const title = screen.getByText("Saída");
   expect(title.className).toContain("text-fg");
   expect(title.className).not.toContain("text-fg-subtle");

@@ -1,11 +1,12 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # ComboboxGroup
 
-Uma seção da lista, com `ComboboxGroupLabel` de cabeçalho.
+A section of the list, with a `ComboboxGroupLabel` as its header.
 
-Serve para lista longa que tem famílias de verdade: clientes por cidade,
-produtos por categoria. Agrupar por agrupar aumenta a altura da lista sem
-diminuir a busca, que é justamente o que a peça existe para resolver.
+It is for a long list that has real families: customers by city, products by
+category. Grouping for the sake of grouping makes the list taller without
+making the search shorter, and shortening the search is exactly what the
+component exists to do.

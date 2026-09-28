@@ -50,16 +50,19 @@ import { NewInvoice } from '@/demo/new-invoice'
 import { Settings } from '@/demo/settings'
 
 /* ---------------------------------------------------------------------------
- * A aplicacao de demonstracao
+ * The demo application
  *
- * Nao e uma grade de componentes: e uma aplicacao. Barra lateral que encolhe,
- * paleta de comandos no Ctrl+K, um painel com graficos de verdade, uma listagem
- * com filtros e uma folha de detalhe, um formulario de quatro passos, e
- * configuracoes que trocam o tema e a densidade de tudo acima.
+ * It is not a grid of components: it is an application. A sidebar that
+ * collapses, a command palette on Ctrl+K, a dashboard with real charts, a
+ * listing with filters and a detail sheet, a four-step form, and settings that
+ * change the theme and density of everything above.
  *
- * Grade de cartao responde "este componente existe". So uma tela responde a
- * pergunta que alguem de fato tem, que e se as pecas se sustentam quando todas
- * estao ligadas ao mesmo tempo.
+ * A grid of cards answers "this component exists". Only a screen answers the
+ * question someone actually has, which is whether the pieces hold up when they
+ * are all switched on at the same time.
+ *
+ * The screen content stays in Portuguese on purpose: it is the Brazilian app
+ * the library is built for.
  * ------------------------------------------------------------------------- */
 
 type ScreenId = 'dashboard' | 'invoices' | 'new' | 'customers' | 'settings'
@@ -151,10 +154,10 @@ export function DemoApp() {
 
   return (
     <RivoProvider scope="local" theme={theme} density={density}>
-      {/* Sem moldura e sem altura fixa: a demonstracao e uma pagina, e nao a
-          foto de uma. Um sistema dentro de um cartao com cantos arredondados
-          continua parecendo exemplo; ocupando a tela ele passa a ser o sistema,
-          que e a pergunta que quem chega esta fazendo. */}
+      {/* No frame and no fixed height: the demo is a page, not a picture of
+          one. A system inside a card with rounded corners still looks like an
+          example; filling the screen it becomes the system, which is the
+          question whoever arrives is asking. */}
       <div className="border-t border-border">
         <SidebarProvider defaultOpen className="min-h-0">
           <Sidebar className="h-[calc(100dvh-3.5rem)]">

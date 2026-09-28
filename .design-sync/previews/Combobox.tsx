@@ -19,7 +19,7 @@ const CLIENTES = [
   { value: 'construtora', label: 'Construtora Litoral' },
 ]
 
-/** Busca em lista */
+/** Search in a list */
 export function SearchInList() {
   return (
     <div className="min-h-72 w-80">
@@ -39,7 +39,7 @@ export function SearchInList() {
   )
 }
 
-/** Escolha múltipla */
+/** Multiple choice */
 export function MultipleChoice() {
   return (
     <div className="min-h-72 w-80">
@@ -78,7 +78,7 @@ const CIDADES = [
   { value: 'caruaru', label: 'Caruaru', uf: 'Pernambuco' },
 ]
 
-/** Lista com famílias */
+/** List with families */
 export function Grouped() {
   return (
     <div className="min-h-80 w-80">
@@ -86,9 +86,9 @@ export function Grouped() {
         <ComboboxInput aria-label="Buscar cidade" placeholder="Buscar cidade" />
         <ComboboxContent emptyMessage="Nenhuma cidade com esse nome.">
           <ComboboxList>
-            {/* Agrupar so paga quando as familias sao de verdade. Grupo de dois
-                itens acrescenta cabecalho e nao tira trabalho de quem procura -
-                e a busca, que e o motivo desta peca existir, ja resolvia. */}
+            {/* Grouping only pays off when the families are real. A group of two
+                items adds a header and saves the searcher no work - and the
+                search, which is why this component exists, already solved it. */}
             <ComboboxGroup>
               <ComboboxGroupLabel>Paraíba</ComboboxGroupLabel>
               {CIDADES.filter((c) => c.uf === 'Paraíba').map((c) => (
@@ -115,7 +115,7 @@ export function Grouped() {
   )
 }
 
-/** Nos três tamanhos */
+/** In the three sizes */
 export function Sizes() {
   return (
     <div className="flex w-80 flex-col gap-3">

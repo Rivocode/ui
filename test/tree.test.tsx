@@ -39,13 +39,13 @@ function ControlledTree({ multiple = true, filter = "" }) {
   );
 }
 
-test("marcar o pai marca todas as folhas debaixo dele", () => {
+test("checking the parent checks every leaf under it", () => {
   render(<ControlledTree />);
   fireEvent.click(screen.getByText("Financeiro"));
   expect(screen.getByText("Escolhidos: contas-pagar,contas-receber")).toBeDefined();
 });
 
-test("o pai com parte das filhas fica em estado misto", () => {
+test("a parent with some of its children checked is in a mixed state", () => {
   render(<ControlledTree />);
   fireEvent.click(screen.getByText("Contas a pagar"));
 
@@ -54,7 +54,7 @@ test("o pai com parte das filhas fica em estado misto", () => {
   expect(parent.querySelector('[data-rc-check="indeterminate"]')).not.toBeNull();
 });
 
-test("desmarcar o pai limpa so as folhas dele", () => {
+test("unchecking the parent clears only its leaves", () => {
   render(<ControlledTree />);
   fireEvent.click(screen.getByText("Financeiro"));
   fireEvent.click(screen.getByText("Expedicao"));
@@ -62,7 +62,7 @@ test("desmarcar o pai limpa so as folhas dele", () => {
   expect(screen.getByText("Escolhidos: expedicao")).toBeDefined();
 });
 
-test("sem escolha multipla, so folha escolhe e a escolha troca", () => {
+test("without multiple selection, only a leaf selects and the selection swaps", () => {
   render(<ControlledTree multiple={false} />);
 
   fireEvent.click(screen.getByText("Financeiro"));
@@ -73,21 +73,21 @@ test("sem escolha multipla, so folha escolhe e a escolha troca", () => {
   expect(screen.getByText("Escolhidos: expedicao")).toBeDefined();
 });
 
-test("a busca guarda o caminho ate quem casou", () => {
+test("the search keeps the path to whatever matched", () => {
   render(<ControlledTree filter="expedicao" />);
   expect(screen.getByText("Operacao")).toBeDefined();
   expect(screen.getByText("Expedicao")).toBeDefined();
   expect(screen.queryByText("Contas a pagar")).toBeNull();
 });
 
-test("a arvore se anuncia com os papeis certos", () => {
+test("the tree announces itself with the right roles", () => {
   render(<ControlledTree />);
   expect(screen.getByRole("tree").getAttribute("aria-multiselectable")).toBe("true");
   expect(screen.getAllByRole("treeitem").length).toBe(5);
   expect(screen.getAllByRole("group").length).toBe(2);
 });
 
-test("as setas andam pelas linhas que estao na tela", () => {
+test("the arrows move through the rows on screen", () => {
   render(<ControlledTree />);
   const rows = screen.getAllByRole("treeitem");
   rows[0]!.focus();
@@ -108,22 +108,22 @@ function RtlTree() {
   );
 }
 
-test("em rtl a seta que abre troca de lado, e o recuo cresce da borda que comeca a leitura", () => {
+test("in rtl the opening arrow switches sides, and the indent grows from the edge where reading starts", () => {
   render(<RtlTree />);
-  const financeiro = screen.getByText("Financeiro").closest("[role=treeitem]") as HTMLElement;
-  const filha = screen.getByText("Contas a pagar").closest("[role=treeitem]") as HTMLElement;
+  const finance = screen.getByText("Financeiro").closest("[role=treeitem]") as HTMLElement;
+  const child = screen.getByText("Contas a pagar").closest("[role=treeitem]") as HTMLElement;
 
-  expect(financeiro.style.paddingLeft).toBe("");
-  expect(financeiro.style.paddingInlineStart).toBe("0.25rem");
-  expect(filha.style.paddingInlineStart).toBe("1.5rem");
+  expect(finance.style.paddingLeft).toBe("");
+  expect(finance.style.paddingInlineStart).toBe("0.25rem");
+  expect(child.style.paddingInlineStart).toBe("1.5rem");
 
-  financeiro.focus();
+  finance.focus();
 
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowRight" });
-  expect(financeiro.getAttribute("aria-expanded")).toBe("false");
+  expect(finance.getAttribute("aria-expanded")).toBe("false");
 
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
-  expect(financeiro.getAttribute("aria-expanded")).toBe("true");
+  expect(finance.getAttribute("aria-expanded")).toBe("true");
 
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
   expect(document.activeElement).toBe(
@@ -131,10 +131,10 @@ test("em rtl a seta que abre troca de lado, e o recuo cresce da borda que comeca
   );
 
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowRight" });
-  expect(document.activeElement).toBe(financeiro);
+  expect(document.activeElement).toBe(finance);
 });
 
-test("espaco escolhe pelo teclado", () => {
+test("space selects from the keyboard", () => {
   render(<ControlledTree />);
   screen.getAllByRole("treeitem")[1]!.focus();
   fireEvent.keyDown(screen.getByRole("tree"), { key: " " });
@@ -164,7 +164,7 @@ function LockedTree({ multiple = true, initial = [] as string[] }) {
   );
 }
 
-test("Enter e espaco num no desabilitado nao escolhem, como o clique nao escolhe", () => {
+test("Enter and space on a disabled node do not select, as the click does not", () => {
   render(<LockedTree multiple={false} />);
   const locked = screen.getByText("Contas a receber").closest("[role=treeitem]") as HTMLElement;
   locked.focus();
@@ -175,7 +175,7 @@ test("Enter e espaco num no desabilitado nao escolhem, como o clique nao escolhe
   expect(screen.getByText("Escolhidos: nenhum")).toBeDefined();
 });
 
-test("marcar e desmarcar o pai nao mexe nas folhas desabilitadas", () => {
+test("checking and unchecking the parent does not touch disabled leaves", () => {
   render(<LockedTree initial={["caixa"]} />);
 
   fireEvent.click(screen.getByText("Financeiro"));
@@ -185,13 +185,13 @@ test("marcar e desmarcar o pai nao mexe nas folhas desabilitadas", () => {
   expect(screen.getByText("Escolhidos: caixa")).toBeDefined();
 });
 
-test("a busca ignora acento e caixa, dos dois lados", () => {
+test("search ignores accents and case, on both sides", () => {
   render(<ControlledTree filter="operação" />);
   expect(screen.getByText("Operacao")).toBeDefined();
   expect(screen.queryByText("Financeiro")).toBeNull();
 });
 
-test("a busca do TreeSelect acha o rotulo com acento digitando sem acento", () => {
+test("the TreeSelect search finds an accented label when typing without accents", () => {
   const ACCENTED: TreeNode[] = [
     { id: "sp", label: "São Paulo" },
     { id: "rj", label: "Rio de Janeiro" },
@@ -208,7 +208,7 @@ test("a busca do TreeSelect acha o rotulo com acento digitando sem acento", () =
   expect(screen.queryByText("Rio de Janeiro")).toBeNull();
 });
 
-test("Home e End levam a primeira e a ultima linha da tela", () => {
+test("Home and End go to the first and last row on screen", () => {
   render(<ControlledTree />);
   const rows = screen.getAllByRole("treeitem");
   rows[2]!.focus();
@@ -220,7 +220,7 @@ test("Home e End levam a primeira e a ultima linha da tela", () => {
   expect(document.activeElement).toBe(rows[0]!);
 });
 
-test("a linha que entra pelo Tab e a ultima que teve foco, e so ela", () => {
+test("the row reached by Tab is the last one that had focus, and only it", () => {
   render(<ControlledTree />);
   const rows = screen.getAllByRole("treeitem");
   const tabbable = () => rows.filter((row) => row.tabIndex === 0);
@@ -234,7 +234,7 @@ test("a linha que entra pelo Tab e a ultima que teve foco, e so ela", () => {
   expect(tabbable()).toEqual([rows[2]!]);
 });
 
-test("o galho fechado devolve o Tab para uma linha que esta na tela", () => {
+test("a closed branch hands Tab back to a row that is on screen", () => {
   function Closing() {
     const [open, setOpen] = useState<string[]>(["financeiro"]);
     return (
@@ -252,7 +252,7 @@ test("o galho fechado devolve o Tab para uma linha que esta na tela", () => {
   expect(rows.filter((row) => row.tabIndex === 0)).toEqual([rows[0]!]);
 });
 
-test("o gatilho mostra os nomes enquanto eles cabem", () => {
+test("the trigger shows the names while they fit", () => {
   render(
     <RivoProvider scope="local">
       <TreeSelect items={TREE} defaultValue={["contas-pagar"]} />
@@ -261,8 +261,8 @@ test("o gatilho mostra os nomes enquanto eles cabem", () => {
   expect(screen.getByText("Contas a pagar")).toBeDefined();
 });
 
-test("passando de tres, o gatilho conta em vez de listar", () => {
-  const grande: TreeNode[] = [
+test("past three, the trigger counts instead of listing", () => {
+  const large: TreeNode[] = [
     {
       id: "todos",
       label: "Todos",
@@ -275,13 +275,13 @@ test("passando de tres, o gatilho conta em vez de listar", () => {
 
   render(
     <RivoProvider scope="local">
-      <TreeSelect items={grande} defaultValue={grande[0]!.children!.map((node) => node.id)} />
+      <TreeSelect items={large} defaultValue={large[0]!.children!.map((node) => node.id)} />
     </RivoProvider>,
   );
   expect(screen.getByText("5 escolhidos")).toBeDefined();
 });
 
-test("id que nao existe mais na arvore nao conta como escolha", () => {
+test("an id that no longer exists in the tree does not count as selected", () => {
   render(
     <RivoProvider scope="local">
       <TreeSelect items={TREE} defaultValue={["setor-que-sumiu"]} placeholder="Escolha" />
@@ -290,7 +290,7 @@ test("id que nao existe mais na arvore nao conta como escolha", () => {
   expect(screen.getByText("Escolha")).toBeDefined();
 });
 
-test("sem escolha, o gatilho mostra o convite", () => {
+test("without a selection, the trigger shows the prompt", () => {
   render(
     <RivoProvider scope="local">
       <TreeSelect items={TREE} placeholder="Escolha o setor" />
@@ -299,7 +299,7 @@ test("sem escolha, o gatilho mostra o convite", () => {
   expect(screen.getByText("Escolha o setor")).toBeDefined();
 });
 
-test("o item de lista sai do mapa de papeis, e a linha fica filha direta da arvore ou do grupo", () => {
+test("the list item leaves the role map, and the row is a direct child of the tree or the group", () => {
   render(<ControlledTree />);
   const rows = screen.getByRole("tree").querySelectorAll("[role=treeitem]");
   expect(rows.length).toBeGreaterThan(3);
@@ -311,7 +311,7 @@ test("o item de lista sai do mapa de papeis, e a linha fica filha direta da arvo
   }
 });
 
-test("o botao de abrir estica o alvo de 16 para 24 pixels sem crescer o desenho", () => {
+test("the expand button stretches the target from 16 to 24 pixels without growing the drawing", () => {
   render(<ControlledTree />);
   const toggle = screen.getAllByRole("button", { name: "Fechar", hidden: true })[0]!;
   const tokens = toggle.className.split(" ");
@@ -324,18 +324,18 @@ test("o botao de abrir estica o alvo de 16 para 24 pixels sem crescer o desenho"
   expect(box.className.split(" ")).toContain("after:hidden");
 });
 
-test("defaultOpen abre os galhos na montagem, e depois a arvore abre e fecha sozinha", () => {
+test("defaultOpen opens the branches on mount, and then the tree opens and closes on its own", () => {
   const opened: string[][] = [];
   render(
     <RivoProvider scope="local">
       <Tree items={TREE} defaultOpen={["financeiro"]} onOpenChange={(ids) => opened.push(ids)} />
     </RivoProvider>,
   );
-  const financeiro = screen.getByText("Financeiro").closest("[role=treeitem]") as HTMLElement;
-  expect(financeiro.getAttribute("aria-expanded")).toBe("true");
+  const finance = screen.getByText("Financeiro").closest("[role=treeitem]") as HTMLElement;
+  expect(finance.getAttribute("aria-expanded")).toBe("true");
 
-  financeiro.focus();
+  finance.focus();
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
-  expect(financeiro.getAttribute("aria-expanded")).toBe("false");
+  expect(finance.getAttribute("aria-expanded")).toBe("false");
   expect(opened).toEqual([[]]);
 });

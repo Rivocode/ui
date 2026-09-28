@@ -39,45 +39,46 @@ function StopGlyph({ color }: { color: string }) {
 }
 
 export type PromptInputProps = {
-  /** O texto do campo. Controlado, como todo campo do pacote. */
+  /** The field text. Controlled, like every field in the package. */
   value: string;
-  /** Chamado a cada tecla, com o texto inteiro. */
+  /** Called on every keystroke, with the whole text. */
   onValueChange: (value: string) => void;
   /**
-   * Chamado pelo botao de enviar, com o texto. Nao dispara com o campo vazio
-   * (so espaco conta como vazio), desabilitado ou em `streaming`. Quem limpa o
-   * campo e quem chamou.
+   * Called by the send button, with the text. Does not fire when the field is
+   * empty (whitespace alone counts as empty), disabled or `streaming`. The
+   * caller clears the field.
    */
   onSubmit: (value: string) => void;
-  /** A resposta esta chegando: o botao de enviar vira o de parar. */
+  /** The answer is arriving: the send button becomes the stop button. */
   streaming?: boolean;
-  /** Chamado pelo botao de parar, que so existe em `streaming`. */
+  /** Called by the stop button, which exists only while `streaming`. */
   onStop?: () => void;
   disabled?: boolean;
   placeholder?: string;
-  /** O nome do campo para o leitor de tela. Sem ele, "Mensagem". */
+  /** The field name for the screen reader. Without it, "Mensagem". */
   label?: string;
-  /** Quantas linhas o campo cresce antes de rolar por dentro. Sem ele, 8. */
+  /** How many lines the field grows before it scrolls inside. Without it, 8. */
   maxRows?: number;
-  /** O teto de caracteres. O campo recusa o que passa dele. */
+  /** The character cap. The field refuses what goes beyond it. */
   maxLength?: number;
-  /** Mostra a contagem de caracteres no rodape, no tom de perigo ao bater no teto. */
+  /** Shows the character count in the footer, in the danger tone when it hits the cap. */
   showCount?: boolean;
-  /** Os anexos ja escolhidos, acima do campo. A peca so reserva o lugar. */
+  /** The attachments already chosen, above the field. The component only reserves the space. */
   attachments?: ReactNode;
-  /** Os botoes do rodape, a esquerda: anexar, ditar. */
+  /** The footer buttons, on the left: attach, dictate. */
   actions?: ReactNode;
   /**
-   * Os textos da peca, para trocar o idioma: `submit` e `stop` sao os nomes do
-   * botao de enviar e do de parar, `hint` a dica ligada ao campo, `count` o que
-   * se ouve do contador (tambem na dica do campo) e `limit` o anuncio ao bater
-   * no teto. Passe so os que mudam.
+   * The component's texts, to change the language: `submit` and `stop` are the
+   * names of the send and stop buttons, `hint` the hint tied to the field,
+   * `count` what is heard from the counter (also in the field hint) and `limit`
+   * the announcement on hitting the cap. Pass only the ones that change.
    */
   labels?: Partial<PromptInputLabels>;
   className?: string;
   /**
-   * Classe por parte: `attachments`, `textarea` (o campo), `footer` (a fileira
-   * de baixo), `count` e `submit` (o botao de enviar, e o de parar no lugar dele).
+   * Class per part: `attachments`, `textarea` (the field), `footer` (the bottom
+   * row), `count` and `submit` (the send button, and the stop button in its
+   * place).
    */
   classNames?: Slots<"attachments" | "textarea" | "footer" | "count" | "submit">;
 };

@@ -17,52 +17,55 @@ import type { Slots } from "../lib/slots";
 import { GAUGE_GAP, GAUGE_REACH, GAUGE_RING, bandAt } from "../shared/chart-layout";
 
 export type ChartGaugeBand = {
-  /** Onde a faixa termina, na mesma unidade do `value`. Ela comeca onde a anterior parou. */
+  /** Where the band ends, in the same unit as `value`. It starts where the previous one stopped. */
   until: number;
-  /** A cor da faixa, e do arco quando o valor cai nela. */
+  /** The band's color, and the arc's when the value falls in it. */
   tone: "success" | "warning" | "danger";
-  /** O nome da faixa por extenso: vai para baixo do numero e para o leitor de tela. */
+  /** The band's name spelled out: goes below the number and to the screen reader. */
   label: string;
 };
 
 export type ChartGaugeProps = Omit<ComponentProps<"div">, "children"> & {
   /**
-   * De 0 a `max`. Fora disso o numero escrito e o nome acessivel dizem o valor
-   * real ("140 de 100"), e so o arco, o ponteiro e a faixa param na ponta.
-   * `NaN` ou infinito vira "—", sem faixa.
+   * From 0 to `max`. Outside that, the written number and the accessible name state the
+   * real value ("140 de 100"), and only the arc, the needle and the band stop at the end.
+   * `NaN` or infinity becomes "—", with no band.
    */
   value: number;
   max?: number;
   /**
-   * As faixas, em ordem, cada uma ate o seu `until`. A ultima deveria terminar
-   * em `max`. Sem faixas, o medidor e um arco neutro de acento, e a leitura
-   * boa ou ruim fica por conta de quem le.
+   * The bands, in order, each up to its `until`. The last one should end
+   * at `max`. Without bands, the gauge is a neutral accent arc, and whether the reading is
+   * good or bad is up to whoever reads it.
    */
   bands?: readonly ChartGaugeBand[];
   /**
-   * O numero grande no meio. Sem ele, o `value` escrito pelo `format`. O texto
-   * dele entra no nome acessivel no lugar do valor, e a fonte encolhe para
-   * caber no furo do arco.
+   * The big number in the middle. Without it, the `value` written by `format`. Its
+   * text goes into the accessible name in place of the value, and the font shrinks to
+   * fit the hole of the arc.
    */
   centerValue?: ReactNode;
-  /** A linha pequena embaixo do numero. Sem ela, o nome da faixa em que o valor caiu. */
+  /** The small line below the number. Without it, the name of the band the value fell in. */
   centerLabel?: ReactNode;
-  /** Como o numero e escrito, no meio e no nome acessivel. */
+  /** How the number is written, in the middle and in the accessible name. */
   format?: Format;
-  /** Quantos graus o arco cobre, com a abertura embaixo. De 0 a 360; 360 fecha o anel. */
+  /**
+   * How many degrees the arc covers, with the opening at the bottom. From 0 to 360; 360 closes the
+   * ring.
+   */
   sweep?: number;
   /**
-   * O que o leitor de tela ouve. Sem ela, o valor, o maximo e o nome da faixa:
+   * What the screen reader hears. Without it, the value, the maximum and the band name:
    * "72 de 100, atencao".
    */
   label?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao
-   * maximo no nome acessivel, e `band` descreve cada faixa na regua que o
-   * leitor de tela ouve. Passe so os que mudam.
+   * The piece's texts, to change the language: `value` joins the written value to the
+   * maximum in the accessible name, and `band` describes each band on the scale the
+   * screen reader hears. Pass only the ones that change.
    */
   labels?: Partial<ChartGaugeLabels>;
-  /** Classe por parte: `arc`, `value`, `label`. */
+  /** Class per part: `arc`, `value`, `label`. */
   classNames?: Slots<"arc" | "value" | "label">;
 };
 

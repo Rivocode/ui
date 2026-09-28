@@ -1,60 +1,61 @@
-Um roteiro para começar um projeto com o `@rivocode/ui` e fazê-lo crescer sem
-virar uma pasta de componentes soltos. Não é molde obrigatório: é o caminho que
-a casa recomenda, e cada projeto adapta o que precisar.
+A roadmap for starting a project with `@rivocode/ui` and growing it without it
+turning into a folder of loose components. It is not a mandatory template: it
+is the path the house recommends, and each project adapts what it needs.
 
-O roteiro vale para os dois jeitos de montar a aplicação:
+The roadmap applies to both ways of building the application:
 
-| Base | Quando usar |
+| Base | When to use |
 | --- | --- |
-| **Vite** com TanStack Router | sistema logado, que roda no navegador: painel, gestão, área do cliente |
-| **Next.js** com App Router | quando a página precisa de SEO ou de servidor: site público, loja, página aberta |
+| **Vite** with TanStack Router | a logged-in system that runs in the browser: dashboard, back office, customer area |
+| **Next.js** with App Router | when the page needs SEO or a server: public site, store, open page |
 
-Nos dois, os dados vêm do TanStack Query e os formulários do
-`@rivocode/ui/form`. Autenticação fica de fora: cada projeto liga a sua.
+In both, data comes from TanStack Query and forms from `@rivocode/ui/form`.
+Authentication is left out: each project wires its own.
 
-## As pastas: uma por funcionalidade
+## The folders: one per feature
 
 ```
 src/
-  app/                 a casca: rotas, providers, AppShell
+  app/                    the shell: routes, providers, AppShell
   features/
-    notas/
-      schema.ts        o Zod, que é a fonte do tipo
-      api.ts           as chamadas ao servidor
-      queries.ts       os hooks do TanStack Query
-      notas-page.tsx   a tela
-      invoice-form.tsx o formulário
-      schema.test.ts   o teste
-    painel/
-  shared/              o que mais de uma funcionalidade usa
+    invoices/
+      schema.ts           the Zod schema, which is the source of the type
+      api.ts              the calls to the server
+      queries.ts          the TanStack Query hooks
+      invoices-page.tsx   the screen
+      invoice-form.tsx    the form
+      schema.test.ts      the test
+    dashboard/
+  shared/                 what more than one feature uses
 ```
 
-Funcionalidade nova é uma pasta nova em `features/`, e tudo dela mora ali: o
-schema, a API, a tela e o teste. **Uma funcionalidade não importa de dentro da
-outra**: o que as duas precisam sobe para `shared/`. É o que deixa apagar,
-mover ou entregar uma funcionalidade sem caçar referência pelo projeto, e o que
-faz o projeto de trinta telas ter a mesma cara do de três.
+A new feature is a new folder in `features/`, and everything of it lives there:
+the schema, the API, the screen and the test. **A feature does not import from
+inside another**: what both need moves up to `shared/`. That is what lets you
+delete, move or hand off a feature without hunting references across the
+project, and what makes a thirty-screen project look like a three-screen one.
 
-`app/` só monta: rota, provider e casca. Regra de negócio não mora lá.
+`app/` only assembles: route, provider and shell. Business rules do not live
+there.
 
-## O que instalar
+## What to install
 
 ```bash
 npm install @rivocode/ui lucide-react @tanstack/react-query react-hook-form zod @hookform/resolvers
 npm install -D tailwindcss
 ```
 
-No Vite, mais `@tanstack/react-router` e `@tailwindcss/vite`. No Next, mais
-`@tailwindcss/postcss`. O CSS e o plugin do Tailwind seguem a
-[Instalação](/instalacao).
+In Vite, add `@tanstack/react-router` and `@tailwindcss/vite`. In Next, add
+`@tailwindcss/postcss`. The CSS and the Tailwind plugin follow
+[Installation](/instalacao).
 
-## A casca
+## The shell
 
-O `RivoProvider` fica uma vez só, por fora de tudo, e o `AppShell` monta o
-cabeçalho, a barra lateral e o conteúdo. O item da barra lateral recebe o link
-do router pelo `render`: sem ele, cada clique recarrega a página inteira.
+`RivoProvider` goes in only once, outside everything, and `AppShell` assembles
+the header, the sidebar and the content. The sidebar item takes the router
+link through `render`: without it, every click reloads the whole page.
 
-No Vite, com o TanStack Router:
+In Vite, with TanStack Router:
 
 ```tsx
 // src/main.tsx
@@ -93,19 +94,19 @@ export function Shell() {
 }
 ```
 
-Cada tela entra na rota com `lazyRouteComponent`, e só é baixada quando alguém a
-abre:
+Each screen goes into the route with `lazyRouteComponent`, and is only
+downloaded when someone opens it:
 
 ```tsx
-const notasRoute = createRoute({
+const invoicesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/notas',
-  component: lazyRouteComponent(() => import('../features/notas/notas-page'), 'NotasPage'),
+  component: lazyRouteComponent(() => import('../features/invoices/invoices-page'), 'InvoicesPage'),
 })
 ```
 
-No Next, os providers vão num arquivo de cliente, e a casca usa o `Link` de
-`next/link` e o `usePathname`:
+In Next, the providers go in a client file, and the shell uses the `Link` from
+`next/link` and `usePathname`:
 
 ```tsx
 // src/app/providers.tsx
@@ -131,16 +132,17 @@ export function Providers({ children }: { children: ReactNode }) {
 </SidebarMenuItem>
 ```
 
-O `layout.tsx` da raiz embrulha tudo em `<Providers><Shell>{children}</Shell></Providers>`,
-e cada `page.tsx` só renderiza a tela da funcionalidade.
+The root `layout.tsx` wraps everything in
+`<Providers><Shell>{children}</Shell></Providers>`, and each `page.tsx` only
+renders the feature's screen.
 
-## Uma funcionalidade inteira
+## A whole feature
 
-**O schema é a fonte da verdade.** Ele valida o formulário e dá o tipo, e o
-campo brasileiro leva o validador da biblioteca:
+**The schema is the source of truth.** It validates the form and gives the
+type, and the Brazilian field takes the library's validator:
 
 ```ts
-// src/features/notas/schema.ts
+// src/features/invoices/schema.ts
 export const invoiceSchema = z.object({
   customer: z.string().trim().min(2, 'Informe o nome do cliente'),
   document: z.string().refine(isValidCnpj, 'CNPJ inválido: confira os dígitos'),
@@ -148,10 +150,11 @@ export const invoiceSchema = z.object({
 })
 ```
 
-**A consulta mora num hook**, e a tela não sabe de onde o dado vem:
+**The query lives in a hook**, and the screen does not know where the data
+comes from:
 
 ```ts
-// src/features/notas/queries.ts
+// src/features/invoices/queries.ts
 export function useInvoices() {
   return useQuery({ queryKey: ['notas'], queryFn: listInvoices })
 }
@@ -165,7 +168,7 @@ export function useCreateInvoice() {
 }
 ```
 
-**A tela desenha os quatro finais**, e não só o caminho feliz:
+**The screen draws the four end states**, and not just the happy path:
 
 ```tsx
 <DataTable
@@ -183,8 +186,8 @@ export function useCreateInvoice() {
 />
 ```
 
-**O formulário usa a peça certa para cada dado**: máscara e validador no CNPJ,
-centavos inteiros no dinheiro.
+**The form uses the right piece for each piece of data**: mask and validator
+on the CNPJ, integer cents for money.
 
 ```tsx
 <Form form={form} onSubmit={onSubmit}>
@@ -203,7 +206,7 @@ centavos inteiros no dinheiro.
 </Form>
 ```
 
-**Excluir oferece desfazer**, em vez de pedir confirmação:
+**Deleting offers undo**, instead of asking for confirmation:
 
 ```tsx
 async function removeWithUndo(invoice: Invoice) {
@@ -222,18 +225,18 @@ async function removeWithUndo(invoice: Invoice) {
 }
 ```
 
-Criar e editar abrem numa `Sheet` ao lado da lista, que mantém o contexto de
-trás. O motivo de cada uma dessas escolhas está no guia de fluxo da
-[Skill](/skill).
+Create and edit open in a `Sheet` beside the list, which keeps the context
+behind it. The reason for each of these choices is in the
+[Skill](/skill)'s flow guide.
 
-## O agente trabalhando do jeito da casa
+## The agent working the house way
 
-Três arquivos na raiz do projeto fazem o Claude Code, o Cursor ou outro agente
-seguir este roteiro sozinho:
+Three files at the project root make Claude Code, Cursor or another agent
+follow this roadmap on its own:
 
-- **A skill**, com `npx rivocode-ui skill`: o contrato da biblioteca, a escolha
-  de peça e as regras de fluxo.
-- **O MCP**, em `.mcp.json`:
+- **The skill**, with `npx rivocode-ui skill`: the library contract, choosing
+  pieces and the flow rules.
+- **The MCP**, in `.mcp.json`:
 
 ```json
 {
@@ -243,18 +246,18 @@ seguir este roteiro sozinho:
 }
 ```
 
-- **Um `CLAUDE.md`** que diga a arquitetura: onde mora cada coisa, que
-  funcionalidade não importa de outra, e as regras de interface (a peça do
-  catálogo antes do `<div>`, o campo que sai do dado, os quatro finais e o
-  desfazer). A auditoria de tela do MCP, o `audit_screen`, dá nota a uma tela
-  pronta.
+- **A `CLAUDE.md`** that states the architecture: where each thing lives, that
+  a feature does not import from another, and the interface rules (the catalog
+  piece before the `<div>`, the field that comes from the data, the four end
+  states and undo). The MCP's screen audit, `audit_screen`, scores a finished
+  screen.
 
-## Testes e CI
+## Tests and CI
 
-Um teste por funcionalidade, começando pelo schema, que é onde mora a regra:
+One test per feature, starting with the schema, which is where the rule lives:
 
 ```ts
-test('recusa o CNPJ com dígito errado', () => {
+test('rejects a CNPJ with a wrong digit', () => {
   const result = invoiceSchema.safeParse({
     customer: 'Clínica São Lucas',
     document: '11.222.333/0001-80',
@@ -265,5 +268,5 @@ test('recusa o CNPJ com dígito errado', () => {
 })
 ```
 
-E a CI roda tipos, testes e build em todo push, para a `main` nunca receber o
-que não compila.
+And CI runs types, tests and build on every push, so `main` never receives what
+does not compile.

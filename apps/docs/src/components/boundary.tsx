@@ -3,17 +3,18 @@ import { CloudOff } from 'lucide-react'
 import { Component, type ReactNode } from 'react'
 
 /* ---------------------------------------------------------------------------
- * Quando o pedaco nao chega
+ * When the chunk does not arrive
  *
- * Cada rota, cada corpo de doc e cada exemplo virou um chunk proprio, entao a
- * pagina passou a depender de downloads que acontecem DEPOIS de ela abrir. Dois
- * jeitos de isso falhar sao rotina, e nenhum e culpa de quem le: rede que cai
- * no meio, e deploy novo que apaga os arquivos com hash da aba aberta ha uma
- * hora - o import estoura com "Failed to fetch dynamically imported module".
+ * Every route, every doc body and every example became its own chunk, so the
+ * page came to depend on downloads that happen AFTER it opens. Two ways for
+ * that to fail are routine, and neither is the reader's fault: a network that
+ * drops midway, and a new deploy that deletes the hashed files of a tab opened
+ * an hour ago - the import blows up with "Failed to fetch dynamically imported
+ * module".
  *
- * Sem esta fronteira, os dois casos dao tela branca: o erro sobe ate a raiz e o
- * React desmonta a arvore inteira, cabecalho e barra lateral junto. Recarregar
- * resolve o segundo caso sempre, e por isso o botao esta aqui.
+ * Without this boundary, both cases give a blank screen: the error climbs to
+ * the root and React unmounts the whole tree, header and sidebar included.
+ * Reloading always fixes the second case, and that is why the button is here.
  * ------------------------------------------------------------------------- */
 
 type Props = { children: ReactNode }
@@ -32,9 +33,9 @@ export class PageBoundary extends Component<Props, { failed: boolean }> {
       <div className="py-20">
         <EmptyState
           icon={<CloudOff size={20} />}
-          title="Esta parte da página não carregou"
-          description="Pode ter sido a rede, ou uma versão nova do site publicada com esta aba aberta. Recarregar resolve os dois casos."
-          action={<Button onClick={() => window.location.reload()}>Recarregar</Button>}
+          title="This part of the page did not load"
+          description="It may have been the network, or a new version of the site published while this tab was open. Reloading fixes both cases."
+          action={<Button onClick={() => window.location.reload()}>Reload</Button>}
         />
       </div>
     )

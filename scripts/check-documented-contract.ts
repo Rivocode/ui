@@ -1,19 +1,19 @@
 /**
- * Confere se o contrato cita tudo que os subcaminhos exportam.
+ * Checks that the contract cites everything the subpaths export.
  *
- * O `convencoes.md` e a primeira coisa que um agente le, e o subcaminho de
- * grafico ja tinha ficado tres versoes atras dele: `ChartXAxis`, `ChartDonut`,
- * `Sparkline`, `ChartRadial` e o gradiente existiam no pacote e nao no
- * contrato. O agente entao escrevia grafico com a API velha, ou inventava.
+ * `convencoes.md` is the first thing an agent reads, and the chart subpath had
+ * already fallen three versions behind it: `ChartXAxis`, `ChartDonut`,
+ * `Sparkline`, `ChartRadial` and the gradient existed in the package and not in
+ * the contract. The agent then wrote charts with the old API, or invented one.
  *
- * Componente do pacote principal nao entra aqui: o indice em `/llms.txt` ja
- * os enumera, e ele e gerado. O que precisa de vigia e o texto escrito a mao,
- * e dele so a parte que promete uma lista.
+ * Main-package components do not go here: the index at `/llms.txt` already
+ * enumerates them, and it is generated. What needs watching is the handwritten
+ * text, and of it only the part that promises a list.
  *
- * Havia um "os 66" nesta frase, escrito quando o catalogo tinha 66 pecas. Ele
- * envelheceu calado ate virar 83 e ninguem viu, porque numero em comentario
- * nao tem guarda. Nao devolva o digito: ele nao carrega o argumento, e a unica
- * coisa que faz e mentir depois.
+ * There used to be a "the 66" in this sentence, written when the catalog had 66
+ * pieces. It went stale silently until it became 83 and nobody noticed, because
+ * a number in a comment has no guard. Do not bring the digit back: it does not
+ * carry the argument, and the only thing it does is lie later.
  */
 import { readdirSync, readFileSync } from "node:fs";
 
@@ -21,20 +21,20 @@ const CONTRACT_FILE = ".design-sync/conventions.md";
 const SKILL_DIR = ".claude/skills/rivocode-ui";
 
 /**
- * Os DOIS pacotes, e nao so o web.
+ * BOTH packages, and not only the web one.
  *
- * A guarda nasceu contando so `src/chart` e `src/form`, e o nativo cresceu
- * quatro subcaminhos por fora dela - `chart`, `form`, `clipboard` e
- * `file-upload`. Peer opcional que ninguem cita e pior que peer nenhum: quem
- * le o contrato nao descobre que a peca existe, e quem le a skill escreve a
- * importacao da raiz, que nao tem a peca. Tirar as quatro linhas de baixo
- * devolve o ponto cego inteiro.
+ * The guard was born counting only `src/chart` and `src/form`, and native grew
+ * four subpaths outside it - `chart`, `form`, `clipboard` and `file-upload`. An
+ * optional peer nobody cites is worse than no peer: whoever reads the contract
+ * does not find out the piece exists, and whoever reads the skill writes the
+ * root import, which does not have the piece. Removing the four lines below
+ * brings back the whole blind spot.
  *
- * Os hooks utilitarios entram pelo mesmo motivo, apesar de sairem da raiz e
- * nao de subcaminho: sao vinte e tantos nomes que o indice de pecas nao
- * enumera - hook nao tem pagina -, e a lista deles no contrato e na skill e
- * escrita a mao. As duas linhas leem o barril de cada pacote, e nao o
- * `index.ts` da raiz, para cobrar so os hooks e nao o catalogo inteiro.
+ * The utility hooks come in for the same reason, even though they come from the
+ * root and not from a subpath: they are twenty-some names the piece index does
+ * not enumerate - a hook has no page -, and their list in the contract and in
+ * the skill is handwritten. The two lines read each package's barrel, and not
+ * the root `index.ts`, to demand only the hooks and not the whole catalog.
  */
 const TARGETS = [
   { file: "src/hooks/public.ts", name: "@rivocode/ui (hooks)" },
@@ -54,11 +54,11 @@ const TARGETS = [
 
 const contract = readFileSync(CONTRACT_FILE, "utf8");
 /**
- * A skill inteira, e nao so o corpo dela.
+ * The whole skill, and not only its body.
  *
- * O corpo virou indice, e o detalhe de formulario e de grafico mora em
- * `reference/`. Lendo so o SKILL.md, a guarda passou a cobrar nomes que estao
- * documentados no arquivo ao lado.
+ * The body became an index, and the form and chart detail lives in
+ * `reference/`. Reading only SKILL.md, the guard started demanding names that
+ * are documented in the file next to it.
  */
 const skill = [
   readFileSync(`${SKILL_DIR}/SKILL.md`, "utf8"),
@@ -68,22 +68,22 @@ const skill = [
 ].join("\n");
 
 /**
- * O que o subcaminho exporta de proprio.
+ * What the subpath exports of its own.
  *
- * As reexportacoes da Recharts ficam de fora: elas sao listadas em bloco nos
- * dois textos, e cobrar uma a uma so criaria ruido a cada peca que a Recharts
- * ganhar.
+ * The Recharts re-exports are left out: they are listed as a block in both
+ * texts, and demanding them one by one would only create noise every time
+ * Recharts gains a piece.
  */
 function exportsOf(file: string) {
   const source = readFileSync(file, "utf8");
   const withoutRecharts = source
-    // `[^}]` e nao `[\s\S]*?`: o nao-guloso comecava no primeiro `export {` do
-    // arquivo e apagava src/chart/index.ts inteiro antes de contar - o check
-    // saia verde havia versoes com useChartMotion, ChartLegend e
-    // ChartLegendContent fora da skill.
+    // `[^}]` and not `[\s\S]*?`: the non-greedy one started at the file's first
+    // `export {` and erased all of src/chart/index.ts before counting - the check
+    // had been passing green for versions with useChartMotion, ChartLegend and
+    // ChartLegendContent missing from the skill.
     .replace(/export \{[^}]*\} from "recharts";/g, "")
-    // Comentario dentro do bloco de export nao e nome de export: sem tirar,
-    // "// os nomes de antes" virava uma peca que a doc precisaria citar.
+    // A comment inside the export block is not an export name: without removing
+    // it, "// the old names" became a piece the docs would need to cite.
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/\/\/[^\n]*/g, "");
 
@@ -92,8 +92,8 @@ function exportsOf(file: string) {
   for (const block of withoutRecharts.matchAll(/export \{([\s\S]*?)\} from/g)) {
     for (const raw of block[1].split(",")) {
       const part = raw.trim();
-      // Tipo nao precisa aparecer em texto de contrato: quem escreve tela usa a
-      // peca, e o tipo chega pelo editor.
+      // A type does not need to appear in contract text: whoever writes a screen
+      // uses the piece, and the type arrives through the editor.
       if (!part || part.startsWith("type ")) continue;
       names.add(part);
     }
@@ -111,19 +111,19 @@ for (const target of TARGETS) {
 
   if (missingFromContract.length > 0) {
     console.error(
-      `${CONTRACT_FILE} nao cita, de ${target.name}: ${missingFromContract.join(", ")}`,
+      `${CONTRACT_FILE} does not cite, from ${target.name}: ${missingFromContract.join(", ")}`,
     );
     misses += missingFromContract.length;
   }
   if (missingFromSkill.length > 0) {
-    console.error(`a skill nao cita, de ${target.name}: ${missingFromSkill.join(", ")}`);
+    console.error(`the skill does not cite, from ${target.name}: ${missingFromSkill.join(", ")}`);
     misses += missingFromSkill.length;
   }
 }
 
 if (misses > 0) {
-  console.error(`\nO que um agente le ficou atras do que o pacote exporta.`);
+  console.error(`\nWhat an agent reads fell behind what the package exports.`);
   process.exit(1);
 }
 
-console.log(`contrato e skill citam tudo que os subcaminhos exportam.`);
+console.log(`contract and skill cite everything the subpaths export.`);

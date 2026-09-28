@@ -1,15 +1,15 @@
 import { DemoApp } from '@/demo/app'
 
 /* ---------------------------------------------------------------------------
- * O endereco da demonstracao
+ * The demo address
  *
- * Uma pagina, e nao uma pagina sobre uma pagina. A aplicacao ocupa a janela
- * abaixo do cabecalho do site, sem introducao e sem moldura: a pergunta com que
- * alguem chega e se isto se sustenta como sistema, e um paragrafo explicando
- * isso atrapalha a unica coisa que responde.
+ * A page, not a page about a page. The application fills the window below the
+ * site header, with no introduction and no frame: the question someone arrives
+ * with is whether this holds up as a system, and a paragraph explaining that
+ * gets in the way of the only thing that answers it.
  *
- * Tudo que interessa esta em `demo/`, escrito do jeito que alguem escreveria
- * uma tela de verdade com esta biblioteca.
+ * Everything that matters is in `demo/`, written the way someone would write a
+ * real screen with this library.
  * ------------------------------------------------------------------------- */
 
 export function DemoPage() {

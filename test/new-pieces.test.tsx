@@ -12,21 +12,21 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("o atalho sai uma tecla por parte, e o leitor de tela ouve a combinacao", () => {
+test("the shortcut comes out one key per part, and the screen reader hears the combination", () => {
   withTheme(<Kbd keys="mod+k" />);
 
-  // O rotulo diz a combinacao inteira; as teclas em si ficam escondidas, senao
-  // o leitor soletraria "comando" e "K" como dois textos soltos. O nome falado
-  // e o da tecla que existe no teclado - `mod` nao e tecla, e era o que o
-  // rotulo dizia.
+  // The label says the whole combination; the keys themselves stay hidden,
+  // otherwise the reader would spell "command" and "K" as two loose texts. The
+  // spoken name is the one of the key that exists on the keyboard - `mod` is
+  // not a key, and it was what the label said.
   const group = screen.getByLabelText("Control mais K");
   expect(group.querySelectorAll("kbd").length).toBe(2);
-  // Nome em `span` generico e descartado pelo leitor: o papel e o que segura o
-  // rotulo de pe.
+  // A name on a generic `span` is dropped by the reader: the role is what keeps
+  // the label standing.
   expect(group.getAttribute("role")).toBe("img");
 });
 
-test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {
+test("the button group joins the borders without each button knowing about it", () => {
   const { container } = withTheme(
     <ButtonGroup>
       <Button>Salvar</Button>
@@ -37,18 +37,18 @@ test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {
   const group = container.querySelector("[role=group]");
   expect(group).not.toBeNull();
   expect(group!.querySelectorAll("button").length).toBe(2);
-  // Nenhuma classe de canto foi escrita nos filhos.
+  // No corner class was written on the children.
   expect(screen.getByText("Salvar").className).not.toContain("rounded-r-none");
 });
 
-test("a proporcao vira estilo, e nao mais uma classe escrita a mao", () => {
+test("the ratio becomes a style, and no longer a hand-written class", () => {
   const { container } = withTheme(
-    <AspectRatio ratio={4 / 3} data-testid="moldura">
+    <AspectRatio ratio={4 / 3} data-testid="frame">
       <img src="/nota.png" alt="" />
     </AspectRatio>,
   );
 
-  const box = container.querySelector<HTMLElement>("[data-testid=moldura]")!;
+  const box = container.querySelector<HTMLElement>("[data-testid=frame]")!;
   expect(box.getAttribute("style")).toContain("aspect-ratio");
   expect(box.getAttribute("style")).toContain("1.333");
 });
@@ -63,7 +63,7 @@ const GROUPS: CommandGroup[] = [
   },
 ];
 
-test("a paleta acha pelo apelido, e nao so pelo rotulo exato", () => {
+test("the palette finds by alias, not only by the exact label", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
 
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "fatura" } });
@@ -72,7 +72,7 @@ test("a paleta acha pelo apelido, e nao so pelo rotulo exato", () => {
   expect(screen.queryByRole("option", { name: /Clientes/ })).toBeNull();
 });
 
-test("a paleta ignora acento, porque ninguem digita acento com pressa", () => {
+test("the palette ignores accents, because nobody types accents in a hurry", () => {
   const groups: CommandGroup[] = [
     { items: [{ id: "sao", label: "São Paulo", onSelect: () => {} }] },
   ];
@@ -83,15 +83,15 @@ test("a paleta ignora acento, porque ninguem digita acento com pressa", () => {
   expect(screen.getByRole("option", { name: /São Paulo/ })).toBeDefined();
 });
 
-test("Enter escolhe o item marcado, e fecha", () => {
+test("Enter picks the highlighted item, and closes", () => {
   let picked = "";
   let isOpen = true;
 
   withTheme(
     <Command
       open
-      onOpenChange={(proxima) => {
-        isOpen = proxima;
+      onOpenChange={(next) => {
+        isOpen = next;
       }}
       groups={[
         {
@@ -112,7 +112,7 @@ test("Enter escolhe o item marcado, e fecha", () => {
   expect(isOpen).toBe(false);
 });
 
-test("sem resultado ela diz isso, em vez de mostrar lista vazia", () => {
+test("with no result it says so, instead of showing an empty list", () => {
   withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
 
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "zzz" } });
@@ -120,7 +120,7 @@ test("sem resultado ela diz isso, em vez de mostrar lista vazia", () => {
   expect(screen.getByText("Nada com esse nome")).toBeDefined();
 });
 
-test("mudar a consulta volta o realce para o topo, e o Enter segue o realce", () => {
+test("changing the query moves the highlight back to the top, and Enter follows the highlight", () => {
   let picked = "";
 
   withTheme(

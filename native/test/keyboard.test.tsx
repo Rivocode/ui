@@ -54,8 +54,8 @@ const liftOf = (screen: ReturnType<typeof render>) =>
   (riserOf(screen).props.style as { transform: { translateY: number }[] }).transform[0]!
     .translateY + 0;
 
-describe("um KeyboardProvider so, e o RivoProvider e quem o poe", () => {
-  test("sem nada por fora, o RivoProvider monta exatamente um", () => {
+describe("a single KeyboardProvider, and RivoProvider is what puts it there", () => {
+  test("with nothing outside, RivoProvider mounts exactly one", () => {
     const before = board.providers;
     const screen = render(<Text>tela</Text>);
     expect(board.providers - before).toBe(1);
@@ -63,7 +63,7 @@ describe("um KeyboardProvider so, e o RivoProvider e quem o poe", () => {
     expect(board.providers).toBe(before);
   });
 
-  test("o app que ja tinha o seu continua com um, e nao com dois", () => {
+  test("an app that already had its own keeps one, not two", () => {
     const before = board.providers;
     let screen!: ReturnType<typeof create>;
     act(() => {
@@ -80,8 +80,8 @@ describe("um KeyboardProvider so, e o RivoProvider e quem o poe", () => {
   });
 });
 
-describe("a folha sobe com o teclado", () => {
-  test("o fundo da folha acompanha cada quadro do teclado, e volta ao fechar", () => {
+describe("the sheet rises with the keyboard", () => {
+  test("the sheet bottom follows every keyboard frame, and comes back on close", () => {
     const screen = render(
       <Sheet open onOpenChange={() => {}} title="Buscar cliente">
         <Input value="" onChangeText={() => {}} />
@@ -106,7 +106,7 @@ describe("a folha sobe com o teclado", () => {
     expect(paddingOf(screen)).toBe(0);
   });
 
-  test("com reduzir movimento, pula para o lugar final no inicio e ignora os quadros", () => {
+  test("with reduce motion, it jumps to the final place at the start and ignores the frames", () => {
     reduceMotion(true);
     const screen = render(
       <Sheet open onOpenChange={() => {}} title="Buscar cliente">
@@ -127,7 +127,7 @@ describe("a folha sobe com o teclado", () => {
     expect(paddingOf(screen)).toBe(0);
   });
 
-  test("o painel encolhe no espaco que sobra, em vez de passar do topo da tela", () => {
+  test("the panel shrinks into the remaining space, instead of going past the top of the screen", () => {
     const screen = render(
       <Sheet open onOpenChange={() => {}} title="Buscar cliente">
         <Text>lista</Text>
@@ -146,7 +146,7 @@ describe("a folha sobe com o teclado", () => {
     expect(String(panel[0]!.props.className).split(" ")).toContain("shrink");
   });
 
-  test("o Combobox abre a busca na folha, e a folha e a lista cedem ao teclado", () => {
+  test("Combobox opens the search in the sheet, and the sheet and the list yield to the keyboard", () => {
     const screen = render(
       <Combobox
         items={[
@@ -175,8 +175,8 @@ describe("a folha sobe com o teclado", () => {
   });
 });
 
-describe("o Dialog tambem desvia", () => {
-  test("o cartao central sobe no espaco acima do teclado", () => {
+describe("Dialog also avoids it", () => {
+  test("the centered card rises into the space above the keyboard", () => {
     const screen = render(
       <Dialog open onOpenChange={() => {}} title="Renomear">
         <Input value="" onChangeText={() => {}} />
@@ -198,7 +198,7 @@ describe("o Dialog tambem desvia", () => {
   });
 });
 
-describe("ScrollArea: a tela de formulario", () => {
+describe("ScrollArea: the form screen", () => {
   const form = (footer?: boolean) => (
     <ScrollArea
       contentContainerClassName="gap-4 p-5"
@@ -216,7 +216,7 @@ describe("ScrollArea: a tela de formulario", () => {
     return found[0]!;
   };
 
-  test("rola ate o campo em foco, com folga, e o toque na lista nao fecha o teclado", () => {
+  test("scrolls to the focused field, with slack, and a tap on the list does not close the keyboard", () => {
     const screen = render(form());
     const scroll = scrollOf(screen);
     expect(scroll.props.bottomOffset).toBe(16);
@@ -229,7 +229,7 @@ describe("ScrollArea: a tela de formulario", () => {
     expect(content).toContain("p-5");
   });
 
-  test("a altura do rodape entra na conta, para o campo parar acima do botao", () => {
+  test("the footer height enters the math, so the field stops above the button", () => {
     const screen = render(form(true));
     expect(scrollOf(screen).props.bottomOffset).toBe(16);
 
@@ -237,7 +237,7 @@ describe("ScrollArea: a tela de formulario", () => {
     expect(scrollOf(screen).props.bottomOffset).toBe(88);
   });
 
-  test("o rodape sobe quadro a quadro com o teclado, e desce ao fechar", () => {
+  test("the footer rises frame by frame with the keyboard, and drops on close", () => {
     const screen = render(form(true));
     expect(liftOf(screen)).toBe(0);
     frame(90, 300);
@@ -248,7 +248,7 @@ describe("ScrollArea: a tela de formulario", () => {
     expect(liftOf(screen)).toBe(0);
   });
 
-  test("com reduzir movimento, o rodape pula direto para cima do teclado", () => {
+  test("with reduce motion, the footer jumps straight above the keyboard", () => {
     reduceMotion(true);
     const screen = render(form(true));
     start(300);
@@ -259,7 +259,7 @@ describe("ScrollArea: a tela de formulario", () => {
     expect(liftOf(screen)).toBe(0);
   });
 
-  test("sem rodape, nada fica preso embaixo da rolagem", () => {
+  test("without a footer, nothing gets stuck under the scroll", () => {
     const screen = render(form());
     const risers = byType(screen, "View").filter(
       (node) => (node.props.style as { transform?: unknown } | undefined)?.transform !== undefined,

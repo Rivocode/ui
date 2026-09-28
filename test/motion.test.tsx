@@ -104,7 +104,7 @@ function lineAt(code: string, at: number) {
   return code.slice(0, at).split("\n").length;
 }
 
-test("a propriedade que o estado muda e a mesma que a transicao anima", async () => {
+test("the property the state changes is the same one the transition animates", async () => {
   const files = await sources();
   expect(files.length).toBeGreaterThan(80);
 
@@ -123,7 +123,7 @@ test("a propriedade que o estado muda e a mesma que a transicao anima", async ()
   expect(jumps).toEqual([]);
 });
 
-test("nenhuma lista de transicao nomeia transform, que o Tailwind 4 nao escreve", async () => {
+test("no transition list names transform, which Tailwind 4 does not write", async () => {
   const files = await sources();
   expect(files.length).toBeGreaterThan(80);
 
@@ -139,7 +139,7 @@ test("nenhuma lista de transicao nomeia transform, que o Tailwind 4 nao escreve"
   expect(named).toEqual([]);
 });
 
-test("toda transicao dura um token, que zera quando a pessoa pede menos movimento", async () => {
+test("every transition lasts a token, which drops to zero when the person asks for reduced motion", async () => {
   const files = await sources();
   expect(files.length).toBeGreaterThan(80);
 
@@ -165,7 +165,7 @@ test("toda transicao dura um token, que zera quando a pessoa pede menos moviment
   expect(fixed).toEqual([]);
 });
 
-test("toda transicao nomeia uma curva da casa, e nao herda a do Tailwind", async () => {
+test("every transition names a house curve, and does not inherit Tailwind's", async () => {
   const files = await sources();
   expect(files.length).toBeGreaterThan(80);
 
@@ -198,7 +198,7 @@ const TOKEN_TIMED = new Set(
   ].map((hit) => hit[1]!),
 );
 
-test("toda animacao para ou zera quando a pessoa pede menos movimento", async () => {
+test("every animation stops or drops to zero when the person asks for reduced motion", async () => {
   expect([...TOKEN_TIMED]).toEqual(
     expect.arrayContaining(["animate-rise", "animate-fade", "animate-enter", "animate-fill"]),
   );
@@ -228,9 +228,9 @@ test("toda animacao para ou zera quando a pessoa pede menos movimento", async ()
 
       const arbitrary = /^animate-\[([\w-]+)_([^\]]+)\]$/.exec(utility);
       if (arbitrary) {
-        if (!keyframes.has(arbitrary[1]!)) loose.push(`${where} (keyframe inexistente)`);
+        if (!keyframes.has(arbitrary[1]!)) loose.push(`${where} (missing keyframe)`);
         if (!/var\(--rc-duration-(?:fast|base|slow|sheet)\)/.test(arbitrary[2]!)) {
-          loose.push(`${where} (duracao fora do token)`);
+          loose.push(`${where} (duration outside the token)`);
         }
         continue;
       }
@@ -241,7 +241,7 @@ test("toda animacao para ou zera quando a pessoa pede menos movimento", async ()
       const calm = block
         ? tokensOf(block.text).includes(`motion-reduce:${prefix}animate-none`)
         : false;
-      if (!calm) loose.push(`${where} (sem motion-reduce:${prefix}animate-none)`);
+      if (!calm) loose.push(`${where} (no motion-reduce:${prefix}animate-none)`);
     }
   }
 
@@ -261,7 +261,7 @@ function expectAnimatedEntry(element: Element | null, entry: string[]) {
   expect(tokens.some((token) => token.startsWith("duration-[var(--rc-duration-"))).toBe(true);
 }
 
-test("o painel flutuante cresce e aparece, e o crescer nao e de estalo", () => {
+test("the floating panel grows and fades in, and the growth is not a snap", () => {
   render(
     <RivoProvider scope="local">
       <Menu defaultOpen>
@@ -288,7 +288,7 @@ test("o painel flutuante cresce e aparece, e o crescer nao e de estalo", () => {
   expect(tokensOfElement(screen.getByRole("menu"))).not.toContain("transition-[opacity,transform]");
 });
 
-test("o dialogo entra junto com a tarja, e nao de estalo por cima dela", () => {
+test("the dialog enters together with the backdrop, and does not snap on top of it", () => {
   render(
     <RivoProvider scope="local">
       <Dialog open>
@@ -310,7 +310,7 @@ test("o dialogo entra junto com a tarja, e nao de estalo por cima dela", () => {
   expectAnimatedEntry(screen.getByTestId("ad"), entry);
 });
 
-test("a paleta de comandos e a tarja dela entram animadas", () => {
+test("the command palette and its backdrop enter animated", () => {
   render(
     <RivoProvider scope="local">
       <Command open onOpenChange={() => {}} groups={[]} />
@@ -328,7 +328,7 @@ test("a paleta de comandos e a tarja dela entram animadas", () => {
   ]);
 });
 
-test("o polegar do interruptor desliza, porque a transicao anima translate", () => {
+test("the switch thumb slides, because the transition animates translate", () => {
   render(<Switch aria-label="Notificar" defaultChecked />);
 
   const thumb = screen.getByRole("switch").querySelector("span");
@@ -339,7 +339,7 @@ test("o polegar do interruptor desliza, porque a transicao anima translate", () 
   expect(stranded(tokens)).toEqual([]);
 });
 
-test("a marca da caixa e o ponto do radio aparecem crescendo", () => {
+test("the checkbox mark and the radio dot appear by growing", () => {
   render(
     <>
       <Checkbox aria-label="Aceito" defaultChecked />
@@ -364,7 +364,7 @@ function Disparo() {
   return <Button onClick={() => toast.add({ title: "Nota emitida" })}>Emitir</Button>;
 }
 
-test("o aviso desliza de verdade, porque a transicao anima translate", () => {
+test("the toast really slides, because the transition animates translate", () => {
   render(
     <RivoProvider scope="local" toastPosition="bottom-right">
       <Disparo />
@@ -378,7 +378,7 @@ test("o aviso desliza de verdade, porque a transicao anima translate", () => {
   expect(stranded(tokens)).toEqual([]);
 });
 
-test("a mensagem de erro do campo chega descendo e sai do mesmo jeito", () => {
+test("the field error message arrives sliding down and leaves the same way", () => {
   render(
     <Field name="email" invalid>
       <FieldLabel>Email</FieldLabel>
@@ -395,7 +395,7 @@ test("a mensagem de erro do campo chega descendo e sai do mesmo jeito", () => {
   ]);
 });
 
-test("o painel da aba nova aparece esmaecendo, e o velho sai sem esperar", () => {
+test("the new tab panel fades in, and the old one leaves without waiting", () => {
   render(
     <Tabs defaultValue="abertas">
       <TabList>
@@ -414,7 +414,7 @@ test("o painel da aba nova aparece esmaecendo, e o velho sai sem esperar", () =>
   expect(tokensOfElement(panel)).not.toContain("data-[ending-style]:opacity-0");
 });
 
-test("o trilho entre etapas pinta o que ja foi feito, e a marca da etapa troca de cor animada", () => {
+test("the rail between steps paints what is done, and the step marker changes color animated", () => {
   const steps = [
     { id: "a", title: "Dados" },
     { id: "b", title: "Pagamento" },
@@ -435,7 +435,7 @@ test("o trilho entre etapas pinta o que ja foi feito, e a marca da etapa troca d
   expect(tokens).toContain("duration-[var(--rc-duration-base)]");
 });
 
-test("a confirmacao da copia aparece esmaecendo, pelo keyframe e pela duracao do token", async () => {
+test("the copy confirmation fades in, through the keyframe and the token duration", async () => {
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,
     value: { writeText: async () => {} },
@@ -452,7 +452,7 @@ test("a confirmacao da copia aparece esmaecendo, pelo keyframe e pela duracao do
   );
 });
 
-test("o mes novo do calendario entra pelo lado para onde a pessoa andou", () => {
+test("the new calendar month enters from the side the person moved toward", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <Calendar defaultMonth={new Date(2026, 0, 1)} />
@@ -468,7 +468,7 @@ test("o mes novo do calendario entra pelo lado para onde a pessoa andou", () => 
   expect(classes.flat()).not.toContain("animate-shift-in-previous");
 });
 
-test("a classe de animacao que o react-day-picker tira com classList.remove e um nome so", () => {
+test("the animation class that react-day-picker removes with classList.remove is a single name", () => {
   const source = readFileSync(join(import.meta.dir, "../src/components/calendar.tsx"), "utf8");
   const keys = [
     ...source.matchAll(/(?:weeks|caption)_(?:before|after)_(?:enter|exit):\s*("[^"]*"|[^,\n]+),/g),

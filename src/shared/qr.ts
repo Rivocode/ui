@@ -1,15 +1,18 @@
 export type QrLevel = "L" | "M" | "Q" | "H";
 
 export type QrMatrix = {
-  /** Lado do simbolo em modulos, sem a margem de silencio: `17 + 4 * version`. */
+  /** Side of the symbol in modules, without the quiet zone: `17 + 4 * version`. */
   size: number;
-  /** A versao escolhida, de 1 a 40: a menor em que o texto cabe no nivel pedido. */
+  /**
+   * The chosen version, from 1 to 40: the smallest one in which the text fits at the requested
+   * level.
+   */
   version: number;
-  /** O nivel de correcao usado. */
+  /** The correction level used. */
   level: QrLevel;
-  /** A mascara escolhida, de 0 a 7: a de menor penalidade pela ISO/IEC 18004. */
+  /** The chosen mask, from 0 to 7: the one with the lowest penalty per ISO/IEC 18004. */
   mask: number;
-  /** Linha a linha, `true` e modulo escuro. */
+  /** Row by row, `true` is a dark module. */
   modules: boolean[][];
 };
 
@@ -388,7 +391,7 @@ export function encodeQr(text: string, level: QrLevel = "M"): QrMatrix {
   }
   if (version > 40) {
     throw new RangeError(
-      `O texto nao cabe num QR Code de nivel ${level}: sao ${segment.bits.length} bits de dado.`,
+      `The text does not fit in a QR Code at level ${level}: it is ${segment.bits.length} bits of data.`,
     );
   }
 

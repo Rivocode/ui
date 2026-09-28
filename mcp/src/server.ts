@@ -7,10 +7,10 @@ import {
   RULES,
 } from "../../.claude/skills/rivocode-ui-audit/scripts/audit.mjs";
 import type { ComponentEntry, Content } from "./content";
-import { clip, compact, fold, overlap, stems, terms, words } from "./text";
+import { clip, compact, fold, overlap, queryStems, stems, terms, words } from "./text";
 
 export type ServerOptions = {
-  /** A versao do proprio `@rivocode/ui-mcp`, que o cliente ve no aperto de mao. */
+  /** The version of `@rivocode/ui-mcp` itself, which the client sees in the handshake. */
   version: string;
 };
 
@@ -25,6 +25,7 @@ const fail = (text: string): Answer => ({ content: [{ type: "text", text }], isE
 
 const GUIDE_ALIASES: Record<string, string> = {
   conventions: "convencoes",
+  contract: "convencoes",
   contrato: "convencoes",
   ia: "para-agents",
   ai: "para-agents",
@@ -34,13 +35,18 @@ const GUIDE_ALIASES: Record<string, string> = {
   llms: "para-agents",
   mcp: "para-agents",
   install: "instalacao",
+  installation: "instalacao",
   instalar: "instalacao",
+  "quick start": "inicio-rapido",
+  architecture: "arquitetura",
+  "brazilian documents": "documentos-brasileiros",
   theme: "temas",
   tema: "temas",
   themes: "temas",
   density: "densidade",
   icons: "icones",
   icone: "icones",
+  icon: "icones",
   formulario: "formularios",
   form: "formularios",
   forms: "formularios",
@@ -48,17 +54,27 @@ const GUIDE_ALIASES: Record<string, string> = {
   chart: "graficos",
   charts: "graficos",
   a11y: "acessibilidade",
+  accessibility: "acessibilidade",
   method: "metodo",
+  flow: "fluxo",
+  text: "texto",
+  copy: "texto",
   components: "escolha-de-peca",
+  "choosing a piece": "escolha-de-peca",
   theming: "vestir-cliente",
   native: "tela-nativa",
   "react native": "react-native",
   reactnative: "react-native",
   quickstart: "inicio-rapido",
   audit: "auditoria",
+  "full skill": "skill-completa",
+  skill: "skill-completa",
   auditar: "auditoria",
   "rivocode-ui-audit": "auditoria",
 };
+
+const ABSENT = /n[ãa]o porta|fila|not port|queue/;
+const JUDGMENT = new Set(["julgamento", "judgment"]);
 
 const CATEGORIES = ["color", "scale", "density", "motion", "all"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -144,8 +160,8 @@ export function createServer(content: Content, options: ServerOptions): McpServe
     });
 
     return near.length > 0
-      ? `Talvez: ${near.slice(0, 8).join(", ")}.`
-      : "Use `list_components` para ver o catálogo, ou `recommend_component` para descrever a intenção.";
+      ? `Maybe: ${near.slice(0, 8).join(", ")}.`
+      : "Use `list_components` to see the catalog, or `recommend_component` to describe the intent.";
   }
 
   function pageOf(entry: ComponentEntry) {
@@ -164,19 +180,19 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   }
 
   const provenance =
-    `Documentação empacotada de @rivocode/ui ${web} e @rivocode/ui-native ${native}.` +
-    ` A versão mais nova mora em ${SITE}.`;
+    `Bundled documentation of @rivocode/ui ${web} and @rivocode/ui-native ${native}.` +
+    ` The newest version lives at ${SITE}.`;
 
   const server = new McpServer(
     { name: "rivocode-ui", title: "RivoCode UI", version: options.version },
     {
       instructions:
-        "Design system da RivoCode (@rivocode/ui no web, @rivocode/ui-native no React Native). " +
-        "Antes de montar uma tela, leia `get_guide` com `convencoes`. Para escolher uma peça, " +
-        "descreva a intenção em `recommend_component`; para usá-la, leia a página inteira em " +
-        "`get_component` - props, exemplos e quando não usar. Cor, escala e densidade saem de " +
-        "`get_tokens`: nunca escreva cor literal. Para dar nota a uma tela pronta, `audit_screen`. " +
-        "Tudo é servido do pacote, sem rede. " +
+        "RivoCode's design system (@rivocode/ui on the web, @rivocode/ui-native on React Native). " +
+        "Before building a screen, read `get_guide` with `convencoes`. To choose a piece, " +
+        "describe the intent in `recommend_component`; to use it, read the whole page in " +
+        "`get_component` - props, examples and when not to use it. Color, scale and density come " +
+        "from `get_tokens`: never write a literal color. To score a finished screen, `audit_screen`. " +
+        "Everything is served from the package, with no network. " +
         provenance,
     },
   );
@@ -184,15 +200,15 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "list_components",
     {
-      title: "Listar as peças",
+      title: "List the pieces",
       description:
-        "Lista as peças do catálogo do @rivocode/ui, agrupadas por família, com uma linha " +
-        "sobre cada uma, as partes que só existem dentro dela e o estado no React Native.",
+        "Lists the pieces of the @rivocode/ui catalog, grouped by family, with one line " +
+        "about each, the parts that only exist inside it and its state on React Native.",
       inputSchema: {
         family: z
           .string()
           .optional()
-          .describe("Filtra por família, como Formulário ou Feedback. Sem acento também serve."),
+          .describe("Filters by family, such as Feedback. Case and accents are ignored."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
@@ -208,7 +224,7 @@ export function createServer(content: Content, options: ServerOptions): McpServe
 
       if (families.size === 0) {
         const known = [...new Set(content.components.map((entry) => entry.family))].sort();
-        return fail(`Não há a família "${family}". As famílias são: ${known.join(", ")}.`);
+        return fail(`There is no family "${family}". The families are: ${known.join(", ")}.`);
       }
 
       const count = [...families.values()].reduce((sum, list) => sum + list.length, 0);
@@ -217,15 +233,15 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         .map(([name, list]) => {
           const lines = list.map((entry) => {
             const parity = content.parity[entry.name]?.state;
-            const parts = entry.parts.length > 0 ? ` Partes: ${entry.parts.join(", ")}.` : "";
+            const parts = entry.parts.length > 0 ? ` Parts: ${entry.parts.join(", ")}.` : "";
             return `- **${entry.name}** — ${entry.summary}${parts}${parity ? ` (React Native: ${parity})` : ""}`;
           });
           return `## ${name}\n\n${lines.join("\n")}`;
         });
 
       return reply(
-        `# Catálogo do @rivocode/ui\n\n${count} peças. ${provenance}\n` +
-          "A página de cada uma sai de `get_component`.\n\n" +
+        `# The @rivocode/ui catalog\n\n${count} pieces. ${provenance}\n` +
+          "The page of each one comes from `get_component`.\n\n" +
           sections.join("\n\n"),
       );
     },
@@ -234,28 +250,32 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "get_component",
     {
-      title: "Página de uma peça",
+      title: "Page of a piece",
       description:
-        "Devolve a página markdown inteira de uma peça: para que serve, importação, exemplos " +
-        'que rodam, tabela de props, as partes, a seção "Quando não usar" e como ela fica no ' +
-        "React Native. Aceita o nome exportado (DataTable), o kebab (data-table) ou uma parte " +
-        "(CardHeader), que devolve a página da peça que a compõe.",
+        "Returns the whole markdown page of a piece: what it is for, import, examples that " +
+        'run, props table, the parts, the "When not to use" section and how it looks on ' +
+        "React Native. Accepts the exported name (DataTable), the kebab name (data-table) or a " +
+        "part (CardHeader), which returns the page of the piece that contains it.",
       inputSchema: {
-        name: z.string().min(1).describe("O nome da peça, como DataTable ou data-table."),
+        name: z.string().min(1).describe("The piece name, such as DataTable or data-table."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ name }) => {
       const found = resolveName(name);
       const entry = found ? ownerOf(found) : undefined;
-      if (!found || !entry) return fail(`Não há peça "${name}" no catálogo. ${suggest(name)}`);
+      if (!found || !entry)
+        return fail(`There is no piece "${name}" in the catalog. ${suggest(name)}`);
 
       const asked = name.trim();
-      const shown = found === entry.name && asked !== entry.name && compact(asked) !== compact(entry.slug) ? asked : found;
+      const shown =
+        found === entry.name && asked !== entry.name && compact(asked) !== compact(entry.slug)
+          ? asked
+          : found;
       const note =
         shown === entry.name
           ? ""
-          : `> \`${shown}\` é parte de \`${entry.name}\` e só existe dentro dela. A página abaixo documenta as duas.\n\n`;
+          : `> \`${shown}\` is a part of \`${entry.name}\` and only exists inside it. The page below documents both.\n\n`;
 
       return reply(`${note}${pageOf(entry)}\n\n---\n\n${provenance}`);
     },
@@ -271,19 +291,19 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "search_docs",
     {
-      title: "Buscar na documentação",
+      title: "Search the documentation",
       description:
-        "Busca textual em toda a documentação empacotada: páginas de peça, guias, convenções " +
-        "e a skill. Ignora acento e caixa, e devolve os documentos com os trechos que casaram.",
+        "Full-text search over all the bundled documentation: piece pages, guides, conventions " +
+        "and the skill. Ignores accents and case, and returns the documents with the matching snippets.",
       inputSchema: {
-        query: z.string().min(2).describe('O que procurar, como "máscara de CNPJ" ou "z-index".'),
+        query: z.string().min(2).describe('What to look for, such as "CNPJ mask" or "z-index".'),
         limit: z
           .number()
           .int()
           .min(1)
           .max(30)
           .optional()
-          .describe("Quantos documentos, até 30. O padrão é 8."),
+          .describe("How many documents, up to 30. The default is 8."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
@@ -295,7 +315,7 @@ export function createServer(content: Content, options: ServerOptions): McpServe
           meaningful.length > 0 ? meaningful : words(query).filter((word) => word.length > 1),
         ),
       ];
-      if (wanted.length === 0) return fail("A busca precisa de ao menos uma palavra.");
+      if (wanted.length === 0) return fail("The search needs at least one word.");
 
       const weight = new Map(
         wanted.map((term) => {
@@ -328,14 +348,14 @@ export function createServer(content: Content, options: ServerOptions): McpServe
 
       if (hits.length === 0) {
         return reply(
-          `Nada casou com "${query}". Tente outras palavras, ou ` +
-            "`recommend_component` se o que você tem é uma intenção de tela.",
+          `Nothing matched "${query}". Try other words, or ` +
+            "`recommend_component` if what you have is a screen intent.",
         );
       }
 
       const partial =
         best < wanted.length
-          ? `Nenhum documento tem todas as palavras; estes têm ${best} de ${wanted.length}.\n\n`
+          ? `No document has all the words; these have ${best} of ${wanted.length}.\n\n`
           : "";
 
       const blocks = hits.map(({ doc, matched }) => {
@@ -355,8 +375,8 @@ export function createServer(content: Content, options: ServerOptions): McpServe
       });
 
       return reply(
-        `# ${hits.length} documento(s) para "${query}"\n\n${partial}${blocks.join("\n\n")}\n\n` +
-          "A página inteira de uma peça sai de `get_component`; a de um guia, de `get_guide`.",
+        `# ${hits.length} document(s) for "${query}"\n\n${partial}${blocks.join("\n\n")}\n\n` +
+          "The whole page of a piece comes from `get_component`; that of a guide, from `get_guide`.",
       );
     },
   );
@@ -375,32 +395,36 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "recommend_component",
     {
-      title: "Recomendar a peça",
+      title: "Recommend the piece",
       description:
-        'Dada uma intenção de interface em texto livre ("confirmar antes de excluir a nota", ' +
-        '"aviso que some sozinho"), devolve as peças candidatas em ordem, com o motivo: a ' +
-        "linha da tabela de escolha da casa que casou, a descrição da peça, e a seção " +
-        '"Quando não usar" de cada uma, que é onde a peça vizinha é nomeada.',
+        'Given an interface intent in free text ("confirm before deleting the invoice", ' +
+        '"notice that goes away by itself"), returns the candidate pieces in order, with the ' +
+        "reason: the matching row of the house choice table, the piece description, and the " +
+        '"When not to use" section of each one, which is where the neighboring piece is named.',
       inputSchema: {
-        intent: z.string().min(3).describe("A intenção de interface, em português."),
+        intent: z
+          .string()
+          .min(3)
+          .describe("The interface intent, in English (common Portuguese words also work)."),
         platform: z
           .enum(["web", "native"])
           .optional()
-          .describe("native marca as peças que não portam e aponta o nome delas no React Native."),
+          .describe(
+            "native flags the pieces that do not port and points to their name on React Native.",
+          ),
         limit: z
           .number()
           .int()
           .min(1)
           .max(10)
           .optional()
-          .describe("Quantas candidatas, até 10. O padrão é 4."),
+          .describe("How many candidates, up to 10. The default is 4."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ intent, platform, limit }) => {
-      const query = stems(intent);
-      if (query.size === 0)
-        return fail("Descreva a intenção com ao menos uma palavra de conteúdo.");
+      const query = queryStems(intent);
+      if (query.size === 0) return fail("Describe the intent with at least one content word.");
 
       type Candidate = { score: number; reasons: string[] };
       const candidates = new Map<string, Candidate>();
@@ -413,23 +437,26 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         candidates.set(owner, current);
       };
 
+      const bestRow = new Map<string, { score: number; reason: string }>();
       for (const { choice, situation, why } of choiceIndex) {
         const hitSituation = overlap(query, situation).length;
         const hitWhy = overlap(query, why).length;
         if (hitSituation === 0) continue;
         const score = hitSituation * 6 + hitWhy * 2;
-        choice.pieces.forEach((name, index) =>
-          add(
-            name,
-            index === 0 ? score : score - 2,
-            `Tabela de escolha: "${choice.situation}" → ${choice.pieces.join(" + ")}. ${choice.why}`,
-          ),
-        );
+        choice.pieces.forEach((name, index) => {
+          const rowScore = index === 0 ? score : score - 2;
+          if ((bestRow.get(name)?.score ?? 0) >= rowScore) return;
+          bestRow.set(name, {
+            score: rowScore,
+            reason: `Choice table: "${choice.situation}" → ${choice.pieces.join(" + ")}. ${choice.why}`,
+          });
+        });
       }
+      for (const [name, { score, reason }] of bestRow) add(name, score, reason);
 
       for (const { entry, summary, avoid } of componentIndex) {
         const hitSummary = overlap(query, summary).length;
-        if (hitSummary > 0) add(entry.name, hitSummary * 3, `A peça: ${entry.summary}`);
+        if (hitSummary > 0) add(entry.name, hitSummary * 3, `The piece: ${entry.summary}`);
 
         const hitAvoid = overlap(query, avoid).length;
         if (hitAvoid < 2) continue;
@@ -437,7 +464,7 @@ export function createServer(content: Content, options: ServerOptions): McpServe
           add(
             name,
             hitAvoid * 2,
-            `O "Quando não usar" de ${entry.name} aponta ${name} para um caso parecido com este.`,
+            `The "When not to use" of ${entry.name} points to ${name} for a case like this one.`,
           );
         }
       }
@@ -450,8 +477,8 @@ export function createServer(content: Content, options: ServerOptions): McpServe
 
       if (ranked.length === 0) {
         return reply(
-          `Nenhuma peça casou com "${intent}". Tente descrever o que a pessoa faz na tela ` +
-            "(escolher, confirmar, avisar, listar), ou veja o catálogo em `list_components`.",
+          `No piece matched "${intent}". Try describing what the person does on the screen ` +
+            "(choose, confirm, notify, list), or see the catalog in `list_components`.",
         );
       }
 
@@ -464,10 +491,10 @@ export function createServer(content: Content, options: ServerOptions): McpServe
           "",
           ...candidate.reasons.slice(0, 3).map((reason) => `- ${reason}`),
         ];
-        if (avoid) lines.push("", `**Quando não usar:** ${clip(avoid, 600)}`);
+        if (avoid) lines.push("", `**When not to use:** ${clip(avoid, 600)}`);
         if (platform === "native" && parity) {
-          lines.push("", `**No React Native:** ${parity.state} — ${parity.note}`);
-        } else if (parity && /não porta|fila/.test(parity.state)) {
+          lines.push("", `**In React Native:** ${parity.state} — ${parity.note}`);
+        } else if (parity && ABSENT.test(parity.state)) {
           lines.push("", `React Native: ${parity.state}.`);
         }
         return lines.join("\n");
@@ -480,12 +507,12 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         .map((name) => `- **${name}**: ${byName.get(name)!.summary}`);
       const aside =
         neighbors.length > 0
-          ? `\n\n## Vizinhas que a página de ${leader} nomeia\n\n${neighbors.join("\n")}`
+          ? `\n\n## Neighbors that the ${leader} page names\n\n${neighbors.join("\n")}`
           : "";
 
       return reply(
-        `# Candidatas para "${intent}"\n\n${blocks.join("\n\n")}${aside}\n\n` +
-          "Confirme a escolha lendo a página inteira em `get_component` antes de escrever a tela.",
+        `# Candidates for "${intent}"\n\n${blocks.join("\n\n")}${aside}\n\n` +
+          "Confirm the choice by reading the whole page in `get_component` before writing the screen.",
       );
     },
   );
@@ -493,20 +520,20 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "get_tokens",
     {
-      title: "Tokens do tema",
+      title: "Theme tokens",
       description:
-        "Os tokens da casa: papéis de cor nos dois temas, escalas (tipografia, raio, " +
-        "empilhamento, foco), densidade confortável e compacta, e movimento (duração, curva, " +
-        "mola). Com `file`, devolve o JSON DTCG 2025.10 cru, o mesmo do `npx rivocode-ui tokens`.",
+        "The house tokens: color roles in both themes, scales (typography, radius, " +
+        "stacking, focus), comfortable and compact density, and motion (duration, easing, " +
+        "spring). With `file`, returns the raw DTCG 2025.10 JSON, the same as `npx rivocode-ui tokens`.",
       inputSchema: {
         category: z
           .enum(CATEGORIES)
           .optional()
-          .describe("color, scale, density, motion ou all. O padrão é all."),
+          .describe("color, scale, density, motion or all. The default is all."),
         file: z
           .string()
           .optional()
-          .describe("Um arquivo DTCG pelo nome, como rivocode-light.tokens.json."),
+          .describe("A DTCG file by name, such as rivocode-light.tokens.json."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
@@ -515,7 +542,7 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         const raw = content.tokens[file] ?? content.tokens[`${file}.tokens.json`];
         if (!raw) {
           return fail(
-            `Não há o arquivo "${file}". Os arquivos são: ${Object.keys(content.tokens).join(", ")}.`,
+            `There is no file "${file}". The files are: ${Object.keys(content.tokens).join(", ")}.`,
           );
         }
         return reply(JSON.stringify(raw, undefined, 2));
@@ -528,60 +555,64 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "get_native_parity",
     {
-      title: "Paridade com o React Native",
+      title: "Parity with React Native",
       description:
-        "Como uma peça do web existe no @rivocode/ui-native: a linha da tabela de paridade " +
-        "(traduz, vira outra, não porta), a seção React Native da página, cada prop que muda " +
-        "de nome ou de forma na chamada, e as props da peça nativa.",
+        "How a web piece exists in @rivocode/ui-native: the parity table row " +
+        "(translates, becomes another piece, does not port), the React Native section of the page, " +
+        "each prop whose name or shape changes in the call, and the props of the native piece.",
       inputSchema: {
-        name: z.string().min(1).describe("O nome da peça no web, como Select ou Popconfirm."),
+        name: z
+          .string()
+          .min(1)
+          .describe("The piece name on the web, such as Select or Popconfirm."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ name }) => {
       const found = resolveName(name);
       const entry = found ? ownerOf(found) : undefined;
-      if (!found || !entry) return fail(`Não há peça "${name}" no catálogo. ${suggest(name)}`);
+      if (!found || !entry)
+        return fail(`There is no piece "${name}" in the catalog. ${suggest(name)}`);
 
       const parity = content.parity[entry.name];
-      const renamed = parity && /vira\s+`([A-Za-z0-9]+)`/.exec(parity.state)?.[1];
+      const renamed = parity && /`([A-Za-z0-9]+)`/.exec(parity.state)?.[1];
       const nativeName = found === entry.name ? (renamed ?? entry.name) : found;
-      const lines = [`# ${found} no React Native`, ""];
+      const lines = [`# ${found} in React Native`, ""];
 
-      if (found !== entry.name) lines.push(`\`${found}\` é parte de \`${entry.name}\`.`, "");
+      if (found !== entry.name) lines.push(`\`${found}\` is a part of \`${entry.name}\`.`, "");
       lines.push(
         parity
-          ? `**Paridade de ${entry.name}:** ${parity.state} — ${parity.note}`
-          : `**Paridade de ${entry.name}:** sem linha na tabela.`,
+          ? `**Parity of ${entry.name}:** ${parity.state} — ${parity.note}`
+          : `**Parity of ${entry.name}:** no row in the table.`,
       );
 
-      const section = /\n## No React Native\n([\s\S]*?)(?=\n## |$)/.exec(pageOf(entry))?.[1];
-      if (section) lines.push("", "## Na página da peça", "", section.trim());
+      const section = /\n## In React Native\n([\s\S]*?)(?=\n## |$)/.exec(pageOf(entry))?.[1];
+      if (section) lines.push("", "## On the piece page", "", section.trim());
 
       const rows = content.signature[found] ?? [];
-      lines.push("", "## A assinatura, prop a prop", "");
+      lines.push("", "## The signature, prop by prop", "");
       lines.push(
         rows.length > 0
           ? `${content.signatureHeader}\n${rows.join("\n")}`
-          : "Nenhuma divergência de assinatura além das duas regras gerais do nativo: tudo é controlado, e lista entra por `items`.",
+          : "No signature difference beyond the two general native rules: everything is controlled, and lists come in through `items`.",
       );
 
       const props = content.nativeProps[nativeName];
       if (props && props.props.length > 0) {
         lines.push(
           "",
-          `## Props de \`${nativeName}\` no @rivocode/ui-native`,
+          `## Props of \`${nativeName}\` in @rivocode/ui-native`,
           "",
-          `Importação: \`${props.entry
+          `Import: \`${props.entry
             .replace(/^native\/src\/(?:index\.ts)?/, "@rivocode/ui-native/")
             .replace(/\/index\.ts$/, "")
             .replace(/\/$/, "")}\``,
           "",
-          "| Prop | Tipo | Obrigatória |",
+          "| Prop | Type | Required |",
           "| --- | --- | --- |",
           ...props.props.map(
             (prop) =>
-              `| \`${prop.name}\` | \`${prop.type.replace(/\|/g, "\\|")}\` | ${prop.required ? "sim" : "não"} |`,
+              `| \`${prop.name}\` | \`${prop.type.replace(/\|/g, "\\|")}\` | ${prop.required ? "yes" : "no"} |`,
           ),
         );
       }
@@ -594,17 +625,19 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   server.registerTool(
     "get_guide",
     {
-      title: "Guia",
+      title: "Guide",
       description:
-        "Um guia inteiro, em markdown: as convenções (o contrato de uso), instalação, temas, " +
-        "tokens, densidade, ícones, React Native, IA e agents, e as referências da skill " +
-        "(método, fluxo, texto, layout, design, escolha de peça, acessibilidade, formulários, " +
-        "gráficos). Sem `name`, lista os guias.",
+        "A whole guide, in markdown: the conventions (the usage contract), installation, themes, " +
+        "tokens, density, icons, React Native, AI and agents, and the skill references " +
+        "(method, flow, text, layout, design, choosing a piece, accessibility, forms, " +
+        "charts). Without `name`, lists the guides.",
       inputSchema: {
         name: z
           .string()
           .optional()
-          .describe("O guia, como convencoes, formularios, densidade ou ia."),
+          .describe(
+            "The guide, such as convencoes, forms, density or agents. The slugs from the list and English names both work.",
+          ),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
@@ -613,49 +646,49 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         .map((guide) => `- \`${guide.slug}\` — **${guide.title}**: ${guide.summary}`)
         .join("\n");
 
-      if (!name) return reply(`# Guias\n\n${catalog}\n\n${provenance}`);
+      if (!name) return reply(`# Guides\n\n${catalog}\n\n${provenance}`);
 
       const slug = guideSlugs.get(compact(name));
       const guide = content.guides.find((item) => item.slug === slug);
-      if (!guide) return fail(`Não há o guia "${name}". Os guias são:\n\n${catalog}`);
+      if (!guide) return fail(`There is no guide "${name}". The guides are:\n\n${catalog}`);
 
       return reply(`${content.files[guide.path] ?? ""}\n\n---\n\n${provenance}`);
     },
   );
 
   const located = z.object({
-    rule: z.string().min(1).describe("O id da regra, como escolha-de-peca."),
-    file: z.string().min(1).describe("O caminho do arquivo, igual ao de `files`."),
-    line: z.number().int().min(1).describe("A linha, contada a partir de 1."),
+    rule: z.string().min(1).describe("The rule id, as the audit skill lists it."),
+    file: z.string().min(1).describe("The file path, the same as in `files`."),
+    line: z.number().int().min(1).describe("The line, counted from 1."),
   });
 
   server.registerTool(
     "audit_screen",
     {
-      title: "Auditar uma tela",
+      title: "Audit a screen",
       description:
-        "Audita arquivos de tela de um app que usa o @rivocode/ui ou o @rivocode/ui-native contra " +
-        "as regras da casa e devolve o relatório com nota de 0 a 100, determinística: cor literal, " +
-        "z-index numérico, peça reescrita à mão, campo sem rótulo, dinheiro em float, CPF sem " +
-        "validador, Pix caseiro, import pelo caminho errado e peer faltando. Os achados de julgamento " +
-        "e os descartes entram por `findings` e `dismissals`, e pesam na mesma conta. É a mesma " +
-        "auditoria da skill rivocode-ui-audit.",
+        "Audits screen files of an app that uses @rivocode/ui or @rivocode/ui-native against " +
+        "the house rules and returns the report with a deterministic score from 0 to 100: literal " +
+        "color, numeric z-index, piece rewritten by hand, field without a label, money as a float, " +
+        "CPF without a validator, homemade Pix, import from the wrong path and missing peer. Judgment " +
+        "findings and dismissals come in through `findings` and `dismissals`, and weigh in the same " +
+        "math. It is the same audit as the rivocode-ui-audit skill.",
       inputSchema: {
         files: z
           .array(
             z.object({
-              path: z.string().min(1).describe("O caminho do arquivo, que aparece no relatório."),
-              source: z.string().describe("O texto inteiro do arquivo."),
+              path: z.string().min(1).describe("The file path, which appears in the report."),
+              source: z.string().describe("The whole file text."),
             }),
           )
           .min(1)
           .max(60)
-          .describe("Os arquivos de tela, cada um com caminho e texto."),
+          .describe("The screen files, each with path and text."),
         package_json: z
           .string()
           .optional()
           .describe(
-            "O texto do package.json do app, para conferir os peers. Num monorepo, use `package_jsons`.",
+            "The text of the app's package.json, to check the peers. In a monorepo, use `package_jsons`.",
           ),
         package_jsons: z
           .array(
@@ -663,25 +696,27 @@ export function createServer(content: Content, options: ServerOptions): McpServe
               path: z
                 .string()
                 .min(1)
-                .describe("O caminho do package.json, como `apps/web/package.json`."),
-              source: z.string().describe("O texto do package.json."),
+                .describe("The package.json path, such as `apps/web/package.json`."),
+              source: z.string().describe("The package.json text."),
             }),
           )
           .max(20)
           .optional()
           .describe(
-            "Os package.json do mais perto da tela ao da raiz do monorepo. Somam: o peer na raiz conta, como no script da skill.",
+            "The package.json files from the one nearest the screen to the monorepo root. They add up: a peer at the root counts, as in the skill script.",
           ),
         findings: z
-          .array(located.extend({ message: z.string().min(1).describe("O que está errado.") }))
+          .array(located.extend({ message: z.string().min(1).describe("What is wrong.") }))
           .optional()
-          .describe("Os achados de julgamento: escolha-de-peca, texto-generico, provider-ausente…"),
+          .describe("The judgment findings, by the ids of the judgment rules the report lists."),
         dismissals: z
           .array(
-            located.extend({ reason: z.string().min(1).describe("Por que o achado não vale.") }),
+            located.extend({
+              reason: z.string().min(1).describe("Why the finding does not apply."),
+            }),
           )
           .optional()
-          .describe("Os achados mecânicos descartados, cada um com o motivo."),
+          .describe("The dismissed mechanical findings, each with the reason."),
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
@@ -695,12 +730,12 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         findings,
         dismissals,
       });
-      const rules = RULES.filter((rule) => rule.kind === "julgamento")
+      const rules = RULES.filter((rule) => JUDGMENT.has(rule.kind as string))
         .map((rule) => `\`${rule.id}\``)
         .join(", ");
       return reply(
-        `${renderMarkdown(report)}\n---\n\nRegras de julgamento que entram por \`findings\`: ${rules}. ` +
-          "A skill inteira, com o laço de auditoria, sai de `get_guide` com `auditoria`.",
+        `${renderMarkdown(report)}\n---\n\nJudgment rules that come in through \`findings\`: ${rules}. ` +
+          "The whole skill, with the audit loop, comes from `get_guide` with `auditoria`.",
       );
     },
   );
@@ -725,7 +760,7 @@ export function createServer(content: Content, options: ServerOptions): McpServe
       `${TOKEN_SCHEME}${file}`,
       {
         title: file,
-        description: "Tokens da casa em JSON DTCG 2025.10.",
+        description: "House tokens in DTCG 2025.10 JSON.",
         mimeType: "application/json",
       },
       async (uri) => ({
@@ -782,7 +817,7 @@ function show(content: Content, value: unknown, prefer?: unknown, depth = 0): st
 const cell = (text: string) => text.replace(/\|/g, "\\|").replace(/\n/g, " ");
 
 function renderTokens(content: Content, category: Category, provenance: string): string {
-  const out: string[] = ["# Tokens do @rivocode/ui", ""];
+  const out: string[] = ["# @rivocode/ui tokens", ""];
   const files = content.tokens as Record<string, Record<string, unknown>>;
   const themes = Object.keys(files)
     .filter((file) => file.endsWith(".tokens.json") && files[file]?.["color"])
@@ -795,11 +830,11 @@ function renderTokens(content: Content, category: Category, provenance: string):
     );
     const paths = [...new Set(flat.flatMap((map) => [...map.keys()]))];
     out.push(
-      "## Papéis de cor",
+      "## Color roles",
       "",
-      "A peça pinta o papel, e o tema responde. Na classe, o papel vira `bg-<papel>`, `text-<papel>` e `border-<papel>`: cor literal não entra.",
+      "The piece paints the role, and the theme answers. In a class, the role becomes `bg-<role>`, `text-<role>` and `border-<role>`: no literal color.",
       "",
-      `| Papel | CSS | ${columns.join(" | ")} |`,
+      `| Role | CSS | ${columns.join(" | ")} |`,
       `| --- | --- | ${columns.map(() => "---").join(" | ")} |`,
       ...paths.map((path) => {
         const first = flat.find((map) => map.has(path))?.get(path);
@@ -819,7 +854,7 @@ function renderTokens(content: Content, category: Category, provenance: string):
     out.push(
       `## ${title}`,
       "",
-      "| Token | CSS | Valor |",
+      "| Token | CSS | Value |",
       "| --- | --- | --- |",
       ...rows.map((row) => `| ${row.path} | \`${row.css}\` | ${cell(show(content, row.value))} |`),
       "",
@@ -827,7 +862,7 @@ function renderTokens(content: Content, category: Category, provenance: string):
   };
 
   if (category === "scale" || category === "all") {
-    table("Escalas", "scales.tokens.json", SCALE_GROUPS);
+    table("Scales", "scales.tokens.json", SCALE_GROUPS);
   }
 
   if (category === "density" || category === "all") {
@@ -838,9 +873,9 @@ function renderTokens(content: Content, category: Category, provenance: string):
     const paths = [...new Set(maps.flatMap((map) => [...map.keys()]))];
     const names = modes.map((file) => file.replace(/^density-|\.tokens\.json$/g, ""));
     out.push(
-      "## Densidade",
+      "## Density",
       "",
-      "Um atributo só, `data-rc-density`, e as peças trocam de altura sem trocar de catálogo.",
+      "One attribute, `data-rc-density`, and the pieces change height without changing catalog.",
       "",
       `| Token | CSS | ${names.join(" | ")} |`,
       `| --- | --- | ${names.map(() => "---").join(" | ")} |`,
@@ -853,14 +888,14 @@ function renderTokens(content: Content, category: Category, provenance: string):
   }
 
   if (category === "motion" || category === "all") {
-    table("Movimento", "scales.tokens.json", MOTION_GROUPS);
+    table("Motion", "scales.tokens.json", MOTION_GROUPS);
   }
 
   out.push(
-    "## Os arquivos DTCG",
+    "## The DTCG files",
     "",
     ...Object.keys(content.tokens).map(
-      (file) => `- \`${TOKEN_SCHEME}${file}\` (ou \`get_tokens\` com \`file: "${file}"\`)`,
+      (file) => `- \`${TOKEN_SCHEME}${file}\` (or \`get_tokens\` with \`file: "${file}"\`)`,
     ),
     "",
     provenance,

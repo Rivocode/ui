@@ -1,4 +1,4 @@
-/* Gerado de src/shared/chart-layout.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/chart-layout.ts by bun run gen:shared. Do not edit. */
 
 export const HEAT_ALPHAS = [0.14, 0.32, 0.5, 0.72, 1] as const;
 

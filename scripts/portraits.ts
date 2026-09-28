@@ -8,25 +8,25 @@ import { scanAtLeast } from "./scan";
 export const SHOTS = "demo/dist";
 
 /**
- * O Chrome que fotografa e audita. O padrao e o do macOS, onde as assinaturas
- * comitadas nasceram; a CI ubuntu aponta `RC_CHROME` para o binario dela.
+ * The Chrome that shoots and audits. The default is the macOS one, where the
+ * committed signatures were born; the ubuntu CI points `RC_CHROME` at its binary.
  */
 export const CHROME =
   process.env.RC_CHROME || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 /**
- * Bandeiras a mais para o Chrome, separadas por espaco. Existe pela CI: o
- * ubuntu 24.04 restringe o namespace de usuario sem privilegio, e o Chrome de
- * la so abre com `--no-sandbox`. Na maquina fica vazio.
+ * Extra flags for Chrome, separated by spaces. It exists for CI: ubuntu 24.04
+ * restricts unprivileged user namespaces, and the Chrome there only opens with
+ * `--no-sandbox`. On the machine it stays empty.
  */
 export const CHROME_FLAGS = (process.env.RC_CHROME_FLAGS ?? "").split(/\s+/).filter(Boolean);
 
-/** Morre com a instrucao, em vez de o `spawn` falhar com ENOENT sem contexto. */
+/** Dies with the instruction, instead of `spawn` failing with ENOENT and no context. */
 export async function requireChrome() {
   if (await Bun.file(CHROME).exists()) return;
   console.error(
-    `O Chrome nao esta em ${CHROME}.\n` +
-      "Aponte a variavel RC_CHROME para o binario - no linux, `which google-chrome`.",
+    `Chrome is not at ${CHROME}.\n` +
+      "Point the RC_CHROME variable at the binary - on linux, `which google-chrome`.",
   );
   process.exit(1);
 }
@@ -63,7 +63,7 @@ export async function launchChrome(extraFlags: string[] = []) {
     browserUrl = /DevTools listening on (ws:\/\/\S+)/.exec(seen)?.[1] ?? "";
   }
   reader.releaseLock();
-  if (!browserUrl) throw new Error(`o Chrome nao abriu a porta de depuracao:\n${seen}`);
+  if (!browserUrl) throw new Error(`Chrome did not open the debugging port:\n${seen}`);
 
   const port = new URL(browserUrl).port;
   const list = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()) as {
@@ -71,7 +71,7 @@ export async function launchChrome(extraFlags: string[] = []) {
     webSocketDebuggerUrl: string;
   }[];
   const tab = list.find((entry) => entry.type === "page");
-  if (!tab) throw new Error("o Chrome abriu sem aba");
+  if (!tab) throw new Error("Chrome opened without a tab");
 
   const socket = new WebSocket(tab.webSocketDebuggerUrl);
   await new Promise((resolve, reject) => {
@@ -177,7 +177,7 @@ export function decodePng(bytes: Uint8Array): PngImage {
       const interlace = body[12];
 
       if (depth !== 8 || interlace !== 0 || (color !== 6 && color !== 2)) {
-        throw new Error(`PNG fora do que este decodificador le: ${depth}/${color}/${interlace}`);
+        throw new Error(`PNG outside what this decoder reads: ${depth}/${color}/${interlace}`);
       }
       channels = color === 6 ? 4 : 3;
     }
@@ -283,7 +283,7 @@ export function stackPngs(slices: PngImage[]): PngImage {
   let offset = 0;
   for (const slice of slices) {
     if (slice.width !== first.width || slice.channels !== first.channels) {
-      throw new Error("fatias de retrato com largura ou canais diferentes");
+      throw new Error("portrait slices with different width or channels");
     }
     pixels.set(slice.pixels, offset);
     offset += slice.pixels.length;
@@ -324,22 +324,22 @@ export const SECTIONS: Section[] = [
 ];
 
 /**
- * Diferenca de cinza que um quadrado pode ter sem contar como mudanca. O
- * motivo de ser 4, e nao 6, esta no cabecalho do `check-portraits.ts`.
+ * Gray difference a square may have without counting as a change. The reason
+ * it is 4, and not 6, is in the header of `check-portraits.ts`.
  */
 export const NOISE = 4;
 
 export type SignatureDiff = { frame?: string; cells: number; total: number; worst: number };
 
 /**
- * Quantos quadrados de duas assinaturas do mesmo retrato mudaram. Retrato de
- * secao guarda as dimensoes da moldura nas duas primeiras posicoes, e moldura
- * de tamanho diferente nao se compara quadrado a quadrado: volta em `frame`.
+ * How many squares of two signatures of the same portrait changed. A section
+ * portrait stores the frame dimensions in the first two positions, and frames
+ * of different sizes are not compared square by square: it comes back in `frame`.
  */
 export function compareSignatures(name: string, before: number[], after: number[]): SignatureDiff {
   if (isSection(name) && (before[0] !== after[0] || before[1] !== after[1])) {
     return {
-      frame: `a moldura foi de ${before[0]}x${before[1]} para ${after[0]}x${after[1]} celulas`,
+      frame: `the frame went from ${before[0]}x${before[1]} to ${after[0]}x${after[1]} cells`,
       cells: 0,
       total: 0,
       worst: 0,
@@ -405,10 +405,11 @@ export const BUILD_KEYWORD = "rc-build";
 const digests = new Map<string, string>();
 
 /**
- * O resumo do conteudo de um arquivo do build, ou `undefined` se ele sumiu.
+ * The digest of a build file's contents, or `undefined` if it is gone.
  *
- * O cache existe porque cada pagina da vitrine repete a mesma CSS compilada, e
- * cada pacote passa dos 3 MB: sem ele os 32 retratos leriam 100 MB de disco.
+ * The cache exists because every showcase page repeats the same compiled CSS,
+ * and each bundle is over 3 MB: without it the 32 portraits would read 100 MB
+ * from disk.
  */
 export async function digestOf(path: string) {
   const known = digests.get(path);
@@ -423,19 +424,19 @@ export async function digestOf(path: string) {
 }
 
 /**
- * A marca de build de um retrato: caminho e resumo de cada arquivo que o
- * navegador carregou para produzi-lo, em ordem, separados por espaco.
+ * A portrait's build stamp: path and digest of each file the browser loaded to
+ * produce it, in order, separated by spaces.
  *
- * O formato e autodescritivo de proposito. Quem confere nao precisa saber a
- * rota de nenhum retrato: le os caminhos que o proprio PNG cita e refaz cada
- * resumo.
+ * The format is self-describing on purpose. Whoever checks does not need to
+ * know the route of any portrait: it reads the paths the PNG itself cites and
+ * recomputes each digest.
  */
 export async function buildStamp(files: string[]) {
   const parts: string[] = [];
 
   for (const path of [...files].sort()) {
     const digest = await digestOf(path);
-    if (!digest) throw new Error(`o retrato depende de ${path}, e o arquivo nao existe`);
+    if (!digest) throw new Error(`the portrait depends on ${path}, and the file does not exist`);
     parts.push(`${path}=${digest}`);
   }
 
@@ -443,8 +444,8 @@ export async function buildStamp(files: string[]) {
 }
 
 /**
- * O que na marca de build nao corresponde mais ao disco, em uma frase por
- * arquivo. Lista vazia quer dizer que o retrato e deste build.
+ * What in the build stamp no longer matches the disk, one sentence per file.
+ * An empty list means the portrait is from this build.
  */
 export async function driftOf(stamp: string) {
   const drift: string[] = [];
@@ -452,13 +453,13 @@ export async function driftOf(stamp: string) {
   for (const part of stamp.split(" ")) {
     const [path, before] = part.split("=");
     if (!path || !before) {
-      drift.push(`a marca de build esta ilegivel em "${part}"`);
+      drift.push(`the build stamp is unreadable at "${part}"`);
       continue;
     }
 
     const now = await digestOf(path);
-    if (!now) drift.push(`${path} nao existe mais`);
-    else if (now !== before) drift.push(`${path} mudou depois do retrato`);
+    if (!now) drift.push(`${path} no longer exists`);
+    else if (now !== before) drift.push(`${path} changed after the portrait`);
   }
 
   return drift;

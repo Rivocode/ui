@@ -18,7 +18,7 @@ describe("Combobox", () => {
     { label: "Transportes Cabo Branco", value: "2" },
   ];
 
-  test("abre com busca, filtra sem acento, e escolher fecha", () => {
+  test("opens with search, filters ignoring accents, and choosing closes", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Combobox items={items} value={null} onValueChange={onValueChange} label="Cliente" />,
@@ -39,7 +39,7 @@ describe("Combobox", () => {
     expect(onValueChange).toHaveBeenCalledWith("1");
   });
 
-  test("multiple: escolher marca e mantém a folha e a busca de pé", () => {
+  test("multiple: choosing checks and keeps the sheet and the search up", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Combobox
@@ -57,11 +57,11 @@ describe("Combobox", () => {
     );
     act(() => option!.props.onPress());
     expect(onValueChange).toHaveBeenCalledWith(["1", "2"]);
-    // Folha aberta e busca no lugar: dá para digitar o próximo nome.
+    // Sheet open and search in place: the next name can be typed.
     expect(textOf(screen)).toContain("Clínica São Lucas");
   });
 
-  test("multiple: o gatilho conta quantos, e com um só diz o nome", () => {
+  test("multiple: the trigger counts how many, and with only one says the name", () => {
     const two = render(
       <Combobox
         items={items}
@@ -80,7 +80,7 @@ describe("Combobox", () => {
     expect(textOf(one)).toContain("Transportes Cabo Branco");
   });
 
-  test("busca sem resultado explica, em vez de sumir em silencio", () => {
+  test("a search with no result explains, instead of vanishing silently", () => {
     const screen = render(
       <Combobox items={items} value={null} onValueChange={() => {}} label="Cliente" />,
     );
@@ -91,12 +91,12 @@ describe("Combobox", () => {
   });
 });
 
-describe("Calendar e DatePicker", () => {
-  test("formatDate fala o formato daqui", () => {
+describe("Calendar and DatePicker", () => {
+  test("formatDate speaks the local format", () => {
     expect(formatDate("2026-08-25")).toBe("25/08/2026");
   });
 
-  test("escolher um dia entrega o ISO daquele dia", () => {
+  test("choosing a day delivers that day's ISO", () => {
     const onValueChange = mock(() => {});
     const screen = render(<Calendar value="2026-08-10" onValueChange={onValueChange} />);
     expect(textOf(screen)).toContain("Agosto de 2026");
@@ -105,7 +105,7 @@ describe("Calendar e DatePicker", () => {
     expect(onValueChange).toHaveBeenCalledWith("2026-08-25");
   });
 
-  test("fora dos limites o dia desliga", () => {
+  test("outside the limits the day turns off", () => {
     const screen = render(
       <Calendar value="2026-08-10" onValueChange={() => {}} min="2026-08-05" max="2026-08-20" />,
     );
@@ -113,7 +113,7 @@ describe("Calendar e DatePicker", () => {
     expect(byLabel(screen, "12/08/2026")[0].props.accessibilityState.disabled).toBe(false);
   });
 
-  test("o DatePicker mostra a data formatada e fecha ao escolher", () => {
+  test("DatePicker shows the formatted date and closes on choosing", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <DatePicker value="2026-08-10" onValueChange={onValueChange} label="Vencimento" />,
@@ -123,13 +123,13 @@ describe("Calendar e DatePicker", () => {
     act(() => byLabel(screen, "Vencimento")[0].props.onPress());
     act(() => byLabel(screen, "15/08/2026")[0].props.onPress());
     expect(onValueChange).toHaveBeenCalledWith("2026-08-15");
-    // Fechou: o calendario nao esta mais montado.
+    // Closed: the calendar is no longer mounted.
     expect(byLabel(screen, "15/08/2026").length).toBe(0);
   });
 });
 
 describe("Slider", () => {
-  test("anuncia papel, valor e responde as acoes do leitor de tela", () => {
+  test("announces role and value, and responds to the screen reader actions", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Slider value={40} onValueChange={onValueChange} min={0} max={100} step={10} label="Meta" />,
@@ -146,7 +146,7 @@ describe("Slider", () => {
 });
 
 describe("Menu", () => {
-  test("agir fecha antes de agir, e o tom danger veste vermelho", () => {
+  test("acting closes before acting, and the danger tone wears red", () => {
     const calls: string[] = [];
     const screen = render(
       <Menu
@@ -173,7 +173,7 @@ describe("Menu", () => {
 
   const acoes = [{ label: "Baixar o PDF", onSelect: () => {} }];
 
-  test("children vira a area do toque longo, e o toque longo abre", () => {
+  test("children becomes the long-press area, and the long press opens", () => {
     const calls: string[] = [];
     const screen = render(
       <Menu
@@ -197,7 +197,7 @@ describe("Menu", () => {
     expect(calls).toEqual(["open:true"]);
   });
 
-  test("o leitor de tela tem a mesma porta, pela acao longpress", () => {
+  test("the screen reader has the same door, through the longpress action", () => {
     const calls: string[] = [];
     const screen = render(
       <Menu
@@ -222,7 +222,7 @@ describe("Menu", () => {
     expect(calls).toEqual(["open:true"]);
   });
 
-  test("sem children nao nasce area de toque longo", () => {
+  test("without children no long-press area is created", () => {
     const screen = render(
       <Menu open onOpenChange={() => {}} title="Nota 4813" actions={acoes} />,
     );
@@ -238,15 +238,15 @@ describe("DateRangePicker", () => {
   const open = (screen: ReturnType<typeof render>) =>
     act(() => byLabel(screen, "Período")[0].props.onPress());
 
-  /* O Button nativo nao carrega accessibilityLabel: o nome dele e o Text de
-     dentro, como no aparelho. Entao o localizador do teste procura por ele. */
+  /* The native Button carries no accessibilityLabel: its name is the inner
+     Text, as on the device. So the test locator looks for it. */
   const buttonWith = (screen: ReturnType<typeof render>, text: string) =>
     byRole(screen, "button").find(
       (node) =>
         node.findAll((child) => child.type === "Text" && child.props.children === text).length > 0,
     )!;
 
-  test("o gatilho mostra o intervalo por extenso, e o vazio cai no placeholder", () => {
+  test("the trigger shows the range spelled out, and empty falls back to the placeholder", () => {
     const vazio = render(<DateRangePicker value={null} onValueChange={() => {}} label="Período" />);
     expect(textOf(vazio)).toContain("Escolha o período");
 
@@ -263,7 +263,7 @@ describe("DateRangePicker", () => {
     );
   });
 
-  test("as duas pontas saem na mesma grade, e a peca ordena os toques", () => {
+  test("both ends come from the same grid, and the piece orders the taps", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <DateRangePicker value={null} onValueChange={onValueChange} label="Período" />,
@@ -272,24 +272,24 @@ describe("DateRangePicker", () => {
     open(screen);
     expect(textOf(screen)).toContain("Toque no primeiro dia");
 
-    // Fim antes do comeco: o dedo toca 20 e depois 5.
+    // End before start: the finger taps 20 and then 5.
     act(() => byLabel(screen, "20/08/2026")[0].props.onPress());
     expect(textOf(screen)).toContain("20/08/2026 – toque no último dia.");
 
     act(() => byLabel(screen, "05/08/2026")[0].props.onPress());
-    // Sai ordenado: a validacao de fim-antes-do-comeco deixou de ser do app.
+    // It comes out ordered: the end-before-start validation is no longer the app's job.
     expect(textOf(screen)).toContain("05/08/2026 – 20/08/2026");
 
-    // O meio do intervalo tambem se anuncia escolhido: a faixa pintada nao
-    // existe para quem ouve a grade.
+    // The middle of the range also announces itself as chosen: the painted
+    // band does not exist for whoever listens to the grid.
     expect(byLabel(screen, "12/08/2026")[0].props.accessibilityState.selected).toBe(true);
     expect(byLabel(screen, "25/08/2026")[0].props.accessibilityState.selected).toBe(false);
 
-    // Nada saiu ainda: quem aplica e o botao.
+    // Nothing went out yet: the button is what applies.
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  test("Aplicar so liga com as duas pontas, e entrega o intervalo fechado", () => {
+  test("Aplicar only turns on with both ends, and delivers the closed range", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <DateRangePicker value={null} onValueChange={onValueChange} label="Período" />,
@@ -300,8 +300,8 @@ describe("DateRangePicker", () => {
     expect(aplicar().props.disabled).toBe(true);
 
     act(() => byLabel(screen, "05/08/2026")[0].props.onPress());
-    // Com meia escolha ele continua desligado: a listagem nunca recebe um
-    // periodo que comeca e nao termina.
+    // With half a choice it stays off: the listing never gets a period that
+    // starts and does not end.
     expect(aplicar().props.disabled).toBe(true);
 
     act(() => byLabel(screen, "09/08/2026")[0].props.onPress());
@@ -309,11 +309,11 @@ describe("DateRangePicker", () => {
 
     act(() => aplicar().props.onPress());
     expect(onValueChange).toHaveBeenCalledWith({ from: "2026-08-05", to: "2026-08-09" });
-    // Fechou: a grade nao esta mais montada.
+    // Closed: the grid is no longer mounted.
     expect(byLabel(screen, "09/08/2026").length).toBe(0);
   });
 
-  test("Limpar entrega null, e os limites continuam desligando o dia", () => {
+  test("Limpar delivers null, and the limits keep turning the day off", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <DateRangePicker
@@ -331,7 +331,7 @@ describe("DateRangePicker", () => {
     expect(onValueChange).toHaveBeenCalledWith(null);
   });
 
-  test("o terceiro toque recomeca o intervalo em vez de esticar o anterior", () => {
+  test("the third tap restarts the range instead of stretching the previous one", () => {
     const screen = render(
       <DateRangePicker value={null} onValueChange={() => {}} label="Período" />,
     );

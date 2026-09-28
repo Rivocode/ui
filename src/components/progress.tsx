@@ -11,21 +11,21 @@ export type ProgressProps = Omit<
   ComponentProps<typeof BaseProgress.Root>,
   "children" | "format"
 > & {
-  /** Texto acima da barra. Sem ele, passe `aria-label`. */
+  /** Text above the bar. Without it, pass `aria-label`. */
   label?: ReactNode;
-  /** Mostra a porcentagem ao lado do rotulo. */
+  /** Shows the percentage beside the label. */
   showValue?: boolean;
   /**
-   * Como o numero e escrito: nome de formatador da casa (`percent`,
-   * `currencyShort`, `integer`...) ou funcao propria. E o mesmo vocabulario do
-   * eixo do grafico - `format` significava tres coisas diferentes na mesma
-   * biblioteca, e a que nao dava erro de tipo era a pior: `{ style: "percent" }`
-   * num medidor de 0 a 100 imprime 8.200% ao lado de uma barra em 82%.
+   * How the number is written: the name of a house formatter (`percent`,
+   * `currencyShort`, `integer`...) or your own function. It is the same vocabulary as the
+   * chart axis - `format` meant three different things in the same
+   * library, and the one that gave no type error was the worst: `{ style: "percent" }`
+   * on a 0 to 100 meter prints 8.200% next to a bar at 82%.
    */
   format?: Format;
-  /** As opcoes do `Intl.NumberFormat`, para quem precisa delas. */
+  /** The `Intl.NumberFormat` options, for those who need them. */
   numberFormat?: Intl.NumberFormatOptions;
-  /** Classe por parte: `label`, `value`, `track`, `indicator`. */
+  /** Class per part: `label`, `value`, `track`, `indicator`. */
   classNames?: Slots<"label" | "value" | "track" | "indicator">;
 };
 

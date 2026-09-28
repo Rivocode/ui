@@ -1,36 +1,36 @@
 /**
- * O espelho da conta de contraste dentro do pacote nativo.
+ * The mirror of the contrast math inside the native package.
  *
- * A matematica e a tabela de pares moram em `src/lib/contrast.ts`, e de la elas
- * saem no `@rivocode/ui` porque o `tsdown` empacota `src/cli.ts` e o que o
- * grafo dele alcanca. O `@rivocode/ui-native` publica de outra forma: ele sai
- * como FONTE, e no tarball entra so o que esta fisicamente dentro de `native/`
- * - um import que suba acima da pasta resolve aqui e some la. Entao quem
- * instala apenas o pacote nativo nao alcanca `src/lib/contrast.ts` de jeito
- * nenhum, e o `checkThemeMap` - a funcao escrita justamente para o tema de
- * MAPA, que e a forma de tema que so o nativo tem - ficaria do lado de fora do
- * pacote que mais precisa dela.
+ * The math and the pair table live in `src/lib/contrast.ts`, and from there
+ * they ship in `@rivocode/ui` because `tsdown` bundles `src/cli.ts` and
+ * whatever its graph reaches. `@rivocode/ui-native` publishes differently: it
+ * ships as SOURCE, and the tarball only gets what is physically inside
+ * `native/` - an import that climbs above the folder resolves here and
+ * vanishes there. So whoever installs only the native package cannot reach
+ * `src/lib/contrast.ts` at all, and `checkThemeMap` - the function written
+ * precisely for the MAP theme, which is the theme shape only native has -
+ * would be left outside the package that needs it most.
  *
- * A saida e a que `native/tokens.ts` e `native/theme.css` ja usam, e nao um
- * segundo arquivo escrito a mao: fonte unica no web, espelho gerado e
- * versionado, e `bun run check` vermelho se o comitado divergir da fonte.
- * Espelhar a mao e como a copia do consumidor envelheceu calada - o `compose`
- * dele nao enxergava duas das tres sintaxes de alfa e o `contrastRatio`
- * respondia NaN, meses depois de o conserto ter entrado aqui.
+ * The way out is the one `native/tokens.ts` and `native/theme.css` already
+ * use, and not a second hand-written file: single source on the web, a
+ * generated and versioned mirror, and `bun run check` red if the committed one
+ * diverges from the source. Mirroring by hand is how the consumer's copy aged
+ * silently - their `compose` did not see two of the three alpha syntaxes and
+ * `contrastRatio` answered NaN, months after the fix had gone in here.
  *
- * ## Por que a comparacao ignora espaco em branco
+ * ## Why the comparison ignores whitespace
  *
- * O `.mjs` sai do `Bun.Transpiler`, que apaga os tipos e reimprime o codigo. O
- * que ele reimprime e estavel dentro de uma versao do Bun, e nao entre versoes
- * - e os quatro workflows desta casa instalam `bun-version: latest`. Uma
- * mudanca de formatacao do transpilador deixaria o gate vermelho na CI sem
- * ninguem ter tocado em uma linha do repositorio, e guarda que acusa o que nao
- * e defeito e desligada na segunda vez.
+ * The `.mjs` comes out of `Bun.Transpiler`, which strips the types and
+ * reprints the code. What it reprints is stable within a Bun version, not
+ * across versions - and the four workflows of this house install
+ * `bun-version: latest`. A formatting change in the transpiler would leave the
+ * gate red in CI without anyone having touched a line of the repository, and a
+ * guard that flags what is not a defect is switched off the second time.
  *
- * Entao a guarda compara o CONTEUDO, sem espaco em branco. Ela continua pegando
- * o que importa - numero trocado, par apagado, arquivo editado a mao - e deixa
- * de pegar o que nao e nosso. Quem quiser o byte exato roda
- * `bun run gen:native:contrast`, que reescreve.
+ * So the guard compares the CONTENT, without whitespace. It still catches what
+ * matters - a swapped number, a deleted pair, a hand-edited file - and stops
+ * catching what is not ours. Whoever wants the exact byte runs
+ * `bun run gen:native:contrast`, which rewrites it.
  */
 import {
   MAP_MEDIA,
@@ -44,12 +44,12 @@ import {
 const SOURCE = "src/lib/contrast.ts";
 const MIRROR = "native/scripts/contrast.mjs";
 
-const BANNER = `/* Gerado de ${SOURCE} por bun run gen:native:contrast. Nao editar. */\n\n`;
+const BANNER = `/* Generated from ${SOURCE} by bun run gen:native:contrast. Do not edit. */\n\n`;
 
 const source = await Bun.file(SOURCE).text();
 const wanted = BANNER + new Bun.Transpiler({ loader: "ts", target: "node" }).transformSync(source);
 
-/** Sem espaco em branco: e o que a formatacao do transpilador pode mexer. */
+/** Without whitespace: that is what the transpiler's formatting may touch. */
 const same = (one: string, other: string) => one.replace(/\s+/g, "") === other.replace(/\s+/g, "");
 
 if (process.argv.includes("--check")) {
@@ -58,15 +58,15 @@ if (process.argv.includes("--check")) {
     .catch(() => "");
 
   if (!committed) {
-    console.error(`${MIRROR} nao existe. Rode: bun run gen:native:contrast`);
+    console.error(`${MIRROR} does not exist. Run: bun run gen:native:contrast`);
     process.exit(1);
   }
 
   if (!same(committed, wanted)) {
     console.error(
-      `${MIRROR} divergiu de ${SOURCE}. Rode: bun run gen:native:contrast\n\n` +
-        `    O espelho e versionado porque o pacote nativo publica FONTE, e so\n` +
-        `    sai no tarball o que esta dentro de native/.`,
+      `${MIRROR} diverged from ${SOURCE}. Run: bun run gen:native:contrast\n\n` +
+        `    The mirror is versioned because the native package publishes SOURCE, and\n` +
+        `    only what is inside native/ ships in the tarball.`,
     );
     process.exit(1);
   }
@@ -78,24 +78,24 @@ if (process.argv.includes("--check")) {
 
   const problems: string[] = [];
   if (!pkg.files.includes("scripts")) {
-    problems.push('    `files` nao inclui "scripts": o espelho nao entraria no tarball.');
+    problems.push('    `files` does not include "scripts": the mirror would not go into the tarball.');
   }
   if (pkg.exports["./contrast"] !== `./${MIRROR.replace("native/", "")}`) {
     problems.push(
-      '    `exports` nao aponta "./contrast" para o espelho. Com o campo `exports`\n' +
-        "    declarado, caminho fundo nao resolve: sem a linha, o arquivo viaja no\n" +
-        "    tarball e ninguem consegue importa-lo.",
+      '    `exports` does not point "./contrast" to the mirror. With the `exports` field\n' +
+        "    declared, a deep path does not resolve: without the line, the file travels in\n" +
+        "    the tarball and nobody can import it.",
     );
   }
 
   if (problems.length > 0) {
-    console.error(`native/package.json nao publica o espelho:\n${problems.join("\n")}`);
+    console.error(`native/package.json does not publish the mirror:\n${problems.join("\n")}`);
     process.exit(1);
   }
 
-  // A prova de que o espelho MEDE, e nao so de que ele existe: o mesmo mapa
-  // pelos dois caminhos tem que dar a mesma linha. Comparar texto pega o
-  // arquivo editado; isto pega o arquivo que virou inerte.
+  // The proof that the mirror MEASURES, not only that it exists: the same map
+  // through both paths has to give the same line. Comparing text catches the
+  // edited file; this catches the file that went inert.
   const {
     checkThemeMap: mirrored,
     checkCodePair: mirroredCode,
@@ -125,29 +125,29 @@ if (process.argv.includes("--check")) {
     ]),
   );
   const here = [
-    ...checkThemeMap("prova", map),
-    ...checkCodePair("prova", ink, paper),
-    ...checkMediaStage("prova", media),
-    ...checkSignaturePaper("prova", signature),
+    ...checkThemeMap("proof", map),
+    ...checkCodePair("proof", ink, paper),
+    ...checkMediaStage("proof", media),
+    ...checkSignaturePaper("proof", signature),
   ].map((finding) => finding.line);
   const there = [
-    ...mirrored("prova", map),
-    ...mirroredCode("prova", ink, paper),
-    ...mirroredMedia("prova", media),
-    ...mirroredSignature("prova", signature),
+    ...mirrored("proof", map),
+    ...mirroredCode("proof", ink, paper),
+    ...mirroredMedia("proof", media),
+    ...mirroredSignature("proof", signature),
   ].map((finding) => finding.line);
 
   if (here.join("\n") !== there.join("\n")) {
     console.error(
-      `${MIRROR} responde diferente de ${SOURCE} no tema da casa.\n` +
-        "    Rode: bun run gen:native:contrast",
+      `${MIRROR} answers differently from ${SOURCE} on the house theme.\n` +
+        "    Run: bun run gen:native:contrast",
     );
     process.exit(1);
   }
 
-  console.log(`${MIRROR} em dia com ${SOURCE}, e mede igual: ${here.length} linha(s).`);
+  console.log(`${MIRROR} up to date with ${SOURCE}, and measures the same: ${here.length} line(s).`);
   process.exit(0);
 }
 
 await Bun.write(MIRROR, wanted);
-console.log(`${MIRROR} escrito a partir de ${SOURCE}.`);
+console.log(`${MIRROR} written from ${SOURCE}.`);

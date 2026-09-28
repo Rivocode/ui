@@ -23,17 +23,17 @@ import { Skeleton } from "./skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export type SidebarState = {
-  /** Aberta na mesa, ou visivel como folha no celular. */
+  /** Open on desktop, or visible as a sheet on the phone. */
   open: boolean;
-  /** Encolhida ate a coluna de icones. Nunca verdadeiro no celular. */
+  /** Collapsed down to the icon column. Never true on the phone. */
   collapsed: boolean;
   /**
-   * Largura de celular, onde a barra vira folha.
+   * Phone width, where the bar becomes a sheet.
    *
-   * Esta aqui para a aplicacao ler junto: a barra ja se vira sozinha, mas o
-   * cabecalho ao lado dela quase sempre precisa da mesma resposta, e ler o
-   * mesmo corte por conta propria e como as duas metades da tela acabam
-   * discordando sobre o que e celular.
+   * It is here for the application to read along: the bar already adapts by itself, but the
+   * header beside it almost always needs the same answer, and reading the
+   * same breakpoint on its own is how the two halves of the screen end up
+   * disagreeing about what a phone is.
    */
   isMobile: boolean;
   toggle: () => void;
@@ -45,7 +45,7 @@ const SidebarContext = createContext<SidebarState | null>(null);
 export function useSidebar(): SidebarState {
   const state = use(SidebarContext);
   if (!state) {
-    throw new Error("useSidebar precisa de um <SidebarProvider> em volta.");
+    throw new Error("useSidebar needs a <SidebarProvider> around it.");
   }
   return state;
 }
@@ -57,25 +57,28 @@ const RowContext = createContext(false);
 const ListContext = createContext(false);
 
 export type SidebarProviderProps = ComponentProps<"div"> & {
-  /** Comeca aberta na mesa. No celular ela sempre comeca fechada. */
+  /** Starts open on desktop. On the phone it always starts closed. */
   defaultOpen?: boolean;
   /**
-   * Aberta na mesa, controlado. No celular ele nao abre a folha: a folha tem
-   * estado proprio, e o `openMobile` e quem a controla.
+   * Open on desktop, controlled. On the phone it does not open the sheet: the sheet has its
+   * own state, and `openMobile` is what controls it.
    */
   open?: boolean;
-  /** Chamado quando a barra abre ou fecha na mesa. Fechar a folha no celular nao chama. */
+  /**
+   * Called when the bar opens or closes on desktop. Closing the sheet on the phone does not call
+   * it.
+   */
   onOpenChange?: (open: boolean) => void;
   /**
-   * A folha do celular, controlada. Sem ele, ela nasce fechada e se controla
-   * sozinha, sem tocar no `open` da mesa.
+   * The phone sheet, controlled. Without it, it starts closed and controls itself
+   * on its own, without touching the desktop `open`.
    */
   openMobile?: boolean;
-  /** Chamado quando a folha do celular abre ou fecha. */
+  /** Called when the phone sheet opens or closes. */
   onOpenMobileChange?: (open: boolean) => void;
   /**
-   * Atalho de teclado que abre e fecha, com Ctrl ou Cmd. Nao dispara dentro de
-   * campo de texto nem de editor, e ignora maiuscula. `null` desliga.
+   * Keyboard shortcut that opens and closes it, with Ctrl or Cmd. Does not fire inside
+   * a text field or an editor, and ignores case. `null` turns it off.
    */
   shortcut?: string | null;
 };
@@ -150,9 +153,9 @@ export function SidebarProvider({
 }
 
 export type SidebarProps = Omit<ComponentProps<"aside">, "title"> & {
-  /** Titulo lido no celular, onde a barra vira folha. */
+  /** Title read on the phone, where the bar becomes a sheet. */
   title?: string;
-  /** De que lado da pagina ela mora. */
+  /** Which side of the page it lives on. */
   side?: "left" | "right";
 };
 
@@ -209,7 +212,7 @@ export function SidebarHeader({ className, ...props }: ComponentProps<"div">) {
 }
 
 export type SidebarBrandProps = ComponentProps<"div"> & {
-  /** O simbolo, que sobra sozinho quando a barra encolhe. */
+  /** The symbol, which is left alone when the bar collapses. */
   mark?: ReactNode;
 };
 
@@ -264,7 +267,7 @@ export function SidebarSeparator({ className, ...props }: ComponentProps<"div">)
 }
 
 export type SidebarInputProps = Omit<ComponentProps<"input">, "size"> & {
-  /** Rotulo lido pelo leitor de tela. O campo nao tem rotulo visivel. */
+  /** Label read by the screen reader. The field has no visible label. */
   label?: string;
 };
 
@@ -320,7 +323,7 @@ export function SidebarInput({ className, label = "Buscar", ...props }: SidebarI
 }
 
 export type SidebarGroupProps = ComponentProps<"div"> & {
-  /** Titulo do grupo. Some quando a barra encolhe, e a linha do meio fica. */
+  /** The group's title. Disappears when the bar collapses, and the divider line stays. */
   label?: string;
 };
 
@@ -358,15 +361,15 @@ const rowClass = cn(
 
 export type SidebarMenuItemProps = ComponentProps<"a"> & {
   /**
-   * Troca a ancora pelo link do router, mantendo o desenho da linha:
-   * `render={<RouterLink to="/notas" />}`. Sem isso o item e um `<a href>`, e
-   * cada clique recarrega a pagina inteira num app com router.
+   * Swaps the anchor for the router's link, keeping the row's drawing:
+   * `render={<RouterLink to="/notas" />}`. Without it the item is an `<a href>`, and
+   * every click reloads the whole page in an app with a router.
    */
   render?: ReactElement;
   icon?: ReactNode;
-  /** Marca a pagina em que se esta, no aria tambem. */
+  /** Marks the page you are on, in aria too. */
   active?: boolean;
-  /** Numero a direita: pendencias, nao lidos. */
+  /** Number on the right: pending items, unread ones. */
   badge?: ReactNode;
 };
 
@@ -470,9 +473,9 @@ export type SidebarMenuSubProps = Omit<ComponentProps<"button">, "children"> & {
   children?: ReactNode;
   label: string;
   icon?: ReactNode;
-  /** Comeca aberto. Vale para a barra larga; encolhida ele e um menu. */
+  /** Starts open. Applies to the wide bar; collapsed, it is a menu. */
   defaultOpen?: boolean;
-  /** Alguma pagina de dentro esta aberta agora. */
+  /** Some page inside it is open right now. */
   active?: boolean;
 };
 
@@ -546,7 +549,7 @@ export function SidebarMenuSub({
 }
 
 export type SidebarMenuSkeletonProps = Omit<ComponentProps<"ul">, "children"> & {
-  /** Quantas linhas de marca de lugar. O padrao cobre uma navegacao curta. */
+  /** How many placeholder rows. The default covers a short navigation. */
   count?: number;
 };
 
@@ -569,9 +572,9 @@ export function SidebarMenuSkeleton({ className, count = 5, ...props }: SidebarM
 
 export type SidebarTriggerProps = ComponentProps<"button"> & {
   /**
-   * Os textos da peca, para trocar o idioma. No celular o botao abre e fecha a
-   * folha, com `open` e `close`; na mesa ele recolhe e expande a barra, com
-   * `collapse` e `expand`. Passe so os que mudam.
+   * The piece's texts, to change the language. On the phone the button opens and closes the
+   * sheet, with `open` and `close`; on desktop it collapses and expands the bar, with
+   * `collapse` and `expand`. Pass only the ones that change.
    */
   labels?: Partial<SidebarTriggerLabels>;
 };

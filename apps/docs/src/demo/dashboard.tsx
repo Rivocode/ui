@@ -67,7 +67,7 @@ const BY_WEEK = [
   { week: 'S4', issued: 22, cancelled: 1 },
 ]
 
-/** Seis meses de cada indicador, só o suficiente para a linha ter forma. */
+/** Six months of each indicator, just enough for the line to have a shape. */
 const TRENDS: Record<string, number[]> = {
   billed: [128, 155, 142, 189, 205, 247],
   received: [119, 142, 139, 170, 192, 198],
@@ -75,7 +75,7 @@ const TRENDS: Record<string, number[]> = {
   overdue: [2, 3, 3, 5, 4, 6],
 }
 
-/** A tendência que entra no slot do Stat. Invertida, desce o que subiu. */
+/** The trend that goes into the Stat slot. Inverted, what rose goes down. */
 const trendChart = (data: number[], invert = false) => (
   <Sparkline
     data={invert ? data.map((point) => -point) : data}
@@ -86,8 +86,8 @@ const trendChart = (data: number[], invert = false) => (
 )
 
 export function Dashboard() {
-  // Clicar num nome da legenda esconde aquela serie. O estado mora aqui e nao
-  // na legenda porque esconder tambem quer dizer nao desenhar a area.
+  // Clicking a legend name hides that series. The state lives here and not in
+  // the legend because hiding also means not drawing the area.
   const series = useSeriesToggle()
   const recent = INVOICES.slice(0, 5)
   const overdue = INVOICES.filter((invoice) => invoice.status === 'overdue').length
@@ -205,8 +205,8 @@ export function Dashboard() {
             <CardDescription>Faturado no mês.</CardDescription>
           </CardHeader>
           <CardContent>
-            {/* Barra deitada, e não em pé: nome de cliente é comprido, e num
-                eixo vertical ele vira texto de lado ou reticência. */}
+            {/* A horizontal bar, not a vertical one: customer names are long,
+                and on a vertical axis they become sideways text or an ellipsis. */}
             <ChartContainer config={TOP} className="h-64">
               <BarChart data={TOP_CUSTOMERS} layout="vertical" margin={{ left: 4, right: 16 }}>
                 <CartesianGrid horizontal={false} />

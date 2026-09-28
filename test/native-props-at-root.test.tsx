@@ -14,23 +14,24 @@ import { ChartDonut } from "../src/chart/chart-donut";
 import { ChartRadial } from "../src/chart/chart-radial";
 
 /*
- * Nove pecas tinham o tipo de props escrito como objeto fechado, e por isso
- * nao aceitavam `id`, `data-*` nem `aria-*`. Nao e detalhe: sem `id` nao ha
- * `aria-describedby` apontando para elas, sem `data-*` nao ha seletor de teste
- * de ponta a ponta nem marcacao de analitica, e o contorno era sempre o mesmo
- * - embrulhar a peca numa `div` so para pendurar o atributo, o que muda o
- * layout de quem esta em grade ou em flex.
+ * Nine pieces had their props type written as a closed object, and so they did
+ * not accept `id`, `data-*` or `aria-*`. It is not a detail: without `id` there
+ * is no `aria-describedby` pointing at them, without `data-*` there is no
+ * end-to-end test selector nor analytics tagging, and the workaround was always
+ * the same - wrapping the piece in a `div` just to hang the attribute, which
+ * changes the layout of whoever sits in a grid or in flex.
  *
- * A guarda monta cada uma das nove com os tres atributos e vai procura-los no
- * DOM. Ela pega os dois defeitos: o tipo que nao aceita, que para no
- * compilador, e o `...rest` esquecido, que so montar revela.
+ * The guard mounts each of the nine with the three attributes and looks for
+ * them in the DOM. It catches both defects: the type that does not accept
+ * them, which stops at the compiler, and the forgotten `...rest`, which only
+ * mounting reveals.
  */
 
-const ID = "raiz-sob-teste";
+const ID = "root-under-test";
 const LABEL = "Rotulo escrito por quem chama";
 
-/** Os tres atributos, do jeito que quem monta a tela os escreveria. */
-const MARKS = { id: ID, "data-teste": "sim", "aria-label": LABEL } as const;
+/** The three attributes, the way whoever builds the screen would write them. */
+const MARKS = { id: ID, "data-test": "yes", "aria-label": LABEL } as const;
 
 const SLICES = [
   { natureza: "servico", total: 148_200 },
@@ -76,29 +77,30 @@ const PIECES: { name: string; node: ReactNode }[] = [
 ];
 
 for (const piece of PIECES) {
-  test(`${piece.name} leva id, data-* e aria-* ate a raiz`, () => {
+  test(`${piece.name} carries id, data-* and aria-* to the root`, () => {
     render(<RivoProvider scope="local">{piece.node}</RivoProvider>);
 
-    // Pelo `id`, e nao pelo contentor do render: a paleta e a casca do
-    // calendario pintam a raiz delas dentro do portal, fora da arvore montada.
+    // By `id`, and not by the render container: the palette and the calendar
+    // shell paint their root inside the portal, outside the mounted tree.
     const root = document.getElementById(ID);
 
     expect(root).not.toBeNull();
-    expect(root!.getAttribute("data-teste")).toBe("sim");
+    expect(root!.getAttribute("data-test")).toBe("yes");
     expect(root!.getAttribute("aria-label")).toBe(LABEL);
   });
 }
 
 /*
- * O `aria-label` de quem chama vence o da peca.
+ * The caller's `aria-label` beats the piece's own.
  *
- * Duas das nove ja escreviam um `aria-label` proprio - a casca do calendario
- * tira o dela do `title`, e o arco tira da porcentagem. Nelas o espalhamento
- * tem que vir DEPOIS do atributo, senao o padrao da peca engole o rotulo
- * escrito de fora e ninguem fica sabendo: nada quebra, o nome e que fica
- * errado. A guarda acima ja falharia, mas so aqui esta dito por que.
+ * Two of the nine already wrote their own `aria-label` - the calendar shell
+ * takes it from `title`, and the arc takes it from the percentage. In them the
+ * spread has to come AFTER the attribute, or the piece's default swallows the
+ * label written from outside and nobody finds out: nothing breaks, the name
+ * is just wrong. The guard above would already fail, but only here is the why
+ * written down.
  */
-test("o rotulo de quem chama vence o padrao da peca, e nao o contrario", () => {
+test("the caller's label beats the piece's default, and not the other way around", () => {
   render(
     <RivoProvider scope="local">
       <ChartRadial value={82} label="Da meta do mês" aria-label={LABEL} />
@@ -110,12 +112,12 @@ test("o rotulo de quem chama vence o padrao da peca, e nao o contrario", () => {
 });
 
 /*
- * A arvore e a unica das nove cuja raiz ja tinha um `onKeyDown` proprio - e a
- * navegacao por seta mora nele. Espalhar as props sem cuidado deixava so um
- * dos dois de pe, e a escolha silenciosa seria de quem escreveu a peca, e nao
- * de quem a usa.
+ * The tree is the only one of the nine whose root already had its own
+ * `onKeyDown` - and arrow navigation lives in it. Spreading the props
+ * carelessly left only one of the two standing, and the silent choice would
+ * belong to whoever wrote the piece, and not to whoever uses it.
  */
-test("o onKeyDown de quem chama corre junto com as setas da arvore", () => {
+test("the caller's onKeyDown runs alongside the tree arrows", () => {
   let heard = 0;
 
   const { container } = render(

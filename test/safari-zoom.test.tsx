@@ -8,34 +8,34 @@ import { SearchInput } from "../src/components/search-input";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * O zoom automatico do Safari do iPhone.
+ * iPhone Safari's automatic zoom.
  *
- * O Safari amplia a pagina inteira ao focar um campo cuja fonte esta abaixo
- * de 16px, e depois nao volta sozinho: quem digitou fica com a tela ampliada
- * ate fechar o teclado e pincar de volta. A escala da casa e densa de
- * proposito - o --rc-text-base e 14px - e o campo medio, que e o padrao, usava
- * exatamente ela. Uma bancada externa mediu 32 campos abaixo de 16px em 12
- * telas a 390px, e todos eram este mesmo defeito.
+ * Safari zooms the whole page when focusing a field whose font is below 16px,
+ * and then does not zoom back on its own: whoever typed is left with a zoomed
+ * screen until they close the keyboard and pinch back. The house scale is dense
+ * on purpose - --rc-text-base is 14px - and the medium field, the default, used
+ * exactly that. An external bench measured 32 fields below 16px across 12
+ * screens at 390px, and all of them were this same defect.
  *
- * O conserto sobe a fonte so do controle, so abaixo de 640px: a escala do
- * resto da interface nao muda, e o desktop nao muda nada. Quatro dos cinco
- * campos herdam isso do inputVariants; o SearchInput desenha o proprio campo
- * e precisa da mesma linha.
+ * The fix raises the font of the control only, only below 640px: the scale of
+ * the rest of the interface does not change, and desktop does not change at
+ * all. Four of the five fields inherit this from inputVariants; SearchInput
+ * draws its own field and needs the same line.
  *
- * O teste roda no happy-dom, que nao tem folha de estilo nem media query: nao
- * ha como medir 16px aqui. Entao ele asserta a classe que produz a regra, do
- * mesmo jeito que test/classnames.test.tsx asserta a classe que veste a
- * parte. O que ele protege e a decisao, e nao o pixel.
+ * The test runs in happy-dom, which has no stylesheet nor media queries: there
+ * is no way to measure 16px here. So it asserts the class that produces the
+ * rule, the same way test/classnames.test.tsx asserts the class that dresses a
+ * part. What it protects is the decision, and not the pixel.
  */
 
-/** A classe que tira o campo do gatilho de zoom do Safari. */
+/** The class that takes the field out of Safari's zoom trigger. */
 const NO_ZOOM = "max-sm:text-[16px]";
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("o campo de texto nao dispara o zoom do Safari, em nenhum tamanho", () => {
+test("the text field does not trigger Safari zoom, at any size", () => {
   for (const size of ["sm", "md", "lg"] as const) {
     const { unmount } = withTheme(<Input size={size} aria-label="Número da nota" />);
     expect(screen.getByRole("textbox").className).toContain(NO_ZOOM);
@@ -43,22 +43,22 @@ test("o campo de texto nao dispara o zoom do Safari, em nenhum tamanho", () => {
   }
 });
 
-test("o campo de varias linhas tambem nao dispara", () => {
+test("the multiline field does not trigger it either", () => {
   const { container } = withTheme(<Textarea aria-label="Observação" />);
   expect(container.querySelector("textarea")!.className).toContain(NO_ZOOM);
 });
 
-test("o campo de busca tambem nao dispara, e ele nao passa pelo inputVariants", () => {
+test("the search field does not trigger it either, and it does not go through inputVariants", () => {
   withTheme(<SearchInput aria-label="Buscar nota" />);
   expect(screen.getByRole("searchbox").className).toContain(NO_ZOOM);
 });
 
-test("o campo com mascara tambem nao dispara", () => {
+test("the masked field does not trigger it either", () => {
   withTheme(<MaskedInput mask="cpf" aria-label="CPF" />);
   expect(screen.getByRole("textbox").className).toContain(NO_ZOOM);
 });
 
-test("o campo do combobox tambem nao dispara", () => {
+test("the combobox field does not trigger it either", () => {
   withTheme(
     <Combobox items={["Clinica Sao Lucas"]}>
       <ComboboxInput aria-label="Cliente" />
@@ -67,10 +67,10 @@ test("o campo do combobox tambem nao dispara", () => {
   expect(screen.getByRole("combobox").className).toContain(NO_ZOOM);
 });
 
-test("no desktop a escala densa continua de pe", () => {
-  // A metade que o conserto nao pode quebrar: subir a fonte abaixo de 640px
-  // nao vale subir a escala inteira. O medio segue no text-base, que e o
-  // --rc-text-base de 14px, e o pequeno segue menor que ele.
+test("on desktop the dense scale still stands", () => {
+  // The half the fix must not break: raising the font below 640px does not
+  // mean raising the whole scale. Medium stays at text-base, which is the 14px
+  // --rc-text-base, and small stays smaller than it.
   const { unmount } = withTheme(<Input aria-label="Número da nota" />);
   expect(screen.getByRole("textbox").className).toContain("text-base");
   unmount();

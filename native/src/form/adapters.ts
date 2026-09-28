@@ -10,12 +10,12 @@ type Identity = {
 };
 
 type Named = {
-  /** O rotulo do `FormField`, no `label` da peca, que e o nome dela no leitor de tela. */
+  /** The `FormField` label, in the component's `label`, which is its name for the screen reader. */
   label: string;
 };
 
 type Spoken = {
-  /** O rotulo do `FormField`, no nome do `TextInput` de baixo. */
+  /** The `FormField` label, in the name of the underlying `TextInput`. */
   accessibilityLabel: string;
 };
 
@@ -24,9 +24,9 @@ export type TextProps = Identity & Spoken & {
   onBlur: Noop;
   value: string;
   onChangeText: (text: string) => void;
-  /** A borda vermelha do `Input` e do `Textarea`. */
+  /** The red border of `Input` and `Textarea`. */
   invalid: boolean;
-  /** O `disabled` do `FormField` na lingua do `TextInput`, que nao le `disabled`. */
+  /** The `FormField` `disabled` in the language of `TextInput`, which does not read `disabled`. */
   editable?: boolean;
 };
 

@@ -7,20 +7,20 @@ import { Text } from "./text";
 
 type CheckboxName =
   | {
-      /** O rotulo visivel. Como no web, clicar no texto tambem marca. */
+      /** The visible label. As on the web, tapping the text also checks it. */
       children: ReactNode;
       /**
-       * O nome falado, obrigatorio quando nao ha `children`. Com texto ao
-       * lado, troca o nome que o leitor de tela le.
+       * The spoken name, required when there are no `children`. With text
+       * beside it, replaces the name the screen reader reads.
        */
       label?: string;
     }
   | {
       children?: undefined;
       /**
-       * O nome falado da caixa sem texto ao lado - a de marcar uma linha de
-       * lista. Obrigatorio aqui: sem ele o leitor de tela le "caixa de
-       * selecao, marcado" e a pessoa nao fica sabendo o que marcou.
+       * The spoken name of a box with no text beside it - the one that checks a
+       * list row. Required here: without it the screen reader reads "caixa de
+       * selecao, marcado" and the person does not learn what they checked.
        */
       label: string;
     };
@@ -30,21 +30,21 @@ export type CheckboxProps = CheckboxName & {
   onCheckedChange: (checked: boolean) => void;
   disabled?: boolean;
   /**
-   * O terceiro estado, o da caixa mestra de uma lista meio marcada: desenha um
-   * traco no lugar do tique e anuncia `mixed`. Vence o `checked` no desenho, e o
-   * toque marca tudo.
+   * The third state, that of the master box of a partly checked list: draws a
+   * dash instead of the tick and announces `mixed`. It wins over `checked` in
+   * the drawing, and the tap checks everything.
    */
   indeterminate?: boolean;
   /**
-   * Area de toque alem do desenho. A caixa desenha 20px, bem abaixo dos 44pt
-   * da Apple e dos 48dp do Android, e quem a poe sem rotulo ao lado perde o
-   * resto do alvo que o texto dava.
+   * Touch area beyond the drawing. The box draws 20px, well below Apple's 44pt
+   * and Android's 48dp, and whoever places it with no label beside it loses the
+   * rest of the target the text provided.
    */
   hitSlop?: PressableProps["hitSlop"];
   className?: string;
   /**
-   * Classe por parte: `box` (a caixa desenhada), `indicator` (o tique ou o
-   * traco dentro dela) e `label` (o texto ao lado).
+   * Class per part: `box` (the drawn box), `indicator` (the tick or dash inside
+   * it) and `label` (the text beside it).
    */
   classNames?: Slots<"box" | "indicator" | "label">;
 };

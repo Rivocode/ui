@@ -1,15 +1,16 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # PopoverContent
 
-O painel, em portal no contêiner do `RivoProvider`.
+The panel, in a portal in the `RivoProvider` container.
 
-`side`, `align` e `sideOffset` moram aqui de propósito: quem escreve a tela
-decide o lado junto com o conteúdo, e não na raiz, longe do que vai dentro. O
-painel vira sozinho quando não cabe do lado pedido.
+`side`, `align` and `sideOffset` live here on purpose: whoever writes the
+screen decides the side together with the content, and not on the root, far
+from what goes inside. The panel flips on its own when it does not fit on the
+requested side.
 
-São as mesmas três props, com o mesmo significado e a mesma folga padrão de
-6px, no `MenuContent`, no `SelectContent`, no `ComboboxContent` e no
-`TooltipContent`: o que flutua nesta biblioteca também se posiciona igual.
+They are the same three props, with the same meaning and the same default gap
+of 6px, on `MenuContent`, `SelectContent`, `ComboboxContent` and
+`TooltipContent`: what floats in this library also positions the same way.

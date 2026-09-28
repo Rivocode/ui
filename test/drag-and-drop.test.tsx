@@ -108,7 +108,7 @@ function Notes(props: Partial<Parameters<typeof SortableList<Note>>[0]>) {
 describe("SortableList", () => {
   beforeEach(() => layOutList());
 
-  test("cada item ganha uma alca com nome, e a instrucao de teclado fica ligada a ela", () => {
+  test("each item gets a named handle, and the keyboard instruction is linked to it", () => {
     withTheme(<Notes />);
 
     const list = screen.getByRole("list", { name: "Ordem de emissão" });
@@ -123,7 +123,7 @@ describe("SortableList", () => {
     expect(help?.textContent).toContain("Esc para cancelar");
   });
 
-  test("Espaco pega, as setas movem, Espaco solta, e a ordem nova sai pronta", async () => {
+  test("Space picks up, the arrows move, Space drops, and the new order comes out ready", async () => {
     const onReorder = mock<(items: Note[], move: unknown) => void>(() => {});
     withTheme(<Notes onReorder={onReorder} />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1041" });
@@ -145,7 +145,7 @@ describe("SortableList", () => {
     expect(move).toEqual({ key: 1041, from: 0, to: 2 });
   });
 
-  test("a alca trava a rolagem no toque, e a linha inteira como alca nao", () => {
+  test("the handle locks scrolling on touch, and the whole row as a handle does not", () => {
     const { unmount } = withTheme(<Notes />);
     expect(tokens(screen.getByRole("button", { name: "Reordenar Nota 1041" }))).toContain(
       "touch-none",
@@ -167,7 +167,7 @@ describe("SortableList", () => {
     expect(received.onPointerDown).toBeUndefined();
   });
 
-  test("o ponteiro arrasta pela alca, e o toque curto nao pega", async () => {
+  test("the pointer drags by the handle, and a short touch does not pick up", async () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     withTheme(<Notes onReorder={onReorder} />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1041" });
@@ -201,7 +201,7 @@ describe("SortableList", () => {
     expect(onReorder.mock.calls[0]![0].map((note) => note.id)).toEqual([1042, 1043, 1041, 1044]);
   });
 
-  test("Esc cancela: a ordem nao muda e o anuncio diz para onde o item voltou", async () => {
+  test("Esc cancels: the order does not change and the announcement says where the item went back to", async () => {
     const onReorder = mock(() => {});
     withTheme(<Notes onReorder={onReorder} />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1042" });
@@ -215,7 +215,7 @@ describe("SortableList", () => {
     expect(announced()).toBe("Movimento cancelado. Item Nota 1042 voltou para a posição 2 de 4.");
   });
 
-  test("soltar no mesmo lugar nao chama onReorder", async () => {
+  test("dropping in the same place does not call onReorder", async () => {
     const onReorder = mock(() => {});
     withTheme(<Notes onReorder={onReorder} />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1044" });
@@ -228,7 +228,7 @@ describe("SortableList", () => {
     expect(announced()).toBe("Item Nota 1044 solto na posição 4 de 4.");
   });
 
-  test("a peca e controlada: sem o pai trocar items, a ordem da tela nao muda", async () => {
+  test("the piece is controlled: unless the parent swaps items, the on-screen order does not change", async () => {
     withTheme(<Notes />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1041" });
     handle.focus();
@@ -240,7 +240,7 @@ describe("SortableList", () => {
     expect(order).toEqual(NOTES.map((note) => note.client));
   });
 
-  test("com o estado no pai, a lista volta na ordem nova", async () => {
+  test("with state in the parent, the list comes back in the new order", async () => {
     function Controlled() {
       const [items, setItems] = useState(NOTES);
       return <Notes items={items} onReorder={setItems} />;
@@ -256,7 +256,7 @@ describe("SortableList", () => {
     expect(order).toEqual(["Clínica São Lucas", "Padaria Pão Quente", "Escola Aprender", "Oficina do Zé"]);
   });
 
-  test("labels troca os anuncios, a instrucao e o nome da alca", async () => {
+  test("labels replaces the announcements, the instruction and the handle name", async () => {
     withTheme(
       <Notes
         labels={{
@@ -275,7 +275,7 @@ describe("SortableList", () => {
     expect(announced()).toBe("Picked Nota 1043, 3 of 4.");
   });
 
-  test("sem handle, quem arrasta e o elemento que recebe handleProps", async () => {
+  test("without handle, the element receiving handleProps is the one that drags", async () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     withTheme(
       <Notes
@@ -302,7 +302,7 @@ describe("SortableList", () => {
     expect(onReorder.mock.calls[0]![0].map((note) => note.id)).toEqual([1042, 1041, 1043, 1044]);
   });
 
-  test("desabilitada, a alca nao pega o item", async () => {
+  test("when disabled, the handle does not pick up the item", async () => {
     const onReorder = mock(() => {});
     withTheme(<Notes disabled onReorder={onReorder} />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1041" }) as HTMLButtonElement;
@@ -316,14 +316,14 @@ describe("SortableList", () => {
     expect(handle.getAttribute("aria-pressed")).not.toBe("true");
   });
 
-  test("lista vazia monta sem item e sem alca", () => {
+  test("an empty list mounts with no item and no handle", () => {
     withTheme(<Notes items={[]} />);
     const list = screen.getByRole("list", { name: "Ordem de emissão" });
     expect(list.querySelectorAll("li").length).toBe(0);
     expect(screen.queryAllByRole("button").length).toBe(0);
   });
 
-  test("classNames alcanca item, alca e conteudo, e o item arrastado sobe com sombra", async () => {
+  test("classNames reaches item, handle and content, and the dragged item lifts with a shadow", async () => {
     withTheme(<Notes classNames={{ item: "gap-4", handle: "text-fg", content: "py-1" }} />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1041" });
     const item = handle.closest("li")!;
@@ -341,7 +341,7 @@ describe("SortableList", () => {
     expect(tokens(item)).toContain("z-[var(--rc-z-sticky)]");
   });
 
-  test("os vizinhos andam com a mola do token, que zera quando o sistema pede menos movimento", async () => {
+  test("the neighbors move with the token spring, which zeroes when the system asks for less motion", async () => {
     withTheme(<Notes />);
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1041" });
     handle.focus();
@@ -363,7 +363,7 @@ describe("SortableList", () => {
 describe("SortableList horizontal", () => {
   beforeEach(() => layOutList("horizontal"));
 
-  test("anda com as setas de lado, e a orientacao fica no data-orientation", async () => {
+  test("moves with the side arrows, and the orientation stays in data-orientation", async () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     withTheme(<Notes orientation="horizontal" onReorder={onReorder} />);
     const list = screen.getByRole("list", { name: "Ordem de emissão" });
@@ -414,7 +414,7 @@ const cardOf = (title: string) =>
 describe("Kanban", () => {
   beforeEach(() => layOutBoard());
 
-  test("cada coluna diz o nome e a contagem, e a vazia mostra onde soltar", () => {
+  test("each column states its name and count, and the empty one shows where to drop", () => {
     withTheme(<Board />);
 
     const todo = screen.getByRole("region", { name: "A fazer" });
@@ -427,7 +427,7 @@ describe("Kanban", () => {
     expect(todo.textContent).not.toContain("Nenhum cartão");
   });
 
-  test("o limite de trabalho avisa em texto e em tom, e nao antes de ser passado", () => {
+  test("the work limit warns in text and tone, and not before it is exceeded", () => {
     const columns = board();
     columns[1] = { ...columns[1]!, items: [card("1050"), card("1051")] };
     withTheme(<Board columns={columns} />);
@@ -443,7 +443,7 @@ describe("Kanban", () => {
     expect(todo.textContent).not.toContain("Acima do limite");
   });
 
-  test("no limite exato, a coluna nao avisa", () => {
+  test("at the exact limit, the column does not warn", () => {
     withTheme(<Board />);
     const review = screen.getByRole("region", { name: "Em análise" });
     expect(review.textContent).toContain("1 de 1 cartões");
@@ -451,7 +451,7 @@ describe("Kanban", () => {
     expect(review.getAttribute("data-over-limit")).toBeNull();
   });
 
-  test("o cartao e a alca: foco, nome de papel e instrucao de teclado", () => {
+  test("the card is the handle: focus, role name and keyboard instruction", () => {
     withTheme(<Board />);
     const item = cardOf("Nota 1042");
 
@@ -467,7 +467,7 @@ describe("Kanban", () => {
     expect(tokens(item)).toContain("focus-visible:ring-2");
   });
 
-  test("dentro da coluna, o teclado reordena e onMove diz a posicao final", async () => {
+  test("inside the column, the keyboard reorders and onMove states the final position", async () => {
     const onMove = mock(() => {});
     withTheme(<Board onMove={onMove} />);
     const item = cardOf("Nota 1041");
@@ -482,7 +482,7 @@ describe("Kanban", () => {
     expect(onMove).toHaveBeenCalledWith({ itemId: "1041", from: "todo", to: "todo", index: 1 });
   });
 
-  test("entre colunas, o anuncio nomeia a coluna nova e avisa o limite passado", async () => {
+  test("between columns, the announcement names the new column and warns about the exceeded limit", async () => {
     const onMove = mock<(move: KanbanMove) => void>(() => {});
     withTheme(<Board onMove={onMove} />);
     const item = cardOf("Nota 1041");
@@ -502,7 +502,7 @@ describe("Kanban", () => {
     );
   });
 
-  test("a coluna vazia recebe o cartao", async () => {
+  test("the empty column receives the card", async () => {
     const onMove = mock<(move: KanbanMove) => void>(() => {});
     const columns = board();
     withTheme(<Board columns={[columns[1]!, columns[2]!]} onMove={onMove} />);
@@ -517,7 +517,7 @@ describe("Kanban", () => {
     expect(onMove.mock.calls[0]).toEqual([{ itemId: "1050", from: "review", to: "done", index: 0 }]);
   });
 
-  test("Esc cancela, o quadro volta ao que veio por props, e nada sai", async () => {
+  test("Esc cancels, the board goes back to what came by props, and nothing is emitted", async () => {
     const onMove = mock(() => {});
     withTheme(<Board onMove={onMove} />);
     const item = cardOf("Nota 1042");
@@ -535,7 +535,7 @@ describe("Kanban", () => {
     expect(screen.getByRole("list", { name: "Em análise" }).textContent).not.toContain("Nota 1042");
   });
 
-  test("controlado: soltar sem o pai mudar columns devolve o cartao ao lugar", async () => {
+  test("controlled: dropping without the parent changing columns puts the card back", async () => {
     withTheme(<Board />);
     const item = cardOf("Nota 1041");
     item.focus();
@@ -547,7 +547,7 @@ describe("Kanban", () => {
     expect(screen.getByRole("list", { name: "Em análise" }).textContent).not.toContain("Nota 1041");
   });
 
-  test("desabilitado, o cartao nao sai do lugar", async () => {
+  test("when disabled, the card does not move", async () => {
     const onMove = mock(() => {});
     withTheme(<Board disabled onMove={onMove} />);
     const item = cardOf("Nota 1041");
@@ -560,7 +560,7 @@ describe("Kanban", () => {
     expect(item.getAttribute("aria-disabled")).toBe("true");
   });
 
-  test("no toque, o cartao deixa o quadro rolar: pegar e segurar, e nao encostar", async () => {
+  test("on touch, the card lets the board scroll: press and hold, and not just touch", async () => {
     const onMove = mock(() => {});
     withTheme(<Board onMove={onMove} />);
     const item = cardOf("Nota 1041");
@@ -577,7 +577,7 @@ describe("Kanban", () => {
     expect(item.getAttribute("aria-pressed")).not.toBe("true");
   });
 
-  test("o item da lista continua item: sem papel, sem foco e sem ouvinte", () => {
+  test("the list item stays an item: no role, no focus and no listener", () => {
     withTheme(<Board />);
     const items = [...screen.getByRole("list", { name: "A fazer" }).children];
     expect(items.length).toBe(3);
@@ -591,7 +591,7 @@ describe("Kanban", () => {
     }
   });
 
-  test("o texto so de leitor de tela fica preso dentro da coluna, e nao alarga a pagina", () => {
+  test("the screen-reader-only text stays inside the column, and does not widen the page", () => {
     withTheme(<Board />);
     const root = screen.getByRole("region", { name: "A fazer" }).parentElement!;
     const hidden = [...root.querySelectorAll(".sr-only")];
@@ -608,7 +608,7 @@ describe("Kanban", () => {
     }
   });
 
-  test("o anel de soltar aqui cabe no corte da fileira, e o titulo longo quebra em vez de sumir", () => {
+  test("the drop-here ring fits within the row clipping, and a long title wraps instead of vanishing", () => {
     withTheme(<Board />);
     const todo = screen.getByRole("region", { name: "A fazer" });
     const root = todo.parentElement!;
@@ -621,7 +621,7 @@ describe("Kanban", () => {
     expect(title.getAttribute("title")).toBe("A fazer");
   });
 
-  test("a fileira rola de lado no celular e encaixa coluna por coluna", () => {
+  test("the row scrolls sideways on mobile and snaps column by column", () => {
     withTheme(<Board />);
     const root = screen.getByRole("region", { name: "A fazer" }).parentElement!;
     expect(root.getAttribute("aria-label")).toBe("Notas do mês");
@@ -630,7 +630,7 @@ describe("Kanban", () => {
     expect(tokens(root)).toContain("sm:snap-none");
   });
 
-  test("classNames alcanca as partes pelo nome", () => {
+  test("classNames reaches the parts by name", () => {
     withTheme(
       <Board
         classNames={{
@@ -657,8 +657,8 @@ describe("Kanban", () => {
   });
 });
 
-describe("o subcaminho", () => {
-  test("as duas pecas saem de @rivocode/ui/dnd, e de nenhuma outra entrada", () => {
+describe("the subpath", () => {
+  test("the two pieces come from @rivocode/ui/dnd, and from no other entry", () => {
     for (const name of ["SortableList", "Kanban"]) {
       expect(name in dnd).toBe(true);
       expect(name in root).toBe(false);

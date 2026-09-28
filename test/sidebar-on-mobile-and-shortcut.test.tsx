@@ -65,14 +65,14 @@ const press = (target: EventTarget, key: string, init: KeyboardEventInit = {}) =
   return event;
 };
 
-test("Ctrl+B fora de campo abre e fecha a barra", () => {
+test("Ctrl+B outside a field opens and closes the bar", () => {
   const { container } = desk();
   expect(state(container)).toBe("open");
   press(document.body, "b");
   expect(state(container)).toBe("closed");
 });
 
-test("Ctrl+B dentro de campo ou de editor nao mexe na barra", () => {
+test("Ctrl+B inside a field or editor does not touch the bar", () => {
   const { container } = desk();
   press(screen.getByLabelText("Busca"), "b");
   expect(state(container)).toBe("open");
@@ -80,7 +80,7 @@ test("Ctrl+B dentro de campo ou de editor nao mexe na barra", () => {
   expect(state(container)).toBe("open");
 });
 
-test("Ctrl+B que o editor ja tratou nao mexe na barra", () => {
+test("Ctrl+B the editor already handled does not touch the bar", () => {
   const { container } = desk();
   const editor = screen.getByTestId("editor");
   const claim = (event: Event) => event.preventDefault();
@@ -93,7 +93,7 @@ test("Ctrl+B que o editor ja tratou nao mexe na barra", () => {
   expect(state(container)).toBe("open");
 });
 
-test("o atalho em maiuscula casa com a tecla, com ou sem Shift", () => {
+test("an uppercase shortcut matches the key, with or without Shift", () => {
   const { container } = desk({ shortcut: "B" });
   press(document.body, "b");
   expect(state(container)).toBe("closed");
@@ -101,7 +101,7 @@ test("o atalho em maiuscula casa com a tecla, com ou sem Shift", () => {
   expect(state(container)).toBe("open");
 });
 
-test("no celular, a barra controlada aberta na mesa nao abre a folha por cima da tela", () => {
+test("on mobile, a controlled bar open on desktop does not open the sheet over the screen", () => {
   phone();
   const onOpenChange = mock((open: boolean) => void open);
   const onOpenMobileChange = mock((open: boolean) => void open);
@@ -129,7 +129,7 @@ test("no celular, a barra controlada aberta na mesa nao abre a folha por cima da
   expect(onOpenChange).not.toHaveBeenCalled();
 });
 
-test("no celular, a folha controlada por openMobile abre pelo estado de quem usa", () => {
+test("on mobile, the sheet controlled by openMobile opens from the consumer's state", () => {
   phone();
   render(
     <RivoProvider scope="local">
@@ -143,7 +143,7 @@ test("no celular, a folha controlada por openMobile abre pelo estado de quem usa
   expect(screen.getByRole("dialog")).toBeDefined();
 });
 
-test("no celular, a barra leva className e atributos para a folha, sem apagar o papel de dialogo", () => {
+test("on mobile, the bar carries className and attributes to the sheet, without erasing the dialog role", () => {
   phone();
   render(
     <RivoProvider scope="local">
@@ -163,7 +163,7 @@ test("no celular, a barra leva className e atributos para a folha, sem apagar o 
   expect(inner.getAttribute("role")).toBe("none");
 });
 
-test("os passos levam className e aria-label para a linha do celular tambem", () => {
+test("the steps carry className and aria-label to the mobile row too", () => {
   const { container } = render(
     <Steps
       steps={[
@@ -193,7 +193,7 @@ test("os passos levam className e aria-label para a linha do celular tambem", ()
   expect(list.getAttribute("aria-label")).toBe("Andamento do cadastro");
 });
 
-test("os passos com className de display continuam escondendo a forma que nao cabe", () => {
+test("steps with a display className still hide the form that does not fit", () => {
   const { container } = render(
     <Steps steps={[{ id: "a", title: "Dados" }]} step={0} className="flex" />,
   );
@@ -201,7 +201,7 @@ test("os passos com className de display continuam escondendo a forma que nao ca
   expect(tokens(container.firstElementChild!)).toContain("sm:hidden");
 });
 
-test("o data-testid do Steps fica num bloco so, e o getByTestId acha um elemento", () => {
+test("the Steps data-testid stays on a single block, and getByTestId finds one element", () => {
   render(
     <Steps
       data-testid="etapas"
@@ -218,7 +218,7 @@ test("o data-testid do Steps fica num bloco so, e o getByTestId acha um elemento
   expect(screen.getAllByRole("group", { name: "Etapas" }).length).toBeGreaterThan(0);
 });
 
-test("o titulo do passo tem a linha da altura do circulo, e fica no meio dele sem descricao", () => {
+test("the step title has the line height of the circle, and sits in its middle without a description", () => {
   render(<Steps steps={[{ id: "a", title: "O que é" }]} step={0} />);
   const title = screen
     .getAllByText("O que é")
@@ -227,7 +227,7 @@ test("o titulo do passo tem a linha da altura do circulo, e fica no meio dele se
   expect(title.className.split(" ")).toContain("leading-6");
 });
 
-test("o item da barra lateral aceita o link do router pelo render, com o desenho e o aria-current da casa", () => {
+test("the sidebar item accepts the router link through render, with the house styling and aria-current", () => {
   let clicked = 0;
   render(
     <SidebarProvider>

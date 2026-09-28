@@ -1,24 +1,25 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Select
 
-Escolha única em lista.
+Single choice from a list.
 
-Compõe com `SelectTrigger`, `SelectValue`, `SelectContent` e `SelectItem`.
-Lista com famílias de verdade ganha `SelectGroup` com `SelectGroupLabel`, e
-`SelectSeparator` entre uma família e outra.
+It composes with `SelectTrigger`, `SelectValue`, `SelectContent` and
+`SelectItem`. A list with real families gets `SelectGroup` with
+`SelectGroupLabel`, and `SelectSeparator` between one family and the next.
 
-**Passe `items` com `{ label, value }` na raiz.** Sem isso o gatilho mostra o
-valor cru em vez do rótulo, e essa é a armadilha mais fácil de cair aqui.
+**Pass `items` with `{ label, value }` at the root.** Without it the trigger
+shows the raw value instead of the label, and that is the easiest trap to fall
+into here.
 
-Renderiza em portal, então exige o `RivoProvider`.
+It renders in a portal, so it requires `RivoProvider`.
 
-`size` mora na raiz, com o vocabulário do `Input`: `sm`, `md` (padrão) e `lg`,
-com a mesma altura, o mesmo recuo e o mesmo corpo de texto. O `SelectTrigger`
-de dentro veste o tamanho sozinho, então um filtro com `Input size="sm"` e
-`Select size="sm"` lado a lado fica numa linha só.
+`size` lives at the root, with `Input`'s vocabulary: `sm`, `md` (default) and
+`lg`, with the same height, the same padding and the same body text. The
+`SelectTrigger` inside wears the size on its own, so a filter with
+`Input size="sm"` and `Select size="sm"` side by side stays on a single line.
 
 ```tsx
 <Select items={STATUS} size="sm">
@@ -31,18 +32,18 @@ de dentro veste o tamanho sozinho, então um filtro com `Input size="sm"` e
 </Select>
 ```
 
-## Quando não usar
+## When not to use
 
-Quando a lista é grande demais para caber na cabeça de quem escolhe, ou quando
-ela vem do servidor, use `Combobox`: ele traz a busca junto. Rolar cento e
-vinte cidades numa lista sem campo de digitar é o mesmo trabalho de procurar
-numa gaveta.
+When the list is too big to fit in the chooser's head, or when it comes from
+the server, use `Combobox`: it brings search along. Scrolling through a hundred
+and twenty cities in a list with no field to type in is the same work as
+rummaging through a drawer.
 
-Para duas ou três opções que cabem lado a lado, o `RadioGroup` mostra todas de
-uma vez e economiza o clique de abrir. E para um liga-desliga, o `Switch`.
+For two or three options that fit side by side, `RadioGroup` shows them all at
+once and saves the click to open. And for an on-off, `Switch`.
 
-## No React Native
+## In React Native
 
-Traduz, e a forma de escrever é outra. No web o `Select` pede `items` na raiz **e** as quatro partes (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`); no nativo ele é uma tag só (`<Select items={…} value={…} onValueChange={…} label="Período" />`), e a lista abre numa folha de baixo, que é o idioma da plataforma para escolher. O `label` é obrigatório: é por ele que o leitor de tela anuncia o gatilho, papel que no web era do `SelectTrigger`.
+Translates, and the way to write it is different. On the web `Select` asks for `items` on the root **and** the four parts (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`); on native it is a single tag (`<Select items={…} value={…} onValueChange={…} label="Período" />`), and the list opens in a bottom sheet, which is the platform's idiom for choosing. `label` is required: it is through it that the screen reader announces the trigger, a role that on the web belonged to `SelectTrigger`.
 
-Famílias de opções entram pelo mesmo `items`, em grupos `{ label, items }` - a forma que o `items` do web também aceita. A folha vira uma `SectionList`, e cada `label` de grupo é anunciado como cabeçalho, no lugar do `SelectGroupLabel`.
+Families of options come in through the same `items`, in `{ label, items }` groups - the shape the web's `items` also accepts. The sheet becomes a `SectionList`, and each group's `label` is announced as a header, in place of `SelectGroupLabel`.

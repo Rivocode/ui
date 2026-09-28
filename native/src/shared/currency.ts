@@ -1,4 +1,4 @@
-/* Gerado de src/shared/currency.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/currency.ts by bun run gen:shared. Do not edit. */
 
 export const CURRENCY_MAX_DIGITS = 12;
 

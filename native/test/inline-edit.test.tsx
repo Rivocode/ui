@@ -6,7 +6,7 @@ import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 const field = (screen: ReturnType<typeof render>) => byType(screen, "TextInput")[0];
 
 describe("Editable", () => {
-  test("fechada, o valor viaja no nome e o toque longo é a porta", () => {
+  test("closed, the value travels in the name and the long press is the door", () => {
     const screen = render(
       <Editable value="Clínica São Lucas" onValueChange={() => {}} label="Nome do cliente" />,
     );
@@ -15,8 +15,8 @@ describe("Editable", () => {
     const preview = byRole(screen, "button")[0];
     expect(preview.props.accessibilityLabel).toBe("Nome do cliente: Clínica São Lucas");
     expect(preview.props.accessibilityHint).toBe("Toque e segure para editar");
-    // O toque curto nao abre: num painel de leitura o dedo encosta em tudo
-    // enquanto rola, e o teclado subiria a cada esbarrao.
+    // A short tap does not open: on a reading dashboard the finger touches
+    // everything while scrolling, and the keyboard would pop up at every bump.
     expect(preview.props.onPress).toBeUndefined();
     expect(byType(screen, "TextInput").length).toBe(0);
 
@@ -24,7 +24,7 @@ describe("Editable", () => {
     expect(byType(screen, "TextInput").length).toBe(1);
   });
 
-  test("quem ouve a tela tem a mesma porta, pela ação de toque longo", () => {
+  test("whoever listens to the screen has the same door, through the long-press action", () => {
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={() => {}} label="Responsável" />,
     );
@@ -36,7 +36,7 @@ describe("Editable", () => {
     expect(byType(screen, "TextInput").length).toBe(1);
   });
 
-  test("o campo abre com o texto de agora, selecionado e com o teclado de pé", () => {
+  test("the field opens with the current text, selected and with the keyboard up", () => {
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={() => {}} label="Responsável" />,
     );
@@ -47,11 +47,11 @@ describe("Editable", () => {
     expect(input.props.accessibilityLabel).toBe("Responsável");
     expect(input.props.autoFocus).toBe(true);
     expect(input.props.selectTextOnFocus).toBe(true);
-    // O retorno confirma, e a tecla precisa dizer isso antes de ser tocada.
+    // Return confirms, and the key needs to say so before being tapped.
     expect(input.props.returnKeyType).toBe("done");
   });
 
-  test("o retorno confirma, e só ele", () => {
+  test("return confirms, and only it", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={onValueChange} label="Responsável" />,
@@ -59,16 +59,16 @@ describe("Editable", () => {
 
     act(() => byRole(screen, "button")[0].props.onLongPress());
     act(() => field(screen).props.onChangeText("Ana Duarte Lima"));
-    // Digitar nao avisa ninguem: a peca e controlada e o rascunho e dela.
+    // Typing notifies nobody: the piece is controlled and the draft is its own.
     expect(onValueChange).not.toHaveBeenCalled();
 
     act(() => field(screen).props.onSubmitEditing());
     expect(onValueChange).toHaveBeenCalledWith("Ana Duarte Lima");
-    // Fechou: o campo saiu da tela.
+    // Closed: the field left the screen.
     expect(byType(screen, "TextInput").length).toBe(0);
   });
 
-  test("sair do campo não salva - é o Cancelar que tira o foco", () => {
+  test("leaving the field does not save - it is Cancelar that takes the focus away", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={onValueChange} label="Responsável" />,
@@ -77,14 +77,14 @@ describe("Editable", () => {
     act(() => byRole(screen, "button")[0].props.onLongPress());
     act(() => field(screen).props.onChangeText("rascunho perdido"));
 
-    // O campo tem `onBlur` do proprio Input, para a borda; salvar ali faria o
-    // Cancelar salvar no caminho de cancelar.
+    // The field has the Input's own `onBlur`, for the border; saving there
+    // would make Cancelar save on its way to cancelling.
     act(() => field(screen).props.onBlur({}));
     expect(onValueChange).not.toHaveBeenCalled();
     expect(byType(screen, "TextInput").length).toBe(1);
   });
 
-  test("o Cancelar desfaz, e o campo reabre com o valor de verdade", () => {
+  test("Cancelar undoes, and the field reopens with the real value", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={onValueChange} label="Responsável" />,
@@ -93,8 +93,8 @@ describe("Editable", () => {
     act(() => byRole(screen, "button")[0].props.onLongPress());
     act(() => field(screen).props.onChangeText("rascunho perdido"));
 
-    // Aberta, a peca tem UM botao: o `Cancelar`. O texto virou campo, e o
-    // campo nao e botao.
+    // Open, the piece has ONE button: `Cancelar`. The text became a field, and
+    // the field is not a button.
     const buttons = byRole(screen, "button");
     expect(buttons.length).toBe(1);
     act(() => buttons[0].props.onPress());
@@ -103,12 +103,12 @@ describe("Editable", () => {
     expect(textOf(screen)).toContain("Ana Duarte");
     expect(textOf(screen)).not.toContain("rascunho perdido");
 
-    // O rascunho nasce do valor a cada abertura: o descartado nao volta.
+    // The draft is born from the value on every opening: the discarded one does not come back.
     act(() => byRole(screen, "button")[0].props.onLongPress());
     expect(field(screen).props.value).toBe("Ana Duarte");
   });
 
-  test("confirmar sem mexer não avisa ninguém", () => {
+  test("confirming without changing notifies nobody", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={onValueChange} label="Responsável" />,
@@ -119,14 +119,14 @@ describe("Editable", () => {
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  test("vazio mostra o traço e anuncia que está vazio", () => {
+  test("empty shows the dash and announces that it is empty", () => {
     const screen = render(<Editable value="" onValueChange={() => {}} label="Apelido" />);
 
     expect(textOf(screen)).toContain("—");
     expect(byLabel(screen, "Apelido: vazio").length).toBe(1);
   });
 
-  test("desligada não abre", () => {
+  test("disabled does not open", () => {
     const screen = render(
       <Editable value="Ana Duarte" onValueChange={() => {}} label="Responsável" disabled />,
     );

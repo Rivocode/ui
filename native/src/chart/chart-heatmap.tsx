@@ -14,49 +14,51 @@ const LABEL_COLUMN = { maxWidth: "40%" } as const;
 
 export type ChartHeatmapProps<Cell> = {
   /**
-   * Uma linha por célula preenchida, no formato longo que a consulta devolve.
-   * Combinação que não aparece aqui vira célula vazia, e não zero.
+   * One row per filled cell, in the long format the query returns. A
+   * combination that does not appear here becomes an empty cell, not zero.
    */
   data: Cell[];
-  /** De onde sai a linha da grade. */
+  /** Where the grid row comes from. */
   rowKey: keyof Cell & string;
-  /** De onde sai a coluna da grade. */
+  /** Where the grid column comes from. */
   columnKey: keyof Cell & string;
-  /** De onde sai o número. `null` é célula vazia; `0` é valor. */
+  /** Where the number comes from. `null` is an empty cell; `0` is a value. */
   valueKey: keyof Cell & string;
-  /** A ordem das linhas, e as que existem mesmo sem dado nenhum. */
+  /** The order of the rows, and the ones that exist even with no data at all. */
   rows?: readonly string[];
-  /** A ordem das colunas, pela mesma regra de `rows`. */
+  /** The order of the columns, by the same rule as `rows`. */
   columns?: readonly string[];
-  /** A cor do degrau mais forte, como papel de token. Sem ela, `chart-1`. */
+  /** The color of the strongest step, as a token role. Without it, `chart-1`. */
   color?: RivoNativeColorRole;
-  /** O intervalo da escala, `[menor, maior]`. Sem ele, de zero até o maior valor. */
+  /** The scale range, `[min, max]`. Without it, from zero to the largest value. */
   domain?: readonly [number, number];
   /**
-   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
-   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
+   * How the number is written: the name of a house formatter (`currencyShort`,
+   * `percent`, `integer`...) or your own function, the same vocabulary as the
+   * web.
    */
   format?: Format;
-  /** O que a grade mede, por extenso: é o nome que o leitor de tela anuncia. */
+  /** What the grid measures, in full: it is the name the screen reader announces. */
   label: string;
-  /** A régua de cor embaixo da grade. Ligada por padrão. */
+  /** The color scale below the grid. On by default. */
   legend?: boolean;
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `empty` e o que a leitura diz na
-   * celula sem dado, "Sem dado" sem ele, e `next` e `previous` os nomes das
-   * duas acoes de ajuste que andam de celula. Passe so os que mudam.
+   * The component's texts, to change the language: `empty` is what the reading
+   * says on a cell with no data, "Sem dado" without it, and `next` and
+   * `previous` the names of the two adjust actions that move between cells.
+   * Pass only the ones that change.
    */
   labels?: Partial<ChartHeatmapLabels>;
   /**
-   * Classe por parte: `grid` (a grade que recebe o arrasto), `cell` (cada
-   * celula) e `legend` (a regua de cor).
+   * Class per part: `grid` (the grid that receives the drag), `cell` (each
+   * cell) and `legend` (the color scale).
    */
   classNames?: Slots<"grid" | "cell" | "legend">;
   /**
-   * O que aparece no lugar da grade quando nao ha celula com numero ou todas
-   * dao zero. O mesmo formato do `empty` do `ChartContainer`. Sem ele, a grade
-   * toda em zero continua pintando o degrau mais ralo.
+   * What appears in place of the grid when no cell has a number or all of them
+   * are zero. The same shape as the `ChartContainer` `empty`. Without it, a
+   * grid that is all zero keeps painting the faintest step.
    */
   empty?: ChartEmptyContent;
 };

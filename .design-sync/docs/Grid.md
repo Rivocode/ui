@@ -1,10 +1,10 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Grid
 
-Arruma os filhos em linhas e colunas, com o mesmo vão do `Stack`.
+Lays the children out in rows and columns, with the same gap as `Stack`.
 
 ```tsx
 <Grid minItemWidth="12rem">
@@ -14,51 +14,54 @@ Arruma os filhos em linhas e colunas, com o mesmo vão do `Stack`.
 </Grid>
 ```
 
-São dois jeitos de dizer as colunas, e a escolha é a pergunta que a tela faz.
+There are two ways to state the columns, and the choice is the question the
+screen asks.
 
-**`minItemWidth`: quantas couberem.** A grade põe quantas colunas couberem com
-pelo menos essa largura e divide a sobra entre elas. No celular sai uma coluna,
-no notebook três, no monitor largo cinco, sem media query escrita à mão. Aceita
-número, lido em pixels, ou medida CSS como `"16rem"`. Numa tela mais estreita que
-o próprio mínimo, o item ocupa a linha inteira em vez de vazar para o lado.
+**`minItemWidth`: as many as fit.** The grid places as many columns as fit
+with at least that width and splits the leftover among them. On a phone you
+get one column, on a laptop three, on a wide monitor five, with no
+hand-written media query. It accepts a number, read in pixels, or a CSS
+length such as `"16rem"`. On a screen narrower than the minimum itself, the
+item takes the whole row instead of overflowing sideways.
 
-**`columns`: quantas eu disser.** Colunas fixas e de largura igual. Serve quando
-o número de colunas é parte do desenho, como três indicadores lado a lado num
-painel. Não muda com a tela, então confira em 390px antes de escolher.
+**`columns`: as many as I say.** Fixed columns of equal width. Useful when the
+number of columns is part of the design, like three indicators side by side on
+a dashboard. It does not change with the screen, so check it at 390px before
+choosing it.
 
-Coluna fixa não protege conteúdo que não quebra. Cada coluna encolhe até caber
-na tela, mas o que está dentro dela, não: `Badge`, botão e número em fonte
-mono ficam numa linha só e passam por cima da coluna vizinha. Três `Badge`
-com contagem em `columns={3}` se sobrepõem num celular de 390px. Para item
-que não quebra, use `minItemWidth`, que desce para menos colunas quando falta
-largura, ou um `Stack` em linha com `wrap`.
+A fixed column does not protect content that does not wrap. Each column
+shrinks until it fits the screen, but what is inside it does not: a `Badge`, a
+button and a number in a mono font stay on a single line and run over the
+neighboring column. Three `Badge` with counts in `columns={3}` overlap on a
+390px phone. For items that do not wrap, use `minItemWidth`, which drops to
+fewer columns when width runs out, or a row `Stack` with `wrap`.
 
-As duas juntas não combinam, e `minItemWidth` vence. Sem nenhuma das duas, sai
-uma coluna só, com o vão entre as linhas.
+The two together do not combine, and `minItemWidth` wins. With neither, you
+get a single column, with the gap between the rows.
 
-A última linha não estica. Com cinco cartões em três colunas, os dois de baixo
-ficam do tamanho dos de cima, e o lugar do terceiro fica vazio: cartão que muda
-de largura conforme a quantidade parece defeito.
+The last row does not stretch. With five cards in three columns, the two at
+the bottom stay the size of the ones above, and the third slot stays empty: a
+card that changes width depending on the count looks like a bug.
 
-`gap` é a mesma escala do [`Stack`](/componentes/stack), de `xs` a `xl`, com o
-mesmo passo menor na densidade compacta. `render` troca o elemento, como lá:
-`<Grid render={<ul />}>` mantém a lista para o leitor de tela.
+`gap` is the same scale as [`Stack`](/componentes/stack), from `xs` to `xl`,
+with the same smaller step in compact density. `render` swaps the element, as
+there: `<Grid render={<ul />}>` keeps the list for the screen reader.
 
-## Quando não usar
+## When not to use
 
-- **Quando uma `div` com classe basta.** Uma grade de duas colunas que só
-  aparece no desktop é `grid gap-4 lg:grid-cols-2`, e ninguém ganha nada com a
-  peça. O `Grid` se paga no `minItemWidth`, que o Tailwind não escreve sem valor
-  arbitrário, e no vão que acompanha a densidade.
-- **Uma direção só.** Campos um embaixo do outro, ou botões lado a lado, são
-  `Stack`.
-- **Dado em linha e coluna.** Nota, cliente e valor alinhados por coluna, com
-  cabeçalho, são `Table` ou `DataTable`: o leitor de tela anuncia a coluna de
-  cada célula, e a grade não anuncia nada.
-- **Colunas que a pessoa redimensiona.** Lista e detalhe com divisória são o
-  `Splitter`. A moldura de cada item continua sendo o `Card`, que o `Grid` não
-  desenha.
+- **When a `div` with a class is enough.** A two-column grid that only shows
+  on desktop is `grid gap-4 lg:grid-cols-2`, and nobody gains anything from the
+  piece. `Grid` pays for itself with `minItemWidth`, which Tailwind cannot
+  write without an arbitrary value, and with the gap that follows density.
+- **A single direction.** Fields one below the other, or buttons side by side,
+  are `Stack`.
+- **Data in rows and columns.** Invoice, customer and amount aligned by
+  column, with a header, are `Table` or `DataTable`: the screen reader
+  announces the column of each cell, and the grid announces nothing.
+- **Columns the person resizes.** List and detail with a divider are the
+  `Splitter`. The frame of each item is still the `Card`, which `Grid` does not
+  draw.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Grid` - `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Grid` - `columns`, `minItemWidth` in points and `gap`; the grid measures its own width to count the columns. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

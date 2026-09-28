@@ -8,7 +8,7 @@ const ONBOARDING = [
   { stage: 'Emitiram a primeira nota', total: 988 },
 ]
 
-/** Funil de adesão */
+/** Adoption funnel */
 export function Onboarding() {
   return (
     <Card className="w-96">
@@ -35,7 +35,7 @@ const COLLECTION = [
   { stage: 'Boletos pagos', total: 371_300 },
 ]
 
-/** Alinhado à esquerda, em dinheiro */
+/** Left-aligned, in money */
 export function AlignedToStart() {
   return (
     <div className="w-80">
@@ -52,7 +52,7 @@ export function AlignedToStart() {
   )
 }
 
-/** Sem etapa nenhuma */
+/** With no stages */
 export function EmptyFunnel() {
   return (
     <div className="w-full max-w-md">

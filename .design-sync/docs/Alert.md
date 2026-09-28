@@ -4,25 +4,26 @@ category: Feedback
 
 # Alert
 
-Aviso que **fica** na tela.
+An alert that **stays** on the screen.
 
-Compõe com `AlertTitle` e `AlertDescription`.
+Composes with `AlertTitle` and `AlertDescription`.
 
-O papel de acessibilidade vem do tom: `danger` e `warning` interrompem o leitor
-de tela, `success` e `info` esperam a pessoa terminar a frase. Interromper
-alguém para dizer "salvo com sucesso" e falta de educacao com quem depende do
-leitor.
+The accessibility role comes from the tone: `danger` and `warning` interrupt
+the screen reader, `success` and `info` wait for the person to finish the
+sentence. Interrupting someone to say "salvo com sucesso" is rude to whoever
+depends on the reader.
 
-## O ícone tem lugar próprio
+## The icon has its own place
 
-**Cor nunca é o único sinal.** Sem ícone, os quatro tons são quatro caixas
-idênticas de forma, separadas só pelo matiz. E quem não distingue vermelho de
-verde é uma fatia grande de qualquer base de usuários, sem contar a impressão em
-preto e branco.
+**Color is never the only signal.** Without an icon, the four tones are four
+boxes identical in shape, told apart only by hue. And people who cannot tell
+red from green are a large slice of any user base, not to mention black and
+white printing.
 
-O ícone entrava como filho, no meio do título e da descrição: sem coluna
-própria, sem alinhamento com a primeira linha, e num lugar diferente a cada
-tela. Agora ele é `icon`, com posição garantida antes do texto:
+The icon used to come in as a child, in the middle of the title and the
+description: no column of its own, no alignment with the first line, and in a
+different place on every screen. Now it is `icon`, with a guaranteed position
+before the text:
 
 ```tsx
 <Alert tone="warning" icon={<TriangleAlert />}>
@@ -31,20 +32,20 @@ tela. Agora ele é `icon`, com posição garantida antes do texto:
 </Alert>
 ```
 
-O par canônico do lucide, o mesmo da tabela de ícones da casa: `Info` para
-`info`, `CheckCircle2` para `success`, `TriangleAlert` para `warning`, `CircleX`
-para `danger`. Ele sai `aria-hidden`: o texto ao lado já diz o que ele desenha,
-e o `role` da raiz já diz a urgência. Anunciá-lo de novo seria dizer a mesma
-coisa duas vezes.
+The canonical lucide pair, the same as in the house icon table: `Info` for
+`info`, `CheckCircle2` for `success`, `TriangleAlert` for `warning`, `CircleX`
+for `danger`. It renders `aria-hidden`: the text beside it already says what it
+draws, and the root's `role` already says the urgency. Announcing it again
+would say the same thing twice.
 
-## Que a pessoa dispensa
+## Dismissible by the person
 
-`onDismiss` liga o xis no canto direito, com nome acessível ("Fechar aviso", ou
-o que `labels.dismiss` disser).
+`onDismiss` turns on the x in the right corner, with an accessible name
+("Fechar aviso", or whatever `labels.dismiss` says).
 
-**Quem some com o aviso é quem chamou.** A peça não guarda estado nenhum, pelo
-mesmo motivo de ela não ter `open`: um aviso que se apaga sozinho é `Toast`, e o
-`Alert` existe justamente para o que fica na tela.
+**Whoever makes the alert disappear is the caller.** The component keeps no
+state at all, for the same reason it has no `open`: an alert that clears itself
+is a `Toast`, and `Alert` exists precisely for what stays on the screen.
 
 ```tsx
 const [open, setOpen] = useState(true)
@@ -57,29 +58,29 @@ const [open, setOpen] = useState(true)
 )}
 ```
 
-Sem `onDismiss` não há botão, que continua sendo o padrão: aviso que a pessoa
-pode dispensar é o caso, e não a regra. O que bloqueia uma ação não se dispensa.
-Tirá-lo da tela é resolver o que ele aponta.
+Without `onDismiss` there is no button, and that is still the default: an alert
+the person can dismiss is the exception, not the rule. What blocks an action is
+not dismissed. Taking it off the screen means resolving what it points to.
 
-## Movimento
+## Motion
 
-O aviso entra na montagem: esmaece e sobe 4px em `--rc-duration-base` (`animate-enter`). É o que faz o aviso que chega depois de uma ação ser visto chegando. Roda uma vez, e não repete a cada re-render; com "reduzir movimento", aparece parado. `className="animate-none"` desliga numa instância.
+The alert enters on mount: it fades and rises 4px in `--rc-duration-base` (`animate-enter`). That is what makes an alert arriving after an action be seen arriving. It runs once, and does not repeat on every re-render; with "reduce motion", it appears still. `className="animate-none"` turns it off for one instance.
 
-## Quando não usar
+## When not to use
 
-Para a confirmação do que acabou de acontecer (nota emitida, arquivo enviado),
-use `useToast()`. O aviso de toast passa; este fica. Um "salvo com sucesso" que
-mora no fluxo da página ainda está lá quando a pessoa volta dez minutos depois,
-e ela lê aquilo como o estado de agora.
+For the confirmation of what just happened (invoice issued, file sent), use
+`useToast()`. The toast passes; this one stays. A "salvo com sucesso" that
+lives in the page flow is still there when the person comes back ten minutes
+later, and they read it as the current state.
 
-O contrário também vale, e é o erro mais caro dos dois: informação que a pessoa
-precisa **ter na tela enquanto trabalha** (o motivo de um campo estar
-bloqueado, a pendência que impede emitir) não pode ser um toast, porque ele
-some antes de ela chegar na parte em que aquilo importa.
+The opposite also holds, and it is the more expensive mistake of the two:
+information the person needs **to have on screen while they work** (the reason
+a field is locked, the pending issue that prevents issuing) cannot be a toast,
+because it disappears before they reach the part where it matters.
 
-E erro de campo não é nenhum dos dois: pertence ao campo que errou, via
-`FieldError`, onde a pessoa está olhando e pode corrigir.
+And a field error is neither of the two: it belongs to the field that went
+wrong, via `FieldError`, where the person is looking and can fix it.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Alert` - `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `labels` como no web, e o ícone também entra por função, na cor do tom. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Alert` - `title` is a prop and the body is a child; no `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` and `labels` as on the web, and the icon can also come in as a function, in the tone's color. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

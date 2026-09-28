@@ -3,24 +3,24 @@ import { ENTRIES, FAMILIES, WITH_EXAMPLE, entriesOfFamily } from '@/catalog'
 import { linkTo, type Route } from '@/routes'
 
 /* ---------------------------------------------------------------------------
- * A pagina do catalogo
+ * The catalog page
  *
- * Toda peca, numa tela so. A barra lateral ja lista os nomes, mas lista
- * responde "existe X" e so isso; esta pagina responde "com o que eu tenho para
- * construir", familia por familia, com a primeira frase de cada doc fazendo a
- * apresentacao.
+ * Every piece, on a single screen. The sidebar already lists the names, but a
+ * list answers "does X exist" and nothing more; this page answers "what do I
+ * have to build with", family by family, with the first sentence of each doc
+ * doing the introduction.
  * ------------------------------------------------------------------------- */
 
 export function CatalogPage({ navigate }: { navigate: (route: Route) => void }) {
   return (
     <div className="px-4 py-10 sm:px-6">
-      <Badge tone="accent">Catálogo</Badge>
+      <Badge tone="accent">Catalog</Badge>
       <h1 className="mt-3 font-display text-3xl tracking-display text-fg">
-        As {ENTRIES.length} peças, numa tela
+        All {ENTRIES.length} pieces, on one screen
       </h1>
       <p className="mt-2 max-w-2xl text-fg-muted">
-        {WITH_EXAMPLE} delas com exemplo que roda na própria página. A primeira frase de cada
-        documento apresenta a peça; o resto mora a um clique.
+        {WITH_EXAMPLE} of them with an example that runs on their own page. The first sentence of
+        each document introduces the piece; the rest is one click away.
       </p>
 
       {FAMILIES.map((family) => {
@@ -50,7 +50,7 @@ export function CatalogPage({ navigate }: { navigate: (route: Route) => void }) 
                       </span>
                       {entry.parts && entry.parts.length > 0 && (
                         <span className="shrink-0 text-xs text-fg-subtle">
-                          +{entry.parts.length} partes
+                          +{entry.parts.length} parts
                         </span>
                       )}
                     </span>

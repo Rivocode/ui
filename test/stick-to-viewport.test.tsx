@@ -41,7 +41,7 @@ const root = () => screen.getByRole("button", { name: "Salvar rascunho" }).close
   "[data-slot=affix]",
 )!;
 
-test("gruda na janela pelo portal do provider, que carrega o tema", () => {
+test("sticks to the window through the provider portal, which carries the theme", () => {
   affix();
   const node = root();
   expect(screen.getByTestId("arvore").contains(node)).toBe(false);
@@ -50,7 +50,7 @@ test("gruda na janela pelo portal do provider, que carrega o tema", () => {
   expect(node.className.split(" ")).toContain("fixed");
 });
 
-test("a posicao vem por prop, com numero em pixel e texto em medida do CSS", () => {
+test("the position comes by prop, with a number in pixels and text as a CSS length", () => {
   affix({ position: { top: 16, left: "var(--rc-pad-panel)" } });
   const node = root();
   expect(node.style.top).toBe("16px");
@@ -58,7 +58,7 @@ test("a posicao vem por prop, com numero em pixel e texto em medida do CSS", () 
   expect(node.style.bottom).toBe("");
 });
 
-test("o empilhamento sai de --rc-z-*, e nunca de numero", () => {
+test("the stacking comes from --rc-z-*, and never from a number", () => {
   affix({ layer: "overlay" });
   const tokens = root().className.split(" ");
   expect(tokens).toContain("z-[var(--rc-z-overlay)]");
@@ -66,14 +66,14 @@ test("o empilhamento sai de --rc-z-*, e nunca de numero", () => {
   expect(tokens.some((token) => /^z-\d/.test(token))).toBe(false);
 });
 
-test("reserva o proprio espaco no scroll-padding, para o foco nao parar atras dela", () => {
+test("reserves its own space in scroll-padding, so focus does not land behind it", () => {
   const { unmount } = affix();
   expect(document.documentElement.style.scrollPaddingBottom).toBe("68px");
   unmount();
   expect(document.documentElement.style.scrollPaddingBottom).toBe("");
 });
 
-test("grudada em cima, reserva em cima, e devolve o valor que a pagina ja tinha", () => {
+test("stuck to the top, it reserves at the top, and restores the value the page already had", () => {
   document.documentElement.style.scrollPaddingTop = "12px";
   const { unmount } = affix({ position: { top: 0 } });
   expect(document.documentElement.style.scrollPaddingTop).toBe("48px");
@@ -81,12 +81,12 @@ test("grudada em cima, reserva em cima, e devolve o valor que a pagina ja tinha"
   expect(document.documentElement.style.scrollPaddingTop).toBe("12px");
 });
 
-test("reserveSpace desligado nao toca na pagina", () => {
+test("reserveSpace off does not touch the page", () => {
   affix({ reserveSpace: false });
   expect(document.documentElement.style.scrollPaddingBottom).toBe("");
 });
 
-test("absolute gruda na caixa: fica na arvore e nao reserva nada na pagina", () => {
+test("absolute sticks to the box: it stays in the tree and reserves nothing on the page", () => {
   affix({ strategy: "absolute" });
   const node = root();
   expect(screen.getByTestId("arvore").contains(node)).toBe(true);
@@ -94,7 +94,7 @@ test("absolute gruda na caixa: fica na arvore e nao reserva nada na pagina", () 
   expect(document.documentElement.style.scrollPaddingBottom).toBe("");
 });
 
-test("withinPortal desligado deixa a peca onde ela foi escrita", () => {
+test("withinPortal off leaves the component where it was written", () => {
   affix({ withinPortal: false });
   expect(screen.getByTestId("arvore").contains(root())).toBe(true);
 });

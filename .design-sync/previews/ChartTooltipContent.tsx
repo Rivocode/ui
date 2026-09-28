@@ -5,7 +5,7 @@ const INVOICES: ChartConfig = {
   pagas: { label: 'Pagas' },
 }
 
-/** Com duas séries */
+/** With two series */
 export function TwoSeries() {
   return (
     <ChartTooltipContent
@@ -22,7 +22,7 @@ export function TwoSeries() {
   )
 }
 
-/** Com valor formatado */
+/** With formatted value */
 export function WithFormattedValue() {
   return (
     <ChartTooltipContent

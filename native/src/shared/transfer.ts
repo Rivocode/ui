@@ -1,11 +1,11 @@
-/* Gerado de src/shared/transfer.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/transfer.ts by bun run gen:shared. Do not edit. */
 
 export type TransferListItem = {
-  /** O identificador que entra e sai do `value`. Unico na lista inteira. */
+  /** The identifier that goes in and out of `value`. Unique across the whole list. */
   value: string;
-  /** O texto da linha, que e tambem onde a busca procura, sem acento importar. */
+  /** The row's text, which is also where the search looks, with accents not mattering. */
   label: string;
-  /** Fica onde esta: nao se marca e nao se move, nem pelo "mover todos". */
+  /** Stays where it is: cannot be checked and cannot be moved, not even by "mover todos". */
   disabled?: boolean;
 };
 

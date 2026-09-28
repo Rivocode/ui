@@ -12,7 +12,7 @@ function list(children: React.ReactNode) {
   );
 }
 
-test("sai como dl/dt/dd de verdade", () => {
+test("renders as real dl/dt/dd", () => {
   const { container } = list(
     <>
       <DescriptionItem label="CNPJ">12.345.678/0001-90</DescriptionItem>
@@ -27,7 +27,7 @@ test("sai como dl/dt/dd de verdade", () => {
   expect(screen.getByText("17/09/2026").tagName).toBe("DD");
 });
 
-test("o valor aceita nó, não só texto", () => {
+test("the value accepts a node, not only text", () => {
   list(
     <DescriptionItem label="Situação">
       <span data-testid="badge">Paga</span>

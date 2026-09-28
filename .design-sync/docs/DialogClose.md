@@ -1,10 +1,10 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # DialogClose
 
-Fecha o diálogo sem você guardar estado.
+Closes the dialog without you holding any state.
 
-Envolve o botão de cancelar, o X do canto ou qualquer coisa que deva fechar.
-Com `render`, vira o elemento que você passar.
+Wraps the cancel button, the X in the corner, or anything else that should
+close it. With `render`, it becomes the element you pass.

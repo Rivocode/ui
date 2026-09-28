@@ -1,15 +1,15 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # ComboboxChips
 
-A moldura das fichas da escolha múltipla, com o campo de busca dentro dela.
+The frame for the chips of a multiple selection, with the search field inside it.
 
-O campo entra como último filho, e não ao lado: as fichas e a digitação são o
-mesmo campo aos olhos de quem usa, e separar os dois faz a busca parecer um
-filtro de outra coisa.
+The field goes in as the last child, not beside it: to the person using it, the
+chips and the typing are the same field, and separating the two makes the
+search look like a filter for something else.
 
-Dentro dela, o `clearable` do `ComboboxInput` sai de cena: cada ficha já tem o
-seu xis, e um limpar geral encostado neles é o botão errado no lugar mais fácil
-de acertar sem querer.
+Inside it, the `clearable` of `ComboboxInput` steps aside: each chip already
+has its own x, and a clear-all button right next to them is the wrong button in
+the easiest place to hit by accident.

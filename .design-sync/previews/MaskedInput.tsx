@@ -1,7 +1,7 @@
 import { Field, FieldDescription, FieldLabel, MaskedInput, toCents } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Moldes */
+/** Masks */
 export function Masks() {
   return (
     <div className="flex w-80 flex-col gap-3">
@@ -21,7 +21,7 @@ export function Masks() {
   )
 }
 
-/** Dinheiro */
+/** Money */
 export function Money() {
   const [cents, setCents] = useState(248_000)
 

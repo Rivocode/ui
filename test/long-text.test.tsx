@@ -11,7 +11,7 @@ function tokens(node: Element | null) {
   return (node?.getAttribute("class") ?? "").split(" ");
 }
 
-test("o valor e o rotulo do DescriptionItem quebram em qualquer ponto em vez de estourar", () => {
+test("the DescriptionItem value and label break anywhere instead of overflowing", () => {
   render(
     <DescriptionList>
       <DescriptionItem label={LONG}>{LONG}</DescriptionItem>
@@ -25,14 +25,14 @@ test("o valor e o rotulo do DescriptionItem quebram em qualquer ponto em vez de 
   expect(tokens(value!)).toContain("min-w-0");
 });
 
-test("o titulo e a descricao do PageHeader quebram a palavra que nao cabe", () => {
+test("the PageHeader title and description break the word that does not fit", () => {
   render(<PageHeader title={LONG} description={`${LONG}-descricao`} />);
 
   expect(tokens(screen.getByRole("heading", { name: LONG }))).toContain("wrap-anywhere");
   expect(tokens(screen.getByText(`${LONG}-descricao`))).toContain("wrap-anywhere");
 });
 
-test("o titulo do AccordionItem mora num trecho que encolhe e quebra, e a seta nao sai da linha", () => {
+test("the AccordionItem title lives in a span that shrinks and wraps, and the chevron stays on the line", () => {
   render(
     <Accordion>
       <AccordionItem value="a" title={LONG}>

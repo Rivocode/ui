@@ -1,12 +1,12 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Rating
 
-Nota em estrelas: como foi o atendimento, quanto a pessoa gostou do produto, a
-média que os outros deram. Serve para **escolher** a nota e para **exibir** a
-média, e as duas coisas saem com a leitura de tela certa.
+A star rating: how the service went, how much the person liked the product, the
+average others gave. It serves to **choose** the rating and to **display** the
+average, and both come out with the right screen reading.
 
 ```tsx
 const [nota, setNota] = useState(0)
@@ -14,107 +14,113 @@ const [nota, setNota] = useState(0)
 <Rating value={nota} onValueChange={setNota} />
 ```
 
-`value` é a nota, e `0` quer dizer nenhuma. Sem `value`, a peça guarda a nota
-sozinha a partir de `defaultValue`. `max` diz quantas estrelas, e o padrão é
-cinco.
+`value` is the rating, and `0` means none. Without `value`, the piece keeps the
+rating on its own starting from `defaultValue`. `max` says how many stars, and
+the default is five.
 
-## Para o leitor de tela e para o teclado
+## For the screen reader and the keyboard
 
-A escolha é um `radiogroup`, o padrão da APG para rating: cada estrela é uma
-opção com o nome da nota ("1 estrela", "3 estrelas"), e o grupo se chama
-"Avaliação". Um `aria-labelledby` apontando para a pergunta da tela toma o
-lugar do nome padrão, e é o jeito certo quando a pergunta está escrita acima.
+Choosing is a `radiogroup`, the APG pattern for rating: each star is an option
+named after the rating ("1 estrela", "3 estrelas"), and the group is called
+"Avaliação". An `aria-labelledby` pointing to the question on the screen takes
+the place of the default name, and it is the right way when the question is
+written above.
 
-- **Tab** entra pela nota marcada, ou pela primeira quando ainda não há nota.
-- **Setas** andam uma estrela (meia, com `allowHalf`) e param nas pontas. Em
-  `rtl` a seta da esquerda é a que sobe, como a pessoa vê, e o preenchimento
-  nasce da borda da direita.
-- **Home** e **End** vão para a menor e para a maior nota.
-- **Espaço** e **Enter** escolhem a estrela em foco.
+- **Tab** enters on the checked rating, or on the first one when there is no
+  rating yet.
+- **Arrows** move one star (half, with `allowHalf`) and stop at the ends. In
+  `rtl` the left arrow is the one that goes up, as the person sees it, and the
+  fill starts from the right edge.
+- **Home** and **End** go to the lowest and the highest rating.
+- **Space** and **Enter** choose the focused star.
 
-Com o ponteiro em cima, as estrelas mostram a prévia da nota que o clique daria,
-e a prévia some quando o ponteiro sai. A prévia não muda o `value`.
+With the pointer over them, the stars preview the rating a click would give,
+and the preview disappears when the pointer leaves. The preview does not change
+`value`.
 
 ```tsx
 <p id="pergunta">Como foi a entrega?</p>
 <Rating aria-labelledby="pergunta" value={nota} onValueChange={setNota} />
 ```
 
-## Meia estrela e limpar
+## Half star and clearing
 
-`allowHalf` divide cada estrela em duas notas: a metade do início da leitura
-(a esquerda, ou a direita em `rtl`) é a nota `n - 0,5`, e as setas andam de
-meio em meio. As metades ganham nome próprio ("Meia estrela", "2,5 estrelas"),
-uma opção cada para o leitor de tela. O alvo do ponteiro continua a estrela
-inteira, com os mesmos 24px ou mais: a metade sai de onde o ponteiro caiu
-dentro dela.
+`allowHalf` splits each star into two ratings: the half at the start of the
+reading direction (the left, or the right in `rtl`) is the rating `n - 0.5`,
+and the arrows move half by half. The halves get their own names ("Meia
+estrela", "2,5 estrelas"), one option each for the screen reader. The pointer
+target is still the whole star, with the same 24px or more: the half comes
+from where the pointer landed inside it.
 
-`clearable` faz o clique na nota já escolhida voltar a zero, e `onValueChange`
-chega com `0`. Nasce desligado: na maioria das telas a nota, uma vez dada, só se
-troca.
+`clearable` makes a click on the already chosen rating go back to zero, and
+`onValueChange` arrives with `0`. It starts off: on most screens a rating, once
+given, is only changed.
 
 ```tsx
 <Rating allowHalf clearable value={nota} onValueChange={setNota} />
 ```
 
-## A média, só leitura
+## The average, read only
 
-`readOnly` exibe sem deixar escolher. Aceita qualquer fração (4,3 pinta 30% da
-quinta estrela) e sai como **uma imagem só** para o leitor de tela, com o nome
-"4,3 de 5". Cinco estrelas lidas uma a uma não dizem a média; a frase diz.
+`readOnly` displays without letting anyone choose. It accepts any fraction (4.3
+paints 30% of the fifth star) and comes out as **a single image** for the
+screen reader, named "4,3 de 5". Five stars read one by one do not say the
+average; the sentence does.
 
 ```tsx
 <Rating readOnly value={4.3} size="sm" />
 ```
 
-## Cor, tamanho e ícone
+## Color, size and icon
 
-A estrela cheia pinta em `warning` e a vazia em `border-strong`. As duas são
-fronteira de objeto gráfico, e as duas estão medidas a 3:1 sobre `bg`,
-`surface` e `surface-raised`, nos dois temas. Desabilitada, a cheia vira
-`fg-disabled` e a vazia `border-disabled`.
+The full star paints in `warning` and the empty one in `border-strong`. Both
+are graphical object boundaries, and both are measured at 3:1 against `bg`,
+`surface` and `surface-raised`, in both themes. Disabled, the full one becomes
+`fg-disabled` and the empty one `border-disabled`.
 
-`size` troca a estrela (`sm`, `md`, `lg`), e a caixa de cada uma nunca fica
-abaixo de 24px de alvo. `icon` troca o desenho por outro ícone do lucide, como
-`<Heart />`: o cheio sai com `fill`, então o ícone precisa ter área.
+`size` changes the star (`sm`, `md`, `lg`), and each one's box never drops
+below a 24px target. `icon` swaps the drawing for another lucide icon, such as
+`<Heart />`: the full one comes out with `fill`, so the icon needs to have
+area.
 
-`name` põe a nota num `input` escondido, para o `<form>` enviar junto.
+`name` puts the rating in a hidden `input`, so the `<form>` submits it along.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `item` (a caixa de cada estrela),
-`empty` (o desenho vazio) e `filled` (o desenho cheio, recortado pela nota).
+`classNames` reaches each node by name: `item` (the box of each star), `empty`
+(the empty drawing) and `filled` (the full drawing, clipped by the rating).
 
-## Textos
+## Texts
 
-`labels` troca o que o leitor de tela ouve: `group` (o nome do grupo), `item`
-(a função que diz o nome de cada nota) e `value` (a função que diz a média no
-modo só leitura).
+`labels` changes what the screen reader hears: `group` (the group's name),
+`item` (the function that says each rating's name) and `value` (the function
+that says the average in read-only mode).
 
-## Quando não usar
+## When not to use
 
-- **Número que precisa ser exato** é `NumberField`. Estrela é opinião, e o
-  intervalo é pequeno: nota de 0 a 10 com decimal não cabe em estrela.
-- **Faixa contínua**, como desconto ou prazo, é `Slider`. O `Slider` arrasta
-  por uma régua; o `Rating` escolhe entre poucos degraus que têm nome.
-- **Escolha entre opções que não são nota** ("Ruim", "Bom", "Ótimo" escritos)
-  é `RadioGroup`, ou `ToggleGroup` quando os botões ficam lado a lado. Estrela
-  só funciona quando mais é melhor.
-- **Medida do sistema**, como uso do plano ou força de senha, é `Meter`. O
-  `Meter` mostra uma quantidade; o `Rating` mostra uma opinião.
+- **A number that needs to be exact** is `NumberField`. A star is an opinion,
+  and the range is small: a 0 to 10 rating with decimals does not fit in
+  stars.
+- **A continuous range**, such as a discount or a deadline, is `Slider`.
+  `Slider` drags along a ruler; `Rating` chooses among a few named steps.
+- **A choice among options that are not ratings** ("Ruim", "Bom", "Ótimo"
+  written out) is `RadioGroup`, or `ToggleGroup` when the buttons sit side by
+  side. Stars only work when more is better.
+- **A system measurement**, such as plan usage or password strength, is
+  `Meter`. `Meter` shows a quantity; `Rating` shows an opinion.
 
-## No React Native
+## In React Native
 
-Traduz, com os mesmos `max`, `allowHalf`, `clearable`, `readOnly` e `size`. O `value` é controlado, como em todo o pacote nativo, e sem `onValueChange` a peça só exibe.
+Translates, with the same `max`, `allowHalf`, `clearable`, `readOnly` and `size`. `value` is controlled, as in the whole native package, and without `onValueChange` the piece only displays.
 
-**Para o leitor de tela, as estrelas são um controle só.** No web a escolha é um `radiogroup` com uma opção por estrela; aqui o grupo é `adjustable`, o mesmo contrato do `Slider`: o VoiceOver e o TalkBack dizem "Avaliação, 3 estrelas", e o gesto de subir e descer anda uma estrela (meia, com `allowHalf`). Cinco paradas de foco para uma nota seriam cinco toques de navegação para chegar ao botão de enviar.
+**For the screen reader, the stars are a single control.** On the web the choice is a `radiogroup` with one option per star; here the group is `adjustable`, the same contract as the `Slider`: VoiceOver and TalkBack say "Avaliação, 3 estrelas", and the swipe up and down gesture moves one star (half, with `allowHalf`). Five focus stops for a rating would be five navigation swipes to reach the submit button.
 
-**O alvo de toque de cada estrela é sempre 44pt.** O `size` troca só o desenho. Com `allowHalf`, o toque na metade de início da leitura dá a meia estrela: a da esquerda, ou a da direita quando o aparelho lê da direita para a esquerda. O preenchimento também começa desse lado, e o gesto de subir continua subindo a nota. Não há prévia: no toque não existe pousar.
+**Each star's touch target is always 44pt.** `size` changes only the drawing. With `allowHalf`, a tap on the reading-start half gives a half star: the left one, or the right one when the device reads right to left. The fill also starts on that side, and the swipe up gesture still raises the rating. There is no preview: on touch there is no hover.
 
-A estrela padrão é o caractere ★ na cor do tema, porque o pacote não traz ícone. Para outro desenho, a função recebe a cor já resolvida, o tamanho e a camada: `icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.
+The default star is the ★ character in the theme color, because the package ships no icons. For another drawing, the function receives the already resolved color, the size and the layer: `icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.
 
 ```tsx
 <Rating value={nota} onValueChange={setNota} allowHalf />
 ```
 
-As partes vestem pelo mesmo `classNames` do web: `item`, `empty` e `filled`. As duas últimas vestem a estrela da casa, que é texto; com `icon`, a cor chega pela função.
+The parts are styled through the same `classNames` as the web: `item`, `empty` and `filled`. The last two style the house star, which is text; with `icon`, the color arrives through the function.

@@ -13,40 +13,40 @@ function withTheme(node: React.ReactNode) {
 
 function classesOf(container: HTMLElement, marker: string): string[] {
   const target = container.ownerDocument.querySelector(marker);
-  expect(`${marker} na arvore: ${target !== null}`).toBe(`${marker} na arvore: true`);
+  expect(`${marker} in the tree: ${target !== null}`).toBe(`${marker} in the tree: true`);
   return target!.className.split(" ");
 }
 
-test("a medida pinta o acento escuro sobre a trilha, e nao o acento cru", () => {
+test("the meter paints the dark accent over the track, and not the raw accent", () => {
   const { container } = withTheme(
-    <Meter value={72} aria-label="Cota" classNames={{ track: "trilha-m", indicator: "barra-m" }} />,
+    <Meter value={72} aria-label="Cota" classNames={{ track: "track-m", indicator: "bar-m" }} />,
   );
 
-  expect(classesOf(container, ".trilha-m")).toContain("bg-skeleton");
-  expect(classesOf(container, ".barra-m")).toContain("bg-accent-text");
-  expect(classesOf(container, ".barra-m")).not.toContain("bg-accent");
+  expect(classesOf(container, ".track-m")).toContain("bg-skeleton");
+  expect(classesOf(container, ".bar-m")).toContain("bg-accent-text");
+  expect(classesOf(container, ".bar-m")).not.toContain("bg-accent");
 });
 
-test("a barra de progresso pinta o acento escuro sobre a trilha", () => {
+test("the progress bar paints the dark accent over the track", () => {
   const { container } = withTheme(
     <Progress
       value={40}
       aria-label="Enviando"
-      classNames={{ track: "trilha-p", indicator: "barra-p" }}
+      classNames={{ track: "track-p", indicator: "bar-p" }}
     />,
   );
 
-  expect(classesOf(container, ".trilha-p")).toContain("bg-skeleton");
-  expect(classesOf(container, ".barra-p")).toContain("bg-accent-text");
-  expect(classesOf(container, ".barra-p")).not.toContain("bg-accent");
+  expect(classesOf(container, ".track-p")).toContain("bg-skeleton");
+  expect(classesOf(container, ".bar-p")).toContain("bg-accent-text");
+  expect(classesOf(container, ".bar-p")).not.toContain("bg-accent");
 });
 
-test("a barra indeterminada parada tece as faixas com o acento escuro", () => {
+test("the still indeterminate bar weaves the stripes with the dark accent", () => {
   const { container } = withTheme(
-    <Progress value={null} aria-label="Sincronizando" classNames={{ indicator: "barra-i" }} />,
+    <Progress value={null} aria-label="Sincronizando" classNames={{ indicator: "bar-i" }} />,
   );
 
-  const classes = classesOf(container, ".barra-i");
+  const classes = classesOf(container, ".bar-i");
   const woven = classes.filter((name) => name.includes("repeating-linear-gradient"));
 
   expect(woven.length).toBe(1);
@@ -54,7 +54,7 @@ test("a barra indeterminada parada tece as faixas com o acento escuro", () => {
   expect(woven[0]).not.toContain("var(--rc-accent)_");
 });
 
-test("a faixa do tracker separa o tom de acento do periodo neutro", () => {
+test("the tracker band separates the accent tone from the neutral period", () => {
   const { container } = withTheme(
     <Tracker
       label="Emissões dos últimos dias"
@@ -67,7 +67,7 @@ test("a faixa do tracker separa o tom de acento do periodo neutro", () => {
   expect(classesOf(container, '[data-rc-track="neutral"]')).toContain("bg-skeleton");
 });
 
-test("a guarda mede a barra sobre a trilha nos tres fundos em que ela pousa", () => {
+test("the guard measures the bar over the track on the three backgrounds it lands on", () => {
   for (const background of ["--rc-bg", "--rc-surface", "--rc-surface-raised"]) {
     const measured = CSS_BOUNDARIES.some(
       ([front, over]) =>
@@ -77,11 +77,11 @@ test("a guarda mede a barra sobre a trilha nos tres fundos em que ela pousa", ()
         over[1] === background,
     );
 
-    expect(`${background} medido: ${measured}`).toBe(`${background} medido: true`);
+    expect(`${background} measured: ${measured}`).toBe(`${background} measured: true`);
   }
 });
 
-test("toda barra que enche uma trilha usa o acento escuro, e nenhuma ficou para tras", async () => {
+test("every bar that fills a track uses the dark accent, and none was left behind", async () => {
   const files = [
     "src/components/meter.tsx",
     "src/components/progress.tsx",

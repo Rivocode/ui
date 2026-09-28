@@ -1,23 +1,24 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # Sheet
 
-Folha que desliza da borda da tela, com gesto de arrastar.
+A sheet that slides in from the edge of the screen, with a drag gesture.
 
-Compõe com `SheetTrigger`, `SheetContent`, `SheetTitle`, `SheetDescription`,
-`SheetHandle` e `SheetClose`.
+It composes with `SheetTrigger`, `SheetContent`, `SheetTitle`,
+`SheetDescription`, `SheetHandle` and `SheetClose`.
 
-`side` decide de onde ela entra, e o gesto de fechar segue o lado. E a peça de
-navegação no celular e o painel de ações onde o polegar alcança. O tipo é
-`SheetSide`, e são três lados: `bottom` (o padrão), `left` e `right`. Não há
-`top`, porque folha que desce do alto disputa com a barra de status do celular e
-com todo cabeçalho fixo.
+`side` decides where it enters from, and the close gesture follows the side. It
+is the navigation piece on the phone and the action panel where the thumb
+reaches. The type is `SheetSide`, and there are three sides: `bottom` (the
+default), `left` and `right`. There is no `top`, because a sheet that comes
+down from above competes with the phone's status bar and with every fixed
+header.
 
-A tarja de fundo clareia junto com o dedo: puxar pela metade mostra metade do que
-esta atrás.
+The backdrop lightens along with the finger: pulling halfway shows half of what
+is behind.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Sheet` - só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento; com campo dentro, a folha sobe junto com o teclado. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Sheet` - only the bottom behavior, which was already the web's narrow mode; it slides up, and with no transition when the system asks to reduce motion; with a field inside, the sheet rises along with the keyboard. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

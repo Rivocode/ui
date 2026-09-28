@@ -19,19 +19,19 @@ const TAG = { 1: "h1", 2: "h2", 3: "h3", 4: "h4", 5: "h5", 6: "h6" } as const;
 
 export type HeadingProps = ComponentPropsWithoutRef<"h2"> & {
   /**
-   * O lugar do titulo no esboco da pagina, de 1 a 6: decide a tag, de `h1` a
-   * `h6`, e e o que o leitor de tela usa para saltar de secao em secao. Sem
-   * padrao de proposito, porque quem sabe o nivel e a pagina, e nao a peca.
+   * The heading's place in the page outline, from 1 to 6: decides the tag, from `h1` to
+   * `h6`, and is what the screen reader uses to jump from section to section. No
+   * default on purpose, because the page knows the level, not the piece.
    */
   level: HeadingLevel;
   /**
-   * O corpo na escala da casa, de `sm` (13px) a `3xl` (30px). Sem ele o
-   * tamanho acompanha o nivel: `h1` e `2xl`, `h2` e `xl`, `h3` e `lg`, `h4` e
-   * `md`, `h5` e `base` e `h6` e `sm`. Troque o tamanho, e nunca o nivel, quando
-   * o titulo precisar parecer maior ou menor.
+   * The size on the house scale, from `sm` (13px) to `3xl` (30px). Without it the
+   * size follows the level: `h1` is `2xl`, `h2` is `xl`, `h3` is `lg`, `h4` is
+   * `md`, `h5` is `base` and `h6` is `sm`. Change the size, and never the level, when
+   * the heading needs to look bigger or smaller.
    */
   size?: HeadingSize;
-  /** Corta em uma linha com reticencias, para titulo dentro de coluna estreita. */
+  /** Truncates to one line with an ellipsis, for a heading inside a narrow column. */
   truncate?: boolean;
   ref?: Ref<HTMLHeadingElement>;
 };

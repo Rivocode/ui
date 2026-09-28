@@ -1,7 +1,7 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # InputPrefix
 
-O encosto antes do campo, dentro do `InputGroup`. Texto curto, sigla ou ícone.
+The addon before the field, inside the `InputGroup`. Short text, an abbreviation or an icon.

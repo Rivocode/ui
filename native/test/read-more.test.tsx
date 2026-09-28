@@ -18,7 +18,7 @@ const clippedAt = (screen: ReturnType<typeof render>, height: number) =>
 const LONG = "A nota fiscal foi cancelada dentro do prazo, e o XML já está no painel.";
 
 describe("Spoiler", () => {
-  test("conteudo que cabe nao ganha botao nem corte", () => {
+  test("content that fits gets no button and no cut", () => {
     const screen = render(
       <Spoiler maxHeight={120}>
         <Text>{LONG}</Text>
@@ -31,7 +31,7 @@ describe("Spoiler", () => {
     expect(clippedAt(screen, 120)).toBe(false);
   });
 
-  test("conteudo que estoura corta na altura e diz Ler mais, recolhido", () => {
+  test("overflowing content is cut at the height and says Ler mais, collapsed", () => {
     const screen = render(
       <Spoiler maxHeight={120}>
         <Text>{LONG}</Text>
@@ -45,7 +45,7 @@ describe("Spoiler", () => {
     expect(clippedAt(screen, 120)).toBe(true);
   });
 
-  test("recolhido, o leitor de tela ouve que o texto esta cortado; aberto, nao ouve mais", () => {
+  test("collapsed, the screen reader hears that the text is cut; open, it no longer does", () => {
     const screen = render(
       <Spoiler maxHeight={120}>
         <Text>{LONG}</Text>
@@ -62,7 +62,7 @@ describe("Spoiler", () => {
     expect(hinted()).toHaveLength(0);
   });
 
-  test("o toque abre, anuncia expandido e troca o texto; o segundo fecha", () => {
+  test("a tap opens, announces expanded and changes the text; the second one closes", () => {
     const screen = render(
       <Spoiler maxHeight={120}>
         <Text>{LONG}</Text>
@@ -80,7 +80,7 @@ describe("Spoiler", () => {
     expect(clippedAt(screen, 120)).toBe(true);
   });
 
-  test("controlado, o toque so avisa", () => {
+  test("controlled, the tap only notifies", () => {
     const onOpenChange = mock((_: boolean) => {});
     const screen = render(
       <Spoiler maxHeight={120} open={false} onOpenChange={onOpenChange}>
@@ -94,7 +94,7 @@ describe("Spoiler", () => {
     expect(byRole(screen, "button")[0]!.props.accessibilityState).toEqual({ expanded: false });
   });
 
-  test("defaultOpen nasce aberto, e labels troca os textos", () => {
+  test("defaultOpen starts open, and labels changes the texts", () => {
     const screen = render(
       <Spoiler defaultOpen labels={{ more: "Ver tudo", less: "Ver menos" }}>
         <Text>{LONG}</Text>

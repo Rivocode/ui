@@ -39,7 +39,7 @@ function Invoices({ invoices }: { invoices: Invoice[] }) {
   )
 }
 
-/** Com dados */
+/** With data */
 export function WithData() {
   return (
     <Card className="max-w-lg">
@@ -55,7 +55,7 @@ export function WithData() {
   )
 }
 
-/** Carregando */
+/** Loading */
 export function Loading() {
   return (
     <Card className="max-w-lg">
@@ -71,7 +71,7 @@ export function Loading() {
   )
 }
 
-/** Carregando com o molde da tela */
+/** Loading with the screen's skeleton */
 export function LoadingWithSkeleton() {
   return (
     <Card className="max-w-lg">
@@ -100,7 +100,7 @@ export function LoadingWithSkeleton() {
   )
 }
 
-/** Erro */
+/** Error */
 export function Failed() {
   return (
     <div className="max-w-lg">
@@ -116,7 +116,7 @@ export function Failed() {
   )
 }
 
-/** Vazio */
+/** Empty */
 export function Empty() {
   return (
     <Card className="max-w-lg">
@@ -141,7 +141,7 @@ type Page = { items: Invoice[]; total: number }
 
 const PAGE: Page = { items: [], total: 0 }
 
-/** Resposta que não é lista */
+/** An answer that is not a list */
 export function NotAList() {
   return (
     <Card className="max-w-lg">
@@ -170,7 +170,7 @@ const STAGES: { id: Stage; label: string }[] = [
   { id: 'dados', label: 'Dados' },
 ]
 
-/** Os quatro finais */
+/** The four endings */
 export function FourEndings() {
   const [stage, setStage] = useState<Stage>('carregando')
 
@@ -221,7 +221,7 @@ const CUSTOMER: Customer = {
   city: 'João Pessoa, PB',
 }
 
-/** Uma folha, e não uma lista */
+/** A sheet, not a list */
 export function SingleRecord() {
   return (
     <Card className="max-w-lg">

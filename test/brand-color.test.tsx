@@ -36,18 +36,18 @@ const paint = (chart: ReactElement, dataKey: string) => {
   return mark!.props as { fill?: string; stroke?: string };
 };
 
-test("a barra sem cor herda a variavel da serie, e nao sai preta", () => {
-  const pintada = paint(
+test("a bar without color inherits the series variable, and does not come out black", () => {
+  const painted = paint(
     <BarChart data={[{ emitidas: 1 }]}>
       <Bar dataKey="emitidas" />
     </BarChart>,
     "emitidas",
   );
 
-  expect(pintada.fill).toBe("var(--color-emitidas)");
+  expect(painted.fill).toBe("var(--color-emitidas)");
 });
 
-test("a linha herda no traco, e a area herda nos dois", () => {
+test("a line inherits on the stroke, and an area inherits on both", () => {
   const stroked = paint(
     <LineChart data={[{ pagas: 1 }]}>
       <Line dataKey="pagas" />
@@ -67,20 +67,20 @@ test("a linha herda no traco, e a area herda nos dois", () => {
   expect(area.stroke).toBe("var(--color-pagas)");
 });
 
-test("a marca que ja escolheu cor fica como esta", () => {
-  const escrita = paint(
+test("a mark that already chose a color stays as it is", () => {
+  const written = paint(
     <BarChart data={[{ emitidas: 1 }]}>
       <Bar dataKey="emitidas" fill="url(#gradiente)" />
     </BarChart>,
     "emitidas",
   );
 
-  expect(escrita.fill).toBe("url(#gradiente)");
-  expect(escrita.stroke).toBeUndefined();
+  expect(written.fill).toBe("url(#gradiente)");
+  expect(written.stroke).toBeUndefined();
 });
 
-test("a marca dentro de outro no tambem e alcancada", () => {
-  const dentro = paint(
+test("a mark inside another node is also reached", () => {
+  const nested = paint(
     <BarChart data={[{ emitidas: 1 }]}>
       <>
         <Bar dataKey="emitidas" />
@@ -89,10 +89,10 @@ test("a marca dentro de outro no tambem e alcancada", () => {
     "emitidas",
   );
 
-  expect(dentro.fill).toBe("var(--color-emitidas)");
+  expect(nested.fill).toBe("var(--color-emitidas)");
 });
 
-test("a chave que o config nao conhece nao ganha cor, e volta na lista", () => {
+test("a key the config does not know gets no color, and comes back in the list", () => {
   const { chart, unknown } = seriesColors(
     <BarChart data={[{ canceladas: 1 }]}>
       <Bar dataKey="canceladas" />
@@ -105,14 +105,15 @@ test("a chave que o config nao conhece nao ganha cor, e volta na lista", () => {
   expect((marks(inside.children)[0]!.props as { fill?: string }).fill).toBeUndefined();
 });
 
-test("a reclamacao nomeia a chave que falta e lista as que existem", () => {
+test("the complaint names the missing key and lists the existing ones", () => {
   const wording = unknownSeriesComplaint("canceladas", ["emitidas", "pagas"]);
 
   expect(wording).toContain('"canceladas"');
   expect(wording).toContain("emitidas, pagas");
+  expect(wording).toContain("does not know that series");
 });
 
-test("a moldura acusa no console a serie que o config nao tem", () => {
+test("the container reports on the console the series the config lacks", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   try {
@@ -134,7 +135,7 @@ test("a moldura acusa no console a serie que o config nao tem", () => {
   }
 });
 
-test("a serie que o config conhece nao vira acusacao", () => {
+test("a series the config knows does not become a complaint", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   try {
@@ -148,37 +149,37 @@ test("a serie que o config conhece nao vira acusacao", () => {
       </RivoProvider>,
     );
 
-    expect(warn.mock.calls.flat().join("\n")).not.toContain("não conhece essa série");
+    expect(warn.mock.calls.flat().join("\n")).not.toContain("does not know that series");
   } finally {
     warn.mockRestore();
   }
 });
 
-test('a barra com `stroke="none"` continua herdando a cor no `fill`', () => {
-  const pintada = paint(
+test('a bar with `stroke="none"` still inherits the color on `fill`', () => {
+  const painted = paint(
     <BarChart data={[{ emitidas: 1 }]}>
       <Bar dataKey="emitidas" stroke="none" />
     </BarChart>,
     "emitidas",
   );
 
-  expect(pintada.fill).toBe("var(--color-emitidas)");
-  expect(pintada.stroke).toBe("none");
+  expect(painted.fill).toBe("var(--color-emitidas)");
+  expect(painted.stroke).toBe("none");
 });
 
-test('a linha com `fill="none"` continua herdando a cor no `stroke`', () => {
-  const tracada = paint(
+test('a line with `fill="none"` still inherits the color on `stroke`', () => {
+  const strokeOnly = paint(
     <LineChart data={[{ pagas: 1 }]}>
       <Line dataKey="pagas" fill="none" />
     </LineChart>,
     "pagas",
   );
 
-  expect(tracada.stroke).toBe("var(--color-pagas)");
-  expect(tracada.fill).toBe("none");
+  expect(strokeOnly.stroke).toBe("var(--color-pagas)");
+  expect(strokeOnly.fill).toBe("none");
 });
 
-test('o `stroke="none"` nao desliga o aviso da serie que o config nao conhece', () => {
+test('`stroke="none"` does not turn off the warning for a series the config does not know', () => {
   const { chart, unknown } = seriesColors(
     <BarChart data={[{ canceladas: 1 }]}>
       <Bar dataKey="canceladas" stroke="none" />
@@ -191,7 +192,7 @@ test('o `stroke="none"` nao desliga o aviso da serie que o config nao conhece', 
   expect((marks(inside.children)[0]!.props as { fill?: string }).fill).toBeUndefined();
 });
 
-test('a moldura acusa no console mesmo com `stroke="none"` na barra', () => {
+test('the container reports on the console even with `stroke="none"` on the bar', () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   try {
@@ -213,7 +214,7 @@ test('a moldura acusa no console mesmo com `stroke="none"` na barra', () => {
   }
 });
 
-test("a area com gradiente no `fill` ganha o traco, e o gradiente fica", () => {
+test("an area with a gradient on `fill` gets the stroke, and the gradient stays", () => {
   const area = paint(
     <AreaChart data={[{ pagas: 1 }]}>
       <Area dataKey="pagas" fill="url(#gradiente)" />
@@ -225,7 +226,7 @@ test("a area com gradiente no `fill` ganha o traco, e o gradiente fica", () => {
   expect(area.stroke).toBe("var(--color-pagas)");
 });
 
-test("a marca com todos os seus papeis escritos nao vira acusacao", () => {
+test("a mark with all its roles written does not become a complaint", () => {
   const { unknown } = seriesColors(
     <BarChart data={[{ canceladas: 1 }]}>
       <Bar dataKey="canceladas" fill="url(#gradiente)" />

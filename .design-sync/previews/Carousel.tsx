@@ -15,7 +15,7 @@ const NEWS = [
   'O Pix por aproximação chegou ao aplicativo: a cobrança sai com o celular encostado.',
 ]
 
-/** Um por vez */
+/** One at a time */
 export function OneAtATime() {
   return (
     <Carousel label="Novidades" indicators>
@@ -30,7 +30,7 @@ export function OneAtATime() {
   )
 }
 
-/** Vários lado a lado, conforme a largura */
+/** Several side by side, depending on width */
 export function Responsive() {
   return (
     <Carousel label="Planos" slidesPerView={{ base: 1, sm: 2, lg: 3 }} indicators>
@@ -49,7 +49,7 @@ export function Responsive() {
   )
 }
 
-/** Largura pela classe do slide */
+/** Width from the slide's class */
 export function AutoWidth() {
   return (
     <Carousel label="Planos" slidesPerView="auto" gap="sm" classNames={{ slide: 'w-56' }}>
@@ -68,7 +68,7 @@ export function AutoWidth() {
   )
 }
 
-/** Controlado */
+/** Controlled */
 export function Controlled() {
   const [index, setIndex] = useState(0)
 
@@ -91,7 +91,7 @@ export function Controlled() {
   )
 }
 
-/** Com rotação, e o botão de pausa */
+/** With autoplay, and the pause button */
 export function Autoplay() {
   return (
     <Carousel label="Novidades" autoplay={6000} indicators>

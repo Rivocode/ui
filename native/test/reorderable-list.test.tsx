@@ -104,12 +104,12 @@ const order = (screen: ReturnType<typeof render>) =>
     .split(/(?=Clínica|Padaria|Oficina|Escola)/)
     .map((chunk) => chunk.trim());
 
-describe("SortableList nativa", () => {
-  test("sai de @rivocode/ui-native/dnd, e nao do indice da raiz", () => {
+describe("native SortableList", () => {
+  test("comes from @rivocode/ui-native/dnd, not from the root index", () => {
     expect("SortableList" in root).toBe(false);
   });
 
-  test("cada item ganha uma alca de 44pt com nome, dica e as duas acoes de mover", () => {
+  test("each item gets a 44pt handle with a name, a hint and both move actions", () => {
     const screen = render(<Notes />);
     expect(byRole(screen, "list")).toHaveLength(1);
 
@@ -124,14 +124,14 @@ describe("SortableList nativa", () => {
     ]);
   });
 
-  test("o gesto da alca nao cede a rolagem da tela no meio do arrasto", () => {
+  test("the handle gesture does not yield to the screen scroll mid-drag", () => {
     render(<Notes />);
     expect(panResponders).toHaveLength(4);
     expect(panResponders[0]!.onStartShouldSetPanResponder()).toBe(true);
     expect(panResponders[0]!.onPanResponderTerminationRequest()).toBe(false);
   });
 
-  test("arrastar pela alca reordena, anuncia cada posicao e entrega a ordem nova", () => {
+  test("dragging by the handle reorders, announces each position and delivers the new order", () => {
     const onReorder = mock<(items: Note[], move: unknown) => void>(() => {});
     const screen = render(<Notes onReorder={onReorder} />);
     layOut(screen);
@@ -150,7 +150,7 @@ describe("SortableList nativa", () => {
     expect(move).toEqual({ key: 1041, from: 0, to: 2 });
   });
 
-  test("durante o arrasto uma copia segue o dedo, e o lugar de origem fica vazio", () => {
+  test("during the drag a copy follows the finger, and the origin place stays empty", () => {
     const screen = render(<Notes />);
     layOut(screen);
     const responder = panResponders[1]!;
@@ -172,7 +172,7 @@ describe("SortableList nativa", () => {
     expect(byType(screen, "View").some((node) => node.props.pointerEvents === "none")).toBe(false);
   });
 
-  test("os vizinhos abrem espaco com a duracao do token, e sem movimento quando o sistema pede", () => {
+  test("the neighbors make room with the token duration, and without motion when the system asks", () => {
     const screen = render(<Notes />);
     layOut(screen);
     const responder = panResponders[0]!;
@@ -195,7 +195,7 @@ describe("SortableList nativa", () => {
     for (const call of still) expect(call.config.duration).toBe(0);
   });
 
-  test("o gesto interrompido pelo sistema cancela, e a ordem nao muda", () => {
+  test("a gesture interrupted by the system cancels, and the order does not change", () => {
     const onReorder = mock(() => {});
     const screen = render(<Notes onReorder={onReorder} />);
     layOut(screen);
@@ -208,7 +208,7 @@ describe("SortableList nativa", () => {
     );
   });
 
-  test("soltar no mesmo lugar nao chama onReorder", () => {
+  test("dropping in the same place does not call onReorder", () => {
     const onReorder = mock(() => {});
     const screen = render(<Notes onReorder={onReorder} />);
     layOut(screen);
@@ -219,7 +219,7 @@ describe("SortableList nativa", () => {
     expect(spoken.announced.at(-1)).toBe("Item Nota 1043 solto na posição 3 de 4.");
   });
 
-  test("as acoes do leitor de tela movem um passo e anunciam, e param nas pontas", () => {
+  test("the screen reader actions move one step and announce, and stop at the ends", () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     const screen = render(<Notes onReorder={onReorder} />);
     const act_ = (label: string, name: string) =>
@@ -236,7 +236,7 @@ describe("SortableList nativa", () => {
     expect(onReorder).toHaveBeenCalledTimes(1);
   });
 
-  test("controlada: com o estado no pai, a lista volta na ordem nova", () => {
+  test("controlled: with the state in the parent, the list comes back in the new order", () => {
     function Controlled() {
       const [items, setItems] = useState(NOTES);
       return <Notes items={items} onReorder={setItems} />;
@@ -255,7 +255,7 @@ describe("SortableList nativa", () => {
     ]);
   });
 
-  test("desabilitada, nem o gesto nem as acoes mexem na ordem", () => {
+  test("disabled, neither the gesture nor the actions touch the order", () => {
     const onReorder = mock(() => {});
     const screen = render(<Notes disabled onReorder={onReorder} />);
     layOut(screen);
@@ -268,7 +268,7 @@ describe("SortableList nativa", () => {
     expect(onReorder).not.toHaveBeenCalled();
   });
 
-  test("sem handle, quem arrasta e a View que recebe handleProps", () => {
+  test("without handle, the View that receives handleProps is what drags", () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     const screen = render(
       <Notes
@@ -287,7 +287,7 @@ describe("SortableList nativa", () => {
     expect(onReorder.mock.calls[0]![0].map((note) => note.id)).toEqual([1042, 1041, 1043, 1044]);
   });
 
-  test("horizontal, o gesto le dx e as acoes falam de esquerda e direita", () => {
+  test("horizontal, the gesture reads dx and the actions talk about left and right", () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     const screen = render(<Notes orientation="horizontal" onReorder={onReorder} />);
     expect(byRole(screen, "list")[0]!.props.className.split(" ")).toContain("flex-row");
@@ -300,7 +300,7 @@ describe("SortableList nativa", () => {
     expect(onReorder.mock.calls[0]![0].map((note) => note.id)).toEqual([1042, 1041, 1043, 1044]);
   });
 
-  test("lista vazia monta sem alca e sem gesto", () => {
+  test("an empty list mounts with no handle and no gesture", () => {
     const screen = render(<Notes items={[]} />);
     expect(byRole(screen, "list")).toHaveLength(1);
     expect(panResponders).toHaveLength(0);

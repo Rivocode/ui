@@ -1,6 +1,6 @@
 import { Field, FieldDescription, FieldLabel, Textarea } from '@rivocode/ui'
 
-/** Com rótulo */
+/** With label */
 export function WithLabel() {
   return (
     <Field className="w-80">
@@ -11,7 +11,7 @@ export function WithLabel() {
   )
 }
 
-/** Nos três tamanhos */
+/** In the three sizes */
 export function Sizes() {
   return (
     <div className="flex w-80 flex-col gap-3">

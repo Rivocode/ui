@@ -1,11 +1,11 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # FieldError
 
-A mensagem de erro do campo.
+The field's error message.
 
-Só aparece quando o campo está inválido, e marca `aria-invalid` no controle
-junto. Vermelho sozinho não diz nada a quem não distingue a cor, a frase é
-que diz.
+It only shows when the field is invalid, and marks `aria-invalid` on the
+control along with it. Red alone says nothing to someone who cannot tell the
+color apart; the sentence is what says it.

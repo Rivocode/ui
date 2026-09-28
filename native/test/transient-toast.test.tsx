@@ -29,8 +29,8 @@ const boxOf = (screen: ReturnType<typeof render>, title: string) =>
 const classesOf = (screen: ReturnType<typeof render>, title: string) =>
   (boxOf(screen, title)!.props.className as string).split(" ");
 
-describe("useToast nativo, com o contrato do web", () => {
-  test("add devolve o id, e o type escolhe o tom do Alert; sem type sai neutro", () => {
+describe("native useToast, with the web contract", () => {
+  test("add returns the id, and type picks the Alert tone; without type it comes out neutral", () => {
     const { screen, api } = mount();
     let id = "";
     act(() => {
@@ -47,7 +47,7 @@ describe("useToast nativo, com o contrato do web", () => {
     expect(classesOf(screen, "Salvo")).toContain("bg-surface-raised");
   });
 
-  test("sem timeout sai em 4s; timeout 0 fica ate o close(id), que chama o onClose", () => {
+  test("without timeout it leaves in 4s; timeout 0 stays until close(id), which calls onClose", () => {
     const { screen, api } = mount();
     const onClose = mock(() => {});
     let sticky = "";
@@ -67,7 +67,7 @@ describe("useToast nativo, com o contrato do web", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  test("update reescreve o aviso que esta na tela", () => {
+  test("update rewrites the notice on screen", () => {
     const { screen, api } = mount();
     let id = "";
     act(() => {
@@ -78,7 +78,7 @@ describe("useToast nativo, com o contrato do web", () => {
     expect(classesOf(screen, "Enviado")).toContain("bg-success-subtle");
   });
 
-  test("promise e um aviso so, que troca de texto e de tom quando a promessa resolve", async () => {
+  test("promise is a single notice, which changes text and tone when the promise resolves", async () => {
     const { screen, api } = mount();
     let finish!: (value: number) => void;
     const pending = new Promise<number>((resolve) => {
@@ -108,7 +108,7 @@ describe("useToast nativo, com o contrato do web", () => {
     expect(textOf(screen)).not.toContain("Nota 4816 emitida");
   });
 
-  test("promise que falha vira o tom de erro e devolve a rejeicao", async () => {
+  test("a failing promise turns into the error tone and returns the rejection", async () => {
     const { screen, api } = mount();
     let caught: unknown;
     await act(async () => {
@@ -126,7 +126,7 @@ describe("useToast nativo, com o contrato do web", () => {
     expect(classesOf(screen, "Falhou: rede")).toContain("bg-danger-subtle");
   });
 
-  test("o objeto do gancho tem identidade estavel entre renderizacoes", () => {
+  test("the hook object has a stable identity across renders", () => {
     const { api, seen } = mount();
     act(() => {
       api().add({ title: "Um" });

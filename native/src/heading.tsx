@@ -18,19 +18,19 @@ const SIZE: Record<HeadingSize, string> = {
 
 export type HeadingProps = Omit<NativeTextProps, "accessibilityRole" | "role" | "className"> & {
   /**
-   * O lugar do titulo no esboco da tela, de 1 a 6. O leitor de tela do
-   * celular anuncia "cabecalho" sem nivel, entao aqui ele decide so o tamanho
-   * quando `size` nao vem - e fica escrito igual ao web, para a tela portar
-   * sem reescrever.
+   * The heading's place in the screen outline, from 1 to 6. The phone screen
+   * reader announces "heading" with no level, so here it decides only the size
+   * when `size` is absent - and it is written the same as on the web, so the
+   * screen ports without rewriting.
    */
   level: HeadingLevel;
   /**
-   * O corpo na escala da casa, de `sm` (13px) a `3xl` (30px). Sem ele o
-   * tamanho acompanha o nivel: `h1` e `2xl`, `h2` e `xl`, `h3` e `lg`, `h4` e
-   * `md`, `h5` e `base` e `h6` e `sm`.
+   * The body size on the house scale, from `sm` (13px) to `3xl` (30px). Without
+   * it the size follows the level: `h1` is `2xl`, `h2` is `xl`, `h3` is `lg`,
+   * `h4` is `md`, `h5` is `base` and `h6` is `sm`.
    */
   size?: HeadingSize;
-  /** Corta em uma linha com reticencias no fim. */
+  /** Truncates to one line with an ellipsis at the end. */
   truncate?: boolean;
   className?: string;
 };

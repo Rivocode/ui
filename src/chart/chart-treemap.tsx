@@ -21,26 +21,27 @@ import { labelFit, squarify, type TreemapBox } from "../shared/chart-layout";
 import { PALETTE, type ChartConfig } from "./chart";
 
 export type ChartTreemapProps<Item> = Omit<ComponentProps<"div">, "children"> & {
-  /** As categorias. Valor zero ou negativo nao ganha area, mas continua na lista do leitor de tela. */
+  /** The categories. A zero or negative value gets no area, but stays in the screen reader list. */
   data: Item[];
-  /** De onde sai o numero, que vira area. */
+  /** Where the number comes from, which becomes area. */
   valueKey: keyof Item & string;
-  /** De onde sai o nome de cada categoria. E ele que o `config` procura. */
+  /** Where each category's name comes from. It is what `config` looks up. */
   nameKey: keyof Item & string;
   /**
-   * Nome legivel e cor por categoria, o mesmo formato da rosca. Sem cor, cada
-   * categoria pega a proxima da paleta, na ordem de `data`.
+   * Readable name and color per category, the same shape as the donut. Without a color, each
+   * category takes the next one in the palette, in the order of `data`.
    */
   config?: ChartConfig;
-  /** Como o numero e escrito, no rotulo, na dica e na lista do leitor de tela. */
+  /** How the number is written, in the label, the tooltip and the screen reader list. */
   format?: Format;
-  /** O que o mapa mede, por extenso: vira o nome do grupo e da lista escondida. */
+  /** What the map measures, spelled out: becomes the name of the group and of the hidden list. */
   label: string;
-  /** Classe por parte: `cell`, `label`. */
+  /** Class per part: `cell`, `label`. */
   classNames?: Slots<"cell" | "label">;
   /**
-   * O que aparece no lugar do desenho quando a lista vem vazia ou a soma e zero. O mesmo formato do
-   * `ChartContainer` e do `DataTable`.
+   * What appears in place of the drawing when the list comes empty or the sum is zero. The same
+   * shape as
+   * `ChartContainer` and `DataTable`.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };

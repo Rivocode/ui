@@ -72,7 +72,7 @@ const MOVING: ChartMotion = {
   animationEasing: `cubic-bezier(${EASE.join(",")})` as ChartMotion["animationEasing"],
 };
 
-test("a duracao e a curva da Recharts saem dos tokens do forma.css", () => {
+test("the Recharts duration and curve come from the forma.css tokens", () => {
   expect(SLOW).toBeGreaterThan(0);
   expect(readChartMotion(document.documentElement)).toEqual(MOVING);
 
@@ -83,7 +83,7 @@ test("a duracao e a curva da Recharts saem dos tokens do forma.css", () => {
   zeroed.remove();
 });
 
-test("a moldura veste toda marca que anima, e respeita quem desligou a mao", () => {
+test("the container dresses every animating mark, and respects whoever turned it off by hand", () => {
   const chart = (
     <LineChart data={POINTS}>
       <XAxis dataKey="mes" />
@@ -155,7 +155,7 @@ function measured() {
   };
 }
 
-test("o grafico se desenha na primeira pintura: a marca ja monta com a animacao ligada", async () => {
+test("the chart draws itself on first paint: the mark already mounts with animation on", async () => {
   const restore = measured();
   const view = render(framed());
   await act(async () => {});
@@ -176,7 +176,7 @@ test("o grafico se desenha na primeira pintura: a marca ja monta com a animacao 
   restore();
 });
 
-test("no servidor o grafico nao desenha, e o cliente o desenha entrando, sem desencontro na hidratacao", async () => {
+test("on the server the chart does not draw, and the client draws it entering, without a hydration mismatch", async () => {
   seen = [];
   const html = renderToString(framed());
   expect(seen).toEqual([]);
@@ -205,7 +205,7 @@ test("no servidor o grafico nao desenha, e o cliente o desenha entrando, sem des
   host.remove();
 });
 
-test("com reduzir movimento, a moldura nunca liga a animacao", async () => {
+test("with reduced motion, the container never turns animation on", async () => {
   reduceMotion();
   const restore = measured();
   render(framed());
@@ -215,7 +215,7 @@ test("com reduzir movimento, a moldura nunca liga a animacao", async () => {
   for (const props of seen) expect(props.isAnimationActive).toBe(false);
 });
 
-test("a rosca e o arco animam pelo mesmo gancho; a Sparkline so esmaece a superficie", async () => {
+test("the donut and the arc animate through the same hook; the Sparkline only fades the surface", async () => {
   const files = ["chart-donut", "chart-radial", "sparkline"];
   const [donut, radial, sparkline] = await Promise.all(
     files.map((name) => Bun.file(`src/chart/${name}.tsx`).text()),
@@ -235,7 +235,7 @@ test("a rosca e o arco animam pelo mesmo gancho; a Sparkline so esmaece a superf
   expect(tokens).not.toContain("animate-appear");
 });
 
-test("o arco em tracinhos acende em sequencia, do primeiro ao ultimo aceso, no tempo slow", () => {
+test("the dashed arc lights up in sequence, from the first to the last lit, at the slow duration", () => {
   const { container } = render(<ChartRadial value={50} variant="segmented" segments={10} />);
   const ticks = [...container.querySelectorAll("[data-rc-tick]")];
   expect(ticks).toHaveLength(10);
@@ -251,7 +251,7 @@ test("o arco em tracinhos acende em sequencia, do primeiro ao ultimo aceso, no t
 
 type Invoice = { id: string; amount: number };
 
-test("a seta de ordenacao e uma so, e gira meia volta ao inverter o sentido", () => {
+test("the sort arrow is a single one, and turns half a turn when the direction flips", () => {
   const columns: Column<Invoice>[] = [{ key: "amount", header: "Valor", sortable: true }];
   render(
     <DataTable
@@ -280,7 +280,7 @@ test("a seta de ordenacao e uma so, e gira meia volta ao inverter o sentido", ()
 
 const FADE = "animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both]";
 
-test("a troca entre leitura e edicao esmaece, e a leitura da primeira pintura nao", () => {
+test("the swap between reading and editing fades, and the first-paint reading does not", () => {
   const { container } = render(<Editable defaultValue="Clinica" label="Cliente" />);
   const shell = () => container.firstElementChild!;
   const reading = shell();
@@ -298,7 +298,7 @@ test("a troca entre leitura e edicao esmaece, e a leitura da primeira pintura na
   expect(shell().className.split(" ")).toContain(FADE);
 });
 
-test("a barra de progresso do arquivo anda ate o valor novo pela largura", () => {
+test("the file progress bar moves to the new value through its width", () => {
   const { rerender } = render(
     <FileUploadItem name="nota.xml" size={100} progress={20} onRemove={() => {}} />,
   );

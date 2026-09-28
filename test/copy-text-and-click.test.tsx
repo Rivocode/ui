@@ -27,7 +27,7 @@ async function settle() {
   });
 }
 
-test("com children, o texto do botao e o children ate copiar, e o de confirmado depois", async () => {
+test("with children, the button text is the children until copying, and the confirmed text afterwards", async () => {
   allowClipboard();
   render(
     <RivoProvider scope="local">
@@ -45,7 +45,7 @@ test("com children, o texto do botao e o children ate copiar, e o de confirmado 
   expect(screen.getByRole("button", { name: "Copiado" })).toBe(button);
 });
 
-test("o onClick de quem usa e chamado, e a copia acontece mesmo assim", async () => {
+test("the consumer's onClick is called, and the copy happens anyway", async () => {
   allowClipboard();
   const onClick = mock(() => {});
   const onCopy = mock((value: string) => void value);

@@ -27,7 +27,7 @@ function Example() {
   );
 }
 
-test("os itens saem com papel de item de menu", () => {
+test("the items render with the menu item role", () => {
   render(
     <RivoProvider>
       <Example />
@@ -36,7 +36,7 @@ test("os itens saem com papel de item de menu", () => {
   expect(screen.getAllByRole("menuitem")).toHaveLength(3);
 });
 
-test("o item destrutivo usa o token de perigo como texto", () => {
+test("the destructive item uses the danger token as text", () => {
   render(
     <RivoProvider>
       <Example />
@@ -47,7 +47,7 @@ test("o item destrutivo usa o token de perigo como texto", () => {
   );
 });
 
-test("o menu abre dentro do container que carrega o tema", () => {
+test("the menu opens inside the container that carries the theme", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <Example />
@@ -57,7 +57,7 @@ test("o menu abre dentro do container que carrega o tema", () => {
   expect(container!.textContent).toContain("Baixar PDF");
 });
 
-test("o titulo do grupo aparece, e o grupo o carrega por dentro", () => {
+test("the group title shows up, and the group carries it inside", () => {
   render(
     <RivoProvider>
       <Example />

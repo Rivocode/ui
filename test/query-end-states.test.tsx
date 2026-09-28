@@ -25,7 +25,7 @@ function list(invoices: Invoice[]) {
   );
 }
 
-test("com a resposta na mao, quem desenha e o filho, sem embrulho nenhum", () => {
+test("with the response in hand, the child draws, with no wrapper at all", () => {
   const { container } = withTheme(
     <QueryBoundary data={INVOICES}>{(invoices) => list(invoices)}</QueryBoundary>,
   );
@@ -34,7 +34,7 @@ test("com a resposta na mao, quem desenha e o filho, sem embrulho nenhum", () =>
   expect(container.querySelector("[aria-busy]")).toBeNull();
 });
 
-test("o filho em funcao recebe o dado sem o undefined que a tela tinha que afastar", () => {
+test("a function child receives the data without the undefined the screen had to guard against", () => {
   let seen: Invoice[] | undefined;
 
   withTheme(
@@ -49,7 +49,7 @@ test("o filho em funcao recebe o dado sem o undefined que a tela tinha que afast
   expect(seen?.length).toBe(2);
 });
 
-test("o filho tambem pode ser no, para quem nao precisa do dado", () => {
+test("the child can also be a node, for whoever does not need the data", () => {
   withTheme(
     <QueryBoundary isLoading={false}>
       <p>A folha inteira</p>
@@ -59,7 +59,7 @@ test("o filho tambem pode ser no, para quem nao precisa do dado", () => {
   expect(screen.getByText("A folha inteira")).toBeDefined();
 });
 
-test("sem resposta e sem isLoading, a peca ja entra carregando", () => {
+test("without a response and without isLoading, the component starts in loading", () => {
   const { container } = withTheme(
     <QueryBoundary<Invoice[]>>{(invoices) => list(invoices)}</QueryBoundary>,
   );
@@ -68,7 +68,7 @@ test("sem resposta e sem isLoading, a peca ja entra carregando", () => {
   expect(container.querySelector("[aria-busy='true']")).not.toBeNull();
 });
 
-test("com filho em funcao, a resposta que nao veio e espera mesmo com isLoading falso", () => {
+test("with a function child, a response that has not arrived is waiting even with isLoading false", () => {
   const { container } = withTheme(
     <QueryBoundary<Invoice[]> isLoading={false}>{(invoices) => list(invoices)}</QueryBoundary>,
   );
@@ -76,7 +76,7 @@ test("com filho em funcao, a resposta que nao veio e espera mesmo com isLoading 
   expect(container.querySelector("[aria-busy='true']")).not.toBeNull();
 });
 
-test("carregando, ela nao mostra os dados velhos", () => {
+test("while loading, it does not show stale data", () => {
   withTheme(
     <QueryBoundary data={INVOICES} isLoading>
       {(invoices) => list(invoices)}
@@ -86,7 +86,7 @@ test("carregando, ela nao mostra os dados velhos", () => {
   expect(screen.queryByText("Clinica Sao Lucas")).toBeNull();
 });
 
-test("o esqueleto de quem chama substitui as linhas genericas", () => {
+test("the caller's skeleton replaces the generic rows", () => {
   const { container } = withTheme(
     <QueryBoundary isLoading skeleton={<div data-testid="molde" />}>
       <p>A folha inteira</p>
@@ -97,7 +97,7 @@ test("o esqueleto de quem chama substitui as linhas genericas", () => {
   expect(container.querySelectorAll(".animate-pulse").length).toBe(0);
 });
 
-test("o erro vence o carregando, e oferece nova tentativa", () => {
+test("error beats loading, and offers a retry", () => {
   let retries = 0;
 
   withTheme(
@@ -120,7 +120,7 @@ test("o erro vence o carregando, e oferece nova tentativa", () => {
   expect(retries).toBe(1);
 });
 
-test("sem onRetry o erro fala sozinho, sem botao que nao leva a lugar nenhum", () => {
+test("without onRetry the error speaks alone, without a button that leads nowhere", () => {
   withTheme(
     <QueryBoundary data={undefined} isError>
       <p>A folha inteira</p>
@@ -130,7 +130,7 @@ test("sem onRetry o erro fala sozinho, sem botao que nao leva a lugar nenhum", (
   expect(screen.queryByRole("button")).toBeNull();
 });
 
-test("a resposta vazia explica o vazio e oferece saida", () => {
+test("an empty response explains the emptiness and offers a way out", () => {
   withTheme(
     <QueryBoundary
       data={[]}
@@ -148,7 +148,7 @@ test("a resposta vazia explica o vazio e oferece saida", () => {
   expect(screen.getByRole("button", { name: "Emitir nota" })).toBeDefined();
 });
 
-test("o vazio nao aparece enquanto a consulta esta em pe", () => {
+test("the empty state does not show while the query is in flight", () => {
   withTheme(
     <QueryBoundary
       data={[]}
@@ -162,7 +162,7 @@ test("o vazio nao aparece enquanto a consulta esta em pe", () => {
   expect(screen.queryByText("Nenhuma nota")).toBeNull();
 });
 
-test("o vazio tambem nao aparece antes de a resposta chegar", () => {
+test("the empty state also does not show before the response arrives", () => {
   withTheme(
     <QueryBoundary<Invoice[]>
       empty={{ title: "Nenhuma nota", description: "Emita a primeira para ela aparecer." }}
@@ -174,7 +174,7 @@ test("o vazio tambem nao aparece antes de a resposta chegar", () => {
   expect(screen.queryByText("Nenhuma nota")).toBeNull();
 });
 
-test("resposta nula conta como vazia, e nao como espera", () => {
+test("a null response counts as empty, and not as waiting", () => {
   withTheme(
     <QueryBoundary<Invoice | null>
       data={null}
@@ -187,7 +187,7 @@ test("resposta nula conta como vazia, e nao como espera", () => {
   expect(screen.getByText("Nota apagada")).toBeDefined();
 });
 
-test("sem `empty`, a lista vazia cai nos filhos, que desenham o vazio deles", () => {
+test("without `empty`, the empty list falls to the children, which draw their own empty state", () => {
   withTheme(
     <QueryBoundary data={[] as Invoice[]}>
       {(invoices) => (invoices.length === 0 ? <p>Zero notas</p> : list(invoices))}
@@ -197,7 +197,7 @@ test("sem `empty`, a lista vazia cai nos filhos, que desenham o vazio deles", ()
   expect(screen.getByText("Zero notas")).toBeDefined();
 });
 
-test("`isEmpty` decide o vazio quando a resposta nao e lista", () => {
+test("`isEmpty` decides emptiness when the response is not a list", () => {
   withTheme(
     <QueryBoundary
       data={{ items: [] as Invoice[], total: 0 }}
@@ -211,7 +211,7 @@ test("`isEmpty` decide o vazio quando a resposta nao e lista", () => {
   expect(screen.getByText("Nenhuma nota")).toBeDefined();
 });
 
-test("`isEmpty` falso vence a contagem, para a lista que veio vazia de proposito", () => {
+test("`isEmpty` false beats the count, for a list that came back empty on purpose", () => {
   withTheme(
     <QueryBoundary
       data={[] as Invoice[]}
@@ -225,7 +225,7 @@ test("`isEmpty` falso vence a contagem, para a lista que veio vazia de proposito
   expect(screen.getByText("A folha inteira")).toBeDefined();
 });
 
-test("a peca avisa quando pediram um vazio que nunca poderia aparecer", () => {
+test("the component warns when asked for an empty state that could never appear", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   withTheme(
@@ -242,7 +242,7 @@ test("a peca avisa quando pediram um vazio que nunca poderia aparecer", () => {
   warn.mockRestore();
 });
 
-test("a classe da moldura veste os tres finais, e nao os filhos", () => {
+test("the frame class dresses the three endings, and not the children", () => {
   const { container: loading } = withTheme(
     <QueryBoundary isLoading className="min-h-64">
       <p>A folha inteira</p>
@@ -258,7 +258,7 @@ test("a classe da moldura veste os tres finais, e nao os filhos", () => {
   expect(data.querySelector(".min-h-64")).toBeNull();
 });
 
-test("classNames veste cada final pelo nome, sem `[&_div]`", () => {
+test("classNames dresses each ending by name, without `[&_div]`", () => {
   const parts = { loading: "espera", error: "queda", empty: "vazio" };
 
   const { container: loading } = withTheme(

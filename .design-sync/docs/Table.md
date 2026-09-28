@@ -1,45 +1,45 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Table
 
-Tabela semântica, com `<table>` de verdade.
+A semantic table, with a real `<table>`.
 
-Compõe com `TableCaption`, `TableHeader`, `TableBody`, `TableFooter`,
-`TableRow`, `TableHead` e `TableCell`.
+It composes with `TableCaption`, `TableHeader`, `TableBody`, `TableFooter`,
+`TableRow`, `TableHead` and `TableCell`.
 
-`selected` na linha desenha uma barra de acento na lateral e abre a primeira
-célula com um marcador de texto que só o leitor de tela ouve: "Selecionada",
-trocável por `labels.selected`. Cor sozinha não é estado.
+`selected` on the row draws an accent bar on the side and opens the first cell
+with a text marker only the screen reader hears: "Selecionada", replaceable
+through `labels.selected`. Color alone is not state.
 
-Ela não marca no `aria-selected`. Esse atributo só vale dentro de `grid` ou
-`treegrid`; num `<table>` simples o navegador o descarta, e o estado nunca
-chega ao leitor. Virar `grid` custaria caro: `grid` exige navegação por setas
-entre as células, que esta peça não implementa. O marcador textual entrega o
-estado sem prometer um teclado que não existe.
+It does not mark `aria-selected`. That attribute is only valid inside `grid` or
+`treegrid`; in a plain `<table>` the browser discards it, and the state never
+reaches the reader. Becoming a `grid` would cost a lot: `grid` requires arrow
+navigation between cells, which this piece does not implement. The text marker
+delivers the state without promising a keyboard that does not exist.
 
-A moldura rola de lado sozinha, então tabela larga não empurra a página.
+The frame scrolls sideways on its own, so a wide table does not push the page.
 
-O nome da tabela entra pelo `TableCaption`, e não por um `<h3>` acima dela: o
-título vizinho não nomeia elemento nenhum, e o leitor de tela anuncia só
-"tabela, 5 colunas".
+The table's name comes in through `TableCaption`, and not through an `<h3>`
+above it: the neighboring heading names no element at all, and the screen
+reader announces only "table, 5 columns".
 
-A linha de totais entra pelo `TableFooter`, e não por uma `<div>` embaixo da
-tabela: dentro do `<tfoot>` a célula divide a largura com a coluna, e o total
-fica debaixo do valor que ele soma.
+The totals row comes in through `TableFooter`, and not through a `<div>` below
+the table: inside the `<tfoot>` the cell shares its width with the column, and
+the total sits below the value it sums.
 
-## Quando não usar
+## When not to use
 
-Para listagem que vem de uma consulta, use `DataTable`. Ela trata os três
-estados que toda consulta tem e quase nenhuma tabela escrita à mão trata
-(carregando, erro e vazio) e traz ordenação, busca, paginação e seleção sem
-nada disso virar estado da sua tela.
+For a listing that comes from a query, use `DataTable`. It handles the three
+states every query has and almost no hand-written table handles (loading, error
+and empty) and brings sorting, search, pagination and selection without any of
+that becoming state on your screen.
 
-Este aqui fica para a tabela que você desenha: o quadro de valores de um
-recibo, a comparação de planos, a linha de totais montada à mão. Quando as
-linhas são um `map` sobre o que a API devolveu, é a outra.
+This one is for the table you design: the values of a receipt, a plan
+comparison, a hand-built totals row. When the rows are a `map` over what the
+API returned, it is the other one.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão - não há tabela no celular; a consulta vira `DataList`. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Does not port, by decision - there is no table on the phone; the query becomes `DataList`. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.

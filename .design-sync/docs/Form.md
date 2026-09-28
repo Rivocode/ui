@@ -1,26 +1,28 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Form
 
-O `<form>` e o contexto do React Hook Form numa peça só, para o `FormField`
-achar o `control` sozinho. Vive em `@rivocode/ui/form`.
+The `<form>` and the React Hook Form context in a single piece, so that
+`FormField` finds the `control` on its own. Lives in `@rivocode/ui/form`.
 
-Vai com `noValidate`: quem valida e o schema, e o balao nativo do navegador
-apareceria em ingles, fora do tema e antes da nossa mensagem.
+It ships with `noValidate`: the schema is what validates, and the browser's
+native bubble would show up in English, outside the theme and before our
+message.
 
-O `onSubmit` recebe os valores já validados e convertidos. Use com o
-`useZodForm`, que liga o resolver e separa o tipo de entrada do de saída.
+`onSubmit` receives the values already validated and converted. Use it with
+`useZodForm`, which wires the resolver and separates the input type from the
+output type.
 
-## No React Native
+## In React Native
 
-Traduz, no caminho próprio `@rivocode/ui-native/form`, com o mesmo arranjo do web e pela mesma razão: o `react-hook-form` é peer opcional. O `useZodForm` é idêntico, linha por linha, porque não há navegador nele.
+Translates, on its own path `@rivocode/ui-native/form`, with the same arrangement as the web and for the same reason: `react-hook-form` is an optional peer. `useZodForm` is identical, line by line, because there is no browser in it.
 
-**O que muda é quem dispara o envio.** No React Native não existe `<form>`, não existe `type="submit"` e não existe Enter que envie: nada é implícito. Então o `Form` entrega o envio a quem desenha o botão (`children` pode ser uma função que recebe `{ submit, isSubmitting }`), e continua aceitando JSX comum para quando o botão mora fora, numa barra fixa no rodapé da tela.
+**What changes is who triggers the submit.** In React Native there is no `<form>`, no `type="submit"` and no Enter that submits: nothing is implicit. So `Form` hands the submit to whoever draws the button (`children` can be a function that receives `{ submit, isSubmitting }`), and still accepts plain JSX for when the button lives outside, in a fixed bar at the foot of the screen.
 
-**E muda a ponte com o controle.** No web o `Field` da Base UI liga rótulo, ajuda e erro a qualquer controle que esteja dentro, pelo contexto; aqui o contexto é mais estreito: o `Field` nativo leva aos campos de digitar (`Input`, `Textarea`, `InputGroup`, `MaskedInput`) o rótulo, como `accessibilityLabel` quando quem chama não passou outro, o erro, como dica, e a validação do `validate`. O campo que o `FormField` entrega leva mesmo assim duas coisas a mais, `accessibilityLabel` e `invalid`, e os adaptadores as põem no controle: as peças que se nomeiam por `label` não leem o contexto, e sem isso ficariam **sem nome nenhum** para o leitor de tela. O `label` do `FormField` é obrigatório aqui pela mesma razão.
+**And the bridge to the control changes.** On the web, Base UI's `Field` links label, help and error to any control inside it, through context; here the context is narrower: the native `Field` carries to the text fields (`Input`, `Textarea`, `InputGroup`, `MaskedInput`) the label, as `accessibilityLabel` when the caller did not pass another, the error, as a hint, and the `validate` validation. The field that `FormField` delivers carries two more things anyway, `accessibilityLabel` and `invalid`, and the adapters put them on the control: the pieces named by `label` do not read the context, and without this they would be left **with no name at all** for the screen reader. `FormField`'s `label` is required here for the same reason.
 
-O adaptador entrega o rótulo no nome que a peça lê. As peças nativas se nomeiam por `label`, e o `forValue`, o `forChecked` e o `forDate` o entregam assim; o `forText` o entrega como `accessibilityLabel`, porque o `Input` e o `Textarea` são o `TextInput` da plataforma. O `forValue` leva os dois, porque serve também a campo de texto com valor próprio, como o `CurrencyInput`.
+The adapter delivers the label under the name the piece reads. Native pieces are named by `label`, and `forValue`, `forChecked` and `forDate` deliver it that way; `forText` delivers it as `accessibilityLabel`, because `Input` and `Textarea` are the platform's `TextInput`. `forValue` carries both, because it also serves a text field with its own value, like `CurrencyInput`.
 
-Os adaptadores são quatro. `forValue`, `forChecked` e `forDate` têm o nome e o trabalho do web. O `forDate` agora converte o vazio para `null` e fala ISO, que é o que o `DatePicker` e o `DateRangePicker` nativos pedem. O quarto é só daqui: `forText`, para `Input` e `Textarea`, porque o `TextInput` chama `onChangeText` com a string crua e não com um evento: espalhar o campo nele guardaria no formulário um objeto de evento que não existe. Ele leva o `ref` junto, e aí o `form.setFocus()` funciona de verdade: `TextInput` tem `focus()`. E traduz o `disabled` do campo para `editable={false}`, porque o `TextInput` não lê `disabled`.
+There are four adapters. `forValue`, `forChecked` and `forDate` have the web's name and job. `forDate` now converts empty to `null` and speaks ISO, which is what the native `DatePicker` and `DateRangePicker` ask for. The fourth is native-only: `forText`, for `Input` and `Textarea`, because `TextInput` calls `onChangeText` with the raw string and not with an event: spreading the field on it would store in the form an event object that does not exist. It carries the `ref` along, and then `form.setFocus()` really works: `TextInput` has `focus()`. And it translates the field's `disabled` to `editable={false}`, because `TextInput` does not read `disabled`.

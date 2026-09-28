@@ -1,6 +1,6 @@
 import { Heading, Text } from '@rivocode/ui'
 
-/** Os tamanhos que acompanham o nível */
+/** The sizes that follow the level */
 export function Levels() {
   return (
     <div className="flex flex-col gap-3">
@@ -13,7 +13,7 @@ export function Levels() {
   )
 }
 
-/** Nível e tamanho separados */
+/** Level and size separate */
 export function SizeApart() {
   return (
     <section className="flex max-w-96 flex-col gap-2">
@@ -28,7 +28,7 @@ export function SizeApart() {
   )
 }
 
-/** Título que não cabe */
+/** A title that does not fit */
 export function Truncated() {
   return (
     <div className="w-64">

@@ -1,11 +1,11 @@
 import type { Popover } from "@base-ui/react/popover";
 
 export type FloatingPositionProps = {
-  /** Lado preferido do gatilho. A Base UI vira sozinha quando nao cabe. */
+  /** Preferred side of the trigger. Base UI flips by itself when it does not fit. */
   side?: Popover.Positioner.Props["side"];
-  /** Alinhamento no eixo do lado escolhido. */
+  /** Alignment on the axis of the chosen side. */
   align?: Popover.Positioner.Props["align"];
-  /** Distancia entre o gatilho e o painel, em pixels. */
+  /** Distance between the trigger and the panel, in pixels. */
   sideOffset?: Popover.Positioner.Props["sideOffset"];
 };
 

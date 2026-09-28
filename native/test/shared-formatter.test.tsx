@@ -4,8 +4,8 @@ import * as web from "../../src/shared/format";
 import { Meter, Progress, Slider, Stat, currencyShort, formatters, percent } from "../src";
 import { byClass, byRole, render, textOf } from "./helpers";
 
-describe("o vocabulario de formatacao e o mesmo do web", () => {
-  test("a raiz exporta os mesmos formatadores, com a mesma saida", () => {
+describe("the formatting vocabulary is the same as the web's", () => {
+  test("the root exports the same formatters, with the same output", () => {
     expect(Object.keys(formatters).sort()).toEqual(Object.keys(web.formatters).sort());
     expect(currencyShort(2480)).toBe(web.currencyShort(2480));
     expect(currencyShort(2480)).toBe("R$\u00a02,5K");
@@ -14,7 +14,7 @@ describe("o vocabulario de formatacao e o mesmo do web", () => {
 });
 
 describe("Meter", () => {
-  test("o nome do formatador escreve a tela e o anuncio", () => {
+  test("the formatter name writes the screen and the announcement", () => {
     const screen = render(
       <Meter value={1500} max={3000} label="Cota" showValue format="currencyShort" />,
     );
@@ -29,7 +29,7 @@ describe("Meter", () => {
     });
   });
 
-  test("a funcao propria recebe o valor cru, e o valueLabel ganha dela", () => {
+  test("a custom function receives the raw value, and valueLabel wins over it", () => {
     const own = render(
       <Meter value={8} max={15} label="Disco" showValue format={(value) => `${value} GB`} />,
     );
@@ -43,7 +43,7 @@ describe("Meter", () => {
 });
 
 describe("Progress", () => {
-  test("showValue escreve o rotulo e a porcentagem, como o web", () => {
+  test("showValue writes the label and the percentage, like the web", () => {
     const screen = render(<Progress value={30} label="Envio" showValue />);
 
     expect(textOf(screen)).toContain("Envio");
@@ -55,7 +55,7 @@ describe("Progress", () => {
     });
   });
 
-  test("format escreve a tela e o anuncio", () => {
+  test("format writes the screen and the announcement", () => {
     const screen = render(
       <Progress value={3} label="Notas" showValue format={(value) => `${value} de 10 notas`} />,
     );
@@ -66,7 +66,7 @@ describe("Progress", () => {
     );
   });
 
-  test("sem showValue a barra continua sozinha, e o format ainda fala", () => {
+  test("without showValue the bar stays alone, and format still speaks", () => {
     const screen = render(<Progress value={30} label="Envio" format="integer" />);
 
     expect(textOf(screen)).toBe("");
@@ -75,7 +75,7 @@ describe("Progress", () => {
 });
 
 describe("Slider", () => {
-  test("showValue escreve o rotulo e o valor pelo formatador da casa", () => {
+  test("showValue writes the label and the value through the house formatter", () => {
     const screen = render(
       <Slider
         value={1500}
@@ -97,7 +97,7 @@ describe("Slider", () => {
     });
   });
 
-  test("sem format o valor sai com a virgula do pt-BR, e sem showValue nada se escreve", () => {
+  test("without format the value comes out with the pt-BR comma, and without showValue nothing is written", () => {
     const shown = render(
       <Slider value={2.5} onValueChange={mock(() => {})} max={5} step={0.5} label="Nota" showValue />,
     );
@@ -111,14 +111,14 @@ describe("Slider", () => {
 });
 
 describe("Stat", () => {
-  test("a variacao sai em percent por padrao, arredondada como no web", () => {
+  test("the change comes out in percent by default, rounded as on the web", () => {
     const screen = render(<Stat label="Faturado" value="R$ 246,7K" delta={12.5} />);
 
     expect(textOf(screen)).toContain("13%");
     expect(textOf(screen)).not.toContain("12.5");
   });
 
-  test("deltaFormat troca a unidade da variacao, e o sinal fica com a seta", () => {
+  test("deltaFormat changes the unit of the change, and the sign stays with the arrow", () => {
     const screen = render(
       <Stat label="Custo" value="R$ 9,1K" delta={-2480} deltaFormat="currencyShort" />,
     );
@@ -127,7 +127,7 @@ describe("Stat", () => {
     expect(textOf(screen)).not.toContain("%");
   });
 
-  test("delta zero e neutro: sem seta e sem o verde de alta, mesmo invertido", () => {
+  test("a zero delta is neutral: no arrow and no rising green, even inverted", () => {
     for (const invert of [false, true]) {
       const screen = render(<Stat label="Faturado" value="R$ 246,7K" delta={0} invert={invert} />);
       expect(textOf(screen)).toContain("0%");

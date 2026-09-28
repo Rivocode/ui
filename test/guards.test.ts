@@ -9,26 +9,26 @@ async function filesOf(area: string, floor: number) {
 
   expect(
     found.length,
-    `a varredura de ${area} achou ${found.length} arquivo(s), e o piso e ${floor}:` +
-      " lista vazia deixa a guarda verde sem ela ter olhado nada",
+    `the scan of ${area} found ${found.length} file(s), and the floor is ${floor}:` +
+      " an empty list leaves the guard green without it having looked at anything",
   ).toBeGreaterThanOrEqual(floor);
 
   return found;
 }
 
-test("branco sobre preto da o maximo de 21 para 1", () => {
+test("white on black gives the maximum of 21 to 1", () => {
   expect(contrastRatio("#ffffff", "#000000")).toBeCloseTo(21, 1);
 });
 
-test("a lima sobre o fundo escuro da 15,06 para 1", () => {
+test("lime on the dark background gives 15.06 to 1", () => {
   expect(contrastRatio("#d4f34a", "#0f1113")).toBeCloseTo(15.06, 1);
 });
 
-test("a cor de texto desabilitado fica abaixo do minimo", () => {
+test("the disabled text color stays below the minimum", () => {
   expect(contrastRatio("#6c737b", "#0f1113")).toBeLessThan(4.5);
 });
 
-test("resolve um token de tema que aponta para a paleta", () => {
+test("resolves a theme token that points to the palette", () => {
   const tokens = readTokens(
     ":root { --rc-p-lima-500: #d4f34a; }\n" +
       "[data-rc-theme='x'] { --rc-accent: var(--rc-p-lima-500); }",
@@ -36,51 +36,51 @@ test("resolve um token de tema que aponta para a paleta", () => {
   expect(tokens["--rc-accent"]).toBe("#d4f34a");
 });
 
-test("a ordem das cores nao muda a razao", () => {
+test("the order of the colors does not change the ratio", () => {
   expect(contrastRatio("#d4f34a", "#0f1113")).toBeCloseTo(contrastRatio("#0f1113", "#d4f34a"), 5);
 });
 
-test("o pacote publicado leva o CHANGELOG junto", async () => {
-  // Numa biblioteca em 0.x, com o pacote ja tendo trocado nomes publicos duas
-  // vezes, quem tem uma versao velha instalada precisa poder ler o que mudou
-  // sem sair do node_modules. O arquivo existia no repo e ficava de fora do
-  // que o npm empacota.
+test("the published package carries the CHANGELOG along", async () => {
+  // In a 0.x library, with the package having already renamed public names
+  // twice, whoever has an old version installed needs to be able to read what
+  // changed without leaving node_modules. The file existed in the repo and was
+  // left out of what npm packs.
   const pkg = await Bun.file("package.json").json();
 
   expect(pkg.files).toContain("CHANGELOG.md");
   expect(await Bun.file("CHANGELOG.md").exists()).toBe(true);
 });
 
-test("a versao escrita no codigo e a mesma do pacote", async () => {
-  // `version` sai na API publica, e um numero errado ali e pior que numero
-  // nenhum: quem depura por ele conclui a coisa errada sobre o que tem
-  // instalado. Sao dois arquivos, e os dois envelhecem juntos.
+test("the version written in the code is the same as the package's", async () => {
+  // `version` ships in the public API, and a wrong number there is worse than
+  // no number: whoever debugs by it draws the wrong conclusion about what is
+  // installed. There are two files, and both age together.
   const pkg = await Bun.file("package.json").json();
   const index = await Bun.file("src/index.ts").text();
 
   expect(index).toContain(`export const version = "${pkg.version}";`);
 });
 
-test("cada pacote tem CHANGELOG proprio, e ele viaja junto", async () => {
-  // O nativo publica FONTE e ja trocou tres nomes de prop. Sem o CHANGELOG
-  // dentro do tarball, quem tem a versao velha instalada nao tem de onde
-  // partir - e o agent de migracao, que le exatamente esse arquivo, tambem
-  // nao.
+test("each package has its own CHANGELOG, and it travels along", async () => {
+  // The native package publishes SOURCE and has already renamed three props.
+  // Without the CHANGELOG inside the tarball, whoever has the old version
+  // installed has nowhere to start from - and neither does the migration
+  // agent, which reads exactly that file.
   for (const dir of [".", "native"]) {
     const pkg = await Bun.file(`${dir}/package.json`).json();
-    expect(`${pkg.name} declara CHANGELOG: ${pkg.files.includes("CHANGELOG.md")}`).toBe(
-      `${pkg.name} declara CHANGELOG: true`,
+    expect(`${pkg.name} declares CHANGELOG: ${pkg.files.includes("CHANGELOG.md")}`).toBe(
+      `${pkg.name} declares CHANGELOG: true`,
     );
-    expect(`${pkg.name} tem CHANGELOG: ${await Bun.file(`${dir}/CHANGELOG.md`).exists()}`).toBe(
-      `${pkg.name} tem CHANGELOG: true`,
+    expect(`${pkg.name} has CHANGELOG: ${await Bun.file(`${dir}/CHANGELOG.md`).exists()}`).toBe(
+      `${pkg.name} has CHANGELOG: true`,
     );
   }
 });
 
-test("a tag de cada pacote aponta para a versao dele", async () => {
-  // Dois pacotes, dois gatilhos: `v*` e do web e `native-v*` e do nativo. Sem
-  // o prefixo, uma tag publicaria o pacote errado - ou pior, o certo com o
-  // numero do outro.
+test("each package's tag points to its own version", async () => {
+  // Two packages, two triggers: `v*` is the web one and `native-v*` is the
+  // native one. Without the prefix, a tag would publish the wrong package - or
+  // worse, the right one with the other's number.
   const web = await Bun.file(".github/workflows/release.yml").text();
   const native = await Bun.file(".github/workflows/release-native.yml").text();
 
@@ -90,23 +90,24 @@ test("a tag de cada pacote aponta para a versao dele", async () => {
 });
 
 /*
- * A fronteira de um controle de formulario e o que diz "aqui se digita", e o
- * WCAG 1.4.11 cobra 3:1 dela. Quem cumpre a promessa e o `--rc-border-strong`;
- * o `--rc-border` e linha de arranjo, e no tema escuro sai em 1,1:1 - visivel
- * para quem enxerga bem, invisivel para o resto.
+ * The boundary of a form control is what says "type here", and WCAG 1.4.11
+ * requires 3:1 of it. What keeps that promise is `--rc-border-strong`;
+ * `--rc-border` is a layout line, and in the dark theme it comes out at 1.1:1 -
+ * visible to those who see well, invisible to everyone else.
  *
- * O `check:contrast` nao pega isso porque mede o token e nao quem o usa: os
- * dois passam, cada um na promessa que fizeram. Esta guarda olha o outro lado.
+ * `check:contrast` does not catch this because it measures the token and not
+ * who uses it: both pass, each on the promise it made. This guard looks at the
+ * other side.
  */
 const CONTROL_ROOT = /"[^"]*\bborder border-border(?!-strong)/;
 
 /**
- * O bloco `cn(...)` inteiro, com os parenteses balanceados - a classe de um
- * controle nasce picada em varias strings, e olhar uma de cada vez perderia a
- * metade que importa.
+ * The whole `cn(...)` block, with balanced parentheses - a control's class is
+ * born split across several strings, and looking at one at a time would miss
+ * the half that matters.
  *
- * Vem com a posicao no arquivo porque as guardas de foco precisam saber QUEM
- * veste o bloco, e isso mora no `<Tag` logo acima dele.
+ * It comes with the position in the file because the focus guards need to
+ * know WHO wears the block, and that lives in the `<Tag` right above it.
  */
 function blocksOf(code: string) {
   const blocks: { text: string; at: number }[] = [];
@@ -124,9 +125,9 @@ function blocksOf(code: string) {
 }
 
 /**
- * Alem do `cn()`, a classe escrita direta no atributo: metade dos
- * `outline-none` da biblioteca mora em `className="..."` sem funcao nenhuma em
- * volta, e uma guarda que so olhasse `cn()` perderia justamente esses.
+ * Besides `cn()`, the class written straight in the attribute: half of the
+ * library's `outline-none`s live in `className="..."` with no function around
+ * them, and a guard that only looked at `cn()` would miss exactly those.
  */
 function classAttributesOf(code: string) {
   return [...code.matchAll(/className="[^"]*"/g)].map((hit) => ({
@@ -135,14 +136,14 @@ function classAttributesOf(code: string) {
   }));
 }
 
-/** A linha de uma posicao, para a mensagem apontar onde doi. */
+/** The line of a position, so the message points to where it hurts. */
 function lineAt(code: string, at: number) {
   return code.slice(0, at).split("\n").length;
 }
 
 /**
- * Quem veste o bloco: o nome da peca da Base UI no `<Tag` mais proximo acima,
- * ou o nome da constante quando o bloco e um `const X = cn(...)` reaproveitado.
+ * Who wears the block: the name of the Base UI piece in the nearest `<Tag`
+ * above, or the constant's name when the block is a reused `const X = cn(...)`.
  */
 function ownerOf(code: string, at: number) {
   const before = code.slice(0, at);
@@ -153,12 +154,12 @@ function ownerOf(code: string, at: number) {
   return tag?.[1] ?? "?";
 }
 
-test("a fronteira de um controle de formulario nunca veste a borda fraca", async () => {
-  // O recorte e estreito de proposito, e e o que separa campo de cartao: uma
-  // superficie de campo (`bg-surface`), com borda inteira em volta e anel de
-  // foco proprio. Cartao nao tem anel; divisoria interna e `border-r` e nao
-  // `border`; amostra de cor e botao de pagina nao tem `bg-surface`. Nenhum
-  // dos tres entra aqui, e todos eles usam o border comum com razao.
+test("the boundary of a form control never wears the weak border", async () => {
+  // The cut is narrow on purpose, and it is what separates a field from a
+  // card: a field surface (`bg-surface`), with a full border around it and its
+  // own focus ring. A card has no ring; an inner divider is `border-r` and not
+  // `border`; a color swatch and a page button have no `bg-surface`. None of
+  // the three gets in here, and all of them use the plain border for a reason.
   const weak: string[] = [];
 
   for (const file of await filesOf("src/components/*.tsx", 70)) {
@@ -173,68 +174,70 @@ test("a fronteira de um controle de formulario nunca veste a borda fraca", async
 });
 
 /* ---------------------------------------------------------------------------
- * Guarda do contorno apagado sem reposicao.
+ * Guard against the outline removed without a replacement.
  *
- * `outline-none` nao e "sem estilo": e a remocao ativa do unico sinal de foco
- * que o navegador da de graca. Quem apaga tem que repor, e quatro pecas nao
- * repunham - o gatilho de menu, o painel de aba, a superficie do grafico e o
- * exemplo publicado da barra de menus. Todas passavam no `check:contrast`, que
- * mede COR e nao mede ausencia; e todas so apareciam com o Tab numa mao e a
- * arvore de acessibilidade na outra.
+ * `outline-none` is not "no style": it is the active removal of the only focus
+ * signal the browser gives for free. Whoever removes it has to replace it, and
+ * four pieces did not - the menu trigger, the tab panel, the chart surface and
+ * the published menubar example. All of them passed `check:contrast`, which
+ * measures COLOR and not absence; and all of them only showed up with Tab in
+ * one hand and the accessibility tree in the other.
  *
- * O que a guarda cobra e a reposicao no MESMO bloco de classe: o anel pode ser
- * `focus-visible:`, `focus:`, `focus-within:` ou o `data-[highlighted]:` que a
- * Base UI acende no item de menu percorrido pela seta.
+ * What the guard requires is the replacement in the SAME class block: the ring
+ * can be `focus-visible:`, `focus:`, `focus-within:` or the
+ * `data-[highlighted]:` that Base UI lights on the menu item the arrow moves
+ * through.
  * ------------------------------------------------------------------------- */
 
 /**
- * Onde as duas guardas de classe olham: a biblioteca e os exemplos publicados.
+ * Where the two class guards look: the library and the published examples.
  *
- * O exemplo conta tanto quanto a peca - quem le a documentacao copia o que ve,
- * e foi assim que a barra de menus saiu sem anel de foco em toda organizacao
- * que a montou.
+ * The example counts as much as the piece - whoever reads the documentation
+ * copies what they see, and that is how the menubar shipped without a focus
+ * ring in every organization that built it.
  */
 const AREAS: [area: string, floor: number][] = [
   ["src/**/*.tsx", 80],
   [".design-sync/previews/*.tsx", 80],
 ];
 
-/** Alguma coisa acende quando o foco chega. */
+/** Something lights up when focus arrives. */
 const FOCUS_PAINTS =
   /focus-visible|focus-within|has-\[input:focus|focus:|data-\[highlighted\]|data-\[selected\]/;
 
 /**
- * O que o Tab nao alcanca, e por isso nao deve nada a 2.4.7.
+ * What Tab does not reach, and therefore owes nothing to 2.4.7.
  *
- * `Popup`, `Positioner`, `Portal`, `Backdrop` e `Viewport` sao a casca do que
- * flutua: quem manda foco para dentro deles e a Base UI, por codigo, e um anel
- * em volta de um dialogo inteiro so acrescentaria ruido.
+ * `Popup`, `Positioner`, `Portal`, `Backdrop` and `Viewport` are the shell of
+ * what floats: what sends focus into them is Base UI, in code, and a ring
+ * around a whole dialog would only add noise.
  *
- * `ContextMenuTrigger` esta aqui por um motivo diferente e vale conferir se a
- * Base UI mudar: ela o renderiza como `div` sem `tabIndex`
- * (`context-menu/trigger/ContextMenuTrigger.js`), entao o `outline-none` dele
- * e letra morta - nao ha foco para apagar.
+ * `ContextMenuTrigger` is here for a different reason and is worth checking if
+ * Base UI changes: it renders it as a `div` without `tabIndex`
+ * (`context-menu/trigger/ContextMenuTrigger.js`), so its `outline-none` is a
+ * dead letter - there is no focus to remove.
  *
- * `input` e o campo de texto: quem mostra o foco ali e o cursor piscando, e
- * nesta biblioteca o anel e desenhado pela moldura em volta
- * (`has-[input:focus-visible]` no TagsInput, `focus-within` no InputGroup).
- * O `textarea` cru e o mesmo caso, e so existe dentro de moldura: o do
- * `PromptInput` vive dentro do `form` que acende `has-[textarea:focus-visible]`.
- * O `Textarea` do catalogo nao passa por aqui, porque ele pinta o proprio anel.
+ * `input` is the text field: what shows focus there is the blinking caret, and
+ * in this library the ring is drawn by the frame around it
+ * (`has-[input:focus-visible]` in TagsInput, `focus-within` in InputGroup).
+ * The raw `textarea` is the same case, and only exists inside a frame: the one
+ * in `PromptInput` lives inside the `form` that lights
+ * `has-[textarea:focus-visible]`. The catalog's `Textarea` does not go through
+ * here, because it paints its own ring.
  */
 const OUT_OF_TAB_ORDER =
   /(Popup|Positioner|Portal|Backdrop|Viewport|floatingPanel)$|^input$|^textarea$|Input$|ContextMenu\.Trigger$/;
 
 /*
- * A guarda nasceu com uma divida declarada numa lista: o `PopoverTrigger`
- * repetia a forma do `MenuTrigger` - `cn("outline-none", className)` - e o
- * arquivo pertencia a outro trabalho em curso na mesma arvore. Ele foi
- * consertado, a lista esvaziou e saiu junto: lista de excecao que sobrevive a
- * ultima excecao nao guarda nada, so ensina que ha um lugar onde se pode
- * escrever o proximo `outline-none` nu.
+ * The guard was born with a debt declared in a list: `PopoverTrigger` repeated
+ * the shape of `MenuTrigger` - `cn("outline-none", className)` - and the file
+ * belonged to other work in progress in the same tree. It was fixed, the list
+ * emptied and went away with it: an exception list that outlives its last
+ * exception guards nothing, it only teaches that there is a place where the
+ * next bare `outline-none` can be written.
  */
 
-test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
+test("whoever removes the focus outline puts something in its place", async () => {
   const naked: string[] = [];
 
   for (const [area, floor] of AREAS) {
@@ -248,7 +251,7 @@ test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
         if (OUT_OF_TAB_ORDER.test(owner)) continue;
 
         naked.push(
-          `${file}:${lineAt(code, at)}  <${owner}> apaga o contorno do foco e nao repoe nenhum`,
+          `${file}:${lineAt(code, at)}  <${owner}> removes the focus outline and replaces it with nothing`,
         );
       }
     }
@@ -258,19 +261,19 @@ test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
 });
 
 /* ---------------------------------------------------------------------------
- * Guarda do `motion-reduce` derrotado pela especificidade.
+ * Guard against `motion-reduce` defeated by specificity.
  *
- * `data-[indeterminate]:animate-indeterminate` compila como
- * `.classe[data-indeterminate]` - (0,2,0). `motion-reduce:animate-none`
- * compila como `.classe` dentro de uma media query - (0,1,0), porque media
- * query nao soma especificidade. O segundo NUNCA ganha do primeiro, em nenhuma
- * ordem, e a barra indeterminada girou meses na cara de quem pediu menos
- * movimento com a classe certa escrita ali do lado.
+ * `data-[indeterminate]:animate-indeterminate` compiles as
+ * `.class[data-indeterminate]` - (0,2,0). `motion-reduce:animate-none`
+ * compiles as `.class` inside a media query - (0,1,0), because a media query
+ * adds no specificity. The second NEVER beats the first, in any order, and the
+ * indeterminate bar spun for months in the face of whoever asked for less
+ * motion, with the right class written right next to it.
  *
- * E a mesma familia do `check:groups`: o seletor existe, gera CSS, e nao casa
- * nunca. O conserto e repetir a variante de dado na regra de movimento -
- * `motion-reduce:data-[indeterminate]:animate-none` -, que iguala a
- * especificidade e vence pela ordem.
+ * It is the same family as `check:groups`: the selector exists, generates CSS,
+ * and never matches. The fix is to repeat the data variant in the motion rule
+ * - `motion-reduce:data-[indeterminate]:animate-none` -, which equalizes the
+ * specificity and wins by order.
  * ------------------------------------------------------------------------- */
 
 /** `motion-reduce:animate-none`, `motion-reduce:transition-none`. */
@@ -279,7 +282,7 @@ const CALM = /(?:^|["'\s])motion-reduce:([a-z]+)-none(?=["'\s]|$)/g;
 /** `data-[indeterminate]:animate-indeterminate`, `data-[open]:duration-500`. */
 const UNDER_DATA = /data-\[[^\]]+\]:([a-z]+)-[a-z0-9[]/g;
 
-test("nenhum motion-reduce perde a especificidade para uma variante de dado", async () => {
+test("no motion-reduce loses on specificity to a data variant", async () => {
   const defeated: string[] = [];
 
   for (const [area, floor] of AREAS) {
@@ -290,16 +293,16 @@ test("nenhum motion-reduce perde a especificidade para uma variante de dado", as
         const calm = new Set([...text.matchAll(CALM)].map((hit) => hit[1]!));
         if (calm.size === 0) continue;
 
-        // So o que esta sob variante de dado disputa: o mesmo grupo de
-        // propriedade escrito solto (`animate-spin` no Spinner) empata em
-        // especificidade e perde pela ordem, que e o certo.
+        // Only what sits under a data variant competes: the same property
+        // group written loose (`animate-spin` in Spinner) ties on specificity
+        // and loses by order, which is right.
         const guarded = new Set([...text.matchAll(UNDER_DATA)].map((hit) => hit[1]!));
 
         for (const property of calm) {
           if (guarded.has(property)) {
             defeated.push(
-              `${file}:${lineAt(code, at)}  motion-reduce:${property}-none nunca casa:` +
-                ` perde de data-[...]:${property}-* por especificidade`,
+              `${file}:${lineAt(code, at)}  motion-reduce:${property}-none never matches:` +
+                ` it loses to data-[...]:${property}-* on specificity`,
             );
           }
         }

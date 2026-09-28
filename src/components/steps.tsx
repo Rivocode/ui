@@ -16,17 +16,17 @@ export type Step = {
 
 export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
   steps: Step[];
-  /** Indice do passo atual, contando de zero. */
+  /** Index of the current step, counting from zero. */
   step: number;
   /**
-   * Recebe o indice do passo ja concluido que foi clicado. Sem ele, a regua
-   * nao e clicavel; com ele, so os passos anteriores ao atual viram botao.
+   * Receives the index of the completed step that was clicked. Without it, the ruler
+   * is not clickable; with it, only the steps before the current one become buttons.
    */
   onStepChange?: (step: number) => void;
   /**
-   * Os textos da peca, para trocar o idioma: `position` e a contagem "Passo 2
-   * de 5", que recebe o passo atual contando de 1 e o total. Passe so os que
-   * mudam.
+   * The piece's texts, to change the language: `position` is the count "Passo 2
+   * de 5", which receives the current step counting from 1 and the total. Pass only the ones that
+   * change.
    */
   labels?: Partial<StepsLabels>;
 };
@@ -157,9 +157,9 @@ export type WizardState = {
   isFirst: boolean;
   isLast: boolean;
   /**
-   * Avanca. Recebe uma checagem opcional que pode ser assincrona: devolva
-   * `false` e o passo nao anda. E por aqui que entra o `trigger` do React Hook
-   * Form, sem o assistente conhecer o React Hook Form.
+   * Advances. Receives an optional check that can be asynchronous: return
+   * `false` and the step does not move. This is where React Hook Form's `trigger`
+   * comes in, without the wizard knowing about React Hook Form.
    */
   next: (validate?: () => boolean | Promise<boolean>) => Promise<boolean>;
   back: () => void;

@@ -1,90 +1,94 @@
 ---
-category: Dados
+category: Data
 ---
 
 # Tracker
 
-A faixa de quadradinhos por período: as últimas 90 emissões, a disponibilidade
-do mês, a fila dos últimos dias.
+The strip of little squares per period: the last 90 issues, the month's uptime,
+the queue over the last few days.
 
-Ela responde uma pergunta que o número sozinho não responde ("esteve sempre
-assim, ou piorou ontem?") e por isso cabe dentro de um `Stat`, embaixo do
-valor.
+It answers a question the number alone does not ("was it always like this, or
+did it get worse yesterday?") and that is why it fits inside a `Stat`, below
+the value.
 
-Cada quadrado carrega o próprio texto. Uma faixa de cor sem texto não existe
-para quem usa leitor de tela, e "verde, verde, vermelho" também não diz nada
-para quem enxerga: o que importa é qual dia foi o vermelho.
+Each square carries its own text. A color strip without text does not exist for
+screen reader users, and "green, green, red" says nothing to sighted people
+either: what matters is which day was the red one.
 
-A dica é uma só. A faixa inteira é o alvo: o ponteiro corre por ela, uma marca
-fina acompanha o período lido e um único painel flutuante anda junto. Antes
-cada quadrado montava a própria dica, e um ano de emissões montava 365 delas
-para que no máximo uma aparecesse.
+There is a single tooltip. The whole strip is the target: the pointer runs
+along it, a thin mark follows the period being read and a single floating panel
+moves along. Before, each square mounted its own tooltip, and a year of issues
+mounted 365 of them so that at most one would appear.
 
-O teclado chega ao mesmo período. A faixa é uma parada de tabulação (uma só,
-e não uma por quadrado): ao receber foco ela abre no período mais recente, as
-setas caminham pelos períodos, `Home` e `End` vão às pontas e `Esc` fecha o
-painel sem tirar o foco dali. O período lido pelo teclado é dito também numa
-região viva, porque desenho não chega a quem ouve; o ponteiro fica calado ali,
-para não encher a fila do leitor de tela com cada quadrado varrido.
+The keyboard reaches the same period. The strip is one tab stop (just one, not
+one per square): on receiving focus it opens on the most recent period, the
+arrows walk through the periods, `Home` and `End` go to the ends and `Esc`
+closes the panel without moving focus away. The period read by the keyboard is
+also spoken in a live region, because drawing does not reach whoever is
+listening; the pointer stays quiet there, so as not to fill the screen reader's
+queue with every square swept.
 
-## O nome é dito uma vez
+## The name is said once
 
-O texto de `label` sai num `<p>` que a fatia `label` pode mostrar, e o grupo o
-toma por `aria-labelledby` em vez de repeti-lo num `aria-label`. Antes eram duas
-frases idênticas em seguida na árvore de acessibilidade: o parágrafo escondido e
-o nome do grupo, um atrás do outro. O `<p>` fica `aria-hidden`, porque quem
-carrega a frase para quem ouve é o nome do grupo; tirá-lo da leitura não tira
-nada de ninguém, e é o que faz a frase ser dita uma vez em vez de duas.
+The `label` text comes out in a `<p>` that the `label` slice can show, and the
+group takes it through `aria-labelledby` instead of repeating it in an
+`aria-label`. Before, there were two identical sentences in a row in the
+accessibility tree: the hidden paragraph and the group's name, one after the
+other. The `<p>` is `aria-hidden`, because what carries the sentence to whoever
+listens is the group's name; removing it from reading takes nothing from
+anyone, and it is what makes the sentence be said once instead of twice.
 
-Guardar o `<p>` em vez de apagá-lo é o que preserva as duas intenções: a fatia
-`label` existe para quem quer o texto na tela, e o nome do grupo continua saindo
-do mesmo lugar que essa pessoa vê.
+Keeping the `<p>` instead of deleting it is what preserves both intentions: the
+`label` slice exists for whoever wants the text on the screen, and the group's
+name still comes from the same place that person sees.
 
-Um `aria-label` escrito por quem chama vence o `label` e cai no mesmo grupo.
-Antes ele parava na `div` externa, sem papel, que o Chrome guarda como um nó
-`generic` nomeado e nenhum leitor de tela expõe.
+An `aria-label` written by the caller beats `label` and lands on the same
+group. Before, it stopped at the outer `div`, with no role, which Chrome keeps
+as a named `generic` node and no screen reader exposes.
 
-## Sentido da escrita
+## Writing direction
 
-Em `dir="rtl"` a faixa vira junto. O período mais recente passa a ser o da
-esquerda, o ponteiro lê a partir da borda onde a leitura começa e as setas
-andam para o lado que a pessoa vê: `←` avança no tempo, `→` volta. `Home` e
-`End` continuam lógicos: o primeiro e o último período, e não a esquerda e a
-direita.
+In `dir="rtl"` the strip flips along. The most recent period becomes the one on
+the left, the pointer reads from the edge where reading begins and the arrows
+move toward the side the person sees: `←` moves forward in time, `→` goes back.
+`Home` and `End` stay logical: the first and the last period, not left and
+right.
 
-A direção vem do `RivoProvider`, e não de um `dir` escrito à mão num elemento
-acima da faixa. É o mesmo `dir` que o resto do catálogo lê, e sem ele a faixa
-espelharia o desenho sem espelhar a conta: o dedo na primeira coluna leria o
-último período.
+The direction comes from `RivoProvider`, not from a `dir` written by hand on an
+element above the strip. It is the same `dir` the rest of the catalog reads,
+and without it the strip would mirror the drawing without mirroring the math:
+a finger on the first column would read the last period.
 
-## O balão anda um quadro atrás
+## The bubble moves one frame behind
 
-Enquanto o dedo varre a faixa, a marca fina troca de período no mesmo quadro do
-evento e o balão chega no quadro seguinte. A Base UI acompanha âncora que se
-move por `IntersectionObserver`, que só avisa no fim do quadro. Não há como
-fazê-lo chegar junto sem dar à dica um posicionador próprio.
+While the finger sweeps the strip, the thin mark changes period in the same
+frame as the event and the bubble arrives in the next frame. Base UI follows a
+moving anchor through `IntersectionObserver`, which only reports at the end of
+the frame. There is no way to make it arrive together without giving the
+tooltip a positioner of its own.
 
-O atraso é de exatamente um quadro, e não cresce: a distância entre a marca e o
-balão é a que o ponteiro percorre nesse quadro (a 800px/s, cerca de 13px em
-60Hz) e no quadro em que o dedo para os dois voltam a coincidir. Como a dica
-só se lê com o ponteiro parado, isto está declarado como limite e não como
-defeito a corrigir.
+The delay is exactly one frame, and it does not grow: the distance between the
+mark and the bubble is the one the pointer travels in that frame (at 800px/s,
+about 13px at 60Hz) and in the frame where the finger stops the two coincide
+again. Since the tooltip is only read with the pointer still, this is declared
+as a limit and not as a defect to fix.
 
-## Movimento
+## Motion
 
-A faixa aparece da esquerda para a direita na montagem, por recorte (`animate-reveal`, `--rc-duration-slow`): é uma linha do tempo, e se revela no sentido dela. Com "reduzir movimento", aparece inteira.
+The strip appears from left to right on mount, by clipping (`animate-reveal`, `--rc-duration-slow`): it is a timeline, and it reveals itself in its own direction. With "reduce motion", it appears whole.
 
-## Quando não usar
+## When not to use
 
-Quando a grandeza é contínua e a forma da curva importa, use `Sparkline`: o
-tracker conta ocorrências discretas, uma por período, e não desenha tendência.
+When the quantity is continuous and the shape of the curve matters, use
+`Sparkline`: the tracker counts discrete occurrences, one per period, and does
+not draw a trend.
 
-## No React Native
+## In React Native
 
-Traduz, e os dois lados chegaram ao mesmo desenho: **a faixa inteira é um alvo só**. O nativo chegou primeiro por necessidade, e o web o seguiu. Lá cada ponto montava um `Tooltip`, e tooltip é portal: 365 dias eram 365 portais montados para que no máximo um aparecesse. Aqui nem essa saída existia, porque dica se abre ao pousar o ponteiro, e trocar cada quadrado por um `Pressable` também não resolveria: 90 períodos em 358px dão 4px por quadrado, seis vezes menos que o alvo de toque mínimo.
+Translates, and both sides arrived at the same design: **the whole strip is a single target**. Native got there first out of necessity, and the web followed it. There, each point mounted a `Tooltip`, and a tooltip is a portal: 365 days were 365 portals mounted so that at most one would appear. Here not even that way out existed, because a tooltip opens on resting the pointer, and swapping each square for a `Pressable` would not solve it either: 90 periods in 358px give 4px per square, six times less than the minimum touch target.
 
-**O que não atravessa é o balão.** No web a leitura sai num `Tooltip` único que segue ponteiro e teclado; aqui ela mora numa linha fixa embaixo da faixa. O dedo pousa e arrasta, uma marca fina acompanha, e o período lido aparece nessa linha, que existe desde o primeiro quadro, mostrando o período mais recente: o espaço fica reservado, a tela não pula no primeiro toque, e o mais recente é o que a pergunta "piorou ontem?" quer ler primeiro.
+**What does not cross over is the bubble.** On the web the reading comes out in a single `Tooltip` that follows pointer and keyboard; here it lives in a fixed line below the strip. The finger rests and drags, a thin mark follows, and the period being read appears on that line, which exists from the first frame, showing the most recent period: the space stays reserved, the screen does not jump on the first tap, and the most recent is what the question "did it get worse yesterday?" wants to read first.
 
-A leitura de tela também muda de forma. A lista escondida com os 365 textos, que no web é barata, aqui seriam 365 paradas de VoiceOver dentro de um cartão; a faixa é uma parada só, do tipo ajustável (o mesmo contrato do `Slider`), e cada passo anuncia o texto de um período. Nenhum dado fica inalcançável e nenhum vira obstáculo. Por isso o `label` de cada ponto é `string`, e não `ReactNode`: ele vai inteiro para o valor acessível da faixa, e de um `ReactNode` não há como ler o texto de volta.
+Screen reading changes shape too. The hidden list with the 365 texts, which on the web is cheap, here would be 365 VoiceOver stops inside a card; the strip is a single stop, of the adjustable kind (the same contract as the `Slider`), and each step announces the text of one period. No data is unreachable and none becomes an obstacle. That is why each point's `label` is `string`, not `ReactNode`: it goes whole into the strip's accessible value, and there is no way to read the text back from a `ReactNode`.
 
-As partes vestem pelo mesmo `classNames` do web: `track`, a faixa que recebe o arrasto, e `cell`. `label` não porta como parte: no web ele é um texto escondido, e aqui o nome vai só no `accessibilityLabel` da faixa, sem nó que se vista.
+The parts are styled through the same `classNames` as the web: `track`, the strip that receives the drag, and `cell`. `label` does not port as a part: on the web it is hidden text, and here the name goes only into the strip's `accessibilityLabel`, with no node to style.

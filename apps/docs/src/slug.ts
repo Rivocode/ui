@@ -1,12 +1,12 @@
 /**
  * `ToggleGroup` -> `toggle-group`, `OTPField` -> `otp-field`.
  *
- * O endereco e o que a pessoa digita, compartilha e entrega a um agente, entao
- * ele fica em minuscula e com hifen. Sequencia de maiusculas fica inteira:
- * quebrar em cada maiuscula viraria `OTPField` em `o-t-p-field`.
+ * The address is what the person types, shares and hands to an agent, so it
+ * stays lowercase and hyphenated. A run of capitals stays whole: breaking at
+ * every capital would turn `OTPField` into `o-t-p-field`.
  *
- * Usada pelo app e pelo plugin do Vite que serve o markdown cru, para a pagina
- * e o `.md` dela nunca discordarem do endereco.
+ * Used by the app and by the Vite plugin that serves the raw markdown, so the
+ * page and its `.md` never disagree on the address.
  */
 export function slugify(name: string) {
   return name

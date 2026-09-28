@@ -64,40 +64,39 @@ function TypingIndicator({ className }: { className?: string }) {
 
 export type MessageProps = {
   /**
-   * Quem fala. Decide o alinhamento e o desenho: `user` e o balao a direita,
-   * `assistant` e o texto corrido a esquerda, `system` e a linha discreta no
-   * centro.
+   * Who is speaking. Decides alignment and look: `user` is the bubble on the
+   * right, `assistant` is running text on the left, `system` is the discreet
+   * line in the center.
    */
   role: MessageRole;
-  /** O nome de quem fala, para o leitor de tela. Sem ele: "Você", "Assistente" ou "Sistema". */
+  /** The speaker's name, for the screen reader. Without it: "Você", "Assistente" or "Sistema". */
   author?: string;
-  /** O `Avatar` ao lado da mensagem. Nao sai em `system`. */
+  /** The `Avatar` next to the message. Not shown for `system`. */
   avatar?: ReactNode;
   /**
-   * O conteudo. Texto solto vira `Text` no corpo da casa; no aceito, para quem
-   * renderiza markdown.
+   * The content. Plain text becomes `Text` in the house body style; a node is
+   * accepted, for those who render markdown.
    */
   children?: ReactNode;
-  /** O texto ainda esta chegando: anuncia `busy`, mostra o indicador e esconde as acoes. */
+  /** The text is still arriving: announces `busy`, shows the indicator and hides the actions. */
   streaming?: boolean;
   /**
-   * Liga o botao de copiar. A peca nao copia: o `expo-clipboard` mora em
-   * `@rivocode/ui-native/clipboard`, e quem copia e quem chamou.
+   * Turns on the copy button. The component does not copy: `expo-clipboard`
+   * lives in `@rivocode/ui-native/clipboard`, and the caller does the copying.
    */
   onCopy?: () => void;
-  /** Liga o botao de tentar de novo, que pede outra resposta. */
+  /** Turns on the retry button, which asks for another answer. */
   onRetry?: () => void;
-  /** Os nomes dos botoes de acao. Sem eles: "Copiar" e "Tentar de novo". */
+  /** The names of the action buttons. Without them: "Copiar" and "Tentar de novo". */
   labels?: { copy?: string; retry?: string };
-  /** Os botoes proprios, depois do copiar e do tentar de novo. */
+  /** Your own buttons, after copy and retry. */
   actions?: ReactNode;
-  /** A resposta falhou: a frase sai embaixo do conteudo, no tom de perigo. */
+  /** The answer failed: the sentence appears below the content, in the danger tone. */
   error?: string;
   className?: string;
   /**
-   * Classe por parte: `avatar`, `bubble`, `content` (o `Text` do conteudo,
-   * quando ele chega como texto), `indicator` (os tres pontos), `error` e
-   * `actions`.
+   * Class per part: `avatar`, `bubble`, `content` (the content `Text`, when it
+   * arrives as text), `indicator` (the three dots), `error` and `actions`.
    */
   classNames?: Slots<"avatar" | "bubble" | "content" | "indicator" | "error" | "actions">;
 };

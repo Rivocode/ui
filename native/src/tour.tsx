@@ -24,48 +24,51 @@ export type { TourLabels };
 
 export type TourStep = {
   /**
-   * O ref do elemento destacado. E medido por `measureInWindow` quando o
-   * passo abre; ref vazio pula o passo, com aviso em desenvolvimento.
+   * The ref of the highlighted element. It is measured by `measureInWindow`
+   * when the step opens; an empty ref skips the step, with a warning in
+   * development.
    */
   target: RefObject<View | null>;
-  /** O titulo da folha. Vira o cabecalho que o leitor de tela anuncia. */
+  /** The sheet title. It becomes the header the screen reader announces. */
   title: string;
-  /** O texto do passo. */
+  /** The step text. */
   description?: string;
-  /** Conteudo extra na folha, acima dos botoes. */
+  /** Extra content in the sheet, above the buttons. */
   action?: ReactNode;
 };
 
 export type TourProps = {
-  /** Os passos, na ordem. */
+  /** The steps, in order. */
   steps: TourStep[];
   open: boolean;
-  /** Chamado ao concluir, ao pular e no voltar do Android. */
+  /** Called on finishing, on skipping and on Android back. */
   onOpenChange: (open: boolean) => void;
-  /** O passo atual, contando de zero. Controlado, como todo o pacote. */
+  /** The current step, counting from zero. Controlled, like the whole package. */
   step: number;
   /**
-   * Chamado a cada troca: Voltar, Proximo e passo pulado por falta de alvo.
-   * E aqui que a tela rola o alvo para a vista, sem animacao, antes da medida.
+   * Called on every change: Voltar, Proximo and a step skipped for lack of a
+   * target. This is where the screen scrolls the target into view, without
+   * animation, before the measurement.
    */
   onStepChange: (step: number) => void;
-  /** Chamado no Concluir do ultimo passo. Nao e chamado ao pular. */
+  /** Called on Concluir of the last step. Not called on skip. */
   onFinish?: () => void;
-  /** Chamado no "Pular tour" e no voltar do Android, com o passo da desistencia. */
+  /** Called on "Pular tour" and on Android back, with the step where the person gave up. */
   onSkip?: (step: number) => void;
-  /** Os textos dos botoes e do contador, para trocar o idioma ou o termo. */
+  /** The texts of the buttons and the counter, to change the language or the wording. */
   labels?: Partial<TourLabels>;
   /**
-   * A altura da area segura de cima, em pontos: `useSafeAreaInsets().top`. So
-   * pesa quando o alvo esta na metade de baixo e a folha sobe para o topo. Sem
-   * ela, 24 no Android e 48 no iOS, que cobrem a barra de status e nao o entalhe.
+   * The height of the top safe area, in points: `useSafeAreaInsets().top`. It
+   * only matters when the target is in the bottom half and the sheet moves up
+   * to the top. Without it, 24 on Android and 48 on iOS, which cover the status
+   * bar but not the notch.
    */
   topInset?: number;
-  /** Veste a folha, nao a mascara. */
+  /** Styles the sheet, not the mask. */
   className?: string;
   /**
-   * Classe por parte: `mask` (as quatro faixas escuras em volta do alvo),
-   * `counter`, `title`, `description` e `footer` (a fileira dos botoes).
+   * Class per part: `mask` (the four dark strips around the target), `counter`,
+   * `title`, `description` and `footer` (the row of buttons).
    */
   classNames?: Slots<"mask" | "counter" | "title" | "description" | "footer">;
 };

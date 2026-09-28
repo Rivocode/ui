@@ -40,12 +40,12 @@ const reducedMotion = (reduce: boolean) => {
 
 const wait = (ms: number) => act(() => new Promise((resolve) => setTimeout(resolve, ms)));
 
-test("a regiao se anuncia como carrossel e leva o nome do label", () => {
+test("the region announces itself as a carousel and takes the label as its name", () => {
   carousel();
   expect(region().getAttribute("aria-roledescription")).toBe("carrossel");
 });
 
-test("cada filho vira um slide com o rotulo acentuado de posicao", () => {
+test("each child becomes a slide with the accented position label", () => {
   carousel();
   const slides = screen.getAllByRole("group");
   expect(slides).toHaveLength(5);
@@ -54,7 +54,7 @@ test("cada filho vira um slide com o rotulo acentuado de posicao", () => {
   expect(slides[1]!.textContent).toBe("Profissional");
 });
 
-test("proximo avanca um slide, e anterior nasce desabilitado no primeiro", () => {
+test("next advances one slide, and previous starts disabled on the first", () => {
   const onIndexChange = mock(() => {});
   carousel({ onIndexChange });
 
@@ -65,7 +65,7 @@ test("proximo avanca um slide, e anterior nasce desabilitado no primeiro", () =>
   expect((previous() as HTMLButtonElement).disabled).toBe(false);
 });
 
-test("no ultimo, proximo desabilita; com loop, ele volta ao primeiro", () => {
+test("on the last one, next disables; with loop, it goes back to the first", () => {
   const { unmount } = carousel({ defaultIndex: 4 });
   expect((next() as HTMLButtonElement).disabled).toBe(true);
   unmount();
@@ -77,7 +77,7 @@ test("no ultimo, proximo desabilita; com loop, ele volta ao primeiro", () => {
   expect(onIndexChange).toHaveBeenLastCalledWith(0);
 });
 
-test("setas, Home e End movem quando o foco esta no carrossel", () => {
+test("arrows, Home and End move when focus is on the carousel", () => {
   carousel();
   fireEvent.keyDown(viewport(), { key: "ArrowRight" });
   expect(region().getAttribute("data-index")).toBe("1");
@@ -89,7 +89,7 @@ test("setas, Home e End movem quando o foco esta no carrossel", () => {
   expect(region().getAttribute("data-index")).toBe("0");
 });
 
-test("a seta dentro de um campo do slide e do campo, e nao do carrossel", () => {
+test("an arrow inside a field in the slide belongs to the field, and not to the carousel", () => {
   render(
     <RivoProvider scope="local">
       <Carousel label="Planos">
@@ -102,7 +102,7 @@ test("a seta dentro de um campo do slide e do campo, e nao do carrossel", () => 
   expect(region().getAttribute("data-index")).toBe("0");
 });
 
-test("controlado, o slide so muda quando quem controla muda", () => {
+test("controlled, the slide only changes when the controller changes it", () => {
   const onIndexChange = mock(() => {});
   carousel({ index: 2, onIndexChange });
   fireEvent.click(next());
@@ -110,7 +110,7 @@ test("controlado, o slide so muda quando quem controla muda", () => {
   expect(region().getAttribute("data-index")).toBe("2");
 });
 
-test("controlado com estado, o index segue o pai", () => {
+test("controlled with state, the index follows the parent", () => {
   function Controlled() {
     const [index, setIndex] = useState(0);
     return (
@@ -129,7 +129,7 @@ test("controlado com estado, o index segue o pai", () => {
   expect(region().getAttribute("data-index")).toBe("2");
 });
 
-test("os indicadores sao opcionais, um por posicao, e marcam o atual", () => {
+test("the indicators are optional, one per position, and mark the current one", () => {
   const { unmount } = carousel();
   expect(screen.queryByRole("button", { name: /Ir para o slide/ })).toBeNull();
   unmount();
@@ -151,12 +151,12 @@ test("os indicadores sao opcionais, um por posicao, e marcam o atual", () => {
   expect(active).not.toContain("bg-border-strong");
 });
 
-test("controls={false} tira os botoes", () => {
+test("controls={false} removes the buttons", () => {
   carousel({ controls: false });
   expect(screen.queryByRole("button", { name: "Próximo slide" })).toBeNull();
 });
 
-test("um slide so, ou nenhum, nao desenha controle nenhum", () => {
+test("a single slide, or none, draws no controls", () => {
   const { unmount } = carousel({ indicators: true }, 1);
   expect(screen.queryAllByRole("button")).toHaveLength(0);
   expect(viewport()).toBeNull();
@@ -167,7 +167,7 @@ test("um slide so, ou nenhum, nao desenha controle nenhum", () => {
   expect(screen.queryAllByRole("group")).toHaveLength(0);
 });
 
-test("a regiao viva diz o slide da frente quando ele muda", () => {
+test("the live region states the front slide when it changes", () => {
   carousel();
   const live = region().querySelector("[aria-live]")!;
   expect(live.getAttribute("aria-live")).toBe("polite");
@@ -175,14 +175,14 @@ test("a regiao viva diz o slide da frente quando ele muda", () => {
   expect(live.textContent).toBe("Slide 2 de 5");
 });
 
-test("sem autoplay, nada anda sozinho e nao ha botao de pausa", async () => {
+test("without autoplay, nothing moves by itself and there is no pause button", async () => {
   carousel();
   expect(screen.queryByRole("button", { name: /rotação/ })).toBeNull();
   await wait(60);
   expect(region().getAttribute("data-index")).toBe("0");
 });
 
-test("com autoplay, anda sozinho, cala a regiao viva e mostra a pausa", async () => {
+test("with autoplay, it moves by itself, silences the live region and shows the pause", async () => {
   carousel({ autoplay: 20 });
   const live = region().querySelector("[aria-live]")!;
   expect(live.getAttribute("aria-live")).toBe("off");
@@ -197,7 +197,7 @@ test("com autoplay, anda sozinho, cala a regiao viva e mostra a pausa", async ()
   expect(live.getAttribute("aria-live")).toBe("polite");
 });
 
-test("o ponteiro em cima e o foco dentro param a rotacao", async () => {
+test("pointer hover and focus inside stop the rotation", async () => {
   carousel({ autoplay: 20 });
   fireEvent.pointerEnter(region(), { pointerType: "mouse" });
   await wait(60);
@@ -209,7 +209,7 @@ test("o ponteiro em cima e o foco dentro param a rotacao", async () => {
   expect(region().getAttribute("data-index")).toBe("0");
 });
 
-test("com reduzir movimento, a rotacao nao comeca, e a pausa oferece retomar", async () => {
+test("with reduced motion, rotation does not start, and the pause offers to resume", async () => {
   const restore = reducedMotion(true);
   try {
     carousel({ autoplay: 20 });
@@ -221,7 +221,7 @@ test("com reduzir movimento, a rotacao nao comeca, e a pausa oferece retomar", a
   }
 });
 
-test("com reduzir movimento, quem aperta retomar ve a rotacao andar, e o slide troca sem deslizar", async () => {
+test("with reduced motion, whoever presses resume sees the rotation run, and the slide swaps without sliding", async () => {
   const restore = reducedMotion(true);
   try {
     carousel({ autoplay: 20 });
@@ -278,7 +278,7 @@ function withLayout() {
   };
 }
 
-test("com defaultIndex, o carrossel ja monta no slide pedido, sem deslizar desde o primeiro", () => {
+test("with defaultIndex, the carousel mounts on the requested slide, without sliding from the first", () => {
   const layout = withLayout();
   try {
     carousel({ defaultIndex: 2 });
@@ -291,7 +291,7 @@ test("com defaultIndex, o carrossel ja monta no slide pedido, sem deslizar desde
   }
 });
 
-test("slidesPerView responsivo escreve uma variavel por ponto, herdando do menor", () => {
+test("responsive slidesPerView writes one variable per breakpoint, inheriting from the smaller", () => {
   carousel({ slidesPerView: { base: 1, md: 3 } });
   const style = region().style;
   expect(style.getPropertyValue("--carousel-per-base")).toBe("1");
@@ -300,14 +300,14 @@ test("slidesPerView responsivo escreve uma variavel por ponto, herdando do menor
   expect(style.getPropertyValue("--carousel-per-xl")).toBe("3");
 });
 
-test("slidesPerView auto deixa a largura com a classe do slide", () => {
+test("slidesPerView auto leaves the width to the slide class", () => {
   carousel({ slidesPerView: "auto", classNames: { slide: "w-64" } });
   const slide = screen.getAllByRole("group")[0]!.className.split(" ");
   expect(slide).toContain("w-64");
   expect(slide.some((token) => token.startsWith("basis-"))).toBe(false);
 });
 
-test("labels troca os textos que o leitor de tela ouve", () => {
+test("labels replaces the texts the screen reader hears", () => {
   carousel({
     labels: { next: "Next", slide: (position, total) => `${position}/${total}` },
   });

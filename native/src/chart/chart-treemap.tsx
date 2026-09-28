@@ -11,28 +11,29 @@ import { resolveFormat, type Format } from "../shared/format";
 import { ChartEmpty, type ChartEmptyContent } from "./empty";
 
 export type ChartTreemapProps<Item> = {
-  /** As categorias. Valor zero ou negativo não ganha área. */
+  /** The categories. A zero or negative value gets no area. */
   data: Item[];
-  /** De onde sai o número, que vira área. */
+  /** Where the number comes from, which becomes area. */
   valueKey: keyof Item & string;
-  /** De onde sai o nome de cada categoria. É ele que o `config` procura. */
+  /** Where each category's name comes from. It is what `config` looks up. */
   nameKey: keyof Item & string;
-  /** Nome legível e papel de cor por categoria, o mesmo formato da rosca daqui. */
+  /** Readable name and color role per category, the same shape as the donut here. */
   config?: ChartConfig;
   /**
-   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
-   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
+   * How the number is written: the name of a house formatter (`currencyShort`,
+   * `percent`, `integer`...) or your own function, the same vocabulary as the
+   * web.
    */
   format?: Format;
   className?: string;
   /**
-   * Classe por parte: `cell` (o bloco de cada categoria) e `label` (o nome e o
-   * valor escritos dentro dele).
+   * Class per part: `cell` (each category's block) and `label` (the name and
+   * value written inside it).
    */
   classNames?: Slots<"cell" | "label">;
   /**
-   * O que aparece no lugar do desenho quando a lista chega vazia ou a soma da
-   * zero. O mesmo formato do `empty` do `ChartContainer`.
+   * What appears in place of the drawing when the list arrives empty or the sum
+   * is zero. The same shape as the `ChartContainer` `empty`.
    */
   empty?: ChartEmptyContent;
 };

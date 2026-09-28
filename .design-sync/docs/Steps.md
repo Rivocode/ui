@@ -1,39 +1,39 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # Steps
 
-A regua de passos de um formulário longo. Anda junto com o `useWizard()`.
+The step ruler of a long form. It goes along with `useWizard()`.
 
-No celular vira uma linha de texto com barra de progresso: quatro bolinhas com
-rótulo em 390px viram quatro palavras cortadas, e o que importa ali e saber
-quanto falta.
+On the phone it becomes a line of text with a progress bar: four labeled dots
+at 390px become four cut-off words, and what matters there is knowing how much
+is left.
 
-As duas formas estão sempre na página, e o CSS mostra uma de cada vez. O
-`className`, o `aria-label` e os demais atributos valem para as duas, e a linha
-do celular vira `group` quando recebe nome. O `id`, o `ref` e o `data-testid`
-ficam só na lista da mesa, porque identidade não pode aparecer duas vezes na
-página; referência por
-`aria-describedby` continua lendo a lista mesmo escondida.
+Both forms are always on the page, and CSS shows one at a time. `className`,
+`aria-label` and the other attributes apply to both, and the phone line becomes
+a `group` when it gets a name. `id`, `ref` and `data-testid` stay only on the
+desktop list, because identity cannot appear twice on the page; a reference
+through `aria-describedby` still reads the list even when hidden.
 
-Só da para voltar, nunca pular para frente. Passo adiante costuma depender do
-que o anterior validou, e um clique que atravessa isso leva a pessoa a uma tela
-que ela não sabe preencher. Por isso o `onStepChange` só é chamado com um passo
-já concluído, e sem ele a régua inteira é só leitura.
+You can only go back, never skip ahead. A later step usually depends on what
+the previous one validated, and a click that crosses that takes the person to a
+screen they do not know how to fill in. That is why `onStepChange` is only
+called with an already completed step, and without it the whole ruler is
+read-only.
 
-O par é `step` e `onStepChange`, o mesmo do `Tour`: passo de uma sequência,
-contado de zero.
+The pair is `step` and `onStepChange`, the same as `Tour`: a step in a
+sequence, counted from zero.
 
-## O estado, e o rodapé
+## The state, and the footer
 
-`useWizard(steps)` conta e valida a passagem, e não desenha nada. Devolve um
-`WizardState`: o índice `step`, o `current` da lista, os avisos `isFirst` e
-`isLast`, e `next`, `back` e `goTo`.
+`useWizard(steps)` counts and validates the transition, and draws nothing. It
+returns a `WizardState`: the index `step`, the list's `current`, the flags
+`isFirst` and `isLast`, and `next`, `back` and `goTo`.
 
-O `next` aceita uma checagem que pode ser assíncrona. Devolva `false` e o passo
-não anda. É por aqui que entra o `trigger` do React Hook Form, sem o assistente
-precisar conhecer o React Hook Form:
+`next` accepts a check that can be asynchronous. Return `false` and the step
+does not move. This is where React Hook Form's `trigger` comes in, without the
+wizard needing to know React Hook Form:
 
 ```tsx
 const steps: Step[] = [
@@ -56,25 +56,25 @@ const wizard = useWizard(steps)
 </WizardFooter>
 ```
 
-`WizardFooter` põe voltar de um lado e avançar do outro, e no celular empilha na
-ordem invertida com os dois ocupando a largura toda: o botão que continua fica
-embaixo, onde o polegar está.
+`WizardFooter` puts back on one side and forward on the other, and on the phone
+stacks them in reverse order with both taking the full width: the button that
+continues sits at the bottom, where the thumb is.
 
-## Quando não usar
+## When not to use
 
-Para o que já aconteceu com alguma coisa (a trilha de uma nota, o histórico de
-uma alteração), use `Timeline`. Esta régua é de assistente: olha para a frente,
-sabe quantos passos faltam e existe para conduzir alguém até o fim de um
-formulário. A linha do tempo olha para trás, e ninguém avança nela.
+For what has already happened to something (an invoice's trail, the history of
+a change), use `Timeline`. This ruler belongs to a wizard: it looks forward,
+knows how many steps are left and exists to lead someone to the end of a form.
+The timeline looks back, and nobody moves forward on it.
 
-Dois ou três campos não pedem assistente. Quebrar em passos um formulário que
-cabe numa tela troca a rolagem por cliques, e esconde de quem preenche o
-tamanho do que ele aceitou fazer.
+Two or three fields do not call for a wizard. Breaking a form that fits on one
+screen into steps trades scrolling for clicks, and hides from whoever fills it
+in the size of what they agreed to do.
 
-## No React Native
+## In React Native
 
-Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha "Passo 2 de 4", o título do passo e a barra de progresso. A régua de bolinhas não atravessa porque ela já tinha sido medida e reprovada abaixo de 640px: cinco passos numa faixa de 390px dão 60px de rótulo por passo, e "Conferir os itens" vira "Confe…" cinco vezes seguidas. A descrição, que o modo estreito do web esconde por falta de largura, aparece: aqui o passo atual é o único na tela.
+Translates, and what ports is **the narrow mode the web already drew**: the "Passo 2 de 4" line, the step's title and the progress bar. The dot track does not cross over because it had already been measured and rejected below 640px: five steps on a 390px strip give 60px of label per step, and "Conferir os itens" becomes "Confe…" five times in a row. The description, which the web's narrow mode hides for lack of width, appears: here the current step is the only one on screen.
 
-Por isso não há `onStepChange`: ele só existia na régua larga, e sem bolinha não há o que tocar. Voltar é o botão do `WizardFooter`, e pular passo continua sendo o `goTo`.
+That is why there is no `onStepChange`: it only existed on the wide track, and without dots there is nothing to tap. Going back is the `WizardFooter` button, and skipping a step is still `goTo`.
 
-O `useWizard()` atravessa **inteiro e idêntico**: é `useState` e três contas de índice, sem DOM e sem media query. Deixar o passo para o router nativo seria trocar um estado de tela por cinco rotas, e um assistente não é navegação: os passos partilham um formulário só, o back do aparelho não pode perder o que já foi digitado, e "Conferir" não é um endereço que alguém deva abrir direto. Quem quiser uma rota por passo continua podendo, porque o `goTo` aceita o índice que o router mandar. O `WizardFooter` empilha sempre, na ordem escrita (voltar em cima, avançar embaixo, onde o polegar está), e o `w-full` de cada botão, que no web chega por seletor de filho, aqui é o `alignItems: stretch` padrão do React Native.
+`useWizard()` crosses over **whole and identical**: it is `useState` and three index calculations, with no DOM and no media query. Leaving the step to the native router would trade one screen state for five routes, and a wizard is not navigation: the steps share a single form, the device's back cannot lose what was already typed, and "Conferir" is not an address anyone should open directly. Whoever wants one route per step still can, because `goTo` accepts the index the router sends. `WizardFooter` always stacks, in written order (back on top, forward below, where the thumb is), and each button's `w-full`, which on the web arrives through a child selector, here is React Native's default `alignItems: stretch`.

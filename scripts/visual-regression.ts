@@ -1,46 +1,48 @@
 /**
- * Compara cada retrato de `demo/dist` com a assinatura comitada.
+ * Compares each portrait in `demo/dist` with the committed signature.
  *
- * O `check:scripts` guarda o incidente de ninguem RODAR esta comparacao. Este e
- * o outro, e custou meio dia de duas pessoas: rodou, e o retrato era de outro
- * build. Os retratos `datas` e `datas-celular` sairam vermelhos, e duas frentes
- * diferentes relataram como regressao de verdade do `EventCalendar`. Nao era. Os
- * PNG eram de 08:55, e o `demo/dist/demo.css` foi reconstruido as 09:12: o CSS
- * velho era o de hoje menos uma regra, `.[scrollbar-gutter:stable]`, usada num
- * unico lugar do repositorio - o container de rolagem da vista de dia. Sem a
- * calha reservada, a coluna do dia fica uns 15px mais larga e as tarjas de
- * evento vao ate a borda.
+ * `check:scripts` guards the incident of nobody RUNNING this comparison. This
+ * is the other one, and it cost half a day of two people: it ran, and the
+ * portrait was from another build. The `datas` and `datas-celular` portraits
+ * came out red, and two different work streams reported it as a real
+ * `EventCalendar` regression. It was not. The PNGs were from 08:55, and
+ * `demo/dist/demo.css` was rebuilt at 09:12: the old CSS was today's minus one
+ * rule, `.[scrollbar-gutter:stable]`, used in a single place in the repository
+ * - the scroll container of the day view. Without the reserved gutter, the day
+ * column gets about 15px wider and the event bars run to the edge.
  *
- * Provado por reconstrucao: apagando SO essa regra do CSS de hoje e
- * refotografando, o resultado bateu com o PNG velho em 0 pixels de 6.150.400, e
- * reproduziu os numeros exatos do alarme - 4 de 576 quadrados pior 7, e 6 de 576
- * pior 10.
+ * Proven by reconstruction: deleting ONLY that rule from today's CSS and
+ * reshooting, the result matched the old PNG in 0 pixels of 6,150,400, and
+ * reproduced the exact numbers of the alarm - 4 of 576 squares worst 7, and 6
+ * of 576 worst 10.
  *
- * Comparacao que pode estar medindo outro build nao pode sair verde nem
- * vermelha: as duas respostas mentem. Entao cada PNG carrega a marca do build
- * que o gerou, num pedaco `tEXt` chamado `rc-build` que o `shot.ts` costura: o
- * caminho e o resumo de conteudo de cada arquivo que o navegador carregou - HTML
- * da pagina, HTML da moldura quando ela existe, CSS compilada e pacote. Antes de
- * comparar, esta guarda refaz os resumos e RECUSA o retrato cujo build nao e
- * mais o que esta no disco, do mesmo jeito que ja recusa a secao que nao coube
- * na janela. Retrato sem marca tambem e recusado: veio de outra ferramenta, ou
- * de antes desta guarda existir, e nos dois casos ninguem sabe de onde ele veio.
+ * A comparison that may be measuring another build cannot come out green or
+ * red: both answers lie. So each PNG carries the stamp of the build that
+ * generated it, in a `tEXt` chunk called `rc-build` that `shot.ts` stitches in:
+ * the path and content digest of each file the browser loaded - the page HTML,
+ * the frame HTML when there is one, the compiled CSS and the bundle. Before
+ * comparing, this guard recomputes the digests and REFUSES the portrait whose
+ * build is no longer what is on disk, the same way it already refuses the
+ * section that did not fit in the window. A portrait without a stamp is also
+ * refused: it came from another tool, or from before this guard existed, and in
+ * both cases nobody knows where it came from.
  *
- * A marca cita so o que aquela rota carrega, e nao o build inteiro. Medido com
- * um byte a mais no `demo/dist/datas.js`: recusou `datas` e `datas-celular`, os
- * dois exatos do incidente, e comparou os outros 42 normalmente. CSS trocada
- * recusa os 44, porque a CSS e de todos.
+ * The stamp cites only what that route loads, and not the whole build.
+ * Measured with one extra byte in `demo/dist/datas.js`: it refused `datas` and
+ * `datas-celular`, exactly the two from the incident, and compared the other 42
+ * normally. Swapped CSS refuses all 44, because the CSS belongs to all of them.
  *
- * A primeira ideia foi comparar `mtime`, e ela perde nos dois lados. Acusa o que
- * nao mudou: o `bun build` reescreve os 17 pacotes a cada `bun run demo` com
- * bytes identicos - medido, as datas foram de 11:00:53 para 11:06:03 e nenhum
- * resumo mudou. Como o `bun run portrait` reconstroi a vitrine inteira e
- * refotografa UMA secao, os outros 43 retratos ficariam mais velhos que todo
- * pacote, e a guarda recusaria 43 sem nada ter mudado. E deixa passar o que
- * mudou de verdade: `touch`, copia de pasta e restauracao de backup trocam a
- * data sem trocar o conteudo. Resumo de conteudo erra para o lado certo nos dois
- * casos, e custa de 122 a 166 bytes por PNG e menos de um segundo de leitura,
- * contra os 77s de Chrome que cada `bun run shot` gasta.
+ * The first idea was to compare `mtime`, and it loses on both sides. It flags
+ * what did not change: `bun build` rewrites the 17 bundles on every
+ * `bun run demo` with identical bytes - measured, the dates went from 11:00:53
+ * to 11:06:03 and no digest changed. Since `bun run portrait` rebuilds the
+ * whole showcase and reshoots ONE section, the other 43 portraits would be
+ * older than every bundle, and the guard would refuse 43 without anything
+ * having changed. And it lets through what really changed: `touch`, folder
+ * copy and backup restore change the date without changing the content. A
+ * content digest errs on the right side in both cases, and costs 122 to 166
+ * bytes per PNG and under a second of reading, against the 77s of Chrome each
+ * `bun run shot` spends.
  */
 
 import {
@@ -159,16 +161,16 @@ function sectionSignature(image: PngImage) {
   return { columns, rows, cells };
 }
 
-const accept = process.argv.includes("--aceitar");
+const accept = process.argv.includes("--accept");
 
-// A bancada da CI fotografa duas arvores na MESMA maquina e compara uma com a
-// outra, e nao com o comitado - que nasceu no macOS e nunca bate no linux. Com
-// `--gravar-em`, esta guarda so escreve o que mediu e quem ela recusou, e quem
-// julga e o `scripts/bench-comparison.ts`.
-const recordAt = process.argv.indexOf("--gravar-em");
+// The CI bench shoots two trees on the SAME machine and compares one with the
+// other, and not with the committed one - which was born on macOS and never
+// matches on linux. With `--record-to`, this guard only writes what it measured
+// and what it refused, and the judge is `scripts/bench-comparison.ts`.
+const recordAt = process.argv.indexOf("--record-to");
 const recordTo = recordAt === -1 ? "" : (process.argv[recordAt + 1] ?? "");
 if (recordAt !== -1 && !recordTo) {
-  console.error("--gravar-em pede o caminho do arquivo.");
+  console.error("--record-to needs the file path.");
   process.exit(1);
 }
 const stored: Record<string, number[]> = await Bun.file(SIGNATURES)
@@ -187,7 +189,7 @@ for (const file of await scanAtLeast("*.png", 30, { cwd: SHOTS })) {
   const image = decodePng(new Uint8Array(await Bun.file(`${SHOTS}/${file}`).arrayBuffer()));
 
   if (!image.build) {
-    outdated.push(`${name} - sem marca de build`);
+    outdated.push(`${name} - no build stamp`);
     refused.add(name);
     continue;
   }
@@ -206,17 +208,17 @@ for (const file of await scanAtLeast("*.png", 30, { cwd: SHOTS })) {
 
     if (!section) {
       broken.push(
-        `${name} - a secao nao coube na janela, ou o marcador \`data-rc-shot\`` +
-          " nao foi achado na pagina.",
+        `${name} - the section did not fit in the window, or the \`data-rc-shot\`` +
+          " marker was not found on the page.",
       );
       refused.add(name);
       continue;
     }
     if (!section.cells) {
       broken.push(
-        `${name} - a moldura tem ${section.columns}x${section.rows} celulas, acima do teto de` +
-          ` ${CELL_CEILING}. Isso e uma pagina com nome de secao: aperte o` +
-          " `data-rc-shot` ate a peca, ou fotografe a pagina inteira.",
+        `${name} - the frame has ${section.columns}x${section.rows} cells, above the ceiling of` +
+          ` ${CELL_CEILING}. That is a page with a section name: tighten the` +
+          " `data-rc-shot` down to the piece, or shoot the whole page.",
       );
       refused.add(name);
       continue;
@@ -248,7 +250,7 @@ if (recordTo) {
     `${JSON.stringify({ signatures: current, refused: [...outdated, ...broken] }, null, 0)}\n`,
   );
   console.log(
-    `${Object.keys(current).length} assinatura(s) medida(s) e ${refused.size} recusada(s), gravadas em ${recordTo}.`,
+    `${Object.keys(current).length} signature(s) measured and ${refused.size} refused, written to ${recordTo}.`,
   );
   process.exit(0);
 }
@@ -257,21 +259,21 @@ const gone = Object.keys(stored).filter((name) => !(name in current) && !refused
 
 if (accept && broken.length === 0 && outdated.length === 0) {
   await Bun.write(SIGNATURES, `${JSON.stringify(current, null, 0)}\n`);
-  console.log(`${Object.keys(current).length} assinatura(s) guardada(s) em ${SIGNATURES}.`);
+  console.log(`${Object.keys(current).length} signature(s) stored in ${SIGNATURES}.`);
   process.exit(0);
 }
 
-for (const problem of outdated) console.log(`  recusou ${problem}`);
-for (const problem of broken) console.log(`  quebrou ${problem}`);
-for (const name of fresh) console.log(`  novo    ${name}`);
-for (const name of gone) console.log(`  sumiu   ${name}`);
+for (const problem of outdated) console.log(`  refused ${problem}`);
+for (const problem of broken) console.log(`  broken  ${problem}`);
+for (const name of fresh) console.log(`  new     ${name}`);
+for (const name of gone) console.log(`  gone    ${name}`);
 for (const { name, cells, total, worst } of changed.sort((a, b) => b.cells - a.cells)) {
   if (total === 0) {
-    console.log(`  mudou   ${name}`);
+    console.log(`  changed ${name}`);
     continue;
   }
   const share = ((cells / total) * 100).toFixed(1);
-  console.log(`  mudou   ${name}  ${cells} de ${total} quadrados (${share}%), pior ${worst}`);
+  console.log(`  changed ${name}  ${cells} of ${total} squares (${share}%), worst ${worst}`);
 }
 
 if (
@@ -281,27 +283,27 @@ if (
   broken.length === 0 &&
   outdated.length === 0
 ) {
-  console.log(`${Object.keys(current).length} retratos, nenhum mudou.`);
+  console.log(`${Object.keys(current).length} portraits, none changed.`);
   process.exit(0);
 }
 
 if (outdated.length > 0) {
   console.log(
-    `\n${outdated.length} retrato(s) recusado(s): nao da para afirmar que o build que` +
-      "\nos gerou e o que esta em demo/dist agora. Sem marca, o retrato veio de" +
-      "\noutra ferramenta ou de antes desta guarda; com marca que nao fecha, algo" +
-      "\nfoi reconstruido depois da foto." +
-      "\n\nComparar assim responderia sobre outro build, e nem verde nem vermelho" +
-      "\nseria verdade - por isso a recusa vem antes da comparacao, e --aceitar" +
-      "\nnao grava enquanto ela existe." +
-      "\n\nRefotografe: bun run shot. Uma secao sozinha: bun run portrait --secao <parte>.",
+    `\n${outdated.length} portrait(s) refused: there is no way to claim the build that` +
+      "\ngenerated them is the one in demo/dist now. Without a stamp, the portrait came" +
+      "\nfrom another tool or from before this guard; with a stamp that does not match," +
+      "\nsomething was rebuilt after the shot." +
+      "\n\nComparing like that would answer about another build, and neither green nor red" +
+      "\nwould be true - that is why the refusal comes before the comparison, and --accept" +
+      "\ndoes not write while it stands." +
+      "\n\nReshoot: bun run shot. A single section: bun run portrait <part>.",
   );
 }
 
 if (changed.length > 0 || fresh.length > 0 || gone.length > 0) {
   console.log(
-    "\nOlhe o que mudou antes de aceitar: esta guarda diz onde mudou, e nao se a" +
-      "\nmudanca esta certa. Depois de olhar: bun run visual --aceitar",
+    "\nLook at what changed before accepting: this guard says where it changed, and not" +
+      "\nwhether the change is right. After looking: bun run visual --accept",
   );
 }
 

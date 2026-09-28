@@ -16,7 +16,7 @@ const hostParent = (node: { parent: unknown }) => {
 };
 
 describe("Button", () => {
-  test("é um botão para o leitor de tela e dispara o onPress", () => {
+  test("is a button for the screen reader and fires onPress", () => {
     const onPress = mock(() => {});
     const screen = render(<Button onPress={onPress}>Emitir nota</Button>);
 
@@ -27,16 +27,16 @@ describe("Button", () => {
     expect(textOf(screen)).toContain("Emitir nota");
   });
 
-  test("desabilitado repassa o disabled ao Pressable E anuncia o estado", () => {
+  test("disabled passes disabled to the Pressable AND announces the state", () => {
     const screen = render(<Button disabled>Emitir</Button>);
     const [button] = byRole(screen, "button");
     expect(button.props.disabled).toBe(true);
-    // Escurecer com opacity-50 nao chega ao leitor de tela: sem isto ele
-    // anuncia um botao ativo que nao responde ao toque.
+    // Dimming with opacity-50 does not reach the screen reader: without this it
+    // announces an active button that does not respond to touch.
     expect(button.props.accessibilityState).toEqual({ disabled: true, busy: false });
   });
 
-  test("carregando trava o toque, anuncia busy e poe a espera antes do rotulo", () => {
+  test("loading locks the touch, announces busy and puts the wait before the label", () => {
     const onPress = mock(() => {});
     const screen = render(
       <Button loading onPress={onPress}>
@@ -50,14 +50,14 @@ describe("Button", () => {
 
     const [indicator] = screen.root.findAllByType("ActivityIndicator" as never);
     expect(indicator).toBeDefined();
-    // O rodinha e enfeite: quem conta que esta ocupado e o accessibilityState,
-    // como no web, onde ele sai com aria-hidden.
+    // The spinner is decoration: what tells it is busy is accessibilityState,
+    // as on the web, where it comes out with aria-hidden.
     expect(indicator.props.accessibilityElementsHidden).toBe(true);
   });
 
-  test("o alvo de toque respeita o minimo das duas plataformas", () => {
-    // 44pt e o minimo da Apple, 48dp o do Android: md e lg tem que passar nos
-    // dois, senao a decisao de nao encolher alvo de toque nao vale nada.
+  test("the touch target respects both platforms' minimum", () => {
+    // 44pt is Apple's minimum, 48dp Android's: md and lg have to pass both, or
+    // the decision not to shrink touch targets is worth nothing.
     expect(byRole(render(<Button size="md">x</Button>), "button")[0].props.className).toContain(
       "h-11",
     );
@@ -66,24 +66,24 @@ describe("Button", () => {
     );
   });
 
-  test("o botao pequeno cresce o alvo sem crescer o desenho", () => {
-    // Subir o sm para 44 o tornaria identico ao md, e a variante existe para a
-    // linha densa - tabela, cartao, barra de acao. O que cresce e a area de
-    // toque, com hitSlop: 32 + 6 de cada lado da os 44 da Apple.
+  test("the small button grows the target without growing the drawing", () => {
+    // Raising sm to 44 would make it identical to md, and the variant exists
+    // for the dense row - table, card, action bar. What grows is the touch
+    // area, with hitSlop: 32 + 6 on each side gives Apple's 44.
     const button = byRole(render(<Button size="sm">x</Button>), "button")[0];
 
     expect(button.props.className).toContain("h-8");
     expect(button.props.hitSlop).toEqual({ top: 6, bottom: 6, left: 0, right: 0 });
   });
 
-  test("o botao que ja passa do minimo nao ganha area extra", () => {
-    // hitSlop em botao grande rouba o toque do vizinho sem nada em troca.
+  test("a button already past the minimum gets no extra area", () => {
+    // hitSlop on a large button steals the neighbor's touch for nothing in return.
     const button = byRole(render(<Button size="md">x</Button>), "button")[0];
 
     expect(button.props.hitSlop).toBeUndefined();
   });
 
-  test("a classe de quem usa vence a da peca, para o wrapper de cliente", () => {
+  test("the consumer's class wins over the piece's, for the client wrapper", () => {
     const screen = render(<Button className="h-14 rounded-pill">x</Button>);
     const root = byRole(screen, "button")[0].props.className as string;
     expect(root).toContain("h-14");
@@ -92,7 +92,7 @@ describe("Button", () => {
     expect(root).not.toContain("rounded-md");
   });
 
-  test("cada variante veste o papel certo, nunca cor literal", () => {
+  test("each variant wears the right role, never a literal color", () => {
     for (const [variant, expected] of [
       ["primary", "bg-accent"],
       ["danger", "bg-danger"],
@@ -104,7 +104,7 @@ describe("Button", () => {
 });
 
 describe("Checkbox", () => {
-  test("papel, estado e alternância no toque", () => {
+  test("role, state and toggling on tap", () => {
     const onCheckedChange = mock(() => {});
     const screen = render(
       <Checkbox checked={false} onCheckedChange={onCheckedChange}>
@@ -118,23 +118,23 @@ describe("Checkbox", () => {
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
 
-  test("marcado anuncia checked e desenha o visto", () => {
+  test("checked announces checked and draws the checkmark", () => {
     const screen = render(<Checkbox label="Aceito" checked onCheckedChange={() => {}} />);
     const [box] = byRole(screen, "checkbox");
     expect(box.props.accessibilityState.checked).toBe(true);
-    // O visto é borda rotacionada, nunca glyph de fonte.
+    // The checkmark is a rotated border, never a font glyph.
     const marks = byClass(screen, /-rotate-45/);
     expect(marks.length).toBe(1);
 
-    // O mesmo acento do trilho do Switch: com a lima cheia, a caixa marcada
-    // media 1,21:1 sobre a página no tema claro e perdia a fronteira.
+    // The same accent as the Switch track: with the full lime, the checked box
+    // measured 1.21:1 over the page in the light theme and lost its boundary.
     expect(byClass(screen, /border-accent-text bg-accent-text/).length).toBe(1);
     expect(byClass(screen, /bg-accent(?![\w-])/).length).toBe(0);
     expect(marks[0].props.className).toContain("border-surface-raised");
     expect(marks[0].props.className).not.toContain("border-accent-fg");
   });
 
-  test("indeterminate anuncia mixed e desenha o traco cheio, sem o visto", () => {
+  test("indeterminate announces mixed and draws the full dash, without the checkmark", () => {
     const screen = render(
       <Checkbox label="Todas" checked={false} indeterminate onCheckedChange={() => {}} />,
     );
@@ -150,7 +150,7 @@ describe("Checkbox", () => {
     expect(dash[0]!.props.className.split(" ")).toContain("bg-surface-raised");
   });
 
-  test("indeterminate vence o checked, e o toque marca tudo", () => {
+  test("indeterminate wins over checked, and the tap checks everything", () => {
     const onCheckedChange = mock(() => {});
     const screen = render(
       <Checkbox label="Todas" checked indeterminate onCheckedChange={onCheckedChange} />,
@@ -164,7 +164,7 @@ describe("Checkbox", () => {
 });
 
 describe("Switch", () => {
-  test("com rótulo, a linha inteira é o interruptor", () => {
+  test("with a label, the whole row is the switch", () => {
     const onCheckedChange = mock(() => {});
     const screen = render(
       <Switch checked={false} onCheckedChange={onCheckedChange}>
@@ -176,7 +176,7 @@ describe("Switch", () => {
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
 
-  test("o trilho ligado veste o acento que se lê sobre o fundo", () => {
+  test("the on track wears the accent that reads over the background", () => {
     const dark = render(<Switch label="Modo escuro" checked onCheckedChange={() => {}} />);
     const track = dark.root.findByType("Switch" as never);
     expect(track.props.trackColor.true).toBe(tokens.themes["rivocode-dark"]["accent-text"]);
@@ -210,7 +210,7 @@ describe("Tabs", () => {
     { label: "Ano", value: "ano" },
   ];
 
-  test("cada aba alcanca os 44pt de toque com a folga que cabe dentro da fileira", () => {
+  test("each tab reaches the 44pt touch target with the slack that fits inside the row", () => {
     const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);
     const tabs = byRole(screen, "tab");
     expect(tabs.length).toBe(2);
@@ -219,7 +219,7 @@ describe("Tabs", () => {
     for (const tab of tabs) expect(touchHeight(tab, room)).toBeGreaterThanOrEqual(44);
   });
 
-  test("cada aba tem papel de tab e a ativa anuncia selected", () => {
+  test("each tab has the tab role and the active one announces selected", () => {
     const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);
     const tabs = byRole(screen, "tab");
     expect(tabs.length).toBe(2);
@@ -227,7 +227,7 @@ describe("Tabs", () => {
     expect(tabs[1].props.accessibilityState.selected).toBe(false);
   });
 
-  test("tocar em outra aba entrega o valor dela", () => {
+  test("tapping another tab delivers its value", () => {
     const onValueChange = mock(() => {});
     const screen = render(<Tabs items={items} value="mes" onValueChange={onValueChange} />);
     act(() => byRole(screen, "tab")[1].props.onPress());
@@ -247,7 +247,7 @@ describe("Select", () => {
     { label: "Frete", value: "frete" },
   ];
 
-  test("multiple: escolher NÃO fecha a folha, para dar tempo de escolher mais", () => {
+  test("multiple: choosing does NOT close the sheet, to leave time to choose more", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Select
@@ -268,7 +268,7 @@ describe("Select", () => {
     expect(textOf(screen)).toContain("Frete");
   });
 
-  test("multiple: tocar de novo desmarca, e só aquele valor sai", () => {
+  test("multiple: tapping again unchecks, and only that value goes out", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Select
@@ -288,7 +288,7 @@ describe("Select", () => {
     expect(onValueChange).toHaveBeenCalledWith(["frete"]);
   });
 
-  test("multiple: o item marcado é caixa de marcar, e não botão com estado mudo", () => {
+  test("multiple: the checked item is a checkbox, not a button with a silent state", () => {
     const screen = render(
       <Select
         label="Categorias"
@@ -299,12 +299,12 @@ describe("Select", () => {
       />,
     );
     act(() => byLabel(screen, "Categorias")[0].props.onPress());
-    // Papel de checkbox: tocar alterna e a folha fica: é o que o leitor de tela
-    // precisa ouvir, e "botão selecionado" o TalkBack não anuncia direito.
+    // Checkbox role: tapping toggles and the sheet stays: it is what the screen
+    // reader needs to hear, and TalkBack does not announce "selected button" properly.
     expect(byRole(screen, "checkbox").length).toBe(3);
   });
 
-  test("multiple: o gatilho diz quantos, na tela e para o leitor de tela", () => {
+  test("multiple: the trigger says how many, on screen and to the screen reader", () => {
     const none = render(
       <Select
         label="Categorias"
@@ -326,7 +326,7 @@ describe("Select", () => {
         onValueChange={() => {}}
       />,
     );
-    // Com uma só, o nome dela diz mais que a contagem.
+    // With only one, its name says more than the count.
     expect(textOf(one)).toContain("Frete");
 
     const three = render(
@@ -342,7 +342,7 @@ describe("Select", () => {
     expect(byLabel(three, "Categorias")[0].props.accessibilityValue.text).toBe("3 selecionados");
   });
 
-  test("multiple: a folha oferece um jeito explícito de terminar", () => {
+  test("multiple: the sheet offers an explicit way to finish", () => {
     const screen = render(
       <Select
         label="Categorias"
@@ -353,8 +353,8 @@ describe("Select", () => {
       />,
     );
     act(() => byLabel(screen, "Categorias")[0].props.onPress());
-    // Pelo texto que ele mostra: o nome falado do Pressable vem do Text de
-    // dentro, e um accessibilityLabel repetindo isso seria adorno.
+    // By the text it shows: the Pressable's spoken name comes from the inner
+    // Text, and an accessibilityLabel repeating it would be decoration.
     const textIn = (node: ReactTestInstance) =>
       node
         .findAllByType("Text" as never)
@@ -366,7 +366,7 @@ describe("Select", () => {
     expect(textOf(screen)).not.toContain("Frete");
   });
 
-  test("fechado mostra o placeholder e anuncia o valor", () => {
+  test("closed, it shows the placeholder and announces the value", () => {
     const screen = render(
       <Select
         label="Período"
@@ -377,11 +377,11 @@ describe("Select", () => {
       />,
     );
     expect(textOf(screen)).toContain("Selecione o período");
-    // A folha começa fechada: nenhuma opção montada.
+    // The sheet starts closed: no option mounted.
     expect(textOf(screen)).not.toContain("Este ano");
   });
 
-  test("abre a folha no toque e escolher fecha e entrega o valor", () => {
+  test("opens the sheet on tap, and choosing closes it and delivers the value", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Select label="Período" items={items} value="30" onValueChange={onValueChange} />,
@@ -397,14 +397,14 @@ describe("Select", () => {
     expect(option).toBeDefined();
     act(() => option!.props.onPress());
     expect(onValueChange).toHaveBeenCalledWith("ano");
-    // Escolheu, fechou: as opções somem; o gatilho segue mostrando o valor.
+    // Chose, closed: the options disappear; the trigger keeps showing the value.
     expect(textOf(screen)).not.toContain("Este ano");
     expect(textOf(screen)).toContain("Últimos 30 dias");
   });
 });
 
 describe("Badge", () => {
-  test("cada tom veste fundo sutil e texto que lê", () => {
+  test("each tone wears a subtle background and readable text", () => {
     const screen = render(<Badge tone="danger">Vencida</Badge>);
     expect(textOf(screen)).toContain("Vencida");
     expect(byClass(screen, /bg-danger-subtle/).length).toBe(1);

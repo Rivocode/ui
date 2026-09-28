@@ -1,122 +1,131 @@
 /**
- * Guarda de classe morta: nome que parece utilitario, nao gera regra nenhuma,
- * e nao arranca erro de ninguem.
+ * Dead class guard: a name that looks like a utility, generates no rule at
+ * all, and draws an error from nobody.
  *
- * O caso medido: `native/src/slider.tsx` pintava o polegar com
- * `shadow-1`, uma classe que o CSS nativo nunca emitiu - `grep -c shadow
- * native/theme.css` dava zero. No web ela existe, alguem a copiou por
- * analogia, e o polegar do `Slider` nativo passou a vida inteira sem sombra.
- * Nada acusou: o `tsc` passa, o `oxlint` passa, o `bun test` passa, o pacote
- * publica, e o defeito so aparece na tela de quem instalou.
+ * The measured case: `native/src/slider.tsx` painted the thumb with
+ * `shadow-1`, a class the native CSS never emitted - `grep -c shadow
+ * native/theme.css` gave zero. On the web it exists, someone copied it by
+ * analogy, and the thumb of the native `Slider` spent its whole life without a
+ * shadow. Nothing flagged it: `tsc` passes, `oxlint` passes, `bun test`
+ * passes, the package publishes, and the defect only shows up on the screen of
+ * whoever installed it.
  *
- * E o pior tipo de defeito desta casa, porque a classe some SEM ESTILO E SEM
- * ERRO. O `check:groups` diz no cabecalho dele que "a varredura de classe orfa
- * nao pega isso"; esta e a varredura de classe orfa, e as duas guardas medem
- * coisas diferentes: la o seletor existe e nunca casa, aqui a regra nunca
- * chega a nascer.
+ * It is the worst kind of defect in this house, because the class vanishes
+ * WITHOUT STYLE AND WITHOUT ERROR. `check:groups` says in its header that "the
+ * orphan class scan does not catch it"; this is the orphan class scan, and the
+ * two guards measure different things: there the selector exists and never
+ * matches, here the rule never gets born.
  *
- * ## Como saber se a classe gera regra
+ * ## How to know whether the class generates a rule
  *
- * Pelo compilador, e nao por lista de nome conhecido. O
- * `__unstable__loadDesignSystem` do Tailwind monta o mesmo sistema de design
- * que o build monta, a partir do MESMO CSS de entrada, e o `candidatesToCss`
- * devolve `null` para o candidato que ele nao sabe compilar. Entao `shadow-1`
- * volta nulo no nativo e volta regra no web, que e exatamente a diferenca que
- * ninguem viu. Variante, valor arbitrario e modificador de opacidade passam
- * pelo mesmo caminho do build, sem regra paralela para envelhecer aqui.
+ * By the compiler, and not by a list of known names. Tailwind's
+ * `__unstable__loadDesignSystem` builds the same design system the build
+ * builds, from the SAME entry CSS, and `candidatesToCss` returns `null` for a
+ * candidate it does not know how to compile. So `shadow-1` comes back null on
+ * native and comes back a rule on the web, which is exactly the difference
+ * nobody saw. Variants, arbitrary values and opacity modifiers go through the
+ * same path as the build, with no parallel rule to grow stale here.
  *
- * ## Como saber se a string e uma lista de classe
+ * ## How to know whether the string is a class list
  *
- * Este e o lado dificil, e a primeira tentativa foi medida antes de virar
- * guarda: aceitar toda string cospe 145 avisos no nativo e 217 no web -
- * `--color-accent`, `aaaa-mm-dd`, nome de pacote, chave de objeto. Ruido nessa
- * escala e guarda que ninguem le.
+ * This is the hard side, and the first attempt was measured before it became
+ * a guard: accepting every string spits 145 warnings on native and 217 on the
+ * web - `--color-accent`, `aaaa-mm-dd`, package names, object keys. Noise on
+ * that scale is a guard nobody reads.
  *
- * O corte que chegou a sinal limpo tem duas portas, e a string entra por uma
- * ou por outra:
+ * The cut that reached a clean signal has two doors, and a string comes in
+ * through one or the other:
  *
- *  1. **posicao.** Literal preso a `className=` ou `class=` e lista de classe
- *     por construcao, mesmo que nenhum token dele compile - e o unico jeito de
- *     pegar `className="shadow-1"` sozinho numa peca.
- *  2. **companhia.** Em qualquer outro lugar - argumento de `cn(...)`, mapa de
- *     variante, ternario -, a string vale como lista de classe quando ao menos
- *     UM token dela compila. Token que nao compila ao lado de token que
- *     compila e o defeito; token solto sem companhia nenhuma e prosa.
+ *  1. **position.** A literal attached to `className=` or `class=` is a class
+ *     list by construction, even if none of its tokens compiles - it is the
+ *     only way to catch a lone `className="shadow-1"` in a piece.
+ *  2. **company.** Anywhere else - an argument of `cn(...)`, a variant map, a
+ *     ternary -, the string counts as a class list when at least ONE of its
+ *     tokens compiles. A token that does not compile next to a token that
+ *     does is the defect; a loose token with no company at all is prose.
  *
- * Com as duas portas: 145 avisos viram 1 no nativo, e o 1 era real.
+ * With both doors: 145 warnings become 1 on native, and the 1 was real.
  *
- * ## Escopo: os dois pacotes
+ * The company door refuses a string with an English closed-class word in it
+ * (`PROSE`): that is a sentence, and a sentence in English easily carries a
+ * word that is also a utility.
  *
- * `src/**` tambem, e nao so `native/src/**`. Foi medido nos dois, com o CSS de
- * cada um: o web sai limpo hoje, mas o mecanismo do defeito e identico la - o
- * Tailwind ignora candidato que nao entende, com outra configuracao e outro
- * conjunto de tokens. Guarda que cobrisse meia casa deixaria o mesmo erro
- * entrar pelo lado que hoje esta limpo, e a peca web e a que mais muda.
+ * ## Scope: both packages
  *
- * Fora ficam `demo/`, `.design-sync/previews/` e `apps/docs/`: nenhum e
- * publicado como pacote, e cada um compila com a propria entrada de CSS, com
- * `@source` e tokens que nao sao os da biblioteca. Medir com o CSS errado
- * inventa acusacao.
+ * `src/**` too, and not only `native/src/**`. It was measured on both, with
+ * each one's CSS: the web comes out clean today, but the mechanism of the
+ * defect is identical there - Tailwind ignores a candidate it does not
+ * understand, with another configuration and another set of tokens. A guard
+ * covering half the house would let the same error in through the side that is
+ * clean today, and the web piece is the one that changes the most.
  *
- * ## Sem lista de excecao, e de proposito
+ * Left out are `demo/`, `.design-sync/previews/` and `apps/docs/`: none is
+ * published as a package, and each compiles with its own CSS entry, with
+ * `@source` and tokens that are not the library's. Measuring with the wrong
+ * CSS invents accusations.
  *
- * As duas arvores saem limpas com as regras acima, entao nao ha `DEBT` aqui, e
- * nao deve nascer um. Duas classes de token saem por REGRA, e nao por nome:
+ * ## No exception list, on purpose
  *
- *  - `group`, `peer`, `group/x`, `peer/x` - marcador, e nao utilitario. Nao
- *    geram regra em versao nenhuma do Tailwind, e quem confere se o marcador
- *    tem consumidor e o `check:groups`.
- *  - token sem uma letra sequer (`0`, `1px`, `1.5`) - nunca foi classe, e
- *    aparece quando uma string de valor abreviado cai pela porta da companhia.
+ * Both trees come out clean with the rules above, so there is no `DEBT` here,
+ * and one should not be born. Two token classes are left out by RULE, and not
+ * by name:
  *
- * ## A sombra que fez a guarda nascer
+ *  - `group`, `peer`, `group/x`, `peer/x` - markers, not utilities. They
+ *    generate no rule in any version of Tailwind, and whoever checks that a
+ *    marker has a consumer is `check:groups`.
+ *  - a token without a single letter (`0`, `1px`, `1.5`) - it was never a
+ *    class, and it shows up when a string of abbreviated values falls through
+ *    the company door.
  *
- * A classe saiu do `Slider` em vez de a escala ser gerada, e as tres medidas
- * que decidiram isso:
+ * ## The shadow that made the guard be born
  *
- *  1. o `react-native-css@3.0.7` TRADUZ `box-shadow` para o `boxShadow` do
- *     React Native - com `light-dark()` virando regra de
- *     `prefers-color-scheme`, e cada camada em `offsetX`, `offsetY`,
- *     `blurRadius`, `spreadDistance` e `color`. Sombra no toque nao e um
- *     idioma perdido;
- *  2. mas o utilitario `shadow-*` do Tailwind nao chega la. Ele passa pela
- *     cadeia de `--tw-shadow`, e a segunda declaracao dessa variavel - a
- *     regra, sobre o `:root` que o `native/scripts/build-css.mjs` sintetiza a
- *     partir do `@property` - derruba o compilador nativo com "failed to
- *     deserialize; expected an object-like struct named Specifier". Gerar a
- *     escala no `@theme` nao daria sombra: daria um app que nao compila CSS,
- *     que e o mesmo estrago que o `@source not inline("shadow")` do
- *     `examples/native/global.css` ja evita;
- *  3. e o polegar nao precisa dela. O `Slider` do web nao tem sombra no
- *     polegar nenhuma - `size-4 rounded-pill border border-accent bg-surface`
- *     -, entao a classe nunca foi paridade, e sim invencao. Medido com
- *     `src/lib/contrast.ts`, o polegar `bg-fg` sobre o trilho `bg-skeleton`
- *     da de 12,97:1 a 15,23:1 nos dois temas e sobre os dois fundos, contra
- *     um minimo de 3:1 da 1.4.11.
+ * The class left the `Slider` instead of the scale being generated, and the
+ * three measurements that decided it:
+ *
+ *  1. `react-native-css@3.0.7` TRANSLATES `box-shadow` into React Native's
+ *     `boxShadow` - with `light-dark()` turning into a
+ *     `prefers-color-scheme` rule, and each layer into `offsetX`, `offsetY`,
+ *     `blurRadius`, `spreadDistance` and `color`. Shadow on touch is not a
+ *     lost idiom;
+ *  2. but Tailwind's `shadow-*` utility does not get there. It goes through
+ *     the `--tw-shadow` chain, and the second declaration of that variable -
+ *     the rule, on top of the `:root` that `native/scripts/build-css.mjs`
+ *     synthesizes from the `@property` - brings the native compiler down with
+ *     "failed to deserialize; expected an object-like struct named
+ *     Specifier". Generating the scale in `@theme` would not give a shadow: it
+ *     would give an app that does not compile CSS, which is the same damage the
+ *     `@source not inline("shadow")` of `examples/native/global.css` already
+ *     avoids;
+ *  3. and the thumb does not need it. The web `Slider` has no shadow on the
+ *     thumb at all - `size-4 rounded-pill border border-accent bg-surface`
+ *     -, so the class was never parity, but invention. Measured with
+ *     `src/lib/contrast.ts`, the `bg-fg` thumb over the `bg-skeleton` track
+ *     gives 12.97:1 to 15.23:1 in both themes and over both backgrounds,
+ *     against a minimum of 3:1 from 1.4.11.
  */
 import { scanAtLeast } from "./scan";
 import { __unstable__loadDesignSystem } from "tailwindcss";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 
-/** Toda string do codigo: aspas duplas, simples e crase. */
+/** Every string in the code: double quotes, single quotes and backticks. */
 const LITERAL =
   /"([^"\\\n]*(?:\\.[^"\\\n]*)*)"|'([^'\\\n]*(?:\\.[^'\\\n]*)*)'|`([^`\\]*(?:\\.[^`\\]*)*)`/g;
 
-/** `className="..."`, `class={"..."}` - a porta da posicao. */
+/** `className="..."`, `class={"..."}` - the position door. */
 const AT_CLASS = /\bclass(?:Name)?\s*=\s*\{?\s*("[^"\n]*"|'[^'\n]*'|`[^`\n]*`)/g;
 
-/** `group`, `peer`, `group/barra` - marcador, medido pelo `check:groups`. */
+/** `group`, `peer`, `group/bar` - a marker, measured by `check:groups`. */
 const MARKER = /^(?:group|peer)(?:\/|$)/;
 
 const MODULES = "node_modules";
 
 /**
- * O CSS de entrada de cada pacote, palavra por palavra o mesmo que o build usa.
+ * The entry CSS of each package, word for word the same the build uses.
  *
- * O nativo nao tem arquivo de entrada comitado: quem o monta e o `global.css`
- * do app que consome, e as tres linhas abaixo sao as tres dele que decidem
- * quais classes existem. O `@source` fica de fora porque o sistema de design
- * nao varre codigo - quem varre e esta guarda.
+ * Native has no committed entry file: whoever assembles it is the consuming
+ * app's `global.css`, and the three lines below are the three of it that
+ * decide which classes exist. `@source` is left out because the design system
+ * does not scan code - the one that scans is this guard.
  */
 const AREAS = [
   {
@@ -125,9 +134,9 @@ const AREAS = [
     trees: [["src/**/*.{ts,tsx}", 80]] as [area: string, floor: number][],
   },
   {
-    name: "nativo",
+    name: "native",
     css: {
-      path: "native/entrada.css",
+      path: "native/entry.css",
       text:
         `@import "tailwindcss/theme.css" layer(theme);\n` +
         `@import "./theme.css";\n` +
@@ -147,13 +156,13 @@ async function loadStylesheet(id: string, base: string) {
   return { path, base: dirname(path), content: await Bun.file(path).text() };
 }
 
-/** Um julgador de candidato por pacote, com memoria: o mesmo token repete muito. */
+/** One candidate judge per package, with memory: the same token repeats a lot. */
 async function compilerOf(css: { path: string; text: string | null }) {
   const text = css.text ?? (await Bun.file(css.path).text());
   const system = await __unstable__loadDesignSystem(text, {
     base: dirname(resolve(css.path)),
     loadStylesheet,
-    loadModule: () => Promise.reject(new Error(`Sem plugin nem config: ${css.path}`)),
+    loadModule: () => Promise.reject(new Error(`No plugin nor config: ${css.path}`)),
   });
 
   const known = new Map<string, boolean>();
@@ -166,9 +175,26 @@ async function compilerOf(css: { path: string; text: string | null }) {
   };
 }
 
-/** Token que nunca foi classe, por forma e nao por nome. */
+/** A token that was never a class, by shape and not by name. */
 const skipped = (token: string) =>
   token.endsWith("-") || token.includes("$") || MARKER.test(token) || !/[a-zA-Z]/.test(token);
+
+/**
+ * English prose, by its closed class. The company door was measured when the
+ * internal text was Portuguese, and Portuguese never shares a word with a
+ * utility. English does: a developer message reading "the panel stays hidden
+ * and the table goes blank" has `hidden` and `table` for company, and 385
+ * words of CLI and warning text came in as classes the day the house moved to
+ * English. No utility is named `the`, `of` or `is`, so a string carrying one of
+ * them is a sentence, whatever else it carries.
+ */
+const PROSE = new Set([
+  "the", "a", "an", "of", "to", "is", "are", "was", "be", "and", "or", "that",
+  "this", "it", "in", "on", "with", "for", "not", "no", "by", "from", "as", "at",
+  "has", "have", "does", "do", "can", "cannot", "would", "should", "when", "if",
+]);
+const isProse = (tokens: string[]) =>
+  tokens.some((token) => PROSE.has(token.toLowerCase().replace(/[.,:;!?]+$/, "")));
 
 const problems: string[] = [];
 let scanned = 0;
@@ -188,21 +214,21 @@ for (const area of AREAS) {
 
       for (const hit of code.matchAll(LITERAL)) {
         const raw = hit[1] ?? hit[2] ?? hit[3] ?? "";
-        // A interpolacao vira espaco: `${base} h-4` sao dois tokens, e o que
-        // esta dentro das chaves e problema de quem passa.
+        // Interpolation becomes a space: `${base} h-4` is two tokens, and what
+        // is inside the braces is the caller's problem.
         const tokens = raw
           .replace(/\$\{[^{}]*\}/g, " ")
           .split(/\s+/)
           .filter(Boolean);
         if (tokens.length === 0) continue;
 
-        const list = atClass.has(hit.index) || tokens.some(compiles);
+        const list = atClass.has(hit.index) || (!isProse(tokens) && tokens.some(compiles));
         if (!list) continue;
 
         for (const token of tokens) {
           if (compiles(token) || skipped(token)) continue;
           const line = code.slice(0, hit.index).split("\n").length;
-          problems.push(`${file}:${line}  "${token}"  no ${area.name}: nenhuma regra`);
+          problems.push(`${file}:${line}  "${token}"  on ${area.name}: no rule`);
         }
       }
     }
@@ -210,21 +236,21 @@ for (const area of AREAS) {
 }
 
 if (problems.length > 0) {
-  console.error(`${problems.length} classe(s) sem regra:\n`);
+  console.error(`${problems.length} class(es) without a rule:\n`);
   for (const problem of problems) console.error(`  ${problem}`);
   console.error(
-    "\nO Tailwind ignora candidato que nao entende, e ninguem reclama: a peca\n" +
-      "sai sem o estilo, o gate fica verde e o pacote publica. Foi assim que o\n" +
-      "polegar do Slider nativo viveu sem sombra.\n" +
-      "Ou o nome esta errado, ou o token que o sustenta nao existe naquele\n" +
-      "pacote - e a segunda hipotese e a que ninguem lembra de conferir.\n" +
-      "No web ha uma terceira: a palavra esta no `@source not inline` de\n" +
-      "src/styles.css, que corta nome de evento, de tag e de metodo que o\n" +
-      "scanner lia como classe. Se ela virou classe de verdade, saia de la.",
+    "\nTailwind ignores a candidate it does not understand, and nobody complains: the piece\n" +
+      "ships without the style, the gate stays green and the package publishes. That is how\n" +
+      "the native Slider thumb lived without a shadow.\n" +
+      "Either the name is wrong, or the token behind it does not exist in that\n" +
+      "package - and the second hypothesis is the one nobody remembers to check.\n" +
+      "On the web there is a third: the word is in the `@source not inline` of\n" +
+      "src/styles.css, which cuts event, tag and method names the scanner\n" +
+      "read as classes. If it became a real class, take it out of there.",
   );
   process.exit(1);
 }
 
 console.log(
-  `Toda classe de ${scanned} arquivos gera regra, nos dois pacotes, e sem lista de excecao.`,
+  `Every class in ${scanned} files generates a rule, in both packages, and with no exception list.`,
 );

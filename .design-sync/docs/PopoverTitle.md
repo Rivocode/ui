@@ -1,10 +1,10 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # PopoverTitle
 
-O título do painel, ligado a ele por `aria-labelledby`.
+The panel's title, wired to it through `aria-labelledby`.
 
-Sem ele o leitor de tela abre um painel sem nome, e quem navega por teclado
-descobre onde está lendo o primeiro parágrafo.
+Without it the screen reader opens a nameless panel, and a keyboard user finds
+out where they are by reading the first paragraph.

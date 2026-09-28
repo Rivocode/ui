@@ -3,16 +3,16 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { createElement } from 'react'
 
 /* ---------------------------------------------------------------------------
- * A galeria de icones
+ * The icon gallery
  *
- * Todo icone da Lucide, com busca, a um clique da area de transferencia. O dado
- * vetorial vem de `virtual:icon-gallery` (veja o vite.config.ts), um pedaco
- * preguicoso que so esta pagina paga.
+ * Every Lucide icon, with search, one click away from the clipboard. The
+ * vector data comes from `virtual:icon-gallery` (see vite.config.ts), a lazy
+ * chunk only this page pays for.
  * ------------------------------------------------------------------------- */
 
 type IconNode = Array<[string, Record<string, string>]>
 
-/** `chart-no-axes-column` vira `ChartNoAxesColumn`, o nome do import. */
+/** `chart-no-axes-column` becomes `ChartNoAxesColumn`, the import name. */
 const pascalOf = (slug: string) =>
   slug
     .split('-')
@@ -62,18 +62,18 @@ export function IconGallery() {
     const pascal = pascalOf(name)
     navigator.clipboard.writeText(`<${pascal} size={16} aria-hidden="true" />`)
     toast.add({
-      title: `${pascal} copiado`,
+      title: `${pascal} copied`,
       description: `import { ${pascal} } from 'lucide-react'`,
     })
   }
 
   let body: ReactNode
   if (!icons) {
-    body = <p className="py-10 text-center text-sm text-fg-subtle">Carregando o acervo…</p>
+    body = <p className="py-10 text-center text-sm text-fg-subtle">Loading the collection…</p>
   } else if (visible.length === 0) {
     body = (
       <p className="py-10 text-center text-sm text-fg-muted">
-        Nada com esse nome. Os nomes são em inglês: tente "receipt", "chart", "user".
+        Nothing by that name. Try "receipt", "chart", "user".
       </p>
     )
   } else {
@@ -84,7 +84,7 @@ export function IconGallery() {
             <button
               type="button"
               onClick={() => copy(name)}
-              title={`Copiar <${pascalOf(name)} />`}
+              title={`Copy <${pascalOf(name)} />`}
               className="flex w-full flex-col items-center gap-2 rounded-md border border-border bg-surface px-2 py-3 text-fg-muted transition-colors hover:border-accent hover:text-fg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
               <Glyph node={icons[name]} />
@@ -100,10 +100,10 @@ export function IconGallery() {
 
   return (
     <section className="mt-12">
-      <h2 className="font-display text-xl text-fg">O acervo inteiro</h2>
+      <h2 className="font-display text-xl text-fg">The whole collection</h2>
       <p className="mt-2 text-fg-muted">
-        {names.length > 0 ? `${names.length} ícones do Lucide.` : 'Todos os ícones do Lucide.'}{' '}
-        Clicar copia o JSX pronto; o vocabulário canônico acima continua sendo a primeira escolha.
+        {names.length > 0 ? `${names.length} Lucide icons.` : 'Every Lucide icon.'}{' '}
+        Clicking copies ready-made JSX; the canonical vocabulary above is still the first choice.
       </p>
 
       <div className="mt-4 max-w-sm">
@@ -111,8 +111,8 @@ export function IconGallery() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onClear={() => setQuery('')}
-          placeholder="Buscar pelo nome, em inglês"
-          aria-label="Buscar ícone"
+          placeholder="Search by name"
+          aria-label="Search icons"
         />
       </div>
 

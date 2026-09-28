@@ -1,29 +1,29 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # AlertDialog
 
-A confirmacao de coisa que não volta atrás: excluir, cancelar nota, sair sem
-salvar.
+The confirmation of something that cannot be undone: deleting, cancelling an
+invoice, leaving without saving.
 
-Compõe com `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogTitle`,
-`AlertDialogDescription`, `AlertDialogFooter` e `AlertDialogClose`.
+Composes with `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogTitle`,
+`AlertDialogDescription`, `AlertDialogFooter` and `AlertDialogClose`.
 
-Não fecha com Esc nem com clique fora, e o foco começa no botão de cancelar.
-Quem esta prestes a apagar algo tem que dizer que sim de propósito, e não
-esbarrar num clique.
+It does not close with Esc or with a click outside, and focus starts on the
+cancel button. Whoever is about to delete something has to say yes on purpose,
+not bump into a click.
 
-No celular os botões empilham e ocupam a largura toda.
+On a phone the buttons stack and take the full width.
 
-## Quando não usar
+## When not to use
 
-Para qualquer outra janela modal (um formulário, um detalhe, uma escolha que
-tem desfazer), use `Dialog`. O que este cobra a mais é sair pela porta: sem Esc
-e sem clique fora, quem abriu por engano tem que ler os botões para escapar.
-Cobrar isso de toda janela treina a pessoa a clicar em confirmar sem ler, que é
-exatamente o hábito que ele existe para impedir.
+For any other modal window (a form, a detail, a choice that can be undone), use
+`Dialog`. What this one charges extra is the way out: with no Esc and no click
+outside, whoever opened it by mistake has to read the buttons to escape.
+Charging that on every window trains people to click confirm without reading,
+which is exactly the habit this component exists to prevent.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `AlertDialog` - `onConfirm`, `onCancel` e `labels` em vez de composição, com os nomes do `Popconfirm`; `tone` `danger` ou `neutral`, e `onConfirm` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `AlertDialog` - `onConfirm`, `onCancel` and `labels` instead of composition, with the names of the `Popconfirm`; `tone` `danger` or `neutral`, and an `onConfirm` that returns a promise holds the modal in a waiting state until it settles; it does not close on a tap outside, as on the web. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

@@ -9,17 +9,17 @@ const COBRANCA = buildPixPayload({
   description: 'Nota 4813',
 })
 
-/** Cobrança com valor */
+/** Charge with an amount */
 export function Charge() {
   return <PixCode payload={COBRANCA} />
 }
 
-/** Enquanto a cobrança é gerada */
+/** While the charge is generated */
 export function Loading() {
   return <PixCode payload="" loading amount={1284.5} />
 }
 
-/** Código vencido */
+/** Expired code */
 export function Expired() {
   return <PixCode payload={COBRANCA} expired onRenew={() => {}} />
 }

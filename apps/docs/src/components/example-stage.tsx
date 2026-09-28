@@ -18,30 +18,30 @@ import { titleOf } from '@/example-source'
 export { titleOf }
 
 /* ---------------------------------------------------------------------------
- * O palco do exemplo
+ * The example stage
  *
- * Preview e codigo como duas abas, mais a chave de largura. Biblioteca de
- * componente cuja doc so mostra a largura de desktop esta documentando metade
- * dela, e esta aqui decide o comportamento de celular primeiro - esconder isso
- * enterraria justamente a parte que deu mais trabalho de pensar.
+ * Preview and code as two tabs, plus the width switch. A component library
+ * whose docs only show the desktop width is documenting half of itself, and
+ * this one decides mobile behavior first - hiding that would bury exactly the
+ * part that took the most thinking.
  * ------------------------------------------------------------------------- */
 
 const VIEWPORTS = [
   { id: 'desktop', label: 'Desktop', width: null, Icon: Monitor },
   { id: 'tablet', label: 'Tablet', width: 768, Icon: Tablet },
-  { id: 'mobile', label: 'Celular', width: 390, Icon: Smartphone },
+  { id: 'mobile', label: 'Mobile', width: 390, Icon: Smartphone },
 ] as const
 
 type ViewportId = (typeof VIEWPORTS)[number]['id']
 
 /* ---------------------------------------------------------------------------
- * Um controle, dois grupos
+ * One control, two groups
  *
- * A chave de largura e a chave preview/codigo respondem a mesma pergunta,
- * "mostra este exemplo de outro jeito", entao as duas leem como um unico
- * controle segmentado. Antes, uma era uma fileira de icones dentro de caixa e a
- * outra uma faixa de abas sublinhadas, e duas formas lado a lado faziam o
- * cabecalho parecer dois recursos costurados.
+ * The width switch and the preview/code switch answer the same question,
+ * "show this example another way", so both read as a single segmented
+ * control. Before, one was a row of icons inside a box and the other a strip
+ * of underlined tabs, and two shapes side by side made the header look like
+ * two features stitched together.
  * ------------------------------------------------------------------------- */
 
 const SEGMENTED = 'flex items-center gap-0.5 rounded-md border border-border bg-bg p-0.5'
@@ -72,7 +72,7 @@ function CopyButton({ text }: { text: string }) {
           <IconButton
             size="sm"
             variant="ghost"
-            label={copied ? 'Código copiado' : 'Copiar código'}
+            label={copied ? 'Code copied' : 'Copy code'}
             onClick={() => {
               navigator.clipboard.writeText(text).then(() => setCopied(true))
             }}
@@ -81,7 +81,7 @@ function CopyButton({ text }: { text: string }) {
           </IconButton>
         }
       />
-      <TooltipContent>{copied ? 'Copiado' : 'Copiar código'}</TooltipContent>
+      <TooltipContent>{copied ? 'Copied' : 'Copy code'}</TooltipContent>
     </Tooltip>
   )
 }
@@ -101,7 +101,7 @@ function ViewportSwitch({
             render={
               <button
                 type="button"
-                aria-label={`Ver em ${label.toLowerCase()}`}
+                aria-label={`View on ${label.toLowerCase()}`}
                 aria-pressed={value === id}
                 onClick={() => onChange(id)}
                 className={segment(value === id, 'w-8')}
@@ -118,14 +118,13 @@ function ViewportSwitch({
 }
 
 /**
- * A largura em que uma historia de keep-open desenha enquanto a chave diz
- * desktop.
+ * The width a keep-open story draws at while the switch says desktop.
  *
- * Ela bate com a coluna da doc, entao a moldura le como se fosse inline; o que
- * importa e a janela, e nao o tamanho: dentro do iframe a cortina de um dialog
- * acaba no cartao, em vez de abrir por cima da documentacao. No celular a
- * coluna e mais estreita que isto, e a moldura acompanha a coluna (`fit`) em
- * vez de encolher um retrato de 720px para metade.
+ * It matches the doc column, so the frame reads as if it were inline; what
+ * matters is the window, not the size: inside the iframe a dialog's backdrop
+ * ends at the card, instead of opening over the documentation. On mobile the
+ * column is narrower than this, and the frame follows the column (`fit`)
+ * instead of shrinking a 720px snapshot to half.
  */
 const KEEP_OPEN_WIDTH = 720
 const KEEP_OPEN_MIN_HEIGHT = 360
@@ -141,16 +140,16 @@ export function ExampleStage({
   Example: ComponentType
   source: string | null
   title?: string
-  /** Historia aberta de proposito desenha no iframe em qualquer largura. */
+  /** A story that is open on purpose draws in the iframe at any width. */
   keepOpen?: boolean
 }) {
   const [viewport, setViewport] = useState<ViewportId>('desktop')
   const picked = VIEWPORTS.find((option) => option.id === viewport)?.width ?? null
   const width = picked ?? (keepOpen ? KEEP_OPEN_WIDTH : null)
 
-  // Medida no instante da troca, para a moldura que substitui o exemplo inline
-  // comecar na altura que a pessoa ja estava olhando, em vez de desabar para um
-  // chute e voltar.
+  // Measured at the moment of the switch, so the frame that replaces the
+  // inline example starts at the height the person was already looking at,
+  // instead of collapsing to a guess and coming back.
   const preview = useRef<HTMLDivElement>(null)
   const heldHeight = useRef<number | undefined>(undefined)
 
@@ -168,35 +167,36 @@ export function ExampleStage({
     <section className="overflow-hidden rounded-lg border border-border bg-surface">
       <Tabs defaultValue="preview">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-3 py-2">
-          {/* `h2` e nao `h3`: cada exemplo e uma secao da pagina, e vinha
-              logo depois do `h1` do componente, pulando um nivel em todas as
-              66 paginas. Nivel semantico e tamanho visual sao coisas
-              diferentes, entao a aparencia nao muda. */}
+          {/* `h2` and not `h3`: each example is a section of the page, and it
+              came right after the component's `h1`, skipping a level on all
+              66 pages. Semantic level and visual size are different things,
+              so the appearance does not change. */}
           <h2 id={anchor(name)} className="pl-1 font-sans text-sm font-medium text-fg">
             {title ?? titleOf(name)}
           </h2>
 
-          {/* O `flex-wrap` aqui e o do `header` sao dois: o de fora quebra
-              entre o titulo e o grupo, e o de dentro quebra DENTRO do grupo.
-              Sem este, o grupo era um item de flex unico de 334px que nao
-              encolhe - o `w-8` de cada icone de largura e a palavra de cada aba
-              travam o minimo -, entao a 320px ele transbordava 86px e o
-              `overflow-hidden` da secao comia o botao de copiar inteiro: 75px
-              fora do cartao, e `elementFromPoint` no centro dele nao devolvia o
-              botao. Nao custa altura onde a fileira ja cabe: de 414px para
-              cima o DOM sai igual ao de antes. */}
+          {/* The `flex-wrap` here and the `header`'s are two: the outer one
+              wraps between the title and the group, and the inner one wraps
+              INSIDE the group. Without this, the group was a single 334px flex
+              item that does not shrink - the `w-8` of each width icon and the
+              word of each tab lock the minimum -, so at 320px it overflowed by
+              86px and the section's `overflow-hidden` ate the whole copy
+              button: 75px outside the card, and `elementFromPoint` at its
+              center did not return the button. It costs no height where the
+              row already fits: from 414px up the DOM comes out the same as
+              before. */}
           <div className="flex flex-wrap items-center justify-end gap-2">
             <ViewportSwitch value={viewport} onChange={switchViewport} />
 
-            {/* Icone e palavra juntos: o olho sozinho e adivinhacao, e a
-                palavra sozinha e mais uma coisa para ler numa pagina cheia de
-                exemplos. */}
-            {/* As abas e o copiar num grupo so, para a quebra cair sempre entre
-                a chave de largura e eles, e nunca no meio deles: a 390px o
-                copiar sozinho descia para uma terceira linha vazia, longe do
-                "Codigo" que e o que ele copia. O `gap-2` repetido e o mesmo do
-                pai, entao onde a fileira cabe inteira o espacamento sai igual
-                ao de antes. */}
+            {/* Icon and word together: the eye alone is guesswork, and the
+                word alone is one more thing to read on a page full of
+                examples. */}
+            {/* The tabs and the copy button in a single group, so the wrap
+                always falls between the width switch and them, never in the
+                middle of them: at 390px the copy button alone dropped to an
+                empty third line, far from the "Code" it copies. The repeated
+                `gap-2` is the same as the parent's, so where the row fits
+                whole the spacing comes out as before. */}
             <div className="flex items-center gap-2">
               <TabList variant="segmented">
                 <Tab value="preview">
@@ -205,7 +205,7 @@ export function ExampleStage({
                 </Tab>
                 <Tab value="code" disabled={!source}>
                   <Code2 size={14} aria-hidden="true" />
-                  Código
+                  Code
                 </Tab>
               </TabList>
 
@@ -215,13 +215,13 @@ export function ExampleStage({
         </header>
 
         <TabPanel value="preview" className="p-0">
-          {/* `safe` porque o par centro + overflow corta o comeco: um exemplo
-              mais largo que a coluna ficava com a borda esquerda inalcancavel,
-              decapitando a primeira coluna da tabela no celular. */}
+          {/* `safe` because center + overflow together cut off the start: an
+              example wider than the column had an unreachable left edge,
+              beheading the table's first column on mobile. */}
           <div ref={preview} className="flex justify-center-safe overflow-x-auto bg-bg/40 p-4">
             {width ? (
               <ExampleFrame
-                title={`Exemplo ${title ?? titleOf(name)}, em ${width}px de largura`}
+                title={`Example ${title ?? titleOf(name)}, at ${width}px wide`}
                 width={width}
                 fit={picked === null}
                 initialHeight={heldHeight.current}
@@ -230,11 +230,11 @@ export function ExampleStage({
                 <Example />
               </ExampleFrame>
             ) : (
-              // A largura tem que estar resolvida ANTES do provider, e nao
-              // dentro dele: como item de flex, a caixa do proprio provider e
-              // shrink-to-fit, entao um `w-full` embaixo dele resolvia contra
-              // uma largura que dependia do conteudo, e um grafico pedindo 100%
-              // disso desabava para uma tirinha.
+              // The width has to be resolved BEFORE the provider, not inside
+              // it: as a flex item, the provider's own box is shrink-to-fit, so
+              // a `w-full` under it resolved against a width that depended on
+              // the content, and a chart asking for 100% of that collapsed
+              // into a sliver.
               <div className="w-full">
                 <RivoProvider scope="local" theme="rivocode-dark">
                   <div className="flex min-h-32 w-full items-center justify-center-safe overflow-x-auto rounded-md p-6">

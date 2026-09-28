@@ -25,7 +25,7 @@ const house = async (theme: string) =>
     (await read("src/tokens/palette.css")) + "\n" + (await read(`src/tokens/themes/${theme}.css`)),
   );
 
-test("as tres sintaxes de alfa compoem no mesmo pixel", () => {
+test("the three alpha syntaxes composite to the same pixel", () => {
   const background = "#14171a";
   const composed = [
     compose("rgb(212 243 74 / 0.14)", background),
@@ -37,7 +37,7 @@ test("as tres sintaxes de alfa compoem no mesmo pixel", () => {
   expect(contrastRatio(composed[0]!, background)).not.toBeNaN();
 });
 
-test("cor que a conta nao sabe compor sai intacta, e a razao nao mente", () => {
+test("a color the math cannot composite comes out intact, and the ratio does not lie", () => {
   const value = compose("color-mix(in oklab, red, blue)", "#14171a");
 
   expect(value.startsWith("#")).toBe(false);
@@ -73,12 +73,12 @@ const CHROME_PIXEL: Array<[string, string]> = [
   ["lch(50 130 40)", "#ff0000"],
 ];
 
-test("os espacos novos chegam no mesmo pixel que o Chrome pinta num canvas", () => {
+test("the new color spaces reach the same pixel Chrome paints on a canvas", () => {
   for (const [written, pixel] of CHROME_PIXEL) expect(toHex(written)).toBe(pixel);
   expect(CHROME_PIXEL.length).toBeGreaterThan(25);
 });
 
-test("a paleta do Tailwind 4 inteira se le, e nenhuma cor sai sem medida", async () => {
+test("the whole Tailwind 4 palette is readable, and no color goes unmeasured", async () => {
   const theme = await read("node_modules/tailwindcss/theme.css");
   const named = new Map<string, string>();
   for (const [, role, value] of theme.matchAll(/--color-([a-z]+-\d+):\s*(oklch\([^)]*\))/g)) {
@@ -95,7 +95,7 @@ test("a paleta do Tailwind 4 inteira se le, e nenhuma cor sai sem medida", async
   expect(wide.length).toBeLessThan(named.size / 2);
 });
 
-test("branco e preto chegam ao mesmo lugar por todos os espacos que a conta le", () => {
+test("white and black land in the same place through every space the math reads", () => {
   const white = [
     "#fff",
     "#ffffff",
@@ -128,7 +128,7 @@ test("branco e preto chegam ao mesmo lugar por todos os espacos que a conta le",
   expect(new Set(black.map((value) => toHex(value)))).toEqual(new Set(["#000000"]));
 });
 
-test("o alfa dos espacos novos compoe no mesmo pixel do rgba e do hexadecimal", () => {
+test("alpha in the new spaces composites to the same pixel as rgba and hexadecimal", () => {
   const background = "#14171a";
   const solid = toHex("oklch(0.7 0.15 145)")!;
   const [red, green, blue] = [1, 3, 5].map((at) => parseInt(solid.slice(at, at + 2), 16));
@@ -148,10 +148,10 @@ test("o alfa dos espacos novos compoe no mesmo pixel do rgba e do hexadecimal", 
   expect(compose("rgb(255 255 255 / 0.4)", background)).toBe(eight);
 });
 
-test("cor fora do gamut do sRGB e medida no valor que a tela corta, e a nota diz quais", async () => {
+test("a color outside the sRGB gamut is measured at the value the screen clips to, and the note says which", async () => {
   const tokens = { ...(await house("rivocode-light")), "--rc-danger": "oklch(0.52 0.22 20)" };
   const findings = checkThemeCss("gamut", tokens);
-  const note = findings.find((finding) => finding.line.includes("fora do sRGB"));
+  const note = findings.find((finding) => finding.line.includes("outside sRGB"));
 
   expect(note?.ok).toBe(true);
   expect(note?.line).toContain("danger (oklch(0.52 0.22 20) → #c9002e)");
@@ -160,7 +160,7 @@ test("cor fora do gamut do sRGB e medida no valor que a tela corta, e a nota diz
   expect(outsideSrgb("oklch(0.44 0.18 264)")).toBe(false);
 });
 
-test("color-mix e nome de cor da CSS continuam sem medida, e cada um diz por que", () => {
+test("color-mix and CSS color names stay unmeasured, and each one says why", () => {
   expect(refusalOf("color-mix(in oklab, red 40%, blue)")).toBe("mix");
   expect(refusalOf("rebeccapurple")).toBe("syntax");
   expect(refusalOf("var(--rc-accent)")).toBe("syntax");
@@ -175,10 +175,10 @@ test("color-mix e nome de cor da CSS continuam sem medida, e cada um diz por que
   const bad = findings.filter((finding) => !finding.ok);
 
   expect(bad.length).toBeGreaterThan(0);
-  expect(bad.some((finding) => finding.line.includes("sem medida"))).toBe(true);
+  expect(bad.some((finding) => finding.line.includes("unmeasured"))).toBe(true);
 });
 
-test("o angulo aceita deg, rad, grad e turn, e o percentual entra no lugar do numero", () => {
+test("the angle accepts deg, rad, grad and turn, and a percentage stands in for the number", () => {
   const same = [
     "hsl(90deg 50% 40%)",
     "hsl(90 50% 40%)",
@@ -192,7 +192,7 @@ test("o angulo aceita deg, rad, grad e turn, e o percentual entra no lugar do nu
   expect(toHex("hsl(90 50 40)")).toBe(toHex("hsl(90 50% 40%)"));
 });
 
-test("o mesmo tema em outra sintaxe mede a mesma linha, papel por papel", () => {
+test("the same theme in another syntax measures the same line, role by role", () => {
   const rewrite = (colors: Record<string, string>) => {
     const other: Record<string, string> = {};
     for (const [role, value] of Object.entries(colors)) {
@@ -215,7 +215,7 @@ test("o mesmo tema em outra sintaxe mede a mesma linha, papel por papel", () => 
   expect(checkThemeMap("outra", other)).toEqual(checkThemeMap("outra", house));
 });
 
-test("os dois temas da casa passam em todos os pares de CSS", async () => {
+test("both house themes pass every CSS pair", async () => {
   for (const theme of ["rivocode-dark", "rivocode-light"]) {
     const findings = checkThemeCss(theme, await house(theme));
     expect(findings.length).toBeGreaterThan(70);
@@ -223,7 +223,7 @@ test("os dois temas da casa passam em todos os pares de CSS", async () => {
   }
 });
 
-test("um papel com contraste ruim reprova, e a linha diz qual par", async () => {
+test("a role with poor contrast fails, and the line says which pair", async () => {
   const broken = { ...(await house("rivocode-light")), "--rc-fg-muted": "#b9bfc6" };
   const bad = checkThemeCss("ruim", broken).filter((finding) => !finding.ok);
 
@@ -231,7 +231,7 @@ test("um papel com contraste ruim reprova, e a linha diz qual par", async () => 
   expect(bad.every((finding) => finding.line.includes("--rc-fg-muted"))).toBe(true);
 });
 
-test("os dois mapas da casa passam em todos os pares do nativo", () => {
+test("both house maps pass every native pair", () => {
   const findings = checkThemeMap("rivocode", {
     light: tokens.themes["rivocode-light"],
     dark: tokens.themes["rivocode-dark"],
@@ -240,7 +240,7 @@ test("os dois mapas da casa passam em todos os pares do nativo", () => {
   expect(findings.filter((finding) => !finding.ok).map((finding) => finding.line)).toEqual([]);
 });
 
-test("papel faltando no mapa reprova sem ninguem passar a lista de papeis", () => {
+test("a role missing from the map fails without anyone passing the role list", () => {
   const { bg: _bg, ...light } = tokens.themes["rivocode-light"] as Record<string, string>;
   const findings = checkThemeMap("sem fundo", {
     light,
@@ -250,7 +250,7 @@ test("papel faltando no mapa reprova sem ninguem passar a lista de papeis", () =
   expect(findings.some((finding) => !finding.ok && finding.line.includes("bg"))).toBe(true);
 });
 
-test("pino do Slider que se dissolve no trilho reprova, e a linha diz qual par caiu", () => {
+test("a Slider thumb that dissolves into the track fails, and the line says which pair fell", () => {
   const light = tokens.themes["rivocode-light"] as Record<string, string>;
   const track = compose(light["skeleton"]!, toHex(light["bg"]!)!);
   const dissolved = { ...light, fg: track, "border-strong": track };
@@ -262,12 +262,12 @@ test("pino do Slider que se dissolve no trilho reprova, e a linha diz qual par c
     .filter((finding) => !finding.ok)
     .map((finding) => finding.line);
 
-  expect(bad.some((line) => line.includes("fg sobre skeleton em bg"))).toBe(true);
-  expect(bad.some((line) => line.includes("border-strong sobre skeleton em bg"))).toBe(true);
-  expect(bad.some((line) => line.includes("border-strong sobre skeleton em surface"))).toBe(true);
+  expect(bad.some((line) => line.includes("fg on skeleton over bg"))).toBe(true);
+  expect(bad.some((line) => line.includes("border-strong on skeleton over bg"))).toBe(true);
+  expect(bad.some((line) => line.includes("border-strong on skeleton over surface"))).toBe(true);
 });
 
-test("o trilho do Slider e medido composto, e nao no token cru", async () => {
+test("the Slider track is measured composited, and not on the raw token", async () => {
   const light = await house("rivocode-light");
   const track = compose(light["--rc-skeleton"]!, light["--rc-bg"]!);
 
@@ -276,35 +276,35 @@ test("o trilho do Slider e medido composto, e nao no token cru", async () => {
 
   const line = checkThemeCss("rivocode-light", light)
     .map((finding) => finding.line)
-    .find((text) => text.includes("--rc-accent-text sobre --rc-skeleton em --rc-bg"));
+    .find((text) => text.includes("--rc-accent-text on --rc-skeleton over --rc-bg"));
 
   expect(line).toContain(contrastRatio(light["--rc-accent-text"]!, track).toFixed(2));
   expect(line).toContain("1.4.11");
 });
 
-test("acento que empata com o trilho reprova a faixa do web, e a linha diz qual par caiu", async () => {
+test("an accent that ties with the track fails the web slider, and the line says which pair fell", async () => {
   const light = await house("rivocode-light");
   const track = compose(light["--rc-skeleton"]!, light["--rc-bg"]!);
   const bad = checkThemeCss("faixa dissolvida", { ...light, "--rc-accent-text": track })
     .filter((finding) => !finding.ok)
     .map((finding) => finding.line);
 
-  expect(bad.some((line) => line.includes("--rc-accent-text sobre --rc-skeleton em --rc-bg"))).toBe(
+  expect(bad.some((line) => line.includes("--rc-accent-text on --rc-skeleton over --rc-bg"))).toBe(
     true,
   );
   expect(
-    bad.some((line) => line.includes("--rc-accent-text sobre --rc-skeleton em --rc-surface")),
+    bad.some((line) => line.includes("--rc-accent-text on --rc-skeleton over --rc-surface")),
   ).toBe(true);
 });
 
-test("a lista de papeis do mapa e derivada das tabelas, e bate com o gerador", () => {
+test("the map role list is derived from the tables, and matches the generator", () => {
   const roles = Object.keys(tokens.themes["rivocode-dark"]);
 
   expect([...MAP_ROLES].sort()).toEqual([...roles].sort());
   expect(MEASURED_ROLES.length + Object.keys(WITHOUT_PAIR).length).toBe(roles.length);
 });
 
-test("o bloco de tema entrega os valores, e nao so os nomes dos papeis", async () => {
+test("the theme block hands over the values, and not only the role names", async () => {
   const css = await read("src/tokens/themes/rivocode-light.css");
   const [block] = themeBlocks([{ file: "rivocode-light.css", css }]);
 
@@ -315,11 +315,11 @@ test("o bloco de tema entrega os valores, e nao so os nomes dos papeis", async (
   expect(resolveTokens(block!.tokens, palette)["--rc-bg"]).toStartWith("#");
 });
 
-test("o espelho do nativo mede igual ao modulo do web", async () => {
+test("the native mirror measures the same as the web module", async () => {
   const mirror = "native/scripts/contrast.mjs";
   const text = await read(mirror);
 
-  expect(text).toStartWith("/* Gerado de src/lib/contrast.ts por bun run gen:native:contrast.");
+  expect(text).toStartWith("/* Generated from src/lib/contrast.ts by bun run gen:native:contrast.");
 
   const there = (await import(`../${mirror}`)) as {
     checkThemeMap: typeof checkThemeMap;
@@ -337,7 +337,7 @@ test("o espelho do nativo mede igual ao modulo do web", async () => {
   expect(there.checkThemeMap("prova", map)).toEqual(checkThemeMap("prova", map));
 });
 
-test("o pacote nativo publica o espelho por um subcaminho proprio", async () => {
+test("the native package publishes the mirror through its own subpath", async () => {
   const pkg = (await Bun.file("native/package.json").json()) as {
     files: string[];
     exports: Record<string, string>;

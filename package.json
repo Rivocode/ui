@@ -138,7 +138,7 @@
     "check:mcp": "bun run scripts/check-mcp-up-to-date.ts",
     "check:demo": "bun run scripts/check-demo.ts",
     "check:portraits": "bun run scripts/check-portraits.ts",
-    "retrato": "bun run demo && bun run scripts/shot.ts --secao"
+    "portrait": "bun run demo && bun run scripts/shot.ts --section"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

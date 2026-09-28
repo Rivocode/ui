@@ -19,7 +19,7 @@ function withTheme(node: ReactNode) {
 const tokens = (element: Element) => (element.getAttribute("class") ?? "").split(/\s+/);
 
 describe("PromptInput", () => {
-  test("Enter envia, Shift+Enter nao, e o campo nao controlado se limpa", () => {
+  test("Enter sends, Shift+Enter does not, and the uncontrolled field clears itself", () => {
     const onSubmit = mock<(value: string) => void>(() => {});
     withTheme(<PromptInput onSubmit={onSubmit} />);
     const field = screen.getByRole("textbox", { name: "Mensagem" });
@@ -33,7 +33,7 @@ describe("PromptInput", () => {
     expect((field as HTMLTextAreaElement).value).toBe("");
   });
 
-  test("campo vazio ou so de espaco nao envia, e o botao fica desabilitado", () => {
+  test("an empty or whitespace-only field does not send, and the button is disabled", () => {
     const onSubmit = mock<(value: string) => void>(() => {});
     withTheme(<PromptInput onSubmit={onSubmit} defaultValue="   " />);
     const send = screen.getByRole("button", { name: "Enviar mensagem" }) as HTMLButtonElement;
@@ -43,7 +43,7 @@ describe("PromptInput", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  test("em streaming o enviar vira parar, e Enter nao envia", () => {
+  test("while streaming the send button becomes stop, and Enter does not send", () => {
     const onSubmit = mock<(value: string) => void>(() => {});
     const onStop = mock(() => {});
     withTheme(<PromptInput streaming onSubmit={onSubmit} onStop={onStop} defaultValue="proxima" />);
@@ -56,7 +56,7 @@ describe("PromptInput", () => {
     expect(onStop).toHaveBeenCalledTimes(1);
   });
 
-  test("Enter no meio da composicao do teclado nao envia", () => {
+  test("Enter in the middle of keyboard composition does not send", () => {
     const onSubmit = mock<(value: string) => void>(() => {});
     withTheme(<PromptInput onSubmit={onSubmit} defaultValue="acentuaç" />);
 
@@ -64,7 +64,7 @@ describe("PromptInput", () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  test("controlado, quem limpa e quem chamou", () => {
+  test("controlled, the caller is the one who clears", () => {
     const seen: string[] = [];
     function Controlled() {
       const [text, setText] = useState("rascunho");
@@ -80,7 +80,7 @@ describe("PromptInput", () => {
     expect(field.value).toBe("rascunho");
   });
 
-  test("desabilitado trava o campo e o envio", () => {
+  test("disabled locks the field and the sending", () => {
     withTheme(<PromptInput disabled defaultValue="texto" />);
 
     expect((screen.getByRole("textbox") as HTMLTextAreaElement).disabled).toBe(true);
@@ -89,7 +89,7 @@ describe("PromptInput", () => {
     ).toBe(true);
   });
 
-  test("o anel de foco do campo e desenhado pela moldura, e nao some", () => {
+  test("the field focus ring is drawn by the frame, and does not disappear", () => {
     withTheme(<PromptInput />);
     const form = screen.getByRole("textbox").closest("form")!;
 
@@ -97,7 +97,7 @@ describe("PromptInput", () => {
     expect(tokens(form)).not.toContain("focus-within:ring-2");
   });
 
-  test("a dica do teclado esta ligada ao campo", () => {
+  test("the keyboard hint is linked to the field", () => {
     withTheme(<PromptInput />);
     const field = screen.getByRole("textbox");
     const hint = document.getElementById(field.getAttribute("aria-describedby") ?? "");
@@ -105,7 +105,7 @@ describe("PromptInput", () => {
     expect(hint?.textContent).toContain("Shift+Enter");
   });
 
-  test("o contador mostra o teto e fica no tom de perigo ao bater nele", () => {
+  test("the counter shows the cap and turns to the danger tone when it hits it", () => {
     withTheme(<PromptInput showCount maxLength={5} defaultValue="12345" />);
     const count = screen.getByText("5/5");
 
@@ -113,7 +113,7 @@ describe("PromptInput", () => {
     expect(tokens(count)).not.toContain("text-fg-subtle");
   });
 
-  test("os anexos entram pelo slot", () => {
+  test("attachments come in through the slot", () => {
     withTheme(<PromptInput attachments={<span>nota-agosto.pdf</span>} />);
     expect(screen.getByText("nota-agosto.pdf")).toBeDefined();
   });
@@ -129,7 +129,7 @@ describe("PromptInput", () => {
     );
   }
 
-  test("Enter no Parar devolve o foco ao campo, e nao o larga no botao desabilitado", () => {
+  test("Enter on Stop returns focus to the field, and does not drop it on the disabled button", () => {
     withTheme(<Turn initial />);
     const stop = screen.getByRole("button", { name: "Parar resposta" });
     stop.focus();
@@ -142,7 +142,7 @@ describe("PromptInput", () => {
     expect(document.activeElement).toBe(screen.getByRole("textbox"));
   });
 
-  test("a resposta que termina com o foco no Parar devolve o foco ao campo", () => {
+  test("a response that ends with focus on Stop returns focus to the field", () => {
     const view = withTheme(<PromptInput streaming onStop={() => {}} />);
     screen.getByRole("button", { name: "Parar resposta" }).focus();
     view.rerender(
@@ -154,7 +154,7 @@ describe("PromptInput", () => {
     expect(document.activeElement).toBe(screen.getByRole("textbox"));
   });
 
-  test("enviar pelo botao, sem resposta chegando, devolve o foco ao campo que se limpou", () => {
+  test("sending by the button, with no response arriving, returns focus to the cleared field", () => {
     withTheme(<PromptInput defaultValue="Quanto faturei?" />);
     const send = screen.getByRole("button", { name: "Enviar mensagem" });
     send.focus();
@@ -166,7 +166,7 @@ describe("PromptInput", () => {
     expect(document.activeElement).toBe(screen.getByRole("textbox"));
   });
 
-  test("a altura se refaz quando a largura muda e quando a fonte chega, e nao so com o texto", async () => {
+  test("the height is recomputed when the width changes and when the font arrives, and not only with the text", async () => {
     const OriginalObserver = globalThis.ResizeObserver;
     const fonts = Object.getOwnPropertyDescriptor(document, "fonts");
     const observed: Array<(entries: Array<{ contentRect: { width: number } }>) => void> = [];
@@ -215,14 +215,14 @@ describe("PromptInput", () => {
       .split(" ")
       .map((id) => document.getElementById(id)?.textContent ?? "");
 
-  test("a dica do teclado sai de labels, para trocar o idioma", () => {
+  test("the keyboard hint comes from labels, to change the language", () => {
     withTheme(<PromptInput labels={{ hint: "Enter sends, Shift+Enter breaks the line." }} />);
     expect(described(screen.getByRole("textbox"))).toContain(
       "Enter sends, Shift+Enter breaks the line.",
     );
   });
 
-  test("o contador esta ligado ao campo, e o teto e avisado", () => {
+  test("the counter is linked to the field, and the cap is announced", () => {
     const view = withTheme(<PromptInput showCount maxLength={5} defaultValue="123" />);
     expect(described(screen.getByRole("textbox"))).toContain("3 de 5 caracteres");
     expect(screen.getByRole("status").textContent).toBe("");
@@ -234,7 +234,7 @@ describe("PromptInput", () => {
     expect(screen.getByText("5/5").getAttribute("aria-hidden")).toBe("true");
   });
 
-  test("um caractere e singular, no contador sem teto e no teto de um", () => {
+  test("one character is singular, in the counter without a cap and in a cap of one", () => {
     const view = withTheme(<PromptInput showCount defaultValue="a" />);
     expect(described(screen.getByRole("textbox"))).toContain("1 caractere");
     expect(described(screen.getByRole("textbox"))).not.toContain("1 caracteres");
@@ -247,7 +247,7 @@ describe("PromptInput", () => {
 });
 
 describe("Message", () => {
-  test("cada mensagem e um artigo com o nome de quem fala", () => {
+  test("each message is an article named after the speaker", () => {
     withTheme(
       <>
         <Message role="user">Quanto faturei?</Message>
@@ -261,7 +261,7 @@ describe("Message", () => {
     expect(screen.getByRole("article", { name: "Sistema" })).toBeDefined();
   });
 
-  test("o alinhamento sai do papel", () => {
+  test("the alignment comes from the role", () => {
     withTheme(
       <>
         <Message role="user">a</Message>
@@ -275,7 +275,7 @@ describe("Message", () => {
     );
   });
 
-  test("em streaming anuncia ocupado e esconde as acoes", () => {
+  test("while streaming it announces busy and hides the actions", () => {
     const onRetry = mock(() => {});
     withTheme(
       <Message role="assistant" streaming copyValue="texto" onRetry={onRetry}>
@@ -289,7 +289,7 @@ describe("Message", () => {
     expect(screen.queryByRole("button", { name: "Copiar" })).toBeNull();
   });
 
-  test("terminada, mostra copiar e tentar de novo, e o tentar chama quem pediu", () => {
+  test("once finished, it shows copy and retry, and retry calls the requester", () => {
     const onRetry = mock(() => {});
     withTheme(
       <Message role="assistant" copyValue="**R$ 48.200,00**" onRetry={onRetry}>
@@ -303,21 +303,21 @@ describe("Message", () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
-  test("o erro sai em texto, e nao so em cor", () => {
+  test("the error comes out as text, and not only as color", () => {
     withTheme(<Message role="assistant" error="A resposta foi interrompida." onRetry={() => {}} />);
 
     const error = screen.getByText("A resposta foi interrompida.");
     expect(tokens(error.parentElement!)).toContain("text-danger-text");
   });
 
-  test("streaming sem conteudo ainda mostra o indicador", () => {
+  test("streaming without content still shows the indicator", () => {
     const { container } = withTheme(<Message role="assistant" streaming />);
     expect(container.querySelectorAll(".animate-pulse").length).toBe(3);
   });
 });
 
 describe("Conversation", () => {
-  test("e uma regiao de log educada, com nome", () => {
+  test("it is a polite log region, with a name", () => {
     withTheme(
       <Conversation className="h-96">
         <Message role="user">Oi</Message>
@@ -329,7 +329,7 @@ describe("Conversation", () => {
     expect(log.getAttribute("tabindex")).toBe("0");
   });
 
-  test("vazia, mostra o estado vazio e as sugestoes entregam o texto", () => {
+  test("when empty, it shows the empty state and the suggestions hand over the text", () => {
     const onSuggestion = mock<(value: string) => void>(() => {});
     withTheme(
       <Conversation
@@ -347,14 +347,14 @@ describe("Conversation", () => {
     expect(onSuggestion).toHaveBeenCalledWith("Quanto faturei em agosto?");
   });
 
-  test("sem onSuggestion as sugestoes nao aparecem", () => {
+  test("without onSuggestion the suggestions do not appear", () => {
     withTheme(
       <Conversation empty={{ title: "Vazio", description: "Nada ainda.", suggestions: ["a"] }} />,
     );
     expect(screen.queryByRole("button", { name: "a" })).toBeNull();
   });
 
-  test("rolar para cima solta o fim e mostra o botao; o botao volta e some", () => {
+  test("scrolling up releases the bottom and shows the button; the button goes back and disappears", () => {
     withTheme(
       <Conversation>
         <Message role="user">Oi</Message>
@@ -378,7 +378,7 @@ describe("Conversation", () => {
     expect(screen.queryByRole("button", { name: "Ir para o fim" })).toBeNull();
   });
 
-  test("grudado no fim, mensagem nova rola ate o fim; solto, nao rola", () => {
+  test("stuck to the bottom, a new message scrolls to the bottom; released, it does not", () => {
     function Chat({ count }: { count: number }) {
       return (
         <Conversation>
@@ -425,7 +425,7 @@ describe("ToolCall", () => {
     ["approval", "Aguardando aprovação"],
   ] as const;
 
-  test("todo estado sai com icone e texto, e cor nunca e o unico sinal", () => {
+  test("every status comes with icon and text, and color is never the only signal", () => {
     for (const [status, text] of STATES) {
       const view = withTheme(<ToolCall name="buscar_notas" status={status} />);
       const label = screen.getByText(text);
@@ -435,14 +435,14 @@ describe("ToolCall", () => {
     }
   });
 
-  test("rodando anuncia ocupado", () => {
+  test("running announces busy", () => {
     const { container } = withTheme(<ToolCall name="buscar_notas" status="running" />);
     expect(container.querySelector("[data-status=running]")?.getAttribute("aria-busy")).toBe(
       "true",
     );
   });
 
-  test("aprovar e recusar so aparecem aguardando aprovacao, fora do painel", () => {
+  test("approve and reject only appear while awaiting approval, outside the panel", () => {
     const onApprove = mock(() => {});
     const onReject = mock(() => {});
     const view = withTheme(
@@ -468,7 +468,7 @@ describe("ToolCall", () => {
     expect(screen.queryByRole("button", { name: "Aprovar" })).toBeNull();
   });
 
-  test("a entrada objeto sai como JSON indentado, e o gatilho abre e fecha", () => {
+  test("an object input comes out as indented JSON, and the trigger opens and closes", () => {
     withTheme(<ToolCall name="buscar_notas" status="done" input={{ mes: 8 }} output="3 notas" />);
     const trigger = screen.getByRole("button", { name: /buscar_notas/ });
 
@@ -483,7 +483,7 @@ describe("ToolCall", () => {
     expect(screen.getByRole("region", { name: "Saída: buscar_notas" })).toBeDefined();
   });
 
-  test("erro abre sozinho e mostra a frase", () => {
+  test("an error opens by itself and shows the sentence", () => {
     withTheme(<ToolCall name="buscar_notas" status="error" error="A prefeitura não respondeu." />);
     expect(screen.getByRole("button", { name: /buscar_notas/ }).getAttribute("aria-expanded")).toBe(
       "true",
@@ -491,7 +491,7 @@ describe("ToolCall", () => {
     expect(screen.getByText("A prefeitura não respondeu.")).toBeDefined();
   });
 
-  test("sem entrada, saida nem erro, o cabecalho nao e botao, e nada aponta para painel inexistente", () => {
+  test("without input, output or error, the header is not a button, and nothing points to a missing panel", () => {
     for (const status of ["pending", "error", "approval"] as const) {
       const view = withTheme(
         <ToolCall name="buscar_notas" status={status} onApprove={() => {}} onReject={() => {}} />,
@@ -506,7 +506,7 @@ describe("ToolCall", () => {
     }
   });
 
-  test("com corpo, o aria-controls do gatilho aponta para o painel que existe", () => {
+  test("with a body, the trigger aria-controls points to the panel that exists", () => {
     withTheme(<ToolCall name="buscar_notas" status="error" error="Falhou." />);
     const trigger = screen.getByRole("button", { name: /buscar_notas/ });
     const id = trigger.getAttribute("aria-controls") ?? "";
@@ -514,7 +514,7 @@ describe("ToolCall", () => {
     expect(document.getElementById(id)).not.toBeNull();
   });
 
-  test("nome e titulo longos quebram em ate duas linhas, e o nome inteiro fica no title", () => {
+  test("long name and title wrap to at most two lines, and the full name stays in the title", () => {
     const name = "consultar_notas_fiscais_da_filial_de_joao_pessoa_com_protocolo_da_sefaz";
     withTheme(<ToolCall name={name} title="Consultando as notas" status="pending" />);
     const shown = screen.getByText(name);
@@ -528,7 +528,7 @@ describe("ToolCall", () => {
     expect(shown.getAttribute("title")).toBe(name);
   });
 
-  test("aprovar e recusar com texto longo quebram a linha em vez de vazar", () => {
+  test("approve and reject with long text wrap instead of overflowing", () => {
     withTheme(
       <ToolCall
         name="emitir_nota"
@@ -548,7 +548,7 @@ describe("ToolCall", () => {
 });
 
 describe("AILabel", () => {
-  test("sem explicacao, e um selo que o leitor de tela ouve por extenso", () => {
+  test("without an explanation, it is a badge the screen reader hears in full", () => {
     withTheme(<AILabel />);
 
     expect(screen.getByText("Conteúdo gerado por IA")).toBeDefined();
@@ -556,7 +556,7 @@ describe("AILabel", () => {
     expect(screen.queryByRole("button")).toBeNull();
   });
 
-  test("com explicacao, vira botao com nome e abre o painel", async () => {
+  test("with an explanation, it becomes a named button and opens the panel", async () => {
     withTheme(<AILabel explanation="Resumo feito pelo modelo a partir das notas de agosto." />);
     const button = screen.getByRole("button", { name: "Conteúdo gerado por IA" });
 
@@ -567,7 +567,7 @@ describe("AILabel", () => {
     expect(screen.getByText("Gerado por IA")).toBeDefined();
   });
 
-  test("com explicacao, a area de toque cresce por fora do desenho, e o selo mudo nao", () => {
+  test("with an explanation, the touch area grows outside the drawing, and the silent badge does not", () => {
     const view = withTheme(<AILabel explanation="Resumo feito pelo modelo." />);
     const button = screen.getByRole("button", { name: "Conteúdo gerado por IA" });
 
@@ -581,7 +581,7 @@ describe("AILabel", () => {
     expect(tokens(screen.getByText("IA").parentElement!)).not.toContain("after:-inset-2");
   });
 
-  test("o tom sai de papel da casa", () => {
+  test("the tone comes from a house role", () => {
     withTheme(<AILabel tone="neutral" />);
     const badge = screen.getByText("IA").parentElement!;
 
@@ -590,8 +590,8 @@ describe("AILabel", () => {
   });
 });
 
-describe("o subcaminho", () => {
-  test("as cinco pecas saem de @rivocode/ui/ai, e de nenhuma outra entrada", () => {
+describe("the subpath", () => {
+  test("the five pieces come from @rivocode/ui/ai, and from no other entry", () => {
     const names = ["AILabel", "Conversation", "Message", "PromptInput", "ToolCall"];
 
     for (const name of names) {
@@ -600,7 +600,7 @@ describe("o subcaminho", () => {
     }
   });
 
-  test("a linha de import da pagina aponta para a entrada que exporta a peca", () => {
+  test("the page's import line points to the entry that exports the piece", () => {
     const documented = new Set(
       readdirSync(".design-sync/docs")
         .filter((file) => file.endsWith(".md"))

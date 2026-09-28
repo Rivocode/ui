@@ -38,31 +38,38 @@ function applied(total: number): string {
 }
 
 export type FilterChipProps = {
-  /** O campo filtrado: "Cliente", "Vencimento". Sai em peso normal, a esquerda. */
+  /** The filtered field: "Cliente", "Vencimento". Rendered in normal weight, on the left. */
   label: string;
   /**
-   * O que foi escolhido nesse campo. Sai em peso medio, e corta com
-   * reticencias quando passa de 10rem.
-   *
-   * `string`, e nao `ReactNode` como no web: texto no celular mora dentro de
-   * um `Text`, e este valor ainda vai inteiro para o rotulo do xis, que so
-   * aceita texto.
+   * What was chosen for that field. Rendered in medium weight, and truncated
+   * with an ellipsis beyond 10rem. `string`, and not `ReactNode` as on the web:
+   * text on the phone lives inside a `Text`, and this value also goes whole
+   * into the X's label, which accepts only text.
    */
   value?: string;
-  /** O que acontece no xis. Sem ele nao ha xis: e assim que se mostra filtro que o app trava. */
+  /**
+   * What happens on the X. Without it there is no X: that is how you show a
+   * filter the app locks.
+   */
   onRemove?: () => void;
-  /** Trava o xis e apaga a ficha, para a consulta que refaz nao aceitar um segundo toque. */
+  /** Locks the X and dims the chip, so the refetching query does not accept a second tap. */
   disabled?: boolean;
   /**
-   * A altura da pilula desenhada, e so ela: o alvo de toque do xis e 44pt nas
-   * duas, porque o dedo nao encolhe junto com a ficha.
+   * The height of the drawn pill, and only that: the X's touch target is 44pt
+   * in both, because the finger does not shrink along with the chip.
    */
   size?: ChipSize;
-  /** O que o leitor de tela ouve no xis. `remove` recebe "Cliente: Acme", ou so "Cliente" quando a ficha nao tem valor. */
+  /**
+   * What the screen reader hears on the X. `remove` receives "Cliente: Acme",
+   * or just "Cliente" when the chip has no value.
+   */
   labels?: { remove?: (filter: string) => string };
-  /** Veste a ficha inteira - a faixa de toque de 44pt, e nao a pilula pintada dentro dela. */
+  /** Styles the whole chip - the 44pt touch strip, not the pill painted inside it. */
   className?: string;
-  /** Classe por parte: `label` (o campo), `value` (o escolhido) e `remove` (o toque do xis). */
+  /**
+   * Class per part: `label` (the field), `value` (the chosen value) and
+   * `remove` (the X's touch target).
+   */
   classNames?: Slots<"label" | "value" | "remove">;
 };
 
@@ -131,53 +138,61 @@ export function FilterChip({
 }
 
 export type AppliedFilter = {
-  /** Chave estavel do filtro, e o que identifica a ficha na fileira. */
+  /** Stable key of the filter, and what identifies the chip in the row. */
   id: string;
-  /** O campo filtrado: "Cliente". */
+  /** The filtered field: "Cliente". */
   label: string;
-  /** O que foi escolhido: "Acme", "01/08 a 31/08". */
+  /** What was chosen: "Acme", "01/08 a 31/08". */
   value?: string;
-  /** `false` tira o xis desta ficha: o filtro aparece, e sair dele nao e escolha de quem le. */
+  /** `false` removes this chip's X: the filter shows, and leaving it is not the reader's choice. */
   removable?: boolean;
 };
 
 export type FilterBarProps = {
-  /** Os filtros de agora. A peca nao guarda lista propria nem conhece a consulta: ela mostra esta. */
+  /**
+   * The current filters. The component keeps no list of its own and does not
+   * know the query: it shows this one.
+   */
   filters: AppliedFilter[];
-  /** O filtro que saiu, com o objeto inteiro, quando o xis dele e apertado. */
+  /** The filter that left, with the whole object, when its X is pressed. */
   onRemove?: (filter: AppliedFilter) => void;
-  /** Chamado quando o "limpar" e apertado, antes do `onFiltersChange`. */
+  /** Called when "limpar" is pressed, before `onFiltersChange`. */
   onClear?: () => void;
-  /** Recebe o que sobrou, tanto no xis quanto no limpar. Sozinho ele ja basta. */
+  /** Receives what remains, on both the X and clear. On its own it is enough. */
   onFiltersChange?: (filters: AppliedFilter[]) => void;
-  /** O nome da fileira para o leitor de tela. */
+  /** The row's name for the screen reader. */
   label?: string;
   /**
-   * Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao
-   * pular quando o primeiro entra. O que ela guarda e uma faixa de toque de
-   * 44pt, que e a altura da fileira cheia. `false` some com a linha e mantem
-   * so o aviso.
+   * Keeps the row height when there is no filter at all, so the screen does not
+   * jump when the first one comes in. What it keeps is a 44pt touch strip, the
+   * height of the full row. `false` removes the row and keeps only the notice.
    */
   reserve?: boolean;
-  /** A partir de quantos filtros o "limpar" aparece. Com `1` ele fica sempre, e com `Infinity` nunca. */
+  /**
+   * From how many filters "limpar" appears. With `1` it is always there, and
+   * with `Infinity` never.
+   */
   clearFrom?: number;
-  /** A altura das pilulas. A fileira tem a mesma altura nas duas. */
+  /** The pill height. The row has the same height in both. */
   size?: ChipSize;
-  /** Trava todos os xis e o limpar, para a consulta que refaz nao aceitar um segundo toque. */
+  /** Locks every X and clear, so the refetching query does not accept a second tap. */
   disabled?: boolean;
-  /** Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` no aviso vivo e `empty` na linha guardada. */
+  /**
+   * The texts the component writes: `remove` on the X, `clear` on the clear
+   * button, `status` in the live notice and `empty` on the reserved row.
+   */
   labels?: {
     remove?: (filter: string) => string;
     clear?: (total: number) => string;
     status?: (total: number) => string;
     empty?: string;
   };
-  /** Veste a fileira inteira. */
+  /** Styles the whole row. */
   className?: string;
   /**
-   * Classe por parte: `list` (a fileira que rola, pelo conteudo dela), `item`
-   * (o embrulho de cada ficha), `chip` (a ficha), `clear` (o botao de limpar)
-   * e `empty` (a linha guardada quando nao ha filtro).
+   * Class per part: `list` (the scrolling row, via its content), `item` (each
+   * chip's wrapper), `chip` (the chip), `clear` (the clear button) and `empty`
+   * (the reserved row when there is no filter).
    */
   classNames?: Slots<"list" | "item" | "chip" | "clear" | "empty">;
 };

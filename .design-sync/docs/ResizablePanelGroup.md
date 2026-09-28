@@ -1,17 +1,17 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # ResizablePanelGroup
 
-Áreas lado a lado, ou empilhadas, com divisórias que se arrastam: a árvore, o
-editor e o inspetor de uma ferramenta; as pastas, a nota e os eventos dela.
-Quantos painéis a tela pedir, e um grupo dentro do painel de outro quando uma
-das áreas também se divide.
+Areas side by side, or stacked, with dividers that can be dragged: the tree,
+the editor and the inspector of a tool; the folders, the note and its events.
+As many panels as the screen asks for, and a group inside another's panel when
+one of the areas also splits.
 
-A família tem três peças. O `ResizablePanelGroup` é a moldura e decide a
-direção por `orientation`; o `ResizablePanel` é cada área; o `ResizableHandle`
-é a divisória entre duas delas.
+The family has three pieces. `ResizablePanelGroup` is the frame and decides the
+direction through `orientation`; `ResizablePanel` is each area;
+`ResizableHandle` is the divider between two of them.
 
 ```tsx
 <ResizablePanelGroup autoSaveId="notas">
@@ -37,59 +37,65 @@ direção por `orientation`; o `ResizablePanel` é cada área; o `ResizableHandl
 </ResizablePanelGroup>
 ```
 
-Toda medida é **porcentagem do grupo**: `defaultSize`, `minSize`, `maxSize` e
-`collapsedSize` do painel, o `layout` controlado e o que o `onLayoutChange`
-devolve. O painel sem `defaultSize` divide com os outros sem medida o que
-sobrou. O grupo ocupa a altura e a largura de quem o contém, então a moldura de
-fora precisa ter altura para o `vertical` ter o que dividir.
+Every size is a **percentage of the group**: the panel's `defaultSize`,
+`minSize`, `maxSize` and `collapsedSize`, the controlled `layout` and what
+`onLayoutChange` returns. A panel without `defaultSize` shares what is left
+with the other unsized ones. The group takes the height and width of its
+container, so the outer frame needs a height for `vertical` to have something
+to split.
 
-## A divisória
+## The divider
 
-Cada `ResizableHandle` é um `separator` de verdade, e as decisões são as mesmas
-do `Splitter`, que hoje é montado por cima desta família:
+Each `ResizableHandle` is a real `separator`, and the decisions are the same as
+in `Splitter`, which today is built on top of this family:
 
-- **O valor diz a medida com unidade.** `aria-valuenow` é a medida do painel
-  ANTES da divisória, e o `aria-valuetext` diz "40%", porque o número pelado
-  não é medida de coisa nenhuma. `aria-valuemin` e `aria-valuemax` são os
-  extremos que ela alcança de verdade com os vizinhos de agora, e não o
-  `minSize` e o `maxSize` crus.
-- **Ela aponta para o painel que mede**, por `aria-controls`. Sem a referência,
-  o leitor de tela não tem como saber qual dos dois lados o valor descreve.
-- **O nome mora nela.** O `aria-label` que você escreve cai no nó que tem o
-  papel. Sem nenhum, ela se chama "Redimensionar painéis", que é melhor que
-  silêncio e pior que dizer quais áreas ela separa: com mais de uma divisória
-  na tela, nomeie cada uma.
-- **O alvo tem 25px e a linha desenha 1.** A WCAG 2.5.8 pede 24, e um `::after`
-  transparente estica 12px para cada lado sem o desenho engordar. O
-  `withHandle` põe a pegadinha no meio da linha, para quem precisa ver onde
-  pegar; o alvo é o mesmo com ou sem ela.
-- **A linha pinta em `border-strong`, e não em `border`.** Ela é o único
-  desenho de um controle que recebe foco, e a WCAG 1.4.11 pede 3:1 contra o
-  fundo: `border` mede 1,23:1 e sumiria, `border-strong` passa nos dois temas.
+- **The value states the size with a unit.** `aria-valuenow` is the size of the
+  panel BEFORE the divider, and `aria-valuetext` says "40%", because the bare
+  number is not a measure of anything. `aria-valuemin` and `aria-valuemax` are
+  the extremes it can really reach with the current neighbors, and not the raw
+  `minSize` and `maxSize`.
+- **It points to the panel it measures**, through `aria-controls`. Without the
+  reference, the screen reader has no way of knowing which of the two sides the
+  value describes.
+- **The name lives on it.** The `aria-label` you write lands on the node that
+  has the role. With none, it is called "Redimensionar painéis", which is
+  better than silence and worse than saying which areas it separates: with
+  more than one divider on the screen, name each one.
+- **The target is 25px and the line draws 1.** WCAG 2.5.8 asks for 24, and a
+  transparent `::after` stretches 12px to each side without the drawing
+  getting thicker. `withHandle` puts the little grip in the middle of the line,
+  for whoever needs to see where to grab; the target is the same with or
+  without it.
+- **The line paints in `border-strong`, not `border`.** It is the only drawing
+  of a control that receives focus, and WCAG 1.4.11 asks for 3:1 against the
+  background: `border` measures 1.23:1 and would disappear, `border-strong`
+  passes in both themes.
 
-O teclado é o do padrão de divisória de janela da WAI-ARIA:
+The keyboard follows the WAI-ARIA window splitter pattern:
 
-| Tecla | O que faz |
+| Key | What it does |
 | --- | --- |
-| `←` `→` (em pé) ou `↑` `↓` (deitada) | move 2%, e os dois vizinhos trocam a medida |
-| `Home` | leva o painel de antes ao menor tamanho que ele alcança; se ele recolhe, recolhe |
-| `End` | leva o painel de antes ao maior tamanho que os vizinhos deixam |
-| `Enter` | recolhe o painel colapsável vizinho, ou o devolve à medida de antes |
+| `←` `→` (upright) or `↑` `↓` (lying down) | moves 2%, and the two neighbors trade size |
+| `Home` | takes the panel before it to the smallest size it can reach; if it collapses, it collapses |
+| `End` | takes the panel before it to the largest size the neighbors allow |
+| `Enter` | collapses the neighboring collapsible panel, or restores it to its previous size |
 
-A seta que passaria do mínimo para no mínimo; no mínimo, a próxima recolhe o
-painel colapsável. Com o mouse o recolher é pela metade: arrastado abaixo da
-metade do caminho entre `collapsedSize` e `minSize`, o painel recolhe, e acima
-dela fica no mínimo. Nenhum painel para num tamanho que ele não aceita.
+An arrow that would go past the minimum stops at the minimum; at the minimum,
+the next one collapses the collapsible panel. With the mouse, collapsing
+happens at the halfway point: dragged below half of the way between
+`collapsedSize` and `minSize`, the panel collapses, and above it, it stays at
+the minimum. No panel stops at a size it does not accept.
 
-## Recolher
+## Collapsing
 
-`collapsible` deixa o painel encolher até o `collapsedSize` (0 por padrão).
-Recolhido em 0, ele sai da tela **e do `Tab`**: o conteúdo fica `inert`, e
-ninguém tabula para dentro de uma coluna que não aparece. Com `collapsedSize`
-acima de 0, a faixa que sobra continua alcançável, para a coluna de ícones.
+`collapsible` lets the panel shrink down to `collapsedSize` (0 by default).
+Collapsed at 0, it leaves the screen **and the `Tab` order**: the content
+becomes `inert`, and nobody tabs into a column that does not show. With
+`collapsedSize` above 0, the strip that remains is still reachable, for the
+icon column.
 
-`onCollapse` e `onExpand` avisam a passagem, e o `ref` do painel dá a API
-imperativa, para o botão de mostrar e esconder que mora fora do grupo:
+`onCollapse` and `onExpand` report the transition, and the panel's `ref` gives
+the imperative API, for the show-and-hide button that lives outside the group:
 
 ```tsx
 const filtros = useRef<ResizablePanelHandle>(null)
@@ -100,46 +106,48 @@ const filtros = useRef<ResizablePanelHandle>(null)
 </ResizablePanel>
 ```
 
-São cinco: `collapse()`, `expand()` (volta à medida de antes de recolher),
-`resize(size)`, `getSize()` e `isCollapsed()`.
+There are five: `collapse()`, `expand()` (back to the size before collapsing),
+`resize(size)`, `getSize()` and `isCollapsed()`.
 
-## Guardar o layout
+## Saving the layout
 
-`autoSaveId` guarda o layout no `localStorage` sob essa chave e o devolve na
-próxima montagem. A leitura e a escrita estão em `try`: modo privado que lança
-ao tocar no `localStorage`, cota cheia ou valor corrompido não derrubam a tela,
-e o grupo volta ao `defaultSize`. Layout guardado que não cabe mais nos painéis
-de hoje (outra quantidade, medida fora do novo mínimo) também é descartado.
+`autoSaveId` saves the layout in `localStorage` under that key and restores it
+on the next mount. Reading and writing are in a `try`: a private mode that
+throws on touching `localStorage`, a full quota or a corrupted value do not
+bring down the screen, and the group goes back to `defaultSize`. A saved layout
+that no longer fits today's panels (a different count, a size outside the new
+minimum) is also discarded.
 
-`storage` troca o lugar: `sessionStorage`, ou um objeto seu com `getItem` e
-`setItem` que grava no perfil da pessoa. Para ter o layout nas mãos, use
-`layout` controlado com `onLayoutChange`.
+`storage` changes the place: `sessionStorage`, or an object of yours with
+`getItem` and `setItem` that writes to the person's profile. To hold the layout
+in your hands, use a controlled `layout` with `onLayoutChange`.
 
-## Sentido da escrita
+## Writing direction
 
-Em `dir="rtl"` o primeiro painel fica à direita, o arraste mede a partir da
-borda onde a leitura começa e as setas andam para o lado que a pessoa vê. A
-direção vem do `RivoProvider`, como no resto do catálogo. `Home` e `End`
-continuam lógicos: o mínimo e o máximo do painel de antes.
+In `dir="rtl"` the first panel sits on the right, dragging measures from the
+edge where reading begins and the arrows move toward the side the person sees.
+The direction comes from `RivoProvider`, as in the rest of the catalog. `Home`
+and `End` stay logical: the minimum and maximum of the panel before.
 
-## No celular
+## On the phone
 
-O grupo não empilha sozinho, de propósito: se três colunas viram uma pilha ou
-uma tela por vez é decisão da sua tela, e não da moldura. A orientação é prop,
-então o `useTelaEstreita()` trocando `orientation` resolve o caso comum. Quando
-o caso é exatamente lista e detalhe, o `Splitter` já faz isso por você.
+The group does not stack on its own, on purpose: whether three columns become a
+stack or one screen at a time is your screen's decision, not the frame's. The
+orientation is a prop, so a `useTelaEstreita()` swapping `orientation` solves
+the common case. When the case is exactly list and detail, `Splitter` already
+does it for you.
 
-## Quando não usar
+## When not to use
 
-Para **duas áreas**, lista e detalhe, sem recolher nem guardar, use o
-`Splitter`: é uma linha, empilha sozinho no celular e tira a divisória de onde
-ela não teria função. O `ResizablePanelGroup` é para quando a tela precisa de
-mais de duas áreas, de grupo dentro de grupo, de painel que recolhe ou de
-layout que volta igual amanhã.
+For **two areas**, list and detail, with no collapsing and no saving, use
+`Splitter`: it is one line, stacks on its own on the phone and removes the
+divider where it would have no function. `ResizablePanelGroup` is for when the
+screen needs more than two areas, a group inside a group, a panel that
+collapses or a layout that comes back the same tomorrow.
 
-Para esconder e mostrar uma área inteira sem proporção a negociar, use a
-`Sidebar` ou o `Collapsible`.
+To hide and show a whole area with no proportion to negotiate, use `Sidebar`
+or `Collapsible`.
 
-## No React Native
+## In React Native
 
-Não porta, pela mesma razão do `Splitter`, que no web é montado por cima desta família. Três colunas que se redimensionam pedem uma tela larga e um ponteiro fino: no celular em pé não há largura para dividir, e arrastar uma linha de 1px com o dedo não é gesto que exista. As áreas viram telas do router (Expo Router, React Navigation), e o painel que recolhe vira `Sheet`. O layout guardado por `autoSaveId` não tem o que guardar lá.
+Does not port, for the same reason as `Splitter`, which on the web is built on top of this family. Three resizable columns ask for a wide screen and a fine pointer: on a phone held upright there is no width to split, and dragging a 1px line with a finger is not a gesture that exists. The areas become router screens (Expo Router, React Navigation), and the panel that collapses becomes a `Sheet`. The layout saved by `autoSaveId` has nothing to save there.

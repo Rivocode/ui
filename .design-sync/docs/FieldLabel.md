@@ -1,10 +1,11 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # FieldLabel
 
-O rótulo do campo.
+The field's label.
 
-Dentro de um `Field`, a Base UI liga rótulo e controle sozinha, sem `htmlFor`
-escrito à mão e sem `id` inventado. Clicar no rótulo foca o campo.
+Inside a `Field`, Base UI wires label and control on its own, with no
+hand-written `htmlFor` and no made-up `id`. Clicking the label focuses the
+field.

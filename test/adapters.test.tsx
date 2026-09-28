@@ -10,11 +10,12 @@ import { CurrencyInput } from "../src/components/currency-input";
 import { TimeField } from "../src/components/time-field";
 
 /*
- * Os adaptadores tinham nome de componente, e o que eles traduzem e formato:
- * forCheckbox serve tudo que tem checked/onCheckedChange - o Switch, sem uma
- * linha de mudanca - e forSelect serve tudo que tem value/onValueChange, que e
- * RadioGroup, ToggleGroup, NumberField, Slider e OTPField. O nome fazia a API
- * parecer menor do que e, e mandava procurar um forSwitch que nao existe.
+ * The adapters were named after components, and what they translate is shape:
+ * forCheckbox serves anything with checked/onCheckedChange - the Switch, without
+ * a line of change - and forSelect serves anything with value/onValueChange,
+ * which is RadioGroup, ToggleGroup, NumberField, Slider and OTPField. The name
+ * made the API look smaller than it is, and sent people looking for a forSwitch
+ * that does not exist.
  */
 
 const schema = z.object({ avisar: z.boolean(), forma: z.string() });
@@ -42,22 +43,22 @@ function InvoiceForm() {
   );
 }
 
-test("o adaptador de marcado veste a chave, e nao so a caixa", () => {
+test("the checked adapter dresses the switch, and not only the checkbox", () => {
   render(<InvoiceForm />);
 
   expect(screen.getByRole("switch").getAttribute("data-checked")).not.toBeNull();
 });
 
-test("o adaptador de valor veste o grupo de escolha unica", () => {
+test("the value adapter dresses the single-choice group", () => {
   const { container } = render(<InvoiceForm />);
 
   const marked = [...container.querySelectorAll('[role="radio"][data-checked]')];
   expect(marked.length).toBe(1);
-  // O marcado e o do schema, e nao o primeiro da lista por acaso.
+  // The checked one is the schema's, and not the first in the list by chance.
   expect(marked[0]!.closest("label")!.textContent).toContain("Pix");
 });
 
-test("o indice do form expoe so os tres adaptadores de formato", async () => {
+test("the form index exposes only the three shape adapters", async () => {
   const exported = Object.keys(await import("../src/form")).filter((name) => name.startsWith("for"));
 
   expect(exported.sort()).toEqual(["forChecked", "forDate", "forValue"]);
@@ -91,14 +92,14 @@ function RequiredForm({ first }: { first: "valor" | "hora" }) {
   );
 }
 
-test("o adaptador de valor entrega a ref, e o formulario foca o campo com erro", async () => {
+test("the value adapter hands over the ref, and the form focuses the field with the error", async () => {
   render(<RequiredForm first="valor" />);
   await act(async () => fireEvent.click(screen.getByText("Salvar")));
   await waitFor(() => expect(screen.getByText("Informe o valor")).toBeTruthy());
   expect(document.activeElement).toBe(screen.getByLabelText("Valor"));
 });
 
-test("o campo de hora com erro tambem recebe o foco pelo adaptador de valor", async () => {
+test("the time field with an error also receives focus through the value adapter", async () => {
   render(<RequiredForm first="hora" />);
   await act(async () => fireEvent.click(screen.getByText("Salvar")));
   await waitFor(() => expect(screen.getByText("Informe a hora")).toBeTruthy());

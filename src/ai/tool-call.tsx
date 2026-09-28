@@ -29,42 +29,42 @@ const STATUS: Record<
 };
 
 export type ToolCallProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
-  /** O nome da ferramenta, como o modelo a chamou: `buscar_notas`. Sai em fonte mono. */
+  /** The tool's name, as the model called it: `buscar_notas`. Shown in a mono font. */
   name: string;
-  /** A frase para gente, ao lado do nome: "Consultando as notas em aberto". */
+  /** The human sentence, beside the name: "Consultando as notas em aberto". */
   title?: ReactNode;
   /**
-   * Em que pe a chamada esta. Cada estado sai com icone E texto, porque cor
-   * nunca e o unico sinal: `pending`, `running` (o icone gira), `done`,
-   * `error` e `approval`, que espera a pessoa decidir.
+   * Where the call stands. Each state shows an icon AND text, because color
+   * is never the only signal: `pending`, `running` (the icon spins), `done`,
+   * `error` and `approval`, which waits for the person to decide.
    */
   status: ToolCallStatus;
   /**
-   * Os argumentos da chamada. Objeto sai como JSON indentado; texto sai como
-   * veio.
+   * The call's arguments. An object is shown as indented JSON; text is shown as
+   * it came.
    */
   input?: unknown;
-  /** O que a ferramenta devolveu, com a mesma regra do `input`. */
+  /** What the tool returned, with the same rule as `input`. */
   output?: unknown;
-  /** A frase do erro, quando `status` e `error`. Sai no painel, no tom de perigo. */
+  /** The error sentence, when `status` is `error`. Shown in the panel, in the danger tone. */
   error?: ReactNode;
   /**
-   * Chamado pelo botao de aprovar, que so aparece em `approval`. Os dois botoes
-   * ficam fora do painel recolhivel: decisao que espera a pessoa nao se
-   * esconde.
+   * Called by the approve button, which only appears in `approval`. The two buttons
+   * stay outside the collapsible panel: a decision waiting on the person is not
+   * hidden.
    */
   onApprove?: () => void;
-  /** Chamado pelo botao de recusar, que so aparece em `approval`. */
+  /** Called by the reject button, which only appears in `approval`. */
   onReject?: () => void;
-  /** Os textos dos estados e dos botoes, para outra lingua ou outro tom. */
+  /** The texts of the states and buttons, for another language or another tone. */
   labels?: Partial<Record<ToolCallStatus | "approve" | "reject" | "input" | "output", string>>;
   /**
-   * Comeca aberto. Sem ele, abre sozinho so em `approval` e em `error`, os dois
-   * estados em que a pessoa precisa ler a entrada ou o erro. Sem `open`, o
-   * painel tambem abre quando `status` muda para um desses dois.
+   * Starts open. Without it, it opens by itself only in `approval` and in `error`, the two
+   * states in which the person needs to read the input or the error. Without `open`, the
+   * panel also opens when `status` changes to one of those two.
    */
   defaultOpen?: boolean;
-  /** Aberto, controlado. */
+  /** Open, controlled. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   classNames?: Slots<"trigger" | "name" | "status" | "panel" | "error" | "actions">;

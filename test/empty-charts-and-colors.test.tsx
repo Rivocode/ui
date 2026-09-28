@@ -24,7 +24,7 @@ function withTheme(node: ReactNode, dir: "ltr" | "rtl" = "ltr") {
   );
 }
 
-test("chave de serie com espaco ou ponto vira variavel de CSS valida, a mesma na declaracao e na marca", () => {
+test("a series key with a space or a dot becomes a valid CSS variable, the same in the declaration and in the mark", () => {
   const config: ChartConfig = {
     "Receita total": { label: "Receita total" },
     "v1.2": { label: "Versao" },
@@ -58,7 +58,7 @@ test("chave de serie com espaco ou ponto vira variavel de CSS valida, a mesma na
   expect(strokes).toEqual(declared.map((name) => `var(${name})`));
 });
 
-test("a cor da fatia sem color segue a ordem do config, e nao a do data", () => {
+test("the color of a slice without color follows the order of the config, not of the data", () => {
   const config: ChartConfig = { produto: { label: "Produto" }, servico: { label: "Serviço" } };
   const { container } = withTheme(
     <ChartDonut
@@ -78,7 +78,7 @@ test("a cor da fatia sem color segue a ordem do config, e nao a do data", () => 
   expect(swatches).toEqual(["var(--rc-chart-2)", "var(--rc-chart-1)"]);
 });
 
-test("o arco sem numero diz travessao, e acima do maximo diz o valor real", () => {
+test("the arc without a number says em dash, and above the maximum says the real value", () => {
   const read = (node: ReactNode) => {
     const { container, unmount } = withTheme(node);
     const root = container.querySelector("[role=img]")!;
@@ -93,7 +93,7 @@ test("o arco sem numero diz travessao, e acima do maximo diz o valor real", () =
   expect(read(<ChartRadial value={41} max={50} />)).toEqual(["82%", "82%"]);
 });
 
-test("no rtl o mapa espelha as caixas, e a seta que anda para frente vai para a esquerda na tela", () => {
+test("in rtl the treemap mirrors the tiles, and the arrow that moves forward goes left on screen", () => {
   const data = [
     { nome: "A", total: 60 },
     { nome: "B", total: 40 },
@@ -140,13 +140,13 @@ function strokeOf(node: unknown): string | undefined {
   return undefined;
 }
 
-test("a sparkline de um ponto so nao tem tendencia, e sai neutra", () => {
+test("a single-point sparkline has no trend, and comes out neutral", () => {
   expect(strokeOf(Sparkline({ data: [5], trend: "auto" }))).toBe("var(--rc-accent)");
   expect(strokeOf(Sparkline({ data: [], trend: "auto" }))).toBe("var(--rc-accent)");
   expect(strokeOf(Sparkline({ data: [5, 3], trend: "auto" }))).toBe("var(--rc-danger)");
 });
 
-test("a dica da rosca fica inteira dentro da moldura e fora do buraco, em qualquer tamanho", () => {
+test("the donut tip stays entirely inside the frame and outside the hole, at any size", () => {
   const sizes = [
     [160, 192],
     [240, 192],
@@ -211,7 +211,7 @@ function withSize<T>(width: number, height: number, run: () => Promise<T>) {
 
 const HIDING = ["opacity-0", "invisible", "hidden", "sr-only"];
 
-test("o miolo da rosca continua visivel enquanto a dica le uma fatia", () =>
+test("the donut center stays visible while the tip reads a slice", () =>
   withSize(320, 192, async () => {
     const { container } = withTheme(
       <ChartDonut
@@ -245,7 +245,7 @@ test("o miolo da rosca continua visivel enquanto a dica le uma fatia", () =>
     expect(steps).toBeGreaterThan(1);
   }));
 
-test("o anel de fundo da rosca e desenhado com dados, zerada e vazia sem empty", () =>
+test("the donut background ring is drawn with data, all zero and empty without empty", () =>
   withSize(320, 192, async () => {
     const cases = [
       [
@@ -266,7 +266,7 @@ test("o anel de fundo da rosca e desenhado com dados, zerada e vazia sem empty",
     }
   }));
 
-test("a rosca vazia ou zerada mostra o empty, e sem ele o anel com o miolo", () => {
+test("the empty or all-zero donut shows the empty, and without it the ring with the center", () => {
   const first = withTheme(
     <ChartDonut data={[]} valueKey="total" nameKey="natureza" empty={EMPTY} centerValue="R$ 0" />,
   );
@@ -292,7 +292,7 @@ test("a rosca vazia ou zerada mostra o empty, e sem ele o anel com o miolo", () 
   expect(container.querySelectorAll("li")).toHaveLength(2);
 });
 
-test("funil, mapa e grade de calor mostram o empty quando nao ha o que desenhar", () => {
+test("funnel, treemap and heatmap show the empty when there is nothing to draw", () => {
   const funnel = withTheme(
     <ChartFunnel
       data={[{ etapa: "Emitidas", total: 0 }]}
@@ -332,7 +332,7 @@ test("funil, mapa e grade de calor mostram o empty quando nao ha o que desenhar"
   expect(screen.queryByRole("group", { name: "Emissao por hora" })).toBeNull();
 });
 
-test("a moldura sem empty e com lista vazia avisa, em vez de eixos sobre o nada", () => {
+test("the frame without empty and with an empty list says so, instead of axes over nothing", () => {
   const config: ChartConfig = { faturado: { label: "Faturado" } };
   const first = withTheme(
     <ChartContainer config={config} className="h-40">
@@ -354,7 +354,7 @@ test("a moldura sem empty e com lista vazia avisa, em vez de eixos sobre o nada"
   expect(screen.getByText("No data")).toBeDefined();
 });
 
-test("a pizza com miolo escrito mantem a largura do texto, e nao zero", () => {
+test("the pie with a written center keeps the text width, and not zero", () => {
   withTheme(
     <ChartDonut
       data={[{ natureza: "servico", total: 1 }]}
@@ -369,7 +369,7 @@ test("a pizza com miolo escrito mantem a largura do texto, e nao zero", () => {
   expect(width).toBe("52%");
 });
 
-test("a grade de calor com todas as celulas em zero ou sem numero mostra o empty", () => {
+test("the heatmap with every cell at zero or without a number shows the empty", () => {
   const rows = [
     [
       { dia: "Seg", hora: "9h", total: 0 },

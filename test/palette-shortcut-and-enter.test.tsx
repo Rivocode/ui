@@ -28,20 +28,20 @@ function press(target: EventTarget, key: string, init: KeyboardEventInit = {}) {
   });
 }
 
-test("Ctrl+K fora de campo abre a paleta", () => {
+test("Ctrl+K outside a field opens the palette", () => {
   const { onOpenChange } = palette();
   press(document.body, "k");
   expect(onOpenChange).toHaveBeenCalledWith(true);
 });
 
-test("Ctrl+K dentro de campo ou de editor nao abre a paleta", () => {
+test("Ctrl+K inside a field or an editor does not open the palette", () => {
   const { onOpenChange } = palette();
   press(screen.getByLabelText("Busca"), "k");
   press(screen.getByTestId("editor"), "k");
   expect(onOpenChange).not.toHaveBeenCalled();
 });
 
-test("Ctrl+K que alguem ja tratou nao abre a paleta", () => {
+test("Ctrl+K that someone already handled does not open the palette", () => {
   const { onOpenChange } = palette();
   const claim = (event: Event) => event.preventDefault();
   document.body.addEventListener("keydown", claim);
@@ -53,19 +53,19 @@ test("Ctrl+K que alguem ja tratou nao abre a paleta", () => {
   expect(onOpenChange).not.toHaveBeenCalled();
 });
 
-test("o atalho em maiuscula casa com a tecla", () => {
+test("an uppercase shortcut matches the key", () => {
   const { onOpenChange } = palette({ shortcut: "K" });
   press(document.body, "k");
   expect(onOpenChange).toHaveBeenCalledWith(true);
 });
 
-test("com a paleta aberta, Ctrl+K no proprio campo dela fecha", () => {
+test("with the palette open, Ctrl+K in its own field closes it", () => {
   const { onOpenChange } = palette({ open: true });
   press(screen.getByRole("combobox"), "k");
   expect(onOpenChange).toHaveBeenCalledWith(false);
 });
 
-test("Enter durante a composicao do IME nao executa o comando", () => {
+test("Enter during IME composition does not run the command", () => {
   const { onSelect, onOpenChange } = palette({ open: true });
   const field = screen.getByRole("combobox");
 

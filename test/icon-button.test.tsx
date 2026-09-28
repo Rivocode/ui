@@ -9,7 +9,7 @@ function mount(ui: React.ReactElement) {
   return render(<RivoProvider scope="local">{ui}</RivoProvider>);
 }
 
-test("o label vira o nome acessivel, e o icone sai mudo", () => {
+test("the label becomes the accessible name, and the icon is hidden", () => {
   mount(
     <IconButton label="Excluir nota">
       <Trash2 />
@@ -21,15 +21,15 @@ test("o label vira o nome acessivel, e o icone sai mudo", () => {
   expect(svg.closest("[aria-hidden='true']")).not.toBeNull();
 });
 
-test("o tipo recusa botao de icone sem label", () => {
-  // @ts-expect-error label e obrigatorio
+test("the type rejects an icon button without a label", () => {
+  // @ts-expect-error label is required
   const missing = <IconButton>{<Trash2 />}</IconButton>;
   expect(missing).toBeDefined();
 });
 
-test("o tipo recusa aria-label solto, para o nome ter um caminho so", () => {
+test("the type rejects a loose aria-label, so the name has a single path", () => {
   const withAria = (
-    // @ts-expect-error aria-label sai do tipo; o nome e o label
+    // @ts-expect-error aria-label is out of the type; the name is the label
     <IconButton label="Excluir" aria-label="Outro">
       <Trash2 />
     </IconButton>
@@ -37,7 +37,7 @@ test("o tipo recusa aria-label solto, para o nome ter um caminho so", () => {
   expect(withAria).toBeDefined();
 });
 
-test("o quadrado sai do token de altura de controle, nos tres tamanhos", () => {
+test("the square comes from the control height token, in all three sizes", () => {
   const sizes = ["sm", "md", "lg"] as const;
   for (const size of sizes) {
     const { unmount } = mount(
@@ -54,7 +54,7 @@ test("o quadrado sai do token de altura de controle, nos tres tamanhos", () => {
   }
 });
 
-test("herda as variantes do Button, sem copiar a classe", () => {
+test("inherits the Button variants, without copying the class", () => {
   mount(
     <IconButton label="Excluir" variant="danger">
       <Trash2 />
@@ -65,7 +65,7 @@ test("herda as variantes do Button, sem copiar a classe", () => {
   expect(tokens).not.toContain("bg-accent");
 });
 
-test("carregando troca o icone pela espera, trava o clique e mantem o nome", () => {
+test("loading swaps the icon for the spinner, blocks the click and keeps the name", () => {
   const onClick = mock(() => {});
   mount(
     <IconButton label="Sincronizar" loading onClick={onClick}>
@@ -83,7 +83,7 @@ test("carregando troca o icone pela espera, trava o clique e mantem o nome", () 
   expect(onClick).not.toHaveBeenCalled();
 });
 
-test("desabilitado nao dispara o clique", () => {
+test("disabled does not fire the click", () => {
   const onClick = mock(() => {});
   mount(
     <IconButton label="Excluir" disabled onClick={onClick}>
@@ -96,7 +96,7 @@ test("desabilitado nao dispara o clique", () => {
   expect((button as HTMLButtonElement).disabled).toBe(true);
 });
 
-test("sem tooltip nao ha dica montada", () => {
+test("without tooltip no tip is mounted", () => {
   mount(
     <IconButton label="Excluir">
       <Trash2 />
@@ -105,7 +105,7 @@ test("sem tooltip nao ha dica montada", () => {
   expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
-test("com tooltip, a dica repete o label e nao entra no nome", async () => {
+test("with tooltip, the tip repeats the label and does not enter the name", async () => {
   mount(
     <IconButton label="Excluir nota" tooltip>
       <Trash2 />
@@ -123,7 +123,7 @@ test("com tooltip, a dica repete o label e nao entra no nome", async () => {
   expect(button.getAttribute("aria-label")).toBe("Excluir nota");
 });
 
-test("como link, continua com nome e sem virar button", () => {
+test("as a link, it keeps its name and does not become a button", () => {
   mount(
     <IconButton label="Abrir nota" render={<a href="/notas/1" />}>
       <Trash2 />

@@ -21,18 +21,18 @@ const DYNAMIC_COMPOSITE =
 
 const MANUAL = [STATIC, DYNAMIC, COMPOSITE_WITH_AMOUNT, COMPOSITE, DYNAMIC_COMPOSITE];
 
-test("o crc16 e o CCITT-FALSE: 29B1 no vetor de conferencia 123456789", () => {
+test("crc16 is CCITT-FALSE: 29B1 on the check vector 123456789", () => {
   expect(pixCrc("123456789")).toBe("29B1");
 });
 
-test("os cinco exemplos do Manual de Padroes para Iniciacao do Pix 2.10 batem o crc", () => {
+test("the five examples of the Pix Initiation Standards Manual 2.10 match the crc", () => {
   for (const payload of MANUAL) {
     expect(pixCrc(payload.slice(0, -4))).toBe(payload.slice(-4));
     expect(parsePixPayload(payload)).not.toBeNull();
   }
 });
 
-test("buildPixPayload remonta o exemplo estatico do manual caractere por caractere", () => {
+test("buildPixPayload rebuilds the manual's static example character by character", () => {
   expect(
     buildPixPayload({
       key: "123e4567-e12b-12d1-a456-426655440000",
@@ -42,7 +42,7 @@ test("buildPixPayload remonta o exemplo estatico do manual caractere por caracte
   ).toBe(STATIC);
 });
 
-test("o parse le chave, nome, cidade e txid do estatico, e o pagamento unico do dinamico", () => {
+test("parse reads key, name, city and txid from the static one, and the single payment from the dynamic one", () => {
   expect(parsePixPayload(STATIC)).toEqual({
     key: "123e4567-e12b-12d1-a456-426655440000",
     url: undefined,
@@ -67,7 +67,7 @@ test("o parse le chave, nome, cidade e txid do estatico, e o pagamento unico do 
   expect(parsePixPayload(COMPOSITE)!.key).toBeUndefined();
 });
 
-test("o parse recusa crc errado, um caractere trocado e codigo sem o GUI do Pix", () => {
+test("parse rejects a wrong crc, a swapped character and a code without the Pix GUI", () => {
   expect(parsePixPayload(`${STATIC.slice(0, -4)}1D3E`)).toBeNull();
   expect(parsePixPayload(STATIC.replace("Fulano", "Fulana"))).toBeNull();
   expect(parsePixPayload("")).toBeNull();
@@ -76,11 +76,11 @@ test("o parse recusa crc errado, um caractere trocado e codigo sem o GUI do Pix"
   expect(parsePixPayload(foreign + pixCrc(foreign))).toBeNull();
 });
 
-test("o crc em minuscula tambem confere", () => {
+test("a lowercase crc also checks out", () => {
   expect(parsePixPayload(`${STATIC.slice(0, -4)}1d3d`)).not.toBeNull();
 });
 
-test("valor, txid e descricao vao e voltam, com o acento tirado do nome e da cidade", () => {
+test("amount, txid and description round-trip, with the accent stripped from name and city", () => {
   const payload = buildPixPayload({
     key: "fulano_da_silva.recebedor@example.com",
     name: "Clínica São Lucas",
@@ -106,7 +106,7 @@ test("valor, txid e descricao vao e voltam, com o acento tirado do nome e da cid
   });
 });
 
-test("o build recusa o que o manual e o EMV nao aceitam", () => {
+test("build rejects what the manual and EMV do not accept", () => {
   const base = { key: "+5583988112233", name: "Fulano", city: "Joao Pessoa" };
   expect(() => buildPixPayload({ ...base, name: "N".repeat(26) })).toThrow(RangeError);
   expect(() => buildPixPayload({ ...base, city: "C".repeat(16) })).toThrow(RangeError);
@@ -128,7 +128,7 @@ const emv = (amount: string) => {
   return body + pixCrc(body);
 };
 
-test("o parse recusa campo 54 que nao e valor em reais", () => {
+test("parse rejects a field 54 that is not an amount in reais", () => {
   for (const amount of ["-5", "0x10", "1e3", " ", "0", "0.00", "1.234", "+5", ".5", "5.", "12345678901"]) {
     expect(parsePixPayload(emv(amount))).toBeNull();
   }
@@ -137,7 +137,7 @@ test("o parse recusa campo 54 que nao e valor em reais", () => {
   expect(parsePixPayload(emv("7"))!.amount).toBe(7);
 });
 
-test("o build grava a chave como o DICT a guarda, tirando a pontuacao de CPF, CNPJ e telefone", () => {
+test("build writes the key as DICT stores it, stripping punctuation from CPF, CNPJ and phone", () => {
   const keyOf = (key: string) =>
     parsePixPayload(buildPixPayload({ key, name: "Fulano", city: "Joao Pessoa" }))!.key;
 
@@ -151,7 +151,7 @@ test("o build grava a chave como o DICT a guarda, tirando a pontuacao de CPF, CN
   expect(keyOf("123E4567-E12B-12D1-A456-426655440000")).toBe("123e4567-e12b-12d1-a456-426655440000");
 });
 
-test("o build recusa chave que o DICT nao acharia, em vez de gerar um codigo que nao paga", () => {
+test("build rejects a key DICT would not find, instead of generating a code that does not pay", () => {
   const base = { name: "Fulano", city: "Joao Pessoa" };
   for (const key of [
     "529.982.247-24",
@@ -165,7 +165,7 @@ test("o build recusa chave que o DICT nao acharia, em vez de gerar um codigo que
   }
 });
 
-test("o codigo sai so em ASCII, entao o tamanho do TLV e o crc contam o mesmo que os bytes do QR", () => {
+test("the code comes out ASCII only, so the TLV length and the crc count the same as the QR bytes", () => {
   const payload = buildPixPayload({
     key: "fulano@example.com",
     name: "Jørgen Ångström Œuvre",
@@ -177,7 +177,7 @@ test("o codigo sai so em ASCII, entao o tamanho do TLV e o crc contam o mesmo qu
   expect(parsePixPayload(payload)).not.toBeNull();
 });
 
-test("o nome perde o acento e fica com a letra: Jørgen Ångström vira Jorgen Angstrom", () => {
+test("the name loses the accent and keeps the letter: Jørgen Ångström becomes Jorgen Angstrom", () => {
   const parsed = parsePixPayload(
     buildPixPayload({ key: "fulano@example.com", name: "Jørgen Ångström", city: "São Paulo" }),
   )!;
@@ -191,7 +191,7 @@ test("o nome perde o acento e fica com a letra: Jørgen Ångström vira Jorgen A
   expect(decomposed.city).toBe("Brasilia");
 });
 
-test("o valor e conferido depois de arredondado a centavo: 0.004 e recusado, 1.005 nao vira 1.00", () => {
+test("the amount is checked after rounding to the cent: 0.004 is rejected, 1.005 does not become 1.00", () => {
   const base = { key: "fulano@example.com", name: "Fulano", city: "Joao Pessoa" };
   expect(() => buildPixPayload({ ...base, amount: 0.004 })).toThrow(RangeError);
   expect(() => buildPixPayload({ ...base, amount: -1 })).toThrow(RangeError);
@@ -200,7 +200,7 @@ test("o valor e conferido depois de arredondado a centavo: 0.004 e recusado, 1.0
   expect(parsePixPayload(buildPixPayload({ ...base, amount: 1284.5 }))!.amount).toBe(1284.5);
 });
 
-test("formatBrl devolve traco para o que nao e valor, e nao escreve menos zero", () => {
+test("formatBrl returns a dash for what is not an amount, and does not write minus zero", () => {
   expect(formatBrl(Number.NaN)).toBe("-");
   expect(formatBrl(Number.POSITIVE_INFINITY)).toBe("-");
   expect(formatBrl(1e21)).toBe("-");
@@ -210,7 +210,7 @@ test("formatBrl devolve traco para o que nao e valor, e nao escreve menos zero",
   expect(formatBrl(999999999999.99)).toBe("R$ 999.999.999.999,99");
 });
 
-test("isValidPixKey aceita as cinco formas do DICT, como o manual as escreve", () => {
+test("isValidPixKey accepts the five DICT forms, as the manual writes them", () => {
   expect(isValidPixKey("52998224725")).toBe(true);
   expect(isValidPixKey("00038166000105")).toBe(true);
   expect(isValidPixKey("12ABC34501DE35")).toBe(true);
@@ -219,7 +219,7 @@ test("isValidPixKey aceita as cinco formas do DICT, como o manual as escreve", (
   expect(isValidPixKey("123e4567-e12b-12d1-a456-426655440000")).toBe(true);
 });
 
-test("isValidPixKey recusa digito verificador errado, pontuacao, fixo e telefone sem +55", () => {
+test("isValidPixKey rejects a wrong check digit, punctuation, a landline and a phone without +55", () => {
   expect(isValidPixKey("52998224724")).toBe(false);
   expect(isValidPixKey("529.982.247-25")).toBe(false);
   expect(isValidPixKey("00038166000106")).toBe(false);
@@ -234,7 +234,7 @@ test("isValidPixKey recusa digito verificador errado, pontuacao, fixo e telefone
   expect(isValidPixKey(`${"a".repeat(70)}@exemplo.com`)).toBe(false);
 });
 
-test("o valor sai em reais sem Intl, igual nos dois pacotes", () => {
+test("the amount comes out in reais without Intl, the same in both packages", () => {
   expect(formatBrl(100.5)).toBe("R$ 100,50");
   expect(formatBrl(1284.5)).toBe("R$ 1.284,50");
   expect(formatBrl(1234567.891)).toBe("R$ 1.234.567,89");
@@ -253,7 +253,7 @@ function pix(
 }
 
 for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
-  test(`o PixCode desenha um QR que decodifica sem inverter no proprio copia e cola, no ${theme}`, () => {
+  test(`PixCode draws a QR that decodes without inversion into its own copy-and-paste code, in ${theme}`, () => {
     const payload = buildPixPayload({
       key: "+5583988112233",
       name: "Clinica Sao Lucas",
@@ -268,7 +268,7 @@ for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
   });
 }
 
-test("valor e recebedor saem do codigo, e o nome da imagem diz os dois", () => {
+test("amount and receiver come from the code, and the image name states both", () => {
   pix();
   expect(screen.getByText("R$ 100,50")).toBeDefined();
   expect(screen.getByText("para Fulano de Tal")).toBeDefined();
@@ -276,7 +276,7 @@ test("valor e recebedor saem do codigo, e o nome da imagem diz os dois", () => {
   expect(screen.getByText(COMPOSITE_WITH_AMOUNT)).toBeDefined();
 });
 
-test("amount e receiver vencem o codigo, e no dinamico o campo 54 e ignorado", () => {
+test("amount and receiver beat the code, and in the dynamic one field 54 is ignored", () => {
   pix({ amount: 250, receiver: "Clinica Sao Lucas" });
   expect(screen.getByText("R$ 250,00")).toBeDefined();
   expect(screen.getByText("para Clinica Sao Lucas")).toBeDefined();
@@ -288,7 +288,7 @@ test("amount e receiver vencem o codigo, e no dinamico o campo 54 e ignorado", (
   expect(container.textContent).not.toContain("R$ 99,90");
 });
 
-test("copiar leva o copia e cola inteiro, e o botao confirma", async () => {
+test("copy takes the whole copy-and-paste code, and the button confirms", async () => {
   const written: string[] = [];
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,
@@ -303,14 +303,14 @@ test("copiar leva o copia e cola inteiro, e o botao confirma", async () => {
   expect(screen.getByRole("button", { name: "Código copiado" })).toBeDefined();
 });
 
-test("codigo com crc errado nao vira QR nem botao de copiar: vira aviso", () => {
+test("a code with a wrong crc becomes neither a QR nor a copy button: it becomes a warning", () => {
   pix({ payload: `${STATIC.slice(0, -4)}0000` });
   expect(screen.getByRole("alert").textContent).toBe("Este código Pix não é válido.");
   expect(screen.queryByRole("img")).toBeNull();
   expect(screen.queryByRole("button")).toBeNull();
 });
 
-test("expirado tira o QR e o copiar, e oferece gerar outro", () => {
+test("expired removes the QR and the copy button, and offers to generate another", () => {
   const onRenew = mock(() => {});
   pix({ expired: true, onRenew });
   expect(screen.queryByRole("img")).toBeNull();
@@ -323,7 +323,7 @@ test("expirado tira o QR e o copiar, e oferece gerar outro", () => {
   expect(onRenew).toHaveBeenCalledTimes(1);
 });
 
-test("carregando marca o lugar, avisa que esta ocupado e nao deixa copiar", () => {
+test("loading holds the place, announces it is busy and does not allow copying", () => {
   const { container } = pix({ loading: true, payload: "" });
   expect(container.querySelector("[aria-busy='true']")).not.toBeNull();
   expect(screen.queryByRole("img")).toBeNull();
@@ -332,13 +332,13 @@ test("carregando marca o lugar, avisa que esta ocupado e nao deixa copiar", () =
   expect(container.textContent).not.toContain("R$");
 });
 
-test("carregando com o valor ja conhecido mostra o valor, e so o QR espera", () => {
+test("loading with the amount already known shows the amount, and only the QR waits", () => {
   pix({ loading: true, payload: "", amount: 1284.5 });
   expect(screen.getByText("R$ 1.284,50")).toBeDefined();
   expect(screen.queryByRole("img")).toBeNull();
 });
 
-test("o copia e cola com espaco e quebra de linha em volta vai aparado para o QR, para a tela e para o copiar", async () => {
+test("the copy-and-paste code with spaces and line breaks around it goes trimmed to the QR, the screen and the copy", async () => {
   const written: string[] = [];
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,
@@ -356,7 +356,7 @@ test("o copia e cola com espaco e quebra de linha em volta vai aparado para o QR
   expect(written).toEqual([COMPOSITE_WITH_AMOUNT]);
 });
 
-test("todo texto da peca sai de labels, inclusive o para do recebedor e o nome do QR", () => {
+test("every text of the piece comes from labels, including the receiver's para and the QR name", () => {
   const labels: Partial<PixCodeLabels> = {
     receiver: (name) => `to ${name}`,
     code: (amount, receiver) => `Pix QR ${amount ?? ""} ${receiver ?? ""}`.trim(),
@@ -366,7 +366,7 @@ test("todo texto da peca sai de labels, inclusive o para do recebedor e o nome d
   expect(screen.getByRole("img", { name: "Pix QR R$ 100,50 Fulano de Tal" })).toBeDefined();
 });
 
-test("o receiver mostra o nome com acento, que o codigo guarda em ASCII", () => {
+test("receiver shows the accented name, which the code stores in ASCII", () => {
   const payload = buildPixPayload({
     key: "+5583988112233",
     name: "Clínica São Lucas",
@@ -380,7 +380,7 @@ test("o receiver mostra o nome com acento, que o codigo guarda em ASCII", () => 
   expect(screen.getByRole("img", { name: "QR Code Pix para Clínica São Lucas" })).toBeDefined();
 });
 
-test("expirar chega ao leitor de tela: a regiao viva ja existia, e so o texto dela muda", () => {
+test("expiring reaches the screen reader: the live region already existed, and only its text changes", () => {
   const { container, rerender } = pix();
   const region = container.querySelector("[role='status']")!;
   expect(region).not.toBeNull();
@@ -396,7 +396,7 @@ test("expirar chega ao leitor de tela: a regiao viva ja existia, e so o texto de
   expect(region.textContent).toBe("Este código Pix expirou.");
 });
 
-test("carregar e terminar de carregar chegam ao leitor de tela, pela mesma regiao viva", () => {
+test("loading and finishing loading reach the screen reader, through the same live region", () => {
   const { container, rerender } = pix({ loading: true, payload: "" });
   const region = container.querySelector("[role='status']")!;
   expect(region.textContent).toBe("Gerando o código Pix…");

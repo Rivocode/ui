@@ -1,17 +1,17 @@
-Se você programa com um agente ao lado, Claude Code, Cursor, ou qualquer um que
-leia skills, dá para ensiná-lo a biblioteca inteira de uma vez.
+If you program with an agent alongside, Claude Code, Cursor, or any other that
+reads skills, you can teach it the whole library at once.
 
-A skill é uma pasta: um `SKILL.md` que o agente lê sempre, e os arquivos de
-`reference/` que ele abre só quando o trabalho pede. O método, o fluxo, o texto,
-layout, design, escolha de peça, acessibilidade, formulário, gráfico, tema e
-React Native ficam separados justamente para não ocupar contexto enquanto não
-são o assunto.
+The skill is a folder: a `SKILL.md` the agent always reads, and the files in
+`reference/` it opens only when the work calls for them. The method, the flow,
+the copy, layout, design, choosing a piece, accessibility, forms, charts,
+theming and React Native are kept apart precisely so they do not take up
+context while they are not the subject.
 
-## Instalar
+## Install
 
-O comando do pacote é o caminho normal. Ele copia a skill **da versão
-instalada**: um projeto preso no `0.2.0` recebe a skill do `0.2.0`, e não a do
-site, que fala de peças que ele ainda não tem.
+The package command is the normal path. It copies the skill **from the
+installed version**: a project pinned to `0.2.0` gets the `0.2.0` skill, not
+the site's, which talks about pieces it does not have yet.
 
 ```bash
 npx rivocode-ui skill        # npm
@@ -20,17 +20,17 @@ yarn rivocode-ui skill       # yarn
 bunx rivocode-ui skill       # bun
 ```
 
-Sem argumento, ela entra no projeto, em `.claude/skills/rivocode-ui`, e a
-equipe recebe junto pelo Git. Com `--global`, entra em `~/.claude` e vale para
-todos os seus projetos.
+With no argument, it goes into the project, at `.claude/skills/rivocode-ui`,
+and the team gets it along through Git. With `--global`, it goes into
+`~/.claude` and applies to all of your projects.
 
-O mesmo comando instala também o **agent** `rivocode-ui`, em
-`.claude/agents/`. A skill ensina; o agent é o especialista que a carrega
-sozinho: delegue "monte a tela de faturas" para ele e o método já vem junto
-(conferir o catálogo antes de inventar um `<div>`, ler o `.md` da peça antes de
-usar, e o contrato de tokens que não se negocia).
+The same command also installs the `rivocode-ui` **agent**, in
+`.claude/agents/`. The skill teaches; the agent is the specialist that loads it
+on its own: delegate "build the invoices screen" to it and the method comes
+along (check the catalog before inventing a `<div>`, read the piece's `.md`
+before using it, and the token contract that is not up for negotiation).
 
-### Sem a biblioteca no projeto
+### Without the library in the project
 
 ```bash
 bunx @rivocode/ui skill
@@ -38,11 +38,11 @@ pnpm dlx @rivocode/ui skill
 npx -y @rivocode/ui skill
 ```
 
-O `yarn` clássico não tem `dlx`. Nele, instale o pacote e use a forma de cima.
+Classic `yarn` has no `dlx`. There, install the package and use the form above.
 
-### Sem gerenciador de pacote nenhum
+### With no package manager at all
 
-O site serve a skill crua, sempre na versão mais nova:
+The site serves the raw skill, always at the newest version:
 
 ```bash
 dir=$HOME/.claude/skills/rivocode-ui && mkdir -p "$dir/reference" && \
@@ -53,56 +53,57 @@ dir=$HOME/.claude/skills/rivocode-ui && mkdir -p "$dir/reference" && \
   done
 ```
 
-Trocando `$HOME/.claude` por `.claude` ela entra só no projeto.
+Swapping `$HOME/.claude` for `.claude` puts it in the project only.
 
 <details>
-<summary>Se o npm reclamar de conflito de dependência</summary>
+<summary>If npm complains about a dependency conflict</summary>
 
-Até a versão `0.3.0`, o par `zod` era declarado como `^4`, e o
-`@hookform/resolvers` arrasta pacotes que pedem zod 3. Para rodar um comando o
-npm instala tudo num diretório temporário, inclusive os pares opcionais, e o
-conflito aparecia ali. Nessas versões, acrescente `--legacy-peer-deps`.
+Up to version `0.3.0`, the `zod` peer was declared as `^4`, and
+`@hookform/resolvers` drags in packages that ask for zod 3. To run a command,
+npm installs everything in a temporary directory, optional peers included, and
+the conflict showed up there. On those versions, add `--legacy-peer-deps`.
 
-A faixa foi alargada e o conflito deixou de existir.
+The range was widened and the conflict no longer exists.
 
 </details>
 
-## Atualizar
+## Update
 
-O mesmo comando de novo. A cópia substitui a pasta inteira, então não sobra
-referência velha apontando para peça que mudou.
+The same command again. The copy replaces the whole folder, so no old reference
+is left pointing to a piece that changed.
 
-## O que ela ensina
+## What it teaches
 
-O contrato da biblioteca, inteiro e sem depender de rede: o Provider, o
-vocabulário de classes, a diferença entre preencher e escrever texto, e a
-altura que vem da densidade.
+The library contract, whole and without depending on the network: the
+Provider, the class vocabulary, the difference between filling and writing
+text, and the height that comes from density.
 
-Uma tabela de escolha para os erros que mais aparecem, `Alert` contra `Toast`,
-`Dialog` contra `AlertDialog`, `Select` contra `Combobox`, `Meter` contra
-`Progress`. Cada linha diz o porquê, que é o que evita a próxima dúvida.
+A choice table for the mistakes that show up most, `Alert` versus `Toast`,
+`Dialog` versus `AlertDialog`, `Select` versus `Combobox`, `Meter` versus
+`Progress`. Each row says why, which is what prevents the next doubt.
 
-O vocabulário de ícones (um conceito, um ícone, sempre do lucide) e a regra
-de tamanho e de nome acessível que acompanha cada um.
+The icon vocabulary (one concept, one icon, always from lucide) and the size
+and accessible-name rule that goes with each one.
 
-Os quatro finais de uma consulta, os dois subcaminhos com exemplo que roda, e a
-lista do que nunca fazer: cor literal, `z-index` numérico, altura cravada,
-portal montado à mão.
+The four end states of a query, the two subpaths with a running example, and
+the list of what never to do: literal color, numeric `z-index`, hard-coded
+height, a portal mounted by hand.
 
-E os endereços da documentação crua, para ele buscar a peça que faltar.
+And the addresses of the raw documentation, so it can fetch whatever piece is
+missing.
 
-## Por que uma skill, e não só o prompt
+## Why a skill, and not just the prompt
 
-Colar o contrato no prompt funciona uma vez. Na segunda conversa ele não está
-lá, e o agente volta a adivinhar a API pelo nome, com confiança, que é pior do
-que errar em silêncio.
+Pasting the contract into the prompt works once. In the second conversation it
+is not there, and the agent goes back to guessing the API from the name, with
+confidence, which is worse than failing silently.
 
-A skill fica instalada, e viaja com o pacote: quem atualiza a biblioteca tem a
-skill nova a um comando de distância.
+The skill stays installed, and travels with the package: whoever updates the
+library has the new skill one command away.
 
-## Ler sem instalar
+## Read without installing
 
-O arquivo principal é markdown cru, em
-[/skill/SKILL.md](https://ds.rivocode.com.br/skill/SKILL.md). Vale a leitura
-mesmo para quem escreve à mão: é o resumo mais curto de como esta biblioteca
-espera ser usada.
+The main file is raw markdown, at
+[/skill/SKILL.md](https://ds.rivocode.com.br/skill/SKILL.md). It is worth
+reading even for someone who writes by hand: it is the shortest summary of how
+this library expects to be used.

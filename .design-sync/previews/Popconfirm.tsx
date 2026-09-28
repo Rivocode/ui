@@ -23,7 +23,7 @@ const INVOICES: Invoice[] = [
   { id: "2", number: "4814", customer: "Transportes Cabo Branco" },
 ];
 
-/** Excluir uma linha */
+/** Delete a row */
 export function DeletingARow() {
   const [rows, setRows] = useState(INVOICES);
 
@@ -71,7 +71,7 @@ export function DeletingARow() {
   );
 }
 
-/** Com a chamada em curso */
+/** With the call in progress */
 export function WhileTheRequestRuns() {
   const [deleted, setDeleted] = useState(false);
 
@@ -97,7 +97,7 @@ export function WhileTheRequestRuns() {
   );
 }
 
-/** Sem perigo */
+/** No danger */
 export function Reversible() {
   return (
     <div className="min-h-72">

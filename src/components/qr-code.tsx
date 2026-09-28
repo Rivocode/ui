@@ -7,19 +7,27 @@ import type { Slots } from "../lib/slots";
 import { encodeQr, qrLogoArea, qrPath, QR_QUIET_ZONE } from "../shared/qr";
 
 export type QRCodeProps = Omit<ComponentProps<"div">, "children"> & {
-  /** O texto que o codigo carrega: link, copia e cola do Pix, chave de acesso. */
+  /** The text the code carries: a link, a Pix copy-and-paste code, an access key. */
   value: string;
-  /** O nome que o leitor de tela ouve, dizendo para que o codigo serve, e nao o conteudo cru. */
+  /** The name the screen reader hears, saying what the code is for, not the raw content. */
   label: string;
-  /** O lado do quadrado em px, com a margem de silencio incluida. */
+  /** The side of the square in px, with the quiet zone included. */
   size?: number;
-  /** A correcao de erro, de `L` (recupera 7% do simbolo) a `H` (30%), com `M` (15%) sem logo e `H` com logo. */
+  /**
+   * The error correction, from `L` (recovers 7% of the symbol) to `H` (30%), with `M` (15%) without
+   * a logo and `H` with a logo.
+   */
   level?: "L" | "M" | "Q" | "H";
-  /** A marca no centro, que so aparece com `level="H"`: os modulos embaixo dela sao apagados. */
+  /**
+   * The mark in the center, which only appears with `level="H"`: the modules under it are erased.
+   */
   logo?: ReactNode;
-  /** Os textos da peca. `tooLong` aparece no lugar do codigo quando o texto passa do que a versao 40 guarda no nivel escolhido. */
+  /**
+   * The piece's texts. `tooLong` appears in place of the code when the text exceeds what version 40
+   * holds at the chosen level.
+   */
   labels?: { tooLong?: string };
-  /** Classe por parte: `code` (o svg) e `logo`. */
+  /** Class per part: `code` (the svg) and `logo`. */
   classNames?: Slots<"code" | "logo">;
 };
 
@@ -43,8 +51,8 @@ export function QRCode({
   useEffect(() => {
     if (!misused || process.env.NODE_ENV === "production") return;
     console.warn(
-      `QRCode: o logo só aparece com level="H", e este código está em "${chosen}". ` +
-        "Os módulos embaixo do logo se perdem, e só o nível H recupera essa perda com folga.",
+      `QRCode: the logo only shows with level="H", and this code is at "${chosen}". ` +
+        "The modules under the logo are lost, and only level H recovers that loss with room to spare.",
     );
   }, [misused, chosen]);
 
@@ -63,8 +71,8 @@ export function QRCode({
   useEffect(() => {
     if (!failure || process.env.NODE_ENV === "production") return;
     console.warn(
-      `QRCode: o texto de ${value.length} caracteres não cabe num QR Code de nível "${chosen}", ` +
-        "e a peça desenha o aviso no lugar do código. Encurte o texto, troque por um link ou baixe o nível.",
+      `QRCode: the ${value.length}-character text does not fit in a QR Code at level "${chosen}", ` +
+        "and the component draws the notice in place of the code. Shorten the text, swap it for a link or lower the level.",
       failure,
     );
   }, [failure, value.length, chosen]);

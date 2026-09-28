@@ -9,9 +9,9 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("a divisoria e um separator que o teclado move", () => {
-  // Arrastar com o mouse e metade da peca: sem teclado, quem nao usa ponteiro
-  // fica preso na proporcao que o desenvolvedor escolheu.
+test("the divider is a separator the keyboard moves", () => {
+  // Dragging with the mouse is half the piece: without a keyboard, whoever
+  // does not use a pointer is stuck with the ratio the developer chose.
   let size = 40;
   withTheme(
     <Splitter
@@ -32,7 +32,7 @@ test("a divisoria e um separator que o teclado move", () => {
   expect(size).toBeGreaterThan(40);
 });
 
-test("a divisoria respeita o minimo dos dois lados", () => {
+test("the divider respects the minimum on both sides", () => {
   let size = 20;
   withTheme(
     <Splitter
@@ -51,25 +51,25 @@ test("a divisoria respeita o minimo dos dois lados", () => {
   expect(size).toBe(20);
 });
 
-test("no celular os dois lados empilham, em vez de espremer", () => {
-  // Duas colunas de 190px nao sao duas colunas: sao duas listas ilegiveis.
+test("on mobile the two sides stack, instead of squeezing", () => {
+  // Two 190px columns are not two columns: they are two unreadable lists.
   withTheme(<Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />);
 
-  // O primeiro filho e o container do provider; a peca e o proximo.
+  // The first child is the provider's container; the piece is the next one.
   const splitter = screen.getByRole("separator").parentElement!;
   expect(splitter.className).toContain("max-md:flex-col");
   expect(screen.getByRole("separator").className).toContain("max-md:hidden");
 });
 
 function splitter(dir: "ltr" | "rtl") {
-  const medida = { size: 50 };
+  const measure = { size: 50 };
   const view = render(
     <RivoProvider scope="local" dir={dir}>
       <Splitter
         defaultSize={50}
         min={10}
         onSizeChange={(next) => {
-          medida.size = next;
+          measure.size = next;
         }}
         start={<p>Lista</p>}
         end={<p>Detalhe</p>}
@@ -83,43 +83,43 @@ function splitter(dir: "ltr" | "rtl") {
   handle.parentElement!.getBoundingClientRect = () =>
     ({ left: 0, right: 600, width: 600, top: 0, bottom: 300, height: 300 }) as DOMRect;
 
-  return { ...view, handle, medida };
+  return { ...view, handle, measure };
 }
 
-test("em rtl o arraste mede da borda que comeca a leitura, e nao sempre da esquerda", () => {
-  const { handle, medida } = splitter("rtl");
+test("in rtl the drag measures from the edge where reading starts, not always from the left", () => {
+  const { handle, measure } = splitter("rtl");
 
   fireEvent.pointerDown(handle, { clientX: 300, clientY: 150, pointerId: 1 });
   fireEvent.pointerMove(window, { clientX: 420, clientY: 150, pointerId: 1 });
 
-  expect(medida.size).toBe(30);
+  expect(measure.size).toBe(30);
   expect(handle.getAttribute("aria-valuenow")).toBe("30");
 
-  const espelho = splitter("ltr");
-  fireEvent.pointerDown(espelho.handle, { clientX: 300, clientY: 150, pointerId: 1 });
+  const mirror = splitter("ltr");
+  fireEvent.pointerDown(mirror.handle, { clientX: 300, clientY: 150, pointerId: 1 });
   fireEvent.pointerMove(window, { clientX: 420, clientY: 150, pointerId: 1 });
 
-  expect(espelho.medida.size).toBe(70);
+  expect(mirror.measure.size).toBe(70);
 });
 
-test("em rtl a seta move a divisoria para o lado que a pessoa ve, e nao pelo numero", () => {
-  const { handle, medida } = splitter("rtl");
+test("in rtl the arrow moves the divider toward the side the person sees, not by the number", () => {
+  const { handle, measure } = splitter("rtl");
 
   fireEvent.keyDown(handle, { key: "ArrowRight" });
-  expect(medida.size).toBe(48);
+  expect(measure.size).toBe(48);
 
   fireEvent.keyDown(handle, { key: "ArrowLeft" });
   fireEvent.keyDown(handle, { key: "ArrowLeft" });
-  expect(medida.size).toBe(52);
+  expect(measure.size).toBe(52);
 
   fireEvent.keyDown(handle, { key: "Home" });
-  expect(medida.size).toBe(10);
+  expect(measure.size).toBe(10);
 
   fireEvent.keyDown(handle, { key: "End" });
-  expect(medida.size).toBe(90);
+  expect(measure.size).toBe(90);
 });
 
-test("o alvo da divisoria chega aos 24px que a WCAG 2.5.8 pede", () => {
+test("the divider target reaches the 24px that WCAG 2.5.8 asks for", () => {
   withTheme(<Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />);
 
   const handle = screen.getByRole("separator");
@@ -128,7 +128,7 @@ test("o alvo da divisoria chega aos 24px que a WCAG 2.5.8 pede", () => {
   expect(handle.className).toContain("after:-inset-x-3");
 });
 
-test("a divisoria deitada estica o alvo pela outra medida", () => {
+test("the horizontal divider stretches the target along the other dimension", () => {
   withTheme(
     <Splitter
       orientation="vertical"
@@ -142,7 +142,7 @@ test("a divisoria deitada estica o alvo pela outra medida", () => {
   expect(handle.className).toContain("after:-inset-y-3");
 });
 
-test("a divisoria diz a medida com unidade, e nao um numero pelado", () => {
+test("the divider states its size with a unit, not a bare number", () => {
   withTheme(
     <Splitter defaultSize={50} start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />,
   );
@@ -154,7 +154,7 @@ test("a divisoria diz a medida com unidade, e nao um numero pelado", () => {
   expect(handle.getAttribute("aria-valuetext")).toBe("85%");
 });
 
-test("a divisoria aponta para o lado que ela mede", () => {
+test("the divider points to the side it measures", () => {
   withTheme(<Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />);
 
   const handle = screen.getByRole("separator");
@@ -163,7 +163,7 @@ test("a divisoria aponta para o lado que ela mede", () => {
   expect(controlled.textContent).toBe("Lista");
 });
 
-test("o aria-label de quem chama pousa no no que tem papel, e nao numa div solta", () => {
+test("the caller's aria-label lands on the node that has a role, not on a loose div", () => {
   const { container } = withTheme(
     <Splitter
       aria-label="Divisória entre lista e detalhe"
@@ -178,7 +178,7 @@ test("o aria-label de quem chama pousa no no que tem papel, e nao numa div solta
   expect(screen.getByRole("separator", { name: "Divisória entre lista e detalhe" })).toBeDefined();
 });
 
-test("o texto vira campo no clique e volta no Enter", () => {
+test("the text becomes a field on click and comes back on Enter", () => {
   let saved = "";
   withTheme(
     <Editable
@@ -199,10 +199,10 @@ test("o texto vira campo no clique e volta no Enter", () => {
   expect(saved).toBe("Clínica Aurora");
 });
 
-test("o Escape desfaz, e nao salva pela metade", () => {
-  // Sair pela lateral e o gesto de quem se arrependeu: salvar ali transforma
-  // um clique errado numa edicao que ninguem pediu.
-  let saved = "sem mudanca";
+test("Escape undoes, and does not save halfway", () => {
+  // Leaving sideways is the gesture of someone who changed their mind: saving
+  // there turns a wrong click into an edit nobody asked for.
+  let saved = "unchanged";
   withTheme(
     <Editable
       value="Clínica São Lucas"
@@ -219,11 +219,11 @@ test("o Escape desfaz, e nao salva pela metade", () => {
   fireEvent.change(field, { target: { value: "outra coisa" } });
   fireEvent.keyDown(field, { key: "Escape" });
 
-  expect(saved).toBe("sem mudanca");
+  expect(saved).toBe("unchanged");
   expect(screen.getByRole("button", { name: /Clínica São Lucas/ })).toBeDefined();
 });
 
-test("sair do campo pelo Enter ou pelo Escape devolve o foco ao texto, e nao ao corpo da pagina", () => {
+test("leaving the field with Enter or Escape returns focus to the text, not to the page body", () => {
   withTheme(<Editable defaultValue="Clínica São Lucas" label="Cliente" />);
 
   fireEvent.click(screen.getByRole("button", { name: /Clínica São Lucas/ }));
@@ -237,7 +237,7 @@ test("sair do campo pelo Enter ou pelo Escape devolve o foco ao texto, e nao ao 
   expect(document.activeElement).toBe(screen.getByRole("button", { name: /Clínica Aurora/ }));
 });
 
-test("sair do campo pelo clique fora nao puxa o foco de volta ao texto", () => {
+test("leaving the field by clicking outside does not pull focus back to the text", () => {
   withTheme(
     <>
       <Editable defaultValue="Clínica São Lucas" label="Cliente" />

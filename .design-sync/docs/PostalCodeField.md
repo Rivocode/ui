@@ -1,12 +1,13 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # PostalCodeField
 
-O campo de CEP que busca o endereço: põe a máscara `99999-999` e, quando a
-pessoa completa os 8 dígitos, chama a sua função `lookup` e entrega o endereço
-por `onAddress`, para o resto do formulário se preencher sozinho.
+The CEP field that looks up the address: it applies the `99999-999` mask and,
+when the person completes the 8 digits, calls your `lookup` function and
+delivers the address through `onAddress`, so the rest of the form fills itself
+in.
 
 ```tsx
 <Field>
@@ -15,13 +16,13 @@ por `onAddress`, para o resto do formulário se preencher sozinho.
 </Field>
 ```
 
-**A biblioteca não chama serviço nenhum.** Quem busca é a função que você
-passa: ela recebe os 8 dígitos e o `signal` da busca, e devolve
-`{ street, district, city, state }`, ou `null` quando o CEP não existe. Você
-escolhe o serviço (ViaCEP, BrasilAPI, o seu próprio servidor), a política de
-cache e o que fazer com o dado.
+**The library calls no service at all.** What does the lookup is the function
+you pass: it receives the 8 digits and the lookup's `signal`, and returns
+`{ street, district, city, state }`, or `null` when the CEP does not exist.
+You pick the service (ViaCEP, BrasilAPI, your own server), the caching policy
+and what to do with the data.
 
-## Com ViaCEP
+## With ViaCEP
 
 ```tsx
 async function lookupViaCep(cep: string, signal: AbortSignal): Promise<PostalAddress | null> {
@@ -33,42 +34,44 @@ async function lookupViaCep(cep: string, signal: AbortSignal): Promise<PostalAdd
 }
 ```
 
-Três regras de contrato, e a função acima segue as três:
+Three contract rules, and the function above follows all three:
 
-- **`null` é "não existe".** O ViaCEP responde `200` com `{ "erro": true }`
-  para CEP que não existe, e é a função que traduz isso para `null`.
-- **Rejeitar é falha de rede.** Timeout, sem conexão, servidor fora do ar: a
-  peça mostra outro aviso, com o "Tentar de novo". Ele some quando a busca
-  recomeça, e o foco volta para o campo antes disso.
-- **Repasse o `signal` ao `fetch`.** Quando a pessoa troca o CEP no meio da
-  busca, a peça cancela a anterior. A resposta velha é descartada de qualquer
-  jeito, mas com o `signal` a requisição para de verdade.
+- **`null` is "does not exist".** ViaCEP answers `200` with
+  `{ "erro": true }` for a CEP that does not exist, and it is the function that
+  translates that to `null`.
+- **Rejecting is a network failure.** Timeout, no connection, server down: the
+  piece shows a different notice, with "Tentar de novo". It goes away when the
+  lookup restarts, and focus goes back to the field before that.
+- **Pass the `signal` on to `fetch`.** When the person changes the CEP in the
+  middle of a lookup, the piece cancels the previous one. The stale response is
+  discarded either way, but with the `signal` the request actually stops.
 
-## Os quatro finais
+## The four outcomes
 
-| Estado | Na tela | No leitor de tela |
+| State | On screen | On the screen reader |
 |---|---|---|
-| Buscando | giro no fim do campo, e o campo com `aria-busy`; com movimento reduzido, o giro para e o "Buscando endereço…" aparece escrito embaixo | "Buscando endereço…" |
-| Achou | um visto no fim do campo, e `onAddress` chamado | "Endereço encontrado." |
-| Não achou | aviso em vermelho embaixo, campo inválido | o próprio aviso |
-| Falha de rede | aviso neutro com "Tentar de novo", campo **não** inválido | o próprio aviso |
+| Looking up | a spinner at the end of the field, and the field with `aria-busy`; with reduced motion, the spinner stops and "Buscando endereço…" appears written below | "Buscando endereço…" |
+| Found | a checkmark at the end of the field, and `onAddress` called | "Endereço encontrado." |
+| Not found | a red notice below, field invalid | the notice itself |
+| Network failure | a neutral notice with "Tentar de novo", field **not** invalid | the notice itself |
 
-A falha de rede não marca o campo como inválido de propósito: o CEP pode estar
-certo, e a pessoa ainda consegue preencher o endereço à mão. O aviso sai ligado
-ao campo por `aria-describedby`, junto com a `FieldDescription` que já
-estivesse lá, e todos os anúncios saem numa região viva que existe antes da
-primeira busca.
+The network failure does not mark the field as invalid on purpose: the CEP may
+be right, and the person can still fill in the address by hand. The notice is
+wired to the field through `aria-describedby`, together with any
+`FieldDescription` already there, and every announcement goes out through a
+live region that exists before the first lookup.
 
-A busca só roda quando a pessoa digita. `defaultValue`, ou um `value` que
-chega do servidor ao editar um cadastro, não dispara nada: buscar ali
-sobrescreveria o endereço que a pessoa já tinha acertado à mão. Apagar um
-dígito cancela a busca em curso e limpa o aviso. `onStatusChange` conta cada
-troca de estado, para quem quer travar o botão de enviar enquanto busca.
+The lookup only runs when the person types. `defaultValue`, or a `value` that
+arrives from the server when editing a record, triggers nothing: looking up
+there would overwrite the address the person had already fixed by hand.
+Deleting a digit cancels the lookup in progress and clears the notice.
+`onStatusChange` reports every state change, for whoever wants to lock the
+submit button while looking up.
 
-## No formulário
+## In the form
 
-Com o `FormField`, guarde os dígitos pelo `onValueChange` e preencha o resto
-pelo `setValue` do formulário:
+With `FormField`, store the digits through `onValueChange` and fill in the rest
+through the form's `setValue`:
 
 ```tsx
 const form = useZodForm(schema, { defaultValues: { cep: '', street: '', city: '' } })
@@ -90,28 +93,29 @@ const form = useZodForm(schema, { defaultValues: { cep: '', street: '', city: ''
 </FormField>
 ```
 
-O erro do schema (`z.string().length(8)`, por exemplo) continua saindo pelo
-`FormField`, embaixo do campo, e convive com o aviso da busca.
+The schema's error (`z.string().length(8)`, for example) still comes out
+through `FormField`, below the field, and coexists with the lookup notice.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `input`, `suffix` (o giro e o visto),
-`message` e `retry`. `className` veste a raiz, que embrulha o campo e o aviso.
+`classNames` reaches each node by name: `input`, `suffix` (the spinner and the
+checkmark), `message` and `retry`. `className` dresses the root, which wraps
+the field and the notice.
 
-## Quando não usar
+## When not to use
 
-- **CEP sem busca de endereço** é `MaskedInput` com `mask="cep"`. Se a tela
-  não vai preencher nada com a resposta, a busca só gasta rede e mostra um
-  giro que não serve a ninguém.
-- **Endereço fora do Brasil** não tem CEP. Use `Input` com o rótulo do país
-  ("ZIP code", "Código postal"), sem máscara.
-- **Escolher entre endereços já cadastrados** é `Combobox`, com a lista de
-  endereços do cliente. O `PostalCodeField` é para escrever um endereço novo.
+- **A CEP without address lookup** is `MaskedInput` with `mask="cep"`. If the
+  screen is not going to fill in anything with the answer, the lookup only
+  spends network and shows a spinner that serves nobody.
+- **An address outside Brazil** has no CEP. Use `Input` with the country's
+  label ("ZIP code", "Código postal"), without a mask.
+- **Choosing among already registered addresses** is `Combobox`, with the
+  customer's list of addresses. `PostalCodeField` is for writing a new address.
 
-## No React Native
+## In React Native
 
-Traduz, com a mesma `lookup`, o mesmo `onAddress` e os mesmos quatro finais, e com a busca cancelada quando o CEP muda: a regra mora num arquivo só, compartilhado pelos dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` recebem os dígitos, sem a pontuação, e o `onValueChange` traz o CEP pontuado no segundo argumento.
+Translates, with the same `lookup`, the same `onAddress` and the same four endings, and with the lookup canceled when the CEP changes: the rule lives in a single file, shared by both packages. The field is controlled, like all of native: `value` and `onValueChange` receive the digits, without punctuation, and `onValueChange` brings the punctuated CEP in the second argument.
 
-O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo anúncio do leitor de tela do sistema. O "Tentar de novo" da falha de rede é um botão de verdade, com alvo de toque inteiro.
+The spinner sits at the end of the field, the message below it, and each state change goes out through the system screen reader's announcement. The network failure's "Tentar de novo" is a real button, with a full touch target.
 
-As partes vestem pelo mesmo `classNames` do web: `input`, `suffix`, `message` e `retry`. O `suffix` só existe enquanto a busca corre, porque aqui não há o visto do endereço achado.
+The parts are styled through the same `classNames` as the web: `input`, `suffix`, `message` and `retry`. `suffix` only exists while the lookup runs, because here there is no check mark for the address found.

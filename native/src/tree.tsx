@@ -9,41 +9,40 @@ import { Text } from "./text";
 export type TreeNode = {
   id: string;
   /**
-   * O nome na linha: "Contas a pagar".
-   *
-   * `string`, e nao o `ReactNode` do web, e a razao e a mesma do `at` do
-   * `Timeline`: este texto e montado dentro do rotulo falado da linha e dentro
-   * do caminho do cabecalho, e de um `ReactNode` nao ha como ler o texto de
-   * volta - o galho sairia anunciado como "objeto, 4 itens".
+   * The name on the row: "Contas a pagar". `string`, and not the web
+   * `ReactNode`, for the same reason as the `Timeline` `at`: this text is built
+   * into the row's spoken label and into the header path, and there is no way
+   * to read text back out of a `ReactNode` - the branch would be announced as
+   * "object, 4 items".
    */
   label: string;
-  /** Sem filhos - ou com a lista vazia - o no e folha, e folha e quem vale. */
+  /** Without children - or with an empty list - the node is a leaf, and leaves are what count. */
   children?: TreeNode[];
   disabled?: boolean;
 };
 
 export type TreeProps = {
   items: TreeNode[];
-  /** Ids das FOLHAS marcadas. Pai marcado nao entra aqui. */
+  /** Ids of the checked LEAVES. A checked parent does not go here. */
   value: string[];
   onValueChange: (ids: string[]) => void;
-  /** Sem isto, so uma folha por vez e nenhum galho se marca. */
+  /** Without it, only one leaf at a time and no branch gets checked. */
   multiple?: boolean;
   /**
-   * O nome do nivel de cima: "Centro de custo". E ele que o leitor de tela
-   * anuncia na lista da raiz, e e para ele que o "Voltar" do segundo nivel
-   * aponta.
+   * The name of the top level: "Centro de custo". It is what the screen reader
+   * announces on the root list, and it is what "Voltar" on the second level
+   * points to.
    */
   label: string;
-  /** O que dizer quando um nivel nao tem nada dentro. */
+  /** What to say when a level has nothing inside. */
   emptyMessage?: string;
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `back` e o nome do botao que
-   * sobe um nivel, e recebe o nome do nivel de cima; `selectAll` o da caixa
-   * que marca um galho inteiro; `branch` o que o leitor de tela ouve num
-   * galho, com o total de folhas e quantas estao escolhidas; e `enter` a dica
-   * dele. Passe so os que mudam.
+   * The component's texts, to change the language: `back` is the name of the
+   * button that goes up a level, and receives the name of the level above;
+   * `selectAll` that of the box that checks a whole branch; `branch` what the
+   * screen reader hears on a branch, with the total of leaves and how many are
+   * chosen; and `enter` its hint. Pass only the ones that change.
    */
   labels?: Partial<TreeLabels>;
 };

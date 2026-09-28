@@ -6,12 +6,12 @@ import { tokens } from "../tokens";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 describe("Alert", () => {
-  test("sem onDismiss nao ha botao, que continua sendo o padrao", () => {
+  test("without onDismiss there is no button, which stays the default", () => {
     const screen = render(<Alert tone="warning" title="Certificado vence em 5 dias" />);
     expect(byRole(screen, "button")).toHaveLength(0);
   });
 
-  test("onDismiss liga o xis, com Fechar aviso de nome", () => {
+  test("onDismiss turns on the x, named Fechar aviso", () => {
     const onDismiss = mock(() => {});
     const screen = render(
       <Alert tone="warning" title="Certificado vence em 5 dias" onDismiss={onDismiss} />,
@@ -22,7 +22,7 @@ describe("Alert", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
-  test("labels.dismiss troca o nome do xis", () => {
+  test("labels.dismiss changes the x's name", () => {
     const screen = render(
       <Alert title="Nota emitida" onDismiss={() => {}} labels={{ dismiss: "Dispensar o aviso" }} />,
     );
@@ -30,7 +30,7 @@ describe("Alert", () => {
     expect(byLabel(screen, "Fechar aviso")).toHaveLength(0);
   });
 
-  test("o xis pinta na cor do texto do tom", () => {
+  test("the x paints in the tone's text color", () => {
     const screen = render(<Alert tone="danger" title="Falhou" onDismiss={() => {}} />);
     const strokes = byClass(screen, /rotate-45/);
     expect(strokes).toHaveLength(2);
@@ -40,7 +40,7 @@ describe("Alert", () => {
     }
   });
 
-  test("o icone fica escondido do leitor e o texto continua na tela", () => {
+  test("the icon stays hidden from the screen reader and the text stays on screen", () => {
     const screen = render(
       <Alert title="Nota emitida" icon={<View testID="glifo" />}>
         O PDF chega por e-mail.
@@ -56,7 +56,7 @@ describe("Alert", () => {
     expect(textOf(screen)).toContain("O PDF chega por e-mail.");
   });
 
-  test("a funcao do icone recebe a cor do texto do tom", () => {
+  test("the icon function receives the tone's text color", () => {
     const seen: { color: string; size: number }[] = [];
     render(
       <Alert

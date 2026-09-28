@@ -1,47 +1,50 @@
 /**
- * Guarda da receita de instalacao: o que o scaffold escreve tem que ser o que
- * o `examples/native` roda.
+ * Install recipe guard: what the scaffold writes has to be what
+ * `examples/native` runs.
  *
- * Um agente montou um app do zero com o pacote publicado e nao chegou ao fim
- * lendo a doc: o `native/README.md` listava QUATRO arquivos de setup e
- * escondia os dois mais caros de diagnosticar. Sem `postcss.config.mjs` o
- * Tailwind nao roda no passe de CSS do metro e a tela sai sem estilo, sem erro
- * e sem pista; com um `babel.config.js` copiado da receita v4 do NativeWind
- * (`jsxImportSource: "nativewind"`) o metro morre procurando
- * `nativewind/jsx-runtime`, que a v5 nao tem. O agente so fechou o app depois
- * de ler o `examples/native` inteiro e reconstruir a receita a mao.
+ * An agent built an app from scratch with the published package and did not
+ * reach the end by reading the docs: `native/README.md` listed FOUR setup
+ * files and hid the two most expensive to diagnose. Without
+ * `postcss.config.mjs` Tailwind does not run in metro's CSS pass and the
+ * screen comes out unstyled, with no error and no clue; with a
+ * `babel.config.js` copied from NativeWind's v4 recipe
+ * (`jsxImportSource: "nativewind"`) metro dies looking for
+ * `nativewind/jsx-runtime`, which v5 does not have. The agent only finished
+ * the app after reading the whole of `examples/native` and rebuilding the
+ * recipe by hand.
  *
- * O `rivocode-ui-native-init` nasceu para essa leitura nao precisar acontecer
- * de novo. So que ele criou uma SEGUNDA copia da receita: os arquivos que
- * precisam concordar entre si dobraram de numero, e nada dizia quando as duas
- * metades se separassem. O `examples/native` e o unico lugar onde a receita e
- * MEDIDA - ele roda -, entao ele e a fonte, e esta guarda cobra que o comando
- * diga o mesmo.
+ * `rivocode-ui-native-init` was born so that reading would not have to happen
+ * again. Except it created a SECOND copy of the recipe: the files that need to
+ * agree with each other doubled in number, and nothing said when the two
+ * halves drifted apart. `examples/native` is the only place where the recipe
+ * is MEASURED - it runs -, so it is the source, and this guard demands that
+ * the command say the same.
  *
- * Ela nao compara texto: compara os FATOS que cada arquivo carrega, extraidos
- * dos dois lados pelo mesmo leitor - a lista ordenada de diretivas do
- * `global.css`, os plugins do PostCSS, o embrulho do metro, o
- * `userInterfaceStyle` do `app.json`, o `browserslist` do `package.json`, a
- * referencia de tipos do `nativewind-env.d.ts` e os presets do Babel. Comparar
- * texto reprovaria pelo caminho relativo do monorepo, que e diferente de
- * proposito.
+ * It does not compare text: it compares the FACTS each file carries, extracted
+ * from both sides by the same reader - the ordered list of `global.css`
+ * directives, the PostCSS plugins, the metro wrapper, the
+ * `userInterfaceStyle` of `app.json`, the `browserslist` of `package.json`,
+ * the type reference of `nativewind-env.d.ts` and the Babel presets. Comparing
+ * text would fail on the monorepo's relative path, which is different on
+ * purpose.
  *
- * O `babel.config.js` e o unico fato pela AUSENCIA, e ele foi medido: escrever
- * um com `presets: ["babel-preset-expo"]` derruba um app do Expo 57 inteiro,
- * porque nesse SDK o preset mora em `node_modules/expo/node_modules` e nao
- * resolve da raiz - o bundle sai com MODULE_NOT_FOUND antes do primeiro
- * modulo, e a mensagem nao cita o preset. Sem arquivo nenhum o
- * `@expo/metro-config` carrega o mesmo preset por caminho proprio e tudo anda.
- * Entao o `examples/native` nao tem arquivo de Babel de proposito, o comando
- * nao escreve nenhum, e a guarda cobra que o exemplo continue assim: no dia em
- * que ele precisar de um, a receita tambem precisa, e o comando esta mentindo.
+ * `babel.config.js` is the only fact by ABSENCE, and it was measured: writing
+ * one with `presets: ["babel-preset-expo"]` brings down a whole Expo 57 app,
+ * because in that SDK the preset lives in `node_modules/expo/node_modules` and
+ * does not resolve from the root - the bundle fails with MODULE_NOT_FOUND
+ * before the first module, and the message does not mention the preset. With
+ * no file at all `@expo/metro-config` loads the same preset by its own path
+ * and everything works. So `examples/native` has no Babel file on purpose, the
+ * command writes none, and the guard demands the example stay that way: on the
+ * day it needs one, the recipe needs one too, and the command is lying.
  *
- * Os peers obrigatorios sao o ultimo fato, e o unico que nao e arquivo: o
- * `RivoProvider` passou a trazer o `KeyboardProvider` do
- * `react-native-keyboard-controller` dentro, entao o app sem esse pacote nao
- * monta a primeira tela. O comando le a lista do proprio `native/package.json`
- * (todo peer que nao e `optional`) e cobra do app; a guarda cobra a mesma lista
- * do exemplo, que e onde ela e medida.
+ * The required peers are the last fact, and the only one that is not a file:
+ * `RivoProvider` started carrying the `KeyboardProvider` of
+ * `react-native-keyboard-controller` inside, so an app without that package
+ * does not mount its first screen. The command reads the list from
+ * `native/package.json` itself (every peer that is not `optional`) and demands
+ * it of the app; the guard demands the same list of the example, which is
+ * where it is measured.
  */
 import { existsSync } from "node:fs";
 import { countAtLeast } from "./scan";
@@ -69,10 +72,10 @@ const recipe = (await import(`${import.meta.dir}/../${RECIPE}`)) as {
 const SPEC = recipe.SPEC;
 
 /**
- * O `examples/native` mora dentro do repositorio e alcanca `native/` por
- * caminho relativo; o app de fora alcanca o mesmo por nome de pacote. Trocar um
- * pelo outro deixa as duas listas de diretiva comparaveis sem afrouxar nada:
- * cada par e uma equivalencia, e nao uma exclusao.
+ * `examples/native` lives inside the repository and reaches `native/` by a
+ * relative path; an outside app reaches the same by package name. Swapping one
+ * for the other makes the two directive lists comparable without loosening
+ * anything: each pair is an equivalence, not an exclusion.
  */
 const SAME_PLACE: [string, string][] = [
   ["../../native/theme.css", `${SPEC}/theme.css`],
@@ -101,10 +104,11 @@ function wrapper(js: string): string[] {
 }
 
 /**
- * O `.d.ts` do app tambem carrega FATO, e nao texto: a lista de referencias de
- * tipo e a de modulos declarados. E a metade do setup que o `tsc` do app cobra
- * e o metro nao - sem `nativewind/types` o `className` nao existe nas props de
- * `View`, e como o pacote publica FONTE o erro cai na NOSSA arvore.
+ * The app's `.d.ts` also carries FACTS, not text: the list of type references
+ * and of declared modules. It is the half of the setup the app's `tsc` checks
+ * and metro does not - without `nativewind/types`, `className` does not exist
+ * in the props of `View`, and since the package publishes SOURCE the error
+ * lands in OUR tree.
  */
 function typing(dts: string): string[] {
   return [
@@ -132,46 +136,46 @@ const exampleCss = await Bun.file(`${EXAMPLE}/global.css`).text();
 const exampleDirectives = directives(exampleCss);
 const mineDirectives = directives(recipe.globalCss(SPEC));
 
-countAtLeast(`diretiva de \`${EXAMPLE}/global.css\``, exampleDirectives.length, 6);
-countAtLeast("diretiva do global.css da receita", mineDirectives.length, 6);
+countAtLeast(`directive of \`${EXAMPLE}/global.css\``, exampleDirectives.length, 6);
+countAtLeast("directive of the recipe global.css", mineDirectives.length, 6);
 
 compare(
-  "global.css: as diretivas nao batem.",
+  "global.css: the directives do not match.",
   mineDirectives,
   exampleDirectives,
-  "O `@source not inline(...)` que falta e classe que o scanner do Tailwind" +
-    "\n    inventa a partir do codigo das pecas, e `.shadow` derruba o compilador" +
-    "\n    nativo. Ordem tambem conta: `utilities.css` depois do tema.",
+  "The missing `@source not inline(...)` is a class Tailwind's scanner" +
+    "\n    invents from the pieces' code, and `.shadow` brings down the native" +
+    "\n    compiler. Order counts too: `utilities.css` after the theme.",
 );
 
 compare(
-  "postcss.config.mjs: a lista de plugins nao bate.",
+  "postcss.config.mjs: the plugin list does not match.",
   plugins(recipe.postcssConfig()),
   plugins(await Bun.file(`${EXAMPLE}/postcss.config.mjs`).text()),
-  "Sem o plugin do Tailwind a tela renderiza sem estilo, sem erro e sem pista.",
+  "Without the Tailwind plugin the screen renders unstyled, with no error and no clue.",
 );
 
 compare(
-  "metro.config.js: o embrulho nao bate.",
+  "metro.config.js: the wrapper does not match.",
   wrapper(recipe.metroConfig()),
   wrapper(await Bun.file(`${EXAMPLE}/metro.config.js`).text()),
-  "E o `withNativewind` que troca o transformador do metro pelo do react-native-css.",
+  "It is `withNativewind` that swaps metro's transformer for react-native-css's.",
 );
 
 const exampleTyping = typing(await Bun.file(`${EXAMPLE}/nativewind-env.d.ts`).text());
 const mineTyping = typing(recipe.nativewindEnv());
 
-countAtLeast(`fato de \`${EXAMPLE}/nativewind-env.d.ts\``, exampleTyping.length, 2);
-countAtLeast("fato do nativewind-env.d.ts da receita", mineTyping.length, 2);
+countAtLeast(`fact of \`${EXAMPLE}/nativewind-env.d.ts\``, exampleTyping.length, 2);
+countAtLeast("fact of the recipe nativewind-env.d.ts", mineTyping.length, 2);
 
 compare(
-  "nativewind-env.d.ts: as declaracoes de tipo nao batem.",
+  "nativewind-env.d.ts: the type declarations do not match.",
   mineTyping,
   exampleTyping,
-  "Sem `nativewind/types` o `className` nao existe nas props de View, Text e" +
-    "\n    Pressable, e o tsc do app reprova a nossa fonte inteira por um erro que" +
-    "\n    nao e dele - o skipLibCheck dele nao salva, porque so pula .d.ts. O" +
-    '\n    `declare module "*.css"` e do `generated.css` que o App.tsx importa.',
+  "Without `nativewind/types`, `className` does not exist in the props of View, Text and" +
+    "\n    Pressable, and the app's tsc fails our whole source over an error that" +
+    "\n    is not the app's - its skipLibCheck does not save it, because it only skips .d.ts. The" +
+    '\n    `declare module "*.css"` is for the `generated.css` that App.tsx imports.',
 );
 
 const exampleApp = (await Bun.file(`${EXAMPLE}/app.json`).json()) as {
@@ -179,10 +183,10 @@ const exampleApp = (await Bun.file(`${EXAMPLE}/app.json`).json()) as {
 };
 
 compare(
-  "app.json: o `userInterfaceStyle` nao bate.",
+  "app.json: `userInterfaceStyle` does not match.",
   recipe.USER_INTERFACE_STYLE,
   exampleApp.expo.userInterfaceStyle,
-  "Fora de `automatic` o iOS prende a aparencia no claro e o tema escuro nunca chega.",
+  "Other than `automatic`, iOS locks the appearance to light and the dark theme never arrives.",
 );
 
 const examplePkg = (await Bun.file(`${EXAMPLE}/package.json`).json()) as {
@@ -190,66 +194,66 @@ const examplePkg = (await Bun.file(`${EXAMPLE}/package.json`).json()) as {
 };
 
 compare(
-  "package.json: o `browserslist` nao bate.",
+  "package.json: `browserslist` does not match.",
   recipe.BROWSERSLIST,
   examplePkg.browserslist,
-  "Sem navegador moderno o passe web do Expo reescreve o `light-dark()` dos" +
-    "\n    tokens num polyfill de vars orfas, e a compilacao morre com" +
+  "Without a modern browser, Expo's web pass rewrites the tokens' `light-dark()`" +
+    "\n    into a polyfill of orphan vars, and compilation dies with" +
     '\n    "Specifier, found ()".',
 );
 
-countAtLeast("peer obrigatorio da receita", recipe.REQUIRED_PEERS.length, 5);
+countAtLeast("required peer of the recipe", recipe.REQUIRED_PEERS.length, 5);
 
 compare(
-  "package.json: faltam peers obrigatorios no exemplo.",
+  "package.json: the example is missing required peers.",
   [],
   recipe.missingPeers(EXAMPLE),
-  "O comando cobra do app todo peer que o `native/package.json` nao marca como" +
-    "\n    opcional; o exemplo que nao os tem nao roda o que a receita promete. O" +
-    "\n    `react-native-keyboard-controller` e o caso novo: o `RivoProvider` traz o" +
-    "\n    `KeyboardProvider` dele dentro, e sem o pacote o provider nao monta.",
+  "The command demands of the app every peer `native/package.json` does not mark as" +
+    "\n    optional; an example without them does not run what the recipe promises." +
+    "\n    `react-native-keyboard-controller` is the new case: `RivoProvider` carries its" +
+    "\n    `KeyboardProvider` inside, and without the package the provider does not mount.",
 );
 
 const strayBabel = recipe.BABEL_NAMES.filter((name) => existsSync(`${EXAMPLE}/${name}`));
 
-countAtLeast("nome de arquivo de Babel procurado", recipe.BABEL_NAMES.length, 10);
+countAtLeast("Babel file name searched for", recipe.BABEL_NAMES.length, 10);
 
 if (strayBabel.length > 0) {
   problems.push(
-    `babel.config.js: ${EXAMPLE} passou a ter arquivo de Babel (${strayBabel.join(", ")}).\n` +
-      "    O comando nao escreve nenhum, e diz ao usuario que nao ter e o certo,\n" +
-      "    porque e o que o exemplo mede. Se o exemplo agora precisa de um, a\n" +
-      "    receita precisa do mesmo, e esta guarda tem que passar a comparar\n" +
-      "    conteudo em vez de ausencia.",
+    `babel.config.js: ${EXAMPLE} now has a Babel file (${strayBabel.join(", ")}).\n` +
+      "    The command writes none, and tells the user that having none is right,\n" +
+      "    because it is what the example measures. If the example now needs one, the\n" +
+      "    recipe needs the same, and this guard has to start comparing\n" +
+      "    content instead of absence.",
   );
 }
 
 if (recipe.BABEL_V4.length === 0) {
   problems.push(
-    "babel.config.js: a receita parou de reconhecer a v4 do NativeWind.\n" +
-      "    `BABEL_V4` esta vazia, entao o comando aceita calado o arquivo que a\n" +
-      "    receita antiga manda escrever - e e ele que quebra o bundle.",
+    "babel.config.js: the recipe stopped recognizing NativeWind v4.\n" +
+      "    `BABEL_V4` is empty, so the command silently accepts the file the\n" +
+      "    old recipe says to write - and that is the one that breaks the bundle.",
   );
 }
 
 if (problems.length > 0) {
   console.error(
-    `${problems.length} divergencia(s) entre a receita do \`rivocode-ui-native-init\` e o ${EXAMPLE}:\n`,
+    `${problems.length} divergence(s) between the \`rivocode-ui-native-init\` recipe and ${EXAMPLE}:\n`,
   );
   for (const problem of problems) console.error(`  ${problem}\n`);
   console.error(
-    `  O ${EXAMPLE} e a fonte, porque e o unico dos dois que roda. Conserte o\n` +
-      `  ${RECIPE} para dizer o mesmo, e o \`native/README.md\` junto.`,
+    `  ${EXAMPLE} is the source, because it is the only one of the two that runs. Fix\n` +
+      `  ${RECIPE} to say the same, and \`native/README.md\` along with it.`,
   );
   process.exit(1);
 }
 
 console.log(
-  `A receita de ${recipe.RECIPE.length} arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ` +
-    `${EXAMPLE}: ${mineDirectives.length} diretivas de CSS, ${recipe.POSTCSS_PLUGINS.length} plugin de PostCSS, ` +
+  `The ${recipe.RECIPE.length}-file recipe of \`rivocode-ui-native-init\` says the same as ` +
+    `${EXAMPLE}: ${mineDirectives.length} CSS directives, ${recipe.POSTCSS_PLUGINS.length} PostCSS plugin(s), ` +
     `${recipe.METRO_WRAPPER}, userInterfaceStyle ${recipe.USER_INTERFACE_STYLE}, ` +
-    `browserslist com ${recipe.BROWSERSLIST.length}, ${mineTyping.length} fatos de tipagem, ` +
-    `${recipe.REQUIRED_PEERS.length} peers obrigatorios instalados, ` +
-    `e nenhum arquivo de Babel nos dois ` +
-    `(${recipe.BABEL_V4.length} marca da v4 recusada em ${recipe.BABEL_NAMES.length} nomes).`,
+    `browserslist with ${recipe.BROWSERSLIST.length}, ${mineTyping.length} typing facts, ` +
+    `${recipe.REQUIRED_PEERS.length} required peers installed, ` +
+    `and no Babel file in either ` +
+    `(${recipe.BABEL_V4.length} v4 mark(s) refused across ${recipe.BABEL_NAMES.length} names).`,
 );

@@ -45,15 +45,15 @@ function ControlledPicker({ initial, record, ...props }: PickerHarnessProps) {
   );
 }
 
-describe("as regras do valor", () => {
-  test("a mascara poe os dois pontos e para em quatro digitos", () => {
+describe("the value rules", () => {
+  test("the mask adds the colon and stops at four digits", () => {
     expect(applyTimeMask("8")).toBe("8");
     expect(applyTimeMask("0830")).toBe("08:30");
     expect(applyTimeMask("083045")).toBe("08:30");
     expect(applyTimeMask("a8b3")).toBe("83");
   });
 
-  test("parseTime recusa o impossivel em vez de consertar", () => {
+  test("parseTime refuses the impossible instead of fixing it", () => {
     expect(parseTime("14:30")).toBe(870);
     expect(parseTime("00:00")).toBe(0);
     expect(parseTime("25:99")).toBeUndefined();
@@ -61,7 +61,7 @@ describe("as regras do valor", () => {
     expect(parseTime("14")).toBeUndefined();
   });
 
-  test("formatTime devolve texto de cinco casas, e vazio sem hora", () => {
+  test("formatTime returns five-character text, and empty without a time", () => {
     expect(formatTime(870)).toBe("14:30");
     expect(formatTime(0)).toBe("00:00");
     expect(formatTime(undefined)).toBe("");
@@ -69,7 +69,7 @@ describe("as regras do valor", () => {
 });
 
 describe("TimeField", () => {
-  test("so hora inteira avisa quem escuta", () => {
+  test("only a whole time notifies the listener", () => {
     const record = mock((_value: string) => {});
     const screen = render(<ControlledField initial="" label="Horário" record={record} />);
     const input = byType(screen, "TextInput")[0]!;
@@ -82,7 +82,7 @@ describe("TimeField", () => {
     expect(record).toHaveBeenCalledWith("08:30");
   });
 
-  test("esvaziar o campo avisa com string vazia", () => {
+  test("emptying the field notifies with an empty string", () => {
     const record = mock((_value: string) => {});
     const screen = render(<ControlledField initial="08:30" label="Horário" record={record} />);
 
@@ -90,7 +90,7 @@ describe("TimeField", () => {
     expect(record).toHaveBeenCalledWith("");
   });
 
-  test("25:99 marca invalido, nao emite, e sair volta ao ultimo valido", () => {
+  test("25:99 marks invalid, does not emit, and leaving goes back to the last valid one", () => {
     const record = mock((_value: string) => {});
     const screen = render(<ControlledField initial="08:00" label="Horário" record={record} />);
     const frame = () => byLabel(screen, "Horário")[0]!.props.className as string;
@@ -109,7 +109,7 @@ describe("TimeField", () => {
     expect(frame()).not.toContain("border-danger");
   });
 
-  test("os dois botoes pousam na grade, e nao somam o passo cru", () => {
+  test("both buttons land on the grid, and do not add the raw step", () => {
     const record = mock((_value: string) => {});
     const screen = render(
       <ControlledField initial="14:07" label="Horário" step={15} record={record} />,
@@ -122,7 +122,7 @@ describe("TimeField", () => {
     expect(record).toHaveBeenLastCalledWith("14:00");
   });
 
-  test("com o campo vazio o botao de mais comeca na abertura da janela", () => {
+  test("with the field empty the plus button starts at the window opening", () => {
     const record = mock((_value: string) => {});
     const screen = render(
       <ControlledField initial="" label="Horário" min="08:00" max="18:00" record={record} />,
@@ -132,13 +132,13 @@ describe("TimeField", () => {
     expect(record).toHaveBeenLastCalledWith("08:00");
   });
 
-  test("o passo nao vira regra: hora fora da grade continua valendo", () => {
+  test("the step does not become a rule: a time off the grid still counts", () => {
     const screen = render(<ControlledField initial="14:07" label="Horário" step={30} />);
     expect(byLabel(screen, "Horário")[0]!.props.className).not.toContain("border-danger");
     expect(byType(screen, "TextInput")[0]!.props.value).toBe("14:07");
   });
 
-  test("fora da janela marca invalido sem apagar o que a pessoa digitou", () => {
+  test("outside the window marks invalid without erasing what the person typed", () => {
     const screen = render(
       <ControlledField initial="19:00" label="Horário" min="08:00" max="18:00" />,
     );
@@ -147,7 +147,7 @@ describe("TimeField", () => {
     expect(byType(screen, "TextInput")[0]!.props.value).toBe("19:00");
   });
 
-  test("janela invertida e ignorada, e o dia inteiro vale", () => {
+  test("an inverted window is ignored, and the whole day counts", () => {
     const screen = render(
       <ControlledField initial="03:00" label="Horário" min="22:00" max="06:00" />,
     );
@@ -155,14 +155,14 @@ describe("TimeField", () => {
     expect(byLabel(screen, "Horário")[0]!.props.className).not.toContain("border-danger");
   });
 
-  test("o teclado que abre e o numerico", () => {
+  test("the keyboard that opens is the numeric one", () => {
     const screen = render(<ControlledField initial="" label="Horário" />);
     expect(byType(screen, "TextInput")[0]!.props.keyboardType).toBe("number-pad");
   });
 });
 
 describe("TimePicker", () => {
-  test("o gatilho mostra a hora, e sem escolha mostra o molde", () => {
+  test("the trigger shows the time, and without a choice shows the mask", () => {
     const cheio = render(<ControlledPicker initial="14:30" label="Horário da coleta" />);
     expect(textOf(cheio)).toContain("14:30");
 
@@ -170,7 +170,7 @@ describe("TimePicker", () => {
     expect(textOf(vazio)).toContain("Escolha o horário");
   });
 
-  test("a hora nao fecha a folha e preserva o minuto; o minuto fecha", () => {
+  test("the hour does not close the sheet and keeps the minute; the minute closes it", () => {
     const record = mock((_value: string) => {});
     const screen = render(
       <ControlledPicker initial="14:30" label="Horário da coleta" step={15} record={record} />,
@@ -188,7 +188,7 @@ describe("TimePicker", () => {
     expect(byLabel(screen, "Minuto 45").length).toBe(0);
   });
 
-  test("a janela recorta a grade sem deslocar a grade", () => {
+  test("the window trims the grid without shifting the grid", () => {
     const screen = render(
       <ControlledPicker initial="" label="Horário" min="08:10" max="10:00" step={15} />,
     );
@@ -202,7 +202,7 @@ describe("TimePicker", () => {
     expect(byLabel(screen, "Minuto 15").length).toBe(1);
   });
 
-  test("a hora nova encosta no limite da janela em vez de sair", () => {
+  test("the new hour sticks to the window limit instead of leaving it", () => {
     const record = mock((_value: string) => {});
     const screen = render(
       <ControlledPicker
@@ -220,7 +220,7 @@ describe("TimePicker", () => {
     expect(record).toHaveBeenLastCalledWith("10:00");
   });
 
-  test("cada opcao passa dos 44pt de alvo", () => {
+  test("each option goes past the 44pt target", () => {
     const screen = render(<ControlledPicker initial="14:30" label="Horário" />);
     act(() => byLabel(screen, "Horário")[0]!.props.onPress());
 
@@ -228,7 +228,7 @@ describe("TimePicker", () => {
     expect(byLabel(screen, "Minuto 30")[0]!.props.className).toContain("h-12");
   });
 
-  test("valor fora da janela pinta o gatilho de erro sem apagar", () => {
+  test("a value outside the window paints the trigger as an error without erasing", () => {
     const screen = render(
       <ControlledPicker initial="19:00" label="Horário" min="08:00" max="18:00" />,
     );
@@ -237,7 +237,7 @@ describe("TimePicker", () => {
     expect(textOf(screen)).toContain("19:00");
   });
 
-  test("os nomes das colunas trocam um sem apagar o outro", () => {
+  test("the column names change one without erasing the other", () => {
     const screen = render(
       <ControlledPicker initial="14:30" label="Horário" labels={{ hours: "Hora da coleta" }} />,
     );

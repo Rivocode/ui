@@ -59,21 +59,21 @@ const shape = readFileSync("src/tokens/forma.css", "utf8");
 const contract = readFileSync("src/tokens/contract.css", "utf8");
 const rootBlock = shape.slice(shape.indexOf(":root"), shape.indexOf("}"));
 
-test("a peca do web nao escreve peso cru do Tailwind: escreve a intencao", () => {
+test("the web component does not write a raw Tailwind weight: it writes the intent", () => {
   const files = filesOf(WEB_TREES);
   expect(files.length).toBeGreaterThan(100);
 
   expect(rawWeights(files)).toEqual([]);
 });
 
-test("a peca nativa tambem nao escreve peso cru", () => {
+test("the native component does not write a raw weight either", () => {
   const files = filesOf(NATIVE_TREES);
   expect(files.length).toBeGreaterThan(80);
 
   expect(rawWeights(files)).toEqual([]);
 });
 
-test("a varredura acusa o peso cru, com e sem variante", () => {
+test("the scan flags the raw weight, with and without a variant", () => {
   const line = 'cn("text-sm font-semibold", "hover:font-medium", "[&_b]:font-bold font-rc-strong")';
   expect([...line.matchAll(RAW)].map((hit) => hit[0])).toEqual([
     "font-semibold",
@@ -83,7 +83,7 @@ test("a varredura acusa o peso cru, com e sem variante", () => {
   expect([..."font-rc-medium font-rc-bold --font-weight-bold".matchAll(RAW)]).toEqual([]);
 });
 
-test("toda font-display da peca web leva o peso de titulo ao lado, com a mesma variante", () => {
+test("every font-display in a web component carries the heading weight beside it, with the same variant", () => {
   const files = filesOf(WEB_TREES);
   expect(files.length).toBeGreaterThan(100);
 
@@ -107,14 +107,14 @@ test("toda font-display da peca web leva o peso de titulo ao lado, com a mesma v
   expect(missing).toEqual([]);
 });
 
-test("os cinco pesos moram no forma.css com o valor da casa, e o Tailwind os le", () => {
+test("the five weights live in forma.css with the house value, and Tailwind reads them", () => {
   for (const intent of INTENTS) {
     expect(rootBlock).toContain(`--rc-weight-${intent}: ${HOUSE[intent]};`);
     expect(contract).toContain(`--font-weight-rc-${intent}: var(--rc-weight-${intent});`);
   }
 });
 
-test("o valor da casa e o mesmo numero da classe do Tailwind que a intencao substituiu", () => {
+test("the house value is the same number as the Tailwind class the intent replaced", () => {
   const tailwind = readFileSync("node_modules/tailwindcss/theme.css", "utf8");
   const REPLACED = {
     regular: "normal",
@@ -140,11 +140,11 @@ async function loadStylesheet(id: string, base: string) {
   return { path, base: dirname(path), content: await Bun.file(path).text() };
 }
 
-test("o Tailwind do web compila cada classe de peso para o token, e nao para o numero", async () => {
+test("the web Tailwind compiles each weight class to the token, and not to the number", async () => {
   const system = await __unstable__loadDesignSystem(readFileSync("src/styles.css", "utf8"), {
     base: resolve("src"),
     loadStylesheet,
-    loadModule: () => Promise.reject(new Error("sem plugin")),
+    loadModule: () => Promise.reject(new Error("no plugin")),
   });
 
   const compiled = system.candidatesToCss(INTENTS.map((intent) => `font-rc-${intent}`));
@@ -154,7 +154,7 @@ test("o Tailwind do web compila cada classe de peso para o token, e nao para o n
   });
 });
 
-test("o nativo recebe os cinco pesos no theme.css e no tokens.json, com o mesmo valor", async () => {
+test("native receives the five weights in theme.css and tokens.json, with the same value", async () => {
   const theme = readFileSync("native/theme.css", "utf8");
   const { tokens } = await import("../native/tokens");
   const scales = tokens.scales as Record<string, number>;
@@ -165,7 +165,7 @@ test("o nativo recebe os cinco pesos no theme.css e no tokens.json, com o mesmo 
   }
 });
 
-test("o cn trata a classe de peso como peso: a ultima vence, e a familia fica", () => {
+test("cn treats the weight class as a weight: the last one wins, and the family stays", () => {
   expect(cn("font-sans font-rc-medium")).toBe("font-sans font-rc-medium");
   expect(cn("font-display font-rc-display")).toBe("font-display font-rc-display");
   expect(cn("font-rc-medium", "font-rc-strong")).toBe("font-rc-strong");

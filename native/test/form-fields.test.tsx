@@ -53,7 +53,7 @@ const hostParent = (node: { parent: unknown }) => {
 };
 
 describe("Slider", () => {
-  test("o arrasto usa o max e o callback de agora, e nao os da montagem", () => {
+  test("the drag uses the current max and callback, not the ones from mount", () => {
     const first = mock((_: number) => {});
     const second = mock((_: number) => {});
     const screen = render(<Slider value={0} onValueChange={first} max={100} label="Volume" />);
@@ -73,7 +73,7 @@ describe("Slider", () => {
     expect(second).toHaveBeenCalledWith(5);
   });
 
-  test("trilho e polegar nao recebem o toque, e o gesto nao se deixa roubar", () => {
+  test("track and thumb do not take the touch, and the gesture does not let itself be stolen", () => {
     const screen = render(<Slider value={40} onValueChange={() => {}} label="Volume" />);
     const parts = byClass(screen, /\b(h-1\.5|size-5)\b/);
 
@@ -82,7 +82,7 @@ describe("Slider", () => {
     expect(panResponders.at(-1)!.onPanResponderTerminationRequest?.()).toBe(false);
   });
 
-  test("desabilitado, o leitor de tela ouve o estado e nao consegue ajustar", () => {
+  test("disabled, the screen reader hears the state and cannot adjust", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Slider value={40} onValueChange={onValueChange} label="Volume" disabled />,
@@ -95,7 +95,7 @@ describe("Slider", () => {
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  test("passo de 0,1 sai com as casas do passo, sem o resto do ponto flutuante", () => {
+  test("a 0.1 step comes out with the step's decimals, without the floating point remainder", () => {
     const onValueChange = mock((_: number) => {});
     const screen = render(
       <Slider value={0.2} onValueChange={onValueChange} max={1} step={0.1} label="Opacidade" />,
@@ -107,8 +107,8 @@ describe("Slider", () => {
   });
 });
 
-describe("Field leva o rotulo ao controle", () => {
-  test("Input, Textarea, InputGroup e MaskedInput saem com o nome do Field", () => {
+describe("Field takes the label to the control", () => {
+  test("Input, Textarea, InputGroup and MaskedInput come out with the Field's name", () => {
     const controls = [
       <Input key="input" />,
       <Textarea key="textarea" />,
@@ -122,7 +122,7 @@ describe("Field leva o rotulo ao controle", () => {
     }
   });
 
-  test("o nome que quem chama passou vence o do Field", () => {
+  test("the name the caller passed wins over the Field's", () => {
     const screen = render(
       <Field label="Nome">
         <Input accessibilityLabel="Nome completo" />
@@ -155,12 +155,12 @@ describe("NumberField", () => {
     );
   }
 
-  test("o campo do meio tem nome", () => {
+  test("the middle field has a name", () => {
     const screen = render(<NumberField value={2} onValueChange={() => {}} label="Parcelas" />);
     expect(input(screen).props.accessibilityLabel).toBe("Parcelas");
   });
 
-  test("o min espera a saida do campo, e o max vale a cada tecla", () => {
+  test("min waits for leaving the field, and max applies on every keystroke", () => {
     const record = mock((_: number) => {});
     const screen = render(<Controlled min={10} max={100} record={record} />);
 
@@ -178,7 +178,7 @@ describe("NumberField", () => {
     expect(input(screen).props.value).toBe("10");
   });
 
-  test("aceita virgula e ponto como separador decimal", () => {
+  test("accepts comma and dot as the decimal separator", () => {
     const record = mock((_: number) => {});
     const screen = render(<Controlled step={0.1} record={record} />);
 
@@ -189,7 +189,7 @@ describe("NumberField", () => {
     expect(record).toHaveBeenLastCalledWith(3.7);
   });
 
-  test("passo de 0,1 sai com as casas do passo", () => {
+  test("a 0.1 step comes out with the step's decimals", () => {
     const onValueChange = mock((_: number) => {});
     const screen = render(
       <NumberField value={0.2} onValueChange={onValueChange} step={0.1} label="Taxa" />,
@@ -198,7 +198,7 @@ describe("NumberField", () => {
     expect(onValueChange).toHaveBeenLastCalledWith(0.3);
   });
 
-  test("o valor de fora aparece no meio da digitacao, sem esperar a saida", () => {
+  test("the outside value appears mid-typing, without waiting for leaving", () => {
     let change = (_: (n: number) => number) => {};
     function Harness() {
       const [value, setValue] = useState(5);
@@ -217,7 +217,7 @@ describe("NumberField", () => {
     expect(input(screen).props.value).toBe("8");
   });
 
-  test("o passo soma a partir do digitado, sem arredondar ao passo", () => {
+  test("the step adds from what was typed, without rounding to the step", () => {
     const record = mock((_: number) => {});
     const screen = render(<Controlled step={0.5} record={record} />);
 
@@ -227,7 +227,7 @@ describe("NumberField", () => {
     expect(input(screen).props.value).toBe("2,87");
   });
 
-  test("o passo parte do digitado abaixo do min, e nao do valor anterior", () => {
+  test("the step starts from what was typed below min, not from the previous value", () => {
     const record = mock((_: number) => {});
     const screen = render(<Controlled min={10} max={100} record={record} />);
 
@@ -237,7 +237,7 @@ describe("NumberField", () => {
     expect(record).toHaveBeenLastCalledWith(10);
   });
 
-  test("com min negativo aceita o sinal de menos e troca de teclado", () => {
+  test("with a negative min it accepts the minus sign and switches keyboard", () => {
     const record = mock((_: number) => {});
     const screen = render(<Controlled min={-50} record={record} />);
 
@@ -249,7 +249,7 @@ describe("NumberField", () => {
     expect(input(screen).props.value).toBe("-12");
   });
 
-  test("sem min negativo o sinal de menos sai do texto", () => {
+  test("without a negative min the minus sign is dropped from the text", () => {
     const record = mock((_: number) => {});
     const screen = render(<Controlled record={record} />);
 
@@ -260,12 +260,12 @@ describe("NumberField", () => {
 });
 
 describe("TimeField", () => {
-  test("o campo do meio tem nome", () => {
+  test("the middle field has a name", () => {
     const screen = render(<TimeField value="" onValueChange={() => {}} label="Entrega" />);
     expect(input(screen).props.accessibilityLabel).toBe("Entrega");
   });
 
-  test("o reset de fora aparece no meio da digitacao, sem esperar a saida", () => {
+  test("an outside reset appears mid-typing, without waiting for leaving", () => {
     let reset = () => {};
     function Harness() {
       const [value, setValue] = useState("");
@@ -284,7 +284,7 @@ describe("TimeField", () => {
 });
 
 describe("forText", () => {
-  test("o disabled do FormField vira editable, que e o que o TextInput le", () => {
+  test("the FormField's disabled becomes editable, which is what the TextInput reads", () => {
     const row = {
       name: "nome",
       value: "Ana",
@@ -304,7 +304,7 @@ describe("forText", () => {
 });
 
 describe("Select", () => {
-  test("a lista rasa rola, e as 27 UFs ficam alcancaveis", () => {
+  test("the flat list scrolls, and the 27 UFs stay reachable", () => {
     const states = Array.from({ length: 27 }, (_, index) => ({
       value: `uf${index}`,
       label: `UF ${index}`,
@@ -324,8 +324,8 @@ describe("Select", () => {
   });
 });
 
-describe("colar o codigo formatado", () => {
-  test("OTPField nao corta o colado antes da limpeza", () => {
+describe("pasting the formatted code", () => {
+  test("OTPField does not cut the pasted text before cleaning", () => {
     const onValueChange = mock((_: string) => {});
     const screen = render(<OTPField value="" onValueChange={onValueChange} />);
 
@@ -334,7 +334,7 @@ describe("colar o codigo formatado", () => {
     expect(onValueChange).toHaveBeenLastCalledWith("123456");
   });
 
-  test("PostalCodeField nao corta o CEP colado com ponto", () => {
+  test("PostalCodeField does not cut a CEP pasted with a dot", () => {
     const onValueChange = mock((_: string, __: string) => {});
     const screen = render(
       <PostalCodeField
@@ -350,8 +350,8 @@ describe("colar o codigo formatado", () => {
   });
 });
 
-describe("a moldura tocavel nao esconde os filhos do leitor de tela", () => {
-  test("OTPField e TagsInput", () => {
+describe("the tappable frame does not hide its children from the screen reader", () => {
+  test("OTPField and TagsInput", () => {
     const otp = render(<OTPField value="" onValueChange={() => {}} />);
     const tags = render(<TagsInput value={["pix"]} onValueChange={() => {}} />);
 
@@ -364,7 +364,7 @@ describe("a moldura tocavel nao esconde os filhos do leitor de tela", () => {
 });
 
 describe("Editable", () => {
-  test("desabilitado nao oferece nem atende a acao de editar", () => {
+  test("disabled neither offers nor answers the edit action", () => {
     const screen = render(<Editable value="Ana" onValueChange={() => {}} label="Nome" disabled />);
     const [preview] = byLabel(screen, "Nome: Ana");
 
@@ -374,7 +374,7 @@ describe("Editable", () => {
   });
 });
 
-describe("alvos de 44", () => {
+describe("44 targets", () => {
   const SIZE: Record<string, number> = { "size-4": 16, "size-10": 40 };
   const reach = (node: { props: { className?: string; hitSlop?: number } }) => {
     const size = String(node.props.className)
@@ -385,13 +385,13 @@ describe("alvos de 44", () => {
     return size! + 2 * (node.props.hitSlop ?? 0);
   };
 
-  test("o dia do Calendar", () => {
+  test("the Calendar day", () => {
     const screen = render(<Calendar value="2026-08-10" onValueChange={() => {}} />);
     const [day] = byLabel(screen, "15/08/2026");
     expect(reach(day!)).toBeGreaterThanOrEqual(44);
   });
 
-  test("o xis do SearchInput cabe inteiro na altura do campo", () => {
+  test("the SearchInput x fits whole within the field height", () => {
     const search = render(<SearchInput value="clinica" onValueChange={() => {}} />);
     const [clear] = byLabel(search, "Limpar a busca");
 
@@ -399,7 +399,7 @@ describe("alvos de 44", () => {
     expect(String(hostParent(clear!)?.props.className).split(" ")).toContain("h-12");
   });
 
-  test("o xis do TagsInput fica com a folga que cabe na ficha, acima dos 24 do WCAG", () => {
+  test("the TagsInput x gets the slack that fits in the chip, above WCAG's 24", () => {
     const tags = render(<TagsInput value={["pix"]} onValueChange={() => {}} />);
     const [remove] = byClass(tags, /size-4/).filter((node) => node.type === "Pressable");
     const slop = remove!.props.hitSlop as {
@@ -439,18 +439,18 @@ describe("Tree", () => {
     return onValueChange.mock.calls[0]![0];
   };
 
-  test("marcar o galho pula a folha travada", () => {
+  test("checking the branch skips the locked leaf", () => {
     expect(toggleAll([])).toEqual(["pagar"]);
   });
 
-  test("desmarcar o galho preserva a folha travada que ja estava marcada", () => {
+  test("unchecking the branch preserves the locked leaf that was already checked", () => {
     expect(toggleAll(["travada", "pagar"])).toEqual(["travada"]);
     expect(toggleAll(["travada"])).toEqual(["travada", "pagar"]);
   });
 });
 
 describe("ColorPicker", () => {
-  test("a amostra sai normalizada", () => {
+  test("the swatch comes out normalized", () => {
     const onValueChange = mock((_: string) => {});
     const screen = render(
       <ColorPicker value="" onValueChange={onValueChange} swatches={["#F0A"]} />,

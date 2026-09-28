@@ -12,27 +12,29 @@ export type ClipboardProps = Omit<
   ButtonProps,
   "children" | "onCopy" | "value" | "size" | "aria-label" | "aria-labelledby"
 > & {
-  /** O que vai para a area de transferencia. */
+  /** What goes to the clipboard. */
   value: string;
   /**
-   * Texto ao lado do icone, trocado por `labels.copied` na confirmacao. Sem
-   * ele, o botao e so o icone, desenhado pelo `IconButton`.
+   * Text beside the icon, replaced by `labels.copied` on confirmation. Without
+   * it, the button is just the icon, drawn by `IconButton`.
    */
   children?: ReactNode;
-  /** A altura do botao, lida de `--rc-control-*`. Sem texto, e o lado do quadrado. */
+  /**
+   * The button's height, read from `--rc-control-*`. Without text, it is the side of the square.
+   */
   size?: "sm" | "md" | "lg";
-  /** Quanto tempo a confirmacao fica na tela, em ms. */
+  /** How long the confirmation stays on screen, in ms. */
   timeout?: number;
   /**
-   * O que o leitor de tela chama o botao antes e depois de copiar. Com
-   * `children`, o nome antes de copiar e o proprio texto, e so `copied` vale.
+   * What the screen reader calls the button before and after copying. With
+   * `children`, the name before copying is the text itself, and only `copied` applies.
    */
   labels?: { copy?: string; copied?: string };
-  /** Recusado pelo tipo: o nome do botao vem de `labels.copy` e `labels.copied`. */
+  /** Refused by the type: the button's name comes from `labels.copy` and `labels.copied`. */
   "aria-label"?: never;
-  /** Recusado pelo tipo, pelo mesmo motivo do `aria-label`. */
+  /** Refused by the type, for the same reason as `aria-label`. */
   "aria-labelledby"?: never;
-  /** Chamado depois de copiar, para quem quer disparar um aviso proprio. */
+  /** Called after copying, for those who want to fire their own notice. */
   onCopy?: (value: string) => void;
 };
 

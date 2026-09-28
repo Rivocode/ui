@@ -55,8 +55,8 @@ const SLICES = [
   { natureza: "produto", total: 40 },
 ];
 
-describe("o cliente veste os papéis no CSS do app, e a tela inteira segue", () => {
-  test("Button, Switch e ChartDonut saem todos no acento do cliente", () => {
+describe("the client dresses the roles in the app CSS, and the whole screen follows", () => {
+  test("Button, Switch and ChartDonut all come out in the client's accent", () => {
     dressRoles(ACME);
 
     const screen = render(
@@ -81,21 +81,21 @@ describe("o cliente veste os papéis no CSS do app, e a tela inteira segue", () 
     expect(seen.accent).toBe(ACME.accent);
   });
 
-  test("o papel que o cliente não vestiu continua na cor da casa", () => {
+  test("a role the client did not dress stays in the house color", () => {
     dressRoles(ACME);
     render(<Probe />, { theme: "rivocode-dark" });
 
     expect(seen.bg).toBe(tokens.themes["rivocode-dark"].bg);
   });
 
-  test("sem sobrescrita nenhuma, o acento volta a ser a lima da casa", () => {
+  test("with no override at all, the accent goes back to the house lime", () => {
     render(<Probe />, { theme: "rivocode-dark" });
 
     expect(seen.accent).toBe(tokens.themes["rivocode-dark"].accent);
   });
 });
 
-describe("no react-native-web a cor sai do documento, e não do useCssElement", () => {
+describe("on react-native-web the color comes from the document, not from useCssElement", () => {
   const dressDocument = () => {
     const sheet = document.createElement("style");
     sheet.textContent =
@@ -118,7 +118,7 @@ describe("no react-native-web a cor sai do documento, e não do useCssElement", 
     }
   };
 
-  test("o papel que o documento pinta vem do getComputedStyle; o resto cai no token", () => {
+  test("a role the document paints comes from getComputedStyle; the rest falls back to the token", () => {
     onWeb(() => {
       render(<Probe />, { theme: "rivocode-dark" });
 

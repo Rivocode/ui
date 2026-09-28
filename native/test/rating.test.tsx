@@ -18,14 +18,14 @@ const fills = (screen: ReturnType<typeof render>) =>
 const tap = (screen: ReturnType<typeof render>, index: number, locationX = 30) =>
   act(() => byType(screen, "Pressable")[index]!.props.onPress({ nativeEvent: { locationX } }));
 
-test("o grupo e um controle ajustavel so, com o nome e a nota dita por extenso", () => {
+test("the group is a single adjustable control, with the name and the rating spoken in full", () => {
   const { screen } = rating({ value: 3 });
   const [group] = byRole(screen, "adjustable");
   expect(group!.props.accessibilityLabel).toBe("Avaliação");
   expect(group!.props.accessibilityValue).toEqual({ min: 0, max: 5, now: 3, text: "3 estrelas" });
 });
 
-test("as estrelas ficam fora da arvore de acessibilidade, e cada uma tem 44pt de alvo", () => {
+test("the stars stay out of the accessibility tree, and each one has a 44pt target", () => {
   const { screen } = rating({ size: "sm" });
   const stars = byType(screen, "Pressable");
   expect(stars).toHaveLength(5);
@@ -40,7 +40,7 @@ test("as estrelas ficam fora da arvore de acessibilidade, e cada uma tem 44pt de
   );
 });
 
-test("tocar a terceira estrela escolhe 3, e a nota pinta ate ela", () => {
+test("tapping the third star picks 3, and the rating paints up to it", () => {
   const { screen, onValueChange } = rating({ value: 3 });
   expect(fills(screen)).toEqual([44, 44, 44, 0, 0]);
 
@@ -50,7 +50,7 @@ test("tocar a terceira estrela escolhe 3, e a nota pinta ate ela", () => {
   expect(onValueChange).not.toHaveBeenCalled();
 });
 
-test("com allowHalf, a metade da esquerda da meia estrela", () => {
+test("with allowHalf, the left half gives half a star", () => {
   const { screen, onValueChange } = rating({ allowHalf: true, value: 2.5 });
   expect(fills(screen)).toEqual([44, 44, 22, 0, 0]);
   tap(screen, 3, 10);
@@ -59,7 +59,7 @@ test("com allowHalf, a metade da esquerda da meia estrela", () => {
   expect(onValueChange).toHaveBeenLastCalledWith(4);
 });
 
-test("o desenho nao recebe toque: o locationX sai sempre da caixa da estrela, e nao do glifo ou do cheio", () => {
+test("the drawing takes no touch: locationX always comes from the star's box, not from the glyph or the fill", () => {
   const { screen } = rating({ allowHalf: true, value: 2.5 });
   const boxes = screen.root.findAll(
     (node) => typeof node.type === "string" && node.props.testID === "rating-star",
@@ -68,7 +68,7 @@ test("o desenho nao recebe toque: o locationX sai sempre da caixa da estrela, e 
   for (const box of boxes) expect(box.props.pointerEvents).toBe("none");
 });
 
-test("clearable limpa ao tocar de novo; sem ele, tocar de novo nao chama nada", () => {
+test("clearable clears on tapping again; without it, tapping again calls nothing", () => {
   const first = rating({ value: 4 });
   tap(first.screen, 3);
   expect(first.onValueChange).not.toHaveBeenCalled();
@@ -78,7 +78,7 @@ test("clearable limpa ao tocar de novo; sem ele, tocar de novo nao chama nada", 
   expect(second.onValueChange).toHaveBeenCalledWith(0);
 });
 
-test("o gesto de ajuste do leitor de tela anda uma estrela e para nas pontas", () => {
+test("the screen reader adjust gesture moves one star and stops at the ends", () => {
   const { screen, onValueChange } = rating({ value: 5 });
   const [group] = byRole(screen, "adjustable");
   act(() => group!.props.onAccessibilityAction({ nativeEvent: { actionName: "increment" } }));
@@ -87,7 +87,7 @@ test("o gesto de ajuste do leitor de tela anda uma estrela e para nas pontas", (
   expect(onValueChange).toHaveBeenLastCalledWith(4);
 });
 
-test("desabilitado nao escolhe, avisa o estado e esmaece a camada inteira", () => {
+test("disabled does not pick, announces the state and dims the whole layer", () => {
   const { screen, onValueChange } = rating({ value: 2, disabled: true });
   const [group] = byRole(screen, "adjustable");
   expect(group!.props.accessibilityState).toEqual({ disabled: true });
@@ -97,7 +97,7 @@ test("desabilitado nao escolhe, avisa o estado e esmaece a camada inteira", () =
   expect(onValueChange).not.toHaveBeenCalled();
 });
 
-test("readOnly sai como imagem com a media em portugues, e pinta a fracao", () => {
+test("readOnly comes out as an image with the average in Portuguese, and paints the fraction", () => {
   const { screen } = rating({ readOnly: true, value: 4.3, size: "md" });
   const [image] = byRole(screen, "image");
   expect(image!.props.accessibilityLabel).toBe("4,3 de 5");
@@ -106,7 +106,7 @@ test("readOnly sai como imagem com a media em portugues, e pinta a fracao", () =
   expect(last).toBeCloseTo(26 * 0.3, 5);
 });
 
-test("a funcao de icone recebe a cor do tema, o tamanho e a camada", () => {
+test("the icon function receives the theme color, the size and the layer", () => {
   const seen: { filled: boolean; size: number }[] = [];
   rating({
     max: 1,
@@ -122,7 +122,7 @@ test("a funcao de icone recebe a cor do tema, o tamanho e a camada", () => {
   ]);
 });
 
-test("a estrela padrao pinta warning cheia e border-strong vazia", () => {
+test("the default star paints warning when full and border-strong when empty", () => {
   const { screen } = rating({ value: 1, max: 1 });
   const glyphs = byType(screen, "Text").map((node) => node.props.className.split(" "));
   expect(glyphs[0]).toContain("text-border-strong");
@@ -138,7 +138,7 @@ function inRTL<T>(run: () => T): T {
   }
 }
 
-test("em rtl, a metade de inicio da leitura e a da direita, e ela da a meia estrela", () => {
+test("in rtl, the reading-start half is the right one, and it gives half a star", () => {
   const { screen, onValueChange } = inRTL(() => rating({ allowHalf: true, value: 2.5 }));
   tap(screen, 3, 30);
   expect(onValueChange).toHaveBeenLastCalledWith(3.5);
@@ -146,7 +146,7 @@ test("em rtl, a metade de inicio da leitura e a da direita, e ela da a meia estr
   expect(onValueChange).toHaveBeenLastCalledWith(4);
 });
 
-test("o cheio se prende ao lado de inicio da leitura, e nao a esquerda fisica", () => {
+test("the fill is pinned to the reading-start side, not to the physical left", () => {
   const { screen } = inRTL(() => rating({ allowHalf: true, value: 2.5 }));
   const layers = screen.root.findAll(
     (node) => typeof node.type === "string" && node.props.testID === "rating-fill",
@@ -160,7 +160,7 @@ test("o cheio se prende ao lado de inicio da leitura, e nao a esquerda fisica", 
   expect(fills(screen)).toEqual([44, 44, 22, 0, 0]);
 });
 
-test("em rtl, o ajuste do leitor de tela continua subindo a nota com incrementar", () => {
+test("in rtl, the screen reader adjustment still raises the rating with increment", () => {
   const { screen, onValueChange } = inRTL(() => rating({ value: 2 }));
   const [group] = byRole(screen, "adjustable");
   act(() => group!.props.onAccessibilityAction({ nativeEvent: { actionName: "increment" } }));

@@ -1,7 +1,7 @@
 import { IconButton } from '@rivocode/ui'
 import { Download, Pencil, RefreshCw, Trash2 } from 'lucide-react'
 
-/** Variantes */
+/** Variants */
 export function Variants() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -24,7 +24,7 @@ export function Variants() {
   )
 }
 
-/** Tamanhos */
+/** Sizes */
 export function Sizes() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -44,7 +44,7 @@ export function Sizes() {
   )
 }
 
-/** Com dica */
+/** With hint */
 export function WithTooltip() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -58,7 +58,7 @@ export function WithTooltip() {
   )
 }
 
-/** Estados */
+/** States */
 export function States() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -72,7 +72,7 @@ export function States() {
   )
 }
 
-/** Como link */
+/** As a link */
 export function AsLink() {
   return (
     <IconButton variant="ghost" label="Baixar o XML da nota" render={<a href="/notas/4813.xml" />}>

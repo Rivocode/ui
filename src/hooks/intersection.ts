@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { useLatest } from "./common/latest";
 
 export type UseIntersectionOptions = {
-  /** O elemento que rola. Sem ele, a janela. */
+  /** The scrolling element. Without it, the window. */
   root?: Element | null;
-  /** Folga em volta da raiz, na sintaxe de `margin`: `"200px"` avisa antes de o alvo aparecer. */
+  /** Slack around the root, in `margin` syntax: `"200px"` notifies before the target appears. */
   rootMargin?: string;
-  /** Quanto do alvo precisa estar visivel, de 0 a 1, para contar. */
+  /** How much of the target needs to be visible, from 0 to 1, to count. */
   threshold?: number | number[];
 };
 
@@ -43,15 +43,19 @@ export function useIntersection<T extends Element = Element>(
 }
 
 export type UseInfiniteScrollOptions = {
-  /** Pede a proxima pagina. Chamado quando a sentinela entra na folga e ha mais para buscar. */
+  /**
+   * Asks for the next page. Called when the sentinel enters the slack and there is more to fetch.
+   */
   onLoadMore: () => void;
-  /** Se ainda ha pagina depois desta. Com `false` a sentinela para de ser observada. */
+  /**
+   * Whether there is still a page after this one. With `false` the sentinel stops being observed.
+   */
   hasMore: boolean;
-  /** Se uma pagina esta a caminho. Enquanto for `true`, nada novo e pedido. */
+  /** Whether a page is on its way. While it is `true`, nothing new is requested. */
   loading: boolean;
-  /** O elemento que rola. Sem ele, a janela. */
+  /** The scrolling element. Without it, the window. */
   root?: Element | null;
-  /** Quanto antes do fim a proxima pagina e pedida, na sintaxe de `margin`. */
+  /** How far before the end the next page is requested, in `margin` syntax. */
   rootMargin?: string;
 };
 

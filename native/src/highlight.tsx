@@ -3,14 +3,14 @@ import { splitHighlight } from "./shared/highlight";
 import { Text, type TextProps } from "./text";
 
 export type HighlightProps = Omit<TextProps, "children"> & {
-  /** O texto inteiro, como string. O destaque e calculado sobre ele. */
+  /** The whole text, as a string. The highlight is computed over it. */
   children: string;
   /**
-   * O termo buscado, ou uma lista deles. Caixa e acento nao importam: "sao"
-   * acha "São". Vazio nao destaca nada.
+   * The searched term, or a list of them. Case and accents do not matter: "sao"
+   * finds "São". Empty highlights nothing.
    */
   query: string | readonly string[];
-  /** Classe por parte: `mark`, cada trecho achado, o `Text` aninhado que pinta o fundo. */
+  /** Class per part: `mark`, each match found, the nested `Text` that paints the background. */
   classNames?: Slots<"mark">;
 };
 

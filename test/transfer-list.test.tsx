@@ -56,7 +56,7 @@ const labelsOf = (list: HTMLElement) =>
 const status = (container: HTMLElement) =>
   (container.querySelector("[role='status'][aria-live='polite']")?.textContent ?? "").trim();
 
-test("as duas listas nascem do value, com o nome e a contagem de cada uma", () => {
+test("both lists come from value, with each one's name and count", () => {
   render(<Controlled start={["rec"]} />);
   const { available, chosen } = lists();
 
@@ -76,7 +76,7 @@ test("as duas listas nascem do value, com o nome e a contagem de cada uma", () =
   expect(countOf(chosen)).toBe("1 item");
 });
 
-test("o lado escolhido segue a ordem do value, e o que entra vai para o fim na ordem de items", () => {
+test("the chosen side follows the value order, and what comes in goes to the end in items order", () => {
   const onValueChange = mock((_: string[]) => {});
   render(<Controlled start={["for", "sp"]} onValueChange={onValueChange} />);
   const { available, chosen } = lists();
@@ -91,7 +91,7 @@ test("o lado escolhido segue a ordem do value, e o que entra vai para o fim na o
   expect(labelsOf(chosen)).toEqual(["Fortaleza", "São Paulo", "João Pessoa", "Recife"]);
 });
 
-test("marcar pelo clique diz aria-selected e muda a contagem, e o botao so acende com marcados", () => {
+test("checking by click sets aria-selected and changes the count, and the button only lights up with checked items", () => {
   render(<Controlled />);
   const { available } = lists();
   const moveSelected = screen.getByRole("button", { name: "Mover selecionados para Escolhidos" });
@@ -112,7 +112,7 @@ test("marcar pelo clique diz aria-selected e muda a contagem, e o botao so acend
   expect((moveSelected as HTMLButtonElement).disabled).toBe(true);
 });
 
-test("duas marcas no mesmo lote de atualizacao ficam as duas marcadas", () => {
+test("two checks in the same update batch both stay checked", () => {
   render(<Controlled />);
   const { available } = lists();
   const options = within(available).getAllByRole("option");
@@ -126,7 +126,7 @@ test("duas marcas no mesmo lote de atualizacao ficam as duas marcadas", () => {
   expect(options[2]!.getAttribute("aria-selected")).toBe("true");
 });
 
-test("mover anuncia em portugues, com o plural certo e o nome da lista de destino", () => {
+test("moving announces in Portuguese, with the right plural and the target list name", () => {
   const { container } = render(<Controlled />);
   const { available, chosen } = lists();
 
@@ -147,7 +147,7 @@ test("mover anuncia em portugues, com o plural certo e o nome da lista de destin
   expect(labelsOf(chosen)).toEqual([]);
 });
 
-test("o mesmo anuncio duas vezes seguidas muda o texto da regiao, para o leitor repetir", () => {
+test("the same announcement twice in a row changes the region text, so the reader repeats it", () => {
   const { container } = render(<Controlled />);
   const { available } = lists();
   const region = container.querySelector("[role='status']")!;
@@ -162,16 +162,16 @@ test("o mesmo anuncio duas vezes seguidas muda o texto da regiao, para o leitor 
   expect(region.textContent).not.toBe(first);
 });
 
-test("item desabilitado nao se marca e fica para tras no mover todos", () => {
+test("a disabled item cannot be checked and stays behind on move all", () => {
   render(<Controlled />);
   const { available, chosen } = lists();
-  const natal = within(available).getByText("Natal").closest("[role='option']")!;
+  const natalOption = within(available).getByText("Natal").closest("[role='option']")!;
 
-  expect(natal.getAttribute("aria-disabled")).toBe("true");
-  expect(tokens(natal)).toContain("text-fg-disabled");
+  expect(natalOption.getAttribute("aria-disabled")).toBe("true");
+  expect(tokens(natalOption)).toContain("text-fg-disabled");
 
-  fireEvent.click(natal);
-  expect(natal.getAttribute("aria-selected")).toBe("false");
+  fireEvent.click(natalOption);
+  expect(natalOption.getAttribute("aria-selected")).toBe("false");
 
   fireEvent.click(screen.getByRole("button", { name: "Mover todos para Escolhidos" }));
   expect(labelsOf(available)).toEqual(["Natal"]);
@@ -182,7 +182,7 @@ test("item desabilitado nao se marca e fica para tras no mover todos", () => {
   ).toBe(true);
 });
 
-test("a busca ignora acento e caixa, e o mover todos respeita o que ela deixou a mostra", () => {
+test("search ignores accents and case, and move all respects what it left visible", () => {
   render(<Controlled />);
   const { available, chosen } = lists();
   const search = screen.getByRole("searchbox", { name: "Buscar em Disponíveis" });
@@ -197,7 +197,7 @@ test("a busca ignora acento e caixa, e o mover todos respeita o que ela deixou a
   expect(labelsOf(chosen)).toEqual(["João Pessoa"]);
 });
 
-test("busca sem resultado diz que nada foi achado, e lista vazia diz que nao ha item", () => {
+test("a search with no results says nothing was found, and an empty list says there are no items", () => {
   render(<Controlled start={ITEMS.map((item) => item.value)} />);
   const { available } = lists();
 
@@ -213,7 +213,7 @@ test("busca sem resultado diz que nada foi achado, e lista vazia diz que nao ha 
   expect(document.getElementById(empty)?.textContent).toBe("Nada encontrado");
 });
 
-test("marcado que a busca escondeu nao e movido", () => {
+test("a checked item hidden by the search is not moved", () => {
   render(<Controlled />);
   const { available, chosen } = lists();
   const search = screen.getByRole("searchbox", { name: "Buscar em Disponíveis" });
@@ -231,7 +231,7 @@ test("marcado que a busca escondeu nao e movido", () => {
   expect(labelsOf(chosen)).toEqual(["Fortaleza"]);
 });
 
-test("pelo teclado: setas andam, espaco marca, shift estende, ctrl+a marca tudo e Enter move", () => {
+test("by keyboard: arrows move, space checks, shift extends, ctrl+a checks all and Enter moves", () => {
   const { container } = render(<Controlled />);
   const { available, chosen } = lists();
   const activeLabel = () =>
@@ -270,7 +270,7 @@ test("pelo teclado: setas andam, espaco marca, shift estende, ctrl+a marca tudo 
   expect(activeLabel()).toBe("Natal");
 });
 
-test("seta para baixo na busca desce para a lista", () => {
+test("arrow down in the search goes down into the list", () => {
   render(<Controlled />);
   const search = screen.getByRole("searchbox", { name: "Buscar em Disponíveis" });
 
@@ -279,7 +279,7 @@ test("seta para baixo na busca desce para a lista", () => {
   expect(document.activeElement).toBe(lists().available);
 });
 
-test("o botao que se apaga depois de mover entrega o foco a lista de destino", () => {
+test("the button that goes disabled after moving hands focus to the target list", () => {
   render(<Controlled />);
   const moveAll = screen.getByRole("button", { name: "Mover todos para Escolhidos" });
 
@@ -290,7 +290,7 @@ test("o botao que se apaga depois de mover entrega o foco a lista de destino", (
   expect(document.activeElement).toBe(lists().chosen);
 });
 
-test("desabilitada, nada marca, nada move e nenhuma lista entra no tab", () => {
+test("disabled, nothing checks, nothing moves and no list enters the tab order", () => {
   const onValueChange = mock((_: string[]) => {});
   render(<Controlled disabled onValueChange={onValueChange} />);
   const { available, chosen } = lists();
@@ -308,7 +308,7 @@ test("desabilitada, nada marca, nada move e nenhuma lista entra no tab", () => {
   expect(onValueChange).not.toHaveBeenCalled();
 });
 
-test("labels troca os nomes das listas, e o anuncio e os botoes acompanham", () => {
+test("labels swaps the list names, and the announcement and buttons follow", () => {
   const { container } = render(
     <Controlled labels={{ available: "Permissões", chosen: "Concedidas" }} searchable={false} />,
   );
@@ -320,7 +320,7 @@ test("labels troca os nomes das listas, e o anuncio e os botoes acompanham", () 
   expect(status(container)).toBe("1 item movido para Concedidas");
 });
 
-test("classNames alcanca cada parte pelo nome", () => {
+test("classNames reaches each part by name", () => {
   render(
     <Controlled
       start={["rec"]}
@@ -344,7 +344,7 @@ test("classNames alcanca cada parte pelo nome", () => {
   expect(document.querySelectorAll(".rc-actions")).toHaveLength(1);
 });
 
-test("as contas puras dizem o plural certo e nao movem o que esta desabilitado", () => {
+test("the pure helpers say the right plural and do not move what is disabled", () => {
   expect(transferCount(0, 1)).toBe("1 item");
   expect(transferCount(0, 1234)).toBe("1.234 itens");
   expect(transferCount(2, 10)).toBe("2 de 10 selecionados");
@@ -361,7 +361,7 @@ const MANY: TransferListItem[] = Array.from({ length: 5000 }, (_, index) => ({
   label: `Cliente ${index}`,
 }));
 
-test("mover cinco mil itens de uma vez, ida e volta, nao cresce ao quadrado", () => {
+test("moving five thousand items at once, there and back, does not grow quadratically", () => {
   const keys = MANY.map((item) => item.value);
   const real = Array.prototype.includes;
   let scanned = 0;
@@ -381,7 +381,7 @@ test("mover cinco mil itens de uma vez, ida e volta, nao cresce ao quadrado", ()
   expect(scanned).toBeLessThan(500_000);
 });
 
-test("com mil e quinhentos itens, marcar tudo e mover tudo nao varre a lista de marcados por linha", () => {
+test("with fifteen hundred items, checking all and moving all does not scan the checked list per row", () => {
   render(<Controlled items={MANY.slice(0, 1500)} searchable={false} />);
   const { available } = lists();
   const real = Array.prototype.includes;

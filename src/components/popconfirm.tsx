@@ -33,65 +33,65 @@ export type PopconfirmProps = Omit<
   "title" | "children" | "onCancel" | "onSubmit"
 > &
   FloatingPositionProps & {
-    /** O botao que abre a confirmacao. E nele que o painel ancora. */
+    /** The button that opens the confirmation. It is where the panel anchors. */
     trigger: ReactElement;
-    /** A pergunta, curta e com o alvo dentro: "Excluir a nota 4813?". */
+    /** The question, short and with the target in it: "Excluir a nota 4813?". */
     title: string;
     /**
-     * Em que nivel a pergunta sai. Padrao `h2`, como no `DialogTitle` e no
+     * The level the question is rendered at. Default `h2`, as in `DialogTitle` and
      * `AlertDialogTitle`.
      *
-     * Baixe quando o painel nascer dentro de uma secao que ja tem titulo: o
-     * gatilho costuma ser um botao de linha dentro de um `Card`, cujo
-     * `CardTitle` e `h3`, e um `h2` ali abre uma secao acima da que o contem.
-     * O esboco da pagina, que e como muita gente navega, inverte.
+     * Lower it when the panel is born inside a section that already has a heading: the
+     * trigger is usually a row button inside a `Card`, whose
+     * `CardTitle` is `h3`, and an `h2` there opens a section above the one containing it.
+     * The page outline, which is how many people navigate, gets inverted.
      */
     titleAs?: "h2" | "h3" | "h4";
-    /** O que a pessoa perde ao confirmar, ou o que acontece depois. */
+    /** What the person loses on confirming, or what happens next. */
     description?: ReactNode;
     /**
-     * `danger` pinta o botao de vermelho e traz o icone de aviso; `neutral`
-     * serve para o que se desfaz, como arquivar.
+     * `danger` paints the button red and brings the warning icon; `neutral`
+     * serves for what can be undone, like archiving.
      */
     tone?: "danger" | "neutral";
     /**
-     * A acao. Devolvendo promessa, o painel fica aberto e o botao entra em
-     * espera ate ela terminar - e um clique so vira uma chamada so. Promessa
-     * que rejeita devolve o painel ao estado anterior, com o texto ainda na
-     * tela.
+     * The action. When it returns a promise, the panel stays open and the button
+     * waits until it finishes - and one click becomes just one call. A promise
+     * that rejects returns the panel to its previous state, with the text still on
+     * screen.
      */
     onConfirm: () => void | Promise<unknown>;
-    /** Chamado em toda saida sem confirmar: botao, Esc, clique fora, arrasto. */
+    /** Called on every exit without confirming: button, Esc, click outside, drag. */
     onCancel?: () => void;
-    /** Deixa a abertura por conta de quem usa. Sem ela, a peca se controla. */
+    /** Leaves opening up to the consumer. Without it, the piece controls itself. */
     open?: boolean;
-    /** Estado inicial de quem nao controla a abertura. */
+    /** Initial state for whoever does not control opening. */
     defaultOpen?: boolean;
-    /** Avisa toda abertura e todo fechamento, controlado ou nao. */
+    /** Reports every opening and every closing, controlled or not. */
     onOpenChange?: (open: boolean) => void;
     /**
-     * Estado de espera vindo de fora, para quem ja tem a chamada em uma
-     * store. Soma com a espera da promessa do `onConfirm`.
+     * Waiting state coming from outside, for those who already have the call in a
+     * store. Adds up with the wait for the `onConfirm` promise.
      */
     loading?: boolean;
     /**
-     * Os textos do painel. `confirm` e o verbo do botao que executa - escreva a
-     * acao, "Excluir", "Cancelar nota", porque so o verbo distingue os dois
-     * botoes num painel deste tamanho. `cancel` e o do botao que sai sem fazer
-     * nada. `busy` e o que o leitor de tela ouve quando a espera comeca, e o
-     * padrao repete o `confirm`. `blocked` e o aviso de quem tenta sair
-     * durante a espera. Passe so os que mudam.
+     * The panel's texts. `confirm` is the verb of the button that runs it - write the
+     * action, "Excluir", "Cancelar nota", because only the verb tells the two
+     * buttons apart in a panel this size. `cancel` is that of the button that leaves without doing
+     * anything. `busy` is what the screen reader hears when the wait begins, and the
+     * default repeats `confirm`. `blocked` is the notice for someone who tries to leave
+     * during the wait. Pass only the ones that change.
      */
     labels?: Partial<PopconfirmLabels>;
     /**
-     * Para onde o foco volta ao fechar. Vale quando o proprio gatilho some na
-     * confirmacao - a linha excluida leva o botao junto, e sem isto o foco cai
-     * no corpo da pagina.
+     * Where focus returns on close. Applies when the trigger itself disappears on
+     * confirmation - the deleted row takes the button with it, and without this focus falls
+     * onto the page body.
      */
     finalFocus?: RefObject<HTMLElement | null>;
     /**
-     * Classe por parte: `title`, `description`, `footer`, `confirm`,
-     * `cancel`. O `className` veste o painel.
+     * Class per part: `title`, `description`, `footer`, `confirm`,
+     * `cancel`. `className` dresses the panel.
      */
     classNames?: Slots<"title" | "description" | "footer" | "confirm" | "cancel">;
   };

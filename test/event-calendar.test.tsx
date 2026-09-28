@@ -48,7 +48,7 @@ const onMobile = () => {
   };
 };
 
-test("a semana desenha sete dias, e cada dia diz quantos compromissos tem", () => {
+test("the week draws seven days, and each day says how many appointments it has", () => {
   const { container } = calendar();
 
   const groups = [...container.querySelectorAll("[data-rc-day]")];
@@ -62,7 +62,7 @@ test("a semana desenha sete dias, e cada dia diz quantos compromissos tem", () =
   expect(wednesday.getAttribute("aria-label")).toContain("1 compromisso");
 });
 
-test("cada compromisso e um item de lista com a contagem real do dia", () => {
+test("each appointment is a list item with the real count of the day", () => {
   const { container } = calendar();
   const drawn = items(container);
 
@@ -75,7 +75,7 @@ test("cada compromisso e um item de lista com a contagem real do dia", () => {
   expect(drawn[0]!.getAttribute("aria-label")).toContain("às");
 });
 
-test("o andaime da grade nao chega a quem ouve", () => {
+test("the grid scaffolding does not reach screen reader users", () => {
   const { container } = calendar();
 
   const hidden = container.querySelectorAll("[aria-hidden='true']");
@@ -84,7 +84,7 @@ test("o andaime da grade nao chega a quem ouve", () => {
   expect(container.querySelectorAll("[role='gridcell']")).toHaveLength(0);
 });
 
-test("clicar num compromisso devolve o compromisso, e nao o intervalo clicado", () => {
+test("clicking an appointment returns the appointment, not the clicked slot", () => {
   const picked = mock();
   const slot = mock();
   const { container } = calendar({ onEventSelect: picked, onSlotSelect: slot });
@@ -96,7 +96,7 @@ test("clicar num compromisso devolve o compromisso, e nao o intervalo clicado", 
   expect(slot).not.toHaveBeenCalled();
 });
 
-test("clicar no vazio devolve o intervalo arredondado em meia hora", () => {
+test("clicking empty space returns the slot rounded to half an hour", () => {
   const slot = mock();
   const { container } = calendar({ onSlotSelect: slot, dayStart: 8 });
 
@@ -110,7 +110,7 @@ test("clicar no vazio devolve o intervalo arredondado em meia hora", () => {
   expect(range.end.getMinutes()).toBe(30);
 });
 
-test("o dia inteiro sobe para a faixa, e a noite que cruza a meia-noite fica na grade", () => {
+test("all-day goes up to the band, and the night that crosses midnight stays in the grid", () => {
   const { container } = calendar({
     events: [
       { id: "feriado", title: "Feriado municipal", start: at(0), end: at(0, 0, 18), allDay: true },
@@ -130,7 +130,7 @@ test("o dia inteiro sobe para a faixa, e a noite que cruza a meia-noite fica na 
   expect(drawn[1]!.getAttribute("aria-label")).toContain("continua do dia anterior");
 });
 
-test("a agenda lista so os dias que tem compromisso, em ordem de hora", () => {
+test("the agenda lists only the days that have appointments, in time order", () => {
   const { container } = calendar({ defaultView: "agenda" });
 
   const sections = [...container.querySelectorAll("[data-rc-day]")];
@@ -142,7 +142,7 @@ test("a agenda lista so os dias que tem compromisso, em ordem de hora", () => {
   expect(titles[2]).toContain("Fechamento do mês");
 });
 
-test("o mes desenha as semanas inteiras, e o que nao cabe na celula vira mais", () => {
+test("the month draws whole weeks, and what does not fit in the cell becomes more", () => {
   const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
     id: String(index),
     title: `Nota ${index + 1}`,
@@ -165,7 +165,7 @@ test("o mes desenha as semanas inteiras, e o que nao cabe na celula vira mais", 
   expect(day.getAttribute("aria-label")).toContain("5 compromissos");
 });
 
-test("o mais e item da lista do dia, tem alvo de 24 pixels, e o dia do mes vizinho passa de 4,5", () => {
+test("more is an item of the day list, has a 24 pixel target, and the day of the neighboring month exceeds 4.5", () => {
   const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
     id: String(index),
     title: `Nota ${index + 1}`,
@@ -193,7 +193,7 @@ test("o mais e item da lista do dia, tem alvo de 24 pixels, e o dia do mes vizin
   for (const node of numbers) expect(node.className.split(" ")).not.toContain("text-fg-disabled");
 });
 
-test("o mais abre a lista daquele dia, que e a agenda dele", async () => {
+test("more opens that day's list, which is its agenda", async () => {
   const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
     id: String(index),
     title: `Nota ${index + 1}`,
@@ -213,7 +213,7 @@ test("o mais abre a lista daquele dia, que e a agenda dele", async () => {
   expect(screen.getByText("Nota 4")).toBeDefined();
 });
 
-test("a grade inteira e uma parada de tabulacao, e o foco anda entre compromissos", () => {
+test("the whole grid is one tab stop, and focus moves between appointments", () => {
   const { container } = calendar();
   const drawn = items(container);
 
@@ -234,7 +234,7 @@ test("a grade inteira e uma parada de tabulacao, e o foco anda entre compromisso
   expect(document.activeElement!.getAttribute("aria-label")).toContain("Fechamento do mês");
 });
 
-test("a tarja se posiciona por propriedade logica, e o piso de altura e so do desenho", () => {
+test("the block is positioned by logical property, and the height floor belongs only to the drawing", () => {
   const { container } = calendar();
   const block = items(container)[0]!;
   const box = block.closest("[role='listitem']") as HTMLElement;
@@ -247,7 +247,7 @@ test("a tarja se posiciona por propriedade logica, e o piso de altura e so do de
   expect(block.className).toContain("max-sm:min-h-11");
 });
 
-test("em rtl a seta que anda para frente e a esquerda", () => {
+test("in rtl the arrow that moves forward is the left one", () => {
   const { container } = render(
     <RivoProvider scope="local" dir="rtl">
       <EventCalendar defaultDate={ANCHOR} defaultView="week" events={EVENTS} label="Agenda" />
@@ -264,7 +264,7 @@ test("em rtl a seta que anda para frente e a esquerda", () => {
   expect(document.activeElement!.getAttribute("aria-label")).toContain("Almoço com o cliente");
 });
 
-test("a pagina troca o periodo, e o escape devolve o foco a barra", () => {
+test("page keys change the period, and escape returns focus to the toolbar", () => {
   const moved = mock();
   const { container } = calendar({ onDateChange: moved });
 
@@ -283,7 +283,7 @@ test("a pagina troca o periodo, e o escape devolve o foco a barra", () => {
   }
 });
 
-test("o periodo visivel sai com o fim exclusivo, e muda quando a vista muda", () => {
+test("the visible period comes out with an exclusive end, and changes when the view changes", () => {
   const range = mock();
   calendar({ onRangeChange: range });
 
@@ -297,7 +297,7 @@ test("o periodo visivel sai com o fim exclusivo, e muda quando a vista muda", ()
   expect(range.mock.calls[1]![0].start.getDate()).toBe(23);
 });
 
-test("a troca de periodo se anuncia em voz alta, com a contagem", () => {
+test("the period change is announced aloud, with the count", () => {
   calendar();
 
   const live = document.querySelectorAll("[aria-live='polite']");
@@ -306,7 +306,7 @@ test("a troca de periodo se anuncia em voz alta, com a contagem", () => {
   expect(spoken).toContain("3 compromissos");
 });
 
-test("no celular a semana some do seletor, e quem pediu semana recebe a agenda", () => {
+test("on mobile the week disappears from the switcher, and whoever asked for week gets the agenda", () => {
   const restore = onMobile();
 
   try {
@@ -320,7 +320,7 @@ test("no celular a semana some do seletor, e quem pediu semana recebe a agenda",
   }
 });
 
-test("os quatro finais vem na ordem da casa", () => {
+test("the four endings come in the house order", () => {
   const retry = mock();
   const { container, rerender } = calendar({ isError: true, onRetry: retry, isLoading: true });
 
@@ -357,7 +357,7 @@ test("os quatro finais vem na ordem da casa", () => {
   expect(document.querySelector("[data-rc-status]")!.textContent).toBe("Conteúdo carregado");
 });
 
-test("na grade o vazio fica por cima, porque a grade tambem e onde se clica", () => {
+test("in the grid the empty state sits on top, because the grid is also where you click", () => {
   const { container } = calendar({
     defaultView: "day",
     events: [],
@@ -382,7 +382,7 @@ function inZone<T>(zone: string, run: () => T): T {
   }
 }
 
-test("no dia do horario de verao o clique das 10h devolve 10h de parede", () => {
+test("on the daylight saving day the 10am click returns 10am wall time", () => {
   inZone("America/New_York", () => {
     const slot = mock();
     const { container } = calendar({
@@ -405,7 +405,7 @@ test("no dia do horario de verao o clique das 10h devolve 10h de parede", () => 
   });
 });
 
-test("na hora repetida do fim do horario de verao o intervalo termina depois de comecar, na hora de parede", () => {
+test("in the repeated hour at the end of daylight saving the slot ends after it starts, in wall time", () => {
   inZone("America/New_York", () => {
     const slot = mock();
     const { container } = calendar({
@@ -426,7 +426,7 @@ test("na hora repetida do fim do horario de verao o intervalo termina depois de 
   });
 });
 
-test("o clique das 10h58 devolve o intervalo clicado, 10h30 as 11h", () => {
+test("the 10:58 click returns the clicked slot, 10:30 to 11:00", () => {
   const slot = mock();
   const { container } = calendar({ onSlotSelect: slot, dayStart: 8, hourHeight: 48 });
 
@@ -441,7 +441,7 @@ test("o clique das 10h58 devolve o intervalo clicado, 10h30 as 11h", () => {
   expect(range.end.getMinutes()).toBe(0);
 });
 
-test("clicar dentro do painel do mais nao escolhe o dia que fica embaixo", async () => {
+test("clicking inside the more panel does not pick the day underneath", async () => {
   const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
     id: String(index),
     title: `Nota ${index + 1}`,
@@ -461,7 +461,7 @@ test("clicar dentro do painel do mais nao escolhe o dia que fica embaixo", async
   expect(slot).not.toHaveBeenCalled();
 });
 
-test("o plantao das 19h as 9h, maior que a janela de horas, continua com hora e fora da faixa", () => {
+test("the 7pm to 9am shift, longer than the hour window, keeps its time and stays out of the band", () => {
   const { container } = calendar({
     events: [{ id: "plantao", title: "Plantão", start: at(19), end: at(9, 0, 18) }],
   });
@@ -476,7 +476,7 @@ test("o plantao das 19h as 9h, maior que a janela de horas, continua com hora e 
   for (const node of drawn) expect(node.getAttribute("aria-label")).not.toContain("Dia inteiro");
 });
 
-test("na agenda o plantao das 19h as 9h diz a hora, e nao dia inteiro", () => {
+test("in the agenda the 7pm to 9am shift says the time, not all day", () => {
   calendar({
     defaultView: "agenda",
     events: [{ id: "plantao", title: "Plantão", start: at(19), end: at(9, 0, 18) }],
@@ -486,7 +486,7 @@ test("na agenda o plantao das 19h as 9h diz a hora, e nao dia inteiro", () => {
   expect(screen.getAllByText(/19:00/).length).toBeGreaterThan(0);
 });
 
-test("o seletor de data fala o locale da agenda e comeca a semana no weekStartsOn", async () => {
+test("the date picker speaks the calendar locale and starts the week on weekStartsOn", async () => {
   calendar({ defaultView: "month", locale: "en-US", weekStartsOn: 1 });
 
   await act(async () => {

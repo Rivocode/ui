@@ -1,18 +1,19 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # MenuRadioGroup
 
-O grupo de escolha única dentro do menu, e quem guarda o valor escolhido.
+The single-choice group inside the menu, and what holds the chosen value.
 
-É o "Ordenar por" de uma listagem: uma ordem de cada vez. O valor vive aqui, e
-não em cada item: `defaultValue` para deixar com a peça, `value` mais
-`onValueChange` para deixar com a tela.
+It is the "Sort by" of a listing: one order at a time. The value lives here,
+and not on each item: `defaultValue` to leave it with the piece, `value` plus
+`onValueChange` to leave it with the screen.
 
-O título vem no `label`, pelo mesmo motivo do `MenuGroup`: a Base UI liga o
-`aria-labelledby` do grupo ao título que mora dentro dele, e um título escrito
-por fora não nomeia grupo nenhum (falha que não quebra tipo, só o anúncio).
+The title comes in `label`, for the same reason as in `MenuGroup`: Base UI
+wires the group's `aria-labelledby` to the title that lives inside it, and a
+title written outside names no group at all (a failure that breaks no type,
+only the announcement).
 
 ```tsx
 <MenuRadioGroup defaultValue="emissao" label="Ordenar por">
@@ -21,17 +22,17 @@ por fora não nomeia grupo nenhum (falha que não quebra tipo, só o anúncio).
 </MenuRadioGroup>
 ```
 
-## Partes
+## Parts
 
-`classNames` alcança o `label`, o mesmo título que o `MenuGroup` escreve.
+`classNames` reaches the `label`, the same title that `MenuGroup` writes.
 
-## Quando não usar
+## When not to use
 
-Para opções que se acumulam (quais colunas mostrar, quais situações incluir no
-filtro), use `MenuCheckboxItem`: lá cada linha é independente, aqui uma linha
-apaga a anterior.
+For options that add up (which columns to show, which statuses to include in
+the filter), use `MenuCheckboxItem`: there each row is independent, here one
+row clears the previous one.
 
-Se as opções cabem na tela e comparar entre elas importa, o menu esconde o que
-deveria estar à vista: `RadioGroup` mostra todas de uma vez, e `ToggleGroup`
-resolve as duas ou três que viram botão. O menu é para quando a escolha não
-merece ocupar espaço permanente na barra.
+If the options fit on the screen and comparing them matters, the menu hides
+what should be in view: `RadioGroup` shows them all at once, and
+`ToggleGroup` handles the two or three that become buttons. The menu is for
+when the choice does not deserve to take up permanent space on the bar.

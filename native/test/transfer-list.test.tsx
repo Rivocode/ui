@@ -42,7 +42,7 @@ const pressBox = (screen: ReturnType<typeof render>, label: string) => {
   const found = byRole(screen, "checkbox").find(
     (box) => box.findAll((node) => node.props?.children === label).length > 0,
   );
-  if (!found) throw new Error(`sem caixa ${label}`);
+  if (!found) throw new Error(`no checkbox ${label}`);
   act(() => found.props.onPress());
   return found;
 };
@@ -51,13 +51,13 @@ const pressButton = (screen: ReturnType<typeof render>, label: string) => {
   const found = byRole(screen, "button").find(
     (button) => button.findAll((node) => node.props?.children === label).length > 0,
   );
-  if (!found) throw new Error(`sem botao ${label}`);
+  if (!found) throw new Error(`no button ${label}`);
   act(() => found.props.onPress());
   return found;
 };
 
 describe("TransferList", () => {
-  test("as duas listas nascem do value, com titulo e contagem", () => {
+  test("both lists are born from value, with title and count", () => {
     const screen = render(<Controlled start={["rec"]} />);
     const text = textOf(screen);
 
@@ -70,7 +70,7 @@ describe("TransferList", () => {
     expect(byRole(screen, "checkbox")).toHaveLength(4);
   });
 
-  test("marcar e mover chama quem controla e anuncia no plural certo", () => {
+  test("checking and moving calls the controller and announces with the right plural", () => {
     const onValueChange = mock((_: string[]) => {});
     const screen = render(<Controlled onValueChange={onValueChange} />);
 
@@ -86,7 +86,7 @@ describe("TransferList", () => {
     expect(spoken.announced.at(-1)).toBe("2 itens movidos para Escolhidos");
   });
 
-  test("item desabilitado nao se marca e fica para tras", () => {
+  test("a disabled item cannot be checked and stays behind", () => {
     const screen = render(<Controlled />);
     const natal = byRole(screen, "checkbox").find(
       (box) => box.findAll((node) => node.props?.children === "Natal").length > 0,
@@ -97,7 +97,7 @@ describe("TransferList", () => {
     expect(textOf(screen)).toContain("1 item");
   });
 
-  test("sem nada marcado, o mover selecionados fica desligado", () => {
+  test("with nothing checked, move selected stays off", () => {
     const screen = render(<Controlled />);
     const button = byRole(screen, "button").find(
       (node) => node.findAll((child) => child.props?.children === "Mover selecionados para Escolhidos").length > 0,
@@ -106,7 +106,7 @@ describe("TransferList", () => {
     expect(button.props.accessibilityState?.disabled ?? button.props.disabled).toBe(true);
   });
 
-  test("a busca ignora acento, e sem resultado diz que nada foi achado", () => {
+  test("the search ignores accents, and with no result says nothing was found", () => {
     const screen = render(<Controlled />);
     const search = byLabel(screen, "Buscar em Disponíveis")[0]!;
 
@@ -119,7 +119,7 @@ describe("TransferList", () => {
     expect(textOf(screen)).toContain("Nenhum item");
   });
 
-  test("labels troca os nomes, e o anuncio acompanha", () => {
+  test("labels changes the names, and the announcement follows", () => {
     const screen = render(
       <Controlled searchable={false} labels={{ available: "Permissões", chosen: "Concedidas" }} />,
     );
@@ -130,7 +130,7 @@ describe("TransferList", () => {
     expect(spoken.announced).toEqual(["1 item movido para Concedidas"]);
   });
 
-  test("desabilitada, nada move", () => {
+  test("disabled, nothing moves", () => {
     const onValueChange = mock((_: string[]) => {});
     const screen = render(<Controlled disabled onValueChange={onValueChange} />);
 
@@ -142,7 +142,7 @@ describe("TransferList", () => {
     expect(spoken.announced).toEqual([]);
   });
 
-  test("com cinco mil itens, mover todos nao varre a lista inteira por item", () => {
+  test("with five thousand items, moving all does not scan the whole list per item", () => {
     const many: TransferListItem[] = Array.from({ length: 5000 }, (_, index) => ({
       value: `k${index}`,
       label: `Cliente ${index}`,

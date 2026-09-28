@@ -1,6 +1,6 @@
 import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from '@rivocode/ui'
 
-/** Aberto */
+/** Open */
 export function Open() {
   return (
     <div className="w-80">
@@ -14,7 +14,7 @@ export function Open() {
   )
 }
 
-/** Fechado */
+/** Closed */
 export function ClosedState() {
   return (
     <div className="w-80">

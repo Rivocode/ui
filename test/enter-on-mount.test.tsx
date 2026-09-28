@@ -27,7 +27,7 @@ const tokensOf = (element: Element | null | undefined) => {
 
 const ENTRANCES = ["enter", "appear", "pop", "fill", "reveal"];
 
-test("cada entrada dura um token, curva da casa, e nao prende estado depois de acabar", () => {
+test("each entrance lasts one token, uses the house curve, and holds no state after it ends", () => {
   for (const name of ENTRANCES) {
     const hit = new RegExp(`--animate-${name}:\\s*([\\w-]+) var\\(--rc-duration-(\\w+)\\) var\\(--rc-ease\\) (\\w+);`).exec(
       contract,
@@ -51,7 +51,7 @@ test("cada entrada dura um token, curva da casa, e nao prende estado depois de a
   }
 });
 
-test("quem usa desliga a entrada com animate-none, e o cn fica so com ela", () => {
+test("the consumer turns the entrance off with animate-none, and cn keeps only that", () => {
   for (const name of ENTRANCES) {
     expect(cn(`animate-${name}`, "animate-none").split(" ")).toEqual(["animate-none"]);
   }
@@ -131,7 +131,7 @@ const cases: [string, () => ReactElement, (root: HTMLElement) => Element | null,
 ];
 
 for (const [name, element, find, token] of cases) {
-  test(`${name} entra na montagem com ${token}`, () => {
+  test(`${name} enters on mount with ${token}`, () => {
     const { container } = render(element());
     let target: Element | null = null;
     try {
@@ -143,7 +143,7 @@ for (const [name, element, find, token] of cases) {
   });
 }
 
-test("a barra do Progress e do Meter enche da esquerda, e o indeterminado troca a entrada pelo vaivem", () => {
+test("the Progress and Meter bar fills from the left, and indeterminate swaps the entrance for the back-and-forth", () => {
   render(<Progress value={40} label="Envio" />);
   const fill = tokensOf(screen.getByRole("progressbar").querySelector(".bg-accent-text"));
   expect(fill).toContain("origin-left");
@@ -157,7 +157,7 @@ const invoices: Invoice[] = [
   { id: "2", amount: 1 },
 ];
 
-test("o corpo da tabela esmaece uma vez ao sair do esqueleto, e ordenar nao repete", () => {
+test("the table body fades in once when leaving the skeleton, and sorting does not repeat it", () => {
   const table = (data: Invoice[] | undefined) => (
     <DataTable data={data} columns={columns} rowKey={(row) => row.id} />
   );
@@ -175,7 +175,7 @@ test("o corpo da tabela esmaece uma vez ao sair do esqueleto, e ordenar nao repe
   expect(view.container.querySelector("tbody")).toBe(arrived);
 });
 
-test("so a ficha que chega depois cresce; as que ja estavam nascem paradas e assim ficam", () => {
+test("only the chip that arrives later grows; the ones already there are born still and stay that way", () => {
   const tags = (value: string[]) => (
     <TagsInput value={value} onValueChange={() => {}} aria-label="Etiquetas" />
   );

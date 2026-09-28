@@ -1,7 +1,7 @@
 import { use } from 'react'
 import { forwardsRootProps, pieceOf, propsOf } from '@/props'
 
-/** Parte o tipo de uniao, para o longo quebrar por valor e nao numa linha so. */
+/** Splits the union type, so a long one breaks per value and not on a single line. */
 function TypeCell({ type }: { type: string }) {
   const parts = type.split(' | ')
 
@@ -28,17 +28,17 @@ export function PropsTable({
   compact,
 }: {
   component: string
-  /** Dentro da lista "Partes", onde uma caixa inteira por parte seria ruido. */
+  /** Inside the "Parts" list, where a whole box per part would be noise. */
   compact?: boolean
 }) {
-  // A tabela e a parte mais alta da pagina, entao ela suspende junto com o
-  // resto em vez de chegar depois: o salto de altura ao fim do download era a
-  // maior parte do CLS da pagina de peca.
+  // The table is the tallest part of the page, so it suspends together with
+  // the rest instead of arriving later: the height jump at the end of the
+  // download was most of the piece page's CLS.
   const piece = use(pieceOf(component))
   const props = propsOf(piece)
 
   if (props.length === 0) {
-    const toast = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'
+    const toast = 'No props of its own: forwards whatever you pass to the element underneath.'
 
     return compact ? (
       <p className="text-sm text-fg-subtle">{toast}</p>
@@ -59,7 +59,7 @@ export function PropsTable({
                 Prop
               </th>
               <th className="px-4 py-2.5 font-mono text-xs tracking-wide text-fg-subtle uppercase">
-                Tipo
+                Type
               </th>
             </tr>
           </thead>
@@ -70,15 +70,15 @@ export function PropsTable({
                   <code className="font-mono text-sm whitespace-nowrap text-fg">{prop.name}</code>
                   {prop.required && (
                     <span className="ml-2 font-mono text-[0.65rem] tracking-wide text-danger-text uppercase">
-                      obrigatória
+                      required
                     </span>
                   )}
-                  {/* Quem tem uma versão velha instalada precisa saber se a
-                      prop existe para ele, e hoje descobre pelo erro de tipo,
-                      ou pior, pelo atributo solto no DOM. */}
+                  {/* Whoever has an old version installed needs to know whether
+                      the prop exists for them, and today finds out through the
+                      type error, or worse, through a stray attribute in the DOM. */}
                   {prop.since && (
                     <span
-                      title={`Existe desde a versão ${prop.since}`}
+                      title={`Available since version ${prop.since}`}
                       className="ml-2 font-mono text-[0.65rem] tracking-wide text-fg-subtle"
                     >
                       {prop.since}
@@ -101,9 +101,9 @@ export function PropsTable({
 
       {forwardsRootProps(piece) && (
         <p className="border-t border-border bg-surface px-4 py-3 text-xs text-fg-subtle">
-          Além destas, a peça aceita <code className="font-mono">className</code>,{' '}
-          <code className="font-mono">style</code>, <code className="font-mono">id</code> e{' '}
-          <code className="font-mono">children</code>, repassados ao elemento de baixo.
+          Beyond these, the piece accepts <code className="font-mono">className</code>,{' '}
+          <code className="font-mono">style</code>, <code className="font-mono">id</code> and{' '}
+          <code className="font-mono">children</code>, forwarded to the element underneath.
         </p>
       )}
     </div>

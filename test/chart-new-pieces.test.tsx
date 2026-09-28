@@ -17,7 +17,7 @@ const SLICES = [
   { natureza: "produto", total: 62_400 },
 ];
 
-test("a rosca usa o buraco para o total, que e o numero que a pessoa veio buscar", () => {
+test("the donut uses the hole for the total, which is the number the person came for", () => {
   withTheme(
     <ChartDonut
       data={SLICES}
@@ -32,7 +32,7 @@ test("a rosca usa o buraco para o total, que e o numero que a pessoa veio buscar
   expect(screen.getByText("faturado")).toBeDefined();
 });
 
-test("a linha miuda se esconde do leitor de tela, porque nao ha o que ler nela", () => {
+test("the tiny line hides from the screen reader, because there is nothing to read in it", () => {
   const { container } = withTheme(<Sparkline data={[1, 4, 3, 9]} />);
   const box = container.querySelector("[aria-hidden=true]");
 
@@ -40,7 +40,7 @@ test("a linha miuda se esconde do leitor de tela, porque nao ha o que ler nela",
   expect(box!.getAttribute("role")).toBeNull();
 });
 
-test("com rotulo ela vira imagem, e o leitor de tela passa a ter o que dizer", () => {
+test("with a label it becomes an image, and the screen reader has something to say", () => {
   withTheme(<Sparkline data={[1, 4, 3, 9]} label="Emissao subindo desde marco" />);
 
   expect(screen.getByRole("img", { name: "Emissao subindo desde marco" })).toBeDefined();
@@ -52,14 +52,14 @@ const PAYLOAD = [
   { dataKey: "pagas", value: "pagas", color: "#b" },
 ];
 
-test("sem `onToggle` a legenda e texto, e nao finge ser clicavel", () => {
+test("without `onToggle` the legend is text, and does not pretend to be clickable", () => {
   withTheme(<ChartLegendContent payload={PAYLOAD} config={CONFIG} />);
 
   expect(screen.queryByRole("button")).toBeNull();
   expect(screen.getByText("Emitidas")).toBeDefined();
 });
 
-test("com `onToggle` cada serie vira botao que diz no aria se esta ligada", () => {
+test("with `onToggle` each series becomes a button that says in aria whether it is on", () => {
   function Chart() {
     const series = useSeriesToggle();
     return <ChartLegendContent payload={PAYLOAD} config={CONFIG} {...series} />;
@@ -75,49 +75,49 @@ test("com `onToggle` cada serie vira botao que diz no aria se esta ligada", () =
     "false",
   );
 
-  // A outra serie nao foi junto.
+  // The other series did not go along.
   expect(screen.getByRole("button", { name: /Pagas/ }).getAttribute("aria-pressed")).toBe("true");
 });
 
-test("o arco prende a escala, e um valor sozinho nao da a volta inteira", () => {
+test("the arc pins the scale, and a lone value does not go all the way around", () => {
   const { container } = withTheme(<ChartRadial value={30} label="30% da meta" />);
 
-  // O eixo escondido e quem segura isso; sem ele a Recharts normaliza pelo
-  // maior valor da serie, que com um ponto so e o proprio ponto.
+  // The hidden axis is what holds this; without it Recharts normalizes by the
+  // largest value in the series, which with a single point is the point itself.
   expect(screen.getByRole("img", { name: "30% da meta" })).toBeDefined();
   expect(container.textContent).toContain("30%");
 });
 
-test("sem valor escrito, o meio mostra a porcentagem", () => {
+test("without a written value, the middle shows the percentage", () => {
   const { container } = withTheme(<ChartRadial value={41} max={50} />);
   expect(container.textContent).toContain("82%");
 });
 
-test("o medidor segmentado sai de tracinhos, e nao de arco liso", () => {
-  // A variacao mais pedida de medidor em painel custava 42 linhas de SVG no
-  // projeto de quem usa - e aquele SVG nao respondia ao tema sozinho.
+test("the segmented gauge is made of dashes, and not of a smooth arc", () => {
+  // The most requested gauge variation on dashboards cost 42 lines of SVG in
+  // the consumer's project - and that SVG did not follow the theme on its own.
   const { container } = withTheme(
     <ChartRadial value={82} variant="segmented" label="82% da meta" segments={44} />,
   );
 
   const ticks = container.querySelectorAll("[data-rc-tick]");
   expect(ticks.length).toBe(44);
-  // O que passou do valor fica apagado, e nao ausente: a escala inteira
-  // precisa continuar visivel para o traço aceso significar alguma coisa.
+  // What is past the value stays dimmed, and not absent: the whole scale must
+  // stay visible for the lit dash to mean anything.
   expect([...ticks].filter((tick) => tick.getAttribute("data-rc-tick") === "on").length).toBe(36);
   expect(container.querySelector('[role="img"]')?.getAttribute("aria-label")).toBe("82% da meta");
 });
 
-test("a sparkline em barra existe nos dois mundos, com o mesmo nome", () => {
-  // O nativo desenha barra e nao area - area pede poligono preenchido, que
-  // com View nao sai. Alinhar pelo web custa uma variante e evita a
-  // divergencia de nome que ja mordeu Avatar, OTPField e ToggleGroup: `bar`
-  // passa a significar a mesma coisa nos dois, e so `area` fica de fora, que e
-  // limitacao de plataforma e nao vocabulario diferente.
-  // O desenho em si nao da para conferir aqui: o ResponsiveContainer mede
-  // 0x0 no jsdom e o recharts nao emite nada. Quem guarda o desenho e o
-  // `bun run visual`; aqui fica o contrato - a variante existe, e a peca
-  // continua se anunciando certo com ela.
+test("the bar sparkline exists in both worlds, with the same name", () => {
+  // Native draws a bar and not an area - an area needs a filled polygon, which
+  // View cannot produce. Aligning with the web costs one variant and avoids the
+  // name divergence that already bit Avatar, OTPField and ToggleGroup: `bar`
+  // means the same thing on both, and only `area` stays out, which is a
+  // platform limitation and not a different vocabulary.
+  // The drawing itself cannot be checked here: ResponsiveContainer measures
+  // 0x0 in jsdom and recharts emits nothing. The drawing is guarded by
+  // `bun run visual`; here stays the contract - the variant exists, and the
+  // piece still announces itself correctly with it.
   const { container } = withTheme(
     <Sparkline data={[3, 9, 5, 12]} variant="bar" label="Emissões por dia" />,
   );
@@ -127,7 +127,7 @@ test("a sparkline em barra existe nos dois mundos, com o mesmo nome", () => {
   expect(box?.getAttribute("aria-hidden")).toBeNull();
 });
 
-test("a rosca desenhada nao deixa parada de tabulacao escondida do leitor dentro do anel", async () => {
+test("the drawn donut leaves no tab stop hidden from the reader inside the ring", async () => {
   const measure = HTMLElement.prototype.getBoundingClientRect;
   HTMLElement.prototype.getBoundingClientRect = function () {
     return { x: 0, y: 0, top: 0, left: 0, right: 320, bottom: 192, width: 320, height: 192, toJSON() {} } as DOMRect;

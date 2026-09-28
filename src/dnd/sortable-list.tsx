@@ -42,24 +42,24 @@ export type { SortableHandleProps, SortableListLabels };
 
 export type SortableItemState = {
   /**
-   * O que faz um elemento virar a alca: ref, ouvintes de ponteiro e de
-   * teclado, `role`, `tabIndex` e a instrucao para o leitor de tela. Espalhe
-   * num elemento seu quando `handle` for `false`; com a alca da peca ligada
-   * ela ja recebeu tudo isto.
+   * What makes an element become the handle: ref, pointer and keyboard
+   * listeners, `role`, `tabIndex` and the instruction for the screen reader. Spread it
+   * on an element of yours when `handle` is `false`; with the piece's handle on
+   * it has already received all of this.
    */
   handleProps: SortableHandleProps;
-  /** O item esta sendo arrastado agora, por ponteiro ou por teclado. */
+  /** The item is being dragged right now, by pointer or by keyboard. */
   isDragging: boolean;
-  /** A posicao do item na lista, contando do zero. */
+  /** The item's position in the list, counting from zero. */
   index: number;
 };
 
 export type SortableListMove = {
-  /** A chave do item que andou, a mesma que `getKey` devolveu. */
+  /** The key of the item that moved, the same one `getKey` returned. */
   key: UniqueIdentifier;
-  /** De onde ele saiu, contando do zero. */
+  /** Where it left from, counting from zero. */
   from: number;
-  /** Onde ele parou, contando do zero. */
+  /** Where it stopped, counting from zero. */
   to: number;
 };
 
@@ -67,36 +67,39 @@ export type SortableListProps<Item> = Omit<
   ComponentPropsWithoutRef<"ul">,
   "children" | "onChange"
 > & {
-  /** Os itens, na ordem de agora. A peca e controlada: a ordem nova volta por `onReorder`. */
+  /**
+   * The items, in their current order. The piece is controlled: the new order comes back through
+   * `onReorder`.
+   */
   items: readonly Item[];
-  /** A identidade de cada item. Tem que ser unica e nao pode mudar quando o item anda. */
+  /** The identity of each item. Must be unique and cannot change when the item moves. */
   getKey: (item: Item) => UniqueIdentifier;
-  /** O desenho de cada item. A peca embrulha cada um num `li` que anda sozinho. */
+  /** The drawing of each item. The piece wraps each one in an `li` that moves by itself. */
   renderItem: (item: Item, state: SortableItemState) => ReactNode;
   /**
-   * A ordem nova, ja montada, ao soltar num lugar diferente de onde o item
-   * saiu. Soltar no mesmo lugar ou cancelar com Esc nao chama.
+   * The new order, already assembled, on dropping in a place different from where the item
+   * left. Dropping in the same place or canceling with Esc does not call it.
    */
   onReorder: (items: Item[], move: SortableListMove) => void;
   /**
-   * O nome do item nos anuncios e no nome da alca: "Nota 1043" vira "Item
-   * Nota 1043 movido para a posicao 3 de 8". Sem ele, sai a chave.
+   * The item's name in the announcements and in the handle's name: "Nota 1043" becomes "Item
+   * Nota 1043 movido para a posicao 3 de 8". Without it, the key is used.
    */
   getLabel?: (item: Item) => string;
   /**
-   * Desenha a alca, um `IconButton` com o icone de pegar, no inicio de cada
-   * item, e so ela arrasta. Com `false` nenhuma alca e desenhada, e quem
-   * arrasta e o elemento onde voce espalhar `handleProps`: a sua propria alca,
-   * ou a linha inteira.
+   * Draws the handle, an `IconButton` with the grab icon, at the start of each
+   * item, and only it drags. With `false` no handle is drawn, and what
+   * drags is the element where you spread `handleProps`: your own handle,
+   * or the whole row.
    */
   handle?: boolean;
-  /** O eixo da lista. `horizontal` vira fileira que rola de lado quando nao cabe. */
+  /** The list's axis. `horizontal` becomes a row that scrolls sideways when it does not fit. */
   orientation?: "vertical" | "horizontal";
-  /** Trava o arrasto inteiro, e a alca sai desabilitada. */
+  /** Locks all dragging, and the handle is rendered disabled. */
   disabled?: boolean;
   /**
-   * Os textos dos anuncios, da instrucao e do nome da alca, para outra lingua
-   * ou outro nome de coisa ("Etapa" em vez de "Item").
+   * The texts of the announcements, the instruction and the handle's name, for another language
+   * or another name for the thing ("Etapa" instead of "Item").
    */
   labels?: Partial<SortableListLabels>;
   classNames?: Slots<"item" | "handle" | "content">;

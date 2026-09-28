@@ -221,7 +221,7 @@ const CASES: Case[] = [
   },
   {
     name: "PostalCodeField com falha",
-    mount: (classNames) => typePostalCode(() => Promise.reject(new Error("rede")), classNames),
+    mount: (classNames) => typePostalCode(() => Promise.reject(new Error("network")), classNames),
     parts: {
       message: both(ofType("Text"), "text-xs"),
       retry: both((node) => node.props.accessibilityRole === "button", says("Tentar de novo")),
@@ -1017,13 +1017,13 @@ const CASES: Case[] = [
 
 const PIECES = new Set(CASES.map((entry) => entry.name.split(" ")[0]));
 
-describe("classNames no nativo", () => {
-  test("a tabela cobre as quarenta pecas que ganharam classNames", () => {
+describe("classNames on native", () => {
+  test("the table covers the forty pieces that got classNames", () => {
     expect(PIECES.size).toBeGreaterThanOrEqual(40);
     expect(CASES.flatMap((entry) => Object.keys(entry.parts)).length).toBeGreaterThan(160);
   });
 
-  test("parte so se veste por classNames, e nunca por uma prop <parte>ClassName", async () => {
+  test("a part is only dressed through classNames, and never through a <part>ClassName prop", async () => {
     const read = async (path: string) =>
       (await Bun.file(new URL(path, import.meta.url)).json()) as Record<
         string,
@@ -1062,7 +1062,7 @@ describe("classNames no nativo", () => {
     expect(found).toEqual([]);
   });
 
-  test("toda parte que o tipo publica tem caso aqui", async () => {
+  test("every part the type publishes has a case here", async () => {
     const published = (await Bun.file(
       new URL("../../apps/docs/src/native-props.json", import.meta.url),
     ).json()) as Record<string, { props: { name: string; type: string }[] }>;
@@ -1098,7 +1098,7 @@ describe("classNames no nativo", () => {
   });
 
   for (const entry of CASES) {
-    test(`${entry.name}: cada parte veste o no dela, e so ele`, async () => {
+    test(`${entry.name}: each part dresses its own node, and only it`, async () => {
       const classNames = Object.fromEntries(
         Object.keys(entry.parts).map((part) => [part, tokenOf(part)]),
       );

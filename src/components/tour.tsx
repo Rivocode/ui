@@ -42,21 +42,21 @@ export type TourPlacement = "top" | "bottom" | "left" | "right";
 
 export type TourStep = {
   /**
-   * O elemento destacado: um seletor CSS (`"#novo-cliente"`) ou um ref. E
-   * lido quando o passo abre, entao o alvo pode nascer depois do tour. Alvo
-   * que nao existe pula o passo, com aviso em desenvolvimento.
+   * The highlighted element: a CSS selector (`"#novo-cliente"`) or a ref. It is
+   * read when the step opens, so the target can be born after the tour. A target
+   * that does not exist skips the step, with a warning in development.
    */
   target: string | RefObject<Element | null>;
-  /** O titulo do balao. Vira o nome do dialogo para o leitor de tela. */
+  /** The bubble's title. Becomes the dialog's name for the screen reader. */
   title: string;
-  /** O texto do passo. Vira a descricao do dialogo. */
+  /** The step's text. Becomes the dialog's description. */
   description?: ReactNode;
   /**
-   * O lado do alvo onde o balao prefere nascer. Padrao `bottom`; vira sozinho
-   * quando nao cabe. No celular nao vale: o balao e folha de baixo.
+   * The side of the target where the bubble prefers to be born. Default `bottom`; flips by itself
+   * when it does not fit. Does not apply on the phone: the bubble is a bottom sheet.
    */
   placement?: TourPlacement;
-  /** Conteudo extra no balao, acima dos botoes: um link para a doc, um atalho. */
+  /** Extra content in the bubble, above the buttons: a link to the docs, a shortcut. */
   action?: ReactNode;
 };
 
@@ -74,36 +74,39 @@ function layerOf(element: Element | null): string | null {
 }
 
 export type TourProps = {
-  /** Os passos, na ordem. Cada um destaca um alvo e explica o que ele faz. */
+  /** The steps, in order. Each one highlights a target and explains what it does. */
   steps: TourStep[];
-  /** Aberto, controlado. Use com `onOpenChange`. */
+  /** Open, controlled. Use with `onOpenChange`. */
   open?: boolean;
-  /** Aberto ao montar, quando ninguem controla. */
+  /** Open on mount, when nobody controls it. */
   defaultOpen?: boolean;
-  /** Avisa toda abertura e todo fechamento: concluir, pular e `Esc`. */
+  /** Reports every opening and every closing: finish, skip and `Esc`. */
   onOpenChange?: (open: boolean) => void;
-  /** O passo atual, controlado. Conta de zero. Use com `onStepChange`. */
+  /** The current step, controlled. Counts from zero. Use with `onStepChange`. */
   step?: number;
-  /** O passo de partida, quando ninguem controla. Cada abertura recomeca dele. */
+  /** The starting step, when nobody controls it. Each opening restarts from it. */
   defaultStep?: number;
-  /** Chamado a cada troca de passo: Voltar, Proximo, setas e passo pulado por falta de alvo. */
+  /**
+   * Called on every step change: Voltar, Proximo, arrows and a step skipped for lack of a target.
+   */
   onStepChange?: (step: number) => void;
-  /** Chamado no Concluir do ultimo passo. Nao e chamado ao pular. */
+  /** Called on Concluir of the last step. Not called on skip. */
   onFinish?: () => void;
-  /** Chamado no "Pular tour" e no `Esc`, com o passo em que a pessoa desistiu. */
+  /** Called on "Pular tour" and on `Esc`, with the step at which the person gave up. */
   onSkip?: (step: number) => void;
   /**
-   * Deixa o alvo clicavel atraves do recorte da mascara. Desligado por
-   * padrao: o resto da tela nunca recebe clique enquanto o tour esta aberto.
+   * Leaves the target clickable through the mask's cutout. Off by
+   * default: the rest of the screen never receives clicks while the tour is open.
    */
   interactive?: boolean;
-  /** Os textos dos botoes e do contador, para trocar o idioma ou o termo. */
+  /** The texts of the buttons and the counter, to change the language or the term. */
   labels?: Partial<TourLabels>;
-  /** Veste o balao, seja o flutuante da mesa ou a folha do celular. */
+  /** Dresses the bubble, whether the floating one on desktop or the sheet on the phone. */
   className?: string;
   /**
-   * Classe por parte: `mask`, `spotlight`, `counter`, `title`, `description`,
-   * `footer`. A mascara e irma do balao no portal, e so se alcanca por aqui.
+   * Class per part: `mask`, `spotlight`, `counter`, `title`, `description`,
+   * `footer`. The mask is a sibling of the bubble in the portal, and can only be reached through
+   * here.
    */
   classNames?: Slots<"mask" | "spotlight" | "counter" | "title" | "description" | "footer">;
 };

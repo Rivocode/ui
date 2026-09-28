@@ -1,34 +1,36 @@
 /* ---------------------------------------------------------------------------
- * As partes
+ * The parts
  *
- * `TableRow` mora na pagina de `Table`, e nao numa pagina propria.
+ * `TableRow` lives on the `Table` page, not on a page of its own.
  *
- * Mais de cento e cinquenta entradas rasas na barra lateral obrigam quem quer
- * uma tabela a abrir seis paginas para montar uma. A regra e o nome: peca cujo
- * nome comeca com o de outra peca do catalogo e parte dela - `CardHeader` de
- * `Card`, `ComboboxItem` de `Combobox`. Ganha o prefixo mais longo, senao
- * `ChartTooltipContent` cairia em `Chart` em vez de em `ChartTooltip`.
+ * More than a hundred and fifty shallow entries in the sidebar force whoever
+ * wants a table to open six pages to build one. The rule is the name: a piece
+ * whose name starts with that of another catalog piece is part of it -
+ * `CardHeader` of `Card`, `ComboboxItem` of `Combobox`. The longest prefix
+ * wins, otherwise `ChartTooltipContent` would land in `Chart` instead of in
+ * `ChartTooltip`.
  *
- * `DataTable` nao vira parte de `Table`: o nome dela nao comeca com ele, e as
- * duas sao pecas de fato independentes.
+ * `DataTable` does not become part of `Table`: its name does not start with
+ * it, and the two are genuinely independent pieces.
  *
- * Usada pelo catalogo que a pagina le e pelo plugin que escreve o markdown cru,
- * para uma parte cair no mesmo lugar nos dois.
+ * Used by the catalog the page reads and by the plugin that writes the raw
+ * markdown, so a part lands in the same place in both.
  * ------------------------------------------------------------------------- */
 
 /**
- * As pecas que a regra engoliria, e nao deveria.
+ * The pieces the rule would swallow, and should not.
  *
- * O prefixo diz que `AlertDialog` e parte de `Alert`, e nao e: um e uma tarja
- * que fica na tela, o outro e um modal que exige resposta. O mesmo vale para
- * `ToggleGroup`, que e controle proprio e nao fatia de `Toggle`. A heuristica
- * se paga nas setenta e tantas partes de verdade; estas sao as que ela erra,
- * listadas em vez de adivinhadas.
+ * The prefix says `AlertDialog` is part of `Alert`, and it is not: one is a
+ * banner that stays on screen, the other is a modal that demands an answer.
+ * The same goes for `ToggleGroup`, which is a control of its own and not a
+ * slice of `Toggle`. The heuristic pays for itself on the seventy-odd real
+ * parts; these are the ones it gets wrong, listed instead of guessed.
  *
- * As pecas `*Group` sao as que vivem sendo esquecidas aqui, e o esquecimento e
- * invisivel: a peca nao some, ela so para de ser contada e se muda para a
- * pagina de outra. O `ButtonGroup` passou um release inteiro dentro de `Button`
- * exatamente por isso, tendo doc propria e export proprio.
+ * The `*Group` pieces are the ones that keep being forgotten here, and the
+ * forgetting is invisible: the piece does not vanish, it just stops being
+ * counted and moves to another piece's page. `ButtonGroup` spent a whole
+ * release inside `Button` exactly because of this, while having its own doc
+ * and its own export.
  */
 const STANDALONE = new Set([
   'AlertDialog',
@@ -45,11 +47,11 @@ const STANDALONE = new Set([
 ])
 
 /**
- * Onde a regra aponta para o pai errado.
+ * Where the rule points to the wrong parent.
  *
- * `TabList` comeca com `Tab`, entao o prefixo o joga na aba solta em vez de em
- * `Tabs`, que e a peca sobre a qual alguem de fato le. As partes do grafico nao
- * tem uma entrada `Chart` onde cair, entao elas nomeiam o container.
+ * `TabList` starts with `Tab`, so the prefix throws it onto the lone tab
+ * instead of `Tabs`, which is the piece someone actually reads about. The
+ * chart parts have no `Chart` entry to land in, so they name the container.
  */
 const PARENT: Record<string, string> = {
   Tab: 'Tabs',
@@ -57,15 +59,15 @@ const PARENT: Record<string, string> = {
   TabPanel: 'Tabs',
   ChartTooltipContent: 'ChartContainer',
   ChartLegendContent: 'ChartContainer',
-  // O prefixo entrega estas ao `Input`, e elas sao pecas do `InputGroup`: um
-  // `Input` sozinho nao tem prefixo nem acao.
+  // The prefix hands these to `Input`, and they are pieces of `InputGroup`: a
+  // lone `Input` has no prefix and no action.
   InputPrefix: 'InputGroup',
   InputSuffix: 'InputGroup',
   InputAction: 'InputGroup',
-  // O grupo e o controle; o radio e uma das opcoes dele.
+  // The group is the control; the radio is one of its options.
   Radio: 'RadioGroup',
-  // A familia nao tem raiz `Resizable`: o grupo e a peca, e o painel e a
-  // divisoria sao partes dele.
+  // The family has no `Resizable` root: the group is the piece, and the panel
+  // and the handle are parts of it.
   ResizablePanel: 'ResizablePanelGroup',
   ResizableHandle: 'ResizablePanelGroup',
 }
@@ -75,8 +77,8 @@ export function findParent(name: string, names: Iterable<string>) {
 
   const named = PARENT[name]
   if (named) {
-    // So quando o pai esta mesmo no catalogo: uma entrada envelhecida aqui
-    // esconderia a peca da barra lateral por inteiro.
+    // Only when the parent really is in the catalog: a stale entry here would
+    // hide the piece from the sidebar entirely.
     for (const other of names) if (other === named) return named
     return null
   }
@@ -85,8 +87,8 @@ export function findParent(name: string, names: Iterable<string>) {
 
   for (const other of names) {
     if (other === name || !name.startsWith(other)) continue
-    // O que sobra depois do prefixo tem que comecar com maiuscula, senao `Tab`
-    // engoliria `Table` por acidente de grafia.
+    // What is left after the prefix has to start with an uppercase letter,
+    // otherwise `Tab` would swallow `Table` by an accident of spelling.
     if (!/^[A-Z]/.test(name.slice(other.length))) continue
     if (!best || other.length > best.length) best = other
   }
@@ -97,34 +99,35 @@ export function findParent(name: string, names: Iterable<string>) {
 const FORM_SUBPATH = new Set(['Form', 'FormField'])
 
 /**
- * O que vem de `@rivocode/ui/chart`.
+ * What comes from `@rivocode/ui/chart`.
  *
- * Por prefixo, e nao por lista escrita a mao: a lista existiu, e toda peca nova
- * de grafico nascia com a linha de import errada na propria pagina, apontando
- * para o pacote principal. Ninguem lembra de voltar aqui.
+ * By prefix, not by a hand-written list: the list existed, and every new chart
+ * piece was born with the wrong import line on its own page, pointing to the
+ * main package. Nobody remembers to come back here.
  */
 const isChart = (name: string) => name.startsWith('Chart') || name === 'Sparkline'
 
 /**
- * O que vem de `@rivocode/ui/ai`. Lista escrita, e nao prefixo: os cinco nomes
- * nao tem raiz comum, e `Message` nao se adivinha de nada.
+ * What comes from `@rivocode/ui/ai`. A written list, not a prefix: the five
+ * names share no root, and `Message` cannot be guessed from anything.
  */
 const AI_SUBPATH = new Set(['AILabel', 'Conversation', 'Message', 'PromptInput', 'ToolCall'])
 
 /**
- * O que vem de `@rivocode/ui/dnd`, atras do peer opcional do dnd-kit. Lista
- * escrita, como a da IA: `Kanban` e `SortableList` nao tem prefixo comum.
+ * What comes from `@rivocode/ui/dnd`, behind the optional dnd-kit peer. A
+ * written list, like the AI one: `Kanban` and `SortableList` share no prefix.
  */
 const DND_SUBPATH = new Set(['Kanban', 'SortableList'])
 
 /**
- * O que vem de `@rivocode/ui/editor`: o editor e a peca que exibe o que ele
- * salvou. As duas moram juntas porque o formato e um so, e quem exibe sem
- * editar nao importa o Tiptap - o `RichTextView` nao toca nele.
+ * What comes from `@rivocode/ui/editor`: the editor and the piece that shows
+ * what it saved. The two live together because the format is one, and whoever
+ * shows without editing does not import Tiptap - `RichTextView` never touches
+ * it.
  */
 const EDITOR_SUBPATH = new Set(['RichTextEditor', 'RichTextView'])
 
-/** De qual entrada a peca vem; os subcaminhos sao opcionais de proposito. */
+/** Which entry point the piece comes from; the subpaths are optional on purpose. */
 export function importPathOf(name: string) {
   if (FORM_SUBPATH.has(name)) return '@rivocode/ui/form'
   if (isChart(name)) return '@rivocode/ui/chart'

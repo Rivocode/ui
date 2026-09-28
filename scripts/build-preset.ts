@@ -11,7 +11,7 @@ export async function flattenPreset(source = SOURCE) {
     .filter((request): request is string => request !== undefined)
     .map((request) => normalize(join(dirname(source), request)));
 
-  const parts: string[] = ["/* @rivocode/ui: tokens e temas. Gerado, nao editar. */"];
+  const parts: string[] = ["/* @rivocode/ui: tokens and themes. Generated, do not edit. */"];
   for (const file of files) {
     parts.push(`\n/* ${file} */\n${await Bun.file(file).text()}`);
   }
@@ -20,7 +20,7 @@ export async function flattenPreset(source = SOURCE) {
     .filter((line) => !line.trimStart().startsWith("@import"))
     .join("\n")
     .trim();
-  parts.push(`\n/* ${source} (sem os imports, ja achatados acima) */\n${rules}`);
+  parts.push(`\n/* ${source} (without the imports, already flattened above) */\n${rules}`);
 
   return { css: parts.join("\n"), files, rules };
 }
@@ -28,5 +28,5 @@ export async function flattenPreset(source = SOURCE) {
 if (import.meta.main) {
   const { css, files } = await flattenPreset();
   await Bun.write("dist/preset.css", css);
-  console.log(`dist/preset.css gerado a partir de ${files.length} arquivos.`);
+  console.log(`dist/preset.css generated from ${files.length} files.`);
 }

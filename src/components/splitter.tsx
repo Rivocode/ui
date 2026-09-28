@@ -7,20 +7,20 @@ import type { Slots } from "../lib/slots";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./resizable";
 
 export type SplitterProps = Omit<ComponentProps<"div">, "onChange"> & {
-  /** O lado que a medida descreve: a esquerda na horizontal, o topo na vertical. */
+  /** The side the size describes: the left when horizontal, the top when vertical. */
   start: ReactNode;
   end: ReactNode;
-  /** Tamanho do primeiro lado, em porcentagem. */
+  /** Size of the first side, in percent. */
   defaultSize?: number;
-  /** Controlado, quando o app quer guardar a escolha entre sessoes. */
+  /** Controlled, when the app wants to keep the choice across sessions. */
   size?: number;
   onSizeChange?: (size: number) => void;
-  /** Quanto cada lado precisa ter, em porcentagem. */
+  /** How much each side needs to have, in percent. */
   min?: number;
-  /** O que o leitor de tela chama a divisoria. */
+  /** What the screen reader calls the divider. */
   label: string;
   orientation?: "horizontal" | "vertical";
-  /** Classe por parte: `start`, `end`, `handle`. */
+  /** Class per part: `start`, `end`, `handle`. */
   classNames?: Slots<"start" | "end" | "handle">;
 };
 

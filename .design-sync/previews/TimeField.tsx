@@ -1,7 +1,7 @@
 import { Field, FieldDescription, FieldLabel, TimeField } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Com rótulo */
+/** With label */
 export function WithLabel() {
   return (
     <Field className="w-40">
@@ -11,7 +11,7 @@ export function WithLabel() {
   )
 }
 
-/** Par de pontos */
+/** Pair of points */
 export function Shift() {
   const [start, setStart] = useState('08:00')
   const [end, setEnd] = useState('17:30')
@@ -30,7 +30,7 @@ export function Shift() {
   )
 }
 
-/** Janela de entrega */
+/** Delivery window */
 export function DeliveryWindow() {
   return (
     <Field className="w-56">
@@ -41,12 +41,12 @@ export function DeliveryWindow() {
   )
 }
 
-/** Vazio */
+/** Empty */
 export function Empty() {
   return <TimeField aria-label="Horário" className="w-40" />
 }
 
-/** Desabilitado */
+/** Disabled */
 export function Disabled() {
   return <TimeField aria-label="Horário" defaultValue="08:00" className="w-40" disabled />
 }

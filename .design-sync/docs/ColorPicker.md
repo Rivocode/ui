@@ -1,15 +1,15 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # ColorPicker
 
-Escolha de uma cor: a de marca de um cliente, num construtor de tema.
+Choosing a color: a client's brand color, in a theme builder.
 
-São duas entradas para a mesma decisão. A **grade de amostras** é para escolher
-olhando, e responde à seta como um grupo de radio, porque é o que ela é: uma
-escolha entre opções, e não um punhado de botões. O **campo de texto** é para
-quem já tem o valor no manual da marca e quer colar.
+There are two inputs for the same decision. The **swatch grid** is for choosing
+by looking, and responds to the arrow keys like a radio group, because that is
+what it is: a choice among options, not a handful of buttons. The **text field**
+is for whoever already has the value in the brand manual and wants to paste it.
 
 ```tsx
 const [brand, setBrand] = useState('#d4f34a')
@@ -22,18 +22,19 @@ const [brand, setBrand] = useState('#d4f34a')
 />
 ```
 
-O valor entra e sai sempre no mesmo formato: hexadecimal de seis dígitos,
-minúsculo, com cerquilha. O que a pessoa **digita ou cola** pode ser bem mais
-solto (`#0f8`, `BFDD3A`, com espaço em volta), e o `onValueChange` recebe
-`#00ff88` e `#bfdd3a`. Texto que ainda não é cor não avisa ninguém: o campo
-guarda o rascunho enquanto ela escreve e volta ao último valor bom quando ela
-sai sem terminar.
+The value always goes in and out in the same format: six-digit hexadecimal,
+lowercase, with a hash. What the person **types or pastes** can be much looser
+(`#0f8`, `BFDD3A`, with spaces around it), and `onValueChange` receives
+`#00ff88` and `#bfdd3a`. Text that is not a color yet does not alert anyone:
+the field keeps the draft while they write and goes back to the last good value
+when they leave without finishing.
 
-Sem `value`, a peça guarda a própria escolha a partir de `defaultValue`.
+Without `value`, the component keeps its own choice starting from
+`defaultValue`.
 
-## As amostras
+## The swatches
 
-`swatches` aceita o valor solto ou o valor com nome:
+`swatches` accepts a bare value or a value with a name:
 
 ```tsx
 <ColorPicker
@@ -50,87 +51,90 @@ Sem `value`, a peça guarda a própria escolha a partir de `defaultValue`.
 />
 ```
 
-**Dê o nome sempre que ele existir.** Uma sequência de seis caracteres lida
-letra a letra não diz nada a quem ouve a tela; "Lima" diz. Sem nome, a amostra
-se anuncia como `Cor #d4f34a`. O valor está lá, e é o mínimo.
+**Give the name whenever it exists.** A six-character sequence read letter by
+letter says nothing to whoever listens to the screen; "Lima" does. Without a
+name, the swatch announces itself as `Cor #d4f34a`. The value is there, and it
+is the minimum.
 
-Sem `swatches`, a grade traz um leque de tons gerado: dez matizes em três
-claridades. Ele serve para experimentar, e **não** para representar uma marca:
-um construtor de tema entrega aqui a paleta do cliente. A biblioteca não podia
-trazer a dela: cor literal dentro de um componente amarra o white-label a uma
-marca, e é por isso que a paleta da casa vive em `src/tokens` e o leque daqui é
-calculado.
+Without `swatches`, the grid brings a generated range of hues: ten hues at
+three lightnesses. It is for experimenting, and **not** for representing a
+brand: a theme builder hands the client's palette in here. The library could
+not bring its own: a literal color inside a component ties white-labeling to
+one brand, and that is why the house palette lives in `src/tokens` and the
+range here is computed.
 
-`columns` é ao mesmo tempo o desenho da grade e o passo das setas para cima e
-para baixo. Por isso é prop, e não uma classe de fora.
+`columns` is at the same time the grid's layout and the step of the up and down
+arrows. That is why it is a prop, and not a class from outside.
 
-## Acessibilidade
+## Accessibility
 
-É o que separa esta peça de um `<input type="color">` embrulhado:
+This is what sets this component apart from a wrapped `<input type="color">`:
 
-- A grade é um `radiogroup`, e cada amostra um `radio`. **Uma** amostra entra na
-  ordem de tabulação; a seta anda dentro da grade, `Home` e `End` vão às pontas.
-  Sem isso, trinta amostras viram trinta paradas de Tab.
-- O escolhido é **dito**, e não só pintado: `aria-checked`. Quem enxerga vê um
-  anel por fora da amostra: por fora, e não uma marca por dentro, porque
-  símbolo desenhado sobre a cor fica ilegível em metade dos valores possíveis, e
-  não existe token que garanta contraste contra um valor que a pessoa inventou.
-- O campo de texto tem nome próprio (`Código hexadecimal da cor`), então ele se
-  anuncia sozinho mesmo fora de um `Field`.
-- Cada amostra em texto puro se chama `Cor #d4f34a`, e `labels.swatch` troca a
-  frase; a amostra `{ value, label }` se chama pelo próprio `label`.
-- **Dentro de um `Field`, o `label` não aparece de novo.** O rótulo na tela ali
-  é o `FieldLabel`, e escrever os dois deixava a mesma frase duas vezes, uma em
-  cima da outra. O `label` da peça continua nomeando a grade para o leitor de
-  tela, só que escondido. No nativo o `forValue` entrega o `label` do
-  `FormField`, e a peça faz a mesma coisa: nomeia sem desenhar.
+- The grid is a `radiogroup`, and each swatch a `radio`. **One** swatch enters
+  the tab order; the arrow moves inside the grid, `Home` and `End` go to the
+  ends. Without this, thirty swatches become thirty Tab stops.
+- The selected one is **stated**, not just painted: `aria-checked`. Whoever
+  sees gets a ring outside the swatch: outside, and not a mark inside, because
+  a symbol drawn over the color becomes illegible on half the possible values,
+  and no token can guarantee contrast against a value the person made up.
+- The text field has its own name (`Código hexadecimal da cor`), so it
+  announces itself even outside a `Field`.
+- Each plain-text swatch is called `Cor #d4f34a`, and `labels.swatch` changes
+  the phrase; a `{ value, label }` swatch is called by its own `label`.
+- **Inside a `Field`, the `label` does not appear again.** The on-screen label
+  there is the `FieldLabel`, and writing both left the same phrase twice, one
+  on top of the other. The component's `label` still names the grid for the
+  screen reader, just hidden. On native, `forValue` delivers the `FormField`'s
+  `label`, and the component does the same thing: it names without drawing.
 
-## Sentido da escrita
+## Writing direction
 
-Em `dir="rtl"` a grade espelha sozinha, porque é grid: a primeira amostra passa
-a ser a da direita. O que não espelha sozinho é a seta, que anda por índice. Por
-isso ela troca de papel. `→` leva o anel de foco para a direita da tela e
-`←` para a esquerda, mesmo que o índice ande no sentido contrário. `ArrowDown` e
-`ArrowUp` continuam andando `columns` de cada vez, na mesma coluna, e `Home` e
-`End` continuam lógicos: a primeira e a última amostra, e não a esquerda e a
-direita.
+In `dir="rtl"` the grid mirrors on its own, because it is a grid: the first
+swatch becomes the one on the right. What does not mirror on its own is the
+arrow key, which moves by index. That is why it swaps roles. `→` takes the
+focus ring to the right of the screen and `←` to the left, even if the index
+moves the other way. `ArrowDown` and `ArrowUp` keep moving `columns` at a time,
+in the same column, and `Home` and `End` stay logical: the first and the last
+swatch, not the left and the right.
 
-A direção vem do `RivoProvider`, e não de um `dir` escrito à mão num elemento
-acima da peça. Sem ele a grade espelharia o desenho sem espelhar a conta: numa
-grade de dez colunas, `→` levava o foco uma amostra para a esquerda.
+The direction comes from `RivoProvider`, not from a `dir` written by hand on an
+element above the component. Without it the grid would mirror the drawing
+without mirroring the math: in a ten-column grid, `→` took focus one swatch to
+the left.
 
-## Partes
+## Parts
 
-`classNames` veste cada parte: `label`, `swatches`, `swatch`, `field`,
+`classNames` dresses each part: `label`, `swatches`, `swatch`, `field`,
 `preview`, `input`.
 
-## Quando não usar
+## When not to use
 
-**Para o seletor de cor completo, use o `<input type="color">` do navegador.**
-Esta peça não tem roda de matiz, mapa de saturação, canal de transparência nem
-conta-gotas, e nada disso está na fila. O input nativo abre o diálogo do
-sistema operacional, que já traz o espectro inteiro, o conta-gotas da própria
-máquina, e o teclado e o leitor de tela acertados sem uma linha nossa. O que ele
-não faz (mostrar a paleta que a casa sugere, dizer qual tom está escolhido,
-aceitar um valor colado do manual da marca) é exatamente o que esta peça faz.
-Os dois convivem bem lado a lado: a grade para o comum, o nativo para o resto.
+**For the full color picker, use the browser's `<input type="color">`.** This
+component has no hue wheel, saturation map, transparency channel or eyedropper,
+and none of that is in the queue. The native input opens the operating
+system's dialog, which already brings the whole spectrum, the machine's own
+eyedropper, and keyboard and screen reader support done right without a line of
+ours. What it does not do (show the palette the house suggests, say which hue
+is selected, accept a value pasted from the brand manual) is exactly what this
+component does. The two sit well side by side: the grid for the common case,
+the native one for the rest.
 
-**Para escolher entre poucas opções fixas e nomeadas, use o `RadioGroup`.** Se a
-tela oferece três temas prontos ("Lima", "Grafite", "Papel"), a decisão é sobre
-o tema e não sobre a cor, e uma lista de rótulos com uma bolinha colorida ao
-lado diz isso melhor que uma grade de tons anônimos.
+**To choose among a few fixed, named options, use `RadioGroup`.** If the screen
+offers three ready-made themes ("Lima", "Grafite", "Papel"), the decision is
+about the theme and not the color, and a list of labels with a colored dot
+beside them says that better than a grid of anonymous hues.
 
-**Para um valor numa faixa contínua**, o `Slider`. Opacidade e raio de canto são
-faixa, não cor.
+**For a value in a continuous range**, `Slider`. Opacity and corner radius are
+a range, not a color.
 
-## No React Native
+## In React Native
 
-Traduz, e sai pelo índice da raiz: não há peer nenhum atrás dela. As duas entradas do web atravessam inteiras: as **amostras**, para escolher olhando, e o **campo hexadecimal**, para quem já tem o valor no manual da marca. O `normalizeColor` é o mesmo dos dois lados, linha por linha: `#0f8`, `BFDD3A` e `  #D4F34A  ` saem todos como seis dígitos minúsculos com cerquilha.
+Translates, and comes from the root index: there is no peer behind it. Both web inputs cross over whole: the **swatches**, for choosing by looking, and the **hex field**, for whoever already has the value in the brand manual. `normalizeColor` is the same on both sides, line by line: `#0f8`, `BFDD3A` and `  #D4F34A  ` all come out as six lowercase digits with a hash.
 
-**Três coisas mudam, e as três saem do dedo.** É controlada, sem `defaultValue`, como toda peça daqui. **Não há navegação por seta** (nem `Home`, nem `End`, nem uma única parada de tabulação), e por isso `columns` deixa de ser o passo das setas e passa a ser só o desenho: o padrão cai de dez para **seis por linha**, porque dez alvos de 44px com vão de 8 dariam 512px numa tela de 390. E cada amostra é um alvo de **44px com o desenho colorido de 32 por dentro**: a grade de cores bonita e pequena demais para o polegar é o defeito clássico desta peça. A marca do escolhido continua sendo **por fora**, pela mesma razão do web: símbolo desenhado sobre a amostra fica ilegível em metade das cores possíveis, e não há token que garanta contraste contra um valor que a pessoa inventou.
+**Three things change, and all three come from the finger.** It is controlled, without `defaultValue`, like every piece here. **There is no arrow navigation** (no `Home`, no `End`, no single tab stop), and so `columns` stops being the arrows' step and becomes only the drawing: the default drops from ten to **six per row**, because ten 44px targets with an 8 gap would give 512px on a 390 screen. And each swatch is a **44px target with the colored 32 drawing inside**: a pretty color grid too small for the thumb is the classic defect of this piece. The selected mark is still **outside**, for the same reason as the web: a symbol drawn over the swatch is illegible on half of the possible colors, and there is no token that guarantees contrast against a value the person made up.
 
-**O campo pede o teclado alfanumérico comum** (`keyboardType="default"`), e não o numérico: hexadecimal tem `a` a `f` e uma cerquilha, e nenhum teclado de números traz as duas coisas. O que ele desliga é o que o sistema faria por conta: `autoCapitalize="none"` para `bfdd3a` não virar `Bfdd3a`, e `autoCorrect={false}` para o corretor não trocar seis letras sem sentido pela palavra mais parecida.
+**The field asks for the plain alphanumeric keyboard** (`keyboardType="default"`), not the numeric one: hex has `a` to `f` and a hash, and no number keyboard has both things. What it turns off is what the system would do on its own: `autoCapitalize="none"` so `bfdd3a` does not become `Bfdd3a`, and `autoCorrect={false}` so the autocorrect does not swap six meaningless letters for the closest word.
 
-Quem não vê a cor a ouve por dois caminhos: o `accessibilityState.checked` de cada amostra, e o texto do próprio campo, que tem nome próprio (`Código hexadecimal da cor`). O retrato ao lado dele sai do leitor de tela: ele repete em cor o que o campo diz em texto, e cor não se ouve. Com `hideInput`, o estado da amostra fica sendo o único canal.
+Whoever cannot see the color hears it through two paths: each swatch's `accessibilityState.checked`, and the text of the field itself, which has its own name (`Código hexadecimal da cor`). The preview next to it is hidden from the screen reader: it repeats in color what the field says in text, and color cannot be heard. With `hideInput`, the swatch state becomes the only channel.
 
-As partes vestem pelo mesmo `classNames` do web, as seis: `label`, `swatches`, `swatch` (o alvo de 44px de cada amostra), `field`, `preview` e `input`.
+The parts are styled through the same `classNames` as the web, all six: `label`, `swatches`, `swatch` (each swatch's 44px target), `field`, `preview` and `input`.

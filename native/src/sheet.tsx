@@ -13,11 +13,11 @@ export type SheetProps = {
   title: string;
   description?: string;
   children?: ReactNode;
-  /** Veste o painel da folha, nao o fundo escurecido. */
+  /** Styles the sheet panel, not the dimmed backdrop. */
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `close` e o nome do fundo
-   * escurecido, que fecha a folha ao toque, "Fechar" sem ele.
+   * The component's texts, to change the language: `close` is the name of the
+   * dimmed backdrop, which closes the sheet on tap, "Fechar" without it.
    */
   labels?: Partial<SheetLabels>;
 };

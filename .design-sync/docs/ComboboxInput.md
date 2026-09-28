@@ -1,18 +1,18 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # ComboboxInput
 
-O campo de busca com o limpar e a seta encostados. Vive dentro do `Combobox`.
+The search field with the clear button and the arrow attached. Lives inside `Combobox`.
 
-O `className` veste a raiz, que aqui é a moldura que segura o campo e os dois
-botões, e não o `<input>`. Para alcançar cada uma delas pelo nome, use
-`classNames` com as partes `wrapper` e `input`:
+`className` dresses the root, which here is the frame holding the field and the
+two buttons, not the `<input>`. To reach each of them by name, use
+`classNames` with the `wrapper` and `input` parts:
 
 ```tsx
 <ComboboxInput classNames={{ input: "font-mono" }} />
 ```
 
-É a diferença que separava esta peça do `AutocompleteInput`, que não tem moldura
-e por isso veste o próprio campo com o `className`.
+That is the difference that set this component apart from `AutocompleteInput`,
+which has no frame and therefore dresses the field itself with `className`.

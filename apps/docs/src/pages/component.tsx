@@ -11,8 +11,8 @@ import { use } from 'react'
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-12">
-      {/* O id e para onde a coluna da direita aponta, e onde um endereco colado
-          aterrissa. */}
+      {/* The id is where the right column points, and where a pasted address
+          lands. */}
       <h2 id={anchor(title)} className="font-display text-xl text-fg">
         {title}
       </h2>
@@ -22,25 +22,25 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 /**
- * Os exemplos que a página mostra: os seus, e os das partes que a compõem.
+ * The examples the page shows: its own, and those of the parts that compose it.
  *
- * Uma parte não tem página própria (o endereço dela leva a quem a monta), e
- * até aqui o preview dela não era mostrado em lugar nenhum. `Radio` é o caso
- * extremo: `RadioGroup` não tem preview seu, então a página abria sem um único
- * exemplo, com dois escritos e mantidos em `Radio.tsx` que ninguém via.
+ * A part has no page of its own (its address leads to whoever assembles it),
+ * and until now its preview was shown nowhere. `Radio` is the extreme case:
+ * `RadioGroup` has no preview of its own, so the page opened without a single
+ * example, with two written and maintained in `Radio.tsx` that nobody saw.
  */
 function examplesOf(entry: Entry) {
   return [entry, ...(entry.parts ?? [])].filter((item) => item.loadExamples)
 }
 
 /**
- * A prosa da peca.
+ * The piece's prose.
  *
- * O corpo das docs saiu do chunk de entrada, entao ele e uma requisicao a
- * parte - e ela SUSPENDE a pagina inteira, em vez de reservar um lugar e
- * preenche-lo depois. Esqueleto que vira texto de outra altura empurra tudo
- * que esta embaixo: a pagina de peca marcava 0,44 de CLS assim, e o limite do
- * bom e 0,1. Suspendendo, a pagina aparece uma vez, ja no tamanho final.
+ * The doc bodies left the entry chunk, so each one is a separate request - and
+ * it SUSPENDS the whole page, instead of reserving a spot and filling it
+ * later. A skeleton that turns into text of another height pushes everything
+ * below it: the piece page scored 0.44 CLS that way, and the good threshold is
+ * 0.1. By suspending, the page appears once, already at its final size.
  */
 function Body({
   entry,
@@ -66,8 +66,8 @@ export function ComponentPage({ slug }: { slug: string }) {
       <div className="py-20">
         <EmptyState
           icon={<FileText size={20} />}
-          title={`Não existe peça em "${slug}"`}
-          description="Confira o nome na lista lateral. Ele diferencia maiúscula de minúscula do jeito que o import usa."
+          title={`There is no piece at "${slug}"`}
+          description="Check the name in the sidebar. It is case-sensitive, the same way the import is."
         />
       </div>
     )
@@ -90,7 +90,7 @@ export function ComponentPage({ slug }: { slug: string }) {
           </a>
           <CopyMarkdown href={`/componentes/${entry.slug}.md`} />
           <span className="text-fg-subtle">
-            markdown cru, para quem lê com agent em vez de olho
+            raw markdown, for whoever reads with an agent instead of eyes
           </span>
         </div>
       </header>
@@ -105,14 +105,14 @@ export function ComponentPage({ slug }: { slug: string }) {
 
       <div className="overflow-hidden rounded-lg border border-border bg-surface">
         <header className="border-b border-border px-4 py-2.5 font-mono text-xs tracking-wide text-fg-subtle uppercase">
-          Importar
+          Import
         </header>
         <pre className="overflow-x-auto p-4 font-mono text-sm text-fg">
           <code>{`import { ${entry.name} } from '${importPathOf(entry.name)}'`}</code>
         </pre>
       </div>
 
-      <Section title="Quando usar">
+      <Section title="When to use">
         <Body entry={entry} />
       </Section>
 
@@ -120,11 +120,13 @@ export function ComponentPage({ slug }: { slug: string }) {
         <PropsTable component={entry.name} />
       </Section>
 
+      {/* "The parts", and not "Parts": several docs write their own `## Parts`,
+          and the two would compete for the same `#parts` id on the page. */}
       {entry.parts && entry.parts.length > 0 && (
-        <Section title="Partes">
+        <Section title="The parts">
           <p className="mb-4 text-fg-muted">
-            {entry.name} se monta com estas peças. Todas vivem nesta página, porque separar cada uma
-            num endereço obrigaria a abrir seis abas para montar uma tela.
+            {entry.name} is assembled with these pieces. They all live on this page, because giving
+            each one its own address would mean opening six tabs to build one screen.
           </p>
 
           <div className="space-y-8">
@@ -143,12 +145,12 @@ export function ComponentPage({ slug }: { slug: string }) {
                 </div>
 
                 <div className="mb-3">
-                  {/* A parte é convidada nesta página: os títulos dela
-                      assinam com o nome dela e descem para dentro do `h3`
-                      acima. Sem isso, o `## No React Native` do ButtonGroup
-                      disputava o endereço `#no-react-native` com o do
-                      Button, e o índice da direita, que identifica cada
-                      linha pelo id, parava de se reconciliar. */}
+                  {/* The part is a guest on this page: its headings sign
+                      with its name and go down inside the `h3` above.
+                      Without that, ButtonGroup's `## In React Native`
+                      competed for the `#in-react-native` address with
+                      Button's, and the right-hand table of contents, which
+                      keys each row by id, stopped reconciling. */}
                   <Body entry={part} idPrefix={anchor(part.name)} headingOffset={2} />
                 </div>
 
@@ -161,14 +163,14 @@ export function ComponentPage({ slug }: { slug: string }) {
 
       {shown.length === 0 && (
         /*
-         * A parte nao chega mais aqui: o endereco dela leva a pagina de quem a
-         * monta, e la ela aparece inteira. Entao esta mensagem parou de ser
-         * "voce esta no lugar errado" e virou o que sempre deveria ser - a
-         * lacuna, dita em voz alta, na pagina de quem a tem.
+         * A part no longer lands here: its address leads to the page of whoever
+         * assembles it, and there it appears whole. So this message stopped
+         * being "you are in the wrong place" and became what it always should
+         * have been - the gap, said out loud, on the page of whoever has it.
          */
         <p className="mt-8 rounded-md border border-border bg-surface p-4 text-sm text-fg-subtle">
-          Esta peça ainda não tem exemplo que roda: a prosa e a tabela de props abaixo são o que
-          existe hoje. É uma lacuna nossa, e não uma característica dela.
+          This piece does not have a running example yet: the prose and the props table below are
+          what exists today. It is a gap on our side, not a feature of the piece.
         </p>
       )}
     </article>

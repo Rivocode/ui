@@ -26,7 +26,7 @@ const HISTORY: Turn[] = [
   },
 ]
 
-/** Com histórico */
+/** With history */
 export function WithHistory() {
   const [turns, setTurns] = useState(HISTORY)
 
@@ -52,7 +52,7 @@ export function WithHistory() {
   )
 }
 
-/** Vazia, com sugestões */
+/** Empty, with suggestions */
 export function EmptyWithSuggestions() {
   const [asked, setAsked] = useState<string | null>(null)
 

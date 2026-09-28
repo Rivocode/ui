@@ -1,6 +1,6 @@
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from '@rivocode/ui'
 
-/** Em link */
+/** On a link */
 export function OnALink() {
   return (
     <div className="min-h-40 w-80">

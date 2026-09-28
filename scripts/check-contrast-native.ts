@@ -1,195 +1,210 @@
 /**
- * Guarda de contraste do tema de MAPA - a metade dos temas que o
- * `check-contrast` nao enxerga.
+ * Contrast guard for the MAP theme - the half of the themes that
+ * `check-contrast` does not see.
  *
- * O `check-contrast` le CSS: abre `src/tokens/themes/*.css`, resolve `var()` e
- * mede os pares. Acontece que o nativo nao tem CSS de tema. Na epoca, o
- * `RivoProvider` do `@rivocode/ui-native` recebia o tema de cliente como
- * objeto - os 45 papeis em `light` e em `dark` - e nenhuma linha do gate media
- * uma cor dele. O efeito e o que o relato descreve: um tema de cliente escrito
- * para o celular podia sair com texto ilegivel e o gate ficava verde, enquanto
- * o MESMO erro em CSS reprovava. Quem sentiu portou a conta a mao, fora do
- * repositorio, e conta feita a mao envelhece calada. A prop por objeto morreu
- * depois, e o par `light`/`dark` continua sendo a FORMA que esta guarda mede:
- * e o que o `bun run gen:native --tema` emite, e e por onde um tema de cliente
- * passa antes de virar CSS.
+ * `check-contrast` reads CSS: it opens `src/tokens/themes/*.css`, resolves
+ * `var()` and measures the pairs. It so happens the native side has no theme
+ * CSS. At the time, the `RivoProvider` of `@rivocode/ui-native` received the
+ * client theme as an object - the 45 roles in `light` and in `dark` - and no
+ * line of the gate measured a single color of it. The effect is what the
+ * report describes: a client theme written for the phone could ship with
+ * unreadable text and the gate stayed green, while the SAME error in CSS
+ * failed. Whoever felt it ported the math by hand, outside the repository, and
+ * math done by hand ages silently. The object prop died later, and the
+ * `light`/`dark` pair is still the SHAPE this guard measures: it is what
+ * `bun run gen:native --tema` emits, and it is where a client theme passes
+ * through before becoming CSS.
  *
- * A conta nao muda; a FORMA do dado muda, e foi onde a porta ficou aberta. O
- * gerador emite alfa como `rgba(212,243,74,0.14)`, que e o que o React Native
- * entende, e o `compose` do `check-contrast` so conhecia
- * `rgb(212 243 74 / 0.14)`. Medido antes de escrever esta guarda: ele devolvia
- * a string intacta e o `contrastRatio` respondia NaN. Por isso o `compose`
- * aprendeu as tres sintaxes em vez de esta guarda ganhar a sua - a conta da
- * WCAG mora num lugar so, e as duas guardas medem com o mesmo codigo.
+ * The math does not change; the SHAPE of the data changes, and that is where
+ * the door was left open. The generator emits alpha as
+ * `rgba(212,243,74,0.14)`, which is what React Native understands, and the
+ * `compose` of `check-contrast` only knew `rgb(212 243 74 / 0.14)`. Measured
+ * before writing this guard: it returned the string untouched and
+ * `contrastRatio` answered NaN. That is why `compose` learned the three
+ * syntaxes instead of this guard getting its own - the WCAG math lives in a
+ * single place, and both guards measure with the same code.
  *
- * **Esse lugar e `src/lib/contrast.ts`, e nao mais `scripts/`.** A conta e o
- * motor deste arquivo sairam para la porque `scripts/` nao esta em `files` de
- * nenhum dos dois pacotes: enquanto ela ficou aqui, quem consome a biblioteca
- * nao tinha o que importar e portava tudo a mao. O que sobrou aqui e a GUARDA:
- * a lista de papeis do mapa da casa, a divida que ela nao arma, e o comando.
- * `checkThemeMap` continua exportado do modulo publicado, para quem for medir o
- * tema do CONSUMIDOR chamar a mesma tabela de pares em vez de porta-la a mao
- * outra vez, que foi o que deu origem a esta guarda.
+ * **That place is `src/lib/contrast.ts`, and no longer `scripts/`.** The math
+ * and the engine of this file moved there because `scripts/` is not in the
+ * `files` of either package: while it stayed here, whoever consumes the
+ * library had nothing to import and ported everything by hand. What is left
+ * here is the GUARD: the list of roles of the house map, the debt it does not
+ * arm, and the command. `checkThemeMap` stays exported from the published
+ * module, so that whoever measures the CONSUMER's theme calls the same pair
+ * table instead of porting it by hand again, which is what gave rise to this
+ * guard.
  *
- * ## Os pares nao sao os mesmos, e isso e decisao
+ * ## The pairs are not the same, and that is a decision
  *
- * O nativo nao e o web com outra sintaxe: e outro dedo. Par que so faz sentido
- * no ponteiro nao entra, e par que so existe no toque entra.
+ * Native is not the web with another syntax: it is another finger. A pair
+ * that only makes sense with a pointer does not come in, and a pair that only
+ * exists on touch does.
  *
- * Saem, e o motivo esta em cada linha de `WITHOUT_PAIR`: `ring` (nao ha foco
- * de teclado no toque), `accent-hover` e `line-hover` (nao ha ponteiro), e o
- * par da fronteira TRAVADA - aquele com piso E teto, o unico do web com os
- * dois -, porque `border-disabled` nao e usado uma vez sequer em `native/src`:
- * o desabilitado la e `opacity-50` na camada inteira, que e outra ideia e nao
- * um papel de cor.
+ * Out, with the reason on each line of `WITHOUT_PAIR`: `ring` (there is no
+ * keyboard focus on touch), `accent-hover` and `line-hover` (there is no
+ * pointer), and the LOCKED boundary pair - the one with a floor AND a ceiling,
+ * the only one on the web with both -, because `border-disabled` is not used
+ * even once in `native/src`: disabled there is `opacity-50` on the whole
+ * layer, which is another idea and not a color role.
  *
- * Entram quatro que so existem aqui:
+ * In come four that only exist here:
  *
- * - **o rotulo do botao primario SOB O DEDO.** `active:bg-accent-active` troca
- *   o preenchimento enquanto a pessoa segura, e o rotulo continua na tela.
- *   Toque tem estado pressionado como o ponteiro tem hover, e este e o que a
- *   pessoa le parada.
- * - **alfa sobre alfa.** No `Calendar`, a celula do intervalo ja e `selected`
- *   e o dia sob o dedo recebe `selected` DE NOVO, uma View dentro da outra. O
- *   web nao empilha esses dois; aqui o texto se le sobre duas camadas, e a
- *   guarda compoe as duas antes de medir. A fronteira de hoje dentro do
- *   intervalo entra pelo mesmo motivo.
- * - **a camada a 90%.** Ver o bloco de `MAP_LAYER_PAIRS`, abaixo.
- * - **o pino do `Slider` dentro do trilho vazio.** O trilho e o mesmo
- *   `bg-skeleton` nos dois pacotes, mas o pino nao: no web ele e
- *   `border-accent bg-surface`, e aqui e um circulo de `bg-fg` com borda
- *   `border-border-strong`. Papeis diferentes no mesmo lugar da tela, entao o
- *   par e daqui e nao de la. Ver o bloco abaixo.
+ * - **the primary button label UNDER THE FINGER.** `active:bg-accent-active`
+ *   swaps the fill while the person holds it, and the label stays on screen.
+ *   Touch has a pressed state the way the pointer has hover, and this is the
+ *   one the person reads while holding still.
+ * - **alpha over alpha.** In the `Calendar`, the range cell is already
+ *   `selected` and the day under the finger gets `selected` AGAIN, one View
+ *   inside the other. The web does not stack those two; here the text reads
+ *   over two layers, and the guard composes both before measuring. Today's
+ *   boundary inside the range comes in for the same reason.
+ * - **the layer at 90%.** See the `MAP_LAYER_PAIRS` block, below.
+ * - **the `Slider` thumb inside the empty track.** The track is the same
+ *   `bg-skeleton` in both packages, but the thumb is not: on the web it is
+ *   `border-accent bg-surface`, and here it is a `bg-fg` circle with a
+ *   `border-border-strong` border. Different roles in the same place on the
+ *   screen, so the pair belongs here and not there. See the block below.
  *
- * ## Alfa composto: o React Native compoe igual? Quase, e o "quase" morde
+ * ## Composed alpha: does React Native compose the same way? Almost, and the
+ * "almost" bites
  *
- * Medido, e nao suposto. Para o alfa do PROPRIO token a conta e identica a do
- * CSS - `alfa * cor + (1 - alfa) * fundo`, em sRGB, source-over. As tres
- * sintaxes conferem entre si no mesmo pixel: `rgb(212 243 74 / 0.14)`,
- * `rgba(212,243,74,0.14)` e a forma de oito digitos sobre o fundo escuro dao o
- * mesmo valor, as tres. E nao ha modo de mistura nem elevacao em `native/src`
- * para baguncar a ordem: as camadas sao as das Views, e so.
+ * Measured, not assumed. For the token's OWN alpha the math is identical to
+ * CSS - `alpha * color + (1 - alpha) * background`, in sRGB, source-over. The
+ * three syntaxes agree with each other on the same pixel:
+ * `rgb(212 243 74 / 0.14)`, `rgba(212,243,74,0.14)` and the eight-digit form
+ * over the dark background give the same value, all three. And there is no
+ * blend mode nor elevation in `native/src` to mess up the order: the layers are
+ * those of the Views, and that is all.
  *
- * O que NAO tem paralelo no CSS desta casa e o `opacity` do React Native. Ele
- * nao pinta um fundo translucido: ele achata a camada INTEIRA - preenchimento
- * e rotulo juntos - e compoe o resultado contra o que estiver atras. Ou seja,
- * o texto desbota junto com o fundo dele, e a razao entre os dois MUDA sem
- * nenhum token ter mudado. O `Button` destrutivo faz exatamente isso com
- * `active:opacity-90`: solto o rotulo mede 5,94:1 no tema claro, e sob o dedo
- * cai para 5,12:1; no escuro cai de 4,83:1 para 4,57:1, a 0,07 do minimo. Por
- * isso `MAP_LAYER_PAIRS` existe e mede o estado pressionado como um par
- * proprio: um tema de cliente com o vermelho um passo mais claro atravessa a
- * linha ali e em lugar nenhum mais. Os dois lados sao compostos contra o MESMO
- * fundo, e nao um sobre o outro: compor o texto sobre o preenchimento ja
- * desbotado e a conta errada, e ela erra para baixo - dava 4,44:1 onde a certa
- * da 5,12:1.
+ * What has NO parallel in this house's CSS is React Native `opacity`. It does
+ * not paint a translucent background: it flattens the WHOLE layer - fill and
+ * label together - and composes the result against whatever is behind. That
+ * is, the text fades along with its background, and the ratio between the two
+ * CHANGES without any token having changed. The destructive `Button` does
+ * exactly that with `active:opacity-90`: released, the label measures 5.94:1
+ * in the light theme, and under the finger it drops to 5.12:1; in dark it
+ * drops from 4.83:1 to 4.57:1, 0.07 from the minimum. That is why
+ * `MAP_LAYER_PAIRS` exists and measures the pressed state as a pair of its
+ * own: a client theme with the red one step lighter crosses the line there and
+ * nowhere else. Both sides are composed against the SAME background, not one
+ * over the other: composing the text over the already faded fill is the wrong
+ * math, and it errs downward - it gave 4.44:1 where the right one gives
+ * 5.12:1.
  *
- * ## Por que o controle marcado tem duas medidas
+ * ## Why the checked control has two measurements
  *
- * O `Switch`, o `Checkbox` e o `RadioGroup` nao escrevem nada: quem le se eles
- * estao marcados le o trilho e a posicao do pino, a caixa cheia com o tique e
- * o circulo com o ponto. Enquanto os tres pintavam `accent`, o marcado media
- * 1,21:1 sobre a pagina no tema claro e 1,26:1 sobre o cartao, contra 3,33:1
- * do DESMARCADO, que e `border-strong`. Reprovava a 1.4.11 E reprovava ao
- * contrario, com o marcado menos visivel que o desmarcado. Era a divida que
- * esta guarda media sem armar, e a linha do `DEBT` saiu no dia em que as pecas
- * mudaram - nos dois pacotes, porque o defeito era o mesmo nos dois.
+ * The `Switch`, the `Checkbox` and the `RadioGroup` write nothing: whoever
+ * reads whether they are checked reads the track and the thumb position, the
+ * full box with the tick and the circle with the dot. While the three painted
+ * `accent`, checked measured 1.21:1 over the page in the light theme and
+ * 1.26:1 over the card, against 3.33:1 for UNCHECKED, which is
+ * `border-strong`. It failed 1.4.11 AND failed it backwards, with checked less
+ * visible than unchecked. It was the debt this guard measured without arming,
+ * and the `DEBT` line left on the day the pieces changed - in both packages,
+ * because the defect was the same in both.
  *
- * Na chave a cor E a fronteira, e nao ha saida de desenho: o trilho e o do
- * sistema, e `Switch` do React Native aceita `trackColor` e mais nada. Borda
- * propria - o caminho que o web teria - nao existe neste lado, e por isso o
- * conserto dos dois foi o mesmo papel: `accent-text`, a lima um passo mais
- * escura, ja garantida em 4,5:1 pelos pares de texto. No tema escuro os dois
- * papeis apontam para o mesmo valor, entao o escuro nao muda um pixel. As duas
- * medidas sao o piso da norma, 3:1 sobre os TRES fundos em que o controle
- * pousa - `surface-raised` entrou junto com a caixa e o radio, que pousam
- * dentro do `Sheet` e do `Dialog` -, e o marcado pesando pelo menos o quanto
- * pesa o desmarcado, que e o defeito que o piso sozinho nao pega.
+ * On the switch the color IS the boundary, and there is no drawing way out:
+ * the track is the system's, and React Native `Switch` accepts `trackColor`
+ * and nothing more. A border of its own - the path the web would have - does
+ * not exist on this side, and that is why the fix for both was the same role:
+ * `accent-text`, the lime one step darker, already guaranteed at 4.5:1 by the
+ * text pairs. In the dark theme both roles point to the same value, so dark
+ * does not change a pixel. The two measurements are the standard's floor, 3:1
+ * over the THREE backgrounds the control sits on - `surface-raised` came in
+ * along with the box and the radio, which sit inside the `Sheet` and the
+ * `Dialog` -, and checked weighing at least as much as unchecked, which is the
+ * defect the floor alone does not catch.
  *
- * A marca por DENTRO do preenchimento tem par proprio, e ele e o unico da casa
- * medido ao contrario: `surface-raised` sobre `accent-text`. Marcada, a caixa
- * do toque se enche de `accent-text` e o tique por cima e duas bordas em
- * `surface-raised`; o `RadioGroup` daqui nao enche o circulo - ele deixa o
- * miolo vazado, com o ponto em `accent-text` sobre o fundo da tela -, e por
- * isso o ponto dele ja esta coberto pelo par de cima e nao por este. Sem esta
- * linha nada diz que a marca dentro do acento tem que se ler, e um tema que
- * aproxime `surface-raised` do acento entrega uma caixa cheia e vazia ao mesmo
- * tempo. Mede 5,75:1 no claro e 13,91:1 no escuro, contra os 3 da norma.
+ * The mark INSIDE the fill has its own pair, and it is the only one in the
+ * house measured backwards: `surface-raised` over `accent-text`. When checked,
+ * the touch box fills with `accent-text` and the tick on top is two borders in
+ * `surface-raised`; the `RadioGroup` here does not fill the circle - it leaves
+ * the core hollow, with the dot in `accent-text` over the screen background -,
+ * and that is why its dot is already covered by the pair above and not by this
+ * one. Without this line nothing says the mark inside the accent has to be
+ * readable, and a theme that brings `surface-raised` close to the accent
+ * delivers a box that is full and empty at the same time. It measures 5.75:1
+ * in light and 13.91:1 in dark, against the standard's 3.
  *
- * ## O pino do Slider, e a sombra que nunca pintou nada
+ * ## The Slider thumb, and the shadow that never painted anything
  *
- * Em 27/08/2026 a classe `shadow-1` saiu do pino do `Slider` nativo. Ela nunca
- * gerou um byte - `shadow` nao existe no CSS do React Native, e o utilitario do
- * Tailwind nem podia ser gerado, porque a cadeia `--tw-shadow` derruba o
- * compilador -, entao o que saiu foi decoracao que nao chegava na tela.
+ * On 27/08/2026 the `shadow-1` class left the native `Slider` thumb. It never
+ * generated a byte - `shadow` does not exist in React Native CSS, and the
+ * Tailwind utility could not even be generated, because the `--tw-shadow`
+ * chain brings down the compiler -, so what left was decoration that never
+ * reached the screen.
  *
- * **A decisao de TIRAR em vez de implementar repousava num numero medido a
- * mao.** O pino se ve sem sombra porque `bg-fg` sobre o trilho `bg-skeleton`
- * mede 14,68:1 sobre a pagina e 15,23:1 sobre o cartao no tema claro, e 14,64:1
- * e 12,97:1 no escuro; e porque a borda `border-border-strong` sozinha, sem
- * contar o miolo, ja da 3,19:1 e 3,22:1 no claro e 3,53:1 e 3,40:1 no escuro. O
- * piso da 1.4.11 e 3. Com essa folga a sombra e enfeite, e a peca perde
- * exatamente nada ao ficar sem ela.
+ * **The decision to REMOVE instead of implement rested on a number measured by
+ * hand.** The thumb is visible without a shadow because `bg-fg` over the
+ * `bg-skeleton` track measures 14.68:1 over the page and 15.23:1 over the card
+ * in the light theme, and 14.64:1 and 12.97:1 in dark; and because the
+ * `border-border-strong` border alone, without counting the core, already
+ * gives 3.19:1 and 3.22:1 in light and 3.53:1 and 3.40:1 in dark. The 1.4.11
+ * floor is 3. With that room the shadow is ornament, and the piece loses
+ * exactly nothing by going without it.
  *
- * Numero medido a mao e numero que a proxima pessoa nao tem. Enquanto nenhum
- * par media isso, um tema de cliente que aproximasse `fg` de `skeleton`
- * desfazia a decisao EM SILENCIO: o pino se dissolve dentro do trilho, e nada
- * acusa. E o que se perde na tela e o controle inteiro, porque o `Slider` do
- * toque nao escreve numero nenhum - `accessibilityValue` vai para o leitor de
- * tela, e o que o olho le e a POSICAO do circulo no trilho. Sem pino visivel
- * sobra o preenchimento `bg-accent`, que diz mais ou menos quanto ja foi, e nao
- * diz onde por o dedo para mudar.
+ * A number measured by hand is a number the next person does not have. While
+ * no pair measured it, a client theme that brought `fg` close to `skeleton`
+ * undid the decision SILENTLY: the thumb dissolves into the track, and nothing
+ * flags it. And what is lost on screen is the whole control, because the touch
+ * `Slider` writes no number at all - `accessibilityValue` goes to the screen
+ * reader, and what the eye reads is the POSITION of the circle on the track.
+ * Without a visible thumb what remains is the `bg-accent` fill, which says
+ * roughly how far it has gone, and does not say where to put the finger to
+ * change it.
  *
- * **Sao dois pares, e nao um, porque os dois numeros dizem coisas
- * diferentes.** A borda passa raspando - 3,19:1 e 0,19 acima do piso, e e o
- * lugar onde um tema de cliente tem quase nenhuma folga -, e e por isso que ela
- * entra, e nao por isso que ela ficaria de fora. O miolo passa com folga larga,
- * e entra porque ele e o numero em que a decisao da sombra se apoia: o par sem
- * folga guarda o TEMA, e o par com folga guarda a DECISAO. Armar so o apertado
- * deixaria a frase "o pino se ve sem sombra" sem nada por baixo dela.
+ * **They are two pairs, not one, because the two numbers say different
+ * things.** The border scrapes by - 3.19:1 is 0.19 above the floor, and it is
+ * the place where a client theme has almost no room -, and that is why it
+ * comes in, not why it would stay out. The core passes with wide room, and it
+ * comes in because it is the number the shadow decision rests on: the pair
+ * with no room guards the THEME, and the pair with room guards the DECISION.
+ * Arming only the tight one would leave the sentence "the thumb is visible
+ * without a shadow" with nothing underneath it.
  *
- * Dois fundos e nao tres, pelo mesmo motivo das fronteiras de estado e de
- * serie: o `Slider` daqui pousa na pagina e no cartao.
+ * Two backgrounds and not three, for the same reason as the state and series
+ * boundaries: the `Slider` here sits on the page and the card.
  *
- * **`skeleton` saiu do `WITHOUT_PAIR`, e a linha dele nao mudou de endereco.**
- * O papel serve a dois propositos com exigencias diferentes, e a linha antiga -
- * "bloco de carregamento, sem texto em cima" - descrevia so o primeiro. Como
- * bloco de espera do `Skeleton`, do `DataList` e do `QueryBoundary` ele
- * continua nao carregando texto nem fronteira, e continua sem par de TEXTO.
- * Como trilho vazio do `Slider` ele e o fundo de um controle que se identifica
- * so pela forma, e ali a 1.4.11 cobra 3:1. Manter a linha e medir o mesmo papel
- * imprimiria "sem par, por declaracao: skeleton" no mesmo relatorio que
- * imprime quatro medidas de `skeleton`, e
- * `test/consumer-contrast.test.ts` cobra a soma: `MEASURED_ROLES` mais
- * `WITHOUT_PAIR` tem que dar exatamente os 45 papeis, e papel nos dois lugares
- * da 46. As duas listas sao disjuntas de proposito - papel e medido ou
- * declarado, nunca os dois -, e `MAP_ROLES` segue 45 porque ela e a UNIAO:
- * `skeleton` trocou de metade sem mudar o total.
+ * **`skeleton` left `WITHOUT_PAIR`, and its line did not change address.** The
+ * role serves two purposes with different requirements, and the old line -
+ * "loading block, no text on top" - described only the first. As the waiting
+ * block of the `Skeleton`, the `DataList` and the `QueryBoundary` it still
+ * carries neither text nor boundary, and still has no TEXT pair. As the empty
+ * track of the `Slider` it is the background of a control identified only by
+ * its shape, and there 1.4.11 demands 3:1. Keeping the line and measuring the
+ * same role would print "no pair, by declaration: skeleton" in the same
+ * report that prints four `skeleton` measurements, and
+ * `test/consumer-contrast.test.ts` demands the sum: `MEASURED_ROLES` plus
+ * `WITHOUT_PAIR` has to give exactly the 45 roles, and a role in both places
+ * gives 46. The two lists are disjoint on purpose - a role is measured or
+ * declared, never both -, and `MAP_ROLES` stays at 45 because it is the UNION:
+ * `skeleton` switched halves without changing the total.
  *
- * ## O que ela cobre, alem dos pares
+ * ## What it covers, beyond the pairs
  *
- * Papel FALTANDO reprova. O gerador so confere isso no caminho `--tema`; mapa
- * escrito a mao nunca passou por conferencia nenhuma, e papel ausente nao da
- * erro no celular - a peca herda a cor da RivoCode e o cliente descobre meses
- * depois. Papel NOVO tambem reprova enquanto ninguem disser o que fazer com
- * ele: todo papel tem que estar num par ou numa linha de `WITHOUT_PAIR` com o
- * motivo, senao ele entra no mapa sem ninguem medir.
+ * A MISSING role fails. The generator only checks that on the `--tema` path; a
+ * hand-written map never went through any check, and a missing role gives no
+ * error on the phone - the piece inherits the RivoCode color and the client
+ * finds out months later. A NEW role also fails while nobody says what to do
+ * with it: every role has to be in a pair or in a `WITHOUT_PAIR` line with the
+ * reason, otherwise it enters the map with nobody measuring it.
  *
- * A conferencia dos papeis vale nos DOIS sentidos, e o segundo nasceu com a
- * mudanca de endereco. `MAP_ROLES` - a lista que o modulo publicado usa quando
- * quem chama nao passa papel nenhum - e DERIVADA das tabelas de pares mais o
- * `WITHOUT_PAIR`, e nao escrita a mao: uma segunda lista de 45 nomes seria o
- * proximo lugar a envelhecer calado. Entao a guarda confere que ela bate
- * exatamente com o que `native/tokens.ts` emite, nos dois sentidos - papel do
- * mapa que a tabela nao alcanca, e nome na tabela que nao e papel do mapa.
+ * The role check works BOTH ways, and the second was born with the change of
+ * address. `MAP_ROLES` - the list the published module uses when the caller
+ * passes no roles - is DERIVED from the pair tables plus `WITHOUT_PAIR`, not
+ * written by hand: a second list of 45 names would be the next place to age
+ * silently. So the guard checks that it matches exactly what
+ * `native/tokens.ts` emits, both ways - a map role the table does not reach,
+ * and a name in the table that is not a map role.
  *
- * ## Fora do repositorio
+ * ## Outside the repository
  *
- * Sem argumento, mede os dois temas da casa em `native/tokens.ts`. Com
- * argumento, mede o mapa que vier: `bun run check:contrast:native-map
- * acme.theme.ts` - que e o arquivo que `bun run gen:native --tema` escreve. O
- * mesmo mapa se mede sem clonar o repositorio, por
- * `rivocode-ui check-theme acme.theme.ts`, que chama este mesmo motor.
+ * Without an argument, it measures the two house themes in `native/tokens.ts`.
+ * With an argument, it measures whatever map comes in:
+ * `bun run check:contrast:native-map acme.theme.ts` - which is the file
+ * `bun run gen:native --tema` writes. The same map can be measured without
+ * cloning the repository, via `rivocode-ui check-theme acme.theme.ts`, which
+ * calls this same engine.
  */
 import {
   MAP_ROLES,
@@ -212,22 +227,23 @@ import {
 } from "../src/lib/contrast";
 import { tokens } from "../native/tokens";
 
-/** Os 45 papeis do mapa, na ordem em que o gerador os emite. */
+/** The 45 map roles, in the order the generator emits them. */
 const ROLES = Object.keys(tokens.themes["rivocode-dark"]);
 
 /**
- * A divida medida que esta guarda NAO arma, com o numero e o endereco do
- * conserto.
+ * The measured debt this guard does NOT arm, with the number and the address
+ * of the fix.
  *
- * Ela existe para o defeito que nao esta no tema e sim na peca: armar o par
- * deixaria o gate vermelho por algo que nenhum tema conserta sozinho, e calar
- * deixaria o numero sumir. Entao ela mede, mostra e nao arma.
+ * It exists for the defect that is not in the theme but in the piece: arming
+ * the pair would leave the gate red for something no theme fixes alone, and
+ * staying quiet would let the number vanish. So it measures, shows and does
+ * not arm.
  *
- * A lista esta VAZIA desde 27/08/2026, quando o trilho da chave ligada - a
- * unica entrada que ela ja teve - virou par armado, nos dois pacotes. O acordo
- * e o das outras listas da casa: ela SO ENCOLHE. Entrada que parou de reprovar
- * e erro, e a guarda manda apagar a linha - senao vira o lugar onde o defeito
- * mora.
+ * The list has been EMPTY since 27/08/2026, when the track of the switched-on
+ * switch - the only entry it ever had - became an armed pair, in both
+ * packages. The agreement is that of the other lists in the house: it ONLY
+ * SHRINKS. An entry that stopped failing is an error, and the guard says to
+ * delete the line - otherwise it becomes the place where the defect lives.
  */
 type Debt = { id: string; min: number; why: string; measure: (colors: ColorMap) => number };
 const DEBT: Debt[] = [];
@@ -251,7 +267,7 @@ for (const file of files) {
   );
   if (found.length === 0) {
     console.error(
-      `${file}: nenhum export com \`light\` e \`dark\` - nao e um mapa de tema. Emita um com` +
+      `${file}: no export with \`light\` and \`dark\` - it is not a theme map. Emit one with` +
         " `bun run gen:native --tema`.",
     );
     process.exit(1);
@@ -264,11 +280,11 @@ let failed = 0;
 const orphans = ROLES.filter((role) => !MEASURED_ROLES.includes(role) && !(role in WITHOUT_PAIR));
 if (orphans.length > 0) {
   console.error(
-    `${orphans.length} papel(eis) que nenhum par mede e que ninguem declarou:\n` +
+    `${orphans.length} role(s) no pair measures and nobody declared:\n` +
       orphans.map((role) => `    ${role}`).join("\n") +
-      "\n\n    Ou entra num par de src/lib/contrast.ts, ou ganha linha em" +
-      "\n    `WITHOUT_PAIR` dizendo por que nao precisa. Papel sem par e cor" +
-      "\n    que ninguem mede.",
+      "\n\n    Either it goes into a pair in src/lib/contrast.ts, or it gets a line in" +
+      "\n    `WITHOUT_PAIR` saying why it does not need one. A role without a pair is" +
+      "\n    a color nobody measures.",
   );
   failed++;
 }
@@ -276,11 +292,11 @@ if (orphans.length > 0) {
 const invented = MAP_ROLES.filter((role) => !ROLES.includes(role));
 if (invented.length > 0) {
   console.error(
-    `${invented.length} nome(s) nas tabelas de src/lib/contrast.ts que o mapa nao tem:\n` +
+    `${invented.length} name(s) in the tables of src/lib/contrast.ts that the map does not have:\n` +
       invented.map((role) => `    ${role}`).join("\n") +
-      "\n\n    `MAP_ROLES` e derivada das tabelas, e e ela que o modulo publicado" +
-      "\n    cobra de um tema de consumidor. Nome errado ali cobra um papel que" +
-      "\n    o `RivoProvider` nunca le, e o tema do cliente reprova por nada.",
+      "\n\n    `MAP_ROLES` is derived from the tables, and it is what the published module" +
+      "\n    demands of a consumer theme. A wrong name there demands a role the" +
+      "\n    `RivoProvider` never reads, and the client theme fails for nothing.",
   );
   failed++;
 }
@@ -327,15 +343,16 @@ for (const finding of checkSignaturePaper(
   console.log(finding.line);
 }
 
-// A divida: mede, mostra o numero e nao arma. Ela e SEMPRE medida no tema da
-// casa, e nunca no mapa que veio por argumento: a divida e da RivoCode, e um
-// cliente cujo acento passe nao paga divida nossa nem apaga linha nossa.
+// The debt: measure, show the number and do not arm. It is ALWAYS measured on
+// the house theme, never on the map that came in by argument: the debt is
+// RivoCode's, and a client whose accent passes neither pays our debt nor
+// deletes our line.
 const house = [tokens.themes["rivocode-light"], tokens.themes["rivocode-dark"]];
 const paid: string[] = [];
 for (const item of DEBT) {
   const worst = Math.min(...house.map((colors) => item.measure(colors)));
   console.log(
-    `\n  divida  ${item.id}  ${worst.toFixed(2)}:1 (min ${item.min})\n` +
+    `\n  debt  ${item.id}  ${worst.toFixed(2)}:1 (min ${item.min})\n` +
       item.why.replace(/^/gm, "          "),
   );
   if (worst >= item.min) paid.push(item.id);
@@ -343,21 +360,21 @@ for (const item of DEBT) {
 
 if (paid.length > 0) {
   console.error(
-    `\n${paid.length} linha(s) do \`DEBT\` que nao acusam mais nada: ${paid.join(", ")}.` +
-      "\n    Apague de scripts/check-contrast-native.ts - ou arme o par, se ele" +
-      "\n    virou regra. Lista de excecao que nao encolhe vira o lugar onde o" +
-      "\n    defeito mora.",
+    `\n${paid.length} \`DEBT\` line(s) that no longer flag anything: ${paid.join(", ")}.` +
+      "\n    Delete them from scripts/check-contrast-native.ts - or arm the pair, if it" +
+      "\n    became a rule. An exception list that does not shrink becomes the place" +
+      "\n    where the defect lives.",
   );
   failed++;
 }
 
 if (failed > 0) {
-  console.error(`\n${failed} problema(s) de contraste no tema de mapa.`);
+  console.error(`\n${failed} contrast problem(s) in the map theme.`);
   process.exit(1);
 }
 console.log(
-  `\nContraste ok em ${maps.length} mapa(s), claro e escuro: ${MAP_PAIRS.length} pares de texto,` +
-    ` ${MAP_BOUNDARIES.length} de 1.4.11, ${MAP_LAYER_PAIRS.length} de camada, ${MAP_TINTED_PAIRS.length} sobre tinta de serie e` +
-    ` ${MAP_CHECKED_OVER.length} do controle marcado, por esquema.` +
-    ` Sem par, por declaracao: ${Object.keys(WITHOUT_PAIR).join(", ")}.`,
+  `\nContrast ok in ${maps.length} map(s), light and dark: ${MAP_PAIRS.length} text pairs,` +
+    ` ${MAP_BOUNDARIES.length} for 1.4.11, ${MAP_LAYER_PAIRS.length} layer, ${MAP_TINTED_PAIRS.length} over series tint and` +
+    ` ${MAP_CHECKED_OVER.length} for the checked control, per scheme.` +
+    ` No pair, by declaration: ${Object.keys(WITHOUT_PAIR).join(", ")}.`,
 );

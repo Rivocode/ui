@@ -21,8 +21,8 @@ const SAVED =
   "<blockquote><p>Pago no Pix.</p></blockquote><pre><code>chave: 3524 0812</code></pre>" +
   "<p>linha um<br>linha dois com <code>emitida_em</code></p><hr>";
 
-describe("o que o RichTextView monta", () => {
-  test("os blocos e as marcas do editor saem como os elementos de cada um", () => {
+describe("what RichTextView renders", () => {
+  test("the editor blocks and marks render as their respective elements", () => {
     const { container } = render(<RichTextView value={SAVED} />);
     const root = container.firstElementChild!;
 
@@ -44,7 +44,7 @@ describe("o que o RichTextView monta", () => {
     expect(link.getAttribute("rel")!.split(" ")).toContain("noopener");
   });
 
-  test("script, atributo de evento, estilo e iframe nao entram", () => {
+  test("script, event attributes, style and iframe are kept out", () => {
     const hostile =
       '<p onclick="alert(1)" style="color:red">Oi<img src=x onerror="alert(2)"></p>' +
       "<script>alert(3)</script><style>p{color:red}</style>" +
@@ -58,7 +58,7 @@ describe("o que o RichTextView monta", () => {
     expect(root.innerHTML).not.toContain("alert");
   });
 
-  test("link com javascript: perde o endereco e fica so o texto", () => {
+  test("a javascript: link loses its address and only the text remains", () => {
     const { container } = render(
       <RichTextView
         value={
@@ -71,7 +71,7 @@ describe("o que o RichTextView monta", () => {
     expect(container.textContent).toBe("clique e aqui");
   });
 
-  test("o JSON do onJsonChange monta o mesmo que o HTML", () => {
+  test("the onJsonChange JSON renders the same as the HTML", () => {
     const json = {
       type: "doc",
       content: [
@@ -108,7 +108,7 @@ describe("o que o RichTextView monta", () => {
     expect(fromJson).toContain("<strong>hoje</strong>");
   });
 
-  test("conteudo vazio nao desenha nada, e o empty aparece no lugar", () => {
+  test("empty content draws nothing, and empty shows in its place", () => {
     for (const value of [null, undefined, "", "<p></p>", "<p>  </p>", { type: "doc", content: [] }]) {
       const { container, unmount } = render(<RichTextView value={value} />);
       expect(container.innerHTML).toBe("");
@@ -120,14 +120,14 @@ describe("o que o RichTextView monta", () => {
     expect(container.firstElementChild!.getAttribute("data-empty")).not.toBeNull();
   });
 
-  test("renderiza no servidor, sem DOM, com o conteudo inteiro no primeiro desenho", () => {
+  test("renders on the server, without a DOM, with the whole content in the first paint", () => {
     const html = renderToString(<RichTextView value={SAVED} />);
 
     expect(html).toContain("<h2>Resumo da nota</h2>");
     expect(html).toContain('<ol start="3">');
   });
 
-  test("a classe de quem usa entra junto com a do conteudo", () => {
+  test("the consumer's class goes in together with the content one", () => {
     const { container } = render(<RichTextView value="<p>a</p>" className="max-w-prose" />);
     const tokens = container.firstElementChild!.className.split(" ");
 
@@ -136,7 +136,7 @@ describe("o que o RichTextView monta", () => {
   });
 });
 
-describe("o bloco de codigo que rola", () => {
+describe("the scrolling code block", () => {
   function widths(scroll: number, client: number) {
     const proto = HTMLElement.prototype;
     const saved = {
@@ -166,7 +166,7 @@ describe("o bloco de codigo que rola", () => {
     };
   }
 
-  test("com estouro, o pre vira parada de tabulacao com nome, para o teclado rolar", () => {
+  test("with overflow, the pre becomes a named tab stop, so the keyboard can scroll", () => {
     const restore = widths(480, 240);
     try {
       const { container } = render(<RichTextView value={SAVED} />);
@@ -179,7 +179,7 @@ describe("o bloco de codigo que rola", () => {
     }
   });
 
-  test("o nome do bloco que rola sai de labels.code", () => {
+  test("the scrolling block name comes from labels.code", () => {
     const restore = widths(480, 240);
     try {
       const { container } = render(<RichTextView value={SAVED} labels={{ code: "Code block" }} />);
@@ -189,7 +189,7 @@ describe("o bloco de codigo que rola", () => {
     }
   });
 
-  test("sem estouro, o pre nao ganha parada de tabulacao a toa", () => {
+  test("without overflow, the pre gets no needless tab stop", () => {
     const restore = widths(240, 240);
     try {
       const { container } = render(<RichTextView value={SAVED} />);
@@ -202,7 +202,7 @@ describe("o bloco de codigo que rola", () => {
     }
   });
 
-  test("o foco no pre desenha o anel da casa", () => {
+  test("focus on the pre draws the house ring", () => {
     const tokens = RICH_TEXT_CONTENT.split(" ");
     expect(tokens).toContain("[&_pre:focus-visible]:ring-2");
     expect(tokens).toContain("[&_pre:focus-visible]:ring-ring");
@@ -210,14 +210,14 @@ describe("o bloco de codigo que rola", () => {
   });
 });
 
-describe("a tipografia do conteudo e a da casa", () => {
+describe("the content typography is the house one", () => {
   const tokensOf = (prefix: string) =>
     RICH_TEXT_CONTENT.split(" ")
       .filter((token) => token.startsWith(prefix))
       .map((token) => token.slice(prefix.length))
       .sort();
 
-  test("o h2 veste o mesmo que o Heading de nivel 2, e o h3 o de nivel 3", () => {
+  test("the h2 wears the same as a level 2 Heading, and the h3 as level 3", () => {
     for (const level of [2, 3] as const) {
       const { container, unmount } = render(<Heading level={level}>x</Heading>);
       const house = container.firstElementChild!.className.split(" ").sort();
@@ -226,7 +226,7 @@ describe("a tipografia do conteudo e a da casa", () => {
     }
   });
 
-  test("o codigo em linha veste o mesmo que o Code", async () => {
+  test("inline code wears the same as Code", async () => {
     const { Code } = await import("../src/components/code");
     const { container } = render(<Code>x</Code>);
     const house = container.firstElementChild!.className.split(" ").sort();
@@ -235,8 +235,8 @@ describe("a tipografia do conteudo e a da casa", () => {
   });
 });
 
-describe("o leitor de HTML", () => {
-  test("entidades viram caractere, e o espaco repetido de fora de pre vira um", () => {
+describe("the HTML reader", () => {
+  test("entities become characters, and repeated whitespace outside pre becomes one", () => {
     const [block] = parseRichHtml("<p>a &amp; b &lt;c&gt; &#233; &#x00e7; &atilde;\n\n   fim</p>");
 
     expect(block).toEqual({
@@ -245,7 +245,7 @@ describe("o leitor de HTML", () => {
     });
   });
 
-  test("o negrito falso do Google Docs nao vira negrito", () => {
+  test("Google Docs fake bold does not become bold", () => {
     const [block] = parseRichHtml(
       '<b style="font-weight:normal;" id="docs-internal-guid-1"><span>normal</span></b>',
     );
@@ -253,7 +253,7 @@ describe("o leitor de HTML", () => {
     expect(block).toEqual({ kind: "paragraph", inline: [{ kind: "text", text: "normal", styles: [] }] });
   });
 
-  test("o titulo que o editor nao escreve vira paragrafo, igual ao editor", () => {
+  test("a heading the editor does not write becomes a paragraph, like the editor", () => {
     expect(parseRichHtml("<h1>a</h1><h4>b</h4>").map((block) => block.kind)).toEqual([
       "paragraph",
       "paragraph",
@@ -263,7 +263,7 @@ describe("o leitor de HTML", () => {
     );
   });
 
-  test("tag sem fechar e texto solto entre blocos nao derrubam a leitura", () => {
+  test("unclosed tags and loose text between blocks do not break the reading", () => {
     const blocks = parseRichHtml("solto<p>um<p>dois<ul><li>a<li>b</ul><div>fim");
 
     expect(blocks.map((block) => block.kind)).toEqual([
@@ -275,15 +275,15 @@ describe("o leitor de HTML", () => {
     ]);
   });
 
-  test("comentario e declaracao somem", () => {
+  test("comments and declarations disappear", () => {
     expect(parseRichHtml("<!DOCTYPE html><!--StartFragment--><p>a</p><!--EndFragment-->")).toEqual([
       { kind: "paragraph", inline: [{ kind: "text", text: "a", styles: [] }] },
     ]);
   });
 });
 
-describe("o endereco de link", () => {
-  test("so passam http, https, mailto, tel e endereco relativo", () => {
+describe("the link address", () => {
+  test("only http, https, mailto, tel and relative addresses pass", () => {
     expect(safeHref("https://rivocode.com.br")).toBe("https://rivocode.com.br");
     expect(safeHref("mailto:nf@rivocode.com.br")).toBe("mailto:nf@rivocode.com.br");
     expect(safeHref("tel:+5511999990000")).toBe("tel:+5511999990000");
@@ -296,7 +296,7 @@ describe("o endereco de link", () => {
     expect(safeHref("vbscript:x")).toBeUndefined();
   });
 
-  test("o que se digita no painel ganha o protocolo que falta", () => {
+  test("what is typed in the panel gets the missing protocol", () => {
     expect(normalizeLinkInput("rivocode.com.br")).toBe("https://rivocode.com.br");
     expect(normalizeLinkInput("rivocode.com.br/notas?id=1")).toBe("https://rivocode.com.br/notas?id=1");
     expect(normalizeLinkInput("nf@rivocode.com.br")).toBe("mailto:nf@rivocode.com.br");
@@ -308,14 +308,14 @@ describe("o endereco de link", () => {
   });
 });
 
-describe("o leitor aguenta conteudo hostil", () => {
+describe("the reader withstands hostile content", () => {
   const timed = (html: string) => {
     const start = performance.now();
     parseRichHtml(html);
     return performance.now() - start;
   };
 
-  test("abertura de tag sem fechar nao vira custo quadratico", () => {
+  test("an unclosed tag opening does not become quadratic cost", () => {
     expect(timed("<a".repeat(20000))).toBeLessThan(1000);
     expect(timed("</a".repeat(20000))).toBeLessThan(1000);
     expect(timed("<!".repeat(20000))).toBeLessThan(1000);
@@ -325,7 +325,7 @@ describe("o leitor aguenta conteudo hostil", () => {
     expect(timed("<script>".repeat(10000))).toBeLessThan(1000);
   });
 
-  test("aninhamento fundo nao estoura a pilha, e o texto de dentro chega", () => {
+  test("deep nesting does not overflow the stack, and the inner text arrives", () => {
     const bold = parseRichHtml(`${"<b>".repeat(18000)}x`);
     expect(bold).toEqual([
       { kind: "paragraph", inline: [{ kind: "text", text: "x", styles: ["bold"] }] },
@@ -337,7 +337,7 @@ describe("o leitor aguenta conteudo hostil", () => {
     }
   });
 
-  test("o JSON fundo tambem nao estoura a pilha, e o texto de dentro chega", () => {
+  test("deep JSON does not overflow the stack either, and the inner text arrives", () => {
     let node: RichTextJson = { type: "text", text: "fim" };
     for (let level = 0; level < 18000; level += 1) {
       node = { type: "bulletList", content: [{ type: "listItem", content: [node] }] };
@@ -347,7 +347,7 @@ describe("o leitor aguenta conteudo hostil", () => {
     );
   });
 
-  test("a maiuscula que muda de tamanho ao baixar a caixa nao desloca o fim do script", () => {
+  test("an uppercase letter that changes length when lowercased does not shift the end of the script", () => {
     expect(parseRichHtml(`<p>${"İ".repeat(20)}</p><script>x</script><p>depois</p>`)).toEqual([
       { kind: "paragraph", inline: [{ kind: "text", text: "İ".repeat(20), styles: [] }] },
       { kind: "paragraph", inline: [{ kind: "text", text: "depois", styles: [] }] },
@@ -355,8 +355,8 @@ describe("o leitor aguenta conteudo hostil", () => {
   });
 });
 
-describe("o endereco que parece relativo e sai do site", () => {
-  test("barra dupla vira https, e barra invertida no comeco e recusada", () => {
+describe("an address that looks relative and leaves the site", () => {
+  test("a double slash becomes https, and a leading backslash is rejected", () => {
     expect(safeHref("//evil.example/x")).toBe("https://evil.example/x");
     expect(safeHref("/\t/evil.example")).toBe("https://evil.example");
     expect(safeHref("/\\evil.example")).toBeUndefined();
@@ -365,7 +365,7 @@ describe("o endereco que parece relativo e sai do site", () => {
     expect(safeHref("/notas/42")).toBe("/notas/42");
   });
 
-  test("no HTML salvo, o link de barra dupla nao passa por relativo", () => {
+  test("in saved HTML, a double-slash link does not pass as relative", () => {
     const hrefs = (html: string) =>
       JSON.stringify(parseRichHtml(html)).match(/"href":"[^"]*"/g) ?? [];
     expect(hrefs('<a href="//evil.example/x">x</a>')).toEqual(['"href":"https://evil.example/x"']);
@@ -373,7 +373,7 @@ describe("o endereco que parece relativo e sai do site", () => {
     expect(hrefs('<a href="\\\\evil.example">x</a>')).toEqual([]);
   });
 
-  test("o que se digita no painel com barra dupla sai como externo", () => {
+  test("what is typed in the panel with a double slash comes out as external", () => {
     expect(normalizeLinkInput("//evil.com")).toBe("https://evil.com");
     expect(normalizeLinkInput("/\\evil.com")).toBeUndefined();
     expect(normalizeLinkInput("\\\\evil.com")).toBeUndefined();

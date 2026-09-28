@@ -1,10 +1,10 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # CardTitle
 
-O nome do cartão, na fonte de display.
+The card's name, in the display font.
 
-Sai como `<h3>`. Se o cartão viver dentro de uma seção com outro nível de
-heading, troque a tag com `render` em vez de deixar a ordem quebrada.
+It renders as `<h3>`. If the card lives inside a section with another heading
+level, swap the tag with `render` instead of leaving the order broken.

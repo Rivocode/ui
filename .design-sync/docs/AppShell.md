@@ -1,13 +1,13 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # AppShell
 
-O esqueleto da aplicação: cabeçalho fixo, barra lateral, conteúdo, e, quando
-a tela pede, uma coluna ao lado e um rodapé. É a primeira peça de uma
-aplicação nova, e a que dá a cada região o landmark certo sem ninguém
-precisar lembrar.
+The application's skeleton: a fixed header, a sidebar, content, and, when the
+screen asks for it, a side column and a footer. It is the first component of a
+new application, and the one that gives each region the right landmark without
+anyone having to remember.
 
 ```tsx
 <AppShell
@@ -26,56 +26,56 @@ precisar lembrar.
 </AppShell>
 ```
 
-## As regiões, e o que o leitor de tela ouve
+## The regions, and what the screen reader hears
 
-| Prop       | Sai como                   | Landmark                                   |
+| Prop       | Renders as                 | Landmark                                   |
 | ---------- | -------------------------- | ------------------------------------------ |
-| `header`   | `<header>`, fixo no topo   | banner                                     |
-| `sidebar`  | `<nav>` dentro do `Sidebar` | navigation, "Navegação principal"         |
+| `header`   | `<header>`, fixed at the top | banner                                   |
+| `sidebar`  | `<nav>` inside `Sidebar`   | navigation, "Navegação principal"          |
 | `children` | `<main>`                   | main                                       |
 | `aside`    | `<aside>`                  | complementary, "Informações complementares" |
 | `footer`   | `<footer>`                 | contentinfo                                |
 
-Cada região só existe quando a prop vem. A `<aside>` que o `Sidebar` desenha
-por dentro sai com `role="none"`: a barra lateral é navegação, e anunciá-la
-também como complementar daria duas regiões para a mesma coisa.
+Each region only exists when its prop is passed. The `<aside>` that `Sidebar`
+draws inside renders with `role="none"`: the sidebar is navigation, and also
+announcing it as complementary would give two regions for the same thing.
 
-**O primeiro foco da página é o link "Pular para o conteúdo".** Ele fica
-escondido até receber o foco, aparece no canto de cima, e leva o foco ao
-`<main>` sem mudar o endereço da página, o que não atrapalha o router. Quem
-navega por teclado deixa de atravessar a barra inteira em toda tela nova.
+**The page's first focus is the "Pular para o conteúdo" link.** It stays
+hidden until it receives focus, appears in the top corner, and takes focus to
+`<main>` without changing the page address, which does not disturb the router.
+Keyboard users stop having to go through the whole bar on every new screen.
 
-## A barra lateral
+## The sidebar
 
-`sidebar` recebe o miolo do `Sidebar` da casa (`SidebarHeader`,
-`SidebarContent`, `SidebarMenu`, `SidebarFooter`), e a casca monta o resto: o
-`SidebarProvider` na raiz, o `Sidebar` com o `<nav>` dentro, e o
-`SidebarTrigger` na frente do cabeçalho. Tudo o que a barra já faz continua
-valendo: encolhe até a coluna de ícones na mesa, abre e fecha por Ctrl+B, e **no
-celular vira a folha** que desliza da borda, fechada ao carregar e fechada de
-novo quando a pessoa escolhe um destino.
+`sidebar` takes the inside of the house `Sidebar` (`SidebarHeader`,
+`SidebarContent`, `SidebarMenu`, `SidebarFooter`), and the shell builds the
+rest: the `SidebarProvider` at the root, the `Sidebar` with the `<nav>` inside,
+and the `SidebarTrigger` at the front of the header. Everything the bar already
+does still holds: it shrinks to the icon column on desktop, opens and closes
+with Ctrl+B, and **on a phone becomes the sheet** that slides in from the edge,
+closed on load and closed again when the person picks a destination.
 
-`defaultOpen`, `open`, `onOpenChange` e `shortcut` vão direto para o
-`SidebarProvider`. `sidebarSide="right"` põe a barra do outro lado. O
-`useSidebar()` funciona em qualquer lugar dentro da casca.
+`defaultOpen`, `open`, `onOpenChange` and `shortcut` go straight to
+`SidebarProvider`. `sidebarSide="right"` puts the bar on the other side.
+`useSidebar()` works anywhere inside the shell.
 
-## O conteúdo
+## The content
 
-Sem `container`, o conteúdo encosta nas bordas do `<main>`: é o que uma
-listagem de ponta a ponta quer. Com `container`, ele vai num `Container` da
-casa, com a largura máxima, o respiro lateral e o respiro de cima e de baixo
-do painel. `true` usa o `lg`; um tamanho (`sm`, `md`, `xl`, `full`) escolhe
-outro.
+Without `container`, the content touches the edges of `<main>`: it is what an
+edge-to-edge listing wants. With `container`, it goes inside a house
+`Container`, with the maximum width, the side spacing and the panel's top and
+bottom spacing. `true` uses `lg`; a size (`sm`, `md`, `xl`, `full`) picks
+another.
 
-`aside` fica à direita do conteúdo a partir de `lg`, na largura da barra
-lateral, e embaixo do conteúdo antes disso. `footer` fecha a coluna.
+`aside` sits to the right of the content from `lg` up, at the sidebar's width,
+and below the content before that. `footer` closes the column.
 
-## Dentro de uma caixa
+## Inside a box
 
-A casca ocupa a janela: a barra lateral gruda na altura da tela e a página
-rola na janela. `contained` troca a janela pela caixa do pai, e a barra e a
-coluna de conteúdo passam a rolar por dentro. É o jeito de montar a casca num
-painel, num `Splitter` ou num exemplo de documentação.
+The shell takes the window: the sidebar sticks at the screen's height and the
+page scrolls in the window. `contained` swaps the window for the parent's box,
+and the bar and the content column start scrolling inside it. It is the way to
+build the shell in a panel, in a `Splitter` or in a documentation example.
 
 ```tsx
 <div className="h-[32rem]">
@@ -83,34 +83,34 @@ painel, num `Splitter` ou num exemplo de documentação.
 </div>
 ```
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `skipLink`, `sidebar`, `column` (a
-coluna à direita da barra), `header`, `body` (a linha do conteúdo e da coluna
-ao lado), `main`, `aside` e `footer`.
+`classNames` reaches each node by name: `skipLink`, `sidebar`, `column` (the
+column to the right of the bar), `header`, `body` (the row with the content and
+the side column), `main`, `aside` and `footer`.
 
-## Textos
+## Text
 
-`labels` troca o texto do link de pular (`skipLink`) e os nomes que o leitor de
-tela anuncia para a navegação (`navigation`) e para a coluna ao lado (`aside`).
-`mainId` fixa o `id` do `<main>`, quando outra parte da página precisa apontar
-para ele.
+`labels` changes the skip link's text (`skipLink`) and the names the screen
+reader announces for the navigation (`navigation`) and for the side column
+(`aside`). `mainId` fixes the `id` of `<main>`, when another part of the page
+needs to point to it.
 
-## Quando não usar
+## When not to use
 
-- **O topo de uma tela** é `PageHeader`. A casca é a aplicação inteira e
-  aparece uma vez; o `PageHeader` é o título, a trilha e as ações de cada
-  rota, e mora dentro do `children` dela.
-- **Só a barra lateral, num layout que você já tem** é o `Sidebar` com o
-  `SidebarProvider` e o `SidebarInset`. A casca é o `Sidebar` mais as outras
-  regiões; se as outras já existem, ela sobra.
-- **Largura de leitura sem esqueleto de aplicação** (página de login,
-  formulário público) é `Container`. Ali não há navegação para organizar.
-- **Painéis lado a lado que a pessoa redimensiona** é `Splitter`. A `aside`
-  da casca tem largura fixa e não se arrasta.
+- **The top of a screen** is `PageHeader`. The shell is the whole application
+  and appears once; `PageHeader` is the title, trail and actions of each route,
+  and lives inside the shell's `children`.
+- **Just the sidebar, in a layout you already have** is `Sidebar` with
+  `SidebarProvider` and `SidebarInset`. The shell is `Sidebar` plus the other
+  regions; if the others already exist, it is surplus.
+- **Reading width without an application skeleton** (a login page, a public
+  form) is `Container`. There is no navigation to organize there.
+- **Side-by-side panels the person resizes** is `Splitter`. The shell's
+  `aside` has a fixed width and does not drag.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão. No celular o esqueleto da aplicação não é desenhado pela biblioteca de componentes: é o router (Expo Router, React Navigation) que monta a tab bar, o drawer, a barra de título de cada tela e a área segura, com o gesto de voltar, o histórico e o estado de cada aba de graça. Uma casca nossa por cima disso seria um segundo esqueleto disputando as mesmas bordas da tela.
+Does not port, by decision. On the phone the application skeleton is not drawn by the component library: it is the router (Expo Router, React Navigation) that builds the tab bar, the drawer, each screen's title bar and the safe area, with the back gesture, the history and each tab's state for free. A shell of ours on top of that would be a second skeleton competing for the same screen edges.
 
-O que a casca do web resolve para a acessibilidade também já vem do sistema: o VoiceOver e o TalkBack anunciam a tab bar e o título da tela, e não existe link de pular para quem navega pelo toque. O topo de cada tela continua sendo o `PageHeader`, que traduz.
+What the web shell solves for accessibility also already comes from the system: VoiceOver and TalkBack announce the tab bar and the screen's title, and there is no skip link for those navigating by touch. The top of each screen is still `PageHeader`, which translates.

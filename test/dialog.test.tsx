@@ -22,7 +22,7 @@ function Example() {
   );
 }
 
-test("o dialogo aberto mostra titulo e descricao", () => {
+test("the open dialog shows title and description", () => {
   render(
     <RivoProvider>
       <Example />
@@ -32,7 +32,7 @@ test("o dialogo aberto mostra titulo e descricao", () => {
   expect(screen.getByText("Esta acao nao pode ser desfeita.")).toBeDefined();
 });
 
-test("no modo escopado o dialogo renderiza dentro do container que carrega o tema", () => {
+test("in scoped mode the dialog renders inside the container that carries the theme", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <Example />
@@ -43,7 +43,7 @@ test("no modo escopado o dialogo renderiza dentro do container que carrega o tem
   expect(container!.contains(screen.getByText("Excluir projeto"))).toBe(true);
 });
 
-test("o empilhamento vem da escala, nunca de um numero cravado", () => {
+test("stacking comes from the scale, never from a hardcoded number", () => {
   render(
     <RivoProvider>
       <Example />
@@ -54,21 +54,21 @@ test("o empilhamento vem da escala, nunca de um numero cravado", () => {
   expect(popup.className).not.toMatch(/z-\d+/);
 });
 
-test("o dialogo exige o Provider e diz isso claramente", () => {
+test("the dialog requires the Provider and says so clearly", () => {
   expect(() => render(<Example />)).toThrow(/RivoProvider/);
 });
 
-/** A classe da tarja, achada pelo marcador que a peca deixou passar. */
+/** The backdrop class, found by the marker the piece let through. */
 function backdrop(marker: string) {
   return document.querySelector(`.${marker}`)!.className;
 }
 
-test("a tarja do dialogo entra e sai animada, como a da confirmacao", () => {
-  // O `transition-opacity` sozinho nao anima nada: sem os dois estados a
-  // transicao nao tem de onde sair nem para onde ir, e o escurecimento entrava
-  // e saia de estalo. A confirmacao e a folha ja tinham os dois, e o dialogo
-  // era o unico que piscava - com a classe de transicao no lugar, escondendo
-  // a falta.
+test("the dialog backdrop enters and leaves animated, like the alert dialog's", () => {
+  // `transition-opacity` alone animates nothing: without both states the
+  // transition has nowhere to start from nor to go, and the dimming snapped in
+  // and out. The alert dialog and the sheet already had both, and the dialog
+  // was the only one that blinked - with the transition class in place, hiding
+  // the gap.
   render(
     <RivoProvider scope="local">
       <Dialog open>
@@ -90,11 +90,11 @@ test("a tarja do dialogo entra e sai animada, como a da confirmacao", () => {
   }
 });
 
-test("os dois rodapes empilham no celular, e nao so o da confirmacao", () => {
-  // O painel dos dois ja encosta embaixo no celular; o que mudava era o
-  // rodape, e duas acoes lado a lado num painel dessa largura saem estreitas
-  // demais. `flex-col-reverse` sobe a ultima da marcacao - a que confirma -
-  // para o alto da pilha, e deixa a saida rente ao polegar.
+test("both footers stack on mobile, and not only the alert dialog's", () => {
+  // Both panels already sit at the bottom on mobile; what differed was the
+  // footer, and two actions side by side in a panel that wide come out too
+  // narrow. `flex-col-reverse` lifts the last one in markup - the confirming
+  // one - to the top of the stack, and leaves the exit close to the thumb.
   const { container } = render(
     <RivoProvider scope="local">
       <DialogFooter data-testid="rodape-dg">Acoes</DialogFooter>
@@ -109,8 +109,8 @@ test("os dois rodapes empilham no celular, e nao so o da confirmacao", () => {
   }
 });
 
-test("o painel dos dois cabe na tela e rola por dentro, como o da folha", () => {
-  const paineis = [
+test("both panels fit on screen and scroll inside, like the sheet's", () => {
+  const panels = [
     [
       "dialog",
       <Dialog open key="dg">
@@ -125,7 +125,7 @@ test("o painel dos dois cabe na tela e rola por dentro, como o da folha", () => 
     ],
   ] as const;
 
-  for (const [role, node] of paineis) {
+  for (const [role, node] of panels) {
     const { unmount } = render(<RivoProvider scope="local">{node}</RivoProvider>);
     const classes = screen.getByRole(role).className.split(" ");
 

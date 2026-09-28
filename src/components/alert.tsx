@@ -24,34 +24,34 @@ export const alertVariants = cva(
 export type AlertProps = ComponentPropsWithoutRef<"div"> &
   VariantProps<typeof alertVariants> & {
     /**
-     * O simbolo a esquerda do texto, com posicao garantida.
+     * The symbol to the left of the text, with a guaranteed position.
      *
-     * Ele existe por causa da regra da casa: cor nunca e o unico sinal. Quem
-     * nao distingue vermelho de verde le quatro caixas iguais, e o mesmo vale
-     * para a impressao em preto e branco. O icone entrava como filho, no meio
-     * do titulo e da descricao - sem coluna propria, sem alinhamento com a
-     * primeira linha, e cada tela o colocava num lugar.
+     * It exists because of the house rule: color is never the only signal. Someone
+     * who cannot tell red from green reads four identical boxes, and the same goes
+     * for black-and-white printing. The icon used to come in as a child, in the middle
+     * of the title and the description - with no column of its own, no alignment with the
+     * first line, and each screen put it in a different place.
      *
-     * O par canonico do lucide, na tabela de icones da casa: `Info` para
-     * `info`, `CheckCircle2` para `success`, `TriangleAlert` para `warning`,
-     * `CircleX` para `danger`. Ele sai `aria-hidden`: o texto ao lado ja diz o
-     * que ele desenha, e o `role` da raiz ja diz a urgencia.
+     * The canonical lucide pair, from the house icon table: `Info` for
+     * `info`, `CheckCircle2` for `success`, `TriangleAlert` for `warning`,
+     * `CircleX` for `danger`. It is rendered `aria-hidden`: the text beside it already says
+     * what it draws, and the root's `role` already states the urgency.
      */
     icon?: ReactNode;
     /**
-     * Liga o xis que fecha o aviso, no canto direito.
+     * Turns on the x that closes the notice, in the right corner.
      *
-     * Quem some com o aviso e quem chamou - a peca nao guarda estado nenhum -,
-     * pelo mesmo motivo de o `Alert` nao ter `open`: um aviso que se apaga
-     * sozinho e `Toast`, e o `Alert` existe para o que fica na tela.
+     * Whoever called it makes the notice go away - the piece keeps no state at all -
+     * for the same reason `Alert` has no `open`: a notice that disappears
+     * by itself is a `Toast`, and `Alert` exists for what stays on the screen.
      *
-     * Sem ele nao ha botao, que continua sendo o padrao: aviso que a pessoa
-     * pode dispensar e o caso, e nao a regra.
+     * Without it there is no button, which remains the default: a notice the person
+     * can dismiss is the exception, not the rule.
      */
     onDismiss?: () => void;
     /**
-     * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis,
-     * "Fechar aviso" sem ele.
+     * The piece's texts, to change the language: `dismiss` is the name of the x,
+     * "Fechar aviso" without it.
      */
     labels?: Partial<AlertLabels>;
   };

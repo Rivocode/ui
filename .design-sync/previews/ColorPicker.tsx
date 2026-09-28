@@ -2,10 +2,11 @@ import { ColorPicker } from '@rivocode/ui'
 import { useState } from 'react'
 
 /*
- * As cores daqui sao a paleta da casa escrita a mao, e e isto que um construtor
- * de tema faz: ele conhece a marca do cliente e entrega os tons dela. Dentro de
- * `src/` nao poderia - la a guarda de cor literal vale, porque componente que
- * sabe a cor de alguem deixa de ser white-label.
+ * The colors here are the house palette written by hand, and that is what a
+ * theme builder does: it knows the client's brand and hands over its shades.
+ * Inside `src/` this would not be allowed - the literal color guard applies
+ * there, because a component that knows someone's color stops being
+ * white-label.
  */
 const BRAND = [
   { value: '#d4f34a', label: 'Lima' },
@@ -18,7 +19,7 @@ const BRAND = [
   { value: '#8b9199', label: 'Cinza' },
 ]
 
-/** Com nome em cada amostra */
+/** With a name on each swatch */
 export function Named() {
   const [brand, setBrand] = useState('#3ddc97')
   return (
@@ -34,7 +35,7 @@ export function Named() {
   )
 }
 
-/** Leque padrão */
+/** Default set */
 export function Wheel() {
   const [brand, setBrand] = useState('')
   return (
@@ -44,7 +45,7 @@ export function Wheel() {
   )
 }
 
-/** Só a grade */
+/** Only the grid */
 export function SwatchesOnly() {
   const [brand, setBrand] = useState('#d4f34a')
   return (
@@ -59,7 +60,7 @@ export function SwatchesOnly() {
   )
 }
 
-/** Desabilitado */
+/** Disabled */
 export function Disabled() {
   return (
     <div className="w-72">

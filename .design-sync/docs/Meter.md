@@ -4,32 +4,33 @@ category: Feedback
 
 # Meter
 
-Medida de quanto de uma capacidade esta em uso: espaço, cota, limite.
+A measure of how much of a capacity is in use: space, quota, limit.
 
 ```tsx
 <Meter value={72} max={100} label="Espaco de arquivos" showValue />
 ```
 
-`showValue` mostra o valor ao lado do rótulo, e `format` diz como ele é escrito:
-o nome de um formatador da casa (`percent`, `currencyShort`, `compact`) ou uma
-função sua. Ele recebe o valor limitado a `min` e `max`, o mesmo que a barra
-desenha. Sem rótulo visível, passe `aria-label`.
+`showValue` shows the value next to the label, and `format` says how it is
+written: the name of a house formatter (`percent`, `currencyShort`, `compact`)
+or a function of yours. It receives the value clamped to `min` and `max`, the
+same one the bar draws. Without a visible label, pass `aria-label`.
 
-## Movimento
+## Motion
 
-A barra enche do zero na montagem (`animate-fill`, `--rc-duration-slow`), o mesmo do `Progress`, e depois anda pela largura quando o valor muda. Com "reduzir movimento", nasce no valor.
+The bar fills from zero on mount (`animate-fill`, `--rc-duration-slow`), the same as `Progress`, and then moves along its width when the value changes. With "reduce motion", it starts at the value.
 
-## Quando não usar
+## When not to use
 
-Para tarefa que anda e termina (enviar um arquivo, gerar um relatório), use
-`Progress`. **Parece a mesma barra e não é.** O progresso caminha para um fim; a
-medida fica parada mostrando um estado que pode subir e descer.
+For a task that advances and ends (sending a file, generating a report), use
+`Progress`. **It looks like the same bar and it is not.** Progress walks toward
+an end; a meter stays put showing a state that can go up and down.
 
-Trocar um pelo outro faz o leitor de tela anunciar "carregando" para algo que
-não carrega, e quem ouve fica esperando o fim de uma operação que não existe.
+Swapping one for the other makes the screen reader announce "loading" for
+something that is not loading, and the listener keeps waiting for the end of an
+operation that does not exist.
 
-## No React Native
+## In React Native
 
-Portado. O texto do valor sai de `format`, com os mesmos nomes de formatador do web (`percent`, `currencyShort`, `integer`...) ou uma função, e vale na tela e no anúncio. Só daqui há o `valueLabel`, para a medida que já chega escrita, e ele ganha do `format` quando os dois vêm. O papel de acessibilidade muda, e por uma razão: o React Native não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca como `progressbar`, que é justamente o erro que ela existe para evitar.
+Ported. The value text comes from `format`, with the same formatter names as the web (`percent`, `currencyShort`, `integer`...) or a function, and applies on screen and in the announcement. Native-only is `valueLabel`, for a measure that already arrives written, and it wins over `format` when both come. The accessibility role changes, and for a reason: React Native has no equivalent of `meter`, so the piece announces itself as text with a value, and never as `progressbar`, which is precisely the mistake it exists to avoid.
 
-As partes vestem pelo mesmo `classNames` do web: `label`, `value`, `track` e `indicator`.
+The parts are styled through the same `classNames` as the web: `label`, `value`, `track` and `indicator`.

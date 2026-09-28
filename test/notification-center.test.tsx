@@ -48,31 +48,31 @@ function openPanel() {
   fireEvent.click(screen.getByRole("button", { name: /notificaç/i }));
 }
 
-test("o sininho diz quantas nao lidas no nome, e a pastilha mostra o numero", () => {
+test("the bell says how many are unread in its name, and the badge shows the number", () => {
   const { container } = center();
   const trigger = screen.getByRole("button", { name: "2 notificações não lidas" });
   expect(trigger.textContent).toContain("2");
   expect(container.querySelector("[role='status']")!.textContent).toBe("2 notificações não lidas");
 });
 
-test("sem nao lidas, o sininho se chama Notificacoes e nao desenha pastilha", () => {
+test("with nothing unread, the bell is called Notificações and draws no badge", () => {
   center({ items: ITEMS.map((item) => ({ ...item, read: true })) });
   const trigger = screen.getByRole("button", { name: "Notificações" });
   expect(trigger.textContent).toBe("");
 });
 
-test("uma so, no singular", () => {
+test("just one, in the singular", () => {
   center({ items: [ITEMS[0]!] });
   expect(screen.getByRole("button", { name: "1 notificação não lida" })).toBeDefined();
 });
 
-test("unreadCount vence a conta dos itens carregados, e max corta o numero", () => {
+test("unreadCount beats the count of loaded items, and max caps the number", () => {
   center({ unreadCount: 140 });
   const trigger = screen.getByRole("button", { name: "140 notificações não lidas" });
   expect(trigger.textContent).toContain("99+");
 });
 
-test("a regiao viva repete a contagem quando ela muda", () => {
+test("the live region repeats the count when it changes", () => {
   function Live() {
     const [items, setItems] = useState(ITEMS);
     return (
@@ -91,7 +91,7 @@ test("a regiao viva repete a contagem quando ela muda", () => {
   expect(region.textContent).toBe("Nenhuma notificação não lida");
 });
 
-test("abrir mostra o painel com o titulo e a lista", () => {
+test("opening shows the panel with the title and the list", () => {
   center();
   openPanel();
   const dialog = screen.getByRole("dialog", { name: "Notificações" });
@@ -100,7 +100,7 @@ test("abrir mostra o painel com o titulo e a lista", () => {
   expect(within(dialog).getByText("há 5 minutos")).toBeDefined();
 });
 
-test("a nao lida ganha o ponto, o negrito e o aviso para o leitor de tela", () => {
+test("the unread one gets the dot, the bold and the screen reader notice", () => {
   center();
   openPanel();
   const items = screen.getAllByRole("listitem");
@@ -118,14 +118,14 @@ test("a nao lida ganha o ponto, o negrito e o aviso para o leitor de tela", () =
   expect(readTitle.className.split(" ")).not.toContain("font-rc-medium");
 });
 
-test("o tom pinta o simbolo com o texto de estado", () => {
+test("the tone paints the symbol with the status text color", () => {
   center();
   openPanel();
   const symbol = screen.getAllByRole("listitem")[1]!.querySelector("[aria-hidden='true']")!;
   expect(symbol.className.split(" ")).toContain("text-warning-text");
 });
 
-test("marcar como lida chama onMarkRead com o id, e so aparece nas nao lidas", () => {
+test("mark as read calls onMarkRead with the id, and only shows on unread items", () => {
   const onMarkRead = mock<(id: string) => void>(() => {});
   center({ onMarkRead });
   openPanel();
@@ -135,7 +135,7 @@ test("marcar como lida chama onMarkRead com o id, e so aparece nas nao lidas", (
   expect(onMarkRead).toHaveBeenCalledWith("2");
 });
 
-test("marcar todas chama onMarkAllRead, e fica desabilitado sem nao lidas", () => {
+test("mark all calls onMarkAllRead, and is disabled with nothing unread", () => {
   const onMarkAllRead = mock(() => {});
   const { unmount } = center({ onMarkAllRead });
   openPanel();
@@ -150,7 +150,7 @@ test("marcar todas chama onMarkAllRead, e fica desabilitado sem nao lidas", () =
   ).toBe(true);
 });
 
-test("escolher uma nao lida chama onItemClick, marca como lida e fecha o painel", () => {
+test("picking an unread one calls onItemClick, marks it read and closes the panel", () => {
   const onItemClick = mock<(item: NotificationItem) => void>(() => {});
   const onMarkRead = mock<(id: string) => void>(() => {});
   center({ onItemClick, onMarkRead });
@@ -161,7 +161,7 @@ test("escolher uma nao lida chama onItemClick, marca como lida e fecha o painel"
   expect(screen.queryByRole("dialog")).toBeNull();
 });
 
-test("escolher uma ja lida nao chama onMarkRead", () => {
+test("picking an already read one does not call onMarkRead", () => {
   const onMarkRead = mock<(id: string) => void>(() => {});
   center({ onItemClick: () => {}, onMarkRead });
   openPanel();
@@ -169,14 +169,14 @@ test("escolher uma ja lida nao chama onMarkRead", () => {
   expect(onMarkRead).not.toHaveBeenCalled();
 });
 
-test("href faz da linha um link", () => {
+test("href makes the row a link", () => {
   center();
   openPanel();
   const link = screen.getByRole("link", { name: /Certificado vence/ });
   expect(link.getAttribute("href")).toBe("/certificado");
 });
 
-test("o filtro Nao lidas esconde as lidas e avisa quem controla", () => {
+test("the Não lidas filter hides the read ones and notifies the controller", () => {
   const onFilterChange = mock<(filter: string) => void>(() => {});
   center({ onFilterChange });
   openPanel();
@@ -187,20 +187,20 @@ test("o filtro Nao lidas esconde as lidas e avisa quem controla", () => {
   expect(screen.queryByText("Relatório de agosto pronto")).toBeNull();
 });
 
-test("vazio: sem nada, diz que nao ha notificacao", () => {
+test("empty: with nothing, it says there is no notification", () => {
   center({ items: [] });
   openPanel();
   expect(screen.getByText("Nenhuma notificação")).toBeDefined();
   expect(screen.queryByRole("list")).toBeNull();
 });
 
-test("vazio no filtro: tudo lido diz que a pessoa esta em dia", () => {
+test("empty in the filter: all read says the person is up to date", () => {
   center({ items: ITEMS.map((item) => ({ ...item, read: true })), defaultFilter: "unread" });
   openPanel();
   expect(screen.getByText("Tudo lido")).toBeDefined();
 });
 
-test("carregando: marca de lugar, aria-busy e o anuncio, sem vazio mentindo", () => {
+test("loading: placeholder, aria-busy and the announcement, with no lying empty state", () => {
   center({ items: [], isLoading: true });
   openPanel();
   const dialog = screen.getByRole("dialog");
@@ -209,7 +209,7 @@ test("carregando: marca de lugar, aria-busy e o anuncio, sem vazio mentindo", ()
   expect(screen.queryByText("Nenhuma notificação")).toBeNull();
 });
 
-test("carregar mais aparece com hasMore, chama onLoadMore e gira enquanto chega", () => {
+test("load more shows with hasMore, calls onLoadMore and spins while it arrives", () => {
   const onLoadMore = mock(() => {});
   const { unmount } = center({ hasMore: true, onLoadMore });
   openPanel();
@@ -224,13 +224,13 @@ test("carregar mais aparece com hasMore, chama onLoadMore e gira enquanto chega"
   expect(button.getAttribute("aria-busy")).toBe("true");
 });
 
-test("sem hasMore, nao ha carregar mais", () => {
+test("without hasMore, there is no load more", () => {
   center({ onLoadMore: () => {} });
   openPanel();
   expect(screen.queryByRole("button", { name: "Carregar mais" })).toBeNull();
 });
 
-test("controlado: open e onOpenChange", () => {
+test("controlled: open and onOpenChange", () => {
   const onOpenChange = mock<(open: boolean) => void>(() => {});
   center({ open: true, onOpenChange });
   expect(screen.getByRole("dialog")).toBeDefined();
@@ -239,7 +239,7 @@ test("controlado: open e onOpenChange", () => {
   expect(screen.getByRole("dialog")).toBeDefined();
 });
 
-test("labels troca os textos", () => {
+test("labels replaces the texts", () => {
   center({
     labels: { title: "Avisos", unreadCount: (count) => `${count} avisos novos` },
   });
@@ -248,7 +248,7 @@ test("labels troca os textos", () => {
   expect(screen.getByRole("dialog", { name: "Avisos" })).toBeDefined();
 });
 
-test("no celular a lista abre numa folha de baixo, com o mesmo conteudo", () => {
+test("on mobile the list opens in a bottom sheet, with the same content", () => {
   const real = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -276,7 +276,7 @@ test("no celular a lista abre numa folha de baixo, com o mesmo conteudo", () => 
   }
 });
 
-test("na mesa o painel e o popover ancorado, na largura fixa", () => {
+test("on desktop the panel is the anchored popover, at a fixed width", () => {
   center();
   openPanel();
   const tokens = screen.getByRole("dialog").className.split(" ");
@@ -306,7 +306,7 @@ const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 0)))
 
 const focused = () => {
   const active = document.activeElement as HTMLElement | null;
-  if (!active) return "nada";
+  if (!active) return "nothing";
   const name = active.getAttribute("aria-label") ?? active.textContent?.trim().slice(0, 40);
   return `${active.tagName.toLowerCase()}:${name}`;
 };
@@ -325,7 +325,7 @@ async function markWithKeyboard(button: HTMLElement) {
   await settle();
 }
 
-test("marcar como lida uma linha sem link leva o foco ao proximo marcar como lida", async () => {
+test("marking a row without a link as read moves focus to the next mark as read", async () => {
   await show(<Marking />);
   const [first] = screen.getAllByRole("button", { name: "Marcar como lida" });
   await markWithKeyboard(first!);
@@ -336,7 +336,7 @@ test("marcar como lida uma linha sem link leva o foco ao proximo marcar como lid
   expect(document.activeElement === rest[0]).toBe(true);
 });
 
-test("marcar como lida uma linha com link leva o foco ao link da mesma linha", async () => {
+test("marking a row with a link as read moves focus to the link of the same row", async () => {
   await show(<Marking />);
   const [, second] = screen.getAllByRole("button", { name: "Marcar como lida" });
   await markWithKeyboard(second!);
@@ -344,7 +344,7 @@ test("marcar como lida uma linha com link leva o foco ao link da mesma linha", a
   expect(focused()).toStartWith("a:Certificado vence em 5 dias");
 });
 
-test("no filtro Nao lidas a linha marcada some, e o foco vai ao proximo marcar como lida", async () => {
+test("in the Não lidas filter the marked row disappears, and focus goes to the next mark as read", async () => {
   await show(<Marking defaultFilter="unread" onItemClick={() => {}} />);
   const [first] = screen.getAllByRole("button", { name: "Marcar como lida" });
   await markWithKeyboard(first!);
@@ -353,14 +353,14 @@ test("no filtro Nao lidas a linha marcada some, e o foco vai ao proximo marcar c
   expect(focused()).toBe("button:Marcar como lida");
 });
 
-test("marcar a ultima nao lida sem link leva o foco ao filtro, e nao a moldura", async () => {
+test("marking the last unread one without a link moves focus to the filter, not to the frame", async () => {
   await show(<Marking initial={[ITEMS[0]!, ITEMS[2]!]} />);
   await markWithKeyboard(screen.getByRole("button", { name: "Marcar como lida" }));
 
   expect(focused()).toBe("button:Todas");
 });
 
-test("marcar todas desabilita o botao focado e leva o foco ao filtro", async () => {
+test("mark all disables the focused button and moves focus to the filter", async () => {
   await show(<Marking />);
   const all = screen.getByRole("button", { name: "Marcar todas como lidas" }) as HTMLButtonElement;
   await markWithKeyboard(all);
@@ -369,7 +369,7 @@ test("marcar todas desabilita o botao focado e leva o foco ao filtro", async () 
   expect(focused()).toBe("button:Todas");
 });
 
-test("o marcar todas quebra a linha em vez de vazar do painel com texto longo", () => {
+test("mark all wraps the line instead of overflowing the panel with long text", () => {
   center({ onMarkAllRead: () => {} });
   openPanel();
   const tokens = screen

@@ -5,7 +5,7 @@ import { cn } from "./cn";
 import { Text } from "./text";
 
 export type FieldsetProps = {
-  /** O titulo do grupo: "Endereço de cobrança". */
+  /** The group title: "Endereço de cobrança". */
   legend: string;
   description?: string;
   children: ReactNode;

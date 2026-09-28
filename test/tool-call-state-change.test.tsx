@@ -8,7 +8,7 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 const tree = (node: ReactNode) => <RivoProvider scope="local">{node}</RivoProvider>;
 const trigger = () => screen.getByRole("button", { name: /buscar_notas/ });
 
-test("a chamada que roda e depois falha abre o painel e mostra o erro", () => {
+test("a call that runs and then fails opens the panel and shows the error", () => {
   const view = render(tree(<ToolCall name="buscar_notas" status="running" input={{ mes: 8 }} />));
   expect(trigger().getAttribute("aria-expanded")).toBe("false");
 
@@ -27,7 +27,7 @@ test("a chamada que roda e depois falha abre o painel e mostra o erro", () => {
   expect(screen.getByText("A prefeitura não respondeu.")).toBeDefined();
 });
 
-test("a chamada sem corpo que passa a pedir aprovacao abre o painel com a entrada", () => {
+test("a call without a body that starts asking for approval opens the panel with the input", () => {
   const view = render(tree(<ToolCall name="buscar_notas" status="pending" />));
   expect(screen.queryByRole("button", { name: /buscar_notas/ })).toBeNull();
 
@@ -39,7 +39,7 @@ test("a chamada sem corpo que passa a pedir aprovacao abre o painel com a entrad
   expect(screen.getByText(/Clínica/)).toBeDefined();
 });
 
-test("fechado a mao, o painel continua fechado enquanto o estado nao muda", () => {
+test("closed by hand, the panel stays closed while the state does not change", () => {
   const view = render(
     tree(<ToolCall name="buscar_notas" status="error" error="Falhou." input={{ mes: 8 }} />),
   );
@@ -54,7 +54,7 @@ test("fechado a mao, o painel continua fechado enquanto o estado nao muda", () =
   expect(trigger().getAttribute("aria-expanded")).toBe("false");
 });
 
-test("controlado, mudar de estado nao abre o painel por conta propria", () => {
+test("controlled, changing state does not open the panel on its own", () => {
   const onOpenChange = mock((open: boolean) => void open);
   const view = render(
     tree(

@@ -12,8 +12,8 @@ const tokens = (node: ReactTestInstance) => String(node.props.className ?? "").s
 
 const opened = () => (Linking as unknown as { opened: string[] }).opened;
 
-describe("Heading nativo", () => {
-  test("se anuncia como cabecalho", () => {
+describe("native Heading", () => {
+  test("announces itself as a header", () => {
     const screen = render(<Heading level={2}>Notas</Heading>);
     const [heading] = byRole(screen, "header");
 
@@ -22,7 +22,7 @@ describe("Heading nativo", () => {
     expect(tokens(heading!)).toContain("text-fg");
   });
 
-  test("o tamanho acompanha o nivel, e muda sem mexer no nivel", () => {
+  test("the size follows the level, and changes without touching the level", () => {
     const first = render(<Heading level={1}>Painel</Heading>);
     expect(tokens(byRole(first, "header")[0]!)).toContain("text-2xl");
 
@@ -37,7 +37,7 @@ describe("Heading nativo", () => {
     expect(classes).not.toContain("text-2xl");
   });
 
-  test("truncate corta em uma linha", () => {
+  test("truncate cuts at one line", () => {
     const screen = render(
       <Heading level={3} truncate>
         Clínica São Lucas
@@ -48,15 +48,15 @@ describe("Heading nativo", () => {
   });
 });
 
-describe("Text nativo", () => {
-  test("sem prop nova, a classe de quem chama passa intacta", () => {
+describe("native Text", () => {
+  test("with no new prop, the caller's class passes intact", () => {
     const screen = render(<Text className="text-xs text-fg-muted">Legenda</Text>);
     const [node] = hostTexts(screen);
 
     expect(node!.props.className).toBe("text-xs text-fg-muted");
   });
 
-  test("tom, corpo e peso viram os mesmos papeis do web", () => {
+  test("tone, size and weight become the same roles as the web", () => {
     const screen = render(
       <Text size="sm" tone="danger" weight="medium">
         Rejeitada
@@ -70,7 +70,7 @@ describe("Text nativo", () => {
     expect(classes).toContain("font-rc-medium");
   });
 
-  test("lineClamp vence truncate, e truncate e uma linha", () => {
+  test("lineClamp wins over truncate, and truncate is one line", () => {
     const one = render(<Text truncate>Uma</Text>);
     expect(hostTexts(one)[0]!.props.numberOfLines).toBe(1);
 
@@ -83,8 +83,8 @@ describe("Text nativo", () => {
   });
 });
 
-describe("Link nativo", () => {
-  test("e link para o leitor de tela, sublinhado no tom de acento", () => {
+describe("native Link", () => {
+  test("is a link for the screen reader, underlined in the accent tone", () => {
     const screen = render(<Link href="https://rivocode.com.br">Site</Link>);
     const [link] = byRole(screen, "link");
 
@@ -93,7 +93,7 @@ describe("Link nativo", () => {
     expect(tokens(link!)).toContain("text-accent-text");
   });
 
-  test("sem onPress, o toque abre o href pelo Linking", () => {
+  test("without onPress, a tap opens href through Linking", () => {
     const screen = render(<Link href="mailto:contato@rivocode.com.br">Escrever</Link>);
     const before = opened().length;
 
@@ -103,7 +103,7 @@ describe("Link nativo", () => {
     expect(opened().at(-1)).toBe("mailto:contato@rivocode.com.br");
   });
 
-  test("endereco que o Linking recusa nao vira promessa rejeitada solta: vira aviso em dev", async () => {
+  test("an address Linking refuses does not become an unhandled rejected promise: it becomes a dev warning", async () => {
     const linking = Linking as unknown as { openURL: (url: string) => Promise<unknown> };
     const original = linking.openURL;
     const warn = spyOn(console, "warn").mockImplementation(() => {});
@@ -121,7 +121,7 @@ describe("Link nativo", () => {
     }
   });
 
-  test("com onPress, quem navega e o router, e o Linking fica quieto", () => {
+  test("with onPress, the router is what navigates, and Linking stays quiet", () => {
     const visits: string[] = [];
     const screen = render(
       <Link href="/notas" onPress={() => visits.push("/notas")}>
@@ -136,7 +136,7 @@ describe("Link nativo", () => {
     expect(opened().length).toBe(before);
   });
 
-  test("external desenha a seta e avisa pela dica, sem a seta no nome", () => {
+  test("external draws the arrow and signals through the hint, without the arrow in the name", () => {
     const screen = render(
       <Link href="https://www.gov.br/nfse" external>
         Portal da NFS-e
@@ -149,7 +149,7 @@ describe("Link nativo", () => {
     expect(link.props.children).toContain(" ↗");
   });
 
-  test("sem external nao ha seta nem dica", () => {
+  test("without external there is no arrow nor hint", () => {
     const screen = render(<Link href="/notas">Notas</Link>);
     const link = byRole(screen, "link")[0]!;
 

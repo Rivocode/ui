@@ -106,7 +106,7 @@ function button(screen: ReactTestRenderer, name: string) {
 const press = (screen: ReactTestRenderer, name: string) =>
   act(() => button(screen, name).props.onPress());
 
-test("o dedo desenha em unidades do desenho, e o traco so vira valor ao soltar", () => {
+test("the finger draws in drawing units, and the stroke only becomes a value on release", () => {
   const onChange = mock((_value: SignatureValue | null) => {});
   const screen = render(<Controlled onChange={onChange} />);
   lay(screen);
@@ -132,7 +132,7 @@ test("o dedo desenha em unidades do desenho, e o traco so vira valor ao soltar",
   expect(byType(screen, "Path").filter((node) => node.props.fill === tokens.signature["signature-ink"])).toHaveLength(1);
 });
 
-test("a forca do toque vira pressao, e sem forca nao se inventa uma", () => {
+test("touch force becomes pressure, and without force none is invented", () => {
   const onChange = mock((_value: SignatureValue | null) => {});
   const screen = render(<Controlled onChange={onChange} />);
   lay(screen);
@@ -140,12 +140,12 @@ test("a forca do toque vira pressao, e sem forca nao se inventa uma", () => {
   stroke([[10, 10]], 0.7);
   stroke([[40, 10]]);
   const value = onChange.mock.lastCall![0]!;
-  if (value.kind !== "drawn") throw new Error("esperava tracos");
+  if (value.kind !== "drawn") throw new Error("expected strokes");
   expect(value.strokes[0]![0]!.pressure).toBe(0.7);
   expect("pressure" in value.strokes[1]![0]!).toBe(false);
 });
 
-test("o papel, a tinta e a guia saem do token fixo, e nao do tema, nos dois esquemas", () => {
+test("the paper, the ink and the guide come from the fixed token, not from the theme, in both schemes", () => {
   for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
     const screen = render(<Controlled />, { theme });
     expect(pad(screen).props.style.backgroundColor).toBe(tokens.signature["signature-paper"]);
@@ -155,7 +155,7 @@ test("o papel, a tinta e a guia saem do token fixo, e nao do tema, nos dois esqu
   }
 });
 
-test("desfazer e limpar devolvem null quando a area esvazia, e o leitor de tela ouve", () => {
+test("undo and clear return null when the area empties, and the screen reader hears it", () => {
   const onChange = mock((_value: SignatureValue | null) => {});
   const screen = render(<Controlled onChange={onChange} />);
   lay(screen);
@@ -174,7 +174,7 @@ test("desfazer e limpar devolvem null quando a area esvazia, e o leitor de tela 
   expect(spoken.announced).toContain("Assinatura limpa");
 });
 
-test("digitar assinatura troca o traco pelo nome, e voltar devolve os tracos", () => {
+test("typing a signature swaps the stroke for the name, and going back restores the strokes", () => {
   const onChange = mock((_value: SignatureValue | null) => {});
   const screen = render(<Controlled onChange={onChange} />);
   lay(screen);
@@ -193,7 +193,7 @@ test("digitar assinatura troca o traco pelo nome, e voltar devolve os tracos", (
   expect(back.kind === "drawn" && back.strokes.length).toBe(1);
 });
 
-test("desabilitada e so leitura nao aceitam o dedo", () => {
+test("disabled and read-only do not accept the finger", () => {
   const onChange = mock((_value: SignatureValue | null) => {});
   const disabled = render(<Controlled onChange={onChange} disabled />);
   lay(disabled);
@@ -212,14 +212,14 @@ test("desabilitada e so leitura nao aceitam o dedo", () => {
   expect(onChange).not.toHaveBeenCalled();
 });
 
-test("invalid pinta a borda de perigo", () => {
+test("invalid paints the danger border", () => {
   const screen = render(<Controlled invalid />);
   const classes = String(pad(screen).props.className).split(/\s+/);
   expect(classes).toContain("border-danger");
   expect(classes).not.toContain("border-border-strong");
 });
 
-test("o SVG exportado no nativo sai com a tinta do token, e vazio e string vazia", () => {
+test("the SVG exported on native comes out with the token ink, and empty is an empty string", () => {
   const value: SignatureValue = {
     kind: "drawn",
     strokes: [[{ x: 10, y: 100, time: 0 }, { x: 80, y: 120, time: 16 }]],
@@ -237,7 +237,7 @@ test("o SVG exportado no nativo sai com a tinta do token, e vazio e string vazia
 const nameInput = (screen: ReactTestRenderer) =>
   byLabel(screen, "Nome para a assinatura").find((node) => node.type === "TextInput");
 
-test("o pai zerar o value apaga o nome do campo, e voltar a desenhar nao ressuscita o traco", () => {
+test("the parent resetting value clears the field name, and drawing again does not revive the stroke", () => {
   let reset!: () => void;
   let current: SignatureValue | null = null;
   function Resettable() {
@@ -267,7 +267,7 @@ test("o pai zerar o value apaga o nome do campo, e voltar a desenhar nao ressusc
   expect(ink).toHaveLength(0);
 });
 
-test("limpar um nome que veio de fora continua no modo de digitar", () => {
+test("clearing a name that came from outside stays in typing mode", () => {
   const screen = render(
     <Controlled initial={{ kind: "typed", text: "Ana", font: "cursive", width: 600, height: 200 }} />,
   );

@@ -1,11 +1,11 @@
 ---
-category: Gráfico
+category: Charts
 ---
 
 # ChartHeatmap
 
-Uma grade de linhas por colunas em que a cor de cada célula diz o tamanho do
-número: notas emitidas por dia da semana e hora, chamados por equipe e semana.
+A grid of rows by columns in which each cell's color says the size of the
+number: invoices issued by weekday and hour, tickets by team and week.
 
 ```tsx
 <ChartHeatmap
@@ -18,100 +18,100 @@ número: notas emitidas por dia da semana e hora, chamados por equipe e semana.
 />
 ```
 
-O `data` vem no formato longo, uma linha por célula, que é o que um
-`GROUP BY dia, hora` devolve. `rows` e `columns` dão a ordem e trazem para a
-grade a linha que não teve nenhum registro: sem eles, o domingo sem emissão
-some da tabela em vez de aparecer vazio.
+`data` comes in long format, one row per cell, which is what a
+`GROUP BY dia, hora` returns. `rows` and `columns` give the order and bring
+into the grid the row that had no record at all: without them, the Sunday with
+no issuing disappears from the table instead of showing up empty.
 
-## A escala
+## The scale
 
-São cinco degraus de uma cor só, do mais ralo ao mais cheio. O degrau mais forte
-é a própria cor da série (`var(--rc-chart-1)`, ou a do `color`) e os quatro de
-baixo são ela mesma em tinta mais rala sobre o fundo, então a escala acompanha o
-tema sem nenhuma cor nova. A régua embaixo mostra os cinco degraus entre o menor
-e o maior número.
+There are five steps of a single color, from the thinnest to the fullest. The
+strongest step is the series color itself (`var(--rc-chart-1)`, or the one in
+`color`) and the four below are the same color as a thinner tint over the
+background, so the scale follows the theme without any new color. The ruler
+below shows the five steps between the smallest and the largest number.
 
-O intervalo sai dos dados: de zero (ou do menor valor, se houver negativo) até o
-maior. Duas grades lado a lado que precisam ser comparadas pedem a **mesma
-régua**, e é para isso que existe o `domain`: sem ele, o degrau mais cheio de
-cada uma quer dizer um número diferente.
+The range comes from the data: from zero (or from the smallest value, if there
+are negatives) to the largest. Two grids side by side that need to be compared
+call for the **same ruler**, and that is what `domain` is for: without it, the
+fullest step of each one means a different number.
 
-Os rótulos de coluna aparecem de tanto em tanto quando não cabem todos: a
-peça mede a largura das células, sem a coluna dos rótulos de linha, e deixa uns
-quarenta pixels para cada rótulo que escreve, então 24 horas num cartão de
-celular saem de quatro em quatro, sem reticências. O rótulo que não aparece
-continua na tabela do leitor de tela.
+The column labels show up every so often when they do not all fit: the
+component measures the width of the cells, without the row-label column, and
+leaves about forty pixels for each label it writes, so 24 hours in a phone card
+come out every four, without ellipses. A label that does not show up is still
+in the screen reader table.
 
-O rótulo de linha ocupa o que precisa até 40% da grade, e nunca mais de
-`10rem`: o nome comprido de um cliente termina em reticências, e o resto da
-largura fica com as células. O nome inteiro está na dica e na tabela.
+The row label takes what it needs up to 40% of the grid, and never more than
+`10rem`: a customer's long name ends in an ellipsis, and the rest of the width
+goes to the cells. The full name is in the tooltip and in the table.
 
-Uma grade sem variação (tudo zero, ou um `domain` com os dois números iguais)
-pinta o degrau mais ralo, e não o mais cheio: sem diferença para mostrar, a
-grade não grita.
+A grid without variation (all zero, or a `domain` with both numbers equal)
+paints the thinnest step, not the fullest: with no difference to show, the grid
+does not shout.
 
-## Zero não é vazio
+## Zero is not empty
 
-A célula com `0` é um valor, e pinta o primeiro degrau. A célula sem dado
-(a combinação que não veio no `data`, ou veio com `null`) não tem tinta
-nenhuma e leva uma borda tracejada. Os dois se leem diferentes de propósito:
-"ninguém emitiu às 22h" e "não apuramos as 22h" são respostas diferentes à mesma
-pergunta, e uma grade que pinta os dois do mesmo jeito mente numa delas. A dica,
-a tabela escondida e a régua dizem "Sem dado", ou o que você escrever em
-`labels.empty`.
+A cell with `0` is a value, and paints the first step. A cell without data (a
+combination that did not come in `data`, or came with `null`) has no tint at
+all and carries a dashed border. The two read differently on purpose: "nobody
+issued at 10 p.m." and "we did not collect 10 p.m." are different answers to
+the same question, and a grid that paints both the same way lies in one of
+them. The tooltip, the hidden table and the ruler say "Sem dado", or whatever
+you write in `labels.empty`.
 
-## Dica, teclado e leitor de tela
+## Tooltip, keyboard and screen reader
 
-O ponteiro sobre uma célula abre a dica com a linha, a coluna e o número. A
-grade inteira é **uma parada só** no Tab, e dali as setas andam célula a
-célula (`Home` e `End` vão às pontas da linha, e com `Ctrl` às pontas da
-grade), com a mesma dica aberta e o mesmo texto anunciado. Cento e sessenta e oito
-paradas de Tab dentro de um cartão seriam um obstáculo, e é a mesma decisão do
-`Tracker`.
+The pointer over a cell opens the tooltip with the row, the column and the
+number. The whole grid is **a single Tab stop**, and from there the arrows move
+cell by cell (`Home` and `End` go to the ends of the row, and with `Ctrl` to
+the ends of the grid), with the same tooltip open and the same text announced.
+One hundred sixty-eight Tab stops inside a card would be an obstacle, and it is
+the same decision as `Tracker`.
 
-Para o leitor de tela o desenho não é a fonte: ao lado dele há uma **tabela de
-verdade**, escondida da vista, com a legenda que você escreveu em `label`, a
-linha e a coluna como cabeçalhos e o número escrito em cada célula. É ela que se
-navega com os comandos de tabela, e é por isso que `label` é obrigatório.
+For the screen reader the drawing is not the source: next to it there is a
+**real table**, visually hidden, with the caption you wrote in `label`, the row
+and the column as headers and the number written in each cell. It is the one
+navigated with table commands, and that is why `label` is required.
 
-## O número não entra na célula
+## The number does not go in the cell
 
-Numa grade de sete por vinte e quatro a célula tem vinte e poucos pixels, e o
-número escrito ali não cabe nem se lê. Ele mora na dica e na tabela. Quando a
-pergunta é o número exato de cada cruzamento, e não o padrão, a peça certa é o
-`DataTable`.
+In a seven-by-twenty-four grid the cell is twenty-something pixels, and the
+number written there neither fits nor reads. It lives in the tooltip and in the
+table. When the question is the exact number of each intersection, and not the
+pattern, the right component is `DataTable`.
 
-## Movimento
+## Motion
 
-A grade entra esmaecendo, e quando os dados mudam cada célula troca de degrau
-em `--rc-duration-slow`. Com "reduzir movimento", a troca é seca.
+The grid fades in, and when the data changes each cell changes step in
+`--rc-duration-slow`. With "reduce motion", the change is abrupt.
 
-## Sem dado
+## No data
 
-`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
-`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
-desenho quando não há o que pintar: a lista vazia, nenhuma célula com número,
-ou todas em zero. Sem ele, a grade desenha só as linhas e colunas que `rows` e `columns` declararem, todas tracejadas.
+`empty` is the same object as in `ChartContainer` and `DataTable`: `title`, a
+required `description`, optional `action` and `icon`. It shows up in place of
+the drawing when there is nothing to paint: an empty list, no cell with a
+number, or all at zero. Without it, the grid draws only the rows and columns that `rows` and `columns` declare, all dashed.
 
 
-Uma linha só, um estado por período, é o `Tracker`: ele mostra se cada dia foi
-bom ou ruim, e não quanto. Uma série só ao longo do tempo é `LineChart` dentro
-do `ChartContainer`, que mostra a tendência que a cor esconde. E poucas
-categorias com o valor como assunto são barra deitada: a cor é o jeito menos
-preciso de comparar dois números, e o heatmap só se paga quando o assunto é o
-**padrão** que aparece na grade inteira.
+A single row, one state per period, is `Tracker`: it shows whether each day was
+good or bad, not how much. A single series over time is `LineChart` inside
+`ChartContainer`, which shows the trend that color hides. And few categories
+with the value as the subject are a horizontal bar: color is the least precise
+way to compare two numbers, and the heatmap only pays off when the subject is
+the **pattern** that shows up across the whole grid.
 
-A peça não tem os quatro finais de uma consulta: carregando, erro e vazio vêm do
-`QueryBoundary` em volta dela.
+The component does not have a query's four endings: loading, error and empty
+come from the `QueryBoundary` around it.
 
-## No React Native
+## In React Native
 
-Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, `valueKey`, `rows`, `columns`, `domain`, `labels`, `legend`, `format`. A escala é a mesma, cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em `native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda tracejada, igual.
+Translates, in `@rivocode/ui-native/chart`, with the same props: `rowKey`, `columnKey`, `valueKey`, `rows`, `columns`, `domain`, `labels`, `legend`, `format`. The scale is the same, five steps of a single color, and the alphas come from the same constant as the web, generated in `native/src/shared/`. Zero paints the first step and a cell with no data has a dashed border, the same.
 
-Uma mudança de tipo: `color` é papel de token (`chart-3`).
+One type change: `color` is a token role (`chart-3`).
 
-**O que muda é como se lê uma célula.** No web o ponteiro pousa e a dica abre, e o leitor de tela navega uma tabela escondida. No celular não há dica nem tabela: o dedo toca ou arrasta sobre a grade e escolhe a célula debaixo dele, que ganha contorno, e a linha, a coluna e o número aparecem escritos embaixo da grade. Para o leitor de tela a grade é **uma parada `adjustable` só**, que anda célula a célula com o gesto de subir e descer, a mesma decisão do `Tracker`: cento e sessenta e oito paradas dentro de um cartão seriam um obstáculo, e o valor de cada uma vai inteiro no `accessibilityValue`.
+**What changes is how a cell is read.** On the web the pointer rests and the tooltip opens, and the screen reader navigates a hidden table. On the phone there is no tooltip and no table: the finger taps or drags over the grid and picks the cell under it, which gets an outline, and the row, the column and the number appear written below the grid. For the screen reader the grid is **a single `adjustable` stop**, which moves cell by cell with the swipe up and down gesture, the same decision as the `Tracker`: one hundred and sixty-eight stops inside a card would be an obstacle, and the value of each one goes whole into `accessibilityValue`.
 
-Os rótulos de coluna aparecem no máximo seis, e não pela largura medida como no web: a tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura.
+At most six column labels appear, not by measured width as on the web: the phone screen is always narrow, and a label that does not appear is still spoken in the reading.
 
-As partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`. Com `empty` (o formato do `ChartContainer`), a grade sem número ou toda em zero dá lugar ao estado vazio; sem ele, a grade em zero continua pintando o degrau mais ralo.
+The parts are styled through the same `classNames` as the web: `grid`, the stop that receives the drag, `cell` and `legend`. With `empty` (the `ChartContainer` format), a grid with no number or all zeros gives way to the empty state; without it, an all-zero grid keeps painting the faintest step.

@@ -1,20 +1,20 @@
 import { launchChrome, requireChrome } from "./portraits";
-import { servir } from "./serve";
+import { serveDemo } from "./serve";
 import { scanAtLeast } from "./scan";
 
 const IGNORED_RULES: Record<string, string> = {
   region:
-    "A vitrine empilha amostras soltas numa pagina sem `main`: conteudo fora de marco e o layout da vitrine, e nao da peca. O `AppShell` que desenha marco tem teste proprio.",
+    "The showcase stacks loose samples on a page without `main`: content outside a landmark is the showcase layout, not the piece's. The `AppShell` that draws landmarks has its own test.",
   "landmark-one-main":
-    "Mesma razao do `region`: a pagina de vitrine nao e aplicacao, e quem poe o `main` e a tela de quem consome.",
+    "Same reason as `region`: the showcase page is not an application, and whoever puts the `main` is the consumer's screen.",
   "landmark-no-duplicate-banner":
-    "A vitrine repete a mesma amostra por tema e por densidade, e cada `AppShell` desenha o proprio `header`.",
+    "The showcase repeats the same sample per theme and per density, and each `AppShell` draws its own `header`.",
   "landmark-no-duplicate-main":
-    "Mesma razao do anterior, para o `main` do `AppShell` e do menu de navegacao repetidos por amostra.",
+    "Same reason as the previous one, for the `main` of the `AppShell` and of the navigation menu repeated per sample.",
   "landmark-unique":
-    "Marco com o mesmo nome e a amostra repetida por tema e densidade - o carrossel \"Planos\" do escuro e o do claro -, e nao duas navegacoes de verdade na mesma tela.",
+    "A landmark with the same name is the sample repeated per theme and density - the \"Planos\" carousel in dark and in light -, not two real navigations on the same screen.",
   "page-has-heading-one":
-    "A pagina de vitrine abre cada amostra com o nome da secao; o `h1` e da tela de quem consome.",
+    "The showcase page opens each sample with the section name; the `h1` belongs to the consumer's screen.",
 };
 
 const IGNORED_NODES: Record<string, { selector: string; reason: string }[]> = {
@@ -22,13 +22,13 @@ const IGNORED_NODES: Record<string, { selector: string; reason: string }[]> = {
     {
       selector: 'span[data-base-ui-focus-guard][aria-hidden="true"][tabindex="0"]:empty',
       reason:
-        "Sentinela de armadilha de foco da Base UI: o span vazio recebe o Tab so para devolver o foco para dentro (ou para fora) do painel, e nunca e lido. E aria-hidden e focavel por desenho, e o Radix e o Floating UI desenham a mesma coisa.",
+        "Base UI focus trap sentinel: the empty span receives Tab only to send focus back into (or out of) the panel, and is never read. It is aria-hidden and focusable by design, and Radix and Floating UI draw the same thing.",
     },
   ],
 };
 
 const EXEMPT_FROM_CONTRAST =
-  "Texto de componente inativo nao entra na 1.4.3: o axe so reconhece `disabled` nativo, e as pecas marcam o inativo com `data-disabled` e `aria-disabled` no controle de fora.";
+  "Text of an inactive component is not covered by 1.4.3: axe only recognizes native `disabled`, and the pieces mark inactive with `data-disabled` and `aria-disabled` on the outer control.";
 
 type FocusTarget = {
   page: string;
@@ -68,7 +68,7 @@ const DESK = { width: 1240, height: 900 };
 const jsonFlag = process.argv.indexOf("--json");
 const jsonTo = jsonFlag === -1 ? "" : (process.argv[jsonFlag + 1] ?? "");
 if (jsonFlag !== -1 && !jsonTo) {
-  console.error("--json pede o caminho do arquivo.");
+  console.error("--json requires the file path.");
   process.exit(1);
 }
 
@@ -77,7 +77,7 @@ function count(key: string, amount = 1) {
   tally[key] = (tally[key] ?? 0) + amount;
 }
 
-const pickedFlag = process.argv.indexOf("--pagina");
+const pickedFlag = process.argv.indexOf("--page");
 const picked = pickedFlag === -1 ? "" : (process.argv[pickedFlag + 1] ?? "");
 
 const FRAMES = new Set(["demo/celular.html", "demo/secao.html"]);
@@ -89,18 +89,18 @@ const pages = (await scanAtLeast("demo/*.html", 15))
   .sort();
 
 if (pages.length === 0) {
-  console.error(`Nenhuma pagina de demo/ casa com "${picked}".`);
+  console.error(`No page in demo/ matches "${picked}".`);
   process.exit(1);
 }
 
 if (!(await Bun.file("demo/dist/demo.css").exists())) {
-  console.error("demo/dist nao existe. Rode `bun run demo` antes, ou use `bun run a11y`.");
+  console.error("demo/dist does not exist. Run `bun run demo` first, or use `bun run a11y`.");
   process.exit(1);
 }
 
 for (const target of FOCUS_TARGETS) {
   if (!pages.includes(target.page) && picked === "" && !jsonTo) {
-    console.error(`FOCUS_TARGETS cita a pagina "${target.page}", que nao existe em demo/.`);
+    console.error(`FOCUS_TARGETS cites the page "${target.page}", which does not exist in demo/.`);
     process.exit(1);
   }
 }
@@ -109,7 +109,7 @@ const axeSource = await Bun.file(require.resolve("axe-core/axe.min.js")).text();
 
 await requireChrome();
 
-const server = servir();
+const server = serveDemo();
 const chrome = await launchChrome();
 
 async function open(page: string, width: number, height: number) {
@@ -319,7 +319,7 @@ const REFLOW_PROBE = `(() => {
       .filter((candidate) => candidate.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)
       .at(-1);
     const section = element.closest("[data-rc-shot]")?.getAttribute("data-rc-shot") ?? heading?.textContent?.trim() ?? "";
-    culprits.push(name + " ate x=" + Math.round(box.right) + (section ? ' (depois de "' + section.slice(0, 40) + '")' : ""));
+    culprits.push(name + " up to x=" + Math.round(box.right) + (section ? ' (after "' + section.slice(0, 40) + '")' : ""));
     if (culprits.length >= 40) break;
   }
   return { scroll, width, culprits };
@@ -347,7 +347,7 @@ const CLIPPED_SCROLL_PROBE = `(() => {
     found.push({
       container: describe(node),
       scrollTop: Math.round(node.scrollTop),
-      focused: element.tagName.toLowerCase() + ' "' + name + '"' + (section ? " em " + section : ""),
+      focused: element.tagName.toLowerCase() + ' "' + name + '"' + (section ? " in " + section : ""),
     });
   }
   return { key: element.getAttribute("data-rc-tab"), found };
@@ -372,47 +372,47 @@ let tabsTotal = 0;
 
 const TARGET_CALIBRATION: { name: string; passes: boolean; html: string }[] = [
   {
-    name: "selo com ::after em -8px, como o AILabel",
+    name: "badge with ::after at -8px, like the AILabel",
     passes: true,
-    html: `<button class="grow" style="width:22px;height:20px" aria-label="selo ampliado">IA</button>`,
+    html: `<button class="grow" style="width:22px;height:20px" aria-label="enlarged badge">IA</button>`,
   },
   {
-    name: "botao de 12px sem area ampliada",
+    name: "12px button without enlarged area",
     passes: false,
-    html: `<button style="width:12px;height:12px" aria-label="xis pequeno"></button>`,
+    html: `<button style="width:12px;height:12px" aria-label="small x"></button>`,
   },
   {
-    name: "::after com pointer-events none nao recebe clique",
+    name: "::after with pointer-events none does not receive the click",
     passes: false,
-    html: `<button class="grow inert-grow" style="width:12px;height:12px" aria-label="xis de pseudo inerte"></button>`,
+    html: `<button class="grow inert-grow" style="width:12px;height:12px" aria-label="x with inert pseudo"></button>`,
   },
   {
-    name: "::after recortado por overflow hidden do pai",
+    name: "::after clipped by the parent's overflow hidden",
     passes: false,
-    html: `<div style="overflow:hidden;width:12px;height:12px"><button class="grow" style="width:12px;height:12px" aria-label="xis recortado"></button></div>`,
+    html: `<div style="overflow:hidden;width:12px;height:12px"><button class="grow" style="width:12px;height:12px" aria-label="clipped x"></button></div>`,
   },
   {
-    name: "link no meio da frase",
+    name: "link in the middle of a sentence",
     passes: true,
     html: `<p style="font-size:12px;line-height:16px">Leia os <a href="#">termos de uso</a> antes de seguir.</p>`,
   },
   {
-    name: "botao de texto no fim da mensagem, em p flex",
+    name: "text button at the end of the message, in a flex p",
     passes: true,
     html: `<p style="display:flex;font-size:12px;line-height:18px">A conexao caiu. <button style="height:18px;padding:0">Tentar de novo</button></p>`,
   },
   {
-    name: "icone solto ao lado do rotulo nao e frase",
+    name: "loose icon next to the label is not a sentence",
     passes: false,
-    html: `<div style="display:flex;gap:4px;font-size:14px">Financeiro<button style="width:16px;height:16px" aria-label="fechar ficha"></button></div>`,
+    html: `<div style="display:flex;gap:4px;font-size:14px">Financeiro<button style="width:16px;height:16px" aria-label="close chip"></button></div>`,
   },
   {
-    name: "botao de texto no outro canto da fileira nao e frase",
+    name: "text button at the other end of the row is not a sentence",
     passes: false,
     html: `<div style="display:flex;justify-content:space-between;width:400px;font-size:12px;line-height:18px">3 selecionadas<button style="height:18px;padding:0">Limpar tudo</button></div>`,
   },
   {
-    name: "botao de texto sozinho no bloco nao e frase",
+    name: "text button alone in the block is not a sentence",
     passes: false,
     html: `<div style="font-size:12px"><button style="height:20px;padding:0">+4 mais</button></div>`,
   },
@@ -438,13 +438,13 @@ async function calibrateTargets() {
     });
   })()`);
   if (verdicts.length !== TARGET_CALIBRATION.length) {
-    throw new Error(`a calibracao do alvo leu ${verdicts.length} caso(s), e declara ${TARGET_CALIBRATION.length}`);
+    throw new Error(`the target calibration read ${verdicts.length} case(s), and declares ${TARGET_CALIBRATION.length}`);
   }
   const wrong = TARGET_CALIBRATION.filter((entry, index) => verdicts[index] !== entry.passes);
   if (wrong.length > 0) {
     throw new Error(
-      "a sonda de alvo errou a calibracao, entao a medida da vitrine nao vale:\n" +
-        wrong.map((entry) => `  ${entry.name}: devia ${entry.passes ? "passar" : "ser acusado"}`).join("\n"),
+      "the target probe got the calibration wrong, so the showcase measurement is not valid:\n" +
+        wrong.map((entry) => `  ${entry.name}: should ${entry.passes ? "pass" : "be flagged"}`).join("\n"),
     );
   }
 }
@@ -463,15 +463,15 @@ try {
       for (const node of violation.nodes.slice(0, 4)) {
         lines.push(`      ${node.target}${node.summary ? `  -> ${node.summary.slice(0, 180)}` : ""}`);
       }
-      if (violation.nodes.length > 4) lines.push(`      ... e mais ${violation.nodes.length - 4}`);
+      if (violation.nodes.length > 4) lines.push(`      ... and ${violation.nodes.length - 4} more`);
     }
 
     const small = await chrome.evaluate<SmallTarget[]>(TARGET_PROBE);
     smallTotal += small.length;
-    for (const target of small) count(`${page} | alvo ${target.label}`);
+    for (const target of small) count(`${page} | target ${target.label}`);
     const smallLines = grouped(small.map((target) => `${target.label} ${target.size}`));
     if (smallLines.length > 0) {
-      lines.push(`  alvo menor que ${MIN_TARGET}x${MIN_TARGET}: ${small.length}`);
+      lines.push(`  target smaller than ${MIN_TARGET}x${MIN_TARGET}: ${small.length}`);
       for (const line of smallLines) lines.push(`      ${line}`);
     }
 
@@ -489,8 +489,8 @@ try {
       })()`);
       if (!found) {
         focusTotal++;
-        count(`${page} | foco ${target.name}`);
-        lines.push(`  foco: "${target.name}" - o alvo declarado nao existe mais na pagina, ou nao recebe foco`);
+        count(`${page} | focus ${target.name}`);
+        lines.push(`  focus: "${target.name}" - the declared target no longer exists on the page, or does not receive focus`);
         continue;
       }
       const fingerprint = `document.body.innerHTML.length + ":" + document.body.innerText`;
@@ -507,13 +507,13 @@ try {
       })()`);
       if ((await chrome.evaluate<string>(fingerprint)) === before) {
         focusTotal++;
-        count(`${page} | foco ${target.name}`);
-        lines.push(`  foco: "${target.name}" - o Enter nao mudou nada na pagina, entao a acao declarada nao foi medida`);
+        count(`${page} | focus ${target.name}`);
+        lines.push(`  focus: "${target.name}" - Enter changed nothing on the page, so the declared action was not measured`);
       } else if (!landed) {
         focusTotal++;
-        count(`${page} | foco ${target.name}`);
+        count(`${page} | focus ${target.name}`);
         lines.push(
-          `  foco: "${target.name}"${target.presses ? ` apertado ${target.presses} vezes` : ""} - depois da acao o foco caiu no body`,
+          `  focus: "${target.name}"${target.presses ? ` pressed ${target.presses} times` : ""} - after the action focus fell to the body`,
         );
       }
     }
@@ -535,14 +535,14 @@ try {
     }
     tabsTotal += seen.size;
     if (seen.size === 0) {
-      lines.push("  Tab: nenhuma parada de foco na pagina, entao a rolagem escondida nao foi medida");
+      lines.push("  Tab: no focus stop on the page, so hidden scrolling was not measured");
     }
     if (clipped.size > 0) {
       clippedTotal += clipped.size;
-      lines.push(`  foco rolou ${clipped.size} caixa(s) com overflow hidden, que nao tem barra para a pessoa voltar:`);
+      lines.push(`  focus scrolled ${clipped.size} box(es) with overflow hidden, which have no scrollbar for the person to go back:`);
       for (const hit of clipped.values()) {
-        count(`${page} | rolagem escondida ${hit.container}`);
-        lines.push(`      ${hit.container} rolou ${hit.scrollTop}px ao focar ${hit.focused}`);
+        count(`${page} | hidden scroll ${hit.container}`);
+        lines.push(`      ${hit.container} scrolled ${hit.scrollTop}px when focusing ${hit.focused}`);
       }
     }
 
@@ -550,9 +550,9 @@ try {
     const reflow = await chrome.evaluate<Reflow>(REFLOW_PROBE);
     if (reflow) {
       reflowTotal++;
-      count(`${page} | reflow a ${REFLOW_WIDTH}px`);
+      count(`${page} | reflow at ${REFLOW_WIDTH}px`);
       lines.push(
-        `  reflow a ${REFLOW_WIDTH}px: a pagina rola ${reflow.scroll - reflow.width}px de lado (${reflow.scroll} > ${reflow.width})`,
+        `  reflow at ${REFLOW_WIDTH}px: the page scrolls ${reflow.scroll - reflow.width}px sideways (${reflow.scroll} > ${reflow.width})`,
       );
       for (const culprit of grouped(reflow.culprits).slice(0, 6)) lines.push(`      ${culprit}`);
     }
@@ -569,23 +569,23 @@ try {
 const focusDeclared = FOCUS_TARGETS.filter((target) => pages.includes(target.page)).length;
 
 console.log(
-  `\n${pages.length} pagina(s). axe: ${axeTotal} no(s) em violacao, com ${Object.keys(IGNORED_RULES).length} regra(s) de layout de vitrine ignorada(s) e ${ignoredNodes} no(s) ignorado(s) por IGNORED_NODES.` +
-    ` Alvo pequeno: ${smallTotal}. Reflow a ${REFLOW_WIDTH}px: ${reflowTotal} pagina(s).` +
-    ` Foco: ${focusTotal} de ${focusDeclared} acao(oes) declarada(s).` +
-    ` Rolagem escondida pelo Tab: ${clippedTotal} caixa(s) em ${tabsTotal} parada(s) de Tab.`,
+  `\n${pages.length} page(s). axe: ${axeTotal} node(s) in violation, with ${Object.keys(IGNORED_RULES).length} showcase layout rule(s) ignored and ${ignoredNodes} node(s) ignored by IGNORED_NODES.` +
+    ` Small target: ${smallTotal}. Reflow at ${REFLOW_WIDTH}px: ${reflowTotal} page(s).` +
+    ` Focus: ${focusTotal} of ${focusDeclared} declared action(s).` +
+    ` Scroll hidden by Tab: ${clippedTotal} box(es) in ${tabsTotal} Tab stop(s).`,
 );
 
 if (jsonTo) {
   await Bun.write(jsonTo, `${JSON.stringify({ pages, problems: tally }, null, 1)}\n`);
-  console.log(`\nContagem por pagina, tipo e alvo gravada em ${jsonTo}.`);
+  console.log(`\nCount per page, kind and target written to ${jsonTo}.`);
   process.exit(0);
 }
 
 if (problems > 0) {
   console.log(
-    "\nAs regras e os nos ignorados, e o motivo de cada um, estao em IGNORED_RULES e IGNORED_NODES, em scripts/accessibility.ts." +
-      "\nAlvo pequeno segue a 2.5.8 sem a excecao de espacamento: so escapa link ou botao de texto que divide a linha com a frase, a area conta o ::before e o ::after absolutos que recebem o clique, e o radio conta o `label` que o envolve." +
-      `\nContraste: ${EXEMPT_FROM_CONTRAST}`,
+    "\nThe ignored rules and nodes, and the reason for each, are in IGNORED_RULES and IGNORED_NODES, in scripts/accessibility.ts." +
+      "\nSmall target follows 2.5.8 without the spacing exception: only a link or text button that shares the line with the sentence escapes, the area counts the absolute ::before and ::after that receive the click, and the radio counts the `label` that wraps it." +
+      `\nContrast: ${EXEMPT_FROM_CONTRAST}`,
   );
   process.exit(1);
 }

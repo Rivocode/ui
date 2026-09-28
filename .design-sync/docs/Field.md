@@ -1,17 +1,17 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Field
 
-Raiz do campo de formulário. Liga rótulo, ajuda e erro por acessibilidade.
+The root of a form field. Wires label, help and error for accessibility.
 
-Compõe com `FieldLabel`, `Input`, `FieldDescription` e `FieldError`. A ligacao e
-automática: não escreva `htmlFor` nem `aria-describedby` a mao.
+Composes with `FieldLabel`, `Input`, `FieldDescription` and `FieldError`. The
+wiring is automatic: do not write `htmlFor` or `aria-describedby` by hand.
 
-Marque inválido com `invalid` na raiz e mostre a mensagem com
-`<FieldError match>`. `disabled` na raiz desabilita o conjunto.
+Mark it invalid with `invalid` on the root and show the message with
+`<FieldError match>`. `disabled` on the root disables the whole set.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Field` - `label`, `description` e `error` como props, e o `label` nomeia o campo de digitar que está dentro; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o `validate` recebe o texto dos campos de digitar (`Input`, `Textarea`, `MaskedInput`, `InputGroup`, `PasswordInput`) e o valor dos que abrem folha (`Autocomplete`, `Select`, `Combobox`, `DatePicker`), e o erro é anunciado, acende a borda deles e vira a dica; nos de folha, fechar a folha é a saída do campo, e o `Concluir` e a tecla de envio são o envio. O texto que chega depois entra por fade. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Field` - `label`, `description` and `error` as props, and `label` names the text field inside; `validate`, `validationMode` and `validationDebounceTime` with the web's name, signature and timing, and an explicit `error` wins over `validate`; `validate` receives the text of the text fields (`Input`, `Textarea`, `MaskedInput`, `InputGroup`, `PasswordInput`) and the value of the ones that open a sheet (`Autocomplete`, `Select`, `Combobox`, `DatePicker`), and the error is announced, lights their border and becomes the hint; in the sheet ones, closing the sheet is leaving the field, and `Concluir` and the submit key are the submit. Text that arrives later fades in. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

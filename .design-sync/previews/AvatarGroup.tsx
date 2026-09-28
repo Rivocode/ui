@@ -1,6 +1,6 @@
 import { Avatar, AvatarGroup } from '@rivocode/ui'
 
-/** Quem tem acesso */
+/** Who has access */
 export function TeamAccess() {
   return (
     <AvatarGroup max={4}>

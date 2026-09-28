@@ -3,26 +3,26 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 /* ---------------------------------------------------------------------------
- * Uma janela estreita de verdade
+ * A genuinely narrow window
  *
- * Encolher uma `<div>` nao prova nada. Toda classe responsiva desta biblioteca
- * se decide pela JANELA: o `max-sm:` da folha que ancora embaixo, o
- * `hideOnMobile` de uma coluna de tabela, o calendario decidindo quantos meses
- * cabem. Uma caixa de 390px dentro de uma janela de 1440 nao dispara nenhuma
- * delas, entao a chave de celular mostrava um desktop espremido e a de tablet
- * nao mostrava nada, porque a coluna da pagina ja era mais estreita que 768.
+ * Shrinking a `<div>` proves nothing. Every responsive class in this library
+ * is decided by the WINDOW: the `max-sm:` of the sheet that anchors at the
+ * bottom, a table column's `hideOnMobile`, the calendar deciding how many
+ * months fit. A 390px box inside a 1440 window triggers none of them, so the
+ * mobile switch showed a squeezed desktop and the tablet one showed nothing,
+ * because the page column was already narrower than 768.
  *
- * Um iframe tem janela propria, entao as queries respondem de verdade. Custa um
- * documento por exemplo, e por isso ele so e montado quando a pessoa pede uma
- * largura: no desktop o exemplo desenha inline, como antes.
+ * An iframe has its own window, so the queries really answer. It costs one
+ * document per example, which is why it is only mounted when the person asks
+ * for a width: on desktop the example draws inline, as before.
  * ------------------------------------------------------------------------- */
 
 /**
- * Copia os estilos da pagina para dentro da moldura.
+ * Copies the page's styles into the frame.
  *
- * Em dev o Vite injeta CSS como tags `<style>` que ele fica mutando; num build
- * e um `<link>`. Os dois sao clonados, e o observer pega as atualizacoes
- * quentes para que uma moldura aberta nao congele na folha com que nasceu.
+ * In dev Vite injects CSS as `<style>` tags that it keeps mutating; in a build
+ * it is a `<link>`. Both are cloned, and the observer catches hot updates so
+ * an open frame does not freeze on the stylesheet it was born with.
  */
 function useClonedStyles(doc: Document | null) {
   useEffect(() => {
@@ -47,14 +47,14 @@ function useClonedStyles(doc: Document | null) {
 }
 
 /**
- * Cresce a moldura ate o que o exemplo la dentro acabou precisando.
+ * Grows the frame to what the example inside ended up needing.
  *
- * A medida e um laco, e nao uma leitura: o exemplo reage a largura da moldura,
- * e a moldura tira a altura do exemplo. Trocar para tablet desce a altura em
- * degraus (264, 216, 169) ao longo de mais de um segundo, e cada degrau e
- * pintado, entao a pessoa assiste uma caixa vazia alta desabar. Por isso o hook
- * tambem informa se o numero parou de mexer, e a moldura fica escondida ate
- * parar.
+ * The measurement is a loop, not a read: the example reacts to the frame's
+ * width, and the frame takes its height from the example. Switching to tablet
+ * lowers the height in steps (264, 216, 169) over more than a second, and
+ * each step is painted, so the person watches a tall empty box collapse. That
+ * is why the hook also reports whether the number stopped moving, and the
+ * frame stays hidden until it does.
  */
 function useMeasuredHeight(root: HTMLElement | null, width: number) {
   const [height, setHeight] = useState(220)
@@ -62,28 +62,27 @@ function useMeasuredHeight(root: HTMLElement | null, width: number) {
 
   useEffect(() => {
     if (!root) return
-    // A largura e dependencia de proposito: trocar de tablet para celular
-    // reaproveita a moldura, e sem o reset a pessoa via o conteudo se
-    // reorganizar ao vivo. O esconde-ate-silenciar so funcionava na primeira
-    // montagem.
+    // The width is a dependency on purpose: switching from tablet to mobile
+    // reuses the frame, and without the reset the person watched the content
+    // rearrange live. Hide-until-quiet only worked on the first mount.
     setSettled(false)
 
     let timer: ReturnType<typeof setTimeout>
     const measure = () => {
       setHeight(Math.max(160, Math.ceil(root.getBoundingClientRect().height)))
-      // Assentado quer dizer que parou de mudar. O observer so relata mudanca,
-      // entao o que conta e o silencio dele, e nao duas leituras iguais.
+      // Settled means it stopped changing. The observer only reports change,
+      // so what counts is its silence, not two equal readings.
       clearTimeout(timer)
       timer = setTimeout(() => setSettled(true), 180)
     }
     measure()
 
-    // Mede o no raiz do portal, e nao o `body`. O `body` e do tamanho da
-    // janela da moldura sempre que alguma folha o estica (e em modo quirks
-    // ele estica sozinho), e ai a medida vira a da propria moldura: a altura
-    // realimentava a si mesma, descendo um degrau por volta do observer (1599,
-    // 1551, 1503...), o silencio de 180ms nunca chegava, e a moldura ficava
-    // invisivel por uns dez segundos em /blocos.
+    // Measures the portal's root node, not the `body`. The `body` is the size
+    // of the frame's window whenever some stylesheet stretches it (and in
+    // quirks mode it stretches by itself), and then the measurement becomes
+    // the frame's own: the height fed back on itself, dropping one step per
+    // observer round (1599, 1551, 1503...), the 180ms silence never came, and
+    // the frame stayed invisible for some ten seconds on /blocos.
     const observer = new ResizeObserver(measure)
     observer.observe(root)
 
@@ -97,15 +96,14 @@ function useMeasuredHeight(root: HTMLElement | null, width: number) {
 }
 
 /**
- * Quanto a moldura precisa encolher para caber na coluna em que ela mora.
+ * How much the frame needs to shrink to fit the column it lives in.
  *
- * Tablet tem 768px de largura e a coluna da documentacao e mais estreita que
- * isso, entao a moldura ou vazava ou, pior, tinha que ser cortada ate o espaco
- * disponivel - foi assim que a chave de tablet acabou mostrando a mesma largura
- * da de desktop. A escala mantem a moldura em 768 pixels de CSS de verdade,
- * entao as media queries la dentro continuam respondendo como tablet, e so o
- * retrato dela fica menor. E o que a propria barra de dispositivo do navegador
- * faz.
+ * Tablet is 768px wide and the documentation column is narrower than that, so
+ * the frame either overflowed or, worse, had to be cut down to the available
+ * space - that is how the tablet switch ended up showing the same width as
+ * desktop. The scale keeps the frame at 768 real CSS pixels, so the media
+ * queries inside keep answering as tablet, and only its picture gets smaller.
+ * It is what the browser's own device toolbar does.
  */
 function useBoxWidth() {
   const box = useRef<HTMLDivElement>(null)
@@ -138,27 +136,28 @@ export function ExampleFrame({
   children,
 }: {
   /**
-   * O nome da moldura para quem navega por leitor de tela. Cada iframe e um
-   * documento, e o leitor anuncia o titulo dele ao entrar e o lista no rotor de
-   * quadros; com todos chamados "Exemplo em outra largura", a lista de /blocos
-   * era dez linhas iguais sem dizer qual bloco cada uma abria.
+   * The frame's name for whoever navigates by screen reader. Each iframe is a
+   * document, and the reader announces its title on entering and lists it in
+   * the frames rotor; with all of them called "Example at another width", the
+   * /blocos list was ten identical lines without saying which block each one
+   * opened.
    */
   title: string
   width: number
   /**
-   * Acompanha a coluna em vez de miniaturizar. Largura escolhida a mao e o
-   * retrato de outro aparelho, entao ela encolhe para caber; historia de
-   * keep-open em repouso e so o exemplo, e num celular ela tem que continuar
-   * legivel: a janela estreita, o layout la dentro responde como celular, e
-   * nada encolhe para metade do tamanho.
+   * Follows the column instead of miniaturizing. A hand-picked width is the
+   * picture of another device, so it shrinks to fit; a keep-open story at
+   * rest is just the example, and on a phone it has to stay readable: the
+   * window narrows, the layout inside answers as mobile, and nothing shrinks
+   * to half size.
    */
   fit?: boolean
-  /** A altura do que a moldura substituiu, para a caixa nunca desabar. */
+  /** The height of what the frame replaced, so the box never collapses. */
   initialHeight?: number
   /**
-   * Espaco para o que flutua. Um dialog se centra na janela da moldura e um
-   * select precisa de ar para abrir; sem isto a moldura abraca o gatilho e o
-   * popup sai cortado na primeira linha.
+   * Room for what floats. A dialog centers in the frame's window and a select
+   * needs air to open; without this the frame hugs the trigger and the popup
+   * comes out cut at the first line.
    */
   minHeight?: number
   children: ReactNode
@@ -176,21 +175,21 @@ export function ExampleFrame({
 
     const attach = () => {
       const inner = node.contentDocument
-      // So o documento do `srcDoc` serve. Antes dele o iframe tem o
-      // about:blank inicial, que e quirks, e o Safari chega a devolve-lo no
-      // primeiro tick; quem vale e o documento em modo padrao, pego aqui se o
-      // load ja passou ou no evento de load se nao.
+      // Only the `srcDoc` document will do. Before it the iframe has the
+      // initial about:blank, which is quirks, and Safari even returns it on
+      // the first tick; what counts is the standards-mode document, caught
+      // here if load already happened or in the load event if not.
       if (!inner || inner.compatMode !== 'CSS1Compat') return
       inner.body.style.margin = '0'
-      // A moldura tem o tamanho do proprio conteudo, entao a barra de rolagem
-      // vertical dela nunca passaria de uma tarja de cromo por cima do
-      // exemplo. Rolar para o lado continua sendo de quem la dentro pediu.
+      // The frame is the size of its own content, so its vertical scrollbar
+      // would never be more than a strip of chrome over the example. Scrolling
+      // sideways is still up to whoever inside asked for it.
       inner.documentElement.style.overflowY = 'hidden'
-      // Quando o `color-scheme` do documento de dentro difere do da pagina, o
-      // navegador pinta um fundo OPACO na cor do esquema dele atras do iframe:
-      // branco, numa pagina escura. Ele aparecia na faixa entre o fim do
-      // conteudo e o fim da moldura, justamente quando o exemplo encolhia e a
-      // altura ainda nao tinha sido medida de novo.
+      // When the inner document's `color-scheme` differs from the page's, the
+      // browser paints an OPAQUE background in its scheme's color behind the
+      // iframe: white, on a dark page. It showed up in the strip between the
+      // end of the content and the end of the frame, exactly when the example
+      // shrank and the height had not been measured again yet.
       inner.documentElement.style.colorScheme = getComputedStyle(node).colorScheme
       inner.documentElement.style.background = 'transparent'
       setDoc((current) => (current === inner ? current : inner))
@@ -204,17 +203,17 @@ export function ExampleFrame({
   useClonedStyles(doc)
   const { height, settled } = useMeasuredHeight(root, frameWidth)
 
-  // Enquanto a largura nova e medida, a caixa segura a altura que ja estava
-  // mostrando, e nunca um placeholder fixo: desabar para 160 e voltar era a
-  // piscada que a pessoa via em cada troca. A primeira montagem parte da altura
-  // do que a moldura substituiu.
+  // While the new width is measured, the box holds the height it was already
+  // showing, never a fixed placeholder: collapsing to 160 and coming back was
+  // the blink the person saw on every switch. The first mount starts from the
+  // height of what the frame replaced.
   const heldHeight = useRef(initialHeight ?? 160)
   if (settled) heldHeight.current = height * scale
 
   return (
-    // A caixa de fora carrega a altura ja escalada, para que uma moldura
-    // encolhida nao deixe espaco morto embaixo, e centra a moldura para que
-    // escalar em torno do proprio centro a mantenha no meio da coluna.
+    // The outer box carries the already-scaled height, so a shrunken frame
+    // leaves no dead space below, and centers the frame so scaling around its
+    // own center keeps it in the middle of the column.
     <div
       ref={box}
       className="flex w-full justify-center overflow-hidden transition-[height] duration-200 ease-rc"
@@ -222,10 +221,10 @@ export function ExampleFrame({
     >
       <iframe
         ref={frame}
-        // O doctype e o motivo de o `srcDoc` existir. Sem ele o iframe nasce
-        // about:blank, em modo quirks, onde o `body` estica ate a altura da
-        // janela e `h-full`, `min-h` e tabela se comportam diferente do site
-        // de quem copia o exemplo.
+        // The doctype is the reason `srcDoc` exists. Without it the iframe is
+        // born about:blank, in quirks mode, where the `body` stretches to the
+        // window height and `h-full`, `min-h` and tables behave differently
+        // from the site of whoever copies the example.
         srcDoc={FRAME_DOCUMENT}
         title={title}
         className={`shrink-0 rounded-md border border-border bg-bg transition-opacity duration-200 ${
@@ -238,17 +237,18 @@ export function ExampleFrame({
           transformOrigin: 'top center',
         }}
       >
-        {/* Local, nunca global: o provider escreve tema global no
-            `document.documentElement`, e dentro de um portal esse documento
-            ainda e o da pagina, e nao o da moldura. */}
+        {/* Local, never global: the provider writes a global theme on
+            `document.documentElement`, and inside a portal that document is
+            still the page's, not the frame's. */}
         {doc &&
           createPortal(
             <RivoProvider scope="local" theme="rivocode-dark">
               <div
                 ref={setRoot}
-                // `safe` pelo mesmo motivo do stage: centro mais overflow torna
-                // o comeco inalcancavel, e aqui o overflow e a regra, nao a
-                // excecao - a moldura existe justamente para apertar a largura.
+                // `safe` for the same reason as the stage: center plus overflow
+                // makes the start unreachable, and here overflow is the rule,
+                // not the exception - the frame exists precisely to squeeze the
+                // width.
                 className="flex min-h-40 items-center justify-center-safe p-6"
                 style={minHeight ? { minHeight } : undefined}
               >

@@ -14,9 +14,9 @@ export type FormProps<Entry extends FieldValues, Saida extends FieldValues> = Om
   ComponentProps<"form">,
   "onSubmit"
 > & {
-  /** O retorno do `useZodForm` ou do `useForm`. */
+  /** The return value of `useZodForm` or `useForm`. */
   form: UseFormReturn<Entry, unknown, Saida>;
-  /** Chamado com os valores ja validados e convertidos pelo schema. */
+  /** Called with the values already validated and converted by the schema. */
   onSubmit: SubmitHandler<Saida>;
 };
 

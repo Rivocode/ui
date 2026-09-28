@@ -40,8 +40,8 @@ async function open(props: Partial<RichTextEditorProps> = {}) {
   return { ...view, box, seen };
 }
 
-describe("a barra de ferramentas", () => {
-  test("e uma toolbar com nomes em portugues, acentuados", async () => {
+describe("the toolbar", () => {
+  test("is a toolbar with Portuguese names, accented", async () => {
     await open();
 
     const toolbar = screen.getByRole("toolbar", { name: "Formatação" });
@@ -68,7 +68,7 @@ describe("a barra de ferramentas", () => {
     ]);
   });
 
-  test("a barra quebra por grupo: separador nenhum abre linha, e o historico anda junto", async () => {
+  test("the bar wraps by group: no separator starts a line, and history moves together", async () => {
     await open();
     const toolbar = screen.getByRole("toolbar", { name: "Formatação" });
 
@@ -94,7 +94,7 @@ describe("a barra de ferramentas", () => {
     expect(undo.parentElement === toolbar).toBe(false);
   });
 
-  test("o botao Link diz ao leitor de tela quando a selecao ja e um link", async () => {
+  test("the Link button tells the screen reader when the selection is already a link", async () => {
     const { box } = await open({
       defaultValue: '<p>ver <a href="https://rivocode.com.br">nota</a> paga</p>',
     });
@@ -108,7 +108,7 @@ describe("a barra de ferramentas", () => {
     expect(link().hasAttribute("data-pressed")).toBe(true);
   });
 
-  test("os nomes se trocam por labels, e so os que vieram", async () => {
+  test("the names are swapped through labels, and only the ones given", async () => {
     await open({ labels: { bold: "Bold", toolbar: "Formatting" } });
 
     expect(screen.getByRole("toolbar", { name: "Formatting" })).toBeTruthy();
@@ -116,7 +116,7 @@ describe("a barra de ferramentas", () => {
     expect(screen.getByRole("button", { name: "Itálico" })).toBeTruthy();
   });
 
-  test("e uma parada de tabulacao so, e as setas andam entre os botoes", async () => {
+  test("is a single tab stop, and the arrows move between the buttons", async () => {
     await open();
 
     const buttons = [...screen.getByRole("toolbar").querySelectorAll("button")];
@@ -132,7 +132,7 @@ describe("a barra de ferramentas", () => {
     expect(document.activeElement).toBe(buttons[1]!);
   });
 
-  test("cada botao diz o atalho ao leitor de tela", async () => {
+  test("each button tells the screen reader its shortcut", async () => {
     await open();
 
     expect(screen.getByRole("button", { name: "Negrito" }).getAttribute("aria-keyshortcuts")).toBe(
@@ -143,7 +143,7 @@ describe("a barra de ferramentas", () => {
     );
   });
 
-  test("o negrito liga pelo botao, e o aria-pressed acompanha a selecao", async () => {
+  test("bold turns on through the button, and aria-pressed follows the selection", async () => {
     const { box, seen } = await open({ defaultValue: "<p>nota paga</p>" });
     const bold = screen.getByRole("button", { name: "Negrito" });
 
@@ -159,7 +159,7 @@ describe("a barra de ferramentas", () => {
     );
   });
 
-  test("titulo e lista sao escolha de um so no grupo, e desligar volta ao paragrafo", async () => {
+  test("heading and list are single choice in the group, and turning off goes back to paragraph", async () => {
     const { box, seen } = await open({ defaultValue: "<p>Resumo</p>" });
     await edit(box, (editor) => editor.commands.setTextSelection(2));
 
@@ -182,7 +182,7 @@ describe("a barra de ferramentas", () => {
     expect(seen.at(-1)).toBe("<p>Resumo</p>");
   });
 
-  test("desfazer comeca travado e destrava depois da primeira mudanca", async () => {
+  test("undo starts disabled and enables after the first change", async () => {
     const { box } = await open({ defaultValue: "<p>a</p>" });
     const undo = () => screen.getByRole("button", { name: "Desfazer" });
 
@@ -191,7 +191,7 @@ describe("a barra de ferramentas", () => {
     expect(undo().getAttribute("aria-disabled")).toBe("false");
   });
 
-  test("limpar formatacao tira marca e bloco", async () => {
+  test("clear formatting removes marks and blocks", async () => {
     const { box, seen } = await open({
       defaultValue: "<h2><strong>Nota</strong> <em>paga</em></h2>",
     });
@@ -205,8 +205,8 @@ describe("a barra de ferramentas", () => {
   });
 });
 
-describe("o valor", () => {
-  test("sai em HTML a cada mudanca, e em JSON quando pedido", async () => {
+describe("the value", () => {
+  test("comes out as HTML on every change, and as JSON when asked", async () => {
     const json: unknown[] = [];
     const { box, seen } = await open({ onJsonChange: (value) => json.push(value) });
 
@@ -219,7 +219,7 @@ describe("o valor", () => {
     });
   });
 
-  test("o editor em branco entrega string vazia, e nao <p></p>", async () => {
+  test("a blank editor delivers an empty string, and not <p></p>", async () => {
     const { box, seen } = await open({ defaultValue: "<p>x</p>" });
 
     await edit(box, (editor) => editor.commands.clearContent(true));
@@ -227,7 +227,7 @@ describe("o valor", () => {
     expect(seen.at(-1)).toBe("");
   });
 
-  test("controlado, o valor de fora troca o documento sem avisar de volta", async () => {
+  test("controlled, the outside value swaps the document without notifying back", async () => {
     function Outside() {
       const [value, setValue] = useState("<p>um</p>");
       return (
@@ -253,7 +253,7 @@ describe("o valor", () => {
     expect(document.querySelector("output")!.textContent).toBe("<p>dois!</p>");
   });
 
-  test("o HTML viaja num input escondido com o name, para o envio do formulario", async () => {
+  test("the HTML travels in a hidden input with the name, for form submission", async () => {
     const { container, box } = await open({ name: "descricao", defaultValue: "<p>a</p>" });
 
     await edit(box, (editor) => editor.commands.insertContentAt(2, "b"));
@@ -263,8 +263,8 @@ describe("o valor", () => {
   });
 });
 
-describe("colar", () => {
-  test("cor, fonte, classe e script ficam para tras, e o negrito fica", async () => {
+describe("paste", () => {
+  test("color, font, class and script are left behind, and bold stays", async () => {
     const { box, seen } = await open();
 
     await edit(box, (editor) =>
@@ -285,8 +285,8 @@ describe("colar", () => {
   });
 });
 
-describe("o limite de caracteres", () => {
-  test("o contador conta texto, e nao marca de HTML", async () => {
+describe("the character limit", () => {
+  test("the counter counts text, and not HTML markup", async () => {
     await open({ defaultValue: "<p><strong>Nota</strong></p>", maxLength: 10 });
 
     expect(screen.getByText("4/10")).toBeTruthy();
@@ -295,7 +295,7 @@ describe("o limite de caracteres", () => {
     expect(hint!.textContent).toBe("4 de 10 caracteres");
   });
 
-  test("a digitacao que passa do teto e recusada, e o aviso diz o teto", async () => {
+  test("typing past the ceiling is rejected, and the notice states the ceiling", async () => {
     const { box, seen } = await open({ defaultValue: "<p>Nota</p>", maxLength: 6 });
 
     await edit(box, (editor) => editor.commands.insertContentAt(5, "!!!!!"));
@@ -307,7 +307,7 @@ describe("o limite de caracteres", () => {
     expect(screen.getByText("6/6").className.split(" ")).toContain("text-danger-text");
   });
 
-  test("teto de um caractere fala no singular, no contador e no aviso", async () => {
+  test("a one-character ceiling speaks in the singular, in the counter and in the notice", async () => {
     const { box } = await open({ defaultValue: "<p>N</p>", maxLength: 1 });
 
     const hint = document.getElementById(box.getAttribute("aria-describedby")!.split(" ").at(-1)!);
@@ -315,7 +315,7 @@ describe("o limite de caracteres", () => {
     expect(screen.getByRole("status").textContent).toBe("Limite de 1 caractere atingido.");
   });
 
-  test("conteudo salvo maior que o teto abre inteiro, e aceita apagar", async () => {
+  test("saved content larger than the ceiling opens whole, and accepts deletion", async () => {
     const { box, seen } = await open({ defaultValue: "<p>Nota fiscal</p>", maxLength: 4 });
 
     expect(box.textContent).toBe("Nota fiscal");
@@ -326,8 +326,8 @@ describe("o limite de caracteres", () => {
   });
 });
 
-describe("o link", () => {
-  test("Ctrl+K abre o painel, e o endereco sem protocolo ganha https", async () => {
+describe("the link", () => {
+  test("Ctrl+K opens the panel, and an address without protocol gets https", async () => {
     const { box, seen } = await open({ defaultValue: "<p>ver nota</p>" });
 
     await edit(box, (editor) => editor.commands.setTextSelection({ from: 5, to: 9 }));
@@ -348,7 +348,7 @@ describe("o link", () => {
     expect(seen.at(-1)).toContain(">nota</a>");
   });
 
-  test("endereco javascript: e recusado com a explicacao", async () => {
+  test("a javascript: address is rejected with the explanation", async () => {
     const { box, seen } = await open({ defaultValue: "<p>ver nota</p>" });
 
     await edit(box, (editor) => editor.commands.setTextSelection({ from: 5, to: 9 }));
@@ -368,7 +368,7 @@ describe("o link", () => {
     expect(screen.getByText("Use um endereço http, https, mailto ou tel.")).toBeTruthy();
   });
 
-  test("o envio do painel nao envia o formulario de fora", async () => {
+  test("submitting the panel does not submit the outer form", async () => {
     let submitted = 0;
     await mount(
       <form
@@ -399,8 +399,8 @@ describe("o link", () => {
   });
 });
 
-describe("os estados", () => {
-  test("so leitura some com a barra e trava a edicao", async () => {
+describe("the states", () => {
+  test("read-only hides the bar and locks editing", async () => {
     const { box } = await open({ readOnly: true, defaultValue: "<p>a</p>" });
 
     expect(screen.queryByRole("toolbar")).toBeNull();
@@ -408,7 +408,7 @@ describe("os estados", () => {
     expect(box.getAttribute("aria-readonly")).toBe("true");
   });
 
-  test("desabilitado trava a barra e o texto, e anuncia", async () => {
+  test("disabled locks the bar and the text, and announces it", async () => {
     const { box, container } = await open({ disabled: true, defaultValue: "<p>a</p>" });
 
     expect(box.getAttribute("contenteditable")).toBe("false");
@@ -418,7 +418,7 @@ describe("os estados", () => {
     expect(container.querySelector("[data-disabled]")).not.toBeNull();
   });
 
-  test("invalid pinta a moldura e anuncia aria-invalid", async () => {
+  test("invalid paints the frame and announces aria-invalid", async () => {
     const { box, container } = await open({ invalid: true });
 
     expect(box.getAttribute("aria-invalid")).toBe("true");
@@ -426,7 +426,7 @@ describe("os estados", () => {
     expect(frame.className.split(" ")).toContain("data-[invalid]:border-danger");
   });
 
-  test("o placeholder e dito ao leitor de tela, e desenhado no editor vazio", async () => {
+  test("the placeholder is told to the screen reader, and drawn in the empty editor", async () => {
     const { box } = await open({ placeholder: "Descreva o serviço" });
 
     expect(box.getAttribute("aria-placeholder")).toBe("Descreva o serviço");
@@ -435,7 +435,7 @@ describe("os estados", () => {
     );
   });
 
-  test("renderiza no servidor, sem editor, com o conteudo e a barra", () => {
+  test("renders on the server, without an editor, with the content and the bar", () => {
     const html = renderToString(
       <RivoProvider scope="local">
         <RichTextEditor aria-label="Descrição" defaultValue="<p>Nota <strong>paga</strong></p>" />
@@ -447,8 +447,8 @@ describe("os estados", () => {
   });
 });
 
-describe("dentro de Field e de FormField", () => {
-  test("o FieldLabel nomeia o texto e o FieldDescription o descreve", async () => {
+describe("inside Field and FormField", () => {
+  test("FieldLabel names the text and FieldDescription describes it", async () => {
     await mount(
       <Field invalid>
         <FieldLabel>Descrição do serviço</FieldLabel>
@@ -466,7 +466,7 @@ describe("dentro de Field e de FormField", () => {
     expect(box.getAttribute("aria-invalid")).toBe("true");
   });
 
-  test("com useZodForm, o vazio e recusado e o erro aparece no campo", async () => {
+  test("with useZodForm, empty is rejected and the error shows in the field", async () => {
     const schema = z.object({ descricao: z.string().min(1, "Descreva o serviço.") });
     let saved: unknown;
 

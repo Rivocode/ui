@@ -44,7 +44,7 @@ afterEach(() => {
   window.Image = OriginalImage;
 });
 
-test("a grade de miniaturas nomeia cada botao pelo alt e avisa que abre um dialogo", () => {
+test("the thumbnail grid names each button by its alt and announces that it opens a dialog", () => {
   viewer();
   const third = thumb(3);
   expect(third.getAttribute("aria-haspopup")).toBe("dialog");
@@ -52,7 +52,7 @@ test("a grade de miniaturas nomeia cada botao pelo alt e avisa que abre um dialo
   expect(screen.queryByRole("dialog")).toBeNull();
 });
 
-test("a miniatura abre a imagem grande, com o contador e o alt", async () => {
+test("the thumbnail opens the large image, with the counter and the alt", async () => {
   const onIndexChange = mock(() => {});
   viewer({ onIndexChange });
   await openAt(3);
@@ -64,13 +64,13 @@ test("a miniatura abre a imagem grande, com o contador e o alt", async () => {
   expect(dialog().querySelector("[aria-live]")!.textContent).toBe("3 de 8: Sala comercial, foto 3");
 });
 
-test("a legenda aparece quando a imagem tem uma", async () => {
+test("the caption shows when the image has one", async () => {
   viewer();
   await openAt(3);
   expect(dialog().textContent).toContain("Recepção com vista para a avenida");
 });
 
-test("anterior e proximo navegam, e travam nas pontas", async () => {
+test("previous and next navigate, and lock at the ends", async () => {
   viewer();
   await openAt(1);
   const previous = screen.getByRole("button", { name: "Imagem anterior" }) as HTMLButtonElement;
@@ -84,7 +84,7 @@ test("anterior e proximo navegam, e travam nas pontas", async () => {
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-1.jpg`);
 });
 
-test("com loop, da ultima a proxima e a primeira", async () => {
+test("with loop, next after the last is the first", async () => {
   viewer({ loop: true, defaultIndex: 7 });
   await settle();
   const next = screen.getByRole("button", { name: "Próxima imagem" }) as HTMLButtonElement;
@@ -93,7 +93,7 @@ test("com loop, da ultima a proxima e a primeira", async () => {
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-1.jpg`);
 });
 
-test("as setas do teclado navegam dentro do visualizador", async () => {
+test("the arrow keys navigate inside the viewer", async () => {
   viewer();
   await openAt(4);
   fireEvent.keyDown(dialog(), { key: "ArrowRight" });
@@ -103,7 +103,7 @@ test("as setas do teclado navegam dentro do visualizador", async () => {
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-3.jpg`);
 });
 
-test("Esc fecha, avisa com null e devolve o foco a miniatura da imagem que estava aberta", async () => {
+test("Esc closes, reports null and returns focus to the thumbnail of the image that was open", async () => {
   const onIndexChange = mock(() => {});
   viewer({ onIndexChange });
   thumb(2).focus();
@@ -119,7 +119,7 @@ test("Esc fecha, avisa com null e devolve o foco a miniatura da imagem que estav
   expect(document.activeElement).toBe(thumb(3));
 });
 
-test("enquanto carrega, o giro diz o que espera e o zoom nao liga", async () => {
+test("while loading, the spinner says what it waits for and zoom stays off", async () => {
   viewer();
   fireEvent.click(thumb(1));
   await settle();
@@ -133,7 +133,7 @@ test("enquanto carrega, o giro diz o que espera e o zoom nao liga", async () => 
   expect(zoomIn.disabled).toBe(false);
 });
 
-test("imagem que nao carrega diz isso, e nao fica girando", async () => {
+test("an image that fails to load says so, and does not keep spinning", async () => {
   viewer();
   fireEvent.click(thumb(1));
   await settle();
@@ -142,7 +142,7 @@ test("imagem que nao carrega diz isso, e nao fica girando", async () => {
   expect(screen.queryByRole("status", { name: "Carregando a imagem" })).toBeNull();
 });
 
-test("os botoes de zoom aumentam e diminuem, e o menos trava no tamanho que cabe", async () => {
+test("the zoom buttons zoom in and out, and minus locks at the fit size", async () => {
   viewer();
   await openAt(1);
   const zoomOut = screen.getByRole("button", { name: "Diminuir o zoom" }) as HTMLButtonElement;
@@ -157,7 +157,7 @@ test("os botoes de zoom aumentam e diminuem, e o menos trava no tamanho que cabe
   expect(scale()).toBe("1");
 });
 
-test("o zoom para no maxZoom", async () => {
+test("zoom stops at maxZoom", async () => {
   viewer({ maxZoom: 2 });
   await openAt(1);
   const zoomIn = screen.getByRole("button", { name: "Aumentar o zoom" }) as HTMLButtonElement;
@@ -167,7 +167,7 @@ test("o zoom para no maxZoom", async () => {
   expect(zoomIn.disabled).toBe(true);
 });
 
-test("duplo clique dobra o zoom, e o segundo volta ao tamanho que cabe", async () => {
+test("double click doubles the zoom, and the second one returns to the fit size", async () => {
   viewer();
   await openAt(1);
   const stage = big().closest("[class*='touch-none']")!;
@@ -177,7 +177,7 @@ test("duplo clique dobra o zoom, e o segundo volta ao tamanho que cabe", async (
   expect(scale()).toBe("1");
 });
 
-test("a roda so aproxima com ctrl, que e o gesto de pinca do trackpad", async () => {
+test("the wheel only zooms with ctrl, which is the trackpad pinch gesture", async () => {
   viewer();
   await openAt(1);
   const stage = big().closest("[class*='touch-none']")!;
@@ -192,7 +192,7 @@ test("a roda so aproxima com ctrl, que e o gesto de pinca do trackpad", async ()
   expect(Number(scale())).toBeGreaterThan(1);
 });
 
-test("+, - e 0 no teclado mexem no zoom", async () => {
+test("+, - and 0 on the keyboard change the zoom", async () => {
   viewer();
   await openAt(1);
   fireEvent.keyDown(dialog(), { key: "+" });
@@ -203,7 +203,7 @@ test("+, - e 0 no teclado mexem no zoom", async () => {
   expect(scale()).toBe("1");
 });
 
-test("trocar de imagem volta o zoom ao tamanho que cabe", async () => {
+test("changing image resets zoom to the fit size", async () => {
   viewer();
   await openAt(1);
   fireEvent.keyDown(dialog(), { key: "+" });
@@ -213,7 +213,7 @@ test("trocar de imagem volta o zoom ao tamanho que cabe", async () => {
   expect(scale()).toBe("1");
 });
 
-test("deslizar para o lado troca de imagem, e so sem zoom", async () => {
+test("swiping sideways changes image, and only without zoom", async () => {
   viewer();
   await openAt(2);
   const stage = big().closest("[class*='touch-none']")!;
@@ -226,7 +226,7 @@ test("deslizar para o lado troca de imagem, e so sem zoom", async () => {
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-2.jpg`);
 });
 
-test("carrega antes as duas vizinhas da imagem aberta", async () => {
+test("preloads the two neighbors of the open image", async () => {
   const loaded: string[] = [];
   window.Image = class {
     set src(value: string) {
@@ -241,7 +241,7 @@ test("carrega antes as duas vizinhas da imagem aberta", async () => {
   expect(loaded).toContain(`${HOST}/fotos/sala-5.jpg`);
 });
 
-test("controlado e sem grade, quem abre e o index", async () => {
+test("controlled and without grid, index is what opens it", async () => {
   const onIndexChange = mock(() => {});
   const { rerender } = render(
     <RivoProvider scope="local">
@@ -262,25 +262,25 @@ test("controlado e sem grade, quem abre e o index", async () => {
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-6.jpg`);
 });
 
-test("uma imagem so nao tem anterior nem proximo", async () => {
+test("a single image has neither previous nor next", async () => {
   viewer({ images: PHOTOS.slice(0, 1) });
   await openAt(1);
   expect(screen.queryByRole("button", { name: "Próxima imagem" })).toBeNull();
 });
 
-test("sem imagens, nao desenha nada", () => {
+test("with no images, renders nothing", () => {
   const { container } = viewer({ images: [] });
   expect(container.querySelector("ul")).toBeNull();
   expect(screen.queryAllByRole("button")).toHaveLength(0);
 });
 
-test("o tipo recusa imagem sem alt", () => {
-  // @ts-expect-error alt e obrigatorio
+test("the type rejects an image without alt", () => {
+  // @ts-expect-error alt is required
   const missing: ImageViewerImage = { src: "/fotos/sala.jpg" };
   expect(missing).toBeDefined();
 });
 
-test("a conta do zoom segura a foto aproximada dentro da tela e aproxima no ponto pedido", () => {
+test("the zoom math keeps the zoomed photo inside the screen and zooms at the requested point", () => {
   expect(clampZoom({ zoom: 2, x: 900, y: -900 }, 4, 400, 300)).toEqual({
     zoom: 2,
     x: 200,
@@ -302,7 +302,7 @@ const focusState = () => {
   };
 };
 
-test("na ultima imagem, o Proxima focado desabilita e o foco desce ao palco, e as setas seguem", async () => {
+test("on the last image, the focused Next disables and focus drops to the stage, and the arrows keep working", async () => {
   viewer();
   await openAt(7);
   const next = screen.getByRole("button", { name: "Próxima imagem" });
@@ -318,7 +318,7 @@ test("na ultima imagem, o Proxima focado desabilita e o foco desce ao palco, e a
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-7.jpg`);
 });
 
-test("na primeira imagem, o Anterior focado desabilita e o foco desce ao palco", async () => {
+test("on the first image, the focused Previous disables and focus drops to the stage", async () => {
   viewer();
   await openAt(2);
   const previous = screen.getByRole("button", { name: "Imagem anterior" });
@@ -329,7 +329,7 @@ test("na primeira imagem, o Anterior focado desabilita e o foco desce ao palco",
   expect(focusState()).toEqual({ inDialog: true, disabled: false });
 });
 
-test("o zoom no teto e no piso nao deixa o foco num botao desabilitado", async () => {
+test("zoom at the ceiling and at the floor does not leave focus on a disabled button", async () => {
   viewer({ maxZoom: 2 });
   await openAt(1);
   const zoomIn = screen.getByRole("button", { name: "Aumentar o zoom" });
@@ -349,7 +349,7 @@ test("o zoom no teto e no piso nao deixa o foco num botao desabilitado", async (
   expect(focusState()).toEqual({ inDialog: true, disabled: false });
 });
 
-test("com zoom, as setas percorrem a foto aproximada e nao trocam de imagem", async () => {
+test("with zoom, the arrows pan the zoomed photo and do not change image", async () => {
   viewer();
   await openAt(3);
   const stage = big().closest("[class*='touch-none']") as HTMLElement;
@@ -369,7 +369,7 @@ test("com zoom, as setas percorrem a foto aproximada e nao trocam de imagem", as
   expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-3.jpg`);
 });
 
-test("PageDown e PageUp trocam de imagem com ou sem zoom, e a troca zera o zoom", async () => {
+test("PageDown and PageUp change image with or without zoom, and the change resets zoom", async () => {
   viewer();
   await openAt(3);
   fireEvent.keyDown(dialog(), { key: "PageDown" });

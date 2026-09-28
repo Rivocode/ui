@@ -5,7 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "../src/components/alert";
 import { EmptyState } from "../src/components/empty-state";
 import { Skeleton } from "../src/components/skeleton";
 
-test("o aviso de erro se anuncia ao leitor de tela sem esperar foco", () => {
+test("the error alert announces itself to the screen reader without waiting for focus", () => {
   render(
     <Alert tone="danger">
       <AlertTitle>Nao foi possivel carregar</AlertTitle>
@@ -16,7 +16,7 @@ test("o aviso de erro se anuncia ao leitor de tela sem esperar foco", () => {
   expect(alert.className).toContain("text-danger-text");
 });
 
-test("o aviso informativo nao interrompe o leitor de tela", () => {
+test("the informative alert does not interrupt the screen reader", () => {
   render(
     <Alert tone="info">
       <AlertTitle>Prazo alterado</AlertTitle>
@@ -25,19 +25,19 @@ test("o aviso informativo nao interrompe o leitor de tela", () => {
   expect(screen.getByRole("status")).toBeDefined();
 });
 
-test("o esqueleto some quando a pessoa pede menos movimento", () => {
+test("the skeleton disappears when the person asks for reduced motion", () => {
   render(<Skeleton className="h-4 w-40" data-testid="osso" />);
   const bone = screen.getByTestId("osso");
   expect(bone.className).toContain("animate-pulse");
   expect(bone.className).toContain("motion-reduce:animate-none");
 });
 
-test("o esqueleto se esconde do leitor de tela, porque nao tem o que ler", () => {
+test("the skeleton hides from the screen reader, because there is nothing to read", () => {
   render(<Skeleton data-testid="osso" />);
   expect(screen.getByTestId("osso").getAttribute("aria-hidden")).toBe("true");
 });
 
-test('o estado vazio sempre oferece uma saida, nunca so "sem dados"', () => {
+test('the empty state always offers a way out, never just "sem dados"', () => {
   render(
     <EmptyState
       title="Nenhuma nota por aqui"
@@ -49,7 +49,7 @@ test('o estado vazio sempre oferece uma saida, nunca so "sem dados"', () => {
   expect(screen.getByRole("button", { name: "Emitir nota" })).toBeDefined();
 });
 
-test("o icone do estado vazio sai do caminho do leitor de tela, como o do aviso", () => {
+test("the empty state icon gets out of the screen reader's way, like the alert's", () => {
   render(
     <EmptyState
       icon={<img src="/vazio.svg" alt="Uma caixa aberta" data-testid="ilustracao" />}
@@ -63,7 +63,7 @@ test("o icone do estado vazio sai do caminho do leitor de tela, como o do aviso"
   expect(screen.queryByRole("img", { name: "Uma caixa aberta" })).toBeNull();
 });
 
-test("a ilustracao nao herda os 32px forcados do icone, e sai do leitor de tela", () => {
+test("the illustration does not inherit the icon's forced 32px, and leaves the screen reader", () => {
   render(
     <EmptyState
       illustration={<svg data-testid="desenho" viewBox="0 0 120 80" />}
@@ -79,7 +79,7 @@ test("a ilustracao nao herda os 32px forcados do icone, e sai do leitor de tela"
   expect(tokens).not.toContain("[&_svg]:size-8");
 });
 
-test("o icone continua com os 32px forcados", () => {
+test("the icon keeps the forced 32px", () => {
   render(
     <EmptyState
       icon={<svg data-testid="simbolo" />}
@@ -93,7 +93,7 @@ test("o icone continua com os 32px forcados", () => {
   expect(tokens).toContain("text-fg-subtle");
 });
 
-test("com ilustracao e icone, a ilustracao toma o lugar do icone", () => {
+test("with illustration and icon, the illustration takes the icon's place", () => {
   render(
     <EmptyState
       icon={<svg data-testid="simbolo" />}
@@ -107,12 +107,12 @@ test("com ilustracao e icone, a ilustracao toma o lugar do icone", () => {
   expect(screen.queryByTestId("simbolo")).toBeNull();
 });
 
-test("o estado vazio funciona sem acao, mas continua explicando o motivo", () => {
+test("the empty state works without an action, but still explains why", () => {
   render(<EmptyState title="Nada encontrado" description="Nenhum resultado para esse filtro." />);
   expect(screen.getByText("Nenhum resultado para esse filtro.")).toBeDefined();
 });
 
-test("o esqueleto usa token proprio, nao superficie, senao some no tema claro", () => {
+test("the skeleton uses its own token, not surface, otherwise it disappears in the light theme", () => {
   render(<Skeleton data-testid="osso" />);
   const classes = screen.getByTestId("osso").className;
   expect(classes).toContain("bg-skeleton");

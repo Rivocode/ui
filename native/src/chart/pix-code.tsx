@@ -32,31 +32,51 @@ const LABELS: PixCodeLabels = {
 };
 
 export type PixCodeProps = {
-  /** O Pix copia e cola inteiro, como o PSP ou o `buildPixPayload` devolvem. O CRC e conferido, e o espaco em volta sai antes do QR e do copiar. */
+  /**
+   * The whole Pix copy-and-paste code, as the PSP or `buildPixPayload` returns
+   * it. The CRC is checked, and surrounding whitespace is removed before the QR
+   * and the copy.
+   */
   payload: string;
-  /** O valor em reais em destaque, que vence o do codigo; no QR dinamico so vale este. */
+  /**
+   * The amount in reais, highlighted, which overrides the one in the code; in a
+   * dynamic QR only this one applies.
+   */
   amount?: number;
-  /** O nome do recebedor como a tela deve mostrar, com acento. Sem ele, o gravado no codigo, que o EMV guarda em ASCII e sem acento. */
+  /**
+   * The receiver's name as the screen should show it, with accents. Without it,
+   * the one recorded in the code, which EMV stores in ASCII without accents.
+   */
   receiver?: string;
   /**
-   * O botao de copiar, que mora em `@rivocode/ui-native/clipboard` por causa do
-   * `expo-clipboard`. Recebe o copia e cola e so e chamado quando ha o que copiar.
+   * The copy button, which lives in `@rivocode/ui-native/clipboard` because of
+   * `expo-clipboard`. Receives the copy-and-paste code and is called only when
+   * there is something to copy.
    */
   renderCopy?: (payload: string) => ReactNode;
-  /** Troca o QR por um aviso e tira o copiar: codigo vencido nao se oferece para pagar. */
+  /**
+   * Replaces the QR with a notice and removes the copy: an expired code is not
+   * offered for payment.
+   */
   expired?: boolean;
-  /** Enquanto a cobranca e gerada: marca de lugar no QR e no texto, e o aviso ao leitor de tela. */
+  /**
+   * While the charge is being generated: a placeholder in the QR and in the
+   * text, and the notice to the screen reader.
+   */
   loading?: boolean;
-  /** Liga o botao de gerar outro codigo, no aviso de expirado. */
+  /** Turns on the button that generates another code, in the expired notice. */
   onRenew?: () => void;
-  /** O lado do QR em px. */
+  /** The QR side in px. */
   size?: number;
-  /** Os textos da peca, para quem precisa de outro idioma ou outro tom. `loading`, `ready` e `expired` sao ditos ao leitor de tela. */
+  /**
+   * The component's texts, for another language or another tone. `loading`,
+   * `ready` and `expired` are spoken to the screen reader.
+   */
   labels?: Partial<PixCodeLabels>;
   className?: string;
   /**
-   * Classe por parte: `code` (o QR, a marca de lugar dele ou o aviso de
-   * expirado), `amount`, `receiver` e `payload` (o texto do copia e cola).
+   * Class per part: `code` (the QR, its placeholder or the expired notice),
+   * `amount`, `receiver` and `payload` (the copy-and-paste text).
    */
   classNames?: Slots<"code" | "amount" | "receiver" | "payload">;
 };

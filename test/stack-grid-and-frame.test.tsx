@@ -12,7 +12,7 @@ function withTheme(node: React.ReactNode) {
 
 const classesOf = (element: HTMLElement) => element.className.split(" ");
 
-test("a pilha nasce em coluna, com o vao medio da escala e sem alinhamento imposto", () => {
+test("the stack starts as a column, with the scale's medium gap and no imposed alignment", () => {
   withTheme(
     <Stack data-testid="pilha">
       <span>Um</span>
@@ -29,7 +29,7 @@ test("a pilha nasce em coluna, com o vao medio da escala e sem alinhamento impos
   expect(classes).not.toContain("flex-wrap");
 });
 
-test("a pilha em linha alinha, distribui e quebra quando pedido", () => {
+test("the row stack aligns, distributes and wraps when asked", () => {
   withTheme(
     <Stack data-testid="linha" direction="row" gap="xs" align="center" justify="between" wrap>
       <span>Um</span>
@@ -46,7 +46,7 @@ test("a pilha em linha alinha, distribui e quebra quando pedido", () => {
   expect(classes).toContain("flex-wrap");
 });
 
-test("o vao none zera, e a classe de quem chama vence a da peca", () => {
+test("gap none zeroes it, and the caller's class beats the component's", () => {
   withTheme(
     <>
       <Stack data-testid="colada" gap="none" />
@@ -60,7 +60,7 @@ test("o vao none zera, e a classe de quem chama vence a da peca", () => {
   expect(replaced).not.toContain("gap-[var(--rc-gap-lg)]");
 });
 
-test("render troca o elemento e a lista continua lista", () => {
+test("render swaps the element and the list stays a list", () => {
   withTheme(
     <Stack render={<ul />} gap="sm">
       <li>Nota 4813</li>
@@ -74,7 +74,7 @@ test("render troca o elemento e a lista continua lista", () => {
   expect(classesOf(list)).toContain("gap-[var(--rc-gap-sm)]");
 });
 
-test("a densidade compacta reescreve a escala de vao que a pilha e a grade leem", async () => {
+test("compact density rewrites the gap scale that the stack and the grid read", async () => {
   const scales = await Bun.file("src/tokens/scales.css").text();
   const compact = scales.slice(scales.indexOf('[data-rc-density="compact"]'));
   const comfortable = scales.slice(0, scales.indexOf('[data-rc-density="compact"]'));
@@ -89,7 +89,7 @@ test("a densidade compacta reescreve a escala de vao que a pilha e a grade leem"
   expect(value(compact, "--rc-gap-xs")).toBe(4);
 });
 
-test("a grade de colunas fixas divide em partes iguais que nao estouram", () => {
+test("the fixed-column grid splits into equal parts that do not overflow", () => {
   withTheme(
     <Grid data-testid="grade" columns={3} gap="lg">
       <span>Um</span>
@@ -102,7 +102,7 @@ test("a grade de colunas fixas divide em partes iguais que nao estouram", () => 
   expect(grid.style.gridTemplateColumns).toBe("repeat(3, minmax(0, 1fr))");
 });
 
-test("a grade por largura minima poe quantas couberem, sem vazar na tela estreita", () => {
+test("the min-width grid fits as many as possible, without overflowing on a narrow screen", () => {
   withTheme(
     <>
       <Grid data-testid="rem" minItemWidth="12rem" />
@@ -118,7 +118,7 @@ test("a grade por largura minima poe quantas couberem, sem vazar na tela estreit
   );
 });
 
-test("sem colunas, a grade sai com uma so e respeita o estilo de quem chama", () => {
+test("without columns, the grid renders a single one and respects the caller's style", () => {
   withTheme(
     <>
       <Grid data-testid="vazia" columns={0} />
@@ -130,7 +130,7 @@ test("sem colunas, a grade sai com uma so e respeita o estilo de quem chama", ()
   expect(screen.getByTestId("estilo").style.gridTemplateColumns).toBe("1fr 2fr");
 });
 
-test("a moldura centraliza no passo lg por padrao, com respiro que segue a densidade", () => {
+test("the frame centers at the lg step by default, with padding that follows the density", () => {
   withTheme(<Container data-testid="moldura">Conteúdo</Container>);
 
   const classes = classesOf(screen.getByTestId("moldura"));
@@ -141,7 +141,7 @@ test("a moldura centraliza no passo lg por padrao, com respiro que segue a densi
   expect(classes).toContain("sm:px-[var(--rc-pad-panel)]");
 });
 
-test("cada passo da moldura e uma largura que o site ja usa, e render vira a regiao principal", () => {
+test("each frame step is a width the site already uses, and render turns it into the main region", () => {
   withTheme(
     <>
       <Container data-testid="sm" size="sm" />

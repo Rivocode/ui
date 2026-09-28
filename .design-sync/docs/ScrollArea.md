@@ -1,14 +1,15 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # ScrollArea
 
-Área de rolagem com barra própria.
+A scroll area with its own scrollbar.
 
-Serve para quando a barra do sistema atrapalha o desenho: no Windows ela ocupa
-largura e empurra o conteúdo, e a diferença entre plataformas aparece na tela.
-**Para rolagem comum de página, `overflow-y-auto` continua sendo mais barato.**
+It is for when the system scrollbar gets in the way of the design: on Windows
+it takes up width and pushes the content, and the difference between platforms
+shows on screen. **For ordinary page scrolling, `overflow-y-auto` is still
+cheaper.**
 
 ```tsx
 <ScrollArea className="h-48">
@@ -18,13 +19,14 @@ largura e empurra o conteúdo, e a diferença entre plataformas aparece na tela.
 </ScrollArea>
 ```
 
-`horizontal` liga a barra de lado também, para tabela larga e fila de cartoes.
+`horizontal` turns on the sideways bar too, for a wide table and a row of
+cards.
 
-## No React Native
+## In React Native
 
-Traduz, e muda de assunto no caminho. No web a peça existe pela **barra**: a do sistema ocupa largura no Windows e desenha diferente em cada plataforma. No celular a barra é do sistema e fica sendo, e o problema de rolagem que dói é outro: **o teclado cobre o campo**. Formulário no fim da tela some debaixo dele, e o botão de enviar fica escondido até alguém fechar o teclado para achá-lo.
+Translates, and changes subject on the way. On the web the piece exists because of the **scroll bar**: the system's takes up width on Windows and draws differently on each platform. On the phone the scroll bar is the system's and stays that way, and the scrolling problem that hurts is another: **the keyboard covers the field**. A form at the end of the screen disappears under it, and the submit button stays hidden until someone closes the keyboard to find it.
 
-Então o `ScrollArea` nativo é a tela de formulário. Por baixo é o `KeyboardAwareScrollView` da `react-native-keyboard-controller`: ao focar um campo, a rolagem anda até ele parar `bottomOffset` pontos acima do teclado (16 por padrão), no mesmo quadro em que o teclado sobe, nos dois sistemas. O toque num item da lista não fecha o teclado (`keyboardShouldPersistTaps="handled"`).
+So the native `ScrollArea` is the form screen. Underneath it is the `KeyboardAwareScrollView` from `react-native-keyboard-controller`: on focusing a field, the scroll moves until it stops `bottomOffset` points above the keyboard (16 by default), in the same frame the keyboard rises, on both systems. A tap on a list item does not close the keyboard (`keyboardShouldPersistTaps="handled"`).
 
 ```tsx
 <ScrollArea
@@ -35,8 +37,8 @@ Então o `ScrollArea` nativo é a tela de formulário. Por baixo é o `KeyboardA
 </ScrollArea>
 ```
 
-O `footer` é a ação presa embaixo da rolagem, e ele **sobe junto com o teclado**: o botão de enviar fica sempre à vista. A altura dele entra na conta de onde o campo em foco para, então nenhum campo fica escondido atrás do botão. Com o "reduzir movimento" ligado, o rodapé pula direto para cima do teclado em vez de acompanhá-lo; a rolagem até o campo continua, porque sem ela o campo fica coberto.
+`footer` is the action pinned below the scroll, and it **rises with the keyboard**: the submit button is always in view. Its height goes into the math of where the focused field stops, so no field stays hidden behind the button. With "reduce motion" on, the footer jumps straight above the keyboard instead of following it; the scroll to the field still happens, because without it the field stays covered.
 
-Não há `horizontal`: fila de cartões que rola de lado é `ScrollView` puro, e não tem campo para o teclado cobrir. A `react-native-keyboard-controller` é peer do pacote, e o `KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.
+There is no `horizontal`: a row of cards that scrolls sideways is a plain `ScrollView`, and has no field for the keyboard to cover. `react-native-keyboard-controller` is a peer of the package, and the `KeyboardProvider` it asks for already comes inside `RivoProvider`.
 
-O conteúdo que rola se veste pelo `contentContainerClassName`, o nome que a `ScrollView` já dá a ele, e a faixa do `footer` pelo `classNames.footer`.
+The scrolling content is styled through `contentContainerClassName`, the name `ScrollView` already gives it, and the `footer` strip through `classNames.footer`.

@@ -45,15 +45,26 @@ export type ResizableStorage = {
 };
 
 export type ResizablePanelGroupProps = Omit<ComponentProps<"div">, "onChange"> & {
-  /** `horizontal` poe os paineis lado a lado; `vertical` empilha, e a divisoria deita. */
+  /**
+   * `horizontal` puts the panels side by side; `vertical` stacks them, and the divider lies down.
+   */
   orientation?: "horizontal" | "vertical";
-  /** Controlado: a medida de cada painel, em porcentagem e na ordem do documento, somando 100. */
+  /** Controlled: each panel's size, in percent and in document order, summing to 100. */
   layout?: number[];
-  /** O layout inteiro, em porcentagem, a cada mudanca: arraste, teclado, colapso ou chamada por ref. */
+  /**
+   * The whole layout, in percent, on every change: drag, keyboard, collapse or a call through the
+   * ref.
+   */
   onLayoutChange?: (sizes: number[]) => void;
-  /** Guarda o layout entre sessoes sob esta chave. A mesma chave em duas telas divide o mesmo layout. */
+  /**
+   * Keeps the layout across sessions under this key. The same key on two screens shares the same
+   * layout.
+   */
   autoSaveId?: string;
-  /** Onde o `autoSaveId` guarda. Padrao `localStorage`; falha de leitura ou escrita e ignorada, e o grupo volta ao `defaultSize`. */
+  /**
+   * Where `autoSaveId` stores. Default `localStorage`; a read or write failure is ignored, and the
+   * group falls back to `defaultSize`.
+   */
   storage?: ResizableStorage;
 };
 
@@ -66,28 +77,39 @@ export type ResizablePanelHandle = {
 };
 
 export type ResizablePanelProps = ComponentPropsWithoutRef<"div"> & {
-  /** Medida inicial, em porcentagem do grupo. Sem ela, o painel divide o que sobra com os outros sem medida. */
+  /**
+   * Initial size, in percent of the group. Without it, the panel shares what is left with the other
+   * unsized ones.
+   */
   defaultSize?: number;
-  /** Menor medida, em porcentagem. Padrao 10. */
+  /** Smallest size, in percent. Default 10. */
   minSize?: number;
-  /** Maior medida, em porcentagem. Padrao 100. */
+  /** Largest size, in percent. Default 100. */
   maxSize?: number;
-  /** Deixa o painel recolher ate o `collapsedSize`: arrastando abaixo da metade do `minSize`, pela seta, por `Home` ou por `Enter` na divisoria. */
+  /**
+   * Lets the panel collapse down to `collapsedSize`: by dragging below half of `minSize`, by the
+   * arrow, by `Home` or by `Enter` on the divider.
+   */
   collapsible?: boolean;
-  /** A medida do painel recolhido, em porcentagem, padrao 0. Em 0 o painel some e o conteudo sai do `Tab`. */
+  /**
+   * The size of the collapsed panel, in percent, default 0. At 0 the panel disappears and its
+   * content leaves the `Tab` order.
+   */
   collapsedSize?: number;
   onCollapse?: () => void;
   onExpand?: () => void;
-  /** A medida nova deste painel, em porcentagem, a cada mudanca. */
+  /** This panel's new size, in percent, on every change. */
   onResize?: (size: number) => void;
-  /** A API imperativa: `collapse()`, `expand()`, `resize(size)`, `getSize()` e `isCollapsed()`. */
+  /**
+   * The imperative API: `collapse()`, `expand()`, `resize(size)`, `getSize()` and `isCollapsed()`.
+   */
   ref?: Ref<ResizablePanelHandle>;
 };
 
 export type ResizableHandleProps = ComponentPropsWithoutRef<"div"> & {
-  /** Desenha a pegadinha no meio da linha. O alvo de 24px existe com ou sem ela. */
+  /** Draws the grip in the middle of the line. The 24px target exists with or without it. */
   withHandle?: boolean;
-  /** Classe por parte: `grip`, a pegadinha do `withHandle`. */
+  /** Class per part: `grip`, the `withHandle` grip. */
   classNames?: Slots<"grip">;
 };
 

@@ -18,21 +18,21 @@ export type ScrollAreaProps = Omit<
 > & {
   children?: ReactNode;
   /**
-   * O que fica preso embaixo da rolagem e sobe junto com o teclado: a acao de
-   * enviar o formulario. A altura dele entra na conta de onde o campo em foco
-   * tem que parar, entao nenhum campo fica escondido atras do botao.
+   * What stays pinned below the scroll and rises with the keyboard: the form's
+   * submit action. Its height enters the calculation of where the focused field
+   * must stop, so no field hides behind the button.
    */
   footer?: ReactNode;
   /**
-   * Em pontos, quanto o campo em foco fica acima do teclado - ou acima do
-   * `footer`, quando ha um. Padrao 16.
+   * In points, how far above the keyboard the focused field sits - or above the
+   * `footer`, when there is one. Default 16.
    */
   bottomOffset?: number;
-  /** Veste a caixa de fora, a que ocupa a tela. */
+  /** Styles the outer box, the one that fills the screen. */
   className?: string;
-  /** Veste o conteudo que rola: `gap-4 p-5` e o comum. */
+  /** Styles the scrolling content: `gap-4 p-5` is the usual. */
   contentContainerClassName?: string;
-  /** Classe por parte: `footer`, a faixa do `footer` - fundo, borda e respiro. */
+  /** Class per part: `footer`, the `footer` strip - background, border and padding. */
   classNames?: Slots<"footer">;
 };
 

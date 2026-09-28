@@ -6,67 +6,67 @@ import { RivoProvider, useRivoContext, type RivoThemeSetting } from "../src/prov
 function Spy() {
   const { theme, density, portalContainer } = useRivoContext();
   return (
-    <span data-testid="espia" data-portal={portalContainer ? "sim" : "nao"}>
+    <span data-testid="spy" data-portal={portalContainer ? "yes" : "no"}>
       {theme}/{density}
     </span>
   );
 }
 
-test("o modo global marca o tema no elemento raiz do documento", () => {
+test("global mode marks the theme on the document root element", () => {
   render(
     <RivoProvider scope="global" theme="rivocode-dark">
-      <p>ola</p>
+      <p>hello</p>
     </RivoProvider>,
   );
   expect(document.documentElement.dataset.rcTheme).toBe("rivocode-dark");
   expect(document.documentElement.dataset.rcDensity).toBe("comfortable");
 });
 
-test("o modo escopado marca o proprio elemento e nao toca no documento", () => {
+test("scoped mode marks its own element and does not touch the document", () => {
   document.documentElement.removeAttribute("data-rc-theme");
   render(
     <RivoProvider scope="local" theme="rivocode-light" density="compact">
-      <p>ola</p>
+      <p>hello</p>
     </RivoProvider>,
   );
-  const escopo = document.querySelector('div[data-rc-theme="rivocode-light"]');
-  expect(escopo).not.toBeNull();
-  expect(escopo?.getAttribute("data-rc-density")).toBe("compact");
+  const scope = document.querySelector('div[data-rc-theme="rivocode-light"]');
+  expect(scope).not.toBeNull();
+  expect(scope?.getAttribute("data-rc-density")).toBe("compact");
   expect(document.documentElement.dataset.rcTheme).toBeUndefined();
 });
 
-test("o contexto entrega tema, densidade e container de portal", () => {
+test("the context delivers theme, density and portal container", () => {
   render(
     <RivoProvider theme="rivocode-dark" density="compact">
       <Spy />
     </RivoProvider>,
   );
-  expect(screen.getByTestId("espia").textContent).toBe("rivocode-dark/compact");
-  expect(screen.getByTestId("espia").dataset.portal).toBe("sim");
+  expect(screen.getByTestId("spy").textContent).toBe("rivocode-dark/compact");
+  expect(screen.getByTestId("spy").dataset.portal).toBe("yes");
 });
 
-test("o container de portal carrega o tema, senao o dialogo sai sem estilo", () => {
+test("the portal container carries the theme, otherwise the dialog comes out unstyled", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
-      <p>ola</p>
+      <p>hello</p>
     </RivoProvider>,
   );
-  const portais = document.body.querySelectorAll(
+  const portals = document.body.querySelectorAll(
     ':scope > [data-rc-portal][data-rc-theme="rivocode-light"]',
   );
-  expect(portais.length).toBe(1);
+  expect(portals.length).toBe(1);
 });
 
-test("usar o contexto fora do Provider da um erro que explica o que fazer", () => {
+test("using the context outside the Provider gives an error that explains what to do", () => {
   expect(() => render(<Spy />)).toThrow(/RivoProvider/);
 });
 
-test("o tema de cliente veste a arvore, e o tipo aceita o nome dele", () => {
-  // O guia de temas termina em <RivoProvider theme="acme">, e ate aqui essa
-  // linha nao compilava: RivoTheme e uma uniao fechada nos dois temas de casa,
-  // entao o guia inteiro de personalizacao - a promessa white-label -
-  // desembocava num erro de tipo, e todo cliente aprendia a escrever `as`
-  // no ponto de entrada do sistema.
+test("a client theme dresses the tree, and the type accepts its name", () => {
+  // The theming guide ends in <RivoProvider theme="acme">, and until now that
+  // line did not compile: RivoTheme is a union closed over the two house
+  // themes, so the whole customization guide - the white-label promise - ended
+  // in a type error, and every client learned to write `as` at the system's
+  // entry point.
   const { container } = render(
     <RivoProvider scope="local" theme="acme">
       <span>Nota</span>
@@ -76,9 +76,9 @@ test("o tema de cliente veste a arvore, e o tipo aceita o nome dele", () => {
   expect(container.querySelector('[data-rc-theme="acme"]')).not.toBeNull();
 });
 
-test("o seletor de tema tem tipo proprio, sem uniao escrita na mao", () => {
-  // Quem escreve um seletor de tema - a primeira coisa que se escreve - guarda
-  // o estado neste tipo.
+test("the theme switcher has its own type, with no hand-written union", () => {
+  // Whoever writes a theme switcher - the first thing one writes - keeps the
+  // state in this type.
   const choices: RivoThemeSetting[] = ["rivocode-dark", "rivocode-light", "system", "acme"];
 
   expect(choices.length).toBe(4);

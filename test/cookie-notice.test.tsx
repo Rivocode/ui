@@ -31,7 +31,7 @@ function consent(props: Partial<CookieConsentProps> = {}) {
 const tokens = (element: Element) => (element.getAttribute("class") ?? "").split(" ");
 const button = (dialog: HTMLElement, name: string) => within(dialog).getByRole("button", { name });
 
-test("aberto, e um dialogo nao modal com nome e descricao, e o foco vai para ele", () => {
+test("when open, it is a non-modal dialog with name and description, and focus goes to it", () => {
   const { dialog } = consent();
 
   expect(dialog.getAttribute("aria-modal")).toBe("false");
@@ -43,7 +43,7 @@ test("aberto, e um dialogo nao modal com nome e descricao, e o foco vai para ele
   expect(dialog.hasAttribute("inert")).toBe(false);
 });
 
-test("fechado, fica inerte e invisivel, e nao pega o foco", () => {
+test("when closed, it stays inert and invisible, and does not take focus", () => {
   const { dialog } = consent({ open: false });
 
   expect(dialog.hasAttribute("inert")).toBe(true);
@@ -51,7 +51,7 @@ test("fechado, fica inerte e invisivel, e nao pega o foco", () => {
   expect(document.activeElement).not.toBe(dialog);
 });
 
-test("abrir depois de montado tambem leva o foco ao aviso", () => {
+test("opening after mount also takes focus to the notice", () => {
   const { dialog, again } = consent({ open: false });
   const page = screen.getByRole("button", { name: "Botão da página" });
   page.focus();
@@ -61,7 +61,7 @@ test("abrir depois de montado tambem leva o foco ao aviso", () => {
   expect(document.activeElement).toBe(dialog);
 });
 
-test("nao prende a pagina: nada fora dele fica inerte ou escondido", () => {
+test("it does not trap the page: nothing outside it becomes inert or hidden", () => {
   const { container } = consent();
   const page = screen.getByRole("button", { name: "Botão da página" });
 
@@ -73,7 +73,7 @@ test("nao prende a pagina: nada fora dele fica inerte ou escondido", () => {
   expect(document.activeElement).toBe(page);
 });
 
-test("Esc nao dispensa sem escolha", () => {
+test("Esc does not dismiss without a choice", () => {
   const { dialog, onDecision } = consent();
 
   fireEvent.keyDown(dialog, { key: "Escape" });
@@ -83,7 +83,7 @@ test("Esc nao dispensa sem escolha", () => {
   expect(dialog.hasAttribute("inert")).toBe(false);
 });
 
-test("Aceitar todos liga tudo", () => {
+test("Aceitar todos turns everything on", () => {
   const { dialog, onDecision } = consent();
 
   fireEvent.click(button(dialog, "Aceitar todos"));
@@ -94,7 +94,7 @@ test("Aceitar todos liga tudo", () => {
   });
 });
 
-test("Recusar não essenciais deixa so o necessario", () => {
+test("Recusar não essenciais leaves only the necessary", () => {
   const { dialog, onDecision } = consent();
 
   fireEvent.click(button(dialog, "Recusar não essenciais"));
@@ -105,7 +105,7 @@ test("Recusar não essenciais deixa so o necessario", () => {
   });
 });
 
-test("recusar tem o mesmo peso visual que aceitar", () => {
+test("reject has the same visual weight as accept", () => {
   const { dialog } = consent();
 
   const accept = tokens(button(dialog, "Aceitar todos")).toSorted();
@@ -121,7 +121,7 @@ test("recusar tem o mesmo peso visual que aceitar", () => {
   expect(pair.children).toHaveLength(2);
 });
 
-test("a ordem do Tab e a ordem que o celular mostra, e a mesa inverte so o desenho", () => {
+test("the Tab order is the order mobile shows, and desktop only reverses the drawing", () => {
   const { dialog } = consent();
   fireEvent.click(button(dialog, "Personalizar"));
 
@@ -140,7 +140,7 @@ test("a ordem do Tab e a ordem que o celular mostra, e a mesa inverte so o desen
   }
 });
 
-test("Personalizar abre as categorias: necessarios ligados e travados, o resto desligado", () => {
+test("Personalizar opens the categories: necessary ones on and locked, the rest off", () => {
   const { dialog } = consent();
   const customize = button(dialog, "Personalizar");
 
@@ -163,7 +163,7 @@ test("Personalizar abre as categorias: necessarios ligados e travados, o resto d
   expect(within(list).getByText(/sempre ativos/)).toBeDefined();
 });
 
-test("Salvar escolhas devolve o que foi ligado a mao", () => {
+test("Salvar escolhas returns what was turned on by hand", () => {
   const { dialog, onDecision } = consent();
 
   fireEvent.click(button(dialog, "Personalizar"));
@@ -178,7 +178,7 @@ test("Salvar escolhas devolve o que foi ligado a mao", () => {
   });
 });
 
-test("categorias e escolha anterior vem por prop, e a obrigatoria nao se desliga", () => {
+test("categories and the previous choice come by prop, and the required one cannot be turned off", () => {
   const { dialog, onDecision } = consent({
     categories: [
       { id: "essential", label: "Essenciais", required: true },
@@ -202,14 +202,14 @@ test("categorias e escolha anterior vem por prop, e a obrigatoria nao se desliga
   });
 });
 
-test("o link da politica vai para o endereco dado", () => {
+test("the policy link goes to the given address", () => {
   const { dialog } = consent({ policyHref: "https://exemplo.com.br/privacidade" });
 
   const link = within(dialog).getByRole("link", { name: "Política de privacidade" });
   expect(link.getAttribute("href")).toBe("https://exemplo.com.br/privacidade");
 });
 
-test("ao fechar com o foco dentro, o foco volta para onde estava antes de abrir", () => {
+test("when closing with focus inside, focus returns to where it was before opening", () => {
   const { dialog, again } = consent({ open: false });
   const page = screen.getByRole("button", { name: "Botão da página" });
   page.focus();
@@ -221,7 +221,7 @@ test("ao fechar com o foco dentro, o foco volta para onde estava antes de abrir"
   expect(document.activeElement).toBe(page);
 });
 
-test("reabrir comeca do zero: sem o Personalizar aberto de antes", () => {
+test("reopening starts from scratch: without the previously open Personalizar", () => {
   const { dialog, again } = consent();
 
   fireEvent.click(button(dialog, "Personalizar"));
@@ -232,7 +232,7 @@ test("reabrir comeca do zero: sem o Personalizar aberto de antes", () => {
   expect(within(dialog).queryByRole("switch")).toBeNull();
 });
 
-test("empilha pelo token e entra e sai pelas curvas de movimento", () => {
+test("stacks by the token and enters and leaves through the motion curves", () => {
   const { dialog, again, container } = consent();
   const root = container.querySelector("[data-open]") as HTMLElement;
 

@@ -32,7 +32,7 @@ function Page(props: Partial<ScrollToTopProps>) {
   );
 }
 
-test("so existe depois de descer mais que o limite", () => {
+test("only exists after scrolling past the threshold", () => {
   render(<Page threshold={400} />);
   expect(screen.queryByRole("button", { name: "Voltar ao topo" })).toBeNull();
 
@@ -46,7 +46,7 @@ test("so existe depois de descer mais que o limite", () => {
   expect(screen.queryByRole("button", { name: "Voltar ao topo" })).toBeNull();
 });
 
-test("sobe suave e leva o foco ao main, que o botao some em seguida", () => {
+test("scrolls up smoothly and takes focus to main, since the button disappears right after", () => {
   const calls: ScrollToOptions[] = [];
   window.scrollTo = ((options: ScrollToOptions) => calls.push(options)) as typeof window.scrollTo;
   let climbed = 0;
@@ -65,7 +65,7 @@ test("sobe suave e leva o foco ao main, que o botao some em seguida", () => {
   expect(main.hasAttribute("tabindex")).toBe(false);
 });
 
-test("com reduzir movimento, a subida e instantanea", () => {
+test("with reduced motion, the scroll up is instant", () => {
   window.matchMedia = ((query: string) =>
     ({
       matches: query.includes("reduce"),
@@ -85,7 +85,7 @@ test("com reduzir movimento, a subida e instantanea", () => {
   expect(calls).toEqual([{ top: 0, behavior: "auto" }]);
 });
 
-test("focusTarget escolhe outro destino para o foco", () => {
+test("focusTarget picks another destination for focus", () => {
   window.scrollTo = (() => {}) as typeof window.scrollTo;
   function WithTarget() {
     const [title, setTitle] = useState<HTMLElement | null>(null);
@@ -102,7 +102,7 @@ test("focusTarget escolhe outro destino para o foco", () => {
   expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Relatório" }));
 });
 
-test("dentro de uma caixa que rola, mede e sobe a caixa, e o foco vai para ela", () => {
+test("inside a scrolling box, it measures and scrolls the box, and focus goes to it", () => {
   const calls: ScrollToOptions[] = [];
   function Box() {
     const [box, setBox] = useState<HTMLDivElement | null>(null);
@@ -136,7 +136,7 @@ test("dentro de uma caixa que rola, mede e sobe a caixa, e o foco vai para ela",
   expect(document.activeElement).toBe(box);
 });
 
-test("o botao e o IconButton da casa, com nome trocavel e a camada de sticky", () => {
+test("the button is the house IconButton, with a replaceable name and the sticky layer", () => {
   render(<Page label="Ir para o começo" classNames={{ button: "c-botao" }} />);
   scrollWindow(3000);
   const button = screen.getByRole("button", { name: "Ir para o começo" });

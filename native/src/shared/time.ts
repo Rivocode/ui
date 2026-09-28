@@ -1,4 +1,4 @@
-/* Gerado de src/shared/time.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/time.ts by bun run gen:shared. Do not edit. */
 
 const DAY = 24 * 60;
 

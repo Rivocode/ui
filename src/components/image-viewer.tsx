@@ -63,31 +63,31 @@ const LABELS: ImageViewerLabels = {
 
 export type ImageViewerProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /**
-   * As imagens, na ordem da navegacao. `alt` e obrigatorio em cada uma: e o
-   * nome da miniatura e o que o leitor de tela ouve ao trocar de imagem.
-   * `thumbnail` e a versao pequena da grade; sem ela, a grade usa o `src`.
+   * The images, in navigation order. `alt` is required on each one: it is the
+   * thumbnail's name and what the screen reader hears when the image changes.
+   * `thumbnail` is the small version for the grid; without it, the grid uses `src`.
    */
   images: ImageViewerImage[];
   /**
-   * A imagem aberta, controlada: o indice, contando de zero, ou `null` com o
-   * visualizador fechado. Use com `onIndexChange`.
+   * The open image, controlled: the index, counting from zero, or `null` with the
+   * viewer closed. Use with `onIndexChange`.
    */
   index?: number | null;
-  /** A imagem aberta ao montar, quando ninguem controla. Sem ela, nasce fechado. */
+  /** The image open on mount, when nobody controls it. Without it, it starts closed. */
   defaultIndex?: number | null;
-  /** Chamado ao abrir, ao navegar e com `null` ao fechar. */
+  /** Called on open, on navigation and with `null` on close. */
   onIndexChange?: (index: number | null) => void;
   /**
-   * Desenha a grade de miniaturas que abre o visualizador. Ligada por padrao;
-   * desligada, quem abre e o `index` controlado, e o foco volta para onde
-   * estava.
+   * Draws the thumbnail grid that opens the viewer. On by default;
+   * when off, the controlled `index` is what opens it, and focus goes back to where
+   * it was.
    */
   thumbnails?: boolean;
-  /** Da ultima, a proxima volta a primeira, e vice-versa. */
+  /** From the last one, next goes back to the first, and vice versa. */
   loop?: boolean;
-  /** O zoom maximo, em vezes o tamanho que cabe na tela. Sem ele, 4. */
+  /** The maximum zoom, in multiples of the size that fits the screen. Without it, 4. */
   maxZoom?: number;
-  /** Os textos da peca, para trocar o idioma ou o termo. */
+  /** The piece's texts, to change the language or the term. */
   labels?: Partial<ImageViewerLabels>;
   classNames?: Slots<
     "thumbnails" | "thumbnail" | "viewer" | "toolbar" | "counter" | "stage" | "image" | "caption"

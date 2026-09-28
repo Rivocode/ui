@@ -66,7 +66,7 @@ function textOf2(node: ReactTestInstance): string {
 }
 
 describe("FilterChip", () => {
-  test("a ficha mostra o campo e o valor, e o valor tem o peso", () => {
+  test("the chip shows the field and the value, and the value carries the weight", () => {
     const screen = render(<FilterChip label="Cliente" value="Clínica São Lucas" />);
 
     expect(textOf(screen)).toContain("Cliente");
@@ -76,7 +76,7 @@ describe("FilterChip", () => {
     expect(value!.props.className.split(" ")).toContain("font-rc-medium");
   });
 
-  test("o xis diz qual filtro sai, e não só 'Remover'", () => {
+  test("the x says which filter goes, and not just 'Remover'", () => {
     const screen = render(
       <FilterChip label="Cliente" value="Clínica São Lucas" onRemove={() => {}} />,
     );
@@ -84,13 +84,13 @@ describe("FilterChip", () => {
     expect(byLabel(screen, "Remover filtro Cliente: Clínica São Lucas").length).toBe(1);
   });
 
-  test("ficha sem valor cai para o nome do campo", () => {
+  test("a chip without a value falls back to the field name", () => {
     const screen = render(<FilterChip label="Cliente" onRemove={() => {}} />);
 
     expect(byLabel(screen, "Remover filtro Cliente").length).toBe(1);
   });
 
-  test("o nome do xis se troca pelo labels.remove, como no TagsInput", () => {
+  test("the x's name is replaced through labels.remove, as in TagsInput", () => {
     const screen = render(
       <FilterChip
         label="Emissão"
@@ -103,13 +103,13 @@ describe("FilterChip", () => {
     expect(byLabel(screen, "Tirar o filtro Emissão: 01/08").length).toBe(1);
   });
 
-  test("sem onRemove a ficha não tem xis, que é como se mostra filtro travado", () => {
+  test("without onRemove the chip has no x, which is how a locked filter is shown", () => {
     const screen = render(<FilterChip label="Filial" value="Matriz" />);
 
     expect(byRole(screen, "button").length).toBe(0);
   });
 
-  test("o alvo do xis chega aos 44pt sem engordar a pílula", () => {
+  test("the x's target reaches 44pt without fattening the pill", () => {
     const screen = render(<FilterChip label="Cliente" value="Acme" onRemove={() => {}} />);
 
     expect(chipRoot(screen).props.className).toContain("h-11");
@@ -123,7 +123,7 @@ describe("FilterChip", () => {
     expect(button.props.hitSlop).toEqual({ top: 0, bottom: 0, left: 14, right: 14 });
   });
 
-  test("a faixa de toque não encolhe com o size; a pílula sim", () => {
+  test("the touch strip does not shrink with size; the pill does", () => {
     const small = render(<FilterChip label="Cliente" value="Acme" size="sm" />);
 
     expect(byClass(small, /gap-1 px-2\b/)[0].props.className).toContain("h-11");
@@ -132,7 +132,7 @@ describe("FilterChip", () => {
     );
   });
 
-  test("o valor corta numa linha só e em 10rem, para não empurrar o vizinho", () => {
+  test("the value is cut to a single line and at 10rem, so it does not push the neighbor", () => {
     const long = "Clínica São Lucas Serviços Médicos e Hospitalares Ltda";
     const screen = render(<FilterChip label="Cliente" value={long} />);
     const value = byType(screen, "Text").find((node) => node.props.children === long)!;
@@ -141,7 +141,7 @@ describe("FilterChip", () => {
     expect(value.props.className).toContain("max-w-40");
   });
 
-  test("a ficha não carrega cor literal nem tom de estado", () => {
+  test("the chip carries no literal color nor state tone", () => {
     const screen = render(<FilterChip label="Cliente" value="Acme" onRemove={() => {}} />);
     const classes = byClass(screen, /./)
       .map((node) => String(node.props.className))
@@ -152,7 +152,7 @@ describe("FilterChip", () => {
     expect(classes).toContain("rounded-pill");
   });
 
-  test("a ficha desabilitada trava o xis e anuncia isso", () => {
+  test("the disabled chip locks the x and announces it", () => {
     const screen = render(<FilterChip label="Cliente" value="Acme" onRemove={() => {}} disabled />);
     const button = cross(screen)!;
 
@@ -163,7 +163,7 @@ describe("FilterChip", () => {
 });
 
 describe("FilterBar", () => {
-  test("a fileira rola na horizontal e não quebra linha", () => {
+  test("the row scrolls horizontally and does not wrap", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     const [scroller] = byType(screen, "ScrollView");
 
@@ -174,7 +174,7 @@ describe("FilterBar", () => {
     expect(scroller.props.accessibilityLabel).toBe("Filtros aplicados");
   });
 
-  test("o limpar fica ancorado fora do trecho que rola", () => {
+  test("clear stays anchored outside the scrolling stretch", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     const [scroller] = byType(screen, "ScrollView");
 
@@ -186,7 +186,7 @@ describe("FilterBar", () => {
     expect(inside.length).toBe(2);
   });
 
-  test("não colapsa em contador: cada filtro tem a própria ficha", () => {
+  test("it does not collapse into a counter: each filter has its own chip", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
 
     expect(textOf(screen)).toContain("Situação");
@@ -194,7 +194,7 @@ describe("FilterBar", () => {
     expect(textOf(screen)).not.toContain("+1");
   });
 
-  test("o xis avisa qual filtro saiu e entrega o que sobrou", () => {
+  test("the x reports which filter left and delivers what remains", () => {
     const left = mock(() => {});
     const rest = mock(() => {});
     const screen = render(<FilterBar filters={APPLIED} onRemove={left} onFiltersChange={rest} />);
@@ -205,7 +205,7 @@ describe("FilterBar", () => {
     expect(rest).toHaveBeenCalledWith([APPLIED[0]]);
   });
 
-  test("a peça não guarda lista própria: sem quem mude o estado, a ficha continua lá", () => {
+  test("the piece keeps no list of its own: with nobody changing the state, the chip stays there", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
 
     act(() => byLabel(screen, "Remover filtro Cliente: Clínica São Lucas")[0].props.onPress());
@@ -213,7 +213,7 @@ describe("FilterBar", () => {
     expect(textOf(screen)).toContain("Clínica São Lucas");
   });
 
-  test("filtro com removable false aparece sem xis", () => {
+  test("a filter with removable false appears without an x", () => {
     const screen = render(
       <FilterBar
         filters={[{ id: "branch", label: "Filial", value: "Matriz", removable: false }, ...APPLIED]}
@@ -226,7 +226,7 @@ describe("FilterBar", () => {
     expect(byLabel(screen, "Remover filtro Cliente: Clínica São Lucas").length).toBe(1);
   });
 
-  test("o limpar aparece a partir de dois filtros, com a contagem dentro", () => {
+  test("clear appears from two filters on, with the count inside", () => {
     const one = render(<FilterBar filters={[APPLIED[0]!]} onFiltersChange={() => {}} />);
     expect(clearButton(one)).toBeUndefined();
 
@@ -234,7 +234,7 @@ describe("FilterBar", () => {
     expect(textOf2(clearButton(two)!)).toBe("Limpar 2 filtros");
   });
 
-  test("clearFrom troca a régua, e com 1 o limpar fica desde o primeiro", () => {
+  test("clearFrom changes the threshold, and with 1 clear shows from the first", () => {
     const screen = render(
       <FilterBar filters={[APPLIED[0]!]} onFiltersChange={() => {}} clearFrom={1} />,
     );
@@ -242,7 +242,7 @@ describe("FilterBar", () => {
     expect(textOf2(clearButton(screen)!)).toBe("Limpar 1 filtro");
   });
 
-  test("o limpar avisa antes e entrega a lista vazia depois", () => {
+  test("clear notifies first and delivers the empty list afterwards", () => {
     const cleared = mock(() => {});
     const rest = mock(() => {});
     const screen = render(<FilterBar filters={APPLIED} onClear={cleared} onFiltersChange={rest} />);
@@ -253,7 +253,7 @@ describe("FilterBar", () => {
     expect(rest).toHaveBeenCalledWith([]);
   });
 
-  test("o limpar guarda os filtros travados e conta so os que saem", () => {
+  test("clear keeps the locked filters and counts only the ones that go", () => {
     const locked: AppliedFilter = {
       id: "empresa",
       label: "Empresa",
@@ -271,13 +271,13 @@ describe("FilterBar", () => {
     expect(clearButton(alone)).toBeUndefined();
   });
 
-  test("sem quem escute, não há limpar nem xis: botão que não faz nada é mentira", () => {
+  test("with no listener, there is no clear nor x: a button that does nothing is a lie", () => {
     const screen = render(<FilterBar filters={APPLIED} />);
 
     expect(byRole(screen, "button").length).toBe(0);
   });
 
-  test("a linha fica guardada quando não há filtro, e o que ela guarda é um alvo de toque", () => {
+  test("the row stays reserved when there is no filter, and what it reserves is a touch target", () => {
     const screen = render(<FilterBar filters={[]} onFiltersChange={() => {}} />);
     const [row] = byClass(screen, /w-full flex-row/);
 
@@ -285,7 +285,7 @@ describe("FilterBar", () => {
     expect(textOf(screen)).toContain("Nenhum filtro aplicado");
   });
 
-  test("reserve false some com a linha e mantém o aviso montado", () => {
+  test("reserve false removes the row and keeps the notice mounted", () => {
     const screen = render(<FilterBar filters={[]} onFiltersChange={() => {}} reserve={false} />);
     const [row] = byClass(screen, /w-full flex-row/);
 
@@ -293,7 +293,7 @@ describe("FilterBar", () => {
     expect(byLabel(screen, "Nenhum filtro aplicado").length).toBe(1);
   });
 
-  test("a contagem sai num aviso vivo, que é onde quem ouve fica sabendo que mudou", () => {
+  test("the count goes out in a live notice, which is where a listener learns it changed", () => {
     for (const [filters, said] of [
       [[], "Nenhum filtro aplicado"],
       [[APPLIED[0]!], "1 filtro aplicado"],
@@ -307,7 +307,7 @@ describe("FilterBar", () => {
     }
   });
 
-  test("com filtro na tela o aviso vivo sai do fluxo, para não abrir buraco na fileira", () => {
+  test("with a filter on screen the live notice leaves the flow, so it does not open a gap in the row", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     const [live] = byLabel(screen, "2 filtros aplicados");
 
@@ -315,35 +315,35 @@ describe("FilterBar", () => {
     expect(live.props.children).toBe("");
   });
 
-  test("tudo cabendo, nenhuma borda aparece", () => {
+  test("when everything fits, no edge appears", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     settle(screen, 390, 300);
 
     expect(edges(screen)).toEqual([]);
   });
 
-  test("com ficha escondida à direita, a borda avisa desse lado antes de qualquer toque", () => {
+  test("with a chip hidden on the right, the edge signals that side before any touch", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     settle(screen, 390, 1429);
 
     expect(edges(screen)).toEqual(["direita"]);
   });
 
-  test("no meio da rolagem há filtro escondido dos dois lados, e as duas bordas dizem isso", () => {
+  test("mid-scroll there are hidden filters on both sides, and both edges say so", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     scrollTo(screen, 400, 390, 1429);
 
     expect(edges(screen).sort()).toEqual(["direita", "esquerda"]);
   });
 
-  test("no fim da rolagem só a borda de trás fica, porque à frente não sobrou nada", () => {
+  test("at the end of the scroll only the back edge remains, because nothing is left ahead", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     scrollTo(screen, 1039, 390, 1429);
 
     expect(edges(screen)).toEqual(["esquerda"]);
   });
 
-  test("a borda não custa largura da fileira nem come o arrasto que começa nela", () => {
+  test("the edge costs no row width nor eats a drag that starts on it", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     settle(screen, 390, 1429);
     const [rule] = byClass(screen, /\bw-px\b/);
@@ -354,7 +354,7 @@ describe("FilterBar", () => {
     expect(String(rule!.props.className)).not.toMatch(/#[0-9a-f]{3,6}|rgba?\(/i);
   });
 
-  test("o disabled trava o xis e o limpar de uma vez", () => {
+  test("disabled locks the x and clear at once", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} disabled />);
 
     expect(clearButton(screen)!.props.disabled).toBe(true);
@@ -364,8 +364,8 @@ describe("FilterBar", () => {
   });
 });
 
-describe("FilterBar em rtl", () => {
-  test("em repouso a fileira já está no começo da leitura, e a régua avisa o lado que ficou para trás", () => {
+describe("FilterBar in rtl", () => {
+  test("at rest the row is already at the reading start, and the edge signals the side left behind", () => {
     const ltr = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     settle(ltr, 390, 1429);
     expect(edges(ltr)).toEqual(["direita"]);
@@ -379,7 +379,7 @@ describe("FilterBar em rtl", () => {
     expect(edges(screen)).toEqual(["esquerda"]);
   });
 
-  test("com o evento na mão a conta é física, e o mesmo contentOffset dá a mesma régua nos dois sentidos", () => {
+  test("with the event in hand the math is physical, and the same contentOffset gives the same edge in both directions", () => {
     for (const [offset, said] of [
       [0, "direita"],
       [1039, "esquerda"],
@@ -398,7 +398,7 @@ describe("FilterBar em rtl", () => {
     }
   });
 
-  test("no meio da rolagem em rtl as duas réguas continuam aparecendo", () => {
+  test("mid-scroll in rtl both edges keep showing", () => {
     const screen = inRTL(() => {
       const rendered = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
       scrollTo(rendered, 639, 390, 1429);
@@ -408,7 +408,7 @@ describe("FilterBar em rtl", () => {
     expect(edges(screen).sort()).toEqual(["direita", "esquerda"]);
   });
 
-  test("em rtl, tudo cabendo, nenhuma régua aparece", () => {
+  test("in rtl, when everything fits, no edge appears", () => {
     const screen = inRTL(() => {
       const rendered = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
       settle(rendered, 390, 300);
@@ -418,7 +418,7 @@ describe("FilterBar em rtl", () => {
     expect(edges(screen)).toEqual([]);
   });
 
-  test("o ScrollView não leva contentOffset: quem para no começo da leitura é o próprio React Native", () => {
+  test("the ScrollView takes no contentOffset: React Native itself is what stops at the reading start", () => {
     const ltr = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     const screen = inRTL(() => render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />));
 
@@ -430,7 +430,7 @@ describe("FilterBar em rtl", () => {
     }
   });
 
-  test("a fileira não espelha de novo o que o RN já espelha: a ordem das fichas é a da lista", () => {
+  test("the row does not mirror again what RN already mirrors: the chip order is the list order", () => {
     const screen = inRTL(() => render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />));
     const said = byType(screen, "Text")
       .map((node) => String(node.props.children ?? ""))
@@ -439,7 +439,7 @@ describe("FilterBar em rtl", () => {
     expect(said.indexOf("Situação")).toBeLessThan(said.indexOf("Cliente"));
   });
 
-  test("o limpar não se cola por margem física: o espaço vem do gap da fileira", () => {
+  test("clear is not attached by a physical margin: the space comes from the row gap", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     const [row] = byClass(screen, /w-full flex-row/);
 

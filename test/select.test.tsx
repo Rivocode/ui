@@ -29,7 +29,7 @@ function Example() {
   );
 }
 
-test("o gatilho anuncia o valor escolhido", () => {
+test("the trigger announces the chosen value", () => {
   render(
     <RivoProvider>
       <Example />
@@ -38,7 +38,7 @@ test("o gatilho anuncia o valor escolhido", () => {
   expect(screen.getByLabelText("Status").textContent).toContain("Abertas");
 });
 
-test("as opcoes abrem dentro do container que carrega o tema", () => {
+test("the options open inside the container that carries the theme", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <Example />
@@ -48,7 +48,7 @@ test("as opcoes abrem dentro do container que carrega o tema", () => {
   expect(container!.textContent).toContain("Pagas");
 });
 
-test("o empilhamento vem da escala", () => {
+test("the stacking comes from the scale", () => {
   render(
     <RivoProvider>
       <Example />
@@ -58,7 +58,7 @@ test("o empilhamento vem da escala", () => {
   expect(list.closest('[class*="--rc-z-dropdown"]')).not.toBeNull();
 });
 
-test("sem a lista de opcoes o gatilho mostraria o valor cru, e isso e contrato da Base UI", () => {
+test("without the options list the trigger would show the raw value, and that is a Base UI contract", () => {
   render(
     <RivoProvider>
       <Select defaultValue="abertas">

@@ -40,8 +40,8 @@ function Screen({ onSubmit }: { onSubmit: (values: z.output<typeof schema>) => v
             {(row) => <DatePicker {...forDate(row)} label="Vencimento" />}
           </FormField>
 
-          {/* O mesmo adaptador do DatePicker: o formato e o mesmo - vazio e
-              `null`, e nao `undefined`. */}
+          {/* The same adapter as the DatePicker: the format is the same - empty
+              is `null`, not `undefined`. */}
           <FormField name="period" label="Período">
             {(row) => <DateRangePicker {...forDate(row)} label="Período" />}
           </FormField>
@@ -61,16 +61,16 @@ function Screen({ onSubmit }: { onSubmit: (values: z.output<typeof schema>) => v
 
 const inputOf = (screen: ReactTestRenderer) => byType(screen, "TextInput")[0];
 
-/* O Button e o item da folha nao carregam accessibilityLabel: o nome deles e
-   o Text de dentro, como no aparelho. */
+/* The Button and the sheet item carry no accessibilityLabel: their name is
+   the inner Text, as on the device. */
 const pressableWith = (screen: ReactTestRenderer, text: string) =>
   byRole(screen, "button").find(
     (node) =>
       node.findAll((child) => child.type === "Text" && child.props.children === text).length > 0,
   )!;
 
-describe("Form e FormField", () => {
-  test("o rotulo e a descricao saem do FormField, e o erro do schema vence a descricao", async () => {
+describe("Form and FormField", () => {
+  test("the label and the description come from FormField, and the schema error wins over the description", async () => {
     const screen = render(<Screen onSubmit={() => {}} />);
 
     expect(textOf(screen)).toContain("E-mail");
@@ -79,16 +79,16 @@ describe("Form e FormField", () => {
     await act(async () => pressableWith(screen, "Assinar").props.onPress());
 
     expect(textOf(screen)).toContain("E-mail inválido");
-    // O Field nativo troca uma pela outra, e nao mostra as duas.
+    // The native Field swaps one for the other, and does not show both.
     expect(textOf(screen)).not.toContain("Para onde vai a nota");
   });
 
-  test("nada envia sozinho: quem chama e o botao, com os valores ja convertidos", async () => {
+  test("nothing submits on its own: the button calls, with the values already converted", async () => {
     const onSubmit = mock(() => {});
     const screen = render(<Screen onSubmit={onSubmit} />);
 
     act(() => inputOf(screen).props.onChangeText("financeiro@clinica.com.br"));
-    // O campo volta controlado pelo formulario, e nao pelo TextInput.
+    // The field comes back controlled by the form, not by the TextInput.
     expect(inputOf(screen).props.value).toBe("financeiro@clinica.com.br");
 
     act(() => byLabel(screen, "Plano")[0].props.onPress());
@@ -106,14 +106,14 @@ describe("Form e FormField", () => {
     });
   });
 
-  test("o rotulo viaja no campo e vira o nome acessivel do TextInput", () => {
+  test("the label travels in the field and becomes the TextInput's accessible name", () => {
     const screen = render(<Screen onSubmit={() => {}} />);
-    // No web quem liga o rotulo ao controle e o `for` do Field da Base UI.
-    // Aqui nao ha `for` nem `id`: sem este fio o campo fica sem nome nenhum.
+    // On the web, what ties the label to the control is the Base UI Field's `for`.
+    // Here there is no `for` nor `id`: without this wire the field has no name at all.
     expect(inputOf(screen).props.accessibilityLabel).toBe("E-mail");
   });
 
-  test("o invalid acende a borda do campo junto com a mensagem", async () => {
+  test("invalid lights up the field border together with the message", async () => {
     const screen = render(<Screen onSubmit={() => {}} />);
     expect(inputOf(screen).props.className).not.toContain("border-danger");
 
@@ -122,8 +122,8 @@ describe("Form e FormField", () => {
   });
 });
 
-describe("os adaptadores", () => {
-  /* O campo cru do React Hook Form, do jeito que o Controller o entrega. */
+describe("the adapters", () => {
+  /* The raw React Hook Form field, the way the Controller delivers it. */
   const row = <Value,>(value: Value) => ({
     name: "field" as const,
     value,
@@ -135,24 +135,24 @@ describe("os adaptadores", () => {
     invalid: false,
   });
 
-  test("forText entrega string e onChangeText, e nunca undefined", () => {
+  test("forText delivers a string and onChangeText, and never undefined", () => {
     const vazio = forText(row(undefined) as never);
-    // Um TextInput que recebe value={undefined} vira nao-controlado no meio
-    // do caminho, e para de responder ao reset() do formulario.
+    // A TextInput that receives value={undefined} becomes uncontrolled midway,
+    // and stops responding to the form's reset().
     expect(vazio.value).toBe("");
 
     const campo = row("olá");
     const props = forText(campo as never);
     expect(props.value).toBe("olá");
     expect(props.accessibilityLabel).toBe("Campo");
-    // O ref segue em frente: e por ele que o form.setFocus() acha o campo.
+    // The ref is passed along: it is how form.setFocus() finds the field.
     expect(props.ref).toBe(campo.ref);
 
     props.onChangeText("outro");
     expect(campo.onChange).toHaveBeenCalledWith("outro");
   });
 
-  test("forValue mantem o tipo do schema e troca o nome do callback", () => {
+  test("forValue keeps the schema type and renames the callback", () => {
     const campo = row(["pdf", "xml"]);
     const props = forValue(campo as never);
 
@@ -161,7 +161,7 @@ describe("os adaptadores", () => {
     expect(campo.onChange).toHaveBeenCalledWith(["pdf"]);
   });
 
-  test("forChecked vira checked, e o vazio conta como desmarcado", () => {
+  test("forChecked becomes checked, and empty counts as unchecked", () => {
     expect(forChecked(row(undefined) as never).checked).toBe(false);
 
     const campo = row(true);
@@ -172,7 +172,7 @@ describe("os adaptadores", () => {
     expect(campo.onChange).toHaveBeenCalledWith(false);
   });
 
-  test("forDate troca undefined por null, que e o vazio dos dois pickers", () => {
+  test("forDate swaps undefined for null, which is the empty value of both pickers", () => {
     expect(forDate(row(undefined) as never).value).toBe(null);
     expect(forDate(row("2026-08-20") as never).value).toBe("2026-08-20");
   });

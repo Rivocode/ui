@@ -1,35 +1,36 @@
 /**
- * Guarda da skill: prop citada em exemplo tem que existir na peca.
+ * Skill guard: a prop cited in an example has to exist on the piece.
  *
- * A propria SKILL.md manda, no item 3, "nunca invente prop" - e o exemplo de
- * formulario dela ensinava `<FormField render={...} />` por meses. O
- * `FormFieldProps` nunca teve `render`: a funcao entra por `children`, que e
- * obrigatorio. Quem seguia o exemplo nao compilava, e quem le a skill e
- * justamente quem ainda nao conhece a peca para desconfiar.
+ * SKILL.md itself says, in item 3, "never invent a prop" - and its form example
+ * taught `<FormField render={...} />` for months. `FormFieldProps` never had
+ * `render`: the function comes in through `children`, which is required.
+ * Whoever followed the example did not compile, and whoever reads the skill is
+ * precisely the one who does not know the piece well enough to be suspicious.
  *
- * O buraco era estrutural. O `check:previews` typecheca `.design-sync/previews`
- * e mais nada; nenhum bloco de codigo da skill passa pelo compilador, e a skill
- * e publicada crua em /skill/SKILL.md e copiada para dentro do pacote pelo
- * `build:skill`. Ou seja: e o unico codigo que a biblioteca distribui sem
- * ninguem conferir.
+ * The hole was structural. `check:previews` typechecks `.design-sync/previews`
+ * and nothing else; no code block of the skill goes through the compiler, and
+ * the skill is published raw at /skill/SKILL.md and copied into the package by
+ * `build:skill`. That is: it is the only code the library distributes without
+ * anyone checking it.
  *
- * ## Por que conferir prop, e nao compilar o bloco
+ * ## Why check props, and not compile the block
  *
- * Compilar seria mais forte e nao cabe: dos blocos aqui, a metade e fragmento -
- * JSX solto, sem import, chamando `FORMAS` e `field` que nunca foram
- * declarados. Faze-los compilar exigiria embrulhar cada um num arquivo
- * sintetico com stubs adivinhados, e a guarda passaria a errar por causa do
- * proprio embrulho - que e o jeito conhecido de uma guarda ser desligada.
+ * Compiling would be stronger and does not fit: of the blocks here, half are
+ * fragments - loose JSX, no import, calling `FORMAS` and `field` that were
+ * never declared. Making them compile would require wrapping each one in a
+ * synthetic file with guessed stubs, and the guard would start failing because
+ * of the wrapper itself - which is the known way for a guard to get turned off.
  *
- * Entao esta confere o que da para conferir sem contexto: o nome de cada
- * atributo escrito num componente do catalogo, contra a tabela de props que o
- * compilador ja gerou em `apps/docs/src/component-props.json`. E o mesmo dado
- * que a documentacao publica mostra, entao a skill e a doc nunca divergem sem
- * alguem saber. Pega o `render` do FormField, que era o alvo.
+ * So this one checks what can be checked without context: the name of each
+ * attribute written on a catalog component, against the props table the
+ * compiler already generated in `apps/docs/src/component-props.json`. It is the
+ * same data the published documentation shows, so the skill and the docs never
+ * diverge without someone knowing. It catches the FormField `render`, which was
+ * the target.
  *
- * O que ela nao pega, de proposito: tipo errado no valor, ordem de composicao,
- * peca que nao existe, import faltando. Para isso o caminho e o compilador, e
- * ele custa o embrulho acima.
+ * What it does not catch, on purpose: wrong value type, composition order, a
+ * piece that does not exist, a missing import. For that the path is the
+ * compiler, and it costs the wrapper above.
  */
 import { scanAtLeast } from "./scan";
 
@@ -38,24 +39,25 @@ const CATALOG = "apps/docs/src/component-props.json";
 const REACT_TYPES = "node_modules/@types/react/index.d.ts";
 
 /**
- * A skill do nativo fala de outro pacote, e confere contra a tabela dele.
+ * The native skill talks about another package, and checks against its table.
  *
- * `Button` e `Card` existem nos dois catalogos com props diferentes, e conferir
- * o exemplo nativo contra a tabela do web acusaria a peca certa pelo motivo
- * errado. Ate 25/09/2026 o `reference/native.md` ficava fora por isso, com o
- * motivo "enquanto o nativo nao gerar tabela propria" - e a tabela ja existia
- * havia um mes, em `apps/docs/src/native-props.json`, sem a guarda saber.
+ * `Button` and `Card` exist in both catalogs with different props, and checking
+ * the native example against the web table would flag the right piece for the
+ * wrong reason. Until 25/09/2026 `reference/native.md` was left out for that,
+ * with the reason "until native generates its own table" - and the table had
+ * already existed for a month, in `apps/docs/src/native-props.json`, without the
+ * guard knowing.
  *
- * A tabela nativa corta o que a peca herda de `ViewProps`, `PressableProps` e
- * `TextInputProps`, como a do web corta o `@types/react`, mas nao tem o
- * `forwardsRoot` que diria quais pecas repassam essas props. E a lista delas
- * nao da para tirar do `.d.ts`, como o web tira do React: o `react-native` so
- * esta instalado em `examples/native`, que o gate nao instala. Entao o lado
- * nativo aceita a FAMILIA de prop de plataforma por forma - evento `onAlgo`,
- * `accessibilityAlgo`, `style`, `testID` - e nao por nome. Prop inventada que
- * nao tem cara de plataforma (`variant="outline"` num `Card`, `render` num
- * `FormField`) continua reprovando, e e esse o erro que a guarda existe para
- * pegar.
+ * The native table cuts what the piece inherits from `ViewProps`,
+ * `PressableProps` and `TextInputProps`, as the web one cuts `@types/react`, but
+ * it has no `forwardsRoot` saying which pieces pass those props on. And their
+ * list cannot be taken from the `.d.ts`, as the web takes it from React:
+ * `react-native` is only installed in `examples/native`, which the gate does not
+ * install. So the native side accepts the platform prop FAMILY by shape - an
+ * `onSomething` event, `accessibilitySomething`, `style`, `testID` - and not by
+ * name. An invented prop that does not look like platform (`variant="outline"`
+ * on a `Card`, `render` on a `FormField`) still fails, and that is the error the
+ * guard exists to catch.
  */
 const NATIVE_FILES = new Set(["reference/native.md"]);
 const NATIVE_CATALOG = "apps/docs/src/native-props.json";
@@ -64,38 +66,38 @@ const NATIVE_PLATFORM = /^(on[A-Z]\w*|accessibility\w*|style|testID|className)$/
 type Piece = { forwardsRoot: boolean; props: { name: string }[] };
 
 /**
- * Os atributos que o React aceita em qualquer elemento.
+ * The attributes React accepts on any element.
  *
- * A tabela de props nao os lista - `catalog-props.ts` corta tudo que vem
- * de `@types/react` e guarda so a resposta `forwardsRoot` - entao `className`
- * num `<Card>` seria acusado sem isto. A lista sai do proprio `.d.ts` do React
- * instalado, e nao escrita a mao: atributo de DOM e um vocabulario de umas
- * trezentas palavras, e mante-lo a mao seria a segunda lista fechada deste
- * repositorio a envelhecer sozinha.
+ * The props table does not list them - `catalog-props.ts` cuts everything that
+ * comes from `@types/react` and keeps only the `forwardsRoot` answer - so
+ * `className` on a `<Card>` would be flagged without this. The list comes from
+ * the installed React `.d.ts` itself, and is not handwritten: DOM attributes are
+ * a vocabulary of some three hundred words, and keeping it by hand would be the
+ * second closed list in this repository to go stale on its own.
  */
 async function domAttributes(): Promise<Set<string>> {
   const source = await Bun.file(REACT_TYPES).text();
   const names = new Set<string>();
 
-  // `AllHTMLAttributes` traz todo atributo de HTML; `SVGAttributes` traz
-  // `fill`, `stroke` e companhia, que os graficos usam. As duas ESTENDEM
-  // `DOMAttributes`, mas esta leitura so ve os membros proprios de cada
-  // interface, e nao os herdados: sem ler `DOMAttributes` tambem, o `onClick`
-  // num `<Button>` da skill era acusado como prop inventada. O comentario
-  // antigo dizia que a heranca bastava, e nenhum exemplo tinha testado isso
-  // ate o primeiro botao com `onClick` entrar. O `aria-*` sai pela regra de
-  // prefixo, e por isso `AriaAttributes` nao entra na lista.
+  // `AllHTMLAttributes` brings every HTML attribute; `SVGAttributes` brings
+  // `fill`, `stroke` and company, which the charts use. Both EXTEND
+  // `DOMAttributes`, but this reading only sees each interface's own members,
+  // not the inherited ones: without reading `DOMAttributes` too, `onClick` on a
+  // skill `<Button>` was flagged as an invented prop. The old comment said
+  // inheritance was enough, and no example had tested that until the first
+  // button with `onClick` came in. `aria-*` goes through the prefix rule, which
+  // is why `AriaAttributes` is not in the list.
   for (const wanted of ["AllHTMLAttributes", "SVGAttributes", "DOMAttributes"]) {
     const start = source.indexOf(`interface ${wanted}<T>`);
     if (start === -1) {
       throw new Error(
-        `Nao achei \`interface ${wanted}<T>\` em ${REACT_TYPES}.\n` +
-          "Sem ela a guarda acusaria `className` em toda peca. Confira se o\n" +
-          "@types/react mudou o nome da interface e ajuste domAttributes().",
+        `Could not find \`interface ${wanted}<T>\` in ${REACT_TYPES}.\n` +
+          "Without it the guard would flag `className` on every piece. Check whether\n" +
+          "@types/react renamed the interface and adjust domAttributes().",
       );
     }
 
-    // Do `{` da interface ate a chave que o fecha na coluna zero do bloco.
+    // From the interface's `{` to the brace that closes it at the block's column zero.
     const open = source.indexOf("{", start);
     const end = source.indexOf("\n    }", open);
     for (const [, name] of source.slice(open, end).matchAll(/^\s{8}([a-zA-Z][\w-]*)\??:/gm)) {
@@ -106,18 +108,18 @@ async function domAttributes(): Promise<Set<string>> {
   return names;
 }
 
-/** `key` e `ref` sao do React e nao do elemento; `children` vem por dentro. */
+/** `key` and `ref` belong to React and not to the element; `children` comes from inside. */
 const ALWAYS = new Set(["key", "ref", "children"]);
 
 /**
- * Os atributos de uma tag de abertura, sem confundir com o que esta dentro dos
- * valores.
+ * The attributes of an opening tag, without mixing them up with what is inside
+ * the values.
  *
- * Um regex sobre a tag inteira acusava `flex-wrap` de `className="flex-wrap"` e
- * `thumb` de `classNames={{ thumb: ... }}` - trinta falsos positivos, o
- * suficiente para ninguem ler a saida. Entao le-se caractere a caractere:
- * string pula inteira, bloco `{...}` pula inteiro, e so sobra o que esta
- * mesmo no nivel da tag.
+ * A regex over the whole tag flagged `flex-wrap` from `className="flex-wrap"`
+ * and `thumb` from `classNames={{ thumb: ... }}` - thirty false positives,
+ * enough for nobody to read the output. So it reads character by character: a
+ * string is skipped whole, a `{...}` block is skipped whole, and only what is
+ * really at the tag level remains.
  */
 function attributesOf(code: string) {
   const found: { tag: string; attr: string; line: number }[] = [];
@@ -165,7 +167,7 @@ function attributesOf(code: string) {
         continue;
       }
 
-      // `aria-label` e `data-state` tem traco; `render` e `onValueChange` nao.
+      // `aria-label` and `data-state` have a hyphen; `render` and `onValueChange` do not.
       if (/[A-Za-z0-9_-]/.test(char)) {
         word += char;
         at += 1;
@@ -191,9 +193,9 @@ const invented: string[] = [];
 let checked = 0;
 
 /*
- * `Glob(".claude/**").scan(".")` devolve zero arquivos: o bun ignora pasta
- * oculta quando ela esta no padrao. Varrer de dentro dela resolve, e o custo de
- * descobrir isso de novo e uma tarde.
+ * `Glob(".claude/**").scan(".")` returns zero files: bun ignores a hidden folder
+ * when it is in the pattern. Scanning from inside it solves it, and the cost of
+ * finding this out again is an afternoon.
  */
 for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
   const native = NATIVE_FILES.has(file);
@@ -204,28 +206,28 @@ for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
 
   for (const block of text.matchAll(/```(?:tsx|jsx)\n([\s\S]*?)```/g)) {
     const code = block[1]!;
-    // A linha onde o bloco comeca, para o endereco do erro apontar o arquivo e
-    // nao o bloco.
+    // The line where the block starts, so the error address points at the file
+    // and not at the block.
     const offset = text.slice(0, block.index! + block[0].indexOf("\n") + 1).split("\n").length - 1;
 
     for (const { tag, attr, line } of attributesOf(code)) {
       const piece = pieces[tag];
-      // Peca que nao esta no catalogo e componente do proprio exemplo
-      // (`<InvoiceScreen />`) ou icone do lucide. Nao ha tabela para conferir.
+      // A piece not in the catalog is the example's own component
+      // (`<InvoiceScreen />`) or a lucide icon. There is no table to check.
       if (!piece) continue;
 
       checked += 1;
 
       if (piece.props.some((prop) => prop.name === attr)) continue;
       if (ALWAYS.has(attr) || /^(aria|data)-/.test(attr)) continue;
-      // Atributo de DOM so vale onde a peca repassa a raiz.
+      // A DOM attribute only counts where the piece forwards the root.
       if (piece.forwardsRoot && dom.has(attr)) continue;
       if (native && NATIVE_PLATFORM.test(attr)) continue;
 
       const real = piece.props.map((prop) => prop.name).sort();
       invented.push(
         `  ${SKILL_DIR}/${file}:${offset + line}  <${tag} ${attr}=...>\n` +
-          `    ${tag} aceita: ${real.length ? real.join(", ") : "(nenhuma prop propria)"}`,
+          `    ${tag} accepts: ${real.length ? real.join(", ") : "(no props of its own)"}`,
       );
     }
   }
@@ -233,27 +235,27 @@ for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
 
 if (nativeFiles !== NATIVE_FILES.size) {
   console.error(
-    `A skill tem ${nativeFiles} de ${NATIVE_FILES.size} arquivo(s) do nativo declarados em NATIVE_FILES.\n` +
-      "O nome mudou ou o arquivo sumiu, e o exemplo nativo passaria a ser conferido contra a\n" +
-      "tabela do web - ou nao seria conferido. Corrija NATIVE_FILES.",
+    `The skill has ${nativeFiles} of ${NATIVE_FILES.size} native file(s) declared in NATIVE_FILES.\n` +
+      "The name changed or the file is gone, and the native example would be checked against\n" +
+      "the web table - or not checked at all. Fix NATIVE_FILES.",
   );
   process.exit(1);
 }
 
 if (invented.length > 0) {
-  console.error(`${invented.length} prop(s) que a skill ensina e a peca nao tem:\n`);
+  console.error(`${invented.length} prop(s) the skill teaches and the piece does not have:\n`);
   for (const item of invented) console.error(item);
   console.error(
-    "\nRegrave o exemplo com a prop que existe - a lista acima sai do mesmo" +
-      "\ncompilador que gera a tabela da documentacao. A skill e copiada para" +
-      "\ndentro do pacote pelo `build:skill` e servida em /skill/SKILL.md:" +
-      "\nexemplo que nao compila vira o primeiro codigo que um agent escreve." +
-      "\n\nSe a prop e nova, rode `bun run gen:props` antes: a tabela pode estar" +
-      "\natrasada em relacao ao codigo.",
+    "\nRewrite the example with the prop that exists - the list above comes from the" +
+      "\nsame compiler that generates the documentation table. The skill is copied into" +
+      "\nthe package by `build:skill` and served at /skill/SKILL.md: an example that" +
+      "\ndoes not compile becomes the first code an agent writes." +
+      "\n\nIf the prop is new, run `bun run gen:props` first: the table may be behind" +
+      "\nthe code.",
   );
   process.exit(1);
 }
 
 console.log(
-  `${checked} props citadas nos exemplos da skill, todas existentes, ${nativeFiles} arquivo(s) contra a tabela do nativo.`,
+  `${checked} props cited in the skill examples, all existing, ${nativeFiles} file(s) against the native table.`,
 );

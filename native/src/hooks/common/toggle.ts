@@ -1,4 +1,4 @@
-/* Gerado de src/hooks/common/toggle.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/hooks/common/toggle.ts by bun run gen:shared. Do not edit. */
 
 "use client";
 

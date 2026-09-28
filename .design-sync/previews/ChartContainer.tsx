@@ -42,7 +42,7 @@ const INVOICES: ChartConfig = {
 
 const UMA: ChartConfig = { emitidas: { label: 'Emitidas' } }
 
-/** Linha */
+/** Line */
 export function AsLine() {
   return (
     <div className="w-full max-w-lg">
@@ -75,7 +75,7 @@ export function AsLine() {
   )
 }
 
-/** Vazio, com saída */
+/** Empty, with a way out */
 export function EmptyWithAction() {
   return (
     <div className="w-full max-w-lg">
@@ -88,8 +88,8 @@ export function EmptyWithAction() {
           action: <Button size="sm">Emitir nota</Button>,
         }}
       >
-        {/* O `data` vazio mora no filho, e a moldura o lê de lá: não é preciso
-            repetir a mesma lista no `ChartContainer`. */}
+        {/* The empty `data` lives in the child, and the frame reads it from there:
+            there is no need to repeat the same list on the `ChartContainer`. */}
         <LineChart data={[]}>
           <CartesianGrid vertical={false} />
           <ChartXAxis dataKey="mes" />
@@ -101,12 +101,12 @@ export function EmptyWithAction() {
   )
 }
 
-/** Erro, dizendo qual gráfico falhou */
+/** Error, saying which chart failed */
 export function ErrorWithTitle() {
   return (
     <div className="w-full max-w-lg">
-      {/* Num painel de quatro gráficos, "Não foi possível carregar o gráfico"
-          quatro vezes não diz qual deles falhou. */}
+      {/* On a dashboard with four charts, "Não foi possível carregar o gráfico"
+          four times does not say which one failed. */}
       <ChartContainer
         config={UMA}
         className="h-56"
@@ -123,7 +123,7 @@ export function ErrorWithTitle() {
   )
 }
 
-/** Linha em degrau */
+/** Step line */
 export function StepLine() {
   return (
     <div className="w-full max-w-lg">
@@ -147,7 +147,7 @@ export function StepLine() {
   )
 }
 
-/** Área com gradiente */
+/** Area with gradient */
 export function GradientArea() {
   return (
     <div className="w-full max-w-lg">
@@ -179,7 +179,7 @@ export function GradientArea() {
   )
 }
 
-/** Área empilhada */
+/** Stacked area */
 export function StackedArea() {
   return (
     <div className="w-full max-w-lg">
@@ -210,7 +210,7 @@ export function StackedArea() {
   )
 }
 
-/** Barra */
+/** Bar */
 export function Bars() {
   return (
     <div className="w-full max-w-lg">
@@ -229,7 +229,7 @@ export function Bars() {
   )
 }
 
-/** Barra empilhada */
+/** Stacked bar */
 export function StackedBars() {
   return (
     <div className="w-full max-w-lg">
@@ -253,7 +253,7 @@ export function StackedBars() {
   )
 }
 
-/** Barra deitada, com rótulo */
+/** Horizontal bar, with label */
 export function HorizontalBars() {
   return (
     <div className="w-full max-w-lg">
@@ -269,7 +269,7 @@ export function HorizontalBars() {
             radius={[0, 4, 4, 0]}
             isAnimationActive={false}
           >
-            {/* O rótulo na ponta dispensa o eixo de valor inteiro. */}
+            {/* The label at the tip makes the whole value axis unnecessary. */}
             <LabelList
               dataKey="emitidas"
               position="right"
@@ -289,8 +289,8 @@ export function AsRadar() {
     <div className="w-full max-w-sm">
       <ChartContainer config={INVOICES} className="h-64">
         <RadarChart data={MESES}>
-          {/* `fill="none"` nao e detalhe: sem ele a grade sai como um poligono
-              cinza chapado, e as duas series desaparecem atras dela. */}
+          {/* `fill="none"` is not a detail: without it the grid renders as a solid
+              gray polygon, and both series disappear behind it. */}
           <PolarGrid stroke="var(--rc-chart-grid)" fill="none" />
           <PolarAngleAxis dataKey="mes" tick={{ fill: 'var(--rc-fg-subtle)', fontSize: 12 }} />
           <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
@@ -316,7 +316,7 @@ export function AsRadar() {
   )
 }
 
-/** Dispersão */
+/** Scatter */
 export function AsScatter() {
   const pontos = MESES.map((mes) => ({ x: mes.emitidas, y: mes.pagas, mes: mes.mes }))
 
@@ -335,7 +335,7 @@ export function AsScatter() {
   )
 }
 
-/** Vazio sem empty: o aviso curto */
+/** Empty without empty: the short notice */
 export function EmptyWithoutProp() {
   return (
     <div className="w-full max-w-lg">

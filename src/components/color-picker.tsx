@@ -18,38 +18,38 @@ import { Input, useInsideField } from "./field";
 export type ColorSwatch = string | { value: string; label: string };
 
 export type ColorPickerProps = Omit<ComponentProps<"div">, "defaultValue" | "children"> & {
-  /** A cor escolhida, em hexadecimal de seis digitos. Controlado. */
+  /** The chosen color, in six-digit hexadecimal. Controlled. */
   value?: string;
-  /** A cor inicial de quem nao controla o valor de fora. */
+  /** The initial color for whoever does not control the value from outside. */
   defaultValue?: string;
-  /** Avisado com o hexadecimal normalizado, sempre de seis digitos e minusculo. */
+  /** Notified with the normalized hexadecimal, always six digits and lowercase. */
   onValueChange?: (value: string) => void;
   /**
-   * As amostras da grade. Sem elas, um leque de tons gerado - util para
-   * experimentar, e nao para representar uma marca: um construtor de tema
-   * entrega aqui a paleta do cliente.
+   * The grid swatches. Without them, a generated range of tones - useful for
+   * experimenting, and not for representing a brand: a theme builder
+   * hands the client's palette in here.
    */
   swatches?: ColorSwatch[];
-  /** Quantas amostras por linha. E tambem o passo das setas para cima e para baixo. */
+  /** How many swatches per row. It is also the step of the up and down arrows. */
   columns?: number;
   /**
-   * Texto acima da grade. Sem ele, a grade leva o nome de `labels.swatches`.
-   * Dentro de um `Field` ele vira so o nome da grade, sem aparecer: quem
-   * escreve o rotulo na tela ali e o `FieldLabel`.
+   * Text above the grid. Without it, the grid takes the name from `labels.swatches`.
+   * Inside a `Field` it becomes just the grid's name, without appearing: whoever
+   * writes the label on screen there is `FieldLabel`.
    */
   label?: ReactNode;
-  /** Esconde o campo de texto e deixa so a grade. */
+  /** Hides the text field and leaves only the grid. */
   hideInput?: boolean;
   disabled?: boolean;
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto
-   * das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o
-   * de cada amostra em texto puro, que recebe o hexadecimal dela. A amostra
-   * `{ value, label }` se nomeia pelo proprio `label`. Passe so os que mudam.
+   * The piece's texts, to change the language: `swatches` is the name of the set
+   * of swatches when there is no `label`, `hex` that of the text field and `swatch` that
+   * of each plain-text swatch, which receives its hexadecimal. A
+   * `{ value, label }` swatch is named by its own `label`. Pass only the ones that change.
    */
   labels?: Partial<ColorPickerLabels>;
-  /** Classe por parte: `label`, `swatches`, `swatch`, `field`, `preview`, `input`. */
+  /** Class per part: `label`, `swatches`, `swatch`, `field`, `preview`, `input`. */
   classNames?: Slots<"label" | "swatches" | "swatch" | "field" | "preview" | "input">;
 };
 

@@ -42,8 +42,8 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-describe("os hooks que atravessam para o nativo", () => {
-  test("a raiz do nativo exporta os doze, e nenhum hook de navegador", () => {
+describe("the hooks that cross over to native", () => {
+  test("the native root exports the twelve, and no browser hook", () => {
     const exported = Object.keys(native).filter((name) => /^use[A-Z]/.test(name));
     for (const name of [
       "useCounter",
@@ -66,7 +66,7 @@ describe("os hooks que atravessam para o nativo", () => {
     }
   });
 
-  test("estado: disclosure, counter, toggle, lista, setState e previous", () => {
+  test("state: disclosure, counter, toggle, list, setState and previous", () => {
     const { result, rerender } = renderHook(
       (value: number) => ({
         disclosure: useDisclosure(),
@@ -100,7 +100,7 @@ describe("os hooks que atravessam para o nativo", () => {
     expect(result.current.first).toBe(false);
   });
 
-  test("tempo: debounce, throttle, interval e timeout limpam no desmonte", () => {
+  test("time: debounce, throttle, interval and timeout clean up on unmount", () => {
     const debounced = mock(() => {});
     const throttled = mock(() => {});
     const tick = mock(() => {});
@@ -142,8 +142,8 @@ describe("os hooks que atravessam para o nativo", () => {
   });
 });
 
-describe("os consertos que atravessam pelo espelho", () => {
-  test("disclosure: duas alternancias no mesmo act voltam a fechado e avisam uma vez cada", () => {
+describe("the fixes that cross over through the mirror", () => {
+  test("disclosure: two toggles in the same act go back to closed and notify once each", () => {
     const onOpen = mock(() => {});
     const onClose = mock(() => {});
     const { result } = renderHook(() => useDisclosure(false, { onOpen, onClose }), undefined);
@@ -166,7 +166,7 @@ describe("os consertos que atravessam pelo espelho", () => {
     expect(result.current[1]).toBe(before);
   });
 
-  test("debounce: trocar o wait nao perde a chamada pendente", () => {
+  test("debounce: changing wait does not lose the pending call", () => {
     const callback = mock((value: string) => void value);
     const { result, rerender } = renderHook(
       (wait: number) => useDebouncedCallback(callback, wait),
@@ -178,7 +178,7 @@ describe("os consertos que atravessam pelo espelho", () => {
     expect(callback.mock.calls).toEqual([["a"]]);
   });
 
-  test("throttle: trocar o wait entrega a que esperava", () => {
+  test("throttle: changing wait delivers the one that was waiting", () => {
     const callback = mock((value: number) => void value);
     const { result, rerender } = renderHook(
       (wait: number) => useThrottledCallback(callback, wait),
@@ -193,7 +193,7 @@ describe("os consertos que atravessam pelo espelho", () => {
     expect(callback.mock.calls).toEqual([[1], [2]]);
   });
 
-  test("insert com indice que nao e numero vai para o fim", () => {
+  test("insert with an index that is not a number goes to the end", () => {
     const { result } = renderHook(() => useListState([1, 2]), undefined);
     act(() => result.current[1].insert(Number.NaN, 3));
     expect(result.current[0]).toEqual([1, 2, 3]);

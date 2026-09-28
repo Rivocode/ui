@@ -1,6 +1,6 @@
 import { AlertDialog, AlertDialogClose, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger, Button } from '@rivocode/ui'
 
-/** Cancelamento */
+/** Cancellation */
 export function Cancelling() {
   return (
     <div className="min-h-72">

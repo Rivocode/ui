@@ -13,34 +13,34 @@ import {
   requireChrome,
   slug,
 } from "./portraits";
-import { servir } from "./serve";
+import { serveDemo } from "./serve";
 
 const PAGES = [
-  { rota: "/index.html", name: "vitrine", height: 2600, alturaCelular: 4200 },
-  { rota: "/dialog.html", name: "dialogo", height: 2800, alturaCelular: 2800 },
-  { rota: "/listagem.html", name: "listagem", height: 1900, alturaCelular: 2000 },
-  { rota: "/flutuantes.html", name: "flutuantes", height: 1120, alturaCelular: 1700 },
-  { rota: "/datas.html", name: "datas", height: 1240, alturaCelular: 1800 },
-  { rota: "/formulario.html", name: "formulario", height: 1560, alturaCelular: 3600 },
-  { rota: "/navegacao.html", name: "navegacao", height: 1000, alturaCelular: 1200 },
-  { rota: "/folhas.html", name: "folhas", height: 1440, alturaCelular: 1440 },
-  { rota: "/consulta.html", name: "consulta", height: 2000, alturaCelular: 3200 },
-  { rota: "/completos.html", name: "completos", height: 1900, alturaCelular: 3400 },
-  { rota: "/graficos.html", name: "graficos", height: 1700, alturaCelular: 4000 },
-  { rota: "/controles.html", name: "controles", height: 1900, alturaCelular: 3800 },
-  { rota: "/dados.html", name: "dados", height: 2520, alturaCelular: 3700 },
-  { rota: "/novas.html", name: "novas", height: 29600, alturaCelular: 43200 },
-  { rota: "/painel.html", name: "painel", height: 3000, alturaCelular: 5000 },
-  { rota: "/paleta.html", name: "paleta", height: 1120, alturaCelular: 1120 },
-  { rota: "/ia.html", name: "ia", height: 10800, alturaCelular: 16800 },
-  { rota: "/arrastar.html", name: "arrastar", height: 4200, alturaCelular: 7600 },
-  { rota: "/editor.html", name: "editor", height: 5200, alturaCelular: 10400 },
-  { rota: "/tour.html", name: "tour", height: 900, alturaCelular: 900 },
-  { rota: "/tour-claro.html", name: "tour-claro", height: 900, alturaCelular: 900 },
-  { rota: "/cronograma.html", name: "cronograma", height: 5600, alturaCelular: 6400 },
+  { route: "/index.html", name: "vitrine", height: 2600, phoneHeight: 4200 },
+  { route: "/dialog.html", name: "dialogo", height: 2800, phoneHeight: 2800 },
+  { route: "/listagem.html", name: "listagem", height: 1900, phoneHeight: 2000 },
+  { route: "/flutuantes.html", name: "flutuantes", height: 1120, phoneHeight: 1700 },
+  { route: "/datas.html", name: "datas", height: 1240, phoneHeight: 1800 },
+  { route: "/formulario.html", name: "formulario", height: 1560, phoneHeight: 3600 },
+  { route: "/navegacao.html", name: "navegacao", height: 1000, phoneHeight: 1200 },
+  { route: "/folhas.html", name: "folhas", height: 1440, phoneHeight: 1440 },
+  { route: "/consulta.html", name: "consulta", height: 2000, phoneHeight: 3200 },
+  { route: "/completos.html", name: "completos", height: 1900, phoneHeight: 3400 },
+  { route: "/graficos.html", name: "graficos", height: 1700, phoneHeight: 4000 },
+  { route: "/controles.html", name: "controles", height: 1900, phoneHeight: 3800 },
+  { route: "/dados.html", name: "dados", height: 2520, phoneHeight: 3700 },
+  { route: "/novas.html", name: "novas", height: 29600, phoneHeight: 43200 },
+  { route: "/painel.html", name: "painel", height: 3000, phoneHeight: 5000 },
+  { route: "/paleta.html", name: "paleta", height: 1120, phoneHeight: 1120 },
+  { route: "/ia.html", name: "ia", height: 10800, phoneHeight: 16800 },
+  { route: "/arrastar.html", name: "arrastar", height: 4200, phoneHeight: 7600 },
+  { route: "/editor.html", name: "editor", height: 5200, phoneHeight: 10400 },
+  { route: "/tour.html", name: "tour", height: 900, phoneHeight: 900 },
+  { route: "/tour-claro.html", name: "tour-claro", height: 900, phoneHeight: 900 },
+  { route: "/cronograma.html", name: "cronograma", height: 5600, phoneHeight: 6400 },
 ];
 
-const LARGURA_JANELA_MINIMA = 500;
+const MIN_WINDOW_WIDTH = 500;
 
 const FROZEN_CLOCK = Date.UTC(2026, 9, 15, 13, 0, 0);
 
@@ -67,7 +67,7 @@ const SLICE_HEIGHT = 2048;
 
 await requireChrome();
 
-const servidor = servir();
+const server = serveDemo();
 const chrome = await launchChrome([
   "--disable-gpu",
   "--force-color-profile=srgb",
@@ -79,18 +79,18 @@ await chrome.send("Emulation.setLocaleOverride", { locale: "pt-BR" });
 await chrome.send("Emulation.setFocusEmulationEnabled", { enabled: true });
 await chrome.send("Page.addScriptToEvaluateOnNewDocument", { source: FROZEN_CLOCK_SCRIPT });
 
-const SHOTS = PAGES.flatMap(({ rota, name, height, alturaCelular }) => [
-  { rota, output: `demo/dist/${name}.png`, janela: `1240,${height}` },
+const SHOTS = PAGES.flatMap(({ route, name, height, phoneHeight }) => [
+  { route, output: `demo/dist/${name}.png`, viewport: `1240,${height}` },
   {
-    rota: `/celular.html#.${rota}`,
+    route: `/celular.html#.${route}`,
     output: `demo/dist/${name}-celular.png`,
-    janela: `${LARGURA_JANELA_MINIMA},${alturaCelular}`,
+    viewport: `${MIN_WINDOW_WIDTH},${phoneHeight}`,
   },
 ]);
 
 const SECTION_WINDOW = "1240,900";
 
-const asked = process.argv.indexOf("--secao");
+const asked = process.argv.indexOf("--section");
 const wanted = asked === -1 ? "" : (process.argv[asked + 1] ?? "");
 
 const chosen = SECTIONS.filter((section) =>
@@ -98,22 +98,22 @@ const chosen = SECTIONS.filter((section) =>
 );
 
 const SECTION_SHOTS = chosen.map((section) => ({
-  rota: address(section),
+  route: address(section),
   output: `${SHOTS_DIR}/${shotName(section)}.png`,
-  janela: SECTION_WINDOW,
+  viewport: SECTION_WINDOW,
 }));
 
 if (asked !== -1 && SECTION_SHOTS.length === 0) {
   console.error(
-    `Nenhuma secao declarada casa com "${wanted}". As declaradas estao em` +
-      `\nscripts/portraits.ts, e marcar uma nova e por \`data-rc-shot\` no demo:\n` +
+    `No declared section matches "${wanted}". The declared ones are in` +
+      `\nscripts/portraits.ts, and marking a new one is done with \`data-rc-shot\` in the demo:\n` +
       SECTIONS.map((s) => `  ${s.page}/${slug(s.name)}/${s.theme}`).join("\n"),
   );
   process.exit(1);
 }
 
-async function servedBy(rota: string, found = new Set<string>()) {
-  const [path, hash = ""] = rota.split("#");
+async function servedBy(route: string, found = new Set<string>()) {
+  const [path, hash = ""] = route.split("#");
   const html = `demo${path}`;
   if (found.has(html)) return found;
   found.add(html);
@@ -210,13 +210,13 @@ const SETTLE_SCRIPT = `(async () => {
     }
     await new Promise((done) => setTimeout(done, ${CALM_INTERVAL}));
   }
-  return documents().every(loaded) ? "a pagina nao parou de mudar" : "a pagina nao terminou de carregar";
+  return documents().every(loaded) ? "the page did not stop changing" : "the page did not finish loading";
 })()`;
 
 let visits = 0;
 
-async function shoot(rota: string, output: string, janela: string) {
-  const [width, height] = janela.split(",").map(Number) as [number, number];
+async function shoot(route: string, output: string, viewport: string) {
+  const [width, height] = viewport.split(",").map(Number) as [number, number];
   await chrome.send("Emulation.setDeviceMetricsOverride", {
     width,
     height,
@@ -224,9 +224,9 @@ async function shoot(rota: string, output: string, janela: string) {
     mobile: false,
   });
 
-  const [path, hash] = rota.split("#");
-  const visit = `?visita=${++visits}`;
-  const url = `http://127.0.0.1:${servidor.port}${path}${visit}${hash === undefined ? "" : `#${hash}`}`;
+  const [path, hash] = route.split("#");
+  const visit = `?visit=${++visits}`;
+  const url = `http://127.0.0.1:${server.port}${path}${visit}${hash === undefined ? "" : `#${hash}`}`;
   await chrome.send("Page.navigate", { url });
 
   let settled = "";
@@ -239,7 +239,7 @@ async function shoot(rota: string, output: string, janela: string) {
   }
 
   if (settled !== "ok") {
-    console.error(`${output}: ${settled || "a navegacao nao chegou"} em ${rota}.`);
+    console.error(`${output}: ${settled || "the navigation did not arrive"} at ${route}.`);
     process.exit(1);
   }
 
@@ -258,20 +258,20 @@ async function shoot(rota: string, output: string, janela: string) {
   );
 }
 
-for (const { rota, output, janela } of asked === -1
+for (const { route, output, viewport } of asked === -1
   ? [...SHOTS, ...SECTION_SHOTS]
   : SECTION_SHOTS) {
-  const served = await servedBy(rota).catch(() => undefined);
+  const served = await servedBy(route).catch(() => undefined);
   if (!served) {
-    console.log(`${output}  pulou: a rota ${rota} cita pagina que nao existe nesta arvore`);
+    console.log(`${output}  skipped: the route ${route} cites a page that does not exist in this tree`);
     continue;
   }
 
-  await shoot(rota, output, janela);
+  await shoot(route, output, viewport);
   await stampBuild(output, await buildStamp([...served]));
   const bytes = await Bun.file(output).size;
   console.log(`${output}  ${(bytes / 1024).toFixed(0)} KB`);
 }
 
 chrome.close();
-await servidor.stop(true);
+await server.stop(true);

@@ -1,6 +1,6 @@
 import { Container, PageHeader } from '@rivocode/ui'
 
-/** Formulário de cadastro */
+/** Sign-up form */
 export function Form() {
   return (
     <div className="w-full rounded-lg border border-dashed border-border">
@@ -15,7 +15,7 @@ export function Form() {
   )
 }
 
-/** Como região principal */
+/** As the main region */
 export function AsMain() {
   return (
     <div className="w-full rounded-lg border border-dashed border-border">

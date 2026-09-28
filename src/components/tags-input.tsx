@@ -20,21 +20,24 @@ export type TagsInputProps = Omit<
   ComponentProps<"input">,
   "value" | "defaultValue" | "onChange" | "max" | "name"
 > & {
-  /** As fichas de agora, quando quem usa guarda a lista. */
+  /** The current tags, when the consumer keeps the list. */
   value?: string[];
-  /** As fichas do primeiro desenho, quando a peca guarda a propria lista. */
+  /** The tags of the first render, when the piece keeps its own list. */
   defaultValue?: string[];
-  /** Avisado com a lista inteira a cada ficha que entra ou sai. */
+  /** Notified with the whole list on each tag that comes in or leaves. */
   onValueChange?: (value: string[]) => void;
-  /** O que fecha uma ficha alem do Enter. Virgula por padrao. */
+  /** What closes a tag besides Enter. Comma by default. */
   separators?: string[];
-  /** Teto de fichas. Alcancado, o campo para de aceitar, mas continua focado e o Backspace ainda tira a ultima. */
+  /**
+   * Cap on tags. Once reached, the field stops accepting, but stays focused and Backspace still
+   * removes the last one.
+   */
   max?: number;
-  /** Cada ficha vai ao formulario nativo como um campo com este nome, e o texto pela metade nao vai. */
+  /** Each tag goes to the native form as a field with this name, and half-typed text does not. */
   name?: string;
-  /** O que o leitor de tela ouve nos botoes da peca. `remove` recebe a ficha. */
+  /** What the screen reader hears on the piece's buttons. `remove` receives the tag. */
   labels?: { remove?: (tag: string) => string };
-  /** Classe por parte: `field`, `tag`, `remove`, `input`. */
+  /** Class per part: `field`, `tag`, `remove`, `input`. */
   classNames?: Slots<"field" | "tag" | "remove" | "input">;
 };
 

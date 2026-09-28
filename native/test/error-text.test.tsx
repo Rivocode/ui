@@ -6,16 +6,16 @@ import { ChartContainer } from "../src/chart/chart";
 import { byClass, render, textOf } from "./helpers";
 
 /*
- * Os mesmos tres textos que o web soltou do JSX estavam cravados aqui, e o
- * nativo ficou para tras: o titulo do erro do grafico, o titulo do erro da
- * lista e a linha da busca sem resultado. Uma tela que carrega duas listagens
- * nao conseguia dizer qual delas caiu, e um produto que nao fala portugues nao
- * conseguia dizer nada - do lado do celular, que e onde ele mais aparece.
+ * The same three texts the web freed from the JSX were hardcoded here, and
+ * native fell behind: the chart error title, the list error title and the
+ * no-results search line. A screen that loads two listings could not say which
+ * one failed, and a product that does not speak Portuguese could say nothing -
+ * on the phone side, which is where it shows up the most.
  *
- * O nome de prop e o mesmo dos dois lados de proposito: `errorTitle`,
- * `errorMessage` e `noResultsMessage`. Quem escreve a tela de web e a de
- * celular escreve as duas na mesma semana, e prop com nome parecido mas nao
- * igual custa uma consulta a doc por peca.
+ * The prop name is the same on both sides on purpose: `errorTitle`,
+ * `errorMessage` and `noResultsMessage`. Whoever writes the web screen and the
+ * phone screen writes both in the same week, and a prop with a similar but not
+ * equal name costs one doc lookup per piece.
  */
 
 const ROWS = [
@@ -43,14 +43,14 @@ function chart(props: Partial<Parameters<typeof ChartContainer>[0]> = {}) {
 }
 
 describe("DataList", () => {
-  test("sem errorTitle o aviso continua de uma linha so, como sempre foi", () => {
+  test("without errorTitle the notice stays a single line, as it always was", () => {
     const screen = render(list({ isError: true }));
     expect(textOf(screen)).toContain("Não foi possível carregar a lista.");
-    // Uma linha de texto no aviso, e nao duas: o titulo nao tem padrao aqui.
+    // One line of text in the notice, not two: the title has no default here.
     expect(byClass(screen, /text-danger-text/).length).toBe(1);
   });
 
-  test("errorTitle diz qual lista caiu, e a mensagem detalha embaixo", () => {
+  test("errorTitle says which list failed, and the message details it below", () => {
     const screen = render(
       list({
         isError: true,
@@ -64,11 +64,11 @@ describe("DataList", () => {
     expect(byClass(screen, /text-danger-text/).length).toBe(2);
   });
 
-  test("sem noResultsMessage, a busca vazia continua com a linha de sempre", () => {
+  test("without noResultsMessage, the empty search keeps the usual line", () => {
     expect(textOf(render(list({ filter: "zzz" })))).toContain("Nenhum resultado para a busca.");
   });
 
-  test("noResultsMessage troca a linha da busca vazia, sem tocar no empty", () => {
+  test("noResultsMessage replaces the empty-search line, without touching empty", () => {
     const screen = render(
       list({
         filter: "zzz",
@@ -79,24 +79,24 @@ describe("DataList", () => {
 
     expect(textOf(screen)).toContain("Nenhuma nota bate com esse texto.");
     expect(textOf(screen)).not.toContain("Nenhum resultado para a busca.");
-    // Filtro que zerou nao e consulta vazia: o `empty` fica reservado ao banco.
+    // A filter that emptied the list is not an empty query: `empty` stays reserved for the database.
     expect(textOf(screen)).not.toContain("Nenhuma nota por aqui");
   });
 });
 
 describe("ChartContainer", () => {
-  test("sem errorTitle, o grafico continua com o titulo de sempre", () => {
+  test("without errorTitle, the chart keeps the usual title", () => {
     expect(textOf(chart({ isError: true }))).toContain("Não foi possível carregar o gráfico");
   });
 
-  test("errorTitle diz qual grafico do painel caiu", () => {
+  test("errorTitle says which dashboard chart failed", () => {
     const screen = chart({ isError: true, errorTitle: "Não foi possível carregar o faturamento" });
 
     expect(textOf(screen)).toContain("Não foi possível carregar o faturamento");
     expect(textOf(screen)).not.toContain("Não foi possível carregar o gráfico");
   });
 
-  test("errorTitle e errorMessage sao o par, e continuam aparecendo juntos", () => {
+  test("errorTitle and errorMessage are a pair, and still appear together", () => {
     const screen = chart({
       isError: true,
       errorTitle: "Não foi possível carregar o faturamento",
@@ -109,24 +109,25 @@ describe("ChartContainer", () => {
 });
 
 /*
- * O erro vence o carregando, e os dois pacotes tem que concordar.
+ * Error wins over loading, and both packages have to agree.
  *
- * O `ChartContainer` dos DOIS lados ordenava ao contrario - carregando antes
- * de erro -, entao consulta que falhou durante um refetch mostrava esqueleto e
- * escondia a falha. No celular doi mais: nao ha barra de rede visivel, e a
- * pessoa fica olhando um carregamento que nunca termina, sem o botao de tentar
- * de novo. `DataList` e `DataTable` sempre ordenaram certo, e a doc ja
- * prometia essa ordem - as pecas de grafico e que discordavam do texto.
+ * `ChartContainer` on BOTH sides ordered it the other way around - loading
+ * before error -, so a query that failed during a refetch showed a skeleton and
+ * hid the failure. On the phone it hurts more: there is no visible network bar,
+ * and the person keeps staring at a loading state that never ends, without the
+ * retry button. `DataList` and `DataTable` always ordered it right, and the doc
+ * already promised that order - it was the chart pieces that disagreed with the
+ * text.
  */
-describe("erro vence carregando", () => {
-  test("o DataList mostra o erro, e nao o esqueleto", () => {
+describe("error wins over loading", () => {
+  test("DataList shows the error, not the skeleton", () => {
     const screen = render(list({ isLoading: true, isError: true }));
 
     expect(textOf(screen)).toContain("Não foi possível carregar a lista.");
     expect(byClass(screen, /bg-skeleton/)).toHaveLength(0);
   });
 
-  test("o ChartContainer mostra o erro, e nao o esqueleto", () => {
+  test("ChartContainer shows the error, not the skeleton", () => {
     const screen = chart({ isLoading: true, isError: true });
 
     expect(textOf(screen)).toContain("Não foi possível carregar o gráfico");

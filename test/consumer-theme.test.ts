@@ -18,25 +18,25 @@ const complete = (selector: string, without: string[] = []) =>
 
 const one = (css: string) => checkThemes([{ file: "tema.css", css }], ALL);
 
-describe("o catalogo de papeis", () => {
-  test("sai do CSS do tema, e nao de uma lista escrita a mao", () => {
+describe("the role catalog", () => {
+  test("comes from the theme CSS, and not from a hand-written list", () => {
     expect(ALL).toContain("--rc-font-sans");
     expect(ALL).toContain("--rc-bg");
     expect(new Set(ALL).size).toBe(ALL.length);
   });
 
-  test("os tres papeis de acabamento nao entram na conta do obrigatorio", () => {
+  test("the three finishing roles do not count as required", () => {
     for (const role of Object.keys(OPTIONAL)) {
       expect(ALL).toContain(role);
       expect(REQUIRED).not.toContain(role);
     }
   });
 
-  test("token de forma nao e papel de tema: ele tem valor de :root por baixo", () => {
+  test("a shape token is not a theme role: it has a :root value underneath", () => {
     for (const token of SHAPE_TOKENS) expect(REQUIRED).not.toContain(token);
   });
 
-  test("todo papel obrigatorio diz o que acontece na tela sem ele", () => {
+  test("every required role says what happens on screen without it", () => {
     for (const role of REQUIRED) {
       const effect = effectOf(role)?.effect ?? "";
       expect(effect.length).toBeGreaterThan(40);
@@ -45,8 +45,8 @@ describe("o catalogo de papeis", () => {
   });
 });
 
-describe("o que o comando acusa", () => {
-  test("tema completo passa sem uma linha de acusacao", () => {
+describe("what the command reports", () => {
+  test("a complete theme passes without a single complaint line", () => {
     const [theme] = one(complete('[data-rc-theme="acme"]'));
 
     expect(theme?.selector).toBe('[data-rc-theme="acme"]');
@@ -54,17 +54,17 @@ describe("o que o comando acusa", () => {
     expect(theme?.declared).toBe(REQUIRED.length);
   });
 
-  test("tema sem `--rc-font-sans` acusa, e a acusacao fala da tela", () => {
+  test("a theme without `--rc-font-sans` is reported, and the report talks about the screen", () => {
     const [theme] = one(complete('[data-rc-theme="neon"]', ["--rc-font-sans"]));
     const [hole] = theme!.missing;
 
     expect(theme?.missing).toHaveLength(1);
     expect(hole?.role).toBe("--rc-font-sans");
     expect(hole?.silent).toBe(true);
-    expect(hole?.effect).toContain("fonte do navegador");
+    expect(hole?.effect).toContain("browser font");
   });
 
-  test("papel que entrou numa versao nova chega com a versao junto", () => {
+  test("a role added in a new version comes with that version", () => {
     const [theme] = one(complete('[data-rc-theme="neon"]', Object.keys(ARRIVED)));
 
     for (const hole of theme!.missing) {
@@ -73,14 +73,14 @@ describe("o que o comando acusa", () => {
     }
   });
 
-  test("a falta de cor tambem e cobrada, e separada da quebra calada", () => {
+  test("a missing color is also demanded, and kept apart from the silent break", () => {
     const [theme] = one(complete('[data-rc-theme="acme"]', ["--rc-accent", "--rc-accent-hover"]));
 
     expect(theme!.missing.find((hole) => hole.role === "--rc-accent")?.silent).toBe(false);
     expect(theme!.missing.find((hole) => hole.role === "--rc-accent-hover")?.silent).toBe(true);
   });
 
-  test("papel escrito com um dedo errado vira sugestao, e nao ruido", () => {
+  test("a role typed with a wrong finger becomes a suggestion, and not noise", () => {
     const css = complete('[data-rc-theme="acme"]', ["--rc-font-sans"]).replace(
       "}\n",
       '  --rc-font-san: "Inter";\n}\n',
@@ -92,7 +92,7 @@ describe("o que o comando acusa", () => {
     );
   });
 
-  test("a paleta do cliente nao vira papel desconhecido", () => {
+  test("the client palette does not become an unknown role", () => {
     const css = complete('[data-rc-theme="acme"]').replace(
       "}\n",
       "  --rc-p-azul-500: oklch(62% 0.19 250);\n}\n",
@@ -102,8 +102,8 @@ describe("o que o comando acusa", () => {
   });
 });
 
-describe("como ele le o CSS", () => {
-  test("o mesmo seletor em dois arquivos conta como um tema so", () => {
+describe("how it reads the CSS", () => {
+  test("the same selector in two files counts as a single theme", () => {
     const reports = checkThemes(
       [
         { file: "cores.css", css: complete('[data-rc-theme="acme"]', ["--rc-font-sans"]) },
@@ -117,7 +117,7 @@ describe("como ele le o CSS", () => {
     expect(reports[0]?.files).toEqual(["cores.css", "fontes.css"]);
   });
 
-  test("dois temas no mesmo arquivo sao dois relatorios", () => {
+  test("two themes in the same file are two reports", () => {
     const reports = one(
       complete('[data-rc-theme="neon"]', ["--rc-font-sans"]) + complete('[data-rc-theme="mint"]'),
     );
@@ -125,18 +125,18 @@ describe("como ele le o CSS", () => {
     expect(reports.map((theme) => theme.missing.length)).toEqual([1, 0]);
   });
 
-  test("bloco que so redefine forma nao e tema", () => {
+  test("a block that only redefines shape is not a theme", () => {
     expect(one(":root { --rc-radius-md: 0px; --rc-duration-base: 140ms; }")).toEqual([]);
   });
 
-  test("papel dentro de `@media` conta para o seletor de dentro", () => {
+  test("a role inside `@media` counts for the inner selector", () => {
     const css = `@media (prefers-color-scheme: dark) {\n${complete(":root")}}\n`;
 
     expect(one(css)[0]?.selector).toBe(":root");
     expect(one(css)[0]?.missing).toEqual([]);
   });
 
-  test("comentario nao esconde nem inventa papel", () => {
+  test("a comment neither hides nor invents a role", () => {
     const css = complete('[data-rc-theme="acme"]', ["--rc-bg"]).replace(
       "}\n",
       "  /* --rc-bg: red; */\n}\n",
@@ -146,7 +146,7 @@ describe("como ele le o CSS", () => {
   });
 });
 
-describe("o comando de verdade, pelo terminal", () => {
+describe("the real command, through the terminal", () => {
   const bench = mkdtempSync(join(tmpdir(), "rivocode-check-theme-"));
   const read = (path: string) => Bun.file(path).text();
 
@@ -166,12 +166,12 @@ describe("o comando de verdade, pelo terminal", () => {
   };
 
   /**
-   * O tema da casa inteiro, paleta e camada 3 juntas.
+   * The whole house theme, palette and layer 3 together.
    *
-   * O `complete()` acima escreve `red` em cada papel, e serve para a pergunta
-   * de completude - mas o comando passou a MEDIR contraste depois dela, e
-   * `red` nao e cor que a conta saiba ler. Tema de mentira nao prova mais que
-   * o comando sai com zero: so um tema de verdade prova.
+   * The `complete()` above writes `red` in each role, and serves the
+   * completeness question - but the command started MEASURING contrast after
+   * it, and `red` is not a color the math can read. A fake theme no longer
+   * proves the command exits with zero: only a real theme does.
    */
   const real = async (extra = "") =>
     (await read("src/tokens/palette.css")) +
@@ -179,15 +179,16 @@ describe("o comando de verdade, pelo terminal", () => {
     (await read("src/tokens/themes/rivocode-light.css")) +
     extra;
 
-  test("tema completo e legivel sai com codigo zero", async () => {
+  test("a complete and readable theme exits with code zero", async () => {
     const { code, output } = await run("completo.css", await real());
 
-    expect(output).toContain("Tema completo");
-    expect(output).toContain("Todo par acima do");
+    expect(output).toContain("Complete theme");
+    expect(output).toContain("Contrast, now that");
+    expect(output).toContain("Every pair above the");
     expect(code).toBe(0);
   });
 
-  test("tema sem a familia de fonte sai com codigo um, e diz o que acontece", async () => {
+  test("a theme without the font family exits with code one, and says what happens", async () => {
     const { code, output } = await run(
       "sem-fonte.css",
       complete('[data-rc-theme="neon"]', ["--rc-font-sans"]),
@@ -195,11 +196,11 @@ describe("o comando de verdade, pelo terminal", () => {
 
     expect(code).toBe(1);
     expect(output).toContain("--rc-font-sans");
-    expect(output).toContain("fonte do navegador");
-    expect(output).toContain("QUEBRA CALADA");
+    expect(output).toContain("browser font");
+    expect(output).toContain("SILENT BREAKAGE");
   });
 
-  test("papel faltando vem antes do contraste, e o contraste nem e medido", async () => {
+  test("a missing role comes before contrast, and contrast is not even measured", async () => {
     const { code, output } = await run(
       "sem-anel.css",
       (await real()).replace(/--rc-ring:[^;]+;/, ""),
@@ -207,11 +208,11 @@ describe("o comando de verdade, pelo terminal", () => {
 
     expect(code).toBe(1);
     expect(output).toContain("--rc-ring");
-    // Medir o que nao existe nao diz nada: a secao de contraste nao sai.
-    expect(output).not.toContain("Contraste, agora que");
+    // Measuring what does not exist says nothing: the contrast section is not printed.
+    expect(output).not.toContain("Contrast, now that");
   });
 
-  test("tema completo com um par abaixo do minimo sai com codigo um", async () => {
+  test("a complete theme with a pair below the minimum exits with code one", async () => {
     const { code, output } = await run(
       "cinza-claro.css",
       (await real()).replace(
@@ -221,35 +222,35 @@ describe("o comando de verdade, pelo terminal", () => {
     );
 
     expect(code).toBe(1);
-    expect(output).toContain("Tema completo");
-    expect(output).toContain("FALHA --rc-fg-muted sobre --rc-bg");
-    expect(output).toContain("abaixo do mínimo");
+    expect(output).toContain("Complete theme");
+    expect(output).toContain("FAIL  --rc-fg-muted on --rc-bg ");
+    expect(output).toContain("below the minimum");
   });
 
-  test("papel que a conta nao sabe ler nao passa calado", async () => {
+  test("a role the math cannot read does not pass silently", async () => {
     const { code, output } = await run("oklch.css", complete('[data-rc-theme="oklch"]'));
 
     expect(code).toBe(1);
-    expect(output).toContain("não resolveu para uma cor opaca que a conta lê");
-    expect(output).toContain("o que não se mede não se promete");
+    expect(output).toContain("did not resolve to an opaque color the math can read");
+    expect(output).toContain("what is not measured is not promised");
   });
 
-  test("arquivo sem tema nenhum falha em vez de passar calado", async () => {
+  test("a file with no theme at all fails instead of passing silently", async () => {
     const { code, output } = await run("vazio.css", ".botao { color: red; }");
 
     expect(code).toBe(1);
-    expect(output).toContain("Nenhum bloco de tema");
+    expect(output).toContain("No theme block");
   });
 
   /**
-   * O mapa do React Native pelo MESMO comando.
+   * The React Native map through the SAME command.
    *
-   * A extensao e o que separa as duas formas de tema: `.css` e a camada 3 do
-   * web, e `.ts`, `.mjs` ou `.js` e o mapa com `light` e `dark` que o
-   * `RivoProvider` nativo recebe. Dois CLIs para as duas formas divergiriam na
-   * primeira correcao que so um deles recebesse.
+   * The extension is what separates the two theme shapes: `.css` is the web
+   * layer 3, and `.ts`, `.mjs` or `.js` is the map with `light` and `dark` that
+   * the native `RivoProvider` receives. Two CLIs for the two shapes would
+   * diverge at the first fix only one of them got.
    */
-  test("o mapa do nativo entra pelo mesmo comando, pela extensao", async () => {
+  test("the native map goes through the same command, by extension", async () => {
     const { tokens } = await import("../native/tokens");
     const map = {
       light: tokens.themes["rivocode-light"],
@@ -263,11 +264,11 @@ describe("o comando de verdade, pelo terminal", () => {
 
     expect(output).toContain("acme / light");
     expect(output).toContain("acme / dark");
-    expect(output).toContain("Todo par acima do");
+    expect(output).toContain("Every pair above the");
     expect(code).toBe(0);
   });
 
-  test("mapa com um par abaixo do minimo sai com codigo um", async () => {
+  test("a map with a pair below the minimum exits with code one", async () => {
     const { tokens } = await import("../native/tokens");
     const map = {
       light: { ...tokens.themes["rivocode-light"], "fg-muted": "#b9bfc6" },
@@ -280,14 +281,14 @@ describe("o comando de verdade, pelo terminal", () => {
     );
 
     expect(code).toBe(1);
-    expect(output).toContain("FALHA fg-muted sobre bg");
+    expect(output).toContain("FAIL  fg-muted on bg ");
   });
 
-  test("extensao que o comando nao le falha dizendo quais ele le", async () => {
+  test("an extension the command does not read fails saying which ones it reads", async () => {
     const { code, output } = await run("tema.json", "{}");
 
     expect(code).toBe(1);
-    expect(output).toContain("Não sei ler");
+    expect(output).toContain("Cannot read");
     expect(output).toContain(".css");
   });
 });

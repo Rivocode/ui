@@ -121,7 +121,7 @@ const speech = (container: HTMLElement, rowKey: string) =>
 const liveChange = (container: HTMLElement) =>
   container.querySelector<HTMLElement>("[data-rc-change]")!.textContent;
 
-test("a frase falada diz o intervalo como a pessoa diz: 12 a 18 de outubro", () => {
+test("the spoken phrase says the interval the way a person says it: 12 a 18 de outubro", () => {
   expect(spokenRange({ start: day(10, 12), end: day(10, 19) })).toBe("12 a 18 de outubro");
   expect(spokenRange({ start: day(9, 28), end: day(10, 4) })).toBe("28 de setembro a 3 de outubro");
   expect(spokenRange({ start: day(12, 28), end: new Date(2027, 0, 4) })).toBe(
@@ -131,7 +131,7 @@ test("a frase falada diz o intervalo como a pessoa diz: 12 a 18 de outubro", () 
   expect(spokenRange({ start: day(10, 25), end: day(10, 25) })).toBe("25 de outubro");
 });
 
-test("fora do portugues, o intervalo segue a ordem do idioma, e nao a frase traduzida palavra a palavra", () => {
+test("outside Portuguese, the interval follows the language's order, and not the phrase translated word by word", () => {
   const en = { ...GANTT_WORDS, locale: "en-US" };
   expect(spokenRange({ start: day(10, 12), end: day(10, 19) }, en)).toBe("October 12 – 18");
   expect(spokenRange({ start: day(9, 28), end: day(10, 4) }, en)).toBe(
@@ -143,7 +143,7 @@ test("fora do portugues, o intervalo segue a ordem do idioma, e nao a frase trad
   expect(spokenRange({ start: day(10, 25), end: day(10, 25) }, en)).toBe("October 25");
 });
 
-test("o labels.range recebe os dois dias e o locale, e devolve a frase inteira", () => {
+test("labels.range receives both days and the locale, and returns the whole phrase", () => {
   const seen: Array<[Date, Date, string]> = [];
   const { container } = gantt({
     locale: "en-GB",
@@ -159,13 +159,13 @@ test("o labels.range recebe os dois dias e o locale, e devolve a frase inteira",
   expect(seen.every(([, , locale]) => locale === "en-GB")).toBe(true);
 });
 
-test("o fim e exclusivo: tarefa que acaba ao meio-dia conta o proprio dia", () => {
+test("the end is exclusive: a task ending at noon counts its own day", () => {
   expect(spokenRange({ start: day(10, 12), end: new Date(2026, 9, 18, 12) })).toBe(
     "12 a 18 de outubro",
   );
 });
 
-test("mover anda uma unidade da escala, e o mes preserva a hora", () => {
+test("moving goes one scale unit, and the month keeps the hour", () => {
   const task = { start: new Date(2026, 0, 31, 9), end: new Date(2026, 1, 3, 18) };
 
   expect(moveTask(task, "day", 1).start).toEqual(new Date(2026, 1, 1, 9));
@@ -176,7 +176,7 @@ test("mover anda uma unidade da escala, e o mes preserva a hora", () => {
   expect(month.end).toEqual(new Date(2026, 2, 3, 18));
 });
 
-test("encolher para no piso de um dia, e nao vira marco sem querer", () => {
+test("shrinking stops at a one-day floor, and does not become a milestone by accident", () => {
   const task = { start: day(10, 12), end: day(10, 14) };
 
   expect(resizeTask(task, "day", -1).end).toEqual(day(10, 13));
@@ -184,7 +184,7 @@ test("encolher para no piso de um dia, e nao vira marco sem querer", () => {
   expect(resizeTask(task, "week", -1).end).toEqual(day(10, 13));
 });
 
-test("arrastar a borda de inicio para no dia anterior ao fim", () => {
+test("dragging the start edge stops on the day before the end", () => {
   const task = { start: day(10, 12), end: day(10, 19) };
 
   expect(dragTask(task, "start", 2).start).toEqual(day(10, 14));
@@ -193,7 +193,7 @@ test("arrastar a borda de inicio para no dia anterior ao fim", () => {
   expect(dragTask(task, "move", -3)).toEqual({ start: day(10, 9), end: day(10, 16) });
 });
 
-test("o agrupamento guarda a ordem de chegada, e recolher tira so os filhos", () => {
+test("grouping keeps arrival order, and collapsing removes only the children", () => {
   const rows = buildRows(TASKS, new Set());
   expect(rows.map((row) => row.key)).toEqual(["g:Infraestrutura", "t:compra", "t:servidor", "t:virada"]);
 
@@ -204,7 +204,7 @@ test("o agrupamento guarda a ordem de chegada, e recolher tira so os filhos", ()
   expect(closed.map((row) => row.key)).toEqual(["g:Infraestrutura", "t:virada"]);
 });
 
-test("o cabecalho do dia tem um rotulo por dia e marca o fim de semana", () => {
+test("the day header has one label per day and marks the weekend", () => {
   const range = scaleRange(TASKS, "day", TODAY);
   const [months, days] = headerTiers(range, "day");
 
@@ -214,14 +214,14 @@ test("o cabecalho do dia tem um rotulo por dia e marca o fim de semana", () => {
   expect(saturday?.weekend).toBe(true);
 });
 
-test("a seta contorna quando a sucessora comeca antes do fim da anterior", () => {
+test("the arrow routes around when the successor starts before the predecessor ends", () => {
   expect(arrowPath({ x: 0, y: 20 }, { x: 100, y: 60 }, 40)).toBe("M 0 20 H 8 V 60 H 100");
   expect(arrowPath({ x: 100, y: 20 }, { x: 50, y: 60 }, 40)).toBe(
     "M 100 20 H 108 V 40 H 42 V 60 H 50",
   );
 });
 
-test("a grade e treegrid com nome, contagem real e titulo como cabecalho da linha", () => {
+test("the grid is a named treegrid, with the real count and the title as row header", () => {
   const { container } = gantt();
 
   const grid = screen.getByRole("treegrid", { name: "Implantação" });
@@ -244,7 +244,7 @@ test("a grade e treegrid com nome, contagem real e titulo como cabecalho da linh
   expect(group.getAttribute("aria-expanded")).toBe("true");
 });
 
-test("sem grupo, a grade e grid, e a coluna de responsavel so entra quando alguem tem", () => {
+test("without groups, the grid is a grid, and the assignee column only appears when someone has one", () => {
   const loose = TASKS.map(({ group: _group, assignee: _assignee, ...task }) => task);
   const { container } = gantt({ tasks: loose });
 
@@ -254,7 +254,7 @@ test("sem grupo, a grade e grid, e a coluna de responsavel so entra quando algue
   expect(container.querySelector("[aria-level]")).toBeNull();
 });
 
-test("a celula da linha do tempo diz datas, progresso e dependencia", () => {
+test("the timeline cell says dates, progress and dependency", () => {
   const { container } = gantt();
 
   expect(speech(container, "t:servidor")).toBe(
@@ -264,7 +264,7 @@ test("a celula da linha do tempo diz datas, progresso e dependencia", () => {
   expect(speech(container, "g:Infraestrutura")).toBe("2 tarefas, 1 a 18 de outubro");
 });
 
-test("a dependencia atrasada vira seta tracejada e e dita em voz alta", () => {
+test("a late dependency becomes a dashed arrow and is said out loud", () => {
   const late = TASKS.map((task) =>
     task.id === "servidor" ? { ...task, start: day(10, 5), end: day(10, 10) } : task,
   );
@@ -278,7 +278,7 @@ test("a dependencia atrasada vira seta tracejada e e dita em voz alta", () => {
   );
 });
 
-test("seta e anuncia: mover pelo teclado chama onTaskChange e diz o novo intervalo", () => {
+test("arrow and announce: moving by keyboard calls onTaskChange and says the new interval", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local">
@@ -301,7 +301,7 @@ test("seta e anuncia: mover pelo teclado chama onTaskChange e diz o novo interva
   expect(liveChange(container)).toBe("Instalar servidor: 13 a 20 de outubro");
 });
 
-test("a unidade da seta segue a escala: semana anda sete dias, mes anda um mes", () => {
+test("the arrow unit follows the scale: week moves seven days, month moves one month", () => {
   const onChange = mock();
   const { container, unmount } = render(
     <RivoProvider scope="local">
@@ -323,7 +323,7 @@ test("a unidade da seta segue a escala: semana anda sete dias, mes anda um mes",
   expect(monthly.mock.calls[0]![1].start).toEqual(day(11, 12));
 });
 
-test("se quem controla nao aplica a mudanca, nada e anunciado", () => {
+test("if the controller does not apply the change, nothing is announced", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local">
@@ -336,7 +336,7 @@ test("se quem controla nao aplica a mudanca, nada e anunciado", () => {
   expect(liveChange(container)).toBe("");
 });
 
-test("o marco anda, mas Shift com seta nao inventa duracao para ele", () => {
+test("a milestone moves, but Shift with arrow does not invent a duration for it", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local">
@@ -352,7 +352,7 @@ test("o marco anda, mas Shift com seta nao inventa duracao para ele", () => {
   expect(onChange.mock.calls[0]![1]).toEqual({ start: day(10, 26), end: day(10, 26), kind: "move" });
 });
 
-test("em RTL a seta da esquerda leva a tarefa para depois", () => {
+test("in RTL the left arrow moves the task later", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local" dir="rtl">
@@ -364,7 +364,7 @@ test("em RTL a seta da esquerda leva a tarefa para depois", () => {
   expect(onChange.mock.calls[0]![1].start).toEqual(day(10, 13));
 });
 
-test("so leitura: sem onTaskChange as setas navegam, e a grade se declara readonly", () => {
+test("read-only: without onTaskChange the arrows navigate, and the grid declares itself readonly", () => {
   const { container } = gantt();
 
   expect(screen.getByRole("treegrid").getAttribute("aria-readonly")).toBe("true");
@@ -376,7 +376,7 @@ test("so leitura: sem onTaskChange as setas navegam, e a grade se declara readon
   expect(document.activeElement).toBe(cell(container, "t:servidor", 3));
 });
 
-test("um so ponto de tabulacao, e as setas andam pelas celulas", () => {
+test("a single tab stop, and the arrows move through the cells", () => {
   const { container } = gantt();
 
   const stops = [...container.querySelectorAll('[data-rc-cell][tabindex="0"]')];
@@ -404,7 +404,7 @@ test("um so ponto de tabulacao, e as setas andam pelas celulas", () => {
   expect(document.activeElement).toBe(cell(container, "t:virada", 0));
 });
 
-test("o grupo recolhe pelo teclado e pelo clique, e avisa quem controla", () => {
+test("the group collapses by keyboard and by click, and notifies the controller", () => {
   const onCollapse = mock();
   const { container } = gantt({ onCollapsedGroupsChange: onCollapse });
 
@@ -424,7 +424,7 @@ test("o grupo recolhe pelo teclado e pelo clique, e avisa quem controla", () => 
   expect(cell(container, "t:compra", 0)).toBeTruthy();
 });
 
-test("Enter e clique no titulo escolhem a tarefa", () => {
+test("Enter and a click on the title select the task", () => {
   const onSelect = mock();
   const { container } = gantt({ onTaskSelect: onSelect });
 
@@ -437,7 +437,7 @@ test("Enter e clique no titulo escolhem a tarefa", () => {
   expect(onSelect.mock.calls[1]![0].id).toBe("virada");
 });
 
-test("arrastar a barra move em dias, e arrastar a borda muda a duracao", () => {
+test("dragging the bar moves in days, and dragging the edge changes the duration", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local">
@@ -460,7 +460,7 @@ test("arrastar a barra move em dias, e arrastar a borda muda a duracao", () => {
   expect(onChange.mock.calls[1]![1]).toEqual({ start: day(10, 12), end: day(10, 17), kind: "resize" });
 });
 
-test("o dedo nao arrasta: no toque a moldura rola, e a barra fica onde estava", () => {
+test("a finger does not drag: on touch the frame scrolls, and the bar stays where it was", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local">
@@ -476,7 +476,7 @@ test("o dedo nao arrasta: no toque a moldura rola, e a barra fica onde estava", 
   expect(onChange).not.toHaveBeenCalled();
 });
 
-test("a barra veste o tom e o progresso, e a linha de hoje aparece no periodo", () => {
+test("the bar wears the tone and the progress, and the today line shows in the period", () => {
   const { container } = gantt();
 
   const bar = cell(container, "t:servidor", 4).querySelector<HTMLElement>("[data-rc-bar]")!;
@@ -492,7 +492,7 @@ test("a barra veste o tom e o progresso, e a linha de hoje aparece no periodo", 
   expect(container.querySelectorAll("[data-rc-today]").length).toBe(2);
 });
 
-test("a linha de hoje passa por baixo dos rotulos: vem antes no DOM e o rotulo e opaco", () => {
+test("the today line runs under the labels: it comes first in the DOM and the label is opaque", () => {
   const { container } = gantt();
 
   const header = container.querySelector<HTMLElement>(`[role="columnheader"][aria-colindex="5"]`)!;
@@ -509,7 +509,7 @@ test("a linha de hoje passa por baixo dos rotulos: vem antes no DOM e o rotulo e
   expect(caption.className.split(" ")).toContain("bg-surface");
 });
 
-test("o rotulo da barra que tem sucessora abre espaco para a seta que sai dela", () => {
+test("the label of a bar with a successor makes room for the arrow leaving it", () => {
   const { container } = gantt();
   const offset = (id: string) => {
     const timeline = cell(container, `t:${id}`, 4);
@@ -526,7 +526,7 @@ test("o rotulo da barra que tem sucessora abre espaco para a seta que sai dela",
   expect(offset("virada")).toBeLessThan(16);
 });
 
-test("o mes que comeca antes da area visivel encolhe o rotulo ao pedaco que sobrou", () => {
+test("a month starting before the visible area shrinks the label to the remaining slice", () => {
   const { container } = gantt({ defaultScale: "week" });
   const viewport = container.querySelector<HTMLElement>('[role="treegrid"]')!;
   const labels = () =>
@@ -550,7 +550,7 @@ test("o mes que comeca antes da area visivel encolhe o rotulo ao pedaco que sobr
   expect(september()).toBe(0);
 });
 
-test("quinhentas tarefas entram, e so um punhado de linhas vai para o DOM", () => {
+test("five hundred tasks go in, and only a handful of rows reach the DOM", () => {
   const many: GanttTask[] = Array.from({ length: 500 }, (_, index) => ({
     id: String(index),
     title: `Tarefa ${index}`,
@@ -565,7 +565,7 @@ test("quinhentas tarefas entram, e so um punhado de linhas vai para o DOM", () =
   expect(drawn).toBeLessThan(60);
 });
 
-test("carregando: esqueleto, voz de espera e nenhuma grade vazia fingindo dado", () => {
+test("loading: skeleton, waiting voice and no empty grid pretending to be data", () => {
   const { container } = gantt({ tasks: undefined });
 
   expect(screen.queryByRole("treegrid")).toBeNull();
@@ -574,7 +574,7 @@ test("carregando: esqueleto, voz de espera e nenhuma grade vazia fingindo dado",
   expect(screen.getByRole("group", { name: "Implantação" }).getAttribute("aria-busy")).toBe("true");
 });
 
-test("erro vence carregando, e oferece tentar de novo", () => {
+test("error beats loading, and offers to try again", () => {
   const onRetry = mock();
   gantt({ tasks: undefined, isError: true, onRetry });
 
@@ -584,7 +584,7 @@ test("erro vence carregando, e oferece tentar de novo", () => {
   expect(screen.queryByRole("grid")).toBeNull();
 });
 
-test("vazio: o EmptyState quando existe, e a grade parada em foco quando nao", () => {
+test("empty: the EmptyState when there is one, and the idle grid in focus when not", () => {
   const { unmount } = gantt({
     tasks: [],
     empty: { title: "Nenhuma tarefa", description: "Crie a primeira para ver o cronograma." },
@@ -599,7 +599,7 @@ test("vazio: o EmptyState quando existe, e a grade parada em foco quando nao", (
   expect(grid.getAttribute("tabindex")).toBe("0");
 });
 
-test("coluna propria entra pela ordem pedida, e o titulo continua primeiro", () => {
+test("a custom column goes in the requested order, and the title stays first", () => {
   gantt({
     columns: [
       "end",
@@ -616,7 +616,7 @@ test("coluna propria entra pela ordem pedida, e o titulo continua primeiro", () 
   expect(screen.getAllByText("Feita")).toHaveLength(1);
 });
 
-test("no celular sobra so o titulo, e a divisoria da tabela sai", () => {
+test("on mobile only the title is left, and the table divider goes away", () => {
   const original = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -635,7 +635,7 @@ test("no celular sobra so o titulo, e a divisoria da tabela sai", () => {
   }
 });
 
-test("no celular o titulo quebra em duas linhas, e o cabecalho da linha guarda o nome inteiro", () => {
+test("on mobile the title wraps to two lines, and the row header keeps the full name", () => {
   const original = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -663,14 +663,14 @@ test("no celular o titulo quebra em duas linhas, e o cabecalho da linha guarda o
   }
 });
 
-test("na mesa o titulo corta numa linha, e o nome inteiro continua no title", () => {
+test("on desktop the title clips to one line, and the full name stays in title", () => {
   const { container } = gantt();
   const header = cell(container, "t:servidor", 0);
   expect(header.getAttribute("title")).toBe("Instalar servidor");
   expect(header.querySelector("span")!.className.split(" ")).toContain("truncate");
 });
 
-test("a divisoria da tabela anda pelo teclado e respeita o piso", () => {
+test("the table divider moves by keyboard and respects the floor", () => {
   gantt();
 
   const handle = screen.getByRole("separator", { name: "Largura da tabela" });
@@ -684,7 +684,7 @@ test("a divisoria da tabela anda pelo teclado e respeita o piso", () => {
   expect(handle.getAttribute("aria-valuenow")).toBe(handle.getAttribute("aria-valuemin"));
 });
 
-test("trocar a escala troca o cabecalho e avisa quem controla", () => {
+test("changing the scale changes the header and notifies the controller", () => {
   const onScale = mock();
   gantt({ onScaleChange: onScale });
 
@@ -693,7 +693,7 @@ test("trocar a escala troca o cabecalho e avisa quem controla", () => {
   expect(screen.getAllByText("out").length).toBeGreaterThan(0);
 });
 
-test("soltar vale onde o ponteiro soltou, mesmo sem o ultimo movimento ter desenhado", () => {
+test("release applies where the pointer was released, even if the last move was not drawn", () => {
   const onChange = mock();
   const { container } = render(
     <RivoProvider scope="local">
@@ -709,7 +709,7 @@ test("soltar vale onde o ponteiro soltou, mesmo sem o ultimo movimento ter desen
   expect(onChange.mock.calls[0]![1].start).toEqual(day(10, 15));
 });
 
-test("a linha segue a densidade: 40 no confortavel, 32 no compacto", () => {
+test("the row follows the density: 40 in comfortable, 32 in compact", () => {
   const { container, unmount } = gantt();
   expect(container.querySelector<HTMLElement>('[data-rc-row="task"]')!.style.height).toBe("40px");
   unmount();
@@ -724,7 +724,7 @@ test("a linha segue a densidade: 40 no confortavel, 32 no compacto", () => {
   ).toBe("32px");
 });
 
-test("a divisoria para de seguir o ponteiro quando o arrasto e cancelado ou perde a captura", () => {
+test("the divider stops following the pointer when the drag is canceled or loses capture", () => {
   for (const ending of ["pointerCancel", "lostPointerCapture"] as const) {
     const { unmount } = gantt();
     const handle = screen.getByRole("separator", { name: "Largura da tabela" });
@@ -741,7 +741,7 @@ test("a divisoria para de seguir o ponteiro quando o arrasto e cancelado ou perd
   }
 });
 
-test("desmontar no meio do arrasto da divisoria solta os ouvintes", () => {
+test("unmounting in the middle of a divider drag releases the listeners", () => {
   const { unmount } = gantt();
   const handle = screen.getByRole("separator", { name: "Largura da tabela" });
   const added: string[] = [];
@@ -763,7 +763,7 @@ test("desmontar no meio do arrasto da divisoria solta os ouvintes", () => {
   expect(removed.sort()).toEqual(added.sort());
 });
 
-test("mover por mes desloca o inicio e leva o fim junto, sem perder dia no fim do mes", () => {
+test("moving by month shifts the start and carries the end along, without losing a day at month end", () => {
   const cases: [Date, Date, number][] = [
     [new Date(2027, 0, 29), new Date(2027, 1, 1), 3],
     [new Date(2027, 0, 30), new Date(2027, 0, 31), 1],
@@ -794,7 +794,7 @@ test("mover por mes desloca o inicio e leva o fim junto, sem perder dia no fim d
   });
 });
 
-test("seta na escala por mes nao transforma a tarefa curta em marco", () => {
+test("an arrow on the month scale does not turn a short task into a milestone", () => {
   const onChange = mock();
   const initial: GanttTask[] = [
     { id: "revisao", title: "Revisão", start: new Date(2027, 0, 30), end: new Date(2027, 0, 31) },
@@ -816,7 +816,7 @@ test("seta na escala por mes nao transforma a tarefa curta em marco", () => {
   expect(timeline.querySelector("[data-rc-bar]")).not.toBeNull();
 });
 
-test("a barra, as escalas e o que o leitor de tela ouve saem de labels, e os meses do locale", () => {
+test("the bar, the scales and what the screen reader hears come from labels, and the months from the locale", () => {
   const { container } = gantt({
     locale: "en-US",
     labels: {

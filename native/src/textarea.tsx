@@ -8,9 +8,12 @@ import { TextInput } from "./text";
 
 export type TextareaProps = TextInputProps & {
   invalid?: boolean;
-  /** Altura inicial em linhas; o campo cresce com o conteudo. */
+  /** Initial height in rows; the field grows with the content. */
   rows?: number;
-  /** Recebe o texto a cada tecla, como o `onValueChange` do Textarea web. Convive com o `onChangeText`: os dois sao chamados. */
+  /**
+   * Receives the text on every keystroke, like the web Textarea
+   * `onValueChange`. Coexists with `onChangeText`: both are called.
+   */
   onValueChange?: (value: string) => void;
 };
 

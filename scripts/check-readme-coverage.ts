@@ -1,54 +1,56 @@
 /**
- * Guarda da promessa do README: peca que o catalogo tem e o README nao cita.
+ * Guard of the README's promise: a piece the catalog has and the README does not cite.
  *
- * O `check:pieces` ja confere o DIGITO - o README abre o catalogo dizendo "90
- * pecas." e falha se o numero envelhecer. O digito estava certo e a lista
- * abaixo dele nao: das 90 pecas, 49 apareciam em algum lugar do arquivo e 41
- * nao apareciam em lugar nenhum. Um numero verdadeiro em cima de uma lista que
- * cobre pouco mais da metade e pior que um numero errado, porque nada acusa e
- * o leitor confia nos dois.
+ * `check:pieces` already checks the DIGIT - the README opens the catalog saying
+ * "90 pieces." and fails if the number goes stale. The digit was right and the
+ * list below it was not: of the 90 pieces, 49 appeared somewhere in the file and
+ * 41 appeared nowhere. A true number on top of a list that covers little more
+ * than half is worse than a wrong number, because nothing flags it and the
+ * reader trusts both.
  *
- * Esta e a primeira guarda de uma familia nova aqui. As outras conferem
- * numero, caminho, cor, contraste, export; nenhuma conferia se uma lista
- * escrita a mao cobre o que ela promete cobrir.
+ * This is the first guard of a new family here. The others check number, path,
+ * color, contrast, export; none checked whether a handwritten list covers what
+ * it promises to cover.
  *
- * ## A decisao, porque ela nao e obvia
+ * ## The decision, because it is not obvious
  *
- * A tabela do README nao e o indice, e isso e escolha, e nao atraso. O
- * README e a pagina que o npm mostra: o trabalho dele e instalar alguem e
- * dizer a diferenca entre as pecas que se parecem - `Switch` contra
- * `Checkbox`, `Progress` contra `Meter`, `Accordion` contra `Collapsible`.
- * Cada peca ganha UMA linha curta na tabela da familia, e nao a pagina dela:
- * a linha diz de quem ela se distingue, e so. O indice de verdade e gerado,
- * mora em `/llms.txt` e nunca envelhece, e duplica-lo a mao seria criar o
- * segundo catalogo escrito a mao deste repositorio - o primeiro anunciou 55
- * pecas quando ja eram 83.
+ * The README table is not the index, and that is a choice, not a delay. The
+ * README is the page npm shows: its job is to get someone installed and to tell
+ * apart the pieces that look alike - `Switch` versus `Checkbox`, `Progress`
+ * versus `Meter`, `Accordion` versus `Collapsible`. Each piece gets ONE short
+ * line in its family's table, and not its page: the line says what it is told
+ * apart from, and that is all. The real index is generated, lives in
+ * `/llms.txt` and never goes stale, and duplicating it by hand would create the
+ * second handwritten catalog of this repository - the first one announced 55
+ * pieces when there were already 83.
  *
- * Entao a guarda cobra duas coisas diferentes, e as duas vem da mesma decisao:
+ * So the guard demands two different things, and both come from the same
+ * decision:
  *
- *   1. **A frase.** O paragrafo que abre o catalogo tem que dizer que a tabela
- *      NAO e o indice, e apontar onde o indice esta. Enquanto a frase mentir,
- *      a lista de baixo nao tem como estar certa.
- *   2. **A cobertura.** Toda peca do catalogo esta citada no README, ou tem
- *      linha em `OUT_OF_README` dizendo POR QUE nao esta. As duas respostas
- *      valem; o silencio, nao. E o mesmo acordo do `check:demo` e do
- *      `check:scripts`: a guarda nao consegue julgar se a peca merece linha,
- *      mas consegue exigir que alguem tenha julgado.
+ *   1. **The sentence.** The paragraph that opens the catalog has to say the
+ *      table is NOT the index, and point to where the index is. While the
+ *      sentence lies, the list below has no way of being right.
+ *   2. **The coverage.** Every catalog piece is cited in the README, or has a
+ *      line in `OUT_OF_README` saying WHY it is not. Both answers are valid;
+ *      silence is not. It is the same agreement as `check:demo` and
+ *      `check:scripts`: the guard cannot judge whether the piece deserves a
+ *      line, but it can demand that someone has judged.
  *
- * `OUT_OF_README` **so encolhe**, como o `SEM_VITRINE` da vitrine e o `OUT`
- * dos scripts: peca que passou a ser citada e erro, e a guarda manda apagar a
- * linha. Lista de excecao que nao encolhe vira o lugar onde a divida mora sem
- * incomodar ninguem.
+ * `OUT_OF_README` **only shrinks**, like the showcase's `SEM_VITRINE` and the
+ * scripts' `OUT`: a piece that became cited is an error, and the guard says to
+ * delete the line. An exception list that does not shrink becomes the place
+ * where debt lives without bothering anyone.
  *
- * A busca e por limite de palavra, pelo mesmo motivo do `check:demo`: `Card`
- * esta dentro de `CardHeader` e `Button` esta dentro de `ButtonGroup`. Sem o
- * limite, o `ButtonGroup` - que de fato nao esta citado - passaria verde para
- * sempre por causa das oito aparicoes de `Button`.
+ * The search is by word boundary, for the same reason as `check:demo`: `Card`
+ * is inside `CardHeader` and `Button` is inside `ButtonGroup`. Without the
+ * boundary, `ButtonGroup` - which is in fact not cited - would pass green
+ * forever because of the eight occurrences of `Button`.
  *
- * Citada quer dizer em qualquer lugar do arquivo, e nao so na tabela. O
- * `RivoProvider` e o `MaskedInput` tem secao propria e nao tem linha de tabela,
- * e cobrar a tabela obrigaria a guarda a entender o desenho do README - que
- * muda - em vez do que ela sabe conferir: se o nome aparece para quem le.
+ * Cited means anywhere in the file, and not only in the table. `RivoProvider`
+ * and `MaskedInput` have their own section and no table line, and demanding the
+ * table would force the guard to understand the README's layout - which changes
+ * - instead of what it knows how to check: whether the name shows up for the
+ * reader.
  */
 import { readdirSync } from "node:fs";
 
@@ -58,27 +60,27 @@ const DOCS = ".design-sync/docs";
 const README = "README.md";
 
 /**
- * O que a frase de abertura do catalogo tem que dizer.
+ * What the catalog's opening sentence has to say.
  *
- * Sao dois pedacos porque sao duas promessas: uma diz o que a tabela NAO e, a
- * outra diz onde esta o que ela nao e. Faltando qualquer uma, o leitor sai
- * achando que leu o catalogo inteiro.
+ * Two pieces because there are two promises: one says what the table is NOT,
+ * the other says where the thing it is not lives. Missing either, the reader
+ * walks away thinking they read the whole catalog.
  */
 const HONEST = [
-  { text: "não é o índice", why: "a tabela precisa dizer que nao e o catalogo inteiro" },
+  { text: "is not the index", why: "the table has to say it is not the whole catalog" },
   {
     text: "https://ds.rivocode.com.br/llms.txt",
-    why: "e para onde vai quem quer a lista completa, e ela e gerada",
+    why: "it is where whoever wants the full list goes, and it is generated",
   },
 ];
 
 /**
- * A mesma fonte do `check:pieces` e do `check:demo`.
+ * The same source as `check:pieces` and `check:demo`.
  *
- * `.design-sync/docs/` menos as partes, e o `findParent` de
- * `apps/docs/src/parts.ts` e quem decide o que e parte - o mesmo que a barra
- * lateral do site usa. Tres guardas contam peca, e contar diferente e o comeco
- * de toda contagem errada deste repositorio.
+ * `.design-sync/docs/` minus the parts, and `findParent` from
+ * `apps/docs/src/parts.ts` decides what a part is - the same one the site's
+ * sidebar uses. Three guards count pieces, and counting differently is the
+ * start of every wrong count in this repository.
  */
 function catalogPieces() {
   const names = readdirSync(DOCS)
@@ -90,14 +92,14 @@ function catalogPieces() {
 }
 
 /**
- * As pecas que o README nao cita, e o motivo de cada uma.
+ * The pieces the README does not cite, and the reason for each.
  *
- * O motivo e para quem for decidir se ainda vale ficar de fora, entao ele diz o
- * que IMPEDE, e nao que esta faltando. A lista chegou a ter 37 linhas - peca
- * que a irma cobria, grafico, nicho e divida de verdade - e zerou em
- * 25/09/2026, quando cada uma ganhou linha na tabela da familia dela. Zerar
- * mostrou que o argumento de "nicho" nao se sustentava: uma linha curta na
- * tabela custa menos que o paragrafo que justificava a ausencia.
+ * The reason is for whoever decides whether it is still worth leaving out, so
+ * it says what PREVENTS it, not that it is missing. The list once had 37 lines
+ * - pieces a sibling covered, charts, niche and real debt - and reached zero on
+ * 25/09/2026, when each one got a line in its family's table. Reaching zero
+ * showed the "niche" argument did not hold: a short table line costs less than
+ * the paragraph that justified the absence.
  */
 const OUT_OF_README: Record<string, string> = {};
 
@@ -110,10 +112,10 @@ for (const { text, why } of HONEST) {
   if (readme.includes(text)) continue;
 
   problems.push(
-    `${README} nao diz mais "${text}", na frase que abre o catalogo.\n` +
+    `${README} no longer says "${text}" in the sentence that opens the catalog.\n` +
       `    ${why}.\n` +
-      "    A tabela cobre uma parte das pecas de proposito, e a frase e o unico lugar\n" +
-      "    onde isso esta escrito. Sem ela, o leitor toma a tabela pelo catalogo.",
+      "    The table covers part of the pieces on purpose, and the sentence is the only\n" +
+      "    place where that is written. Without it, the reader takes the table for the catalog.",
   );
 }
 
@@ -128,9 +130,9 @@ for (const piece of pieces) {
 
     if (OUT_OF_README[piece]) {
       problems.push(
-        `\`${piece}\` esta em OUT_OF_README e JA e citada no ${README}.\n` +
-          "    A divida foi paga: apague a linha dela da lista. Excecao que nao encolhe\n" +
-          "    vira o lugar onde a peca invisivel se esconde.",
+        `\`${piece}\` is in OUT_OF_README and IS ALREADY cited in ${README}.\n` +
+          "    The debt was paid: delete its line from the list. An exception that does not\n" +
+          "    shrink becomes the place where the invisible piece hides.",
       );
     }
     continue;
@@ -142,36 +144,36 @@ for (const piece of pieces) {
   }
 
   problems.push(
-    `\`${piece}\` nao aparece em lugar nenhum do ${README}.\n` +
-      "    Ou ela ganha linha na tabela da familia dela - e a tabela diz a diferenca\n" +
-      "    entre ela e a vizinha parecida, que e o trabalho do README -, ou ganha linha\n" +
-      "    em OUT_OF_README, em scripts/check-readme-coverage.ts, dizendo o que a\n" +
-      "    impede. As duas respostas valem; o silencio, nao.",
+    `\`${piece}\` appears nowhere in ${README}.\n` +
+      "    Either it gets a line in its family's table - and the table says the difference\n" +
+      "    between it and the look-alike neighbor, which is the README's job -, or it gets a\n" +
+      "    line in OUT_OF_README, in scripts/check-readme-coverage.ts, saying what\n" +
+      "    prevents it. Both answers are valid; silence is not.",
   );
 }
 
 for (const piece of Object.keys(OUT_OF_README)) {
   if (!pieces.includes(piece)) {
     problems.push(
-      `\`${piece}\` esta em OUT_OF_README e nao e peca do catalogo.\n` +
-        `    Ou o nome mudou, ou a pagina em ${DOCS} sumiu. Apague ou corrija a linha:\n` +
-        "    entrada morta faz a lista parecer maior do que a divida.",
+      `\`${piece}\` is in OUT_OF_README and is not a catalog piece.\n` +
+        `    Either the name changed, or the page in ${DOCS} is gone. Delete or fix the line:\n` +
+        "    a dead entry makes the list look bigger than the debt.",
     );
   }
 }
 
 if (problems.length > 0) {
-  console.error(`${problems.length} problema(s) na cobertura do ${README}:\n`);
+  console.error(`${problems.length} problem(s) in ${README} coverage:\n`);
   for (const problem of problems) console.error(`  ${problem}\n`);
   console.error(
-    "O digito ja tem guarda desde que o README anunciou 55 pecas tendo 83. Esta\n" +
-      "guarda cuida do que vem depois do digito: a lista embaixo dele cobria 49 das\n" +
-      "90, e um numero verdadeiro em cima de uma lista pela metade nao acusa nada.",
+    "The digit has had a guard since the README announced 55 pieces while having 83.\n" +
+      "This guard looks after what comes after the digit: the list below it covered 49\n" +
+      "of 90, and a true number on top of a half list flags nothing.",
   );
   process.exit(1);
 }
 
 console.log(
-  `${cited.length} de ${pieces.length} pecas citadas no ${README}, e ${declared.length} ` +
-    "declaradas fora, com o motivo de cada uma.",
+  `${cited.length} of ${pieces.length} pieces cited in ${README}, and ${declared.length} ` +
+    "declared out, each with its reason.",
 );

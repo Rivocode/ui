@@ -1,6 +1,6 @@
 import { Radio, RadioGroup } from '@rivocode/ui'
 
-/** Forma de pagamento */
+/** Payment method */
 export function PaymentMethod() {
   return (
     <RadioGroup defaultValue="pix">
@@ -20,7 +20,7 @@ export function PaymentMethod() {
   )
 }
 
-/** Com rótulo */
+/** With label */
 export function WithText() {
   return (
     <RadioGroup defaultValue="service">

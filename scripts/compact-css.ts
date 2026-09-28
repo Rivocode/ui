@@ -4,7 +4,7 @@ export function compactCss(css: string) {
   for (const hit of css.matchAll(RISKY)) {
     if (/[{};\n]/.test(hit[0])) {
       throw new Error(
-        `compactCss: string ou comentario com { } ; ou quebra de linha, e o corte de espaco o corromperia: ${hit[0].slice(0, 80)}`,
+        `compactCss: string or comment containing { } ; or a line break, and stripping whitespace would corrupt it: ${hit[0].slice(0, 80)}`,
       );
     }
   }
@@ -17,11 +17,11 @@ export function compactCss(css: string) {
 if (import.meta.main) {
   const path = process.argv[2];
   if (!path) {
-    console.error("uso: bun run scripts/compact-css.ts <caminho-da-css>");
+    console.error("usage: bun run scripts/compact-css.ts <css-path>");
     process.exit(1);
   }
   const before = await Bun.file(path).text();
   const after = compactCss(before);
   await Bun.write(path, after);
-  console.log(`${path}: ${before.length} -> ${after.length} bytes sem espaco inutil.`);
+  console.log(`${path}: ${before.length} -> ${after.length} bytes without useless whitespace.`);
 }

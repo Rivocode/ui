@@ -49,7 +49,7 @@ const NAVIGATION = (
   </>
 )
 
-/** Aplicação completa */
+/** Full application */
 export function Complete() {
   return (
     <div className="h-[32rem] overflow-hidden rounded-lg border border-border">
@@ -80,7 +80,7 @@ export function Complete() {
   )
 }
 
-/** Com coluna ao lado */
+/** With a side column */
 export function WithAside() {
   return (
     <div className="h-[28rem] overflow-hidden rounded-lg border border-border">

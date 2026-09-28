@@ -36,13 +36,13 @@ function withoutDom<T>(run: () => T): T {
   }
 }
 
-describe("useLocalStorage e useSessionStorage", () => {
+describe("useLocalStorage and useSessionStorage", () => {
   beforeEach(() => {
     localStorage.clear();
     sessionStorage.clear();
   });
 
-  test("le o padrao, grava em JSON e remove", () => {
+  test("reads the default, writes JSON and removes", () => {
     const { result } = renderHook(() =>
       useLocalStorage({ key: "filtros", defaultValue: { page: 1 } }),
     );
@@ -60,7 +60,7 @@ describe("useLocalStorage e useSessionStorage", () => {
     expect(result.current[0]).toEqual({ page: 1 });
   });
 
-  test("duas chamadas com a mesma chave andam juntas na mesma aba", () => {
+  test("two calls with the same key move together in the same tab", () => {
     const { result } = renderHook(() => ({
       one: useLocalStorage({ key: "tema", defaultValue: "claro" }),
       other: useLocalStorage({ key: "tema", defaultValue: "claro" }),
@@ -69,7 +69,7 @@ describe("useLocalStorage e useSessionStorage", () => {
     expect(result.current.other[0]).toBe("escuro");
   });
 
-  test("o evento storage de outra aba atualiza o valor", () => {
+  test("the storage event from another tab updates the value", () => {
     const { result } = renderHook(() => useLocalStorage({ key: "tema", defaultValue: "claro" }));
 
     localStorage.setItem("tema", '"escuro"');
@@ -85,13 +85,13 @@ describe("useLocalStorage e useSessionStorage", () => {
     expect(result.current[0]).toBe("escuro");
   });
 
-  test("valor gravado que nao se le cai no padrao, sem lancar", () => {
+  test("a stored value that cannot be read falls back to the default, without throwing", () => {
     localStorage.setItem("quebrado", "{nao e json");
     const { result } = renderHook(() => useLocalStorage({ key: "quebrado", defaultValue: 7 }));
     expect(result.current[0]).toBe(7);
   });
 
-  test("armazenamento que lanca nao derruba a tela, e o valor segue em memoria", () => {
+  test("a throwing storage does not bring the screen down, and the value stays in memory", () => {
     const original = Storage.prototype.setItem;
     Storage.prototype.setItem = () => {
       throw new Error("QuotaExceededError");
@@ -108,14 +108,14 @@ describe("useLocalStorage e useSessionStorage", () => {
     expect(result.current[0]).toBe(0);
   });
 
-  test("a sessao usa o sessionStorage, e nao o local", () => {
+  test("the session hook uses sessionStorage, and not local", () => {
     const { result } = renderHook(() => useSessionStorage({ key: "passo", defaultValue: 1 }));
     act(() => result.current[1](2));
     expect(sessionStorage.getItem("passo")).toBe("2");
     expect(localStorage.getItem("passo")).toBeNull();
   });
 
-  test("padrao escrito como literal nao muda de identidade a cada render", () => {
+  test("a default written as a literal does not change identity on each render", () => {
     let effects = 0;
     function Probe() {
       const [value] = useLocalStorage({ key: "vazia", defaultValue: { page: 1 } });
@@ -130,7 +130,7 @@ describe("useLocalStorage e useSessionStorage", () => {
     expect(effects).toBe(1);
   });
 
-  test("o setter com funcao parte do padrao inicial, e o setter e estavel", () => {
+  test("the function setter starts from the initial default, and the setter is stable", () => {
     const { result, rerender } = renderHook(() =>
       useSessionStorage({ key: "vazia", defaultValue: { page: 1 } }),
     );
@@ -142,7 +142,7 @@ describe("useLocalStorage e useSessionStorage", () => {
     expect(result.current[0]).toEqual({ page: 2 });
   });
 
-  test("desmontar tira a escuta da janela", () => {
+  test("unmounting removes the window listener", () => {
     const removed: string[] = [];
     const original = window.removeEventListener.bind(window);
     window.removeEventListener = ((...args: Parameters<typeof window.removeEventListener>) => {
@@ -159,8 +159,8 @@ describe("useLocalStorage e useSessionStorage", () => {
   });
 });
 
-describe("no servidor, sem window", () => {
-  test("os hooks de navegador renderizam o padrao e nao tocam o DOM", () => {
+describe("on the server, without window", () => {
+  test("the browser hooks render the default and do not touch the DOM", () => {
     function Probe() {
       const [theme] = useLocalStorage({ key: "tema", defaultValue: "claro" });
       const [step] = useSessionStorage({ key: "passo", defaultValue: 1 });
@@ -210,7 +210,7 @@ describe("useClickOutside", () => {
     );
   }
 
-  test("dispara so fora do elemento e dos nos extras", () => {
+  test("fires only outside the element and the extra nodes", () => {
     const onOutside = mock(() => {});
     render(<Panel onOutside={onOutside} />);
 
@@ -222,7 +222,7 @@ describe("useClickOutside", () => {
     expect(onOutside).toHaveBeenCalledTimes(1);
   });
 
-  test("desligado ou desmontado, nao escuta", () => {
+  test("disabled or unmounted, it does not listen", () => {
     const onOutside = mock(() => {});
     const { rerender, unmount } = render(<Panel onOutside={onOutside} enabled={false} />);
     fireEvent.pointerDown(screen.getByText("fora"));
@@ -236,7 +236,7 @@ describe("useClickOutside", () => {
 });
 
 describe("useHotkeys", () => {
-  test("mod vira Cmd no Mac e Ctrl fora dele", () => {
+  test("mod becomes Cmd on Mac and Ctrl elsewhere", () => {
     expect(isApple("MacIntel")).toBe(true);
     expect(isApple("macOS")).toBe(true);
     expect(isApple("Win32")).toBe(false);
@@ -250,7 +250,7 @@ describe("useHotkeys", () => {
     expect(parseHotkey("alt++", false)).toMatchObject({ key: "+", alt: true });
   });
 
-  test("os modificadores precisam bater exatamente", () => {
+  test("modifiers must match exactly", () => {
     const hotkey = parseHotkey("mod+k", false);
     const base = {
       key: "k",
@@ -283,7 +283,7 @@ describe("useHotkeys", () => {
     ...event,
   });
 
-  test("simbolo que pede shift casa pelo caractere, com o shift que o teclado exigiu", () => {
+  test("a symbol that needs shift matches by character, with the shift the keyboard required", () => {
     const question = press({ key: "?", code: "Slash", shiftKey: true });
     expect(matchesHotkey(parseHotkey("?", false), question)).toBe(true);
     expect(matchesHotkey(parseHotkey("shift+/", false), question)).toBe(true);
@@ -297,7 +297,7 @@ describe("useHotkeys", () => {
     ).toBe(true);
   });
 
-  test("em letra o shift continua contando", () => {
+  test("on letters shift still counts", () => {
     expect(
       matchesHotkey(parseHotkey("shift+a", false), press({ key: "A", code: "KeyA", shiftKey: true })),
     ).toBe(true);
@@ -309,7 +309,7 @@ describe("useHotkeys", () => {
     ).toBe(false);
   });
 
-  test("a tecla fisica so vale quando o caractere nao diz qual e a tecla", () => {
+  test("the physical key only counts when the character does not say which key it is", () => {
     const azertyW = press({ key: "w", code: "KeyZ" });
     expect(matchesHotkey(parseHotkey("z", false), azertyW)).toBe(false);
     expect(matchesHotkey(parseHotkey("w", false), azertyW)).toBe(true);
@@ -330,7 +330,7 @@ describe("useHotkeys", () => {
     ).toBe(false);
   });
 
-  test("campo de texto e o que recebe digitacao, e caixa de marcar nao e", () => {
+  test("a text field is what receives typing, and a checkbox is not", () => {
     const text = document.createElement("input");
     const box = document.createElement("input");
     box.type = "checkbox";
@@ -350,7 +350,7 @@ describe("useHotkeys", () => {
     return <input aria-label="busca" />;
   }
 
-  test("dispara no documento e ignora quem esta digitando, por padrao", () => {
+  test("fires on the document and ignores whoever is typing, by default", () => {
     const handler = mock(() => {});
     render(<Bound handler={handler} />);
 
@@ -364,7 +364,7 @@ describe("useHotkeys", () => {
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  test("com ignoreFields desligado, dispara tambem dentro do campo e previne o padrao", () => {
+  test("with ignoreFields off, it also fires inside the field and prevents the default", () => {
     const handler = mock(() => {});
     render(<Bound handler={handler} ignoreFields={false} />);
     const event = new KeyboardEvent("keydown", {
@@ -379,7 +379,7 @@ describe("useHotkeys", () => {
     expect(event.defaultPrevented).toBe(true);
   });
 
-  test("desmontar tira a escuta", () => {
+  test("unmounting removes the listener", () => {
     const handler = mock(() => {});
     const { unmount } = render(<Bound handler={handler} />);
     unmount();
@@ -390,7 +390,7 @@ describe("useHotkeys", () => {
 
 type Watched = { callback: (entries: unknown[]) => void; nodes: Element[]; disconnected: boolean };
 
-describe("useIntersection, useInfiniteScroll e useElementSize", () => {
+describe("useIntersection, useInfiniteScroll and useElementSize", () => {
   const observers: Watched[] = [];
   const saved = {
     intersection: globalThis.IntersectionObserver,
@@ -424,7 +424,7 @@ describe("useIntersection, useInfiniteScroll e useElementSize", () => {
 
   const live = () => observers.filter((observer) => !observer.disconnected);
 
-  test("useIntersection entrega a ultima entrada e desconecta no desmonte", () => {
+  test("useIntersection hands over the last entry and disconnects on unmount", () => {
     function Target() {
       const { ref, entry } = useIntersection<HTMLDivElement>({ threshold: 0.5 });
       return <div ref={ref}>{entry?.isIntersecting ? "visivel" : "fora"}</div>;
@@ -445,7 +445,7 @@ describe("useIntersection, useInfiniteScroll e useElementSize", () => {
     return <div ref={sentinelRef} data-testid="sentinela" />;
   }
 
-  test("useInfiniteScroll pede mais quando a sentinela aparece, e so quando pode", () => {
+  test("useInfiniteScroll asks for more when the sentinel appears, and only when it can", () => {
     const onLoadMore = mock(() => {});
     const { rerender, unmount } = render(<Feed hasMore loading={false} onLoadMore={onLoadMore} />);
     expect(live()).toHaveLength(1);
@@ -469,7 +469,7 @@ describe("useIntersection, useInfiniteScroll e useElementSize", () => {
     expect(live()).toHaveLength(0);
   });
 
-  test("useElementSize mede pelo ResizeObserver e desconecta no desmonte", () => {
+  test("useElementSize measures through ResizeObserver and disconnects on unmount", () => {
     function Box() {
       const { ref, width, height } = useElementSize<HTMLDivElement>();
       return <div ref={ref}>{`${width}x${height}`}</div>;
@@ -484,7 +484,7 @@ describe("useIntersection, useInfiniteScroll e useElementSize", () => {
     expect(live()).toHaveLength(0);
   });
 
-  test("sem os observers no ambiente, nada quebra", () => {
+  test("without observers in the environment, nothing breaks", () => {
     globalThis.IntersectionObserver = undefined as unknown as typeof IntersectionObserver;
     globalThis.ResizeObserver = undefined as unknown as typeof ResizeObserver;
     function Both() {
@@ -508,7 +508,7 @@ describe("useIntersection, useInfiniteScroll e useElementSize", () => {
 describe("useClipboard", () => {
   const settle = () => act(async () => void (await Promise.resolve()));
 
-  test("copied liga ao copiar e volta sozinho", async () => {
+  test("copied turns on when copying and resets by itself", async () => {
     const written: string[] = [];
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
@@ -528,12 +528,12 @@ describe("useClipboard", () => {
     expect(result.current.copied).toBe(false);
   });
 
-  test("falha devolve false e guarda o erro, sem ligar copied", async () => {
+  test("a failure returns false and keeps the error, without turning copied on", async () => {
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: {
         writeText: async () => {
-          throw new Error("negado");
+          throw new Error("denied");
         },
       },
     });
@@ -544,14 +544,14 @@ describe("useClipboard", () => {
     });
     expect(ok).toBe(false);
     expect(result.current.copied).toBe(false);
-    expect(result.current.error?.message).toBe("negado");
+    expect(result.current.error?.message).toBe("denied");
 
     act(() => result.current.reset());
     expect(result.current.error).toBeNull();
     await settle();
   });
 
-  test("desmontar limpa o timer da confirmacao", async () => {
+  test("unmounting clears the confirmation timer", async () => {
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: { writeText: async () => {} },
@@ -573,13 +573,13 @@ describe("useClipboard", () => {
     }
   });
 
-  test("a peca Clipboard continua avisando onCopy so quando copiou", async () => {
+  test("the Clipboard piece still calls onCopy only when it copied", async () => {
     const onCopy = mock((value: string) => void value);
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: {
         writeText: async () => {
-          throw new Error("negado");
+          throw new Error("denied");
         },
       },
     });
@@ -595,8 +595,8 @@ describe("useClipboard", () => {
   });
 });
 
-describe("useDocumentTitle, useNetworkStatus e useReducedMotion", () => {
-  test("o titulo muda, ignora vazio e so volta se pedido", () => {
+describe("useDocumentTitle, useNetworkStatus and useReducedMotion", () => {
+  test("the title changes, ignores empty and only restores if asked", () => {
     document.title = "Antes";
     const { rerender, unmount } = renderHook(({ title }) => useDocumentTitle(title), {
       initialProps: { title: "Faturas" },
@@ -614,7 +614,7 @@ describe("useDocumentTitle, useNetworkStatus e useReducedMotion", () => {
     expect(document.title).toBe("Antes");
   });
 
-  test("a rede segue os eventos online e offline", () => {
+  test("the network follows the online and offline events", () => {
     let online = true;
     Object.defineProperty(navigator, "onLine", { configurable: true, get: () => online });
     const { result, unmount } = renderHook(() => useNetworkStatus());
@@ -630,7 +630,7 @@ describe("useDocumentTitle, useNetworkStatus e useReducedMotion", () => {
     unmount();
   });
 
-  test("movimento reduzido le a media query do sistema", () => {
+  test("reduced motion reads the system media query", () => {
     const original = window.matchMedia;
     window.matchMedia = ((query: string) =>
       ({

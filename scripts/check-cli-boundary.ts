@@ -1,77 +1,78 @@
 /**
- * Guarda da fronteira da FERRAMENTA: o que existe para o `rivocode-ui` nao
- * pode entrar no bundle de quem usa a biblioteca.
+ * Guard of the TOOL boundary: what exists for `rivocode-ui` must not get into
+ * the bundle of whoever uses the library.
  *
- * O `tsdown` tem quatro entradas, e `src/cli.ts` e uma delas. Isso quer dizer
- * que tudo que o CLI alcanca pousa em `dist/cli.js`, e nada disso pesa para
- * quem escreve `import { Button } from "@rivocode/ui"` - desde que nenhum
- * modulo alcancado pelos indices da biblioteca importe a mesma coisa. A palavra
- * "desde que" e a guarda: no dia em que isto foi medido a separacao era
- * verdadeira por ACIDENTE, e nao por regra. Nada impedia um
- * `import { contrastRatio } from "../lib/contrast"` dentro de um componente, e
- * a partir dele a tabela dos 45 papeis, os minimos e a prosa de cada par
- * viajariam para o navegador de todo mundo, uma vez por aplicacao.
+ * `tsdown` has four entries, and `src/cli.ts` is one of them. That means
+ * everything the CLI reaches lands in `dist/cli.js`, and none of it weighs on
+ * whoever writes `import { Button } from "@rivocode/ui"` - as long as no module
+ * reached by the library's indexes imports the same thing. The words "as long
+ * as" are the guard: on the day this was measured the separation was true by
+ * ACCIDENT, and not by rule. Nothing prevented an
+ * `import { contrastRatio } from "../lib/contrast"` inside a component, and
+ * from there the table of the 45 roles, the minimums and the prose of each pair
+ * would travel to everyone's browser, once per application.
  *
- * A conta de contraste e o caso que fez esta guarda existir. Ela acabou de sair
- * de `scripts/` - que nao esta em `files` de nenhum dos dois pacotes, e por
- * isso obrigava cada consumidor a portar a conta a mao - para `src/lib`, que e
- * publicado. O ganho e real e o risco e novo: em `scripts/` era fisicamente
- * impossivel um componente importar aquilo, e em `src/lib` passou a ser uma
- * linha. Mudanca que troca "impossivel" por "ninguem faria isso" pede guarda,
- * senao a prova de hoje envelhece calada.
+ * The contrast math is the case that made this guard exist. It had just moved
+ * out of `scripts/` - which is not in the `files` of either package, and so
+ * forced every consumer to port the math by hand - into `src/lib`, which is
+ * published. The gain is real and the risk is new: in `scripts/` it was
+ * physically impossible for a component to import that, and in `src/lib` it
+ * became one line. A change that swaps "impossible" for "nobody would do that"
+ * asks for a guard, or today's proof grows stale in silence.
  *
- * ## Ela le o grafo, e nao a pasta
+ * ## It reads the graph, not the folder
  *
- * Proibir o import a partir de `src/components/**` pegaria o caminho obvio e
- * deixaria os outros: um `src/lib/x.ts` inocente importando a conta, e um
- * componente importando o `x`, e a conta esta no bundle sem ninguem ter escrito
- * o nome dela num componente. Entao a pergunta que a guarda faz e a mesma que o
- * empacotador faz - o modulo e ALCANCAVEL a partir de `src/index.ts`,
- * `src/form/index.ts` ou `src/chart/index.ts`? - e a resposta vem com o caminho
- * inteiro, para quem quebrou saber por onde.
+ * Forbidding the import from `src/components/**` would catch the obvious path
+ * and leave the others: an innocent `src/lib/x.ts` importing the math, and a
+ * component importing `x`, and the math is in the bundle without anyone having
+ * written its name in a component. So the question the guard asks is the same
+ * the bundler asks - is the module REACHABLE from `src/index.ts`,
+ * `src/form/index.ts` or `src/chart/index.ts`? - and the answer comes with the
+ * whole path, so whoever broke it knows where through.
  *
- * A segunda regra e o contrario da primeira, e existe para a guarda nao virar
- * decoracao: o modulo tem que continuar alcancavel a partir de `src/cli.ts`.
- * Modulo que ninguem alcanca passa nesta guarda com louvor, e o jeito mais
- * facil de deixar a primeira regra sempre verde e a ferramenta parar de usar o
- * que ela deveria usar.
+ * The second rule is the opposite of the first, and exists so the guard does
+ * not become decoration: the module has to stay reachable from `src/cli.ts`.
+ * A module nobody reaches passes this guard with honors, and the easiest way to
+ * keep the first rule always green is for the tool to stop using what it should
+ * use.
  *
- * ## A terceira regra mede o artefato
+ * ## The third rule measures the artifact
  *
- * As duas de cima leem fonte, que e o que o gate tem. Como `bun run build` roda
- * depois do gate, o `dist/` de uma construcao anterior costuma estar ali - e
- * quando esta, a guarda procura no que `dist/index.js` e os subcaminhos
- * alcancam uma frase que so existe dentro do modulo de ferramenta. E a unica das tres que responde pela pergunta
- * de verdade, que nao e "quem importa quem" e sim "o que o cliente baixa".
- * Sem `dist/`, ela diz que nao rodou em vez de calar.
+ * The two above read source, which is what the gate has. Since `bun run build`
+ * runs after the gate, the `dist/` of an earlier build is usually there - and
+ * when it is, the guard searches what `dist/index.js` and the subpaths reach
+ * for a phrase that only exists inside the tool module. It is the only one of
+ * the three that answers the real question, which is not "who imports whom"
+ * but "what does the client download".
+ * Without `dist/`, it says it did not run instead of keeping quiet.
  */
 /**
- * O modulo de ferramenta, por que ele e ferramenta, e a frase que o denuncia
- * dentro do artefato.
+ * The tool module, why it is a tool, and the phrase that gives it away inside
+ * the artifact.
  *
- * A `mark` e uma string literal, e nao um nome de funcao: nome sobrevive ao
- * empacotamento com sorte, e literal sobrevive sempre.
+ * `mark` is a string literal, and not a function name: a name survives
+ * bundling with luck, and a literal always survives.
  */
 export const TOOL_ONLY: Array<{ file: string; mark: string; why: string }> = [
   {
     file: "src/lib/contrast.ts",
-    mark: "trilho, caixa e círculo marcados",
-    why: "A conta da WCAG e as tabelas de pares. Servem ao `check-theme` e as duas guardas de contraste; nenhuma peca mede contraste em tempo de execucao, e a tabela dos 45 papeis com a prosa de cada par nao tem o que fazer no navegador de quem usa um Button.",
+    mark: "checked track, box and circle",
+    why: "The WCAG math and the pair tables. They serve `check-theme` and the two contrast guards; no piece measures contrast at runtime, and the table of the 45 roles with the prose of each pair has nothing to do in the browser of whoever uses a Button.",
   },
   {
     file: "src/lib/theme-check.ts",
-    mark: "Papel de tema sem consequência",
-    why: "As consequencias escritas de cada papel faltando - paragrafos de portugues, um por papel. E material de diagnostico do CLI, e o que ele diagnostica e um tema que ainda nao subiu.",
+    mark: "Theme role with no written consequence",
+    why: "The written consequences of each missing role - paragraphs of prose, one per role. It is CLI diagnostic material, and what it diagnoses is a theme that has not shipped yet.",
   },
   {
     file: "src/tokens/dtcg.ts",
-    mark: "não tem tipo no DTCG 2025.10",
-    why: "A traducao das tres camadas para o JSON do W3C Design Tokens. Serve ao `rivocode-ui tokens`, ao `build:tokens` e ao site; o navegador de quem usa as pecas ja tem os tokens como CSS, e nao tem o que fazer com um parser de CSS e um escritor de JSON.",
+    mark: "has no type in DTCG 2025.10",
+    why: "The translation of the three layers into W3C Design Tokens JSON. It serves `rivocode-ui tokens`, `build:tokens` and the site; the browser of whoever uses the pieces already has the tokens as CSS, and has nothing to do with a CSS parser and a JSON writer.",
   },
   {
     file: "src/tokens/theme-roles.ts",
     mark: "--rc-text-hero",
-    why: "O catalogo de papeis que o `gen:themes` escreve a partir do CSS. Em tempo de execucao o navegador ja tem os papeis: eles sao o proprio CSS carregado. A lista existe para o CLI cobrar o tema de quem instala.",
+    why: "The role catalog that `gen:themes` writes from the CSS. At runtime the browser already has the roles: they are the loaded CSS itself. The list exists for the CLI to check the theme of whoever installs.",
   },
 ];
 
@@ -102,7 +103,7 @@ async function resolve(from: string, request: string) {
   return undefined;
 }
 
-/** De onde cada arquivo alcancado foi alcancado, para o caminho sair inteiro. */
+/** Where each reached file was reached from, so the path comes out whole. */
 async function reach(entries: string[]) {
   const from = new Map<string, string | undefined>();
   const queue: string[] = [];
@@ -130,13 +131,13 @@ async function reach(entries: string[]) {
   return from;
 }
 
-// A guarda so tem sentido se as entradas existirem: um caminho errado aqui
-// deixaria as tres regras verdes sobre nada.
+// The guard only makes sense if the entries exist: a wrong path here would
+// leave all three rules green over nothing.
 for (const entry of [...LIBRARY, TOOL]) {
   if (!(await Bun.file(entry).exists())) {
     console.error(
-      `${entry} nao existe. As entradas desta guarda tem que ser as mesmas do` +
-        " tsdown.config.ts, senao ela fica verde sobre nada.",
+      `${entry} does not exist. The entries of this guard have to be the same as` +
+        " tsdown.config.ts, or it stays green over nothing.",
     );
     process.exit(1);
   }
@@ -150,10 +151,10 @@ const problems: string[] = [];
 for (const item of TOOL_ONLY) {
   if (!(await Bun.file(item.file).exists())) {
     problems.push(
-      `  ${item.file} nao existe mais.\n` +
-        "    Apague a linha do `TOOL_ONLY` desta guarda, ou aponte para o novo\n" +
-        "    endereco. Lista de excecao que nao encolhe vira o lugar onde o\n" +
-        "    codigo morto mora.",
+      `  ${item.file} no longer exists.\n` +
+        "    Delete the `TOOL_ONLY` line of this guard, or point it to the new\n" +
+        "    address. An exception list that does not shrink becomes the place where\n" +
+        "    dead code lives.",
     );
     continue;
   }
@@ -162,7 +163,7 @@ for (const item of TOOL_ONLY) {
     const path: string[] = [];
     for (let at: string | undefined = item.file; at; at = library.get(at)) path.unshift(at);
     problems.push(
-      `  ${item.file} entrou no bundle da biblioteca:\n` +
+      `  ${item.file} got into the library bundle:\n` +
         path.map((step, index) => `    ${"  ".repeat(index)}${step}`).join("\n") +
         `\n    ${item.why}`,
     );
@@ -170,30 +171,30 @@ for (const item of TOOL_ONLY) {
 
   if (!(await Bun.file(item.file).text()).includes(item.mark)) {
     problems.push(
-      `  ${item.file} nao contem mais "${item.mark}".\n` +
-        "    A `mark` e o que esta guarda procura no dist/. Frase que\n" +
-        "    saiu da fonte nunca aparece no bundle, e a linha fica verde sem\n" +
-        "    olhar nada. Aponte para uma frase que o arquivo ainda tenha.",
+      `  ${item.file} no longer contains "${item.mark}".\n` +
+        "    `mark` is what this guard looks for in dist/. A phrase that\n" +
+        "    left the source never shows up in the bundle, and the line stays green without\n" +
+        "    looking at anything. Point it at a phrase the file still has.",
     );
   }
 
   if (!tool.has(item.file)) {
     problems.push(
-      `  ${item.file} nao e alcancado por ${TOOL}.\n` +
-        "    Ou a ferramenta parou de usar o modulo - e ele e codigo morto -, ou\n" +
-        "    a linha do `TOOL_ONLY` esta velha. Modulo que ninguem alcanca passa\n" +
-        "    nesta guarda sem ela ter olhado nada.",
+      `  ${item.file} is not reached by ${TOOL}.\n` +
+        "    Either the tool stopped using the module - and it is dead code -, or\n" +
+        "    the `TOOL_ONLY` line is stale. A module nobody reaches passes\n" +
+        "    this guard without it having looked at anything.",
     );
   }
 }
 
 /**
- * O texto de tudo que um conjunto de entradas do `dist/` alcanca.
+ * The text of everything a set of `dist/` entries reaches.
  *
- * Desde que o `tsdown` passou a emitir um arquivo por modulo (`unbundle`), o
- * `dist/index.js` e so uma lista de reexportacoes: procurar a frase nele
- * ficaria verde sem ler um byte de peca. A leitura segue os imports relativos,
- * que e o mesmo caminho que o empacotador de quem instala percorre.
+ * Since `tsdown` started emitting one file per module (`unbundle`),
+ * `dist/index.js` is just a list of re-exports: searching it for the phrase
+ * would stay green without reading a byte of any piece. The reading follows
+ * relative imports, which is the same path the installer's bundler walks.
  */
 async function artifactOf(entries: string[]) {
   const present: string[] = [];
@@ -214,16 +215,16 @@ if (bundle) {
   for (const item of TOOL_ONLY) {
     if (bundle.text.includes(item.mark)) {
       problems.push(
-        `  o dist/ da biblioteca carrega "${item.mark}", que so existe em ${item.file}.\n` +
+        `  the library dist/ carries "${item.mark}", which only exists in ${item.file}.\n` +
           `    ${item.why}`,
       );
     }
     if (toolBundle && !toolBundle.text.includes(item.mark)) {
       problems.push(
-        `  o dist/cli.js, com o que ele importa, nao carrega "${item.mark}".\n` +
-          "    A frase existe na fonte e a ferramenta alcanca o modulo, entao a leitura\n" +
-          "    do artefato e que parou de achar: uma busca que nao acha nem onde a\n" +
-          "    frase TEM que estar tambem nao acharia onde ela nao pode estar.",
+        `  dist/cli.js, with what it imports, does not carry "${item.mark}".\n` +
+          "    The phrase exists in the source and the tool reaches the module, so it is the\n" +
+          "    artifact reading that stopped finding it: a search that does not find the phrase\n" +
+          "    even where it MUST be would not find it where it must not be either.",
       );
     }
   }
@@ -231,21 +232,21 @@ if (bundle) {
 
 if (problems.length > 0) {
   console.error(
-    `${problems.length} vazamento(s) de codigo de ferramenta para a biblioteca:\n\n` +
+    `${problems.length} leak(s) of tool code into the library:\n\n` +
       problems.join("\n\n"),
   );
   console.error(
-    "\nO `tsdown` tem `src/cli.ts` como entrada separada: o que so o CLI alcanca" +
-      "\npousa em dist/cli.js e nao pesa para ninguem. Basta um import a partir de" +
-      "\num modulo que os indices alcancam para desfazer isso, e o unico sintoma e" +
-      "\no tamanho do bundle de quem instalou.",
+    "\n`tsdown` has `src/cli.ts` as a separate entry: what only the CLI reaches" +
+      "\nlands in dist/cli.js and weighs on nobody. One import from a module the" +
+      "\nindexes reach is enough to undo that, and the only symptom is" +
+      "\nthe bundle size of whoever installed.",
   );
   process.exit(1);
 }
 
 const names = TOOL_ONLY.map((item) => item.file).join(", ");
 const measured = bundle
-  ? `e nenhuma frase deles esta nos ${bundle.files} arquivo(s) do dist/ que as entradas da biblioteca alcancam`
-  : "e dist/index.js nao existe agora, entao a medida do artefato nao rodou - a leitura do grafo acima ja responde o mesmo pelo fonte";
+  ? `and none of their phrases is in the ${bundle.files} dist/ file(s) the library entries reach`
+  : "and dist/index.js does not exist now, so the artifact measurement did not run - the graph reading above already answers the same from source";
 
-console.log(`Fora do bundle da biblioteca, e dentro do ${TOOL}: ${names} - ${measured}.`);
+console.log(`Outside the library bundle, and inside ${TOOL}: ${names} - ${measured}.`);

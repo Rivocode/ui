@@ -9,7 +9,7 @@ import {
 } from '@rivocode/ui'
 import { ChevronDown, Grid2x2, List, Rows3 } from 'lucide-react'
 
-/** Ação com variantes */
+/** Action with variants */
 export function SplitAction() {
   return (
     <ButtonGroup>
@@ -32,7 +32,7 @@ export function SplitAction() {
   )
 }
 
-/** Só ícones */
+/** Icons only */
 export function IconsOnly() {
   return (
     <ButtonGroup>

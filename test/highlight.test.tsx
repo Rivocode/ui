@@ -10,20 +10,20 @@ const marks = (container: HTMLElement) =>
 
 const tokens = (element: Element) => (element.getAttribute("class") ?? "").split(" ");
 
-test("o termo sem acento acha o trecho acentuado, e o destaque devolve o texto original", () => {
+test("an unaccented term finds the accented stretch, and the highlight returns the original text", () => {
   const { container } = render(<Highlight query="sao">Clínica São Lucas</Highlight>);
 
   expect(marks(container)).toEqual(["São"]);
   expect(container.textContent).toBe("Clínica São Lucas");
 });
 
-test("o termo acentuado acha o texto sem acento, e a caixa nao importa", () => {
+test("an accented term finds the unaccented text, and case does not matter", () => {
   const { container } = render(<Highlight query="JOÃO">joao pessoa, JOAO e João</Highlight>);
 
   expect(marks(container)).toEqual(["joao", "JOAO", "João"]);
 });
 
-test("varios termos destacam cada um, e os que se encostam viram um trecho so", () => {
+test("several terms highlight each one, and the ones that touch become a single stretch", () => {
   const { container } = render(
     <Highlight query={["nota", "fiscal", "cancel"]}>Nota fiscal cancelada, nota paga</Highlight>,
   );
@@ -34,7 +34,7 @@ test("varios termos destacam cada um, e os que se encostam viram um trecho so", 
   expect(marks(joined.container)).toEqual(["marco".replace("c", "ç")]);
 });
 
-test("termo vazio ou so de espaco nao destaca nada, e nao some com o texto", () => {
+test("an empty or whitespace-only term highlights nothing, and does not drop the text", () => {
   for (const query of ["", "   ", [] as string[], ["", " "]]) {
     const { container, unmount } = render(<Highlight query={query}>Recife</Highlight>);
     expect(container.querySelectorAll("mark")).toHaveLength(0);
@@ -43,14 +43,14 @@ test("termo vazio ou so de espaco nao destaca nada, e nao some com o texto", () 
   }
 });
 
-test("sem ocorrencia, o texto sai inteiro e sem mark", () => {
+test("with no occurrence, the text comes out whole and without a mark", () => {
   const { container } = render(<Highlight query="manaus">Natal e Fortaleza</Highlight>);
 
   expect(container.querySelectorAll("mark")).toHaveLength(0);
   expect(container.textContent).toBe("Natal e Fortaleza");
 });
 
-test("o acento escrito em duas partes fica dentro do destaque, e nao solto depois dele", () => {
+test("an accent written in two code points stays inside the highlight, and not loose after it", () => {
   const decomposed = "São Paulo";
   const { container } = render(<Highlight query="sao">{decomposed}</Highlight>);
 
@@ -58,7 +58,7 @@ test("o acento escrito em duas partes fica dentro do destaque, e nao solto depoi
   expect(container.textContent).toBe(decomposed);
 });
 
-test("o mark se pinta no fundo cheio de atencao com a tinta dele, e nao no fundo sutil", () => {
+test("the mark paints on the full warning fill with its own ink, and not on the subtle fill", () => {
   const { container } = render(
     <Highlight query="pix" classNames={{ mark: "rc-mark" }} className="rc-root">
       Pague por Pix
@@ -74,7 +74,7 @@ test("o mark se pinta no fundo cheio de atencao com a tinta dele, e nao no fundo
   expect(tokens(container.firstElementChild!)).toContain("rc-root");
 });
 
-test("o fundo do mark se distingue do fundo em volta e a tinta se le sobre ele, nos dois temas", async () => {
+test("the mark fill stands out from the surrounding background and its ink reads on it, in both themes", async () => {
   const { container } = render(<Highlight query="pix">Pague por Pix</Highlight>);
   const classes = tokens(container.querySelector("mark")!);
   const fill = classes.find((name) => name.startsWith("bg-"))!.slice(3);
@@ -96,7 +96,7 @@ test("o fundo do mark se distingue do fundo em volta e a tinta se le sobre ele, 
   expect(measured).toHaveLength(6);
 });
 
-test("a conta pura corta pelo texto original, com a sobreposicao fundida", () => {
+test("the pure function splits on the original text, with overlaps merged", () => {
   expect(splitHighlight("Ação e acao", "acao")).toEqual([
     { text: "Ação", match: true },
     { text: " e ", match: false },

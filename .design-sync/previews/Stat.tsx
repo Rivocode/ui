@@ -4,7 +4,7 @@ import { Sparkline, currencyShort, percent } from '@rivocode/ui/chart'
 const TREND = [128, 154, 142, 188, 205, 246]
 const OVERDUE = [2, 3, 3, 5, 4, 6]
 
-/** Padrão */
+/** Default */
 export function Default() {
   return (
     <Stat
@@ -17,7 +17,7 @@ export function Default() {
   )
 }
 
-/** Com tendência */
+/** With trend */
 export function WithTrend() {
   return (
     <Stat
@@ -32,7 +32,7 @@ export function WithTrend() {
   )
 }
 
-/** Subir é ruim */
+/** Going up is bad */
 export function Inverted() {
   return (
     <Stat
@@ -55,7 +55,7 @@ export function Inverted() {
   )
 }
 
-/** A fileira de painel */
+/** The dashboard row */
 export function Row() {
   return (
     <div className="grid w-full gap-4 sm:grid-cols-3">
@@ -66,12 +66,12 @@ export function Row() {
   )
 }
 
-/** A variação que não é porcentagem */
+/** A change that is not a percentage */
 export function DeltaFormat() {
   /*
-   * O delta fala o mesmo vocabulário de formatação do Progress, do Meter e do
-   * eixo do gráfico. Sem `deltaFormat` ele sai em `percent`, que é o padrão;
-   * com ele, sai na unidade que o número realmente tem.
+   * The delta speaks the same formatting vocabulary as the Progress, the Meter
+   * and the chart axis. Without `deltaFormat` it renders as `percent`, which is
+   * the default; with it, it renders in the unit the number actually has.
    */
   return (
     <div className="grid w-full gap-4 sm:grid-cols-3">

@@ -1,20 +1,21 @@
-A mesma tela serve a dois usos que não combinam. Uma página de cadastro, que
-alguém preenche uma vez, quer respiro. Uma tela de operação, onde a pessoa passa
-o dia inteiro, quer caber mais linha na altura visível.
+The same screen serves two uses that do not match. A sign-up page, which
+someone fills in once, wants breathing room. An operations screen, where the
+person spends the whole day, wants more rows to fit in the visible height.
 
-Em vez de dois catálogos, a biblioteca tem uma chave:
+Instead of two catalogs, the library has one switch:
 
 ```tsx
-<RivoProvider density="comfortable">  {/* padrão */}
-<RivoProvider density="compact">      {/* tela de operação */}
+<RivoProvider density="comfortable">  {/* default */}
+<RivoProvider density="compact">      {/* operations screen */}
 ```
 
-## O que muda
+## What changes
 
-A densidade escreve tokens de altura e de espaçamento interno que **todo**
-controle lê. Botão, campo, item de menu, linha de tabela, item de lista, nenhum deles carrega altura própria em pixel.
+Density writes height and inner-spacing tokens that **every** control reads.
+Button, field, menu item, table row, list item: none of them carries its own
+pixel height.
 
-| Token                 | Confortável | Compacto |
+| Token                 | Comfortable | Compact  |
 | --------------------- | ----------- | -------- |
 | `--rc-control-sm`     | 2rem        | 1.75rem  |
 | `--rc-control-md`     | 2.5rem      | 2.25rem  |
@@ -25,38 +26,40 @@ controle lê. Botão, campo, item de menu, linha de tabela, item de lista, nenhu
 | `--rc-gap-lg`         | 16px        | 12px     |
 | `--rc-gap-xl`         | 24px        | 16px     |
 
-Por isso a troca alcança o catálogo inteiro de uma vez, e por isso um componente
-novo entra já obedecendo: ele pede `h-[var(--rc-control-md)]`, não `h-10`.
+That is why the switch reaches the whole catalog at once, and why a new
+component already obeys it on arrival: it asks for `h-[var(--rc-control-md)]`,
+not `h-10`.
 
-## O que não muda
+## What does not change
 
-**Tamanho de fonte e alvo de toque.** Compacto encolhe a moldura, não a letra.
-Um controle que fica pequeno demais para o dedo deixa de ser dens, passa a ser
-inacessível, e isso não é uma preferência de tela.
+**Font size and touch target.** Compact shrinks the frame, not the letters. A
+control that gets too small for a finger stops being dense and becomes
+inaccessible, and that is not a screen preference.
 
-## Misturar, quando faz sentido
+## Mixing, when it makes sense
 
-Densidade é herdada, e um `RivoProvider` interno pode discordar do de fora:
+Density is inherited, and an inner `RivoProvider` can disagree with the outer
+one:
 
 ```tsx
 <RivoProvider density="comfortable">
-  <FormularioDeCadastro />
+  <SignUpForm />
 
-  {/* a tabela de apoio, ao lado, cabe mais linha */}
+  {/* the supporting table, alongside, fits more rows */}
   <RivoProvider scope="local" density="compact">
-    <TabelaDeApoio />
+    <SupportingTable />
   </RivoProvider>
 </RivoProvider>
 ```
 
-Use com parcimônia: duas alturas na mesma tela precisam de uma fronteira visual
-clara, senão parece defeito.
+Use it sparingly: two heights on the same screen need a clear visual boundary,
+otherwise it looks like a defect.
 
-## Onde ela costuma valer
+## Where it usually pays off
 
-- Listagem com muitas linhas, onde rolar é o custo
-- Painel lateral de filtros
-- Tela que a pessoa usa o dia inteiro e já conhece de cor
+- A listing with many rows, where scrolling is the cost
+- A side panel of filters
+- A screen the person uses all day and already knows by heart
 
-E onde não vale: primeira tela, cadastro, formulário longo, qualquer coisa que
-alguém usa uma vez e precisa ler com calma.
+And where it does not: the first screen, sign-up, a long form, anything someone
+uses once and needs to read calmly.

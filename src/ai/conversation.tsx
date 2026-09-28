@@ -19,13 +19,13 @@ import type { Slots } from "../lib/slots";
 import { STICK_DISTANCE } from "../shared/ai";
 
 export type ConversationProps = Omit<ComponentPropsWithoutRef<"div">, "role"> & {
-  /** As mensagens, em ordem de chegada: a mais nova por ultimo. */
+  /** The messages, in order of arrival: the newest last. */
   children?: ReactNode;
-  /** O nome da regiao para o leitor de tela. Sem ele, "Conversa". */
+  /** The region's name for the screen reader. Without it, "Conversa". */
   label?: string;
   /**
-   * O que aparece quando ainda nao ha mensagem nenhuma. As `suggestions` viram
-   * botoes, e o toque entrega o texto ao `onSuggestion`.
+   * What appears while there is no message yet. The `suggestions` become
+   * buttons, and a tap hands the text to `onSuggestion`.
    */
   empty?: {
     title: ReactNode;
@@ -33,11 +33,11 @@ export type ConversationProps = Omit<ComponentPropsWithoutRef<"div">, "role"> & 
     icon?: ReactNode;
     suggestions?: string[];
   };
-  /** Chamado com o texto da sugestao tocada. Sem ele, as sugestoes nao aparecem. */
+  /** Called with the text of the tapped suggestion. Without it, the suggestions do not appear. */
   onSuggestion?: (suggestion: string) => void;
   /**
-   * Os textos da peca, para trocar o idioma: `scroll` e o botao que volta ao
-   * fim da conversa, "Ir para o fim" sem ele.
+   * The piece's texts, to change the language: `scroll` is the button that goes back to
+   * the end of the conversation, "Ir para o fim" without it.
    */
   labels?: Partial<ConversationLabels>;
   classNames?: Slots<"viewport" | "content" | "empty" | "suggestions" | "scrollButton">;

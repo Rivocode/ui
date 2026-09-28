@@ -8,27 +8,30 @@ import { percent } from "../shared/format";
 import { useTokenMotion } from "./use-chart-motion";
 
 export type ChartRadialProps = Omit<ComponentProps<"div">, "color" | "children"> & {
-  /** De 0 a `max`. Acima disso o arco para no fim, e nao da a volta, mas o texto diz o valor real. `NaN`, infinito ou `max` sem tamanho viram "—". */
+  /**
+   * From 0 to `max`. Above that the arc stops at the end, and does not wrap around, but the text
+   * states the real value. `NaN`, infinity or a `max` with no size become "—".
+   */
   value: number;
   max?: number;
-  /** A cor do arco. Sem ela, o acento do tema. */
+  /** The arc's color. Without it, the theme accent. */
   color?: string;
-  /** O numero grande no meio. Sem ele, a porcentagem. */
+  /** The big number in the middle. Without it, the percentage. */
   centerValue?: ReactNode;
-  /** A linha pequena embaixo do numero. */
+  /** The small line below the number. */
   centerLabel?: ReactNode;
-  /** Onde o arco comeca e termina, em graus. `360` fecha o circulo. */
+  /** Where the arc starts and ends, in degrees. `360` closes the circle. */
   sweep?: number;
   className?: string;
-  /** O que o leitor de tela ouve. */
+  /** What the screen reader hears. */
   label?: string;
   /**
-   * `solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que
-   * e a variacao mais pedida de medidor em painel e custava 42 linhas de SVG
-   * no projeto de quem usa - com a cor cravada, entao sem responder ao tema.
+   * `solid` draws a smooth arc; `segmented` draws the arc in dashes, which
+   * is the most requested gauge variation in dashboards and cost 42 lines of SVG
+   * in the consumer's project - with the color hardcoded, so not responding to the theme.
    */
   variant?: "solid" | "segmented";
-  /** Quantos tracinhos, no `segmented`. */
+  /** How many dashes, in `segmented`. */
   segments?: number;
 };
 

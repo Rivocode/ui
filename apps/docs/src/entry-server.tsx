@@ -5,17 +5,18 @@ import { GUIDES } from '@/guides'
 import { setRenderedPath } from '@/routes'
 
 /* ---------------------------------------------------------------------------
- * O lado de fora do navegador
+ * The outside of the browser
  *
- * O mesmo `App` que roda na aba, montado uma vez por endereco em tempo de
- * build. E `prerenderToNodeStream`, e nao `renderToString`: metade do que a
- * pagina mostra chega por promessa - a rota e um `lazy()`, e o corpo de cada
- * doc entra por `use()`. O `renderToString` desiste dessas duas e escreve o
- * fallback, que aqui e uma caixa vazia; o `prerender` espera tudo assentar e
- * escreve a pagina inteira, que e a unica versao que vale a pena guardar.
+ * The same `App` that runs in the tab, mounted once per address at build
+ * time. It is `prerenderToNodeStream`, not `renderToString`: half of what the
+ * page shows arrives through a promise - the route is a `lazy()`, and each
+ * doc body comes in through `use()`. `renderToString` gives up on both and
+ * writes the fallback, which here is an empty box; `prerender` waits for
+ * everything to settle and writes the whole page, the only version worth
+ * keeping.
  * ------------------------------------------------------------------------- */
 
-/** Os enderecos que ganham HTML proprio, na ordem em que o site os lista. */
+/** The addresses that get their own HTML, in the order the site lists them. */
 export function pagePaths(): string[] {
   return [
     '/',
@@ -30,11 +31,11 @@ export function pagePaths(): string[] {
 }
 
 /**
- * O HTML de um endereco, ou o erro que impediu.
+ * The HTML of an address, or the error that prevented it.
  *
- * O `onError` nao interrompe: o React continua e entrega o que conseguiu. Uma
- * pagina meio escrita e pior do que nenhuma - ela hidrata divergindo -, entao
- * quem chama decide, e a decisao aqui e nao publicar o que falhou.
+ * `onError` does not interrupt: React carries on and delivers what it could.
+ * A half-written page is worse than none - it hydrates with a mismatch -, so
+ * the caller decides, and the decision here is to not publish what failed.
  */
 export async function renderPage(path: string) {
   setRenderedPath(path)

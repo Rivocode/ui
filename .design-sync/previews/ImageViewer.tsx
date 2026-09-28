@@ -24,17 +24,17 @@ const PHOTOS: ImageViewerImage[] = [
   { src: photo(90, 'Terraço'), alt: 'Terraço com vista para o parque' },
 ]
 
-/** Grade de miniaturas */
+/** Thumbnail grid */
 export function Gallery() {
   return <ImageViewer images={PHOTOS} className="max-w-xl" />
 }
 
-/** Em volta, da última volta à primeira */
+/** Looping, from the last back to the first */
 export function Looping() {
   return <ImageViewer images={PHOTOS.slice(0, 3)} loop className="max-w-xs" />
 }
 
-/** Controlado, aberto por outro botão */
+/** Controlled, opened by another button */
 export function Controlled() {
   const [index, setIndex] = useState<number | null>(null)
 

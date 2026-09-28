@@ -4,24 +4,24 @@ import { fileURLToPath } from 'node:url'
 import { createServer, createServerModuleRunner } from 'vite'
 
 /* ---------------------------------------------------------------------------
- * O prerender
+ * The prerender
  *
- * O `vite build` escreve um `index.html` com o `#root` vazio: nada aparece na
- * tela ate o React montar, e no Lighthouse isso media 2.490ms de atraso de
- * render dentro do LCP - sozinho, maior que todo o resto somado. Este passo
- * roda o mesmo `App` uma vez por endereco, em Node, e guarda o HTML pronto
- * dentro do `#root`. O navegador passa a pintar assim que o documento chega, e
- * o React hidrata por cima (ver o `main.tsx`).
+ * `vite build` writes an `index.html` with an empty `#root`: nothing shows on
+ * screen until React mounts, and in Lighthouse that measured 2,490ms of render
+ * delay inside the LCP - by itself, more than everything else combined. This
+ * step runs the same `App` once per address, in Node, and stores the finished
+ * HTML inside `#root`. The browser starts painting as soon as the document
+ * arrives, and React hydrates on top (see `main.tsx`).
  *
- * Nao ha segundo bundle. O Vite carrega os modulos por conta propria, com os
- * mesmos plugins, aliases e modulos virtuais do `vite.config.ts` - a alternativa
- * era um `vite build --ssr` com externals proprios, e ai passam a existir duas
- * configuracoes que divergem sem ninguem notar.
+ * There is no second bundle. Vite loads the modules on its own, with the same
+ * plugins, aliases and virtual modules as `vite.config.ts` - the alternative
+ * was a `vite build --ssr` with its own externals, and then there would be two
+ * configurations drifting apart without anyone noticing.
  *
- * O `vercel.json` continua reescrevendo para `/index.html` o que nao casa com
- * arquivo, entao endereco sem HTML proprio segue funcionando como SPA: o
- * prerender nao e requisito de nada, e sim de quanto tempo a primeira tela
- * demora.
+ * `vercel.json` keeps rewriting to `/index.html` whatever does not match a
+ * file, so an address without its own HTML still works as a SPA: the
+ * prerender is not a requirement for anything, only for how long the first
+ * screen takes.
  * ------------------------------------------------------------------------- */
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -29,17 +29,17 @@ const DIST = join(here, 'dist')
 const MARKER = '<div id="root"></div>'
 
 /*
- * As tres familias latinas, prontas para o preload.
+ * The three latin families, ready for preload.
  *
- * Elas sao descobertas em profundidade 3 - o HTML pede o CSS, o CSS pede a
- * fonte -, e chegavam por volta de 1.100ms. O `font-display: swap` ja impede
- * que o texto espere por elas, entao isto nao mexe no LCP: mexe no pulo de
- * fonte, que com o prerender passou a ser visivel, porque agora ha texto na
- * tela desde o primeiro quadro.
+ * They are discovered at depth 3 - the HTML asks for the CSS, the CSS asks
+ * for the font -, and arrived around 1,100ms. `font-display: swap` already
+ * keeps the text from waiting for them, so this does not touch the LCP: it
+ * touches the font swap jump, which became visible with the prerender,
+ * because now there is text on screen from the first frame.
  *
- * Os nomes carregam hash de build, entao a lista sai do proprio `dist`. Um
- * `latin-ext` nao entra: o portugues cabe no `latin`, e preload de arquivo que
- * o navegador nao vai usar e banda jogada fora.
+ * The names carry a build hash, so the list comes from `dist` itself. A
+ * `latin-ext` does not go in: Portuguese fits in `latin`, and preloading a
+ * file the browser will not use is wasted bandwidth.
  */
 function latinFonts(): string[] {
   return readdirSync(join(DIST, 'assets'))
@@ -56,24 +56,24 @@ function withFontPreload(html: string, fonts: string[]): string {
   return html.replace('</head>', `${links}\n  </head>`)
 }
 
-/** Onde o HTML de um endereco mora dentro do `dist`. */
+/** Where an address's HTML lives inside `dist`. */
 function fileOf(path: string) {
   return path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1), 'index.html')
 }
 
 async function main() {
   /*
-   * O molde sai do proprio `index.html` do build, com o `#root` esvaziado
-   * antes de qualquer coisa. Sem esvaziar, rodar este script duas vezes sobre
-   * o mesmo `dist` - o que acontece na primeira vez que alguem repete o
-   * comando sem refazer o build - leria a capa ja prerenderizada como molde e
-   * aninharia a pagina dentro dela. Pelo mesmo motivo o preload de fonte e
-   * removido antes de ser reescrito: sem isso a segunda passada acumularia
-   * uma copia de cada link.
+   * The template comes from the build's own `index.html`, with `#root`
+   * emptied before anything else. Without emptying it, running this script
+   * twice over the same `dist` - which happens the first time someone repeats
+   * the command without rebuilding - would read the already prerendered cover
+   * as the template and nest the page inside it. For the same reason the font
+   * preload is removed before being rewritten: without that the second pass
+   * would pile up one copy of each link.
    */
   const fonts = latinFonts()
   if (fonts.length === 0) {
-    throw new Error('Nenhuma fonte latina em dist/assets: o preload sairia vazio sem ninguem ver.')
+    throw new Error('No latin font in dist/assets: the preload would come out empty without anyone noticing.')
   }
 
   const template = withFontPreload(
@@ -84,13 +84,13 @@ async function main() {
   )
 
   if (!template.includes(MARKER)) {
-    throw new Error(`O ${MARKER} nao esta no dist/index.html: o prerender nao teria onde escrever.`)
+    throw new Error(`${MARKER} is not in dist/index.html: the prerender would have nowhere to write.`)
   }
 
   const server = await createServer({
     root: here,
-    // Sem isto a Vite serviria o proprio `index.html` e ligaria o HMR, que aqui
-    // nao tem para quem falar.
+    // Without this Vite would serve its own `index.html` and turn on HMR, which
+    // here has nobody to talk to.
     appType: 'custom',
     server: { middlewareMode: true },
     logLevel: 'warn',
@@ -107,10 +107,11 @@ async function main() {
     const broken: string[] = []
 
     /*
-     * Um endereco por vez, de proposito. A rota que o `App` le mora em modulo
-     * (`setRenderedPath`), entao duas paginas em voo ao mesmo tempo escreveriam
-     * uma o endereco da outra - e o defeito sairia como uma pagina de peca com
-     * o conteudo da vizinha, que hidrata divergindo e some no primeiro frame.
+     * One address at a time, on purpose. The route the `App` reads lives in a
+     * module (`setRenderedPath`), so two pages in flight at once would write
+     * each other's address - and the defect would come out as a piece page
+     * with its neighbor's content, which hydrates with a mismatch and vanishes
+     * on the first frame.
      */
     for (const path of paths) {
       const { html, failures } = await entry.renderPage(path)
@@ -129,13 +130,13 @@ async function main() {
     }
 
     if (broken.length > 0) {
-      console.error(`\nO prerender falhou em ${broken.length} de ${paths.length} enderecos:`)
+      console.error(`\nThe prerender failed on ${broken.length} of ${paths.length} addresses:`)
       for (const line of broken.slice(0, 10)) console.error(`  ${line}`)
-      throw new Error('Pagina que nao renderiza fora do navegador nao vai ao ar pela metade.')
+      throw new Error('A page that does not render outside the browser does not go live half-done.')
     }
 
     console.log(
-      `prerender: ${written} paginas, ${(bytes / written / 1024).toFixed(1)} KB de HTML em media`,
+      `prerender: ${written} pages, ${(bytes / written / 1024).toFixed(1)} KB of HTML on average`,
     )
   } finally {
     await server.close()

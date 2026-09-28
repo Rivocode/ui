@@ -23,28 +23,28 @@ const PLAN: TreeNode[] = [
   { id: "marketing", label: "Marketing" },
 ];
 
-/** O galho na tela de agora, pelo nome falado que a peca monta. */
+/** The branch on the current screen, by the spoken name the piece assembles. */
 const branch = (screen: ReturnType<typeof render>, label: string) =>
   byRole(screen, "button").find((node) =>
     String(node.props.accessibilityLabel ?? "").startsWith(label),
   )!;
 
 describe("Tree", () => {
-  test("a raiz mostra um nível só, e o galho diz quantas folhas tem", () => {
+  test("the root shows a single level, and the branch says how many leaves it has", () => {
     const screen = render(
       <Tree items={PLAN} value={[]} onValueChange={() => {}} label="Centro de custo" />,
     );
 
     expect(textOf(screen)).toContain("Financeiro");
     expect(textOf(screen)).toContain("Marketing");
-    // O nivel de dentro nao esta na tela: e essa a diferenca para o web.
+    // The inner level is not on screen: that is the difference from the web.
     expect(textOf(screen)).not.toContain("Contas a pagar");
 
     expect(byLabel(screen, "Financeiro, 3 itens").length).toBe(1);
     expect(byRole(screen, "list")[0].props.accessibilityLabel).toBe("Centro de custo");
   });
 
-  test("tocar num galho empurra o nível, e o cabeçalho volta um de cada vez", () => {
+  test("tapping a branch pushes the level, and the header goes back one at a time", () => {
     const screen = render(
       <Tree items={PLAN} value={[]} onValueChange={() => {}} label="Centro de custo" />,
     );
@@ -57,17 +57,17 @@ describe("Tree", () => {
 
     act(() => branch(screen, "Contas a pagar").props.onPress());
     expect(textOf(screen)).toContain("Fornecedores");
-    // O caminho inteiro, na ordem em que foi andado.
+    // The whole path, in the order it was walked.
     expect(textOf(screen)).toContain("Financeiro › Contas a pagar");
     expect(byLabel(screen, "Voltar para Financeiro").length).toBe(1);
 
-    // Voltar sobe UM nivel, e nao volta a raiz.
+    // Back goes up ONE level, and does not return to the root.
     act(() => byLabel(screen, "Voltar para Financeiro")[0].props.onPress());
     expect(textOf(screen)).toContain("Contas a receber");
     expect(byLabel(screen, "Voltar para Centro de custo").length).toBe(1);
   });
 
-  test("é controlada: escolher não muda a tela sozinho, avisa quem manda", () => {
+  test("it is controlled: choosing does not change the screen on its own, it notifies the owner", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Tree items={PLAN} value={[]} onValueChange={onValueChange} label="Centro de custo" />,
@@ -78,14 +78,14 @@ describe("Tree", () => {
     )!;
     act(() => leaf.props.onPress());
     expect(onValueChange).toHaveBeenCalledWith(["marketing"]);
-    // Nada mudou na tela: quem guarda o valor esta do lado de fora.
+    // Nothing changed on screen: whoever keeps the value is outside.
     expect(
       byRole(screen, "button").filter((node) => node.props.accessibilityState?.selected === true)
         .length,
     ).toBe(0);
   });
 
-  test("sem multiple, a escolha troca em vez de somar, e galho não escolhe", () => {
+  test("without multiple, the choice replaces instead of adding, and a branch does not choose", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Tree
@@ -96,7 +96,7 @@ describe("Tree", () => {
       />,
     );
 
-    // Galho nao tem caixa de marcar quando a escolha e unica: ele so navega.
+    // A branch has no checkbox when the choice is single: it only navigates.
     expect(byRole(screen, "checkbox").length).toBe(0);
 
     const chosen = byRole(screen, "button").find(
@@ -106,7 +106,7 @@ describe("Tree", () => {
     expect(onValueChange).toHaveBeenCalledWith([]);
   });
 
-  test("multiple: marcar o galho marca todas as folhas debaixo dele", () => {
+  test("multiple: checking the branch checks all the leaves under it", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Tree
@@ -119,11 +119,11 @@ describe("Tree", () => {
     );
 
     act(() => byLabel(screen, "Marcar tudo em Financeiro")[0].props.onPress());
-    // As tres folhas, e nunca o id do pai: quem vale e a folha.
+    // The three leaves, and never the parent's id: the leaf is what counts.
     expect(onValueChange).toHaveBeenCalledWith(["fornecedores", "impostos", "receber"]);
   });
 
-  test("multiple: desmarcar o galho cheio tira só as folhas dele", () => {
+  test("multiple: unchecking the full branch removes only its leaves", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Tree
@@ -142,7 +142,7 @@ describe("Tree", () => {
     expect(onValueChange).toHaveBeenCalledWith(["marketing"]);
   });
 
-  test("multiple: o galho meio marcado anuncia o estado misto, como no web", () => {
+  test("multiple: a half-checked branch announces the mixed state, as on the web", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Tree
@@ -163,7 +163,7 @@ describe("Tree", () => {
     expect(onValueChange).toHaveBeenCalledWith(["fornecedores", "impostos", "receber"]);
   });
 
-  test("multiple: galho sem nada marcado e galho cheio não ficam mistos", () => {
+  test("multiple: a branch with nothing checked and a full branch are not mixed", () => {
     const empty = render(
       <Tree items={PLAN} multiple value={[]} onValueChange={() => {}} label="Centro de custo" />,
     );
@@ -185,7 +185,7 @@ describe("Tree", () => {
     );
   });
 
-  test("multiple: a folha é uma caixa de marcar, e alterna sozinha", () => {
+  test("multiple: the leaf is a checkbox, and toggles on its own", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <Tree
@@ -204,7 +204,7 @@ describe("Tree", () => {
     expect(onValueChange).toHaveBeenCalledWith([]);
   });
 
-  test("o galho desligado não entra e a caixa dele não marca", () => {
+  test("a disabled branch does not open and its checkbox does not check", () => {
     const onValueChange = mock(() => {});
     const items: TreeNode[] = [
       {
@@ -223,7 +223,7 @@ describe("Tree", () => {
     expect(byLabel(screen, "Marcar tudo em Bloqueado")[0].props.disabled).toBe(true);
   });
 
-  test("o caminho encolhe sozinho quando o galho some da árvore nova", () => {
+  test("the path shrinks on its own when the branch vanishes from the new tree", () => {
     const screen = render(
       <Tree items={PLAN} value={[]} onValueChange={() => {}} label="Centro de custo" />,
     );
@@ -232,7 +232,7 @@ describe("Tree", () => {
     act(() => branch(screen, "Contas a pagar").props.onPress());
     expect(textOf(screen)).toContain("Fornecedores");
 
-    // A consulta se refez e o galho de dentro nao existe mais.
+    // The query was redone and the inner branch no longer exists.
     const trimmed: TreeNode[] = [
       {
         id: "financeiro",
@@ -240,8 +240,8 @@ describe("Tree", () => {
         children: [{ id: "receber", label: "Contas a receber" }],
       },
     ];
-    // Com o provider por fora, como o `render` monta: trocando a raiz, o React
-    // remontaria a arvore e o caminho se perderia por outro motivo.
+    // With the provider outside, the way `render` mounts: by changing the root,
+    // React would remount the tree and the path would be lost for another reason.
     act(() => {
       screen.update(
         <RivoProvider>
@@ -250,13 +250,13 @@ describe("Tree", () => {
       );
     });
 
-    // O caminho para no ultimo galho que ainda existe, em vez de mostrar um
-    // nivel que a resposta anterior tinha e esta nao tem.
+    // The path stops at the last branch that still exists, instead of showing a
+    // level the previous response had and this one does not.
     expect(textOf(screen)).toContain("Contas a receber");
     expect(byLabel(screen, "Voltar para Centro de custo").length).toBe(1);
   });
 
-  test("o nível vazio explica que está vazio", () => {
+  test("an empty level explains that it is empty", () => {
     const items: TreeNode[] = [];
     const screen = render(<Tree items={items} value={[]} onValueChange={() => {}} label="Conta" />);
     expect(textOf(screen)).toContain("Nada dentro deste nível.");
@@ -264,10 +264,10 @@ describe("Tree", () => {
 });
 
 describe("leavesOf", () => {
-  test("um nó sem filhos é a própria folha, e um galho entrega as de baixo", () => {
+  test("a node without children is the leaf itself, and a branch delivers the ones below", () => {
     expect(leavesOf({ id: "só", label: "Só" })).toEqual(["só"]);
     expect(leavesOf(PLAN[0]!)).toEqual(["fornecedores", "impostos", "receber"]);
-    // Lista vazia de filhos e folha, e nao galho sem nada dentro.
+    // An empty children list is a leaf, not a branch with nothing inside.
     expect(leavesOf({ id: "vazio", label: "Vazio", children: [] })).toEqual(["vazio"]);
   });
 });

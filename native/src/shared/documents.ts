@@ -1,4 +1,4 @@
-/* Gerado de src/shared/documents.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/documents.ts by bun run gen:shared. Do not edit. */
 
 const digitsOf = (text: string) => text.replace(/[^a-zA-Z0-9]/g, "");
 

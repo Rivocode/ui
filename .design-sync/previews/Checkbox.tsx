@@ -1,6 +1,6 @@
 import { Checkbox, Field, FieldLabel } from '@rivocode/ui'
 
-/** Estados */
+/** States */
 export function States() {
   return (
     <div className="flex flex-wrap items-center gap-6">
@@ -24,7 +24,7 @@ export function States() {
   )
 }
 
-/** Selecionar todas */
+/** Select all */
 export function SelectAll() {
   return (
     <div className="flex max-w-xs flex-col gap-3">
@@ -44,7 +44,7 @@ export function SelectAll() {
   )
 }
 
-/** Dentro de campo */
+/** Inside a field */
 export function InsideAField() {
   return (
     <Field name="termos" className="max-w-sm">
@@ -56,7 +56,7 @@ export function InsideAField() {
   )
 }
 
-/** Com rótulo */
+/** With label */
 export function WithText() {
   return (
     <div className="space-y-3">

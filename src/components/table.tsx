@@ -43,14 +43,14 @@ export function TableFooter({ className, ...props }: ComponentPropsWithoutRef<"t
 
 export type TableRowProps = ComponentPropsWithoutRef<"tr"> & {
   /**
-   * Linha escolhida. Pinta o fundo, desenha a barra de acento na lateral e
-   * abre a PRIMEIRA celula com um marcador de texto que so o leitor de tela
-   * ouve, porque cor sozinha nao e estado. Nao usa aria-selected: ele so vale
-   * dentro de grid ou treegrid, e esta e uma table simples - prometer grid
-   * exigiria navegacao por setas entre celulas, que a peca nao tem.
+   * Chosen row. Paints the background, draws the accent bar on the side and
+   * opens the FIRST cell with a text marker that only the screen reader
+   * hears, because color alone is not state. Does not use aria-selected: it only applies
+   * inside a grid or treegrid, and this is a plain table - promising a grid
+   * would require arrow navigation between cells, which the piece does not have.
    */
   selected?: boolean;
-  /** O texto do marcador da linha escolhida. Padrao "Selecionada". */
+  /** The text of the chosen row's marker. Default "Selecionada". */
   labels?: { selected?: string };
 };
 

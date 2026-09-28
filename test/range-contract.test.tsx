@@ -24,13 +24,13 @@ function day(label: string) {
 type Same<A, B> =
   (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 
-test("o periodo em Date tem as duas pontas obrigatorias, como o do nativo", () => {
+test("the Date range has both ends required, like the native one", () => {
   const from: Same<DateRange["from"], Date> = true;
   const to: Same<DateRange["to"], Date> = true;
   expect(from && to).toBe(true);
 });
 
-test("com Date, o Limpar responde null, e nao undefined", () => {
+test("with Date, Limpar answers null, and not undefined", () => {
   const received: unknown[] = [];
   render(
     <RivoProvider scope="local">
@@ -50,7 +50,7 @@ test("com Date, o Limpar responde null, e nao undefined", () => {
   expect(screen.getByText("Escolha o período")).toBeDefined();
 });
 
-test("com Date e sem confirm, cada saida e um periodo fechado, e esvaziar responde null", () => {
+test("with Date and without confirm, every output is a closed range, and clearing answers null", () => {
   const received: Array<DateRange | null> = [];
   render(
     <RivoProvider scope="local">
@@ -76,7 +76,7 @@ test("com Date e sem confirm, cada saida e um periodo fechado, e esvaziar respon
   expect(received[2]!.to.getDate()).toBe(12);
 });
 
-test("com texto e sem confirm, o periodo sai no mesmo contrato, fechado e em texto", () => {
+test("with text and without confirm, the range comes out in the same contract, closed and as text", () => {
   const received: unknown[] = [];
   render(
     <RivoProvider scope="local">
@@ -93,7 +93,7 @@ test("com texto e sem confirm, o periodo sai no mesmo contrato, fechado e em tex
   expect(received).toEqual([null, { from: "2026-09-08", to: "2026-09-08" }]);
 });
 
-test("com Date, o pai que zera o periodo por fora apaga o gatilho", () => {
+test("with Date, a parent that resets the range from outside clears the trigger", () => {
   function Filter() {
     const [range, setRange] = useState<DateRange | null>(null);
     return (
@@ -117,7 +117,7 @@ test("com Date, o pai que zera o periodo por fora apaga o gatilho", () => {
   expect(screen.getByText("Escolha o período")).toBeDefined();
 });
 
-test("o Calendar aceita defaultValue em Date e guarda o dia sozinho", () => {
+test("the Calendar accepts defaultValue as Date and keeps the day on its own", () => {
   const received: Date[] = [];
   render(
     <RivoProvider scope="local">
@@ -135,7 +135,7 @@ test("o Calendar aceita defaultValue em Date e guarda o dia sozinho", () => {
   expect(day("25").closest("td")!.getAttribute("aria-selected")).not.toBe("true");
 });
 
-test("o Calendar com defaultValue em texto responde em texto", () => {
+test("the Calendar with defaultValue as text answers as text", () => {
   const received: string[] = [];
   render(
     <RivoProvider scope="local">

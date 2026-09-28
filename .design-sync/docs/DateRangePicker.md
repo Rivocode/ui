@@ -1,29 +1,29 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # DateRangePicker
 
-Periodo, para filtro de relatório e de listagem.
+A date range, for report and listing filters.
 
-Aqui não ha digitacao, e essa é a diferença de propósito para o `DatePicker`:
-mascara de intervalo pede duas datas num campo só, e o custo de acertar teclado,
-colagem e ordem invertida não se paga.
+There is no typing here, and that is the deliberate difference from
+`DatePicker`: a range mask asks for two dates in a single field, and the cost
+of getting keyboard, pasting and reversed order right does not pay off.
 
-O rodape com Aplicar vem ligado por padrão, ao contrário do `DatePicker`, e a
-diferença é de propósito: período pede dois cliques. O primeiro já fecha um
-período de um dia e o segundo estica até o fim, então sem `confirm` o
-`onValueChange` sairia duas vezes, e um filtro de listagem recarregaria duas
-vezes.
+The footer with Apply is on by default, unlike `DatePicker`, and the
+difference is on purpose: a range takes two clicks. The first already closes a
+one-day range and the second stretches it to the end, so without `confirm`
+`onValueChange` would fire twice, and a listing filter would reload twice.
 
-## Valor
+## Value
 
-`value` e `defaultValue` aceitam pontas em `Date` ou em texto `aaaa-mm-dd`, e o
-`onValueChange` responde no formato que recebeu. O contrato é um só nos dois
-formatos, e é o do `@rivocode/ui-native`: só sai intervalo **fechado**, com
-`from` e `to` obrigatórios (`DateRange` em `Date`, `IsoDateRange` em texto), e
-`null` quando a escolha esvazia. O período pela metade fica no rascunho do
-calendário até ganhar a segunda ponta, e nunca chega a quem chama.
+`value` and `defaultValue` accept ends as `Date` or as `yyyy-mm-dd` text, and
+`onValueChange` answers in the format it received. The contract is one and the
+same in both formats, and it is the one from `@rivocode/ui-native`: only a
+**closed** range comes out, with `from` and `to` required (`DateRange` in
+`Date`, `IsoDateRange` in text), and `null` when the selection is emptied. A
+half-picked range stays in the calendar's draft until it gets its second end,
+and never reaches the caller.
 
 ```tsx
 const [periodo, setPeriodo] = useState<IsoDateRange | null>(null)
@@ -36,9 +36,9 @@ const [periodo, setPeriodo] = useState<IsoDateRange | null>(null)
 />
 ```
 
-Com `Date`, o vazio que entra é `undefined`, porque `null` no `value` é o que
-escolhe o formato em texto. Guarde `DateRange | null` e passe o vazio adiante
-como `undefined`:
+With `Date`, the empty value that goes in is `undefined`, because `null` in
+`value` is what picks the text format. Store `DateRange | null` and pass the
+empty value on as `undefined`:
 
 ```tsx
 const [periodo, setPeriodo] = useState<DateRange | null>(null)
@@ -46,34 +46,35 @@ const [periodo, setPeriodo] = useState<DateRange | null>(null)
 <DateRangePicker value={periodo ?? undefined} onValueChange={setPeriodo} />
 ```
 
-`min` e `max` são inclusivos: desabilitam os dias de fora e param a navegação no
-mês de cada ponta, que é o que um filtro de período precisa para ficar dentro
-dos exercícios abertos. `showOutsideDays` e `locale` atravessam para o
-calendário, como no `DatePicker`.
+`min` and `max` are inclusive: they disable the days outside and stop
+navigation at the month of each end, which is what a range filter needs to
+stay within the open fiscal years. `showOutsideDays` and `locale` pass through
+to the calendar, as in `DatePicker`.
 
-## O segundo período estende, e não recomeça
+## The second range extends, it does not restart
 
-Com um intervalo inteiro na tela, o próximo dia clicado **mexe numa das pontas
-do que já existe**, em vez de começar de novo. A regra é de posição, e não de
-ordem: dia antes do começo puxa o começo para trás, e qualquer dia depois dele
-vira o novo fim — inclusive um dia que está no meio da faixa, que assim
-encurta o período em vez de abrir um período novo a partir dali. É a única
-regra que não joga trabalho fora: o calendário não tem como saber qual das duas
-pontas a pessoa quis mexer, e adivinhar errado apagaria uma data que ela acabou
-de escolher.
+With a whole range on screen, the next day clicked **moves one of the ends of
+the existing one**, instead of starting over. The rule is about position, not
+order: a day before the start pulls the start back, and any day after it
+becomes the new end - including a day in the middle of the range, which thus
+shortens the range instead of opening a new one from there. It is the only
+rule that throws no work away: the calendar has no way of knowing which of the
+two ends the person meant to move, and guessing wrong would erase a date they
+just picked.
 
-Para trocar de período em vez de esticar o atual há duas portas, e é bom saber
-das duas antes de precisar. `Limpar` zera a escolha **e fecha o painel** — e
-ele não limpa só o rascunho: confirma o vazio, chamando `onValueChange` com
-`null` sem esperar pelo `Aplicar`, nos dois formatos, então um filtro ligado nele
-recarrega vazio e reabrir o painel é um clique a mais. A outra porta não fecha nada:
-clicar exatamente sobre uma das duas pontas transforma o intervalo num período
-de um dia só ali, e o clique seguinte já estende a partir desse dia.
+To switch to a different range instead of stretching the current one there are
+two doors, and it is good to know both before you need them. `Limpar` resets
+the selection **and closes the panel** - and it does not clear just the draft:
+it confirms the empty value, calling `onValueChange` with `null` without
+waiting for `Aplicar`, in both formats, so a filter wired to it reloads empty
+and reopening the panel is one more click. The other door closes nothing:
+clicking exactly on one of the two ends turns the range into a one-day range
+right there, and the next click already extends from that day.
 
-Com `confirm={false}` não há rodapé, e portanto não há `Limpar`: aí a ponta é o
-único caminho, e clicar de novo no período de um dia só é o que esvazia, com o
-mesmo `null`.
+With `confirm={false}` there is no footer, and therefore no `Limpar`: then the
+end is the only way, and clicking the one-day range again is what empties it,
+with the same `null`.
 
-## No React Native
+## In React Native
 
-Traduz, com um desenho só: **um mês, numa folha de baixo, com a faixa pintada na própria grade**. Os dois meses lado a lado do web não cabem (390px partidos ao meio dão 27px de célula, e o alvo de toque mínimo é 44), e dois `DatePicker` em sequência, que era o que esta tabela mandava fazer até agora, perdem justamente o que faz a peça existir: as duas pontas na mesma grade, com os dias do meio pintados. **A validação de fim-antes-do-começo deixou de ser sua**: tocar 20 e depois 5 devolve 5 a 20, porque a peça ordena as duas pontas em vez de descartar o primeiro toque, e o `Aplicar` fica desligado enquanto falta a segunda. Por isso o tipo mudou: o `DateRange` daqui tem `from` e `to` **obrigatórios**, os dois como ISO `aaaa-mm-dd`, e o vazio é `null` - o mesmo `IsoDateRange` que o web aceita e devolve quando recebe o valor em texto, e o mesmo contrato do web nos dois formatos: o `onValueChange` só recebe intervalo fechado, e `null` no Limpar. O intervalo pela metade não sai de nenhum dos dois pacotes: quem quiser acompanhar lê o resumo que a própria folha escreve acima do mês. Sem `confirm`: a folha sempre confirma, porque o toque fora dela é o gesto de desistir e não pode valer como aplicar.
+Translates, with a single design: **one month, in a bottom sheet, with the range painted on the grid itself**. The web's two side-by-side months do not fit (390px split in half gives 27px cells, and the minimum touch target is 44), and two `DatePicker`s in sequence, which is what this table told you to do until now, lose precisely what makes the piece exist: both ends on the same grid, with the days in between painted. **Validating end-before-start is no longer your job**: tapping 20 and then 5 gives back 5 to 20, because the piece orders the two ends instead of discarding the first tap, and `Aplicar` stays disabled while the second is missing. That is why the type changed: the `DateRange` here has **required** `from` and `to`, both as ISO `yyyy-mm-dd`, and empty is `null` - the same `IsoDateRange` the web accepts and returns when it receives the value as text, and the same contract as the web in both formats: `onValueChange` only receives a closed range, and `null` on Limpar. A half range comes out of neither package: whoever wants to follow along reads the summary the sheet itself writes above the month. No `confirm`: the sheet always confirms, because a tap outside it is the gesture of giving up and cannot count as applying.

@@ -1,4 +1,4 @@
-/* Gerado de src/shared/pix.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/pix.ts by bun run gen:shared. Do not edit. */
 
 const cleanTaxId = (text: string) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
 
@@ -42,38 +42,51 @@ export function isValidPixKey(key: string): boolean {
 }
 
 export type PixPayloadInput = {
-  /** A chave Pix. CPF, CNPJ e celular podem vir pontuados e saem como o DICT os guarda; chave fora dos cinco tipos lanca `RangeError`. */
+  /**
+   * The Pix key. CPF, CNPJ and phone may come punctuated and come out as the DICT stores them; a
+   * key outside the five types throws `RangeError`.
+   */
   key: string;
-  /** O nome do recebedor, ate 25 caracteres depois de tirar o acento. O app do pagador mostra o nome do DICT, e nao este. */
+  /**
+   * The receiver's name, up to 25 characters after removing accents. The payer's app shows the DICT
+   * name, not this one.
+   */
   name: string;
-  /** A cidade do recebedor, ate 15 caracteres depois de tirar o acento. */
+  /** The receiver's city, up to 15 characters after removing accents. */
   city: string;
-  /** Em reais, arredondado ao centavo e de um centavo para cima. Sem ele, o app do pagador pergunta quanto. */
+  /**
+   * In reais, rounded to the cent and from one cent up. Without it, the payer's app asks how much.
+   */
   amount?: number;
-  /** O identificador para conciliar, ate 25 letras e digitos. Sem ele sai `***`, como manda o manual. */
+  /**
+   * The reconciliation identifier, up to 25 letters and digits. Without it `***` is used, as the
+   * manual says.
+   */
   txid?: string;
-  /** O texto livre que o pagador ve, no campo infoAdicional. Divide 99 caracteres com a chave. */
+  /**
+   * The free text the payer sees, in the infoAdicional field. Shares 99 characters with the key.
+   */
   description?: string;
 };
 
 export type PixPayload = {
-  /** A chave Pix. Vazia no QR dinamico, que leva `url` no lugar. */
+  /** The Pix key. Empty in a dynamic QR, which carries `url` instead. */
   key?: string;
-  /** A location do QR dinamico, sem protocolo. */
+  /** The dynamic QR's location, without protocol. */
   url?: string;
-  /** A location dos parametros de recorrencia do QR composto (ID 80 a 99), sem protocolo. */
+  /** The location of the composite QR's recurrence parameters (ID 80 to 99), without protocol. */
   recurrence?: string;
-  /** O nome do recebedor gravado no codigo. */
+  /** The receiver's name recorded in the code. */
   name: string;
-  /** A cidade do recebedor gravada no codigo. */
+  /** The receiver's city recorded in the code. */
   city: string;
-  /** Em reais. No QR dinamico o valor que vale e o da cobranca, e nao este. */
+  /** In reais. In a dynamic QR the amount that counts is the charge's, not this one. */
   amount?: number;
-  /** O identificador de conciliacao; ausente quando o codigo diz `***`. */
+  /** The reconciliation identifier; absent when the code says `***`. */
   txid?: string;
-  /** O infoAdicional. */
+  /** The infoAdicional. */
   description?: string;
-  /** `true` quando o codigo so vale para um pagamento (ID 01 igual a 12). */
+  /** `true` when the code is valid for a single payment only (ID 01 equal to 12). */
   unique: boolean;
 };
 
@@ -122,15 +135,15 @@ export function pixCrc(text: string) {
 
 function field(id: string, value: string) {
   if (value.length > 99) {
-    throw new RangeError(`O campo ${id} do Pix passa de 99 caracteres.`);
+    throw new RangeError(`Pix field ${id} is longer than 99 characters.`);
   }
   return `${id}${String(value.length).padStart(2, "0")}${value}`;
 }
 
 function limit(label: string, value: string, max: number) {
-  if (value.length === 0) throw new RangeError(`O Pix precisa de ${label}.`);
+  if (value.length === 0) throw new RangeError(`The Pix needs a ${label}.`);
   if (value.length > max) {
-    throw new RangeError(`${label} do Pix passa de ${max} caracteres: "${value}".`);
+    throw new RangeError(`The Pix ${label} is longer than ${max} characters: "${value}".`);
   }
   return value;
 }
@@ -159,29 +172,29 @@ function toCents(value: number) {
 }
 
 export function buildPixPayload(input: PixPayloadInput): string {
-  const key = limit("a chave", pixKeyOf(input.key), 77);
+  const key = limit("key", pixKeyOf(input.key), 77);
   if (!isValidPixKey(key)) {
     throw new RangeError(
-      `A chave do Pix nao e CPF, CNPJ, e-mail, celular com +55 nem chave aleatoria: "${input.key}".`,
+      `The Pix key is not a CPF, CNPJ, e-mail, mobile number with +55 or random key: "${input.key}".`,
     );
   }
-  const name = limit("o nome", plain(input.name), 25);
-  const city = limit("a cidade", plain(input.city), 15);
+  const name = limit("name", plain(input.name), 25);
+  const city = limit("city", plain(input.city), 15);
   const description = input.description ? plain(input.description) : "";
 
   const txid = input.txid?.trim() || "***";
   if (txid !== "***" && !/^[A-Za-z0-9]{1,25}$/.test(txid)) {
-    throw new RangeError(`O txid do Pix aceita so letras e digitos, ate 25: "${txid}".`);
+    throw new RangeError(`The Pix txid accepts only letters and digits, up to 25: "${txid}".`);
   }
 
   let amount = "";
   if (input.amount !== undefined) {
     const cents = toCents(input.amount);
     if (!Number.isSafeInteger(cents) || cents <= 0) {
-      throw new RangeError(`O valor do Pix tem que ser de um centavo para cima: ${input.amount}.`);
+      throw new RangeError(`The Pix amount has to be one cent or more: ${input.amount}.`);
     }
     amount = `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, "0")}`;
-    if (amount.length > 13) throw new RangeError(`O valor do Pix passa de 13 caracteres: ${amount}.`);
+    if (amount.length > 13) throw new RangeError(`The Pix amount is longer than 13 characters: ${amount}.`);
   }
 
   const account =

@@ -9,29 +9,28 @@ import { useRivo } from "./provider";
 const STROKE = 2;
 
 export type SparklineProps = {
-  /** So os numeros, na ordem do tempo. */
+  /** Only the numbers, in time order. */
   data: number[];
-  /** `line` para tendencia pura; `bar` quando cada periodo conta sozinho. */
+  /** `line` for pure trend; `bar` when each period counts on its own. */
   variant?: "line" | "bar";
   /**
-   * O papel de token que pinta o traco - `chart-1` a `chart-8` quando a peca
-   * entra numa serie. Sem ele, o acento do tema, que e a leitura neutra de
-   * "isto e um numero desta tela".
+   * The token role that paints the stroke - `chart-1` to `chart-8` when the
+   * component joins a series. Without it, the theme accent, which is the
+   * neutral reading of "this is a number on this screen".
    */
   color?: RivoNativeColorRole;
   /**
-   * Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo
-   * ponto. Use so quando subir for bom: em custo, subir e ruim.
-   *
-   * Nao se chama `tone` de proposito, e o nome acompanha o do web: `tone` e a
-   * escala semantica de cor no resto do catalogo - `Badge`, `Alert`,
-   * `Timeline` -, com outros valores.
+   * Paints green or red depending on whether it rises or falls from the first
+   * to the last point. Use only when rising is good: for cost, rising is bad.
+   * It is not called `tone` on purpose, and the name matches the web: `tone` is
+   * the semantic color scale in the rest of the catalog - `Badge`, `Alert`,
+   * `Timeline` -, with other values.
    */
   trend?: "auto" | "none";
-  /** A altura do desenho, em px. A largura vem do pai. */
+  /** The drawing height, in px. The width comes from the parent. */
   height?: number;
   className?: string;
-  /** O que o leitor de tela ouve. Sem isto ela e escondida dele. */
+  /** What the screen reader hears. Without it, the sparkline is hidden from it. */
   label?: string;
 };
 

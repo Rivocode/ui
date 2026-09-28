@@ -1,12 +1,12 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Spoiler
 
-Mostra o começo de um texto longo e esconde o resto atrás de um "Ler mais". A
-descrição de um produto, o termo de uso, a nota interna de um cliente, a
-resposta longa de um chamado.
+Shows the beginning of a long text and hides the rest behind a "Ler mais". A
+product description, the terms of use, a client's internal note, the long reply
+to a ticket.
 
 ```tsx
 <Spoiler maxHeight={96}>
@@ -15,31 +15,32 @@ resposta longa de um chamado.
 </Spoiler>
 ```
 
-## Pela altura, e só quando estoura
+## By height, and only when it overflows
 
-O corte é por **altura**, em pixels (`maxHeight`, 120 sem a prop), e não por
-número de caracteres: o que cabe depende da largura da tela, e a peça mede o
-conteúdo de verdade, de novo a cada vez que ele muda de tamanho.
+The cut is by **height**, in pixels (`maxHeight`, 120 without the prop), and not
+by number of characters: what fits depends on the screen width, and the piece
+measures the real content, again each time it changes size.
 
-Conteúdo que cabe na altura não ganha botão, nem corte, nem degradê. Por isso
-dá para usar o mesmo `Spoiler` em toda linha de uma lista, com texto curto e
-longo misturados.
+Content that fits in the height gets no button, no cut and no gradient. That is
+why the same `Spoiler` can be used on every row of a list, with short and long
+text mixed.
 
-## O corte
+## The cut
 
-Recolhido, as duas últimas linhas visíveis somem num degradê. É uma máscara, e
-não uma camada pintada por cima: ela funciona sobre `bg`, `surface`, cartão ou
-imagem, sem saber a cor do fundo. O degradê mede duas alturas de linha (`2lh`),
-então acompanha o corpo do texto, e a linha que o corte pega pela metade nunca
-aparece com a borda seca.
+Collapsed, the last two visible lines fade into a gradient. It is a mask, not a
+layer painted on top: it works over `bg`, `surface`, a card or an image,
+without knowing the background color. The gradient measures two line heights
+(`2lh`), so it follows the body text, and the line the cut catches halfway
+never shows with a hard edge.
 
-Ao abrir, a caixa cresce até a altura inteira com a duração `base` e a curva
-da casa, e sem movimento quando o sistema pede para reduzir.
+On opening, the box grows to its full height with the `base` duration and the
+house curve, and with no motion when the system asks to reduce it.
 
-## O botão
+## The button
 
-"Ler mais" recolhido, "Ler menos" aberto, e `aria-expanded` diz o estado para
-quem ouve. `aria-controls` aponta para a caixa. `labels` troca os dois textos:
+"Ler mais" collapsed, "Ler menos" open, and `aria-expanded` tells the state to
+whoever is listening. `aria-controls` points to the box. `labels` changes both
+texts:
 
 ```tsx
 <Spoiler labels={{ more: 'Ver o termo inteiro', less: 'Recolher o termo' }}>
@@ -47,43 +48,44 @@ quem ouve. `aria-controls` aponta para a caixa. `labels` troca os dois textos:
 </Spoiler>
 ```
 
-Controlado, `open` e `onOpenChange` andam juntos; sem controlar,
-`defaultOpen` decide como nasce. São os mesmos nomes do `Collapsible` e do
-`AccordionItem`: abrir e fechar se chama `open` em toda a biblioteca.
+Controlled, `open` and `onOpenChange` go together; uncontrolled,
+`defaultOpen` decides how it starts. They are the same names as in
+`Collapsible` and `AccordionItem`: opening and closing is called `open`
+throughout the library.
 
-## O que fica escondido não some
+## What is hidden does not disappear
 
-O corte é só visual. O leitor de tela lê o texto inteiro, recolhido ou não, e o
-link que estiver abaixo do corte continua na ordem do Tab. Quando o foco entra
-num elemento abaixo do corte ou dentro do degradê, o `Spoiler` abre sozinho,
-volta o texto para o começo e traz o elemento focado para a vista, para ninguém
-focar o que não vê.
+The cut is only visual. The screen reader reads the whole text, collapsed or
+not, and a link below the cut stays in the Tab order. When focus enters an
+element below the cut or inside the gradient, `Spoiler` opens on its own,
+scrolls the text back to the beginning and brings the focused element into view,
+so nobody focuses on what they cannot see.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `content` (a caixa que corta) e
-`trigger` (o botão). O `className` vai na raiz, e é lá que o corpo e o tom do
-texto entram.
+`classNames` reaches each node by name: `content` (the box that cuts) and
+`trigger` (the button). `className` goes on the root, and that is where the
+text's body size and tone come in.
 
-## Quando não usar
+## When not to use
 
-- **Uma linha ou poucas, cortadas com reticência, sem abrir** é `Text` com
-  `truncate` ou `lineClamp`. O `Spoiler` é para quem vai querer ler o resto ali
-  mesmo.
-- **Um bloco inteiro que nasce fechado, com título próprio** ("Ver os detalhes
-  do cálculo") é `Collapsible`. O `Spoiler` mostra o começo do conteúdo; o
-  `Collapsible` esconde tudo atrás do título.
-- **Várias seções que se fecham entre si** é `Accordion`.
-- **Texto que não cabe e que a pessoa precisa ler inteiro para decidir**, como
-  um contrato antes do aceite, vai aberto numa `ScrollArea` ou num `Dialog`. O
-  "Ler mais" convida a pular.
+- **One line or a few, cut with an ellipsis, with no opening** is `Text` with
+  `truncate` or `lineClamp`. `Spoiler` is for whoever will want to read the
+  rest right there.
+- **A whole block that starts closed, with its own title** ("Ver os detalhes
+  do cálculo") is `Collapsible`. `Spoiler` shows the beginning of the content;
+  `Collapsible` hides everything behind the title.
+- **Several sections that close each other** is `Accordion`.
+- **Text that does not fit and that the person needs to read in full to
+  decide**, such as a contract before accepting, goes open in a `ScrollArea` or
+  a `Dialog`. "Ler mais" invites skipping.
 
-## No React Native
+## In React Native
 
-Traduz, com os mesmos `maxHeight`, `open`, `defaultOpen`, `onOpenChange` e `labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado por `accessibilityState.expanded`.
+Translates, with the same `maxHeight`, `open`, `defaultOpen`, `onOpenChange` and `labels`, and the same button that only appears when the content overflows. The button states its state through `accessibilityState.expanded`.
 
-**Recolhido, o leitor de tela ouve que o texto está cortado.** O `overflow` esconde só da vista, e o TalkBack e o VoiceOver leem o bloco inteiro. Então o conteúdo recolhido vira um elemento só para o leitor, com a dica "Texto cortado. Toque em Ler mais para ver o resto."; aberto, a dica sai. Link dentro do bloco recolhido não recebe foco próprio até abrir.
+**Collapsed, the screen reader hears that the text is cut.** `overflow` hides only from sight, and TalkBack and VoiceOver read the whole block. So the collapsed content becomes a single element for the reader, with the hint "Texto cortado. Toque em Ler mais para ver o resto."; when open, the hint goes away. A link inside the collapsed block does not receive its own focus until it opens.
 
-**O degradê é pintado, e não máscara.** O React Native não tem máscara sem dependência nova, então os últimos 40 pontos recebem faixas na cor do fundo, com opacidade crescente. A cor sai de `fadeOver` (`bg`, `surface` ou `surface-raised`, `bg` sem a prop): ponha o fundo em que o bloco pousa, senão o degradê aparece como uma faixa.
+**The fade is painted, not a mask.** React Native has no mask without a new dependency, so the last 40 points get bands in the background color, with increasing opacity. The color comes from `fadeOver` (`bg`, `surface` or `surface-raised`, `bg` without the prop): set the background the block sits on, otherwise the fade shows up as a band.
 
-O `className` vai na raiz, e as partes vestem pelo mesmo `classNames` do web: `content` (a caixa que corta) e `trigger` (o botão).
+`className` goes on the root, and the parts are styled through the same `classNames` as the web: `content` (the box that clips) and `trigger` (the button).

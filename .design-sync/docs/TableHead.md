@@ -1,10 +1,10 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # TableHead
 
-Uma célula de cabeçalho.
+A header cell.
 
-Sai como `<th>`, em caixa alta e menor, com a altura vinda da densidade. Não
-quebra linha: cabeçalho quebrado desalinha a coluna toda.
+It comes out as a `<th>`, uppercase and smaller, with the height coming from
+density. It does not wrap: a wrapped header misaligns the whole column.

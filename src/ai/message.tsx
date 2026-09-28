@@ -13,38 +13,38 @@ export type { MessageRole };
 
 export type MessageProps = Omit<ComponentPropsWithoutRef<"article">, "role"> & {
   /**
-   * Quem fala. Decide o alinhamento e o desenho: `user` e o balao a direita,
-   * `assistant` e o texto corrido a esquerda, `system` e a linha discreta no
-   * centro.
+   * Who is speaking. Decides the alignment and the drawing: `user` is the bubble on the right,
+   * `assistant` is running text on the left, `system` is the discreet line in the
+   * center.
    */
   role: MessageRole;
   /**
-   * O nome de quem fala, para o leitor de tela, que ouve cada mensagem como um
-   * artigo com esse nome. Sem ele: "Você", "Assistente" ou "Sistema".
+   * The speaker's name, for the screen reader, which hears each message as an
+   * article with that name. Without it: "Você", "Assistente" or "Sistema".
    */
   author?: string;
-  /** O `Avatar` ao lado da mensagem. Nao sai em `system`. */
+  /** The `Avatar` beside the message. Not shown in `system`. */
   avatar?: ReactNode;
   /**
-   * O texto ainda esta chegando: a mensagem anuncia `aria-busy`, para o leitor
-   * de tela ler quando ela terminar e nao a cada pedaco, mostra o indicador e
-   * esconde as acoes.
+   * The text is still arriving: the message announces `aria-busy`, so the screen
+   * reader reads it when it finishes and not at each chunk, shows the indicator and
+   * hides the actions.
    */
   streaming?: boolean;
   /**
-   * Liga o botao de copiar, com este texto. Passe o texto cru (o markdown, e
-   * nao o que ele desenha): e o que a pessoa cola em outro lugar.
+   * Turns on the copy button, with this text. Pass the raw text (the markdown, and
+   * not what it draws): it is what the person pastes somewhere else.
    */
   copyValue?: string;
-  /** Liga o botao de tentar de novo, que pede outra resposta. */
+  /** Turns on the try-again button, which asks for another answer. */
   onRetry?: () => void;
-  /** Os nomes dos botoes de acao. Sem eles: "Copiar", "Copiado" e "Tentar de novo". */
+  /** The names of the action buttons. Without them: "Copiar", "Copiado" and "Tentar de novo". */
   labels?: { copy?: string; copied?: string; retry?: string };
-  /** Os botoes proprios, depois do copiar e do tentar de novo: gostei, nao gostei. */
+  /** Your own buttons, after copy and try again: like, dislike. */
   actions?: ReactNode;
   /**
-   * A resposta falhou: a frase sai embaixo do conteudo, com icone e no tom de
-   * perigo, e as acoes aparecem mesmo sem conteudo.
+   * The answer failed: the sentence appears below the content, with an icon and in the danger
+   * tone, and the actions appear even without content.
    */
   error?: ReactNode;
   classNames?: Slots<"avatar" | "bubble" | "content" | "indicator" | "error" | "actions">;

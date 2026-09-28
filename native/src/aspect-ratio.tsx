@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { cn } from "./cn";
 
 export type AspectRatioProps = {
-  /** Largura sobre altura: `16 / 9`, `1`, `4 / 3`. */
+  /** Width over height: `16 / 9`, `1`, `4 / 3`. */
   ratio: number;
   children: ReactNode;
   className?: string;

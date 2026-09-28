@@ -10,7 +10,7 @@ const SAVED =
   '<blockquote><p>Pagamento por Pix em até 5 dias úteis.</p></blockquote>' +
   '<p>Detalhes em <a href="https://rivocode.com.br">rivocode.com.br</a>.</p>'
 
-/** O que o editor salvou */
+/** What the editor saved */
 export function Saved() {
   return <RichTextView value={SAVED} className="max-w-prose" />
 }
@@ -19,12 +19,12 @@ const HOSTILE =
   '<p style="color:red" onclick="alert(1)">Texto colado de fora, com ' +
   '<a href="javascript:alert(2)">um link que não abre</a>.</p><script>alert(3)</script>'
 
-/** HTML de fora, sem o que não é texto */
+/** Outside HTML, without what is not text */
 export function Hostile() {
   return <RichTextView value={HOSTILE} className="max-w-prose" />
 }
 
-/** Vazio */
+/** Empty */
 export function Empty() {
   return <RichTextView value="<p></p>" empty={<Text tone="muted">Sem descrição.</Text>} />
 }

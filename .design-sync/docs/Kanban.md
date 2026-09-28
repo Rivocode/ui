@@ -1,14 +1,15 @@
 ---
-category: Dados
+category: Data
 ---
 
 # Kanban
 
-O quadro de colunas: cada coluna é uma situação, cada cartão é uma coisa que
-anda entre elas. Notas que vão de "A emitir" a "Emitida", pedidos que vão de
-"Recebido" a "Entregue". Os cartões arrastam entre colunas e dentro delas, com o
-ponteiro, com o dedo e com o teclado. Vive em `@rivocode/ui/dnd`, atrás do
-`@dnd-kit/core` e do `@dnd-kit/sortable`, que são dependências opcionais.
+The column board: each column is a status, each card is a thing that moves
+between them. Invoices going from "A emitir" to "Emitida", orders going from
+"Recebido" to "Entregue". Cards drag between columns and within them, with the
+pointer, with the finger and with the keyboard. Lives in `@rivocode/ui/dnd`,
+behind `@dnd-kit/core` and `@dnd-kit/sortable`, which are optional
+dependencies.
 
 ```bash
 npm install @dnd-kit/core @dnd-kit/sortable
@@ -38,100 +39,101 @@ const [columns, setColumns] = useState([
 />
 ```
 
-## A peça é controlada
+## The piece is controlled
 
-O quadro não guarda cartão nenhum. Durante o arrasto ele mostra onde o cartão
-vai cair (é o único estado que ele tem), e ao soltar pede a mudança por
-`onMove({ itemId, from, to, index })`: a chave do cartão, a coluna de onde ele
-saiu, a coluna onde parou e a posição final dentro dela, contando do zero. Quem
-muda `columns` é você, e o quadro desenha o que voltar. Sem mudar, o cartão
-volta para onde estava.
+The board holds no cards at all. During the drag it shows where the card will
+land (that is the only state it has), and on drop it requests the change
+through `onMove({ itemId, from, to, index })`: the card's key, the column it
+left, the column where it stopped and the final position within it, counting
+from zero. You are the one who changes `columns`, and the board draws what
+comes back. Without a change, the card goes back to where it was.
 
-É isso que deixa a mudança de situação passar pelo servidor antes: mudar a
-nota de "Em análise" para "Emitida" costuma ser uma chamada, e ela pode
-recusar.
+That is what lets the status change go through the server first: moving the
+invoice from "Em análise" to "Emitida" is usually a call, and it can refuse.
 
-Soltar no mesmo lugar, soltar fora de qualquer coluna e cancelar com Esc não
-chamam `onMove`.
+Dropping in the same place, dropping outside any column and cancelling with
+Esc do not call `onMove`.
 
-`getKey` é a identidade do cartão, única no quadro inteiro, e não só na coluna.
+`getKey` is the card's identity, unique across the whole board, and not just
+within the column.
 
-## Contagem e limite
+## Count and limit
 
-Cada coluna diz quantos cartões tem, ao lado do nome. `limit` liga o limite de
-trabalho em andamento: a contagem vira "3/4", e **acima do limite** ela fica no
-tom de atenção e diz "Acima do limite" em texto, com ícone. Cor nunca é o único
-sinal.
+Each column says how many cards it has, next to its name. `limit` turns on the
+work-in-progress limit: the count becomes "3/4", and **above the limit** it
+takes the warning tone and says "Acima do limite" in text, with an icon. Color
+is never the only signal.
 
-O limite avisa e não tranca: o cartão continua entrando, porque às vezes a
-coluna precisa passar do limite por um dia, e quem decide isso é a pessoa. O
-anúncio para o leitor de tela diz quando o cartão fez a coluna passar: "A coluna
-Em análise passa do limite de 4.".
+The limit warns and does not lock: the card still goes in, because sometimes
+the column needs to go over the limit for a day, and the person is the one who
+decides that. The screen reader announcement says when the card pushed the
+column over: "A coluna Em análise passa do limite de 4.".
 
-## Coluna vazia
+## Empty column
 
-Coluna sem cartão mostra uma área tracejada, "Nenhum cartão. Solte um aqui.", e
-ela inteira aceita o cartão. Enquanto um cartão passa por cima, a coluna que vai
-recebê-lo ganha o anel de foco.
+A column with no cards shows a dashed area, "Nenhum cartão. Solte um aqui.",
+and the whole of it accepts the card. While a card passes over it, the column
+that will receive it gets the focus ring.
 
-## Teclado e leitor de tela
+## Keyboard and screen reader
 
-O cartão inteiro é a alça, e recebe foco com Tab.
+The whole card is the handle, and receives focus with Tab.
 
-| Tecla | O que faz |
+| Key | What it does |
 | --- | --- |
-| Espaço ou Enter | pega o cartão |
-| Setas para cima e para baixo | movem dentro da coluna |
-| Setas para os lados | levam o cartão para a coluna vizinha |
-| Espaço ou Enter | solta |
-| Esc | cancela, e o cartão volta para onde estava |
+| Space or Enter | picks up the card |
+| Up and down arrows | move within the column |
+| Left and right arrows | take the card to the neighboring column |
+| Space or Enter | drops it |
+| Esc | cancels, and the card goes back to where it was |
 
-Cada passo é anunciado com o nome que `getLabel` devolve e o nome da coluna:
-"Cartão Nota 1043 movido para Em análise, posição 2 de 3.". `labels` troca
-esses textos, a contagem, o aviso de limite e o texto da coluna vazia.
+Each step is announced with the name `getLabel` returns and the column's name:
+"Cartão Nota 1043 movido para Em análise, posição 2 de 3.". `labels` swaps
+those texts, the count, the limit warning and the empty column text.
 
-## No celular
+## On a phone
 
-A fileira de colunas rola de lado e encaixa uma coluna por vez. Deslizar o dedo
-sobre um cartão **rola o quadro**; para arrastar, a pessoa segura o cartão um
-instante antes de mover. Sem isso, todo gesto de rolar pegaria o primeiro cartão
-embaixo do dedo.
+The row of columns scrolls sideways and snaps one column at a time. Swiping the
+finger over a card **scrolls the board**; to drag, the person holds the card
+for a moment before moving. Without that, every scroll gesture would grab the
+first card under the finger.
 
-## Movimento
+## Motion
 
-Os cartões da coluna abrem espaço com a mola espacial dos tokens, e o cartão que
-anda segue o ponteiro numa cópia com `shadow-3`, enquanto o lugar de origem fica
-tracejado. Ao soltar, a cópia assenta no lugar com a mesma mola
-(`--rc-duration-spatial` e `--rc-ease-spatial`), e pelo teclado ela anda de
-posição em posição com a mola também. Com "reduzir movimento", os tokens vão a
-zero: a cópia pula de lugar e some sem assentar.
+The column's cards make room with the tokens' spatial spring, and the moving
+card follows the pointer in a copy with `shadow-3`, while the origin spot stays
+dashed. On drop, the copy settles into place with the same spring
+(`--rc-duration-spatial` and `--rc-ease-spatial`), and via the keyboard it
+moves from position to position with the spring too. With "reduce motion", the
+tokens go to zero: the copy jumps into place and disappears without settling.
 
-## Conteúdo do cartão
+## Card content
 
-`renderCard` desenha o miolo; a moldura, o foco e a alça são da peça. Como o
-cartão inteiro é um botão de arrastar, **não ponha outro botão dentro dele**:
-controle dentro de controle confunde o leitor de tela e rouba o clique. Para
-abrir o detalhe, use uma ação fora do quadro, ou a lista ao lado.
+`renderCard` draws the core; the frame, the focus and the handle belong to the
+piece. Since the whole card is a drag button, **do not put another button
+inside it**: a control inside a control confuses the screen reader and steals
+the click. To open the detail, use an action outside the board, or the list
+beside it.
 
-## Partes
+## Parts
 
-`classNames` alcança `column`, `header`, `title`, `count`, `list`, `card` e
-`empty`. O `card` veste também a cópia que segue o ponteiro, para as duas
-saírem iguais.
+`classNames` reaches `column`, `header`, `title`, `count`, `list`, `card` and
+`empty`. `card` also dresses the copy that follows the pointer, so the two come
+out the same.
 
-## Quando não usar
+## When not to use
 
-- **Um item que só muda de posição é `SortableList`.** Se não há colunas (só
-  uma fila que a pessoa ordena), o quadro é moldura sobrando.
-- **Situação que só se lê é `DataTable`.** Quando a pessoa consulta muitas
-  notas e raramente muda a situação de uma, a tabela com uma coluna de `Badge`
-  mostra mais linhas, ordena e filtra. O quadro é para quem move cartão o dia
-  inteiro.
-- **Etapas de um único processo são `Steps`.** O `Steps` diz em que passo *uma*
-  coisa está; o `Kanban` mostra *muitas* coisas, cada uma no seu passo.
+- **An item that only changes position is `SortableList`.** If there are no
+  columns (just a queue the person orders), the board is a spare frame.
+- **A status that is only read is `DataTable`.** When the person looks up many
+  invoices and rarely changes the status of one, the table with a `Badge`
+  column shows more rows, sorts and filters. The board is for whoever moves
+  cards all day.
+- **Stages of a single process are `Steps`.** `Steps` says which step *one*
+  thing is in; `Kanban` shows *many* things, each in its own step.
 
-## No React Native
+## In React Native
 
-Não porta, e não é fila: é decisão. **O quadro existe para o olho ver as colunas lado a lado**, e a 390px cabe uma. Arrastar um cartão para a coluna ao lado quer dizer segurar o dedo enquanto a fileira rola por baixo dele até uma coluna que ainda não está na tela, e o dedo que arrasta é o mesmo que precisaria rolar. No navegador do celular o `Kanban` do web continua de pé, com a fileira rolando uma coluna por vez e o cartão saindo do lugar só depois de o dedo segurá-lo, mas é o recurso de quem abriu uma tela de mesa no telefone, e não o desenho de um aplicativo.
+Does not port, and it is not queued: it is a decision. **The board exists for the eye to see the columns side by side**, and at 390px one fits. Dragging a card to the next column means holding the finger while the row scrolls under it to a column that is not yet on screen, and the finger that drags is the same one that would need to scroll. In the phone's browser the web `Kanban` still stands, with the row scrolling one column at a time and the card leaving its place only after the finger holds it, but that is the fallback for someone who opened a desktop screen on the phone, not the design of an app.
 
-**No telefone, cada coluna é uma lista, e mudar de coluna é uma ação.** As colunas viram `Tabs` (ou seções de uma `DataList`), a ordem dentro da coluna é a `SortableList` de `@rivocode/ui-native/dnd`, e cada cartão ganha um `Menu` com "Mover para" e o nome das outras colunas. É o mesmo `onMove({ itemId, from, to, index })` do web do lado de quem guarda o estado, e é o caminho que o leitor de tela já faria de qualquer jeito.
+**On the phone, each column is a list, and changing columns is an action.** The columns become `Tabs` (or sections of a `DataList`), the order within the column is the `SortableList` from `@rivocode/ui-native/dnd`, and each card gets a `Menu` with "Mover para" and the names of the other columns. It is the same `onMove({ itemId, from, to, index })` as the web on the side that holds the state, and it is the path the screen reader would take anyway.

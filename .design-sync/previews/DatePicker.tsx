@@ -1,7 +1,7 @@
 import { DatePicker, Field, FieldLabel } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Com rótulo */
+/** With label */
 export function WithLabel() {
   const [dueDate, setDueDate] = useState<string | null>('2026-03-03')
   return (
@@ -12,7 +12,7 @@ export function WithLabel() {
   )
 }
 
-/** Com limites */
+/** With limits */
 export function WithBounds() {
   return (
     <Field className="w-64">
@@ -22,7 +22,7 @@ export function WithBounds() {
   )
 }
 
-/** Vazio */
+/** Empty */
 export function Empty() {
   return <DatePicker aria-label="Data" className="w-64" />
 }

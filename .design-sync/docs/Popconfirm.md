@@ -1,100 +1,106 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # Popconfirm
 
-A confirmação que nasce colada no botão que a disparou: excluir uma linha sem
-escurecer a tela inteira.
+The confirmation that appears attached to the button that triggered it:
+deleting a row without darkening the whole screen.
 
-O caso é o botão de lixeira dentro de uma lista. A pergunta aparece a poucos
-pixels da linha que ela ameaça, então o painel não precisa repetir o contexto
-que a tela toda já mostra: quem lê "Excluir a nota 4813?" ao lado da nota 4813
-não perdeu de vista de onde veio, e a lista continua atrás, legível.
+The case is the trash button inside a list. The question appears a few pixels
+from the row it threatens, so the panel does not need to repeat the context
+the whole screen already shows: whoever reads "Excluir a nota 4813?" next to
+invoice 4813 has not lost sight of where it came from, and the list stays
+behind it, readable.
 
-Monta-se com uma peça só: `trigger` é o elemento que abre e a âncora do painel,
-`title` é a pergunta, `description` é o que se perde, e `onConfirm` é a ação.
-`side`, `align` e `sideOffset` são os mesmos dos outros painéis flutuantes da
-casa. Numa coluna de ações encostada na borda direita, `align="end"` evita que
-o painel empurre a largura.
+It is built with a single piece: `trigger` is the element that opens it and
+the panel's anchor, `title` is the question, `description` is what gets lost,
+and `onConfirm` is the action. `side`, `align` and `sideOffset` are the same
+as in the house's other floating panels. In an actions column against the
+right edge, `align="end"` keeps the panel from pushing the width.
 
-Os textos moram em `labels`: `confirm` é o verbo do botão que executa (escreva
-a ação, "Excluir", e não "Confirmar"), `cancel` o do botão que sai, `busy` o
-que o leitor de tela ouve quando a espera começa e `blocked` o aviso de quem
-tenta sair durante ela. Passe só os que mudam.
+The texts live in `labels`: `confirm` is the verb of the button that executes
+(write the action, "Excluir", not "Confirmar"), `cancel` that of the button
+that leaves, `busy` what the screen reader hears when the wait begins and
+`blocked` the notice for whoever tries to leave during it. Pass only the ones
+that change.
 
-## Sair sem fazer nada é fácil de propósito
+## Leaving without doing anything is easy on purpose
 
-`Esc`, o botão de cancelar e o clique fora fecham o painel, e os três chamam
-`onCancel`. Isso é o oposto do `AlertDialog`, e a razão é que aqui o gesto
-distraído leva ao resultado seguro: **fechar não apaga nada**. O que exige
-intenção é o contrário: executar, que só acontece no botão vermelho, com o
-verbo escrito nele. Prender a pessoa num painel de 20rem para ela ler dois
-botões cobra atenção onde não há risco, e é assim que se treina alguém a clicar
-em "Confirmar" sem ler.
+`Esc`, the cancel button and a click outside close the panel, and all three
+call `onCancel`. That is the opposite of `AlertDialog`, and the reason is that
+here the distracted gesture leads to the safe result: **closing deletes
+nothing**. What demands intent is the opposite: executing, which only happens
+on the red button, with the verb written on it. Trapping the person in a 20rem
+panel to make them read two buttons demands attention where there is no risk,
+and that is how you train someone to click "Confirmar" without reading.
 
-O foco fica preso enquanto o painel está aberto, e começa no botão de cancelar.
-A página continua rolando: o painel acompanha a âncora, e travar a rolagem de
-uma tela inteira por causa de uma pergunta de duas linhas é o peso do modal
-voltando pela janela.
+Focus stays trapped while the panel is open, and starts on the cancel button.
+The page keeps scrolling: the panel follows the anchor, and locking the scroll
+of a whole screen because of a two-line question is the weight of the modal
+coming back in through the window.
 
-Quando a confirmação apaga a própria linha que a abriu, o gatilho desaparece
-com ela e o foco não tem para onde voltar. É o que `finalFocus` resolve: aponte
-o cabeçalho da tabela, ou o que sobrar na tela.
+When the confirmation deletes the very row that opened it, the trigger
+disappears with it and focus has nowhere to go back to. That is what
+`finalFocus` solves: point it at the table header, or at whatever is left on
+the screen.
 
-## A rede demora, e o botão tem que dizer isso
+## The network is slow, and the button has to say so
 
-`onConfirm` pode devolver uma promessa. Enquanto ela não termina, o painel fica
-aberto, o botão entra em espera e se anuncia ocupado, o cancelar trava, e nem
-`Esc` nem o clique fora fecham: um clique vira uma chamada, e não duas linhas
-apagadas. Se a promessa rejeitar, tudo volta ao estado anterior com o texto
-ainda na tela, e a pessoa decide se tenta de novo.
+`onConfirm` can return a promise. Until it settles, the panel stays open, the
+button goes into a waiting state and announces itself busy, cancel locks, and
+neither `Esc` nor a click outside closes it: one click becomes one call, not
+two deleted rows. If the promise rejects, everything goes back to the previous
+state with the text still on screen, and the person decides whether to try
+again.
 
-Para quem já guarda esse estado fora da peça (numa store, num `useMutation`),
-existe `loading`, que soma com a espera da promessa.
+For whoever already keeps that state outside the piece (in a store, in a
+`useMutation`), there is `loading`, which adds to the promise's wait.
 
-## No celular ela vira folha de baixo
+## On a phone it becomes a bottom sheet
 
-Abaixo de 640px o painel ancorado não é ancorável: 20rem pendurados num botão
-de lixeira encostado na borda de uma tela de 390px viram um painel torto, sem
-lugar para onde fugir. Nessa largura a peça troca a casca por uma folha de
-baixo, com os botões na largura toda e na altura de toque, a mesma decisão que
-o `Dialog` e o `CalendarPanel` já tomam. O conteúdo e as ações são os mesmos; o
-que muda é a casca.
+Below 640px the anchored panel cannot be anchored: 20rem hanging from a trash
+button against the edge of a 390px screen turn into a lopsided panel, with
+nowhere to escape to. At that width the piece swaps the shell for a bottom
+sheet, with the buttons at full width and at touch height, the same decision
+`Dialog` and `CalendarPanel` already make. The content and the actions are the
+same; what changes is the shell.
 
-## As partes
+## Parts
 
-`classNames` veste `title`, `description`, `footer`, `confirm` e `cancel`, e o
-`className` veste o painel, seja ele o flutuante ou a folha. Sem esses nomes só
-resta `[&_button]` na sua tela, que amarra o seu layout à árvore interna da
-peça.
+`classNames` dresses `title`, `description`, `footer`, `confirm` and `cancel`,
+and `className` dresses the panel, whether it is the floating one or the
+sheet. Without those names all that is left on your screen is `[&_button]`,
+which ties your layout to the piece's internal tree.
 
-`tone` escolhe entre os dois desenhos: `danger`, o padrão, traz o ícone de
-aviso e o botão vermelho de executar; `neutral` serve ao que se desfaz (o
-arquivar, o remover da seleção) porque gastar o vermelho no reversível o
-apaga onde ele importa.
+`tone` picks between the two designs: `danger`, the default, brings the
+warning icon and the red execute button; `neutral` serves what can be undone
+(archiving, removing from the selection) because spending red on the
+reversible wears it out where it matters.
 
-## Quando não usar
+## When not to use
 
-Para o que é irreversível e de escopo largo, use `AlertDialog`. A linha entre
-os dois é a **largura do estrago**: uma linha de tabela, um anexo, um item de
-lista (coisas que a pessoa vê de onde clicou e que valem uma frase) pedem
-este painel; cancelar uma nota fiscal na prefeitura, apagar uma conta,
-descartar um formulário inteiro pedem o modal, que escurece o resto, não fecha
-no clique fora e obriga a leitura antes de qualquer saída.
+For what is irreversible and broad in scope, use `AlertDialog`. The line
+between the two is the **breadth of the damage**: a table row, an attachment,
+a list item (things the person sees from where they clicked and that are worth
+one sentence) call for this panel; cancelling an invoice with the city hall,
+deleting an account, discarding a whole form call for the modal, which darkens
+the rest, does not close on a click outside and forces reading before any
+exit.
 
-O segundo teste é o tamanho do texto: se a confirmação precisa de mais de duas
-linhas, de uma lista do que será perdido ou de um campo para digitar o nome do
-que se apaga, ela não cabe num painel ancorado e nunca coube. É `AlertDialog`.
+The second test is the length of the text: if the confirmation needs more than
+two lines, a list of what will be lost or a field to type the name of what is
+being deleted, it does not fit in an anchored panel and it never did. It is
+`AlertDialog`.
 
-E se não há pergunta nenhuma a fazer, não use nenhum dos dois: uma ação que se
-desfaz sozinha pede o `Toast` com "Desfazer", que não custa um clique a mais em
-cada vez que a pessoa acerta.
+And if there is no question to ask at all, use neither: an action that can be
+undone calls for the `Toast` with "Desfazer", which does not cost one more
+click every time the person gets it right.
 
-## No React Native
+## In React Native
 
-Vira `AlertDialog`. Painel ancorado não é idioma de toque: uma pergunta de 20rem presa a um botão de lixeira encostado na borda direita a 390px sai da tela ou tapa a linha que se vai apagar. O próprio web já reconhece isso: abaixo de 640px o `Popconfirm` deixa de ser painel e vira folha de baixo, que é exatamente o que o nativo tem.
+Becomes `AlertDialog`. An anchored panel is not a touch idiom: a 20rem question attached to a trash button against the right edge at 390px goes off screen or covers the row that is about to be deleted. The web itself already recognizes this: below 640px `Popconfirm` stops being a panel and becomes a bottom sheet, which is exactly what native has.
 
-**Uma diferença de contrato, e ela é deliberada:** no web dispensar CANCELA (`Esc`, clique fora e o botão, os três chamam `onCancel`), porque ali o gesto distraído leva ao resultado seguro. O `AlertDialog` nativo não fecha ao tocar fora, como o do web também não. Então a saída no celular é o botão de cancelar, escrito e visível: sem Escape não há saída invisível, e é a mesma regra que o `Editable` segue. O `onCancel` tem o mesmo nome, e aqui quem o chama é o botão de cancelar e o voltar do Android.
+**One contract difference, and it is deliberate:** on the web dismissing CANCELS (`Esc`, clicking outside and the button, all three call `onCancel`), because there the distracted gesture leads to the safe result. The native `AlertDialog` does not close on a tap outside, as the web's does not either. So the way out on the phone is the cancel button, written and visible: without Escape there is no invisible exit, and it is the same rule `Editable` follows. `onCancel` has the same name, and here it is called by the cancel button and Android's back.
 
-A ação em curso porta com os mesmos nomes: quem devolve promessa em `onConfirm` ganha o mesmo botão em espera e a mesma trava contra o segundo toque, e o modal só fecha quando ela resolve. O `tone` também: `danger` é o padrão, e `neutral` pinta o botão primário para o que se desfaz. Os textos moram no mesmo `labels`, com as mesmas chaves: `confirm`, `cancel`, `busy` e `blocked`.
+The action in progress ports with the same names: whoever returns a promise in `onConfirm` gets the same waiting button and the same lock against the second tap, and the modal only closes when it resolves. So does `tone`: `danger` is the default, and `neutral` paints the primary button for what can be undone. The texts live in the same `labels`, with the same keys: `confirm`, `cancel`, `busy` and `blocked`.

@@ -17,11 +17,11 @@ export type DialogProps = {
   title: string;
   description?: string;
   children?: ReactNode;
-  /** Veste o cartao central, nao o fundo escurecido. */
+  /** Styles the central card, not the dimmed backdrop. */
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `close` e o nome do fundo
-   * escurecido, que fecha o modal ao toque, "Fechar" sem ele.
+   * The component's texts, to change the language: `close` is the name of the
+   * dimmed backdrop, which closes the modal on tap, "Fechar" without it.
    */
   labels?: Partial<DialogLabels>;
 };
@@ -86,36 +86,37 @@ export type AlertDialogProps = {
   title: string;
   description: string;
   /**
-   * A acao, que pode devolver promessa para o modal esperar por ela. Com
-   * promessa, o modal fica aberto e o botao entra em espera ate ela terminar -
-   * e um toque so vira uma chamada so. Promessa que rejeita devolve o modal ao
-   * estado anterior, com o texto ainda na tela. Outro retorno qualquer e
-   * ignorado e o modal fecha na hora.
+   * The action, which may return a promise for the modal to wait on. With a
+   * promise, the modal stays open and the button waits until it settles - and a
+   * single tap becomes a single call. A promise that rejects returns the modal
+   * to its previous state, with the text still on screen. Any other return
+   * value is ignored and the modal closes right away.
    */
   onConfirm: () => unknown;
   /**
-   * Chamado em toda saida sem confirmar: o botao de cancelar e o voltar do
-   * Android. O toque no fundo nao sai, como em todo alerta: a pessoa escolhe um
-   * dos dois botoes. Nao dispara durante a espera, que nao deixa sair.
+   * Called on every exit without confirming: the cancel button and the Android
+   * back. A tap on the backdrop does not exit, as in every alert: the person
+   * picks one of the two buttons. Does not fire during the wait, which does not
+   * allow exiting.
    */
   onCancel?: () => void;
   /**
-   * `danger` pinta o botao de vermelho; `neutral` serve para o que se desfaz,
-   * como arquivar. Os mesmos valores do `Popconfirm` do web.
+   * `danger` paints the button red; `neutral` is for what can be undone, like
+   * archiving. The same values as the web `Popconfirm`.
    */
   tone?: "danger" | "neutral";
   /**
-   * Estado de espera vindo de fora, para quem ja tem a chamada em uma store.
-   * Soma com a espera da promessa do `onConfirm`.
+   * A waiting state coming from outside, for those who already have the call in
+   * a store. Adds to the wait on the `onConfirm` promise.
    */
   loading?: boolean;
   /**
-   * Os textos do modal, com as mesmas chaves do `Popconfirm` do web. `confirm`
-   * e o verbo do botao que executa - escreva a acao, "Cancelar nota",
-   * "Arquivar". `cancel` e o do botao que sai sem fazer nada. `busy` e o que o
-   * leitor de tela ouve quando a espera comeca, e o padrao repete o `confirm`.
-   * `blocked` e o aviso de quem tenta sair durante a espera. Passe so os que
-   * mudam.
+   * The modal texts, with the same keys as the web `Popconfirm`. `confirm` is
+   * the verb of the button that executes - write the action, "Cancelar nota",
+   * "Arquivar". `cancel` is that of the button that exits without doing
+   * anything. `busy` is what the screen reader hears when the wait starts, and
+   * the default repeats `confirm`. `blocked` is the notice for someone who
+   * tries to exit during the wait. Pass only the ones that change.
    */
   labels?: Partial<AlertDialogLabels>;
 };

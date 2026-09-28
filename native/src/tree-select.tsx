@@ -10,23 +10,23 @@ import { Tree, type TreeLabels, type TreeNode } from "./tree";
 
 export type TreeSelectProps = {
   items: TreeNode[];
-  /** Ids das FOLHAS escolhidas - o mesmo contrato do `Tree` e do web. */
+  /** Ids of the chosen LEAVES - the same contract as `Tree` and the web. */
   value: string[];
   onValueChange: (ids: string[]) => void;
-  /** O que se escolhe: "Centro de custo". O leitor de tela anuncia isto. */
+  /** What is being chosen: "Centro de custo". The screen reader announces this. */
   label: string;
-  /** O que o gatilho mostra sem escolha. */
+  /** What the trigger shows with no choice. */
   placeholder?: string;
-  /** Ligada por padrao, como no web: arvore quase sempre se escolhe aos punhados. */
+  /** On by default, as on the web: a tree is almost always chosen by the handful. */
   multiple?: boolean;
   disabled?: boolean;
-  /** Veste o gatilho; a folha e da plataforma. */
+  /** Styles the trigger; the sheet belongs to the platform. */
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `selected` e o resumo com mais de
-   * uma escolha, `empty` o rodape da folha sem escolha nenhuma e `apply` o
-   * botao que confirma. `back`, `selectAll`, `branch` e `enter` vao para o
-   * `Tree` de dentro. Passe so os que mudam.
+   * The component's texts, to change the language: `selected` is the summary
+   * with more than one choice, `empty` the sheet footer with no choice at all
+   * and `apply` the confirm button. `back`, `selectAll`, `branch` and `enter`
+   * go to the inner `Tree`. Pass only the ones that change.
    */
   labels?: Partial<TreeSelectLabels>;
 };

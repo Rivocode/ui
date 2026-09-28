@@ -1,46 +1,48 @@
 ---
-category: Dados
+category: Data
 ---
 
 # Timeline
 
-O que aconteceu com uma coisa, em ordem.
+What happened to something, in order.
 
-Uma nota fiscal olha para trás (emitida, autorizada, enviada, paga, cancelada)
-com carimbo de tempo e autor em cada ponto. Trilha de auditoria tem a mesma
-forma: o que mudou, quando e por quem.
+An invoice looks back (issued, authorized, sent, paid, canceled) with a
+timestamp and an author at each point. An audit trail has the same shape: what
+changed, when and by whom.
 
-Sai como `<ol>` porque a ordem é o dado. Um leitor de tela que anuncia "lista de
-5 itens" na ordem certa já entregou metade do que a linha desenha.
+It comes out as an `<ol>` because the order is the data. A screen reader that
+announces "list, 5 items" in the right order has already delivered half of what
+the line draws.
 
-O tom é por item, de propósito: numa nota, a linha do cancelamento é vermelha e
-as outras não, e é essa linha que a pessoa procura quando abre a trilha.
-`pending` deixa o marcador vazado: preencher o marcador de um evento futuro
-faz a linha prometer que ele já ocorreu, que é o erro que uma trilha de
-auditoria não pode cometer.
+The tone is per item, on purpose: on an invoice, the cancellation row is red
+and the others are not, and that is the row the person looks for when they open
+the trail. `pending` leaves the marker hollow: filling in the marker of a future
+event makes the line promise it already happened, which is the mistake an audit
+trail cannot make.
 
-Como cor e marcador vazado não chegam a quem ouve, o título leva antes dele um
-texto só para o leitor de tela: "Pendente", e uma palavra por tom ("Sucesso",
-"Atenção", "Erro", "Destaque"; o `neutral` não diz nada). O que cada tom quer
-dizer é do produto, então `labels` troca a palavra: `labels={{ tone: { danger:
-"Cancelada" } }}`, e texto vazio cala.
+Since color and a hollow marker do not reach whoever is listening, the title
+carries before it a text only for the screen reader: "Pendente", and one word
+per tone ("Sucesso", "Atenção", "Erro", "Destaque"; `neutral` says nothing).
+What each tone means belongs to the product, so `labels` changes the word:
+`labels={{ tone: { danger: "Cancelada" } }}`, and an empty text silences it.
 
-## Movimento
+## Motion
 
-Cada `TimelineItem` entra esmaecendo e subindo 4px (`animate-enter`, `--rc-duration-base`), sem escalonar: na montagem a trilha inteira entra de uma vez, e depois só o evento novo entra. Com "reduzir movimento", aparece parada.
+Each `TimelineItem` fades in and rises 4px (`animate-enter`, `--rc-duration-base`), without staggering: on mount the whole trail enters at once, and afterwards only the new event enters. With "reduce motion", it appears still.
 
-## Quando não usar
+## When not to use
 
-Para um formulário longo em etapas, use `Steps`. O `Steps` é assistente: olha
-para a frente, sabe quantos passos faltam e só deixa voltar. A `Timeline` olha
-para trás e ninguém "avança" nela. Trocar uma pela outra faz o controle
-prometer o que ele não faz, o mesmo argumento que separa `Progress` de `Meter`.
+For a long form in steps, use `Steps`. `Steps` is a wizard: it looks forward,
+knows how many steps are left and only lets you go back. `Timeline` looks back
+and nobody "moves forward" on it. Swapping one for the other makes the control
+promise what it does not do, the same argument that separates `Progress` from
+`Meter`.
 
-## As partes
+## Parts
 
-`TimelineItem` é um ponto: `title`, `at`, `by`, `tone`, `pending`, e conteúdo
-livre como filho. O `at` costuma receber um `RelativeTime`.
+`TimelineItem` is a point: `title`, `at`, `by`, `tone`, `pending`, and free
+content as a child. `at` usually receives a `RelativeTime`.
 
-## No React Native
+## In React Native
 
-Traduz, com a lista por `items`: cada evento leva `title`, `at`, `by`, `description`, `tone` e `pending`, e a composição do `TimelineItem` não atravessa (a mesma regra do `RadioGroup` e do `Select`). **O carimbo é texto, e não um `RelativeTime`**: cada evento é uma parada só do leitor de tela e o rótulo dela é montado a partir desse texto, então um relógio vivo lá dentro continuaria andando na tela enquanto o rótulo ficaria preso na hora em que montou. E trilha de auditoria não pode dizer duas horas diferentes. Para o carimbo, `formatDate`. **A ordem, que o `<ol>` do web entrega de graça, vai escrita**: não existe papel de item de lista no React Native, então cada evento anuncia "3 de 5: Nota autorizada, 12/03 às 14:22, por Ana Duarte", uma frase com o que mudou, quando e por quem, em vez de três paradas de VoiceOver que não dizem o assunto. E nada é tocável: uma trilha se lê, e o marcador de 9px nunca seria alvo de dedo. Quem quer abrir o detalhe de um evento põe um `Item` com `onPress`.
+Translates, with the list through `items`: each event carries `title`, `at`, `by`, `description`, `tone` and `pending`, and the `TimelineItem` composition does not cross over (the same rule as `RadioGroup` and `Select`). **The timestamp is text, not a `RelativeTime`**: each event is a single screen reader stop and its label is built from that text, so a live clock inside it would keep moving on screen while the label stayed stuck at the time it was built. And an audit trail cannot say two different times. For the timestamp, `formatDate`. **The order, which the web's `<ol>` delivers for free, is written out**: there is no list item role in React Native, so each event announces "3 de 5: Nota autorizada, 12/03 às 14:22, por Ana Duarte", one sentence with what changed, when and by whom, instead of three VoiceOver stops that do not say the subject. And nothing is tappable: a trail is read, and the 9px marker would never be a finger target. Whoever wants to open the detail of an event puts in an `Item` with `onPress`.

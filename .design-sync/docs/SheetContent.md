@@ -1,15 +1,15 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # SheetContent
 
-O painel, com a tarja de fundo e o portal por dentro.
+The panel, with the backdrop and the portal inside.
 
-Monta em portal no container do `RivoProvider`, então o tema vale ali dentro.
-Não recebe `side`: o lado mora na raiz, porque o gesto de fechar tem que
-concordar com a direção de onde a folha entrou.
+It mounts in a portal in `RivoProvider`'s container, so the theme applies in
+there. It does not take `side`: the side lives at the root, because the close
+gesture has to agree with the direction the sheet came in from.
 
-A tarja é irmã do painel dentro do portal, então nem `className` nem variante de
-descendente alcançam ela. Para vestir as duas, use `classNames` com as partes
-`backdrop` e `viewport`.
+The backdrop is the panel's sibling inside the portal, so neither `className`
+nor a descendant variant reaches it. To dress both, use `classNames` with the
+`backdrop` and `viewport` parts.

@@ -15,53 +15,52 @@ import { Slider } from "../src/components/slider";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * O alvo de 24x24 da WCAG 2.5.8 (AA).
+ * The 24x24 target of WCAG 2.5.8 (AA).
  *
- * Uma bancada externa contou 30 alvos abaixo de 24 CSS px em 12 telas a
- * 390px, descontando os input escondidos da Base UI e o link em texto
- * corrido, que a norma dispensa. Sobraram quatro desenhos: a marca do
- * Checkbox sem rotulo (o --rc-box, 18px, que e exatamente a coluna de
- * selecao do DataTable, onde o dedo mais mira), o pino do Slider, o botao de
- * remover da ficha do Combobox - o menor da biblioteca, do tamanho do icone -
- * e o link do Breadcrumb, que falha na altura porque e uma linha de texto
- * pequeno.
+ * An external bench counted 30 targets below 24 CSS px across 12 screens at
+ * 390px, not counting Base UI's hidden inputs and inline text links, which the
+ * standard exempts. Four drawings were left: the unlabeled Checkbox mark (the
+ * --rc-box, 18px, which is exactly the DataTable selection column, where the
+ * finger aims most), the Slider thumb, the remove button on the Combobox chip -
+ * the smallest in the library, the size of the icon - and the Breadcrumb link,
+ * which fails on height because it is a line of small text.
  *
- * O conserto nao mexe no desenho: um pseudo-elemento transparente estica a
- * area de toque para fora da caixa visivel. Crescer a caixa de verdade
- * engordaria a coluna de selecao, a ficha e a trilha da faixa, que e
- * exatamente o que a densidade da casa nao quer.
+ * The fix does not touch the drawing: a transparent pseudo-element stretches
+ * the touch area beyond the visible box. Growing the real box would fatten the
+ * selection column, the chip and the range track, which is exactly what the
+ * house density does not want.
  *
- * Onde o rotulo ja existe, nada muda: o `<label>` inteiro ja e o alvo, e
- * pendurar um halo no quadradinho so poria uma camada por cima do texto. Por
- * isso o Checkbox so estica quando sai sozinho, e o teste abaixo guarda os
- * dois lados.
+ * Where the label already exists, nothing changes: the whole `<label>` is
+ * already the target, and hanging a halo on the little box would only put a
+ * layer over the text. That is why the Checkbox only stretches when it stands
+ * alone, and the test below guards both sides.
  *
- * Nao ha layout de verdade no happy-dom - nenhum destes elementos tem largura
- * medivel aqui -, entao o teste asserta as classes que produzem a area, como
- * test/classnames.test.tsx faz com as classes que produzem a aparencia. O
- * numero de pixels quem confere e a bancada; o que este arquivo impede e a
- * area sumir num refatoramento.
+ * There is no real layout in happy-dom - none of these elements has a
+ * measurable width here -, so the test asserts the classes that produce the
+ * area, as test/classnames.test.tsx does with the classes that produce the
+ * appearance. The pixel count is checked by the bench; what this file prevents
+ * is the area vanishing in a refactor.
  */
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/** O alvo esticado por pseudo-elemento, e nao pela caixa desenhada. */
+/** The target stretched by a pseudo-element, and not by the drawn box. */
 function hasTouchTarget(element: Element, ...insets: string[]) {
   expect(element.className).toContain("relative");
   expect(element.className).toContain("after:absolute");
   for (const inset of insets) expect(element.className).toContain(inset);
 }
 
-test("a caixa de marcar sem rotulo estica o alvo alem do quadradinho", () => {
-  // O caso da coluna de selecao do DataTable: 18x18 desenhados, sem texto ao
-  // lado para emprestar area.
+test("an unlabeled checkbox stretches the target beyond the little box", () => {
+  // The DataTable selection column case: 18x18 drawn, with no text beside it
+  // to lend area.
   withTheme(<Checkbox aria-label="Selecionar linha" />);
   hasTouchTarget(screen.getByRole("checkbox"), "after:-inset-1.5");
 });
 
-test("com rotulo o alvo continua sendo o label inteiro, sem halo por cima do texto", () => {
+test("with a label the target is still the whole label, with no halo over the text", () => {
   withTheme(<Checkbox>ISS retido na fonte</Checkbox>);
 
   const box = screen.getByRole("checkbox", { name: "ISS retido na fonte" });
@@ -69,15 +68,15 @@ test("com rotulo o alvo continua sendo o label inteiro, sem halo por cima do tex
   expect(label).not.toBeNull();
   expect(label!.textContent).toContain("ISS retido na fonte");
 
-  // Sem o halo: aqui ele nao acrescentaria alvo nenhum e ainda deitaria uma
-  // camada sobre o texto do proprio rotulo.
+  // No halo: here it would add no target at all and would still lay a layer
+  // over the label's own text.
   expect(box.className).not.toContain("after:absolute");
 
   fireEvent.click(screen.getByText("ISS retido na fonte"));
   expect(box.getAttribute("data-checked")).not.toBeNull();
 });
 
-test("o pino da faixa estica o alvo, e os dois pinos da faixa dupla tambem", () => {
+test("the range thumb stretches the target, and so do both thumbs of a dual range", () => {
   const { container } = withTheme(
     <Slider
       defaultValue={[10, 40]}
@@ -91,7 +90,7 @@ test("o pino da faixa estica o alvo, e os dois pinos da faixa dupla tambem", () 
   for (const thumb of thumbs) hasTouchTarget(thumb, "after:-inset-1.5");
 });
 
-test("o remover da ficha estica o alvo, que e o menor desenho da biblioteca", () => {
+test("the chip remove button stretches the target, which is the smallest drawing in the library", () => {
   withTheme(
     <Combobox items={["Clinica Sao Lucas"]} multiple defaultValue={["Clinica Sao Lucas"]}>
       <ComboboxChips>
@@ -109,18 +108,18 @@ test("o remover da ficha estica o alvo, que e o menor desenho da biblioteca", ()
     </Combobox>,
   );
 
-  // O nome do xis passou a carregar a ficha: "Remover" cravado nao distinguia
-  // uma ficha da vizinha.
+  // The x's name now carries the chip: a hardcoded "Remover" did not tell one
+  // chip from its neighbor.
   hasTouchTarget(
     screen.getByRole("button", { name: "Remover Clinica Sao Lucas" }),
     "after:-inset-1.5",
   );
 });
 
-test("o link da migalha estica o alvo so na altura, para nao pegar o clique do vizinho", () => {
-  // A largura ja passava; quem falha e a altura de uma linha de texto
-  // pequeno. Esticar tambem na horizontal poria o halo por cima da migalha
-  // seguinte, que fica a seis pixels de distancia.
+test("the crumb link stretches the target only in height, so it does not catch the neighbor's click", () => {
+  // The width already passed; what fails is the height of a line of small
+  // text. Stretching horizontally too would put the halo over the next crumb,
+  // which sits six pixels away.
   withTheme(
     <Breadcrumb
       items={[{ label: "Clientes", href: "/clientes" }, { label: "Clinica Sao Lucas" }]}
@@ -132,7 +131,7 @@ test("o link da migalha estica o alvo so na altura, para nao pegar o clique do v
   expect(link.className).not.toContain("after:-inset-x");
 });
 
-test("o link da migalha nao corta o proprio halo: quem trunca e o texto de dentro", () => {
+test("the crumb link does not clip its own halo: the inner text is what truncates", () => {
   withTheme(
     <Breadcrumb
       items={[{ label: "Clientes", href: "/clientes" }, { label: "Clinica Sao Lucas" }]}
@@ -149,7 +148,7 @@ test("o link da migalha nao corta o proprio halo: quem trunca e o texto de dentr
   expect(text.className.split(" ")).toContain("block");
 });
 
-test("a opcao com rotulo tem 24 pixels de altura no label, e o circulo sozinho estica o alvo", () => {
+test("a labeled option is 24 pixels tall on the label, and a lone circle stretches the target", () => {
   withTheme(
     <RadioGroup defaultValue="pix">
       <Radio value="pix">Pix</Radio>
@@ -170,7 +169,7 @@ test("a opcao com rotulo tem 24 pixels de altura no label, e o circulo sozinho e
   expect(tokens).toContain("after:-inset-1.5");
 });
 
-test("a caixa de marcar com rotulo tambem tem 24 pixels de altura no label", () => {
+test("a labeled checkbox is also 24 pixels tall on the label", () => {
   withTheme(<Checkbox>ISS retido na fonte</Checkbox>);
   const label = screen.getByRole("checkbox", { name: "ISS retido na fonte" }).closest("label")!;
   expect(label.className.split(" ")).toContain("min-h-6");

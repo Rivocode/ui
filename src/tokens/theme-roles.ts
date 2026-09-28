@@ -1,4 +1,4 @@
-/* Gerado de src/tokens/themes/rivocode-dark.css e src/tokens/forma.css por bun run gen:themes. Nao editar. */
+/* Generated from src/tokens/themes/rivocode-dark.css and src/tokens/forma.css by bun run gen:themes. Do not edit. */
 
 export const THEME_ROLES = [
   "--rc-bg",

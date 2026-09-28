@@ -23,7 +23,7 @@ const literals = (catalog: Catalog, piece: string, prop: string) => {
 const classesOf = (node: { props: { className?: string } }) =>
   (node.props.className ?? "").split(" ");
 
-describe("o vocabulario de variante e o do web", () => {
+describe("the variant vocabulary is the web's", () => {
   const web = read("component-props.json");
   const native = read("native-props.json");
 
@@ -39,7 +39,7 @@ describe("o vocabulario de variante e o do web", () => {
     expect(nativeSide).toEqual(literals(web, piece, prop));
   });
 
-  test("a IconButton se nomeia por label, o mesmo nome do web", () => {
+  test("IconButton is named through label, the same name as the web", () => {
     const names = (catalog: Catalog) =>
       catalog.IconButton?.props.map((entry) => entry.name) ?? [];
     expect(names(web)).toContain("label");
@@ -48,7 +48,7 @@ describe("o vocabulario de variante e o do web", () => {
 });
 
 describe("outline", () => {
-  test("o Button outline e so a borda grossa, sem fundo, com o rotulo em fg", () => {
+  test("the outline Button is only the thick border, without background, with the label in fg", () => {
     const screen = render(<Button variant="outline">Exportar</Button>);
     const box = classesOf(byRole(screen, "button")[0]!);
     const label = classesOf(byType(screen, "Text")[0]!);
@@ -60,13 +60,13 @@ describe("outline", () => {
     expect(label).not.toContain("text-fg-muted");
   });
 
-  test("a borda do outline se pinta nos dois temas", () => {
+  test("the outline border paints in both themes", () => {
     const [button] = byRole(render(<Button variant="outline">Exportar</Button>), "button");
     expect(paintedColor(button!, "border-color", "light")).toBeDefined();
     expect(paintedColor(button!, "border-color", "dark")).toBeDefined();
   });
 
-  test("o IconButton outline veste as mesmas classes do Button", () => {
+  test("the outline IconButton wears the same classes as Button", () => {
     const icon = classesOf(
       byRole(
         render(
@@ -81,7 +81,7 @@ describe("outline", () => {
     expect(icon).toContain("border-border-strong");
   });
 
-  test("o icone do outline pinta em fg, como o secundario, e nao no fg-muted do ghost", () => {
+  test("the outline icon paints in fg, like secondary, and not in ghost's fg-muted", () => {
     const colorOf = (variant: "outline" | "secondary" | "ghost") => {
       const seen: string[] = [];
       render(

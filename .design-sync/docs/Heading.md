@@ -1,47 +1,49 @@
 ---
-category: Tipografia
+category: Typography
 ---
 
 # Heading
 
-O título de uma seção, com o nível e o tamanho separados. `level` decide a
-tag, de `h1` a `h6`, e é o que o leitor de tela usa para saltar de seção em
-seção; `size` decide o corpo na escala da casa, de `sm` a `3xl`.
+The title of a section, with level and size kept apart. `level` decides the
+tag, from `h1` to `h6`, and is what the screen reader uses to jump from
+section to section; `size` decides the type size on the house scale, from `sm`
+to `3xl`.
 
 ```tsx
 <Heading level={2}>Notas fiscais</Heading>
 <Heading level={2} size="md">Resumo do mês</Heading>
 ```
 
-A separação existe para a ordem dos títulos não ficar refém do tamanho. Quando
-a tag carrega o desenho, quem quer um título menor desce o nível, e a página
-passa a pular de `h2` para `h4` sem ter um `h3`. Quem navega por título ouve
-um buraco que não está na tela. Aqui o tamanho muda sozinho, e o nível
-continua dizendo onde o título mora.
+The split exists so the order of headings is not held hostage by size. When
+the tag carries the look, whoever wants a smaller title drops the level, and
+the page starts jumping from `h2` to `h4` without an `h3`. Someone navigating
+by heading hears a gap that is not on the screen. Here the size changes on its
+own, and the level keeps saying where the title lives.
 
-`level` não tem padrão, de propósito: quem sabe o nível é a página, e não a
-peça. Sem `size`, o corpo acompanha o nível: `h1` é `2xl`, `h2` é `xl`, `h3`
-é `lg`, `h4` é `md`, `h5` é `base` e `h6` é `sm`. A letra é a `font-display`
-em peso 600, a mesma do `CardTitle` e do `PageHeader`.
+`level` has no default, on purpose: the page knows the level, not the piece.
+Without `size`, the type size follows the level: `h1` is `2xl`, `h2` is `xl`,
+`h3` is `lg`, `h4` is `md`, `h5` is `base` and `h6` is `sm`. The typeface is
+`font-display` at weight 600, the same as `CardTitle` and `PageHeader`.
 
-`truncate` corta em uma linha com reticências, para o título que mora numa
-coluna estreita. A frase inteira continua no DOM, e o leitor de tela lê tudo.
+`truncate` cuts to one line with an ellipsis, for a title that lives in a
+narrow column. The whole sentence stays in the DOM, and the screen reader reads
+all of it.
 
-## Quando não usar
+## When not to use
 
-- **Topo de rota:** `PageHeader`. Ele já traz o `h1`, a trilha, a descrição
-  e as ações, na mesma hierarquia em todas as páginas; montar isso com
-  `Heading` é reescrever o topo a cada rota.
-- **Título de cartão, diálogo ou folha:** `CardTitle`, `DialogTitle`,
-  `SheetTitle`. Eles ligam o título à região que nomeiam (o `DialogTitle`
-  vira o nome acessível do diálogo), e um `Heading` solto ali não liga nada.
-- **Texto que só precisa parecer grande:** `Text` com `size="lg"` e
-  `weight="semibold"`. Título é para o que abre uma seção; um número de
-  destaque ou uma frase de efeito que não abre nada não entra no esboço da
-  página.
+- **Top of a route:** `PageHeader`. It already brings the `h1`, the
+  breadcrumb, the description and the actions, in the same hierarchy on every
+  page; building that with `Heading` is rewriting the top on every route.
+- **Card, dialog or sheet title:** `CardTitle`, `DialogTitle`, `SheetTitle`.
+  They wire the title to the region they name (`DialogTitle` becomes the
+  dialog's accessible name), and a loose `Heading` there wires nothing.
+- **Text that only needs to look big:** `Text` with `size="lg"` and
+  `weight="semibold"`. A heading is for what opens a section; a highlighted
+  number or a catchy sentence that opens nothing does not belong in the page
+  outline.
 
-## No React Native
+## In React Native
 
-Traduz, com os mesmos `level`, `size` e `truncate` do web, e o mesmo tamanho para cada nível quando `size` não vem. Sai como `Text` com `accessibilityRole="header"`, na família `display` do provider.
+Translates, with the same `level`, `size` and `truncate` as the web, and the same size for each level when `size` is not given. It comes out as a `Text` with `accessibilityRole="header"`, in the provider's `display` family.
 
-**O nível não é anunciado.** O VoiceOver e o TalkBack dizem “cabeçalho” e param aí: não há `h1` a `h6` no toque. O `level` continua obrigatório mesmo assim, por dois motivos: ele decide o tamanho quando `size` não vem, e a tela porta do web sem reescrever a chamada.
+**The level is not announced.** VoiceOver and TalkBack say “cabeçalho” and stop there: there is no `h1` to `h6` on touch. `level` is still required anyway, for two reasons: it decides the size when `size` is not given, and the screen ports from the web without rewriting the call.

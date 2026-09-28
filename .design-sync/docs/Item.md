@@ -1,23 +1,24 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Item
 
-A linha de lista: alguma coisa a esquerda, texto no meio, ação a direita.
+The list row: something on the left, text in the middle, an action on the right.
 
-Existe porque metade de qualquer tela e isso, e sem uma peça com nome cada
-projeto reinventa com div solta e respiro próprio. Não e componente de dado, e de
-arranjo.
+It exists because half of any screen is this, and without a piece with a name
+every project reinvents it with a loose div and its own spacing. It is not a
+data component, it is a layout one.
 
-Compõe com `ItemMedia` à esquerda, `ItemContent` no meio (com `ItemTitle` e
-`ItemDescription` dentro) e `ItemActions` à direita. As três colunas existem
-para uma só encolher: o miolo corta o texto com reticências, e a mídia e as
-ações ficam do tamanho que têm.
+Composes with `ItemMedia` on the left, `ItemContent` in the middle (with
+`ItemTitle` and `ItemDescription` inside) and `ItemActions` on the right. The
+three columns exist so that only one of them shrinks: the middle truncates the
+text with an ellipsis, and the media and the actions keep their own size.
 
-Com `interactive` ganha foco e passagem; use junto com `render` de link ou botão,
-porque cor de passagem em div não vira alvo de teclado.
+With `interactive` it gets focus and hover; use it together with a link or
+button `render`, because a hover color on a div does not become a keyboard
+target.
 
-## No React Native
+## In React Native
 
-Traduz, e não concorre com o `DataList`: ele resolve os quatro finais de uma consulta e devolve cada linha ao `renderItem` sem opinião sobre o que há dentro dela. O `Item` é esse dentro, e serve igualmente à lista de duas escolhas numa folha, que consulta nenhuma tem. A composição do web (`ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`) vira quatro props, pela mesma regra do `PageHeader`: os lugares são sempre os mesmos, e prop nenhuma deixa trocar a ordem das colunas sem querer. Com `onPress` a linha inteira vira alvo, com 44px de altura mínima, mas quando há `actions`, o alvo passa a ser só a área de texto, senão o `Pressable` acessível por cima engoliria o botão da direita como parada do leitor de tela. Dentro de um `DataList` com `onRowPress`, não passe `onPress`: um `Pressable` dentro do outro segura o toque no de dentro, e a linha responderia aqui e nunca lá.
+Translates, and it does not compete with `DataList`: that one resolves a query's four endings and hands each row to `renderItem` with no opinion about what is inside it. `Item` is that inside, and serves equally well a two-choice list in a sheet, which has no query at all. The web's composition (`ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`) becomes four props, by the same rule as `PageHeader`: the slots are always the same, and no prop lets you swap the column order by accident. With `onPress` the whole row becomes a target, with a 44px minimum height, but when there are `actions`, the target becomes only the text area, otherwise the accessible `Pressable` on top would swallow the button on the right as a screen reader stop. Inside a `DataList` with `onRowPress`, do not pass `onPress`: one `Pressable` inside another holds the touch in the inner one, and the row would respond here and never there.

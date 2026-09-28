@@ -18,14 +18,14 @@ export type FormFieldRow<
 > = ControllerRenderProps<Values, Name>;
 
 export type FormFieldProps<Values extends FieldValues, Name extends FieldPath<Values>> = {
-  /** O caminho do campo no schema. */
+  /** The field's path in the schema. */
   name: Name;
   label?: ReactNode;
   description?: ReactNode;
-  /** So quando o campo vive fora de um `<Form>`. */
+  /** Only when the field lives outside a `<Form>`. */
   control?: Control<Values>;
   className?: string;
-  /** Recebe o campo pronto para espalhar no controle. */
+  /** Receives the field ready to spread onto the control. */
   children: (field: FormFieldRow<Values, Name>, state: ControllerFieldState) => ReactElement;
 };
 

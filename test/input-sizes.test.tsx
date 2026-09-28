@@ -27,7 +27,7 @@ function inputTokens(size: (typeof SIZES)[number]) {
   return found;
 }
 
-test("o Select, o Combobox e o Textarea falam o size do Input, com as mesmas classes", () => {
+test("Select, Combobox and Textarea speak the Input size, with the same classes", () => {
   for (const size of SIZES) {
     const expected = inputTokens(size);
     expect(expected).toHaveLength(3);
@@ -76,7 +76,7 @@ test("o Select, o Combobox e o Textarea falam o size do Input, com as mesmas cla
   }
 });
 
-test("sem size, os tres nascem no md, como o Input", () => {
+test("without size, the three start at md, like the Input", () => {
   render(
     <RivoProvider scope="local">
       <Select items={OPTIONS}>

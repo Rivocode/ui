@@ -1,125 +1,125 @@
-# Escolher a peça certa
+# Choosing the right piece
 
-## Conteúdo
+## Contents
 
-- Escolhas que costumam sair erradas
-- Toda consulta tem quatro finais
+- Choices that usually go wrong
+- Every query has four endings
 
-O catálogo tem 134 peças. O índice de todas fica em
-<https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
-`https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
-exemplos que rodam e a tabela de props.
+The catalog has 134 pieces. The index of all of them is at
+<https://ds.rivocode.com.br/llms.txt>, and each one has its own document at
+`https://ds.rivocode.com.br/componentes/<kebab-name>.md`, with the import,
+examples that run and the props table.
 
-## Escolhas que costumam sair erradas
+## Choices that usually go wrong
 
-| Situação | Peça certa | Por quê |
+| Situation | Right piece | Why |
 |---|---|---|
-| Aviso que fica na tela | `Alert` | O `Toast` passa, e quem estava olhando para outro canto perde |
-| Aviso da página inteira: manutenção, fatura em atraso, modo de teste | `Banner` | Faixa de largura total no topo da área; o `Alert` mora junto do trecho de que fala |
-| Passeio guiado pela tela no primeiro acesso, um elemento de cada vez | `Tour` | Escurece o resto, recorta o alvo e prende o foco no balão; vira folha de baixo no celular. Dica de um elemento só é `Tooltip` ou `Popover`, e novidade que não para a pessoa é `Banner` |
-| Botão só com ícone | `IconButton` | O `label` é obrigatório e vira o nome; `tooltip` mostra a dica sem repetir o nome |
-| Aviso de cookies da LGPD | `CookieConsent` | Recusar tem o mesmo peso de aceitar, não prende a página e Esc não dispensa; a escolha volta por `onDecision` e quem grava é o app. Nunca `AlertDialog`: parede de cookies não é consentimento livre |
-| Confirmação destrutiva | `AlertDialog` | Ele exige resposta; o `Dialog` deixa fechar clicando fora |
-| Escolha entre poucas opções fixas | `Select` | O `Combobox` pede digitação sem precisar |
-| Lista longa, ou vinda do servidor | `Combobox` | Não cabe na cabeça de quem escolhe |
-| Liga agora, sem confirmar | `Switch` | O `Checkbox` só vale quando o formulário for enviado |
-| Perguntas uma por vez: onboarding, pesquisa, triagem, o agente pedindo esclarecimento | `Questionnaire` | Valida antes de avançar e só a opcional se pula; se as perguntas cabem numa tela é `Form`, e etapa com vários campos é `Steps` com `useWizard` |
-| Quais colunas a listagem mostra | `MenuCheckboxItem` | Dentro do `Menu`: traz `aria-checked` e a navegação de menu, que `Popover` com `Checkbox` dentro não tem |
-| Ordenar por, dentro do menu | `MenuRadioGroup` + `MenuRadioItem` | Uma ordem de cada vez; passe `closeOnClick` para o menu fechar ao escolher |
-| Lista de opções com famílias de verdade | `SelectGroup` + `SelectGroupLabel` | Se agrupar é para domar lista grande demais, o remédio é o `Combobox`, que busca |
-| Marcar uma opção entre várias | `ToggleGroup` | Guarda estado e diz isso no aria |
-| Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
-| Fazer a mesma coisa com várias linhas marcadas | `ActionBar` | Entra com a seleção do `DataTable`, diz quantos e limpa; a ação de uma linha só fica no `Menu` da linha |
-| Montar um conjunto a partir de uma lista longa, vendo o que ficou de fora | `TransferList` | Duas listas com busca e mover nos dois sentidos; lista curta é `CheckboxGroup`, e escolher sem ver o resto é `Combobox` com `multiple` |
-| Mostrar por que o resultado da busca apareceu | `Highlight` | Pinta o termo sem acento importar; filtre com `matchesSearch`, que é a mesma regra |
-| Texto longo que a pessoa pode querer ler ali mesmo | `Spoiler` | Corta por altura e só mostra o "Ler mais" quando estoura; bloco fechado com título próprio é `Collapsible` |
-| Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |
-| Mostrar um atalho no texto | `Kbd` | `mod` sai `⌘` no Mac e `Ctrl` no resto |
-| Título de seção menor sem pular nível | `Heading` com `size` | `level` decide a tag de `h1` a `h6`; `size` muda só o desenho, e a ordem dos títulos fica inteira |
-| Texto secundário, legenda ou frase num tom de estado | `Text` com `tone` | Só os papéis de texto do tema; sem `size` e `tone`, herda da frase em volta |
-| Ir para outra página ou outro site | `Link` | Navega; o `Button` age. `external` abre em outra aba e avisa quem ouve, e o router entra pelo `render` |
-| Nome de arquivo, comando ou chave de JSON no texto | `Code` | O `Kbd` promete "aperte isto"; este é para ler ou copiar |
-| Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
-| Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |
-| Cobrar por Pix: QR, valor e copia e cola | `PixCode` | Recebe o copia e cola pronto e confere o CRC; monte o estático com `buildPixPayload` |
-| Um link ou código que a câmera de outro aparelho lê | `QRCode` | SVG sempre escuro sobre claro, em qualquer tema, numa placa com a margem de 4 módulos; `label` obrigatório, e `logo` só com `level="H"` |
-| "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
-| O que já aconteceu com uma coisa, em ordem | `Timeline` | Olha para trás, com carimbo e autor; o `Steps` olha para a frente |
-| Cronograma de projeto: o que vem antes de quê, e por quantos dias | `Gantt` | Tabela à esquerda, escala à direita e seta de dependência; edição controlada por `onTaskChange`. Hora do dia e choque de horário é `EventCalendar` |
-| O sino do cabeçalho com a lista de notificações | `NotificationCenter` | Conta as não lidas no nome do botão, abre popover na mesa e folha no celular, e não busca nada: marcar, filtrar e carregar mais saem por callback |
-| Contagem por cima do sino, da aba, do menu | `Indicator` | Posiciona sozinho, e a contagem é dita e não só vista |
-| Fila de pessoas sobrepostas | `AvatarGroup` | Corta para uma letra e conta o excedente em "+n" |
-| Vários cartões ou fotos que a pessoa percorre de lado | `Carousel` | Rola por scroll-snap, com botões e teclado; o que se compara é `Tabs`, e o que cabe na tela é `Grid` |
-| Foto que a pessoa precisa ampliar: imóvel, vistoria, comprovante | `ImageViewer` | Tela cheia sobre o `Dialog`, com zoom, setas e `alt` obrigatório; imagem que só enfeita o card é `AspectRatio` |
-| Nota em estrelas, ou a média que os outros deram | `Rating` | `radiogroup` com uma opção por estrela e setas; `readOnly` vira uma imagem só, "4,3 de 5". Número exato é `NumberField`, faixa contínua é `Slider` |
-| Assinatura na tela: aceite, recebimento, vistoria | `SignaturePad` | Dedo, caneta ou mouse, com o nome digitado em cursiva para quem não desenha; exporta SVG e PNG com tinta escura nos dois temas. "Li e aceito" sem rubrica é `Checkbox` |
-| Valor em dinheiro | `CurrencyInput` | Entra e sai em centavos inteiros, digita da direita e lê o colado; quantidade com passo é `NumberField` |
-| CPF | `MaskedInput` | `mask="cpf"`, e o número se confere com `isValidCpf` no schema, ao sair do campo. Guarde o cru, o segundo argumento do `onValueChange`: só os 11 dígitos |
-| CNPJ, inclusive o alfanumérico | `MaskedInput` | `mask="cnpj"` aceita letra nas doze primeiras casas e põe em maiúscula; confere com `isValidCnpj`. Guarde o cru |
-| CPF ou CNPJ no mesmo campo | `ToggleGroup` e `MaskedInput` | Nenhum molde alterna sozinho entre os dois: a pessoa escolhe "Pessoa física" ou "Pessoa jurídica" antes, e o `mask` troca junto com o validador |
-| Telefone, fixo ou celular | `MaskedInput` | `mask="telefone"` troca sozinho entre fixo e celular pela quantidade de dígitos, 10 ou 11; `autoComplete="tel-national"`. Guarde os dígitos, e a chave Pix pede `+55` na frente |
-| CEP que preenche o endereço | `PostalCodeField` | Máscara e busca: completa os 8 dígitos, chama o seu `lookup` e entrega `onAddress`. CEP solto, sem endereço, é `MaskedInput` com `mask="cep"` |
-| Data: vencimento, nascimento, agendamento | `DatePicker` | Digita ou escolhe no calendário, com `min`, `max` e `disabledDays`; nascimento leva `max` em hoje. `mask="data"` num campo de texto perde o calendário e a validação da data |
-| Hora do dia | `TimeField` | Entra e sai como `HH:mm`, com `min`, `max` e `step`; `mask="hora"` não confere se a hora existe |
-| Número do cartão | `MaskedInput` | `mask="cartao"` e `autoComplete="cc-number"`. A biblioteca não confere o cartão: quem aprova é o adquirente |
-| Placa de veículo, antiga ou Mercosul | `MaskedInput` | `mask="placa"`; a forma se confere com `isValidPlate` |
-| Linha digitável de boleto | `MaskedInput` | `mask="boleto"` troca sozinho para a de convênio quando começa com 8; `isValidBoletoLine` confere e `parseBoleto` lê valor e vencimento |
-| Código de verificação que chega por SMS, de uso único | `OTPField` | Uma casa por dígito, cola o código inteiro e `autoComplete="one-time-code"` deixa o celular preencher sozinho |
-| E-mail do cliente, de contato ou de login | `Input` | `type="email"` e `autoComplete="email"`, sem máscara; o formato se confere no schema com `z.string().email()` |
-| Campo de formulário para a chave Pix: a pessoa digita ou cadastra a chave para receber ou transferir | `Input` | Sem máscara, porque a chave Pix pode ser CPF, CNPJ, e-mail, celular ou aleatória; `isValidPixKey` confere depois de tirar a pontuação. Mostrar a chave para alguém copiar é `Code` com `Clipboard`; cobrar com QR e copia e cola é `PixCode` |
-| Quantidade, parcelas, porcentagem | `NumberField` | Número com passo e teclado numérico; dinheiro nunca entra aqui, é `CurrencyInput` |
-| Senha, com o olho que revela | `PasswordInput` | O botão diz a ação e não o estado; sair do campo esconde de novo |
-| Marcadores que a pessoa escreve | `TagsInput` | Enter fecha, Backspace tira a última, repetida não entra |
-| Ocorrência por período, em faixa | `Tracker` | Responde "piorou ontem?"; cabe no rodapé de um `Stat` |
-| Lista e detalhe lado a lado, com proporção ajustável | `Splitter` | Divisória é `separator` de verdade e anda pelas setas; empilha no celular |
-| Três ou mais áreas ajustáveis, aninhadas, que recolhem ou guardam o layout | `ResizablePanelGroup` | Com `ResizablePanel` e `ResizableHandle`; o `Splitter` é a forma curta dele para duas áreas |
-| Corrigir um valor sem sair da tela | `Editable` | Escape desfaz, sair do campo salva; fechado é um `button` |
-| Escolher a cor de marca de um cliente | `ColorPicker` | Grade de amostras que anda por seta e diz qual está escolhida, mais o hexadecimal colado do manual |
-| Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |
-| Empilhar blocos com vão que acompanha a densidade | `Stack` | `gap` é escala (`xs` a `xl`), não pixel; `direction="row"` põe lado a lado |
-| Cartões em colunas que se ajustam à tela | `Grid` | `minItemWidth` põe quantas couberem, sem media query; `columns` fixa o número |
-| Largura de leitura da página, centralizada | `Container` | `size` de `sm` a `xl`, respiro lateral por token; só no web |
-| Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
-| Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
-| Quanto de uma capacidade está em uso | `Meter` | O `Progress` anda para o fim e termina |
-| Um número julgado por faixas (em dia, atenção, crítico) | `ChartGauge`, de `@rivocode/ui/chart` | O `ChartRadial` mede contra meta e não julga; o `Meter` cabe numa linha e só diz quanto |
-| O padrão numa grade de linha por coluna | `ChartHeatmap` | Célula vazia não é zero; um estado por período, numa linha só, é o `Tracker` |
-| Quantos passaram de cada etapa para a seguinte | `ChartFunnel` | A taxa sai escrita; onde a pessoa está num processo é o `Steps` |
-| Proporção de muitas categorias | `ChartTreemap` | Até seis, o `ChartDonut` lê melhor; o rótulo que não cabe some |
-| Número de painel com variação e tendência | `Stat` | O valor chega formatado; a `Sparkline` entra pelo slot `chart` |
-| Folha de detalhes com rótulo e valor | `DescriptionList` + `DescriptionItem` | Sai como `<dl>` de verdade; o valor aceita `Badge` e `font-mono` |
-| Campo de busca com lupa e atalho | `SearchInput` | `type="search"`, Esc limpa; `shortcut="mod+k"` só desenha o atalho |
-| Anexar arquivo, com arrastar e soltar | `FileUpload` + `FileUploadList` | Valida `accept` e `maxSize` na entrada; subir é do app, o item mostra `progress` e `error` |
-| O esqueleto de uma aplicação nova: cabeçalho, barra lateral, conteúdo | `AppShell` | Monta o `Sidebar` da casa, o cabeçalho fixo com o botão da barra, os landmarks e o link "Pular para o conteúdo"; o topo de cada rota continua sendo `PageHeader` |
-| Topo de rota com trilha, título e ações | `PageHeader` | O título é `<h1>`; trilha e ações entram por slot |
-| Índice "Nesta página" de um texto longo | `TableOfContents` | Lê os `h2`/`h3` (ou `items`), marca a seção lida com `aria-current` e leva o foco ao título no clique; `offset` desconta o cabeçalho fixo. Navegar entre rotas é `Sidebar` |
-| "Voltar ao topo" numa página ou lista longa | `ScrollToTop` | Só existe depois de `threshold` pixels, sobe suave (salto com reduzir movimento) e leva o foco ao `<main>`; `target` para caixa que rola |
-| Ação ou aviso que fica parado na janela enquanto a página rola | `Affix` | `position` por lado, empilhamento de `--rc-z-*`, e reserva o `scroll-padding` para o foco não parar atrás; o topo que gruda dentro da seção é `sticky` |
-| Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
-| Listagem que ordena, busca, pagina ou seleciona | `DataTable` com `sortable`, `filter`, `pageSize`, `selectable` | Tudo opt-in e client-side; no servidor, entregue os dados prontos e não peça o recurso |
-| Tabela montada à mão | `Table` e suas partes | Sai como `<table>` de verdade |
-| Ordem que só a pessoa sabe: fila de emissão, prioridade, etapas | `SortableList`, de `@rivocode/ui/dnd` | Arrasta pela alça e pelo teclado, e anuncia cada posição; ordem por critério (valor, data) é `sortable` no `DataTable`. Peer opcional: `@dnd-kit/core` e `@dnd-kit/sortable` |
-| Coisas que andam entre situações: a emitir, em análise, emitida | `Kanban`, de `@rivocode/ui/dnd` | Colunas com contagem e `limit`, cartão entre colunas pelo teclado; situação que só se lê cabe numa coluna de `Badge` do `DataTable`. No nativo não porta: lá é lista por coluna e `Menu` "Mover para" |
-| Campo onde a pessoa escreve para um assistente | `PromptInput`, de `@rivocode/ui/ai` | Enter envia e Shift+Enter quebra; o `Textarea` vai junto com o formulário e não envia no Enter |
-| A conversa com um assistente | `Conversation` + `Message` | Gruda no fim enquanto o texto chega e solta quando a pessoa rola; a `Timeline` olha para trás |
-| Chamada de ferramenta, com aprovação | `ToolCall` | Estado com ícone e texto, e aprovar ou recusar fora do painel; o `Accordion` organiza texto, não acontecimento |
-| Marcar conteúdo gerado por IA fora da conversa | `AILabel` | O leitor ouve por extenso e a explicação abre no toque; estado de registro continua `Badge` |
-| Excluir, arquivar ou remover um item da lista quando dá para voltar atrás | `ToastViewport` | Faz na hora e o `useToast` oferece "Desfazer" pelo `actionProps`, com `timeout` maior que o padrão. Confirmar antes cobra de todo mundo para proteger o engano de poucos |
-| Desfazer a exclusão, o arquivamento ou a última ação | `ToastViewport` | O desfazer mora no aviso que confirma a ação: `actionProps` com `children: "Desfazer"` e o `onClick` que restaura e fecha o aviso |
-| Excluir de vez, cancelar nota, emitir: o que não tem volta | `AlertDialog` | Só aqui a confirmação se paga; o título nomeia o objeto e o botão diz o efeito. Item pequeno e local é `Popconfirm` |
-| Editar um campo direto na tabela, na lista ou no detalhe, sem abrir formulário | `Editable` | Clica, edita, Enter salva e Esc desfaz; a linha inteira com vários campos é `Sheet` ao lado da lista |
-| Mostrar opções avançadas só quando a pessoa pedir | `Collapsible` | Esconde o que poucos usam sem tirar do formulário; várias seções que se abrem uma de cada vez são `Accordion` |
-| Cadastro com muitos campos que não dependem uns dos outros | `Fieldset` | Um formulário só, em seções com título, e não wizard: quebrar em passos só esconde o tamanho. Passos só quando uma etapa depende da anterior |
-| Fluxo em etapas em que a escolha de uma muda a seguinte, com revisão no fim | `Steps` | `useWizard` valida cada passo antes de avançar e `WizardFooter` segura voltar e seguir; a última etapa é sempre revisão |
-| Salvar o rascunho do formulário e recuperar ao voltar | `Form` | Voltar passo e errar o envio não perdem nada, porque o formulário fica na memória. Guardar no navegador para sobreviver a recarregar é decisão do projeto: só o que não for sensível, com `useLocalStorage`, limpo no envio |
-| Busca global: achar qualquer tela, cliente ou nota de qualquer lugar do app | `Command` | Ctrl+K de qualquer lugar, com `keywords` para os sinônimos; o campo que filtra só a lista da tela é `SearchInput` |
-| Tela vazia na primeira vez, sem nada cadastrado ainda | `EmptyState` | Diz o que vai aparecer ali e oferece criar o primeiro; vazio por filtro oferece limpar o filtro, e não criar |
-| Abrir o detalhe de um item por cima da tela, sem sair dela e sem perder o contexto de trás | `Sheet` | Folha lateral mantém o contexto; lista e detalhe sempre lado a lado é `Splitter`, `Dialog` é para uma decisão curta, e página nova é para tarefa que ocupa a tela |
+| A notice that stays on screen | `Alert` | `Toast` goes away, and whoever was looking at another corner misses it |
+| A whole-page notice: maintenance, overdue invoice, test mode | `Banner` | Full-width strip at the top of the area; `Alert` lives next to the passage it talks about |
+| Guided walk through the screen on first access, one element at a time | `Tour` | Dims the rest, cuts out the target and traps focus in the bubble; becomes a bottom sheet on a phone. A hint about a single element is `Tooltip` or `Popover`, and news that does not stop the person is `Banner` |
+| Icon-only button | `IconButton` | `label` is required and becomes the name; `tooltip` shows the hint without repeating the name |
+| LGPD cookie notice | `CookieConsent` | Refusing weighs the same as accepting, it does not lock the page and Esc does not dismiss it; the choice comes back through `onDecision` and the app stores it. Never `AlertDialog`: a cookie wall is not free consent |
+| Destructive confirmation | `AlertDialog` | It demands an answer; `Dialog` lets you close it by clicking outside |
+| Choice among a few fixed options | `Select` | `Combobox` asks for typing without need |
+| Long list, or one coming from the server | `Combobox` | It does not fit in the chooser's head |
+| Turns on now, without confirming | `Switch` | `Checkbox` only counts when the form is submitted |
+| Questions one at a time: onboarding, survey, triage, the agent asking for clarification | `Questionnaire` | Validates before moving on and only the optional one can be skipped; if the questions fit on one screen it is `Form`, and a step with several fields is `Steps` with `useWizard` |
+| Which columns the listing shows | `MenuCheckboxItem` | Inside `Menu`: brings `aria-checked` and menu navigation, which a `Popover` with a `Checkbox` inside does not have |
+| Sort by, inside the menu | `MenuRadioGroup` + `MenuRadioItem` | One order at a time; pass `closeOnClick` for the menu to close on choosing |
+| Option list with real families | `SelectGroup` + `SelectGroupLabel` | If grouping is to tame a list that is too big, the remedy is `Combobox`, which searches |
+| Mark one option among several | `ToggleGroup` | Keeps state and says so in aria |
+| Sibling actions side by side | `ButtonGroup` | Does not keep state; they are actions, not a choice |
+| Do the same thing to several marked rows | `ActionBar` | Comes in with the `DataTable` selection, says how many and clears; a single-row action stays in the row's `Menu` |
+| Build a set from a long list, seeing what was left out | `TransferList` | Two lists with search and moving both ways; a short list is `CheckboxGroup`, and choosing without seeing the rest is `Combobox` with `multiple` |
+| Show why the search result showed up | `Highlight` | Paints the term with accents not mattering; filter with `matchesSearch`, which is the same rule |
+| Long text the person may want to read right there | `Spoiler` | Cuts by height and only shows "Ler mais" when it overflows; a closed block with its own title is `Collapsible` |
+| Go anywhere by keyboard | `Command` | Palette on Ctrl+K, accent-insensitive search and by `keywords` |
+| Show a shortcut in the text | `Kbd` | `mod` comes out `⌘` on Mac and `Ctrl` elsewhere |
+| Smaller section heading without skipping a level | `Heading` with `size` | `level` decides the tag from `h1` to `h6`; `size` changes only the look, and the heading order stays whole |
+| Secondary text, caption or a sentence in a status tone | `Text` with `tone` | Only the theme's text roles; without `size` and `tone`, it inherits from the surrounding sentence |
+| Go to another page or another site | `Link` | Navigates; `Button` acts. `external` opens in another tab and tells whoever is listening, and the router comes in through `render` |
+| File name, command or JSON key in the text | `Code` | `Kbd` promises "press this"; this one is for reading or copying |
+| API response, log or configuration as a block | `CodeBlock` | Scrolls on its own, and `copyable` puts copy in the corner |
+| Take a piece of data to another system | `Clipboard` | The confirmation is part of the piece: the button's accessible name changes |
+| Charge by Pix: QR, amount and copy-and-paste | `PixCode` | Receives the ready copy-and-paste code and checks the CRC; build the static one with `buildPixPayload` |
+| A link or code another device's camera reads | `QRCode` | SVG always dark on light, in any theme, on a plate with the 4-module margin; `label` required, and `logo` only with `level="H"` |
+| "há 2 minutos" in a log, queue or notification | `RelativeTime` | Comes out in a `<time>`, with the exact date in `title` and a configurable cutoff |
+| What has already happened to a thing, in order | `Timeline` | Looks back, with timestamp and author; `Steps` looks forward |
+| Project schedule: what comes before what, and for how many days | `Gantt` | Table on the left, scale on the right and dependency arrows; editing controlled by `onTaskChange`. Time of day and schedule clashes are `EventCalendar` |
+| The header bell with the notification list | `NotificationCenter` | Counts the unread in the button's name, opens a popover on desktop and a sheet on a phone, and fetches nothing: marking, filtering and loading more go out by callback |
+| Count on top of the bell, the tab, the menu | `Indicator` | Positions itself, and the count is spoken and not only seen |
+| Row of overlapping people | `AvatarGroup` | Cuts down to one letter and counts the excess as "+n" |
+| Several cards or photos the person browses sideways | `Carousel` | Scrolls by scroll-snap, with buttons and keyboard; what is compared is `Tabs`, and what fits on screen is `Grid` |
+| A photo the person needs to enlarge: property, inspection, receipt | `ImageViewer` | Full screen over the `Dialog`, with zoom, arrows and required `alt`; an image that only decorates the card is `AspectRatio` |
+| A star rating, or the average others gave | `Rating` | `radiogroup` with one option per star and arrows; `readOnly` becomes a single image, "4,3 de 5". An exact number is `NumberField`, a continuous range is `Slider` |
+| Signature on screen: acceptance, receipt, inspection | `SignaturePad` | Finger, pen or mouse, with the typed name in cursive for whoever does not draw; exports SVG and PNG with dark ink in both themes. "Li e aceito" without a signature is `Checkbox` |
+| Money amount | `CurrencyInput` | Goes in and out in integer cents, types from the right and reads what is pasted; a quantity with a step is `NumberField` |
+| CPF | `MaskedInput` | `mask="cpf"`, and the number is checked with `isValidCpf` in the schema, on leaving the field. Store the raw value, the second argument of `onValueChange`: just the 11 digits |
+| CNPJ, including the alphanumeric one | `MaskedInput` | `mask="cnpj"` accepts letters in the first twelve positions and uppercases them; check with `isValidCnpj`. Store the raw value |
+| CPF or CNPJ in the same field | `ToggleGroup` and `MaskedInput` | No pattern alternates between the two on its own: the person picks "Pessoa física" or "Pessoa jurídica" first, and `mask` switches together with the validator |
+| Phone, landline or mobile | `MaskedInput` | `mask="telefone"` switches between landline and mobile on its own by digit count, 10 or 11; `autoComplete="tel-national"`. Store the digits, and a Pix key needs `+55` in front |
+| CEP that fills in the address | `PostalCodeField` | Mask and lookup: completes the 8 digits, calls your `lookup` and delivers `onAddress`. A standalone CEP, without an address, is `MaskedInput` with `mask="cep"` |
+| Date: due date, birth date, scheduling | `DatePicker` | Type it or pick it on the calendar, with `min`, `max` and `disabledDays`; a birth date takes `max` at today. `mask="data"` on a text field loses the calendar and the date validation |
+| Time of day | `TimeField` | Goes in and out as `HH:mm`, with `min`, `max` and `step`; `mask="hora"` does not check whether the time exists |
+| Card number | `MaskedInput` | `mask="cartao"` and `autoComplete="cc-number"`. The library does not check the card: the acquirer approves it |
+| Vehicle plate, old or Mercosul | `MaskedInput` | `mask="placa"`; the shape is checked with `isValidPlate` |
+| Boleto typeable line | `MaskedInput` | `mask="boleto"` switches to the utility-bill one on its own when it starts with 8; `isValidBoletoLine` checks and `parseBoleto` reads amount and due date |
+| Single-use verification code that arrives by SMS | `OTPField` | One slot per digit, pastes the whole code and `autoComplete="one-time-code"` lets the phone fill it in by itself |
+| Customer, contact or login e-mail | `Input` | `type="email"` and `autoComplete="email"`, no mask; the format is checked in the schema with `z.string().email()` |
+| Form field for the Pix key: the person types or registers the key to receive or transfer | `Input` | No mask, because a Pix key can be CPF, CNPJ, e-mail, mobile or random; `isValidPixKey` checks after stripping punctuation. Showing the key for someone to copy is `Code` with `Clipboard`; charging with QR and copy-and-paste is `PixCode` |
+| Quantity, installments, percentage | `NumberField` | A number with a step and the numeric keyboard; money never goes here, it is `CurrencyInput` |
+| Password, with the eye that reveals | `PasswordInput` | The button says the action and not the state; leaving the field hides it again |
+| Tags the person writes | `TagsInput` | Enter closes, Backspace removes the last one, a repeated one does not go in |
+| Occurrence per period, in a strip | `Tracker` | Answers "did it get worse yesterday?"; fits in the footer of a `Stat` |
+| List and detail side by side, with adjustable proportion | `Splitter` | The divider is a real `separator` and moves with the arrows; stacks on a phone |
+| Three or more adjustable, nested areas that collapse or remember the layout | `ResizablePanelGroup` | With `ResizablePanel` and `ResizableHandle`; `Splitter` is its short form for two areas |
+| Fix a value without leaving the screen | `Editable` | Escape undoes, leaving the field saves; closed it is a `button` |
+| Choose a client's brand color | `ColorPicker` | A grid of swatches that moves by arrow and says which one is chosen, plus the hex pasted from the brand manual |
+| Hold the height before the image | `AspectRatio` | Without it the row jumps when the image loads |
+| Stack blocks with a gap that follows the density | `Stack` | `gap` is a scale (`xs` to `xl`), not pixels; `direction="row"` puts them side by side |
+| Cards in columns that adjust to the screen | `Grid` | `minItemWidth` fits as many as there is room for, without a media query; `columns` fixes the number |
+| Page reading width, centered | `Container` | `size` from `sm` to `xl`, side breathing room by token; web only |
+| Split the page into sections | default `TabList` | The line underneath says "this part of the page" |
+| See the same thing another way | `TabList variant="segmented"` | The little box does not promise a section |
+| How much of a capacity is in use | `Meter` | `Progress` moves toward the end and finishes |
+| A number judged by bands (on track, attention, critical) | `ChartGauge`, from `@rivocode/ui/chart` | `ChartRadial` measures against a goal and does not judge; `Meter` fits in one line and only says how much |
+| The pattern in a row-by-column grid | `ChartHeatmap` | An empty cell is not zero; one state per period, in a single row, is `Tracker` |
+| How many passed from each stage to the next | `ChartFunnel` | The rate comes out written; where the person is in a process is `Steps` |
+| Proportion of many categories | `ChartTreemap` | Up to six, `ChartDonut` reads better; the label that does not fit disappears |
+| Dashboard number with change and trend | `Stat` | The value arrives formatted; `Sparkline` comes in through the `chart` slot |
+| Details sheet with label and value | `DescriptionList` + `DescriptionItem` | Comes out as a real `<dl>`; the value accepts `Badge` and `font-mono` |
+| Search field with magnifier and shortcut | `SearchInput` | `type="search"`, Esc clears; `shortcut="mod+k"` only draws the shortcut |
+| Attach a file, with drag and drop | `FileUpload` + `FileUploadList` | Validates `accept` and `maxSize` on entry; uploading is the app's job, the item shows `progress` and `error` |
+| The skeleton of a new application: header, sidebar, content | `AppShell` | Mounts the house `Sidebar`, the fixed header with the sidebar button, the landmarks and the "Pular para o conteúdo" link; the top of each route is still `PageHeader` |
+| Route top with breadcrumb, title and actions | `PageHeader` | The title is an `<h1>`; breadcrumb and actions come in through slots |
+| "Nesta página" index of a long text | `TableOfContents` | Reads the `h2`/`h3` (or `items`), marks the section being read with `aria-current` and takes focus to the heading on click; `offset` discounts the fixed header. Navigating between routes is `Sidebar` |
+| "Voltar ao topo" on a long page or list | `ScrollToTop` | Only exists after `threshold` pixels, scrolls up smoothly (a jump with reduce motion) and takes focus to `<main>`; `target` for a box that scrolls |
+| An action or notice that stays still in the window while the page scrolls | `Affix` | `position` per side, stacking from `--rc-z-*`, and reserves the `scroll-padding` so focus does not stop behind it; the top that sticks inside the section is `sticky` |
+| Listing with query states | `DataTable` | Receives loading, error and empty ready-made |
+| Listing that sorts, searches, paginates or selects | `DataTable` with `sortable`, `filter`, `pageSize`, `selectable` | All opt-in and client-side; on the server, deliver the data ready and do not ask for the feature |
+| Hand-built table | `Table` and its parts | Comes out as a real `<table>` |
+| An order only the person knows: issuing queue, priority, stages | `SortableList`, from `@rivocode/ui/dnd` | Drags by the handle and by keyboard, and announces each position; ordering by a criterion (amount, date) is `sortable` in `DataTable`. Optional peer: `@dnd-kit/core` and `@dnd-kit/sortable` |
+| Things that move between statuses: to issue, under review, issued | `Kanban`, from `@rivocode/ui/dnd` | Columns with count and `limit`, card between columns by keyboard; a status that is only read fits in a `Badge` column of `DataTable`. It does not port to native: there it is a list per column and a "Mover para" `Menu` |
+| Field where the person writes to an assistant | `PromptInput`, from `@rivocode/ui/ai` | Enter sends and Shift+Enter breaks the line; `Textarea` goes along with the form and does not send on Enter |
+| The conversation with an assistant | `Conversation` + `Message` | Sticks to the end while the text arrives and lets go when the person scrolls; `Timeline` looks back |
+| Tool call, with approval | `ToolCall` | Status with icon and text, and approve or reject outside the panel; `Accordion` organizes text, not events |
+| Mark AI-generated content outside the conversation | `AILabel` | The reader hears it spelled out and the explanation opens on tap; record status is still `Badge` |
+| Delete, archive or remove a list item when it can be undone | `ToastViewport` | Do it right away and `useToast` offers "Desfazer" through `actionProps`, with a `timeout` longer than the default. Confirming first charges everyone to protect the mistake of a few |
+| Undo the deletion, the archiving or the last action | `ToastViewport` | The undo lives in the toast that confirms the action: `actionProps` with `children: "Desfazer"` and the `onClick` that restores and closes the toast |
+| Delete for good, cancel an invoice, issue: what cannot be undone | `AlertDialog` | Only here does confirmation pay for itself; the title names the object and the button says the effect. A small, local item is `Popconfirm` |
+| Edit a field right in the table, the list or the detail, without opening a form | `Editable` | Click, edit, Enter saves and Esc undoes; the whole row with several fields is a `Sheet` beside the list |
+| Show advanced options only when the person asks | `Collapsible` | Hides what few use without taking it out of the form; several sections that open one at a time are `Accordion` |
+| Registration with many fields that do not depend on one another | `Fieldset` | A single form, in sections with titles, and not a wizard: breaking it into steps only hides the size. Steps only when a stage depends on the previous one |
+| Staged flow where the choice in one changes the next, with review at the end | `Steps` | `useWizard` validates each step before moving on and `WizardFooter` holds back and next; the last stage is always review |
+| Save the form draft and recover it on coming back | `Form` | Going back a step and a failed submit lose nothing, because the form stays in memory. Storing in the browser to survive a reload is a project decision: only what is not sensitive, with `useLocalStorage`, cleared on submit |
+| Global search: find any screen, customer or invoice from anywhere in the app | `Command` | Ctrl+K from anywhere, with `keywords` for synonyms; the field that filters only the screen's list is `SearchInput` |
+| Empty screen the first time, nothing registered yet | `EmptyState` | Says what will appear there and offers to create the first one; empty because of a filter offers to clear the filter, not to create |
+| Open an item's detail over the screen, without leaving it and without losing the context behind | `Sheet` | A side sheet keeps the context; list and detail always side by side is `Splitter`, `Dialog` is for a short decision, and a new page is for a task that takes over the screen |
 
-## Toda consulta tem quatro finais
+## Every query has four endings
 
-Carregando, deu certo, deu errado, veio vazia. O `DataTable` e o
-`ChartContainer` recebem os quatro:
+Loading, succeeded, failed, came back empty. `DataTable` and `ChartContainer`
+take all four:
 
 ```tsx
 <DataTable
@@ -141,5 +141,5 @@ Carregando, deu certo, deu errado, veio vazia. O `DataTable` e o
 />
 ```
 
-A descrição do vazio é obrigatória de propósito: "nenhum resultado" transfere
-para a pessoa o trabalho de descobrir por quê, e ela quase nunca descobre.
+The empty-state description is required on purpose: "nenhum resultado" hands
+the person the work of finding out why, and they almost never do.

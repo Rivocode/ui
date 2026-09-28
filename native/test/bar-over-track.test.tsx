@@ -8,7 +8,7 @@ function paintedTokens(screen: ReactTestRenderer): string[] {
   return byClass(screen, /./).flatMap((node) => String(node.props.className).split(" "));
 }
 
-test("a medida do toque pinta o acento escuro sobre a trilha, e nao o acento cru", () => {
+test("the touch meter paints the dark accent over the track, not the raw accent", () => {
   const painted = paintedTokens(render(<Meter value={72} label="Cota" />));
 
   expect(painted).toContain("bg-skeleton");
@@ -16,7 +16,7 @@ test("a medida do toque pinta o acento escuro sobre a trilha, e nao o acento cru
   expect(painted).not.toContain("bg-accent");
 });
 
-test("a barra de progresso do toque pinta o acento escuro sobre a trilha", () => {
+test("the touch progress bar paints the dark accent over the track", () => {
   const painted = paintedTokens(render(<Progress value={40} label="Enviando" />));
 
   expect(painted).toContain("bg-skeleton");
@@ -24,7 +24,7 @@ test("a barra de progresso do toque pinta o acento escuro sobre a trilha", () =>
   expect(painted).not.toContain("bg-accent");
 });
 
-test("a faixa do toque separa o tom de acento do periodo neutro", () => {
+test("the touch band separates the accent tone from the neutral period", () => {
   const painted = paintedTokens(
     render(
       <Tracker

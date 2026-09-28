@@ -1,38 +1,39 @@
 /**
- * Guarda de instalacao duplicada: uma segunda copia do React na arvore.
+ * Duplicate install guard: a second copy of React in the tree.
  *
- * A raiz declara `workspaces: ["apps/*"]`, e `native/` nao esta la. Quem roda
- * `bun install` dentro do pacote nativo - o gesto obvio de quem vai mexer nele
- * - nao ganha um link para a copia da raiz: ganha uma segunda copia de
- * verdade, com o mesmo numero de versao.
+ * The root declares `workspaces: ["apps/*"]`, and `native/` is not in it. Whoever
+ * runs `bun install` inside the native package - the obvious move for someone
+ * about to work on it - does not get a link to the root's copy: they get a real
+ * second copy, with the same version number.
  *
- * O estrago nao aparece onde foi feito. O `bun test` da raiz carrega as duas
- * no mesmo processo, e noventa e oito testes que ninguem tocou passam a falhar
- * com "Invalid hook call ... more than one copy of React" - uma mensagem que
- * manda procurar erro de hook em codigo que esta certo. A CI nunca ve, porque
- * so instala na raiz, entao o verde de la nao ajuda a entender o vermelho daqui.
+ * The damage does not show up where it was done. The root `bun test` loads both
+ * in the same process, and ninety-eight tests nobody touched start failing
+ * with "Invalid hook call ... more than one copy of React" - a message that
+ * sends you hunting for a hook bug in code that is correct. CI never sees it,
+ * because it only installs at the root, so the green there does not help explain
+ * the red here.
  *
- * Nada legitimo precisa dessa pasta: o `check:native:types` tipa o pacote pelo
- * `examples/native`, e passa sem ela.
+ * Nothing legitimate needs that folder: `check:native:types` type-checks the
+ * package through `examples/native`, and passes without it.
  */
 import { existsSync } from "node:fs";
 
-/** Pasta e o rastro que ela deixa, para o conserto sair completo. */
+/** The folder and the trail it leaves, so the fix comes out complete. */
 const STRAYS = ["native/node_modules", "native/bun.lock"];
 
 const found = STRAYS.filter((path) => existsSync(path));
 
 if (found.length > 0) {
-  console.error(`Instalacao solta dentro de native/: ${found.join(", ")}`);
+  console.error(`Stray install inside native/: ${found.join(", ")}`);
   console.error(
-    "\n`native/` nao e workspace, entao um `bun install` la dentro cria uma" +
-      "\nsegunda copia do React - e o `bun test` da raiz quebra em massa com" +
-      '\n"Invalid hook call", apontando para codigo que esta certo.' +
-      `\n\nO conserto:\n  rm -rf ${found.join(" ")}` +
-      "\n\nPara mexer no pacote nativo, o app de exemplo ja tem tudo instalado:" +
+    "\n`native/` is not a workspace, so a `bun install` in there creates a" +
+      "\nsecond copy of React - and the root `bun test` breaks en masse with" +
+      '\n"Invalid hook call", pointing at code that is correct.' +
+      `\n\nThe fix:\n  rm -rf ${found.join(" ")}` +
+      "\n\nTo work on the native package, the example app already has everything installed:" +
       "\n  bun install --cwd examples/native",
   );
   process.exit(1);
 }
 
-console.log("Uma copia do React so: nenhuma instalacao solta em native/.");
+console.log("A single copy of React: no stray install in native/.");

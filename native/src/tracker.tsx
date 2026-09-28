@@ -6,14 +6,13 @@ import { Entrance } from "./motion";
 import { Text } from "./text";
 
 export type TrackerPoint = {
-  /** O que aconteceu nesse período. */
+  /** What happened in that period. */
   tone?: "neutral" | "success" | "warning" | "danger" | "accent";
   /**
-   * O que o leitor de tela ouve e o que a linha de baixo mostra.
-   *
-   * `string`, e não `ReactNode` como no web: aqui ele vai inteiro para o
-   * `accessibilityValue` da faixa, que só aceita texto, e num `ReactNode` não
-   * há como ler o texto de volta.
+   * What the screen reader hears and what the bottom line shows. `string`, and
+   * not `ReactNode` as on the web: here it goes whole into the strip's
+   * `accessibilityValue`, which accepts only text, and there is no way to read
+   * the text back out of a `ReactNode`.
    */
   label: string;
 };
@@ -28,17 +27,18 @@ const TONE: Record<NonNullable<TrackerPoint["tone"]>, string> = {
 
 export type TrackerProps = {
   data: TrackerPoint[];
-  /** O que a faixa mede, dito por extenso: "Emissões dos últimos 90 dias". */
+  /** What the strip measures, spelled out: "Emissões dos últimos 90 dias". */
   label: string;
   className?: string;
   /**
-   * Classe por parte: `track` (a faixa que recebe o arrasto) e `cell` (cada
-   * periodo). O `label` e so o nome falado da faixa, e nao tem no para vestir.
+   * Class per part: `track` (the strip that receives the drag) and `cell` (each
+   * period). `label` is only the strip's spoken name, and has no node to style.
    */
   classNames?: Slots<"track" | "cell">;
   /**
-   * Os textos da peca, para trocar o idioma: `next` e `previous` sao os nomes
-   * das duas acoes de ajuste que andam de periodo. Passe so os que mudam.
+   * The component's texts, to change the language: `next` and `previous` are
+   * the names of the two adjust actions that move between periods. Pass only
+   * the ones that change.
    */
   labels?: Partial<TrackerLabels>;
 };

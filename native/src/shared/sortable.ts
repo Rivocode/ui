@@ -1,4 +1,4 @@
-/* Gerado de src/shared/sortable.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/sortable.ts by bun run gen:shared. Do not edit. */
 
 export type SortableListLabels = {
   instructions: string;

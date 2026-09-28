@@ -1,35 +1,36 @@
 import { expect, test } from "bun:test";
 
 /*
- * DOC-09: nenhuma pagina dizia em que versao a prop apareceu.
+ * DOC-09: no page said in which version a prop appeared.
  *
- * Numa biblioteca pre-1.0 que ja trocou nome publico duas vezes, quem tem uma
- * versao velha instalada nao tem como saber se a prop que esta lendo existe
- * para ele - e descobre pelo erro de tipo, ou pior, pelo atributo solto no DOM.
+ * In a pre-1.0 library that has already renamed public names twice, whoever
+ * has an old version installed has no way of knowing whether the prop they are
+ * reading exists for them - and finds out from the type error, or worse, from
+ * the stray attribute in the DOM.
  *
- * O marcador nao e escrito a mao: ele e carimbado no lancamento, sobre o que
- * ainda nao tem carimbo. Assim a primeira versao em que a prop aparece no
- * catalogo e a que fica registrada, e ninguem precisa lembrar de anotar.
+ * The marker is not written by hand: it is stamped at release, onto whatever
+ * has no stamp yet. So the first version in which the prop appears in the
+ * catalog is the one recorded, and nobody needs to remember to note it.
  */
 
 const catalog = await Bun.file("apps/docs/src/component-props.json").json();
 
-test("a prop carimbada guarda a versao em que apareceu", () => {
+test("a stamped prop keeps the version in which it appeared", () => {
   const button = catalog.Button.props.find((prop: { name: string }) => prop.name === "loading");
 
   expect(button.since).toBe("0.4.0");
 });
 
-test("a prop que nasceu nesta versao carrega esta versao", () => {
-  // `classNames` nasceu no 0.5.0, e o carimbo do lancamento a alcancou. O que
-  // este teste guarda e a diferenca entre as duas: uma prop antiga nao pode
-  // ser recarimbada com a versao de hoje, senao o marcador vira ruido.
+test("a prop born in this version carries this version", () => {
+  // `classNames` was born in 0.5.0, and the release stamp reached it. What
+  // this test guards is the difference between the two: an old prop cannot be
+  // restamped with today's version, otherwise the marker becomes noise.
   const slider = catalog.Slider.props.find((prop: { name: string }) => prop.name === "classNames");
 
   expect(slider.since).toBe("0.5.0");
 });
 
-test("toda prop carimbada aponta para uma versao que o CHANGELOG conta", async () => {
+test("every stamped prop points to a version the CHANGELOG tells about", async () => {
   const changelog = await Bun.file("CHANGELOG.md").text();
   const versions = new Set(
     Object.values<any>(catalog).flatMap((piece) =>
@@ -39,8 +40,8 @@ test("toda prop carimbada aponta para uma versao que o CHANGELOG conta", async (
 
   expect(versions.size).toBeGreaterThan(1);
   for (const version of versions) {
-    expect(`${version} no CHANGELOG: ${changelog.includes(`## ${version}`)}`).toBe(
-      `${version} no CHANGELOG: true`,
+    expect(`${version} in CHANGELOG: ${changelog.includes(`## ${version}`)}`).toBe(
+      `${version} in CHANGELOG: true`,
     );
   }
 });

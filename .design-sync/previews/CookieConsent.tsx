@@ -1,7 +1,7 @@
 import { Button, CookieConsent, type CookieChoice } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Aceitar, recusar ou personalizar */
+/** Accept, reject or customize */
 export function Decide() {
   const [open, setOpen] = useState(false)
   const [choice, setChoice] = useState<CookieChoice | null>(null)
@@ -32,7 +32,7 @@ export function Decide() {
   )
 }
 
-/** Categorias próprias */
+/** Custom categories */
 export function OwnCategories() {
   const [open, setOpen] = useState(false)
 

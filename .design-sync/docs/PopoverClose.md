@@ -1,11 +1,11 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # PopoverClose
 
-Fecha o painel de dentro dele, sem você guardar estado.
+Closes the panel from inside it, without you holding any state.
 
-O painel já fecha com Esc e com clique fora; este serve para o botão que
-conclui (o Aplicar de um filtro, o Entendi de uma explicação) fechar junto
-com o que ele faz.
+The panel already closes with Esc and with a click outside; this one is for
+the button that concludes (the Apply of a filter, the Got it of an
+explanation) to close along with what it does.

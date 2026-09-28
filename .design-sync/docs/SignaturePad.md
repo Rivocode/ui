@@ -1,13 +1,13 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # SignaturePad
 
-A área de assinatura na tela: o aceite de um contrato de locação, o recebimento
-de uma entrega, o "de acordo" num laudo de vistoria. A pessoa assina com o
-dedo, com a caneta ou com o mouse, e quem não consegue desenhar **digita o
-nome**, que sai em letra cursiva.
+The on-screen signature area: accepting a rental contract, acknowledging a
+delivery, the "agreed" on an inspection report. The person signs with a finger,
+a stylus or the mouse, and whoever cannot draw **types their name**, which
+comes out in cursive script.
 
 ```tsx
 const [assinatura, setAssinatura] = useState<SignatureValue | null>(null)
@@ -18,52 +18,57 @@ const [assinatura, setAssinatura] = useState<SignatureValue | null>(null)
 </Field>
 ```
 
-O desenho sai por Pointer Events, então o mesmo código atende dedo, caneta e
-mouse. O traço é suave: os pontos são ligados por curvas, e a espessura varia
-com a velocidade, fina quando a mão corre e cheia quando ela desacelera, como
-tinta de verdade. Com caneta que mede pressão, a pressão entra na conta. O botão
-direito do mouse não desenha, e um segundo dedo que encosta no meio do traço
-(a palma da mão, quase sempre) é ignorado.
+The drawing comes through Pointer Events, so the same code serves finger,
+stylus and mouse. The stroke is smooth: the points are joined by curves, and
+the thickness varies with speed, thin when the hand runs and full when it slows
+down, like real ink. With a stylus that measures pressure, pressure enters the
+calculation. The right mouse button does not draw, and a second finger touching
+down in the middle of a stroke (the palm of the hand, almost always) is
+ignored.
 
-## O valor
+## The value
 
-`value` é `null` sem assinatura, ou um de dois formatos:
+`value` is `null` with no signature, or one of two shapes:
 
-- `{ kind: 'drawn', strokes, width, height }`: os traços, cada um uma lista de
-  pontos `{ x, y, time, pressure? }` em unidades de desenho. A área tem 600
-  unidades de largura em qualquer tamanho de tela, então a assinatura feita no
-  celular sai igual no monitor.
-- `{ kind: 'typed', text, font, width, height }`: o nome digitado e a família
-  da letra.
+- `{ kind: 'drawn', strokes, width, height }`: the strokes, each a list of
+  points `{ x, y, time, pressure? }` in drawing units. The area is 600 units
+  wide on any screen size, so a signature made on the phone comes out the same
+  on the monitor.
+- `{ kind: 'typed', text, font, width, height }`: the typed name and the font
+  family.
 
-`onValueChange` é chamado **ao fim de cada traço**, e não a cada ponto, a cada
-letra digitada, ao desfazer e ao limpar. Quando a área esvazia, chega `null`,
-que é o que o schema do formulário lê como "sem assinatura". Sem `value`, a
-peça guarda a assinatura sozinha a partir de `defaultValue`.
+`onValueChange` is called **at the end of each stroke**, and not on every
+point, on every typed letter, on undo and on clear. When the area empties,
+`null` arrives, which is what the form schema reads as "no signature". Without
+`value`, the piece keeps the signature on its own starting from
+`defaultValue`.
 
-`ratio` é a largura sobre a altura da área, com padrão `3`. A altura sai daí, e
-não de um número cravado: a área encolhe junto com a coluna.
+`ratio` is the area's width over its height, with a default of `3`. The height
+comes from it, and not from a fixed number: the area shrinks along with the
+column.
 
-## Desfazer, limpar, e o que o leitor de tela ouve
+## Undo, clear, and what the screen reader hears
 
-Embaixo do papel ficam **Desfazer o último traço** e **Limpar assinatura**, os
-dois `IconButton` com a dica ao pousar, e o botão que troca de modo. Vazia, a
-área mostra a linha de base e o "Assine aqui", e os dois botões ficam inativos.
+Below the paper sit **Desfazer o último traço** and **Limpar assinatura**, both
+`IconButton`s with a tooltip on hover, and the button that switches mode. Empty,
+the area shows the baseline and "Assine aqui", and both buttons are inactive.
 
-A peça é um `group` com o nome do rótulo do `Field` (ou `aria-label`, ou
-"Assinatura" sem nenhum dos dois), descrito pela instrução de como assinar. O
-papel é uma imagem cujo nome diz o estado: "Nenhuma assinatura", "Assinatura
-desenhada, 3 traços" ou "Assinatura digitada: Maria Souza". Desfazer e limpar
-se anunciam num `status`, e limpar pelo teclado leva o foco para o botão de
-modo, que continua vivo, em vez de largar o foco no corpo da página.
+The piece is a `group` named by the `Field`'s label (or `aria-label`, or
+"Assinatura" with neither), described by the instruction on how to sign. The
+paper is an image whose name states its status: "Nenhuma assinatura",
+"Assinatura desenhada, 3 traços" or "Assinatura digitada: Maria Souza". Undo and
+clear announce themselves in a `status`, and clearing from the keyboard moves
+focus to the mode button, which stays alive, instead of dropping focus on the
+page body.
 
-## Digitar em vez de desenhar
+## Typing instead of drawing
 
-Desenhar pede mão firme e ponteiro fino, e muita gente não tem os dois: quem
-usa só teclado, leitor de tela, acionador, ou tem tremor. **Digitar assinatura**
-troca o papel pelo campo "Nome para a assinatura", e o nome aparece no papel em
-letra cursiva. O valor vira `kind: 'typed'`, e sai exportado do mesmo jeito que
-o desenho. Não há prop que desligue esse modo: a alternativa é a peça.
+Drawing takes a steady hand and a fine pointer, and many people have neither:
+keyboard-only users, screen reader users, switch users, or people with a
+tremor. **Digitar assinatura** swaps the paper for the "Nome para a assinatura"
+field, and the name appears on the paper in cursive script. The value becomes
+`kind: 'typed'`, and exports the same way as the drawing. There is no prop that
+turns this mode off: the alternative is the piece.
 
 ```tsx
 <SignaturePad
@@ -73,25 +78,26 @@ o desenho. Não há prop que desligue esse modo: a alternativa é a peça.
 />
 ```
 
-`font` é a família cursiva, em CSS. Carregue a fonte na página: sem ela, o
-navegador cai na cursiva do sistema, e o PNG também. Trocar de modo guarda o
-rascunho do outro: quem desenhou, foi digitar e voltou, encontra os traços.
-Quando o pai zera o `value` por fora (um `reset` do formulário), os dois
-rascunhos vão junto: o campo do nome esvazia e voltar a desenhar não traz traço
-antigo. Um caso escapa: se o valor já era `null` quando o pai zera, o React não
-avisa a peça, e o rascunho do outro modo continua guardado. Isso acontece quando
-a pessoa desenhou, trocou para "Digitar" sem escrever nada e o formulário foi
-zerado. Para um reset que apaga tudo sem exceção, remonte a peça com `key`:
-`<SignaturePad key={tentativa} … />`, trocando `tentativa` no reset.
-Limpar não troca de modo: quem limpou o nome continua no campo do nome.
-`defaultMode="type"` abre no nome digitado, para a tela em que a maioria assina
-pelo teclado.
+`font` is the cursive family, in CSS. Load the font on the page: without it, the
+browser falls back to the system cursive, and so does the PNG. Switching modes
+keeps the other one's draft: whoever drew, went to type and came back finds the
+strokes. When the parent resets `value` from outside (a form `reset`), both
+drafts go with it: the name field empties and going back to draw brings no old
+stroke. One case escapes: if the value was already `null` when the parent
+resets it, React does not tell the piece, and the other mode's draft stays
+stored. That happens when the person drew, switched to "Digitar" without writing
+anything and the form was reset. For a reset that erases everything without
+exception, remount the piece with `key`: `<SignaturePad key={tentativa} … />`,
+changing `tentativa` on reset.
+Clearing does not switch modes: whoever cleared the name stays in the name
+field. `defaultMode="type"` opens on the typed name, for the screen where most
+people sign from the keyboard.
 
-## No formulário
+## In a form
 
-Dentro de `Field`, o grupo pega o rótulo, a descrição e o erro; `disabled` e
-`invalid` do `Field` chegam sozinhos. No React Hook Form, o `forValue` liga a
-peça ao schema, e vazio é `null`:
+Inside `Field`, the group takes the label, the description and the error; the
+`Field`'s `disabled` and `invalid` arrive on their own. In React Hook Form,
+`forValue` ties the piece to the schema, and empty is `null`:
 
 ```tsx
 const schema = z.object({
@@ -105,73 +111,76 @@ const schema = z.object({
 </FormField>
 ```
 
-No formulário do HTML, `name` põe o **SVG** da assinatura num campo escondido,
-vazio quando não há assinatura.
+In an HTML form, `name` puts the signature's **SVG** in a hidden field, empty
+when there is no signature.
 
-## Exportar
+## Exporting
 
-`signatureToSvg(valor)` devolve o SVG em texto, e `signatureToPng(valor)` a
-imagem em `data:image/png`, desenhada num canvas com o dobro da resolução
-(`scale`). Os dois devolvem `''` sem assinatura.
+`signatureToSvg(valor)` returns the SVG as text, and `signatureToPng(valor)`
+the image as `data:image/png`, drawn on a canvas at double resolution
+(`scale`). Both return `''` with no signature.
 
 ```tsx
 const svg = signatureToSvg(assinatura)
 const png = await signatureToPng(assinatura, { paper: true })
 ```
 
-**A tinta é escura nos dois temas.** A assinatura feita no tema escuro não sai
-clara no documento: a tinta, o papel e a guia são os `--rc-signature-*`, fixos
-em `scales.css` como o par do código lido por máquina, e não papel de tema. O
-`check:contrast` mede a tinta e o "Assine aqui" a 4,5:1 sobre o papel, a linha
-de base a 3:1, e reprova a tinta mais clara que o papel. Sem `paper`, o fundo
-sai transparente, para assentar sobre o documento; `paper: true` pinta o papel
-branco, e `ink` troca a tinta de uma exportação só.
+**The ink is dark in both themes.** A signature made in the dark theme does not
+come out light on the document: the ink, the paper and the guide are the
+`--rc-signature-*`, fixed in `scales.css` like the machine-read code pair, and
+not a theme role. `check:contrast` measures the ink and "Assine aqui" at 4.5:1
+against the paper, the baseline at 3:1, and fails ink lighter than the paper.
+Without `paper`, the background comes out transparent, to sit on the document;
+`paper: true` paints the white paper, and `ink` changes the ink for a single
+export.
 
-O nome digitado sai no SVG como texto com a `font-family`: quem abrir o arquivo
-sem a fonte vê a cursiva do sistema. Para arquivo que precisa sair igual em
-qualquer lugar, exporte o PNG.
+The typed name comes out in the SVG as text with the `font-family`: whoever
+opens the file without the font sees the system cursive. For a file that needs
+to look the same anywhere, export the PNG.
 
-## Estados
+## States
 
-- **Desabilitada**: nem desenho nem botões, a borda vira `border-disabled` e a
-  guia `signature-disabled`. A assinatura que já estava continua visível.
-- **Só leitura** (`readOnly`): mostra a assinatura sem botões, sem desenho e
-  sem o modo de digitar. É a forma de exibir a assinatura já colhida.
-- **Inválida** (`invalid`, ou o `Field` inválido): borda `danger` e
-  `aria-invalid`. A mensagem é do formulário.
+- **Disabled**: no drawing and no buttons, the border becomes `border-disabled`
+  and the guide `signature-disabled`. A signature already there stays visible.
+- **Read only** (`readOnly`): shows the signature with no buttons, no drawing
+  and no typing mode. It is the way to display a signature already collected.
+- **Invalid** (`invalid`, or an invalid `Field`): `danger` border and
+  `aria-invalid`. The message belongs to the form.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `pad` (o papel), `placeholder` (o
-"Assine aqui"), `baseline` (a linha), `actions` (a fileira de botões) e `input`
-(o campo do nome digitado). `className` veste a raiz.
+`classNames` reaches each node by name: `pad` (the paper), `placeholder` (the
+"Assine aqui"), `baseline` (the line), `actions` (the row of buttons) and
+`input` (the typed name field). `className` dresses the root.
 
-## Textos
+## Texts
 
-`labels` troca cada texto: `group`, `placeholder`, `instruction`, `undo`,
-`clear`, `typeMode`, `drawMode`, `typedName`, `empty`, `undone`, `cleared`, e
-as funções `drawn(traços)` e `typed(nome)`, que dizem o estado do papel ao
-leitor de tela.
+`labels` changes each text: `group`, `placeholder`, `instruction`, `undo`,
+`clear`, `typeMode`, `drawMode`, `typedName`, `empty`, `undone`, `cleared`, and
+the functions `drawn(strokes)` and `typed(name)`, which tell the screen reader
+the paper's status.
 
-## Quando não usar
+## When not to use
 
-- **Aceite que não precisa de rubrica**, como "li e concordo com os termos", é
-  `Checkbox`. A assinatura desenhada pesa mais na tela e na mão; peça só quando
-  o documento pede o traço.
-- **Assinatura que já existe em papel**, digitalizada, é `FileUpload`: a pessoa
-  anexa a imagem, e não redesenha.
-- **Só o nome, sem valor de assinatura**, como "quem recebeu", é `Input`.
-- **Assinatura digital com validade jurídica**, com certificado ICP-Brasil, não
-  é esta peça: o traço na tela é evidência de aceite, e não assinatura
-  qualificada. O certificado é do serviço que assina o documento.
+- **An acceptance that needs no initials**, such as "I have read and agree to
+  the terms", is `Checkbox`. A drawn signature weighs more on the screen and on
+  the hand; ask for it only when the document requires the stroke.
+- **A signature that already exists on paper**, scanned, is `FileUpload`: the
+  person attaches the image, and does not redraw it.
+- **Just the name, with no signature value**, such as "who received it", is
+  `Input`.
+- **A digital signature with legal validity**, with an ICP-Brasil certificate,
+  is not this piece: the stroke on the screen is evidence of acceptance, not a
+  qualified signature. The certificate belongs to the service that signs the
+  document.
 
-## No React Native
+## In React Native
 
-Traduz, no caminho `@rivocode/ui-native/chart`: o papel é desenhado com o `react-native-svg`, que já é o peer desse caminho, e a regra da casa é **um subcaminho por peer**, e não um por assunto. Quem só usa um `Button` não passa a precisar do SVG por causa da assinatura.
+Translates, on the `@rivocode/ui-native/chart` path: the paper is drawn with `react-native-svg`, which is already that path's peer, and the house rule is **one subpath per peer**, not one per subject. Whoever only uses a `Button` does not come to need SVG because of the signature.
 
-**O traço é o mesmo dos dois lados, linha por linha.** A suavização por curvas, a espessura que varia com a velocidade e com a pressão, o nome digitado em cursiva e o SVG exportado moram em `src/shared/` e atravessam por espelho: a assinatura feita no celular abre igual no web, com o mesmo `value`. O gesto é o `PanResponder` do core, que não cede o toque para a rolagem no meio do traço; `onDrawingChange` avisa quando o dedo começa e termina, para a `ScrollView` em volta desligar o `scrollEnabled`. A força do toque, quando o aparelho a mede, entra como pressão.
+**The stroke is the same on both sides, line by line.** The curve smoothing, the width that varies with speed and pressure, the typed name in cursive and the exported SVG live in `src/shared/` and cross over by mirror: a signature made on the phone opens the same on the web, with the same `value`. The gesture is the core's `PanResponder`, which does not yield the touch to scrolling in the middle of a stroke; `onDrawingChange` reports when the finger starts and ends, so the surrounding `ScrollView` can turn off `scrollEnabled`. Touch force, when the device measures it, comes in as pressure.
 
-**Exporta só o SVG.** `signatureToSvg` sai daqui com a tinta do token, escura nos dois temas; o PNG não porta, porque o React Native não tem canvas. Quem precisa de imagem rasteriza o SVG no servidor, ou captura a área com uma biblioteca de captura de tela. O `value` é controlado, não há `name` (formulário escondido não existe no celular), e o modo de digitar o nome continua lá: a cursiva padrão é a Snell Roundhand no iOS e a `cursive` no Android.
+**It exports only SVG.** `signatureToSvg` comes from here with the token's ink, dark in both themes; PNG does not port, because React Native has no canvas. Whoever needs an image rasterizes the SVG on the server, or captures the area with a screenshot library. `value` is controlled, there is no `name` (a hidden form does not exist on the phone), and the type-your-name mode is still there: the default cursive is Snell Roundhand on iOS and `cursive` on Android.
 
 ```tsx
 import { SignaturePad } from '@rivocode/ui-native/chart'
@@ -183,6 +192,6 @@ import { SignaturePad } from '@rivocode/ui-native/chart'
 />
 ```
 
-O nome do grupo é `label`, no lugar do `aria-label` do web, e sem ele vale o `labels.group`. Dentro do `FormField`, o `forValue` já entrega o `label`.
+The group's name is `label`, in place of the web's `aria-label`, and without it `labels.group` applies. Inside `FormField`, `forValue` already delivers the `label`.
 
-As partes vestem pelo mesmo `classNames` do web: `pad`, `placeholder`, `actions` e `input`. `baseline` não porta como parte: a linha de base é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe.
+The parts are styled through the same `classNames` as the web: `pad`, `placeholder`, `actions` and `input`. `baseline` does not port as a part: the baseline is a stroke inside the `Svg`, and `react-native-svg` does not take classes.

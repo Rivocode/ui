@@ -39,7 +39,7 @@ function themed(node: ReactNode) {
 
 const name = (label: string) => screen.getByRole("button", { name: label });
 
-test("Pagination: a regiao, as setas, os numeros e a posicao saem de labels", () => {
+test("Pagination: the region, arrows, numbers and position come from labels", () => {
   themed(
     <Pagination
       page={2}
@@ -63,14 +63,14 @@ test("Pagination: a regiao, as setas, os numeros e a posicao saem de labels", ()
   expect(screen.queryByRole("button", { name: "Página anterior" })).toBeNull();
 });
 
-test("Pagination: sem labels, o padrao continua em portugues", () => {
+test("Pagination: without labels, the default stays in Portuguese", () => {
   themed(<Pagination page={1} pageCount={3} onPageChange={() => {}} />);
   expect(screen.getByRole("navigation", { name: "Paginação" })).toBeDefined();
   expect(name("Próxima página")).toBeDefined();
   expect(screen.getByText("1 de 3")).toBeDefined();
 });
 
-test("DataTable: a paginacao de dentro recebe labels.pagination, e a contagem sai de labels.range", () => {
+test("DataTable: the inner pagination receives labels.pagination, and the count comes from labels.range", () => {
   const rows = Array.from({ length: 12 }, (_, index) => ({ id: String(index) }));
   themed(
     <DataTable
@@ -95,12 +95,12 @@ test("DataTable: a paginacao de dentro recebe labels.pagination, e a contagem sa
   expect(screen.getAllByRole("checkbox", { name: "Select row" }).length).toBe(5);
 });
 
-test("Breadcrumb: labels.navigation nomeia a trilha", () => {
+test("Breadcrumb: labels.navigation names the trail", () => {
   themed(<Breadcrumb items={[{ label: "Notas" }]} labels={{ navigation: "Breadcrumb" }} />);
   expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeDefined();
 });
 
-test("NumberField: os dois botoes de passo saem de labels", () => {
+test("NumberField: both step buttons come from labels", () => {
   themed(
     <NumberField
       aria-label="Parcelas"
@@ -112,7 +112,7 @@ test("NumberField: os dois botoes de passo saem de labels", () => {
   expect(name("Increase")).toBeDefined();
 });
 
-test("Tree: o botao que abre e fecha o ramo sai de labels", () => {
+test("Tree: the button that opens and closes the branch comes from labels", () => {
   themed(
     <Tree
       items={[{ id: "a", label: "Serviços", children: [{ id: "b", label: "Consultoria" }] }]}
@@ -124,7 +124,7 @@ test("Tree: o botao que abre e fecha o ramo sai de labels", () => {
   expect(screen.getByRole("button", { name: "Collapse" })).toBeDefined();
 });
 
-test("SidebarTrigger: o nome de mesa sai de labels.collapse e labels.expand", () => {
+test("SidebarTrigger: the desktop name comes from labels.collapse and labels.expand", () => {
   themed(
     <SidebarProvider>
       <SidebarTrigger labels={{ collapse: "Collapse sidebar", expand: "Expand sidebar" }} />
@@ -137,7 +137,7 @@ test("SidebarTrigger: o nome de mesa sai de labels.collapse e labels.expand", ()
   expect([before, after].sort()).toEqual(["Collapse sidebar", "Expand sidebar"]);
 });
 
-test("FileUploadItem: nova tentativa, remover e a barra saem de labels", () => {
+test("FileUploadItem: retry, remove and the bar come from labels", () => {
   themed(
     <ul>
       <FileUploadItem
@@ -162,7 +162,7 @@ test("FileUploadItem: nova tentativa, remover e a barra saem de labels", () => {
   expect(name("Try again")).toBeDefined();
 });
 
-test("FileUpload: os motivos de recusa saem de labels", () => {
+test("FileUpload: the rejection reasons come from labels", () => {
   const reasons: string[] = [];
   const { container } = themed(
     <FileUpload
@@ -182,13 +182,13 @@ test("FileUpload: os motivos de recusa saem de labels", () => {
   expect(reasons).toEqual(["wrong type", "over 10 B"]);
 });
 
-test("ColorPicker: a grade e o campo de texto saem de labels", () => {
+test("ColorPicker: the grid and the text field come from labels", () => {
   themed(<ColorPicker labels={{ swatches: "Color swatches", hex: "Hex code" }} />);
   expect(screen.getByRole("textbox", { name: "Hex code" })).toBeDefined();
   expect(screen.getByLabelText("Color swatches")).toBeDefined();
 });
 
-test("Alert e Link: o xis e o aviso de aba nova saem de labels", () => {
+test("Alert and Link: the x and the new tab notice come from labels", () => {
   themed(
     <>
       <Alert onDismiss={() => {}} labels={{ dismiss: "Dismiss" }}>
@@ -203,22 +203,22 @@ test("Alert e Link: o xis e o aviso de aba nova saem de labels", () => {
   expect(screen.getByRole("link").textContent).toContain("(new tab)");
 });
 
-test("PromptInput: o botao de enviar sai de labels.submit", () => {
+test("PromptInput: the send button comes from labels.submit", () => {
   themed(<PromptInput labels={{ submit: "Send message" }} />);
   expect(name("Send message")).toBeDefined();
 });
 
-test("PromptInput: o botao de parar sai de labels.stop", () => {
+test("PromptInput: the stop button comes from labels.stop", () => {
   themed(<PromptInput streaming labels={{ stop: "Stop answer" }} />);
   expect(name("Stop answer")).toBeDefined();
 });
 
-test("Conversation: sem mensagem, labels nao quebra a regiao", () => {
+test("Conversation: without messages, labels does not break the region", () => {
   themed(<Conversation label="Chat" labels={{ scroll: "Jump to end" }} />);
   expect(screen.getByRole("log", { name: "Chat" })).toBeDefined();
 });
 
-test("Popconfirm: cancelar e o aviso de espera saem de labels", () => {
+test("Popconfirm: cancel and the waiting notice come from labels", () => {
   themed(
     <Popconfirm
       defaultOpen
@@ -234,7 +234,7 @@ test("Popconfirm: cancelar e o aviso de espera saem de labels", () => {
   expect(screen.getByRole("alertdialog").textContent).toContain("Deleting.");
 });
 
-test("DatePicker: o botao, o titulo e o rodape saem de labels", () => {
+test("DatePicker: the button, the title and the footer come from labels", () => {
   themed(
     <DatePicker
       aria-label="Due date"
@@ -250,7 +250,7 @@ test("DatePicker: o botao, o titulo e o rodape saem de labels", () => {
   expect(screen.queryByText("Limpar")).toBeNull();
 });
 
-test("DateRangePicker: o titulo e o rodape saem de labels", () => {
+test("DateRangePicker: the title and the footer come from labels", () => {
   themed(<DateRangePicker labels={{ title: "Pick a period", clear: "Clear", apply: "Apply" }} />);
   fireEvent.click(screen.getByRole("button", { name: /Escolha o período/ }));
   expect(screen.getByRole("dialog", { name: "Pick a period" })).toBeDefined();
@@ -259,7 +259,7 @@ test("DateRangePicker: o titulo e o rodape saem de labels", () => {
   expect(screen.queryByText("Aplicar")).toBeNull();
 });
 
-test("ComboboxInput: o xis e a seta saem de labels", () => {
+test("ComboboxInput: the x and the arrow come from labels", () => {
   themed(
     <Combobox items={["Recife"]}>
       <ComboboxInput aria-label="City" labels={{ clear: "Clear choice", open: "Open list" }} />
@@ -269,18 +269,18 @@ test("ComboboxInput: o xis e a seta saem de labels", () => {
   expect(screen.queryByRole("button", { name: "Abrir lista" })).toBeNull();
 });
 
-test("Kbd: a palavra entre as teclas e o nome das setas saem de labels", () => {
+test("Kbd: the word between keys and the arrow names come from labels", () => {
   themed(<Kbd keys="shift+up" labels={{ plus: "plus", up: "up arrow" }} />);
   expect(screen.getByRole("img", { name: "Shift plus up arrow" })).toBeDefined();
 });
 
-test("ColorPicker: a amostra em texto puro se chama labels.swatch", () => {
+test("ColorPicker: the plain text swatch is named labels.swatch", () => {
   themed(<ColorPicker swatches={["#112233"]} labels={{ swatch: (value) => `Color ${value}` }} />);
   expect(screen.getByRole("radio", { name: "Color #112233" })).toBeDefined();
   expect(screen.queryByRole("radio", { name: "Cor #112233" })).toBeNull();
 });
 
-test("ColorPicker: dentro de um Field o label nao aparece de novo, e segue nomeando a grade", () => {
+test("ColorPicker: inside a Field the label does not show again, and keeps naming the grid", () => {
   themed(
     <Field name="brand">
       <FieldLabel>Brand color</FieldLabel>
@@ -295,12 +295,12 @@ test("ColorPicker: dentro de um Field o label nao aparece de novo, e segue nomea
   expect(inner[0]!.className.split(" ")).toContain("sr-only");
 });
 
-test("ColorPicker: fora de Field o label continua visivel", () => {
+test("ColorPicker: outside a Field the label stays visible", () => {
   themed(<ColorPicker label="Brand color" swatches={["#112233"]} />);
   expect(screen.getByText("Brand color").className.split(" ")).not.toContain("sr-only");
 });
 
-test("ChartGauge: o valor e a regua das faixas saem de labels", () => {
+test("ChartGauge: the value and the band ruler come from labels", () => {
   const { container } = themed(
     <ChartGauge
       value={72}
@@ -315,7 +315,7 @@ test("ChartGauge: o valor e a regua das faixas saem de labels", () => {
   expect(container.textContent).toContain("ok from 0 to 100");
 });
 
-test("EventCalendar: a barra, as vistas e a contagem saem de labels, e as datas do locale", () => {
+test("EventCalendar: the bar, the views and the count come from labels, and the dates from the locale", () => {
   themed(
     <EventCalendar
       events={[]}
@@ -346,7 +346,7 @@ test("EventCalendar: a barra, as vistas e a contagem saem de labels, e as datas 
   expect(screen.queryByText("Hoje")).toBeNull();
 });
 
-test("Steps, Stat, AvatarGroup, OTPField e Carousel: os textos montados saem de labels", () => {
+test("Steps, Stat, AvatarGroup, OTPField and Carousel: the composed texts come from labels", () => {
   const { container } = themed(
     <div>
       <Steps

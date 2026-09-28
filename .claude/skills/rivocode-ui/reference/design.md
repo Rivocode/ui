@@ -1,228 +1,234 @@
-# As decisões de design, e onde elas moram nos tokens
+# The design decisions, and where they live in the tokens
 
-Este arquivo não ensina teoria de cor. Ele diz **qual token carrega qual
-decisão** nesta biblioteca, para a escolha sair do vocabulário do sistema e não
-de um valor inventado na hora.
+This file does not teach color theory. It says **which token carries which
+decision** in this library, so the choice comes from the system's vocabulary
+and not from a value invented on the spot.
 
-## Conteúdo
+## Contents
 
-- A regra que sustenta todas as outras: preencher ≠ escrever
-- Os três planos de profundidade
-- Hierarquia de texto com três tons
-- Cor com significado, e quando não usar cor
-- A paleta de gráfico, e por que ela é separada
-- Tipografia: três famílias, três trabalhos
-- Forma, sombra e movimento
-- Foco e estados
+- The rule that holds up all the others: fill ≠ write
+- The three depth planes
+- Text hierarchy with three tones
+- Color with meaning, and when not to use color
+- The chart palette, and why it is separate
+- Typography: three families, three jobs
+- Shape, shadow and motion
+- Focus and states
 
-## A regra que sustenta todas as outras: preencher ≠ escrever
+## The rule that holds up all the others: fill ≠ write
 
-Nenhuma cor serve para preencher um bloco **e** para escrever texto sobre o
-fundo da página. São contrastes diferentes contra fundos diferentes, e é o erro
-que mais aparece.
+No color works both to fill a block **and** to write text on the page
+background. They are different contrasts against different backgrounds, and it
+is the most common mistake.
 
-| Intenção | Par certo |
+| Intent | Right pair |
 |---|---|
-| Bloco preenchido com a cor | `bg-accent` + `text-accent-fg` |
-| Texto colorido sobre a página | `text-accent-text`, sozinho |
-| Bloco suave, de fundo | `bg-accent-subtle` + `text-fg` |
+| Block filled with the color | `bg-accent` + `text-accent-fg` |
+| Colored text on the page | `text-accent-text`, alone |
+| Soft background block | `bg-accent-subtle` + `text-fg` |
 
-Vale igual para `success`, `warning`, `danger` e `info`. `bg-danger` pede
-`text-danger-fg` por cima; `text-danger-text` é o vermelho que se lê sobre a
-página.
+The same holds for `success`, `warning`, `danger` and `info`. `bg-danger` asks
+for `text-danger-fg` on top; `text-danger-text` is the red that reads on the
+page.
 
-Trocar os dois produz o defeito exato de texto na cor do próprio fundo, que não
-é "contraste baixo": é invisível.
+Swapping the two produces the exact defect of text in the color of its own
+background, which is not "low contrast": it is invisible.
 
-## Os três planos de profundidade
+## The three depth planes
 
-Profundidade aqui é superfície, não sombra. Use nesta ordem e não invente um
-quarto plano.
+Depth here is surface, not shadow. Use them in this order and do not invent a
+fourth plane.
 
-| Token | O que é |
+| Token | What it is |
 |---|---|
-| `bg-bg` | o fundo da página, o plano mais ao fundo |
-| `bg-surface` | cartão, painel, campo: o que se destaca do fundo |
-| `bg-surface-raised` | o que salta do cartão: menu, dica, aviso, tecla |
+| `bg-bg` | the page background, the deepest plane |
+| `bg-surface` | card, panel, field: what stands out from the background |
+| `bg-surface-raised` | what pops out of the card: menu, tooltip, toast, key |
 
-`bg-overlay` é a tarja que escurece o resto quando algo modal abre. Não é plano,
-é interrupção.
+`bg-overlay` is the scrim that darkens the rest when something modal opens. It
+is not a plane, it is an interruption.
 
-Empilhar `surface` dentro de `surface` para "destacar" achata os dois. Se algo
-precisa de destaque dentro de um cartão, use borda ou `bg-accent-subtle`, não
-mais uma camada.
+Stacking `surface` inside `surface` to "highlight" flattens both. If something
+needs emphasis inside a card, use a border or `bg-accent-subtle`, not one more
+layer.
 
-## Hierarquia de texto com três tons
+## Text hierarchy with three tones
 
-Três, e só três. A quarta variação vira ruído.
+Three, and only three. The fourth variation becomes noise.
 
-| Token | Papel |
+| Token | Role |
 |---|---|
-| `text-fg` | o que a pessoa veio ler: valor, título, resposta |
-| `text-fg-muted` | apoio: descrição, texto de linha, legenda de apoio |
-| `text-fg-subtle` | metadado: legenda de eixo, cabeçalho de grupo, dica de ajuda |
+| `text-fg` | what the person came to read: value, title, answer |
+| `text-fg-muted` | support: description, row text, supporting caption |
+| `text-fg-subtle` | metadata: axis caption, group header, help hint |
 
-`text-fg-disabled` não é um quarto tom, é um estado.
+`text-fg-disabled` is not a fourth tone, it is a state.
 
-Rótulo de campo é a exceção, e ela é deliberada: `FieldLabel`, `Slider`,
-`Progress` e `Meter` escrevem em `text-fg` com `font-rc-medium`. O rótulo é o que
-nomeia o controle, e nomear não é apoiar.
+A field label is the exception, and a deliberate one: `FieldLabel`, `Slider`,
+`Progress` and `Meter` write in `text-fg` with `font-rc-medium`. The label is
+what names the control, and naming is not supporting.
 
-Hierarquia se faz primeiro por **tamanho e peso**, depois por tom. Um painel
-onde tudo é `text-fg` cansa; um onde tudo é `text-fg-muted` não tem foco.
+Hierarchy is made first by **size and weight**, then by tone. A dashboard where
+everything is `text-fg` is tiring; one where everything is `text-fg-muted` has
+no focus.
 
-## Cor com significado, e quando não usar cor
+## Color with meaning, and when not to use color
 
-`success`, `warning`, `danger` e `info` carregam significado. Não use nenhum
-deles por gosto estético: verde que quer dizer "combina com a marca" apaga o
-verde que quer dizer "deu certo".
+`success`, `warning`, `danger` and `info` carry meaning. Do not use any of them
+for aesthetic taste: a green that means "goes with the brand" erases the green
+that means "it worked".
 
-**Cor nunca é o único sinal.** Um `Badge` de situação leva a palavra junto, e
-não só o tom. Quem não distingue vermelho de verde é uma fatia grande de
-qualquer base de usuários, e a impressão em preto e branco é o mesmo problema.
+**Color is never the only signal.** A status `Badge` carries the word along,
+and not just the tone. People who cannot tell red from green are a large slice
+of any user base, and black-and-white printing is the same problem.
 
-Para o acento: ele marca **uma** ação por tela. Duas ações em `bg-accent` lado a
-lado não têm ação primária nenhuma. A segunda vai de `variant="secondary"` ou
-`"outline"`.
+As for the accent: it marks **one** action per screen. Two actions in
+`bg-accent` side by side have no primary action at all. The second one goes
+with `variant="secondary"` or `"outline"`.
 
-## A paleta de gráfico, e por que ela é separada
+## The chart palette, and why it is separate
 
-`--color-chart-1` a `--color-chart-8` existem separadas do acento porque série
-de gráfico precisa de coisas que cor de marca não dá: distinguir oito valores
-lado a lado, sobreviver em fatia fina, e não sugerir "certo" ou "errado".
+`--color-chart-1` to `--color-chart-8` exist separately from the accent because
+a chart series needs things a brand color does not give: telling eight values
+apart side by side, surviving in a thin slice, and not suggesting "right" or
+"wrong".
 
-Use na ordem, ou nomeie no `config` da série. Não escolha uma porque combina.
-Acima de seis séries a leitura acaba, e o problema passa a ser o gráfico
-escolhido, não a cor.
+Use them in order, or name them in the series `config`. Do not pick one because
+it matches. Above six series reading ends, and the problem becomes the chosen
+chart, not the color.
 
-`--color-chart-grid` é a malha. Ela é fraca de propósito: grade que compete com
-a linha do dado inverte a leitura.
+`--color-chart-grid` is the mesh. It is weak on purpose: a grid that competes
+with the data line inverts the reading.
 
-## Tipografia: três famílias, três trabalhos
+## Typography: three families, three jobs
 
-| Classe | Para |
+| Class | For |
 |---|---|
-| `font-sans` | interface, texto corrido, rótulo |
-| `font-display` | número grande, título de tela, valor de indicador |
-| `font-mono` | o que se compara na vertical ou se lê caractere a caractere: valor em tabela, CNPJ, código, atalho |
+| `font-sans` | interface, running text, label |
+| `font-display` | big number, screen title, indicator value |
+| `font-mono` | what is compared vertically or read character by character: table value, CNPJ, code, shortcut |
 
-Tamanho vai de `text-xs` a `text-3xl`. Salte degraus para criar hierarquia:
-`text-sm` ao lado de `text-base` quase não se distingue, e a distinção era o
-objetivo.
+Size goes from `text-xs` to `text-3xl`. Skip steps to create hierarchy:
+`text-sm` next to `text-base` is barely distinguishable, and the distinction
+was the point.
 
-Peso por intenção, e não por número: `font-rc-regular` (corpo),
-`font-rc-medium` (rótulo, botão, aba), `font-rc-strong` (ênfase forte),
-`font-rc-bold` (negrito) e `font-rc-display`, que acompanha **todo**
-`font-display`. O número mora em `--rc-weight-*`, e o tema de um cliente cuja
-fonte não tem 600 o troca sem tocar em tela nenhuma. `font-semibold` cravado
-não segue o tema.
+Weight by intent, not by number: `font-rc-regular` (body), `font-rc-medium`
+(label, button, tab), `font-rc-strong` (strong emphasis), `font-rc-bold` (bold)
+and `font-rc-display`, which goes with **every** `font-display`. The number
+lives in `--rc-weight-*`, and the theme of a client whose font has no 600 swaps
+it without touching any screen. A hardcoded `font-semibold` does not follow the
+theme.
 
-Altura de linha por token: `--rc-leading-tight` para número e título,
-`--rc-leading-normal` para interface, `--rc-leading-relaxed` para parágrafo.
+Line height by token: `--rc-leading-tight` for numbers and titles,
+`--rc-leading-normal` for interface, `--rc-leading-relaxed` for paragraphs.
 
-## Forma, sombra e movimento
+## Shape, shadow and motion
 
-Raio: `rounded-sm` em marcador miúdo, `rounded-md` em controle, `rounded-lg` em
-cartão, `rounded-xl` em painel e diálogo, `rounded-pill` em etiqueta e botão
-redondo. **Uma peça dentro da outra usa raio menor que o pai**, senão o canto
-interno "vaza" visualmente do externo.
+Radius: `rounded-sm` on a tiny marker, `rounded-md` on a control, `rounded-lg`
+on a card, `rounded-xl` on a panel and dialog, `rounded-pill` on a tag and a
+round button. **A piece inside another uses a smaller radius than the parent**,
+or the inner corner visually "leaks" from the outer one.
 
-Sombra: `shadow-1`, `shadow-2`, `shadow-3`, em ordem de quanto a coisa flutua.
-Cartão parado não precisa de sombra: no tema escuro a sombra some e o que
-separa é a borda. Cada sombra já carrega um fio de 1px por fora, na cor certa
-do tema: é o bisel que descola o flutuante do fundo, e convive com a
-`border` que a peça já tem: um é o traço interno, o outro o contorno externo.
+Shadow: `shadow-1`, `shadow-2`, `shadow-3`, in order of how much the thing
+floats. A still card does not need a shadow: in the dark theme the shadow
+disappears and what separates is the border. Each shadow already carries a 1px
+hairline outside, in the theme's right color: it is the bevel that lifts the
+floating thing off the background, and it coexists with the `border` the piece
+already has: one is the inner stroke, the other the outer outline.
 
-`shadow-glow` é a lanterna do acento, opt-in: hero de landing e CTA que merece
-cerimônia. Nenhum componente liga sozinho, e produto de operação nunca usa.
+`shadow-glow` is the accent's lantern, opt-in: a landing hero and a CTA that
+deserves ceremony. No component turns it on by itself, and an operations
+product never uses it.
 
-Título display aperta a letra: `tracking-display` acompanha `font-display` em
-`text-xl` para cima (os títulos de Card, Dialog e Sheet já vêm com ele);
-`tracking-tight` serve para título menor. Corpo de texto fica em tracking 0.
+A display title tightens the letters: `tracking-display` goes with
+`font-display` from `text-xl` up (the Card, Dialog and Sheet titles already
+come with it); `tracking-tight` is for a smaller title. Body text stays at
+tracking 0.
 
-Movimento: `--rc-duration-fast` para retorno de toque (cor de hover),
-`--rc-duration-base` para o que entra e sai, `--rc-duration-sheet` para a folha.
-Animar `width` e `height` custa layout; prefira `opacity`, `scale` e
-`translate`. No Tailwind 4, `scale-*`, `translate-*` e `rotate-*` escrevem as
-propriedades `scale`, `translate` e `rotate`, e não `transform`: com
-`transition-[opacity,transform]` o painel aparece esmaecendo e a escala entra
-de estalo. Nomeie a propriedade que muda (`transition-[opacity,scale]`) ou use
-`transition-transform`, que cobre as quatro. A duração vem sempre do token,
-`duration-fast` (ou `duration-[var(--rc-duration-fast)]`, que é o mesmo):
-`transition-colors` sozinho cai nos 150ms do Tailwind, que não zeram com
-"reduzir movimento". Animação em laço (`animate-spin`, `animate-pulse`) leva
-`motion-reduce:animate-none` ao lado.
+Motion: `--rc-duration-fast` for touch feedback (hover color),
+`--rc-duration-base` for what enters and leaves, `--rc-duration-sheet` for the
+sheet. Animating `width` and `height` costs layout; prefer `opacity`, `scale`
+and `translate`. In Tailwind 4, `scale-*`, `translate-*` and `rotate-*` write
+the `scale`, `translate` and `rotate` properties, and not `transform`: with
+`transition-[opacity,transform]` the panel appears fading and the scale snaps
+in. Name the property that changes (`transition-[opacity,scale]`) or use
+`transition-transform`, which covers all four. The duration always comes from
+the token, `duration-fast` (or `duration-[var(--rc-duration-fast)]`, which is
+the same): `transition-colors` alone falls back to Tailwind's 150ms, which do
+not zero out with "reduce motion". A looping animation (`animate-spin`,
+`animate-pulse`) takes `motion-reduce:animate-none` beside it.
 
-A curva também tem nome de intenção: `ease-rc` é o padrão, `ease-rc-enter` para
-o que chega e `ease-rc-exit` para o que sai. As molas andam com a duração do
-mesmo nome: `ease-rc-spatial duration-spatial` para posição e tamanho,
-`ease-rc-expressive duration-expressive` quando o gesto merece ser notado, e
-`ease-rc-effects duration-effects` para cor e opacidade, que não podem passar do
-alvo.
+The curve also has an intent name: `ease-rc` is the default, `ease-rc-enter`
+for what arrives and `ease-rc-exit` for what leaves. The springs go with the
+duration of the same name: `ease-rc-spatial duration-spatial` for position and
+size, `ease-rc-expressive duration-expressive` when the gesture deserves to be
+noticed, and `ease-rc-effects duration-effects` for color and opacity, which
+must not overshoot the target.
 
-Entrada de marca: `animate-rise` sobe um passo e assenta, `animate-fade` só
-aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240: isso é de
-landing e hero, e não de tela de operação.
+Brand entrance: `animate-rise` goes up one step and settles, `animate-fade`
+only appears. Stagger siblings with `[animation-delay:80ms]`, 160, 240: that is
+for landing and hero, and not for an operations screen.
 
-**As peças entram na montagem.** A regra antiga dizia que produto de operação
-não anima entrada; o dono decidiu o contrário, e o critério agora é um só: a
-entrada ajuda a perceber o que chegou ou o que mudou. O dado que chega entra (o
-gráfico se desenha, a barra de progresso enche do zero, o aviso e o estado vazio
-sobem 4px esmaecendo, a pastilha de contagem cresce, o corpo da tabela esmaece
-ao sair do esqueleto). A moldura não entra: `Card`, `PageHeader`, `Sidebar`,
-`Separator` e controle no estado inicial ficam parados, porque a tela inteira
-piscando a cada navegação é ruído, e o `Switch` que desliza ao montar sugere uma
-mudança que não aconteceu. As peças já trazem a entrada delas; os utilitários
-estão aqui para o que você monta por fora:
+**Pieces animate in on mount.** The old rule said an operations product does
+not animate entrances; the owner decided the opposite, and the criterion now is
+a single one: the entrance helps notice what arrived or what changed. Data that
+arrives animates in (the chart draws itself, the progress bar fills from zero,
+the alert and the empty state rise 4px fading, the count pill grows, the table
+body fades on leaving the skeleton). The frame does not: `Card`, `PageHeader`,
+`Sidebar`, `Separator` and a control in its initial state stay still, because
+the whole screen flashing on every navigation is noise, and a `Switch` that
+slides on mount suggests a change that did not happen. The pieces already bring
+their own entrance; the utilities are here for what you build outside them:
 
-| Classe | Efeito | Duração |
+| Class | Effect | Duration |
 |---|---|---|
-| `animate-enter` | esmaece e sobe 4px | `base` |
-| `animate-appear` | só esmaece | `base` |
-| `animate-pop` | cresce de 60% esmaecendo | `fast` |
-| `animate-fill` | a barra enche do zero pela escala horizontal; junto com `origin-left` | `slow` |
-| `animate-reveal` | aparece da esquerda para a direita, por recorte | `slow` |
+| `animate-enter` | fades and rises 4px | `base` |
+| `animate-appear` | only fades | `base` |
+| `animate-pop` | grows from 60% fading | `fast` |
+| `animate-fill` | the bar fills from zero by horizontal scale; together with `origin-left` | `slow` |
+| `animate-reveal` | appears from left to right, by clipping | `slow` |
 
-As cinco terminam em `backwards`: vale o quadro de partida enquanto a animação
-roda, e depois dela não sobra nada, então o estado final é sempre o do próprio
-elemento, e se a animação não rodar o conteúdo continua lá. Roda uma vez por
-montagem: re-render não repete, só um nó novo no DOM. Com
-`prefers-reduced-motion` as durações zeram e nada entra animado. Para desligar
-numa instância, `className="animate-none"`. E não ponha entrada em linha que
-reordena nem em linha virtualizada: mover o nó no DOM reinicia a animação, e a
-ordenação vira um pisca-pisca. O nível certo é o corpo da tabela ou a lista
-inteira.
+All five end in `backwards`: the starting frame applies while the animation
+runs, and afterwards nothing is left, so the final state is always the
+element's own, and if the animation does not run the content is still there. It
+runs once per mount: a re-render does not repeat it, only a new node in the DOM
+does. With `prefers-reduced-motion` the durations go to zero and nothing
+animates in. To turn it off on one instance, `className="animate-none"`. And do
+not put an entrance on a row that reorders or on a virtualized row: moving the
+node in the DOM restarts the animation, and sorting becomes a blinking light.
+The right level is the table body or the whole list.
 
-## Ícones
+## Icons
 
-O conjunto é o **lucide-react**, peer obrigatória: mesmo traço, mesma grade,
-e o `size` numérico dispensa classe. Nunca emoji no lugar de ícone, e nunca
-um segundo conjunto misturado: dois traços diferentes na mesma tela parecem
-duas marcas.
+The set is **lucide-react**, a required peer: same stroke, same grid, and the
+numeric `size` spares a class. Never an emoji in place of an icon, and never a
+second set mixed in: two different strokes on the same screen look like two
+brands.
 
-| Onde | Tamanho |
+| Where | Size |
 |---|---|
-| Dentro de controle (`Button`, `Tab`, item de menu) | `size={16}` |
-| Junto de texto `sm`/`xs` (célula, meta, eyebrow) | `size={14}` |
-| Miúdo em linha apertada (hint do `Stat`, delta) | `size={13}` |
-| Estado vazio (`icon` do `EmptyState`) | nenhum: a peça força 32px |
+| Inside a control (`Button`, `Tab`, menu item) | `size={16}` |
+| Next to `sm`/`xs` text (cell, meta, eyebrow) | `size={14}` |
+| Tiny in a tight row (`Stat` hint, delta) | `size={13}` |
+| Empty state (`EmptyState` `icon`) | none: the piece forces 32px |
 
-Ícone decorativo (que acompanha um texto que já diz tudo) leva
-`aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
-`aria-label` no botão, nunca no ícone. E alvo de toque continua sendo 24px no
-mínimo: ícone menor cresce o botão e devolve o espaço com margem negativa,
-como o hint do `Stat` faz.
+A decorative icon (one that goes with a text that already says it all) takes
+`aria-hidden="true"`. An icon that is a button's only content requires
+`aria-label` on the button, never on the icon. And the touch target is still
+24px at minimum: a smaller icon grows the button and gives the space back with
+a negative margin, as the `Stat` hint does.
 
-### Ícone ou ilustração no estado vazio
+### Icon or illustration in the empty state
 
-O `EmptyState` tem dois espaços, e cada um serve a um vazio:
+`EmptyState` has two slots, and each serves one kind of empty:
 
-- **`icon`** para o vazio que acontece no meio do trabalho: filtro ou busca
-  sem resultado, lista que a pessoa esvaziou, período sem movimento. Um ícone
-  do lucide da tabela abaixo, e a peça o põe em 32px e `fg-subtle`.
-- **`illustration`** para o vazio de primeira vez: a tela inicial que ainda não
-  tem nada, o passo de onboarding. Tamanho livre, e toma o lugar do `icon`
-  quando os dois vêm.
+- **`icon`** for the empty that happens in the middle of work: a filter or
+  search with no result, a list the person emptied, a period with no activity.
+  A lucide icon from the table below, and the piece sets it at 32px and
+  `fg-subtle`.
+- **`illustration`** for the first-time empty: the start screen that has
+  nothing yet, the onboarding step. Free size, and it takes the place of `icon`
+  when both come.
 
 ```tsx
 <EmptyState
@@ -239,65 +245,66 @@ O `EmptyState` tem dois espaços, e cada um serve a um vazio:
 />
 ```
 
-**A ilustração pinta com `currentColor` ou com classe de token**
-(`fill-accent-subtle`, `stroke-fg-muted`), e nunca com cor literal: a mesma
-tela veste vários clientes pelo tema, e um hexadecimal dentro do SVG fica igual
-em todos eles e pode sumir no tema escuro. O invólucro já vem em
-`text-fg-subtle`, então `currentColor` acompanha sozinho. Prefira SVG em linha
-a `<img>`, que não acompanha tema nenhum. A biblioteca não tem kit de
-ilustrações, de propósito: o espaço é o que ela garante, e o desenho é do
-produto. No React Native, o `icon` aceita também uma função que recebe a cor e
-o tamanho, e a ilustração pinta com os papéis de `useRivo().colors`.
+**The illustration paints with `currentColor` or with a token class**
+(`fill-accent-subtle`, `stroke-fg-muted`), and never with a literal color: the
+same screen dresses several clients through the theme, and a hex inside the SVG
+stays the same in all of them and can vanish in the dark theme. The wrapper
+already comes in `text-fg-subtle`, so `currentColor` follows on its own. Prefer
+inline SVG to `<img>`, which follows no theme at all. The library has no
+illustration kit, on purpose: the slot is what it guarantees, and the drawing
+belongs to the product. In React Native, `icon` also accepts a function that
+receives the color and the size, and the illustration paints with the roles in
+`useRivo().colors`.
 
-### O vocabulário
+### The vocabulary
 
-Um conceito, um ícone. O lucide tem sinônimo para quase tudo (`Trash` e
-`Trash2`, `Gear` e `Settings`), e cada sinônimo que entra é uma tela que
-parece de outro produto. Esta é a tabela canônica; conceito novo entra aqui
-antes de entrar no código.
+One concept, one icon. Lucide has a synonym for almost everything (`Trash` and
+`Trash2`, `Gear` and `Settings`), and each synonym that gets in is a screen
+that looks like it belongs to another product. This is the canonical table; a
+new concept enters here before it enters the code.
 
-| Conceito | Ícone |
+| Concept | Icon |
 |---|---|
-| adicionar / criar | `Plus` |
-| excluir | `Trash2` |
-| editar | `Pencil` |
-| buscar | `Search` |
-| baixar / exportar | `Download` |
-| enviar arquivo | `Upload` |
-| copiar | `Copy` |
-| confirmado / feito | `Check` |
-| fechar / limpar | `X` |
-| mais ações | `MoreHorizontal` |
-| filtros finos | `SlidersHorizontal` |
-| recarregar | `RefreshCw` |
-| ver / prévia | `Eye` |
-| link que sai do produto | `ExternalLink` |
-| sair da conta | `LogOut` |
-| abre um nível (item, breadcrumb) | `ChevronRight` |
-| expande para baixo (select, accordion) | `ChevronDown` |
-| página anterior / voltar | `ChevronLeft` |
-| ordenável sem ordem | `ChevronsUpDown` |
-| variação para cima / para baixo | `ArrowUpRight` / `ArrowDownRight` |
-| documento / nota | `FileText` |
-| pessoas / clientes | `Users` |
-| ajustes do sistema | `Settings` |
-| data | `CalendarDays` |
-| painel | `LayoutDashboard` |
-| explicação curta | `Info` |
-| agente / IA | `Bot` |
+| add / create | `Plus` |
+| delete | `Trash2` |
+| edit | `Pencil` |
+| search | `Search` |
+| download / export | `Download` |
+| upload a file | `Upload` |
+| copy | `Copy` |
+| confirmed / done | `Check` |
+| close / clear | `X` |
+| more actions | `MoreHorizontal` |
+| fine filters | `SlidersHorizontal` |
+| reload | `RefreshCw` |
+| view / preview | `Eye` |
+| link that leaves the product | `ExternalLink` |
+| log out | `LogOut` |
+| opens a level (item, breadcrumb) | `ChevronRight` |
+| expands downward (select, accordion) | `ChevronDown` |
+| previous page / back | `ChevronLeft` |
+| sortable with no order | `ChevronsUpDown` |
+| change up / down | `ArrowUpRight` / `ArrowDownRight` |
+| document / invoice | `FileText` |
+| people / customers | `Users` |
+| system settings | `Settings` |
+| date | `CalendarDays` |
+| dashboard | `LayoutDashboard` |
+| short explanation | `Info` |
+| agent / AI | `Bot` |
 
-## Foco e estados
+## Focus and states
 
-Foco é `focus-visible:ring-2 focus-visible:ring-ring`, nunca `outline-none`
-sozinho. Tirar o anel sem repor é o defeito de acessibilidade mais comum, e
-quebra a navegação por teclado inteira.
+Focus is `focus-visible:ring-2 focus-visible:ring-ring`, never `outline-none`
+alone. Removing the ring without restoring it is the most common accessibility
+defect, and it breaks keyboard navigation entirely.
 
-| Estado | Como se mostra |
+| State | How it shows |
 |---|---|
-| hover | mudança de superfície, não de tamanho |
-| selecionado | `bg-selected`, ou `bg-accent` quando é escolha única e forte |
-| desabilitado | `text-fg-disabled` e sem ponteiro; nunca só opacidade |
-| carregando | `bg-skeleton` na forma do conteúdo que vem, e não um giro no meio da tela |
+| hover | a change of surface, not of size |
+| selected | `bg-selected`, or `bg-accent` when it is a single, strong choice |
+| disabled | `text-fg-disabled` and no pointer; never opacity alone |
+| loading | `bg-skeleton` in the shape of the content that is coming, and not a spinner in the middle of the screen |
 
-A marca de lugar deve ter a **largura da coluna**, e não a do texto que vier:
-assim a tela não pula quando os dados chegam.
+The placeholder mark should have the **width of the column**, and not that of
+whatever text comes: that way the screen does not jump when the data arrives.

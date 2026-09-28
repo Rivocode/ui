@@ -16,7 +16,7 @@ const SETORES: TreeNode[] = [
   },
 ]
 
-/** Escolhido */
+/** Selected */
 export function Selected() {
   return (
     <TreeSelect
@@ -28,7 +28,7 @@ export function Selected() {
   )
 }
 
-/** Vazio */
+/** Empty */
 export function Empty() {
   return <TreeSelect className="w-72" items={SETORES} placeholder="Escolha os setores" />
 }

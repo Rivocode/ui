@@ -24,8 +24,8 @@ function Faq(props: Omit<AccordionProps, "children">) {
   );
 }
 
-describe("Accordion controlado", () => {
-  test("value decide quem abre, e o toque só avisa", () => {
+describe("controlled Accordion", () => {
+  test("value decides what opens, and the tap only notifies", () => {
     const onValueChange = mock((_value: string[]) => {});
     const screen = render(<Faq value={["cancelar"]} onValueChange={onValueChange} />);
 
@@ -38,7 +38,7 @@ describe("Accordion controlado", () => {
     expect(expanded(screen)).toEqual([false, true]);
   });
 
-  test("quem controla de fora abre por conta própria", () => {
+  test("whoever controls from outside opens on their own", () => {
     function Outside() {
       const [value, setValue] = useState<string[]>([]);
       return (
@@ -58,14 +58,14 @@ describe("Accordion controlado", () => {
     expect(textOf(screen)).toContain("Pelo botão Emitir nota.");
   });
 
-  test("multiple deixa vários abertos ao mesmo tempo", () => {
+  test("multiple leaves several open at the same time", () => {
     const screen = render(<Faq multiple />);
     press(screen, 0);
     press(screen, 1);
     expect(expanded(screen)).toEqual([true, true]);
   });
 
-  test("o padrão abre um e fecha o outro, como no web", () => {
+  test("the default opens one and closes the other, as on the web", () => {
     const onValueChange = mock((_value: string[]) => {});
     const screen = render(<Faq defaultValue={["emitir"]} onValueChange={onValueChange} />);
     expect(expanded(screen)).toEqual([true, false]);
@@ -79,7 +79,7 @@ describe("Accordion controlado", () => {
     expect(onValueChange).toHaveBeenLastCalledWith([]);
   });
 
-  test("item sem value continua abrindo sozinho, com defaultOpen", () => {
+  test("an item without value still opens on its own, with defaultOpen", () => {
     const onValueChange = mock((_value: string[]) => {});
     const screen = render(
       <Accordion value={[]} onValueChange={onValueChange}>
@@ -95,12 +95,12 @@ describe("Accordion controlado", () => {
   });
 });
 
-describe("AccordionItem com value e defaultOpen", () => {
+describe("AccordionItem with value and defaultOpen", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   afterEach(() => warn.mockClear());
   afterAll(() => warn.mockRestore());
 
-  test("avisa em desenvolvimento que o aberto é da raiz", () => {
+  test("warns in development that the open state belongs to the root", () => {
     render(
       <Accordion>
         <AccordionItem value="a" title="Item A" defaultOpen>
@@ -114,8 +114,8 @@ describe("AccordionItem com value e defaultOpen", () => {
   });
 });
 
-describe("Collapsible controlado", () => {
-  test("open decide, e onOpenChange recebe o próximo estado", () => {
+describe("controlled Collapsible", () => {
+  test("open decides, and onOpenChange receives the next state", () => {
     const onOpenChange = mock((_value: boolean) => {});
     const screen = render(
       <Collapsible label="Ver o detalhe" open onOpenChange={onOpenChange}>
@@ -131,7 +131,7 @@ describe("Collapsible controlado", () => {
     expect(textOf(screen)).toContain("O detalhe inteiro.");
   });
 
-  test("sem open, a peça se controla e ainda avisa", () => {
+  test("without open, the piece controls itself and still notifies", () => {
     const onOpenChange = mock((_value: boolean) => {});
     const screen = render(
       <Collapsible label="Ver o detalhe" defaultOpen onOpenChange={onOpenChange}>

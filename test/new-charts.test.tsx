@@ -42,7 +42,7 @@ function heatmap(extra: Partial<React.ComponentProps<typeof ChartHeatmap>> = {})
 }
 
 describe("ChartHeatmap", () => {
-  test("zero e valor e pinta o primeiro degrau; celula sem dado nao tem tinta", () => {
+  test("zero is a value and paints the first step; a cell with no data has no ink", () => {
     const { container } = heatmap({ rows: ["Seg", "Ter", "Qua"] });
 
     const step = (cell: string) =>
@@ -64,7 +64,7 @@ describe("ChartHeatmap", () => {
     expect(empty.className).not.toContain("bg-");
   });
 
-  test("a tabela escondida diz o numero de cada celula, e diz 'Sem dado' onde nao ha, recortada por uma caixa para nao alargar a pagina", () => {
+  test("the hidden table states each cell's number, and says 'Sem dado' where there is none, clipped by a box so it does not widen the page", () => {
     heatmap();
 
     const table = screen.getByRole("table", { name: "Emissões por dia e hora" });
@@ -84,14 +84,14 @@ describe("ChartHeatmap", () => {
     expect(within(rows[1]!).getByRole("rowheader").textContent).toBe("Seg");
   });
 
-  test("labels.empty troca o 'Sem dado' da tabela e da leitura", () => {
+  test("labels.empty replaces the 'Sem dado' in the table and in the reading", () => {
     heatmap({ labels: { empty: "No data" } });
     const table = screen.getByRole("table", { name: "Emissões por dia e hora" });
     expect(table.textContent).toContain("No data");
     expect(table.textContent).not.toContain("Sem dado");
   });
 
-  test("a seta anda pela grade e o leitor de tela ouve a celula em que parou", () => {
+  test("the arrow moves through the grid and the screen reader hears the cell it stopped on", () => {
     heatmap();
     const grid = screen.getByRole("group", { name: "Emissões por dia e hora" });
 
@@ -105,7 +105,7 @@ describe("ChartHeatmap", () => {
     expect(screen.getByRole("status").textContent).toBe("Seg, 9h: 12");
   });
 
-  test("a legenda so mostra a amostra de vazio quando ha celula vazia", () => {
+  test("the legend only shows the empty swatch when there is an empty cell", () => {
     const { container, unmount } = heatmap({ data: EMISSIONS.slice(0, 3), columns: ["8h", "9h"] });
     const legend = () => container.querySelector("[data-rc-heat-legend]")!;
     expect(legend().textContent).toContain("Sem dado");
@@ -117,7 +117,7 @@ describe("ChartHeatmap", () => {
     );
   });
 
-  test("os cinco degraus pintam os alfas da escala compartilhada com o nativo, sobre a cor pedida", () => {
+  test("the five steps paint the alphas of the scale shared with native, over the requested color", () => {
     const { container } = heatmap({ color: "var(--rc-chart-3)" });
     const root = container.querySelector<HTMLElement>("[data-rc-heat-legend]")!.parentElement!;
     expect(root.style.getPropertyValue("--rc-heat")).toBe("var(--rc-chart-3)");
@@ -134,12 +134,12 @@ describe("ChartHeatmap", () => {
     );
   });
 
-  test("o dominio fixo e a regua: o mesmo numero cai no mesmo degrau nas duas grades", () => {
+  test("the fixed domain is the ruler: the same number lands on the same step in both grids", () => {
     const { container } = heatmap({ domain: [0, 120] });
     expect(container.querySelector('[data-rc-cell="0-1"]')!.getAttribute("data-rc-step")).toBe("0");
   });
 
-  test("grade toda em zero, ou dominio sem largura, pinta o degrau mais ralo, e nao o mais cheio", () => {
+  test("an all-zero grid, or a zero-width domain, paints the faintest step, and not the fullest", () => {
     const zeros = heatmap({
       data: [
         { dia: "Seg", hora: "8h", total: 0 },
@@ -157,7 +157,7 @@ describe("ChartHeatmap", () => {
     expect(steps().filter((step) => step !== "empty")).toEqual(["0", "0", "0"]);
   });
 
-  test("o rotulo de linha comprido tem teto de largura e trunca, e a grade continua com a maior parte", () => {
+  test("a long row label has a width cap and truncates, and the grid keeps most of the space", () => {
     const long = "Clínica São Lucas Serviços Médicos e Laboratoriais Ltda";
     const { container } = heatmap({
       data: [
@@ -183,7 +183,7 @@ const BANDS: ChartGaugeBand[] = [
 ];
 
 describe("ChartGauge", () => {
-  test("o nome carrega valor, maximo e faixa, e a regua das faixas vai na descricao", () => {
+  test("the name carries value, maximum and band, and the band ruler goes in the description", () => {
     withTheme(<ChartGauge value={72} bands={BANDS} />);
 
     const gauge = screen.getByRole("img", { name: "72 de 100, Atenção" });
@@ -195,7 +195,7 @@ describe("ChartGauge", () => {
     expect(screen.getByText("Atenção")).toBeDefined();
   });
 
-  test("o arco pinta o papel -text da faixa, que e o que o contraste mede sobre o trilho", () => {
+  test("the arc paints the band's -text role, which is what contrast measures over the track", () => {
     const { container } = withTheme(<ChartGauge value={95} bands={BANDS} />);
     const arc = container.querySelector("[data-rc-gauge-value]")!;
 
@@ -210,20 +210,20 @@ describe("ChartGauge", () => {
     ]);
   });
 
-  test("acima do maximo o numero e o real, e so o arco, o ponteiro e a faixa param na ponta", () => {
+  test("above the maximum the number is the real one, and only the arc, the needle and the band stop at the end", () => {
     const { container } = withTheme(<ChartGauge value={140} bands={BANDS} />);
     const gauge = screen.getByRole("img", { name: "140 de 100, Crítico" });
     expect(gauge.getAttribute("data-rc-gauge-tone")).toBe("danger");
     expect(container.querySelector("[data-rc-gauge-center]")!.textContent).toBe("140");
   });
 
-  test("abaixo de zero o numero tambem e o real, e a faixa e a primeira", () => {
+  test("below zero the number is also the real one, and the band is the first", () => {
     const { container } = withTheme(<ChartGauge value={-5} bands={BANDS} />);
     expect(screen.getByRole("img", { name: "-5 de 100, Bom" })).toBeDefined();
     expect(container.querySelector("[data-rc-gauge-center]")!.textContent).toBe("-5");
   });
 
-  test("numero que nao e numero vira travessao, sem faixa e sem arco pintado", () => {
+  test("a number that is not a number becomes a dash, with no band and no painted arc", () => {
     for (const value of [Number.NaN, Number.POSITIVE_INFINITY]) {
       const { container, unmount } = withTheme(<ChartGauge value={value} bands={BANDS} />);
       const gauge = screen.getByRole("img", { name: "— de 100" });
@@ -235,19 +235,19 @@ describe("ChartGauge", () => {
     }
   });
 
-  test("com centerValue, o nome acessivel diz o mesmo texto que a tela mostra", () => {
+  test("with centerValue, the accessible name says the same text the screen shows", () => {
     withTheme(<ChartGauge value={1234.5} max={2000} format="currency" centerValue="R$ 1.234,50" />);
     expect(screen.getByRole("img", { name: /^R\$ 1\.234,50 de R\$\s2\.000,00$/ })).toBeDefined();
   });
 
-  test("o texto do meio tem a largura do furo do arco, e nao a do cartao", () => {
+  test("the center text has the width of the arc hole, and not of the card", () => {
     const { container } = withTheme(<ChartGauge value={72} bands={BANDS} />);
     const hole = container.querySelector<HTMLElement>("[data-rc-gauge-hole]")!;
     expect(hole.className.split(" ")).toContain("w-[52cqmin]");
     expect(hole.parentElement!.className.split(" ")).toContain("[container-type:size]");
   });
 
-  test("sweep de 360 desenha o anel inteiro, em dois arcos, e acima disso para em 360", () => {
+  test("a 360 sweep draws the whole ring, in two arcs, and above that stops at 360", () => {
     for (const sweep of [360, 400]) {
       const { container, unmount } = withTheme(<ChartGauge value={50} sweep={sweep} />);
       const d = container.querySelector("[data-rc-gauge-value]")!.getAttribute("d")!;
@@ -263,7 +263,7 @@ describe("ChartGauge", () => {
     }
   });
 
-  test("sem faixas e um arco neutro, sem ponteiro e sem descricao", () => {
+  test("without bands it is a neutral arc, with no needle and no description", () => {
     const { container } = withTheme(<ChartGauge value={40} max={80} format="integer" />);
     const gauge = screen.getByRole("img", { name: "40 de 80" });
 
@@ -274,7 +274,7 @@ describe("ChartGauge", () => {
     );
   });
 
-  test("a faixa cai pelo limite inclusivo: 60 ainda e bom", () => {
+  test("the band falls by the inclusive limit: 60 is still good", () => {
     expect(bandAt(BANDS, 60)?.label).toBe("Bom");
     expect(bandAt(BANDS, 60.1)?.label).toBe("Atenção");
   });
@@ -287,7 +287,7 @@ const STAGES = [
 ];
 
 describe("ChartFunnel", () => {
-  test("cada etapa e item da lista, com a taxa sobre a anterior escrita por extenso", () => {
+  test("each stage is a list item, with the rate over the previous one spelled out", () => {
     withTheme(
       <ChartFunnel data={STAGES} valueKey="total" nameKey="etapa" label="Funil de adesão" />,
     );
@@ -302,7 +302,7 @@ describe("ChartFunnel", () => {
     expect(screen.getByText("do início ao fim").previousSibling?.textContent).toBe("10%");
   });
 
-  test("a barra mede em relacao a etapa mais larga", () => {
+  test("the bar measures relative to the widest stage", () => {
     const { container } = withTheme(<ChartFunnel data={STAGES} valueKey="total" nameKey="etapa" />);
     const widths = [...container.querySelectorAll<HTMLElement>("[data-rc-funnel-bar]")].map(
       (bar) => bar.style.width,
@@ -310,7 +310,7 @@ describe("ChartFunnel", () => {
     expect(widths).toEqual(["100%", "40%", "10%"]);
   });
 
-  test("etapa anterior zerada nao inventa taxa, e a linha do total some com showOverall desligado", () => {
+  test("a zeroed previous stage does not invent a rate, and the total line disappears with showOverall off", () => {
     withTheme(
       <ChartFunnel
         data={[
@@ -326,7 +326,7 @@ describe("ChartFunnel", () => {
     expect(screen.queryByText("do início ao fim")).toBeNull();
   });
 
-  test("as frases do funil saem de labels, para trocar o idioma", () => {
+  test("the funnel sentences come from labels, so the language can be changed", () => {
     withTheme(
       <ChartFunnel
         data={[
@@ -343,7 +343,7 @@ describe("ChartFunnel", () => {
     expect(screen.queryByText("da etapa anterior")).toBeNull();
   });
 
-  test("nome repetido nao repete chave, e nenhuma etapa some", () => {
+  test("a repeated name does not repeat a key, and no stage disappears", () => {
     const warn = spyOn(console, "error").mockImplementation(() => {});
     withTheme(
       <ChartFunnel
@@ -362,13 +362,13 @@ describe("ChartFunnel", () => {
     expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(2);
   });
 
-  test("palavra comprida sem espaco quebra dentro do nome, em vez de alargar a pagina", () => {
+  test("a long word without spaces breaks inside the name, instead of widening the page", () => {
     const word = "Supercalifragilisticexpialidociousnotafiscalsupercalifragilistic";
     withTheme(<ChartFunnel data={[{ etapa: word, total: 1 }]} valueKey="total" nameKey="etapa" />);
     expect(screen.getByText(word).className.split(" ")).toContain("wrap-anywhere");
   });
 
-  test("a conta das taxas", () => {
+  test("the rate math", () => {
     expect(funnelRates([200, 50, 25])).toEqual({ fromPrevious: [null, 25, 50], overall: 12.5 });
     expect(funnelRates([10])).toEqual({ fromPrevious: [null], overall: null });
   });
@@ -400,7 +400,7 @@ afterEach(() => {
   if (realHeight) Object.defineProperty(HTMLElement.prototype, "clientHeight", realHeight);
 });
 
-test("na grade estreita o rotulo de coluna aparece de tanto em tanto, em vez de virar reticencias", () => {
+test("in a narrow grid the column label shows up every so often, instead of turning into an ellipsis", () => {
   measureAs(300, 200);
   const hours = Array.from({ length: 24 }, (_, index) => `${index}h`);
   const { container } = withTheme(
@@ -420,7 +420,7 @@ test("na grade estreita o rotulo de coluna aparece de tanto em tanto, em vez de 
   expect(shown).toEqual(["0h", "4h", "8h", "12h", "16h", "20h"]);
 });
 
-test("quantos rotulos de coluna cabem se mede pela area das celulas, e nao pela grade com a coluna de rotulo", () => {
+test("how many column labels fit is measured by the cell area, and not by the grid with the label column", () => {
   measureAs(300, 200);
   const realOffset = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
   Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
@@ -452,7 +452,7 @@ test("quantos rotulos de coluna cabem se mede pela area das celulas, e nao pela 
 });
 
 describe("ChartTreemap", () => {
-  test("a lista escondida traz todas as categorias com a fatia, inclusive a que nao ganhou area", () => {
+  test("the hidden list brings every category with its share, including the one that got no area", () => {
     const { container } = withTheme(
       <ChartTreemap data={NATURES} valueKey="total" nameKey="natureza" label="Por natureza" />,
     );
@@ -469,7 +469,7 @@ describe("ChartTreemap", () => {
     expect(container.querySelectorAll("[data-rc-tile]")).toHaveLength(3);
   });
 
-  test("sem medida, nenhum rotulo e desenhado: nao se adivinha o que cabe", () => {
+  test("without a measurement, no label is drawn: what fits is not guessed", () => {
     const { container } = withTheme(
       <ChartTreemap data={NATURES} valueKey="total" nameKey="natureza" label="Por natureza" />,
     );
@@ -479,7 +479,7 @@ describe("ChartTreemap", () => {
     expect(fits).toEqual(["none", "none", "none"]);
   });
 
-  test("medido, o rotulo aparece onde cabe e some onde nao cabe", () => {
+  test("once measured, the label shows where it fits and disappears where it does not", () => {
     measureAs(400, 200);
     const { container } = withTheme(
       <ChartTreemap
@@ -499,7 +499,7 @@ describe("ChartTreemap", () => {
     expect(within(tiles[1] as HTMLElement).queryByText("Retenções de ISS")).toBeNull();
   });
 
-  test("a tinta da categoria e a que o contraste mede", () => {
+  test("the category ink is the one contrast measures", () => {
     expect(TREEMAP_TINT).toBe(CHART_TINT);
 
     const { container } = withTheme(
@@ -513,7 +513,7 @@ describe("ChartTreemap", () => {
     );
   });
 
-  test("nome repetido nao repete chave, na grade nem na lista escondida", () => {
+  test("a repeated name does not repeat a key, neither in the grid nor in the hidden list", () => {
     measureAs(400, 200);
     const warn = spyOn(console, "error").mockImplementation(() => {});
     withTheme(
@@ -533,7 +533,7 @@ describe("ChartTreemap", () => {
     expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(2);
   });
 
-  test("o teclado percorre as categorias e o leitor de tela ouve cada uma", () => {
+  test("the keyboard walks the categories and the screen reader hears each one", () => {
     withTheme(
       <ChartTreemap data={NATURES} valueKey="total" nameKey="natureza" label="Por natureza" />,
     );
@@ -545,8 +545,8 @@ describe("ChartTreemap", () => {
   });
 });
 
-describe("a geometria", () => {
-  test("o squarify cobre a area inteira, sem sair do quadro, e na ordem de entrada", () => {
+describe("the geometry", () => {
+  test("squarify covers the whole area, without leaving the frame, and in input order", () => {
     const values = [6, 6, 4, 3, 2, 2, 1];
     const boxes = squarify(values, 600, 400);
     const area = boxes.reduce((sum, box) => sum + box.width * box.height, 0);
@@ -561,12 +561,12 @@ describe("a geometria", () => {
     expect(boxes[0]!.width * boxes[0]!.height).toBeCloseTo((6 / 24) * 600 * 400, 3);
   });
 
-  test("valor nulo, negativo ou invalido nao ganha area", () => {
+  test("a null, negative or invalid value gets no area", () => {
     const boxes = squarify([5, 0, -3, Number.NaN], 100, 100);
     expect(boxes.slice(1).every((box) => box.width === 0 && box.height === 0)).toBe(true);
   });
 
-  test("o degrau da escala", () => {
+  test("the scale step", () => {
     expect(heatStep(0, 0, 100, 5)).toBe(0);
     expect(heatStep(100, 0, 100, 5)).toBe(4);
     expect(heatStep(50, 0, 100, 5)).toBe(2);
@@ -574,14 +574,14 @@ describe("a geometria", () => {
     expect(heatStep(0, 0, 0, 5)).toBe(0);
   });
 
-  test("o rotulo que nao cabe some inteiro, e nao vira reticencias", () => {
+  test("a label that does not fit disappears whole, and does not turn into an ellipsis", () => {
     expect(labelFit("Serviços", "600", 200, 60)).toBe("both");
     expect(labelFit("Serviços", "600", 200, 44)).toBe("name");
     expect(labelFit("Serviços", "600", 40, 60)).toBe("none");
     expect(labelFit("Serviços", "600", 200, 12)).toBe("none");
   });
 
-  test("o 'both' nunca corta: a estimativa cobre a fonte mono e o recuo de verdade", () => {
+  test("'both' never clips: the estimate covers the mono font and the real padding", () => {
     const MONO = 12 * 0.6;
     const INSET = 2 * 2 + 2 * 8 + 2 * 2;
     const LINE = 16;

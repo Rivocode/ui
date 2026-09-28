@@ -1,13 +1,13 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # TransferList
 
-Duas listas lado a lado: à esquerda o que **está disponível**, à direita o que
-**foi escolhido**. A pessoa marca um ou vários itens e os passa de um lado para
-o outro. Permissões de um papel, colunas de um relatório, cidades de entrega,
-os produtos de uma tabela de preço.
+Two lists side by side: on the left what **is available**, on the right what
+**was chosen**. The person checks one or several items and moves them from one
+side to the other. A role's permissions, a report's columns, delivery cities,
+the products of a price table.
 
 ```tsx
 const [granted, setGranted] = useState<string[]>([])
@@ -24,91 +24,91 @@ const [granted, setGranted] = useState<string[]>([])
 />
 ```
 
-A peça é controlada: `value` são os `value` dos escolhidos, e `onValueChange`
-recebe a lista nova a cada movimento. O lado da direita aparece **na ordem do
-`value`**, e o que entra vai para o fim, na ordem de `items`. O lado da esquerda
-é `items` sem os escolhidos, na ordem de `items`.
+The piece is controlled: `value` is the `value`s of the chosen ones, and
+`onValueChange` receives the new list on every move. The right side appears
+**in `value` order**, and whatever comes in goes to the end, in `items` order.
+The left side is `items` without the chosen ones, in `items` order.
 
-## Mover
+## Moving
 
-Entre as duas listas ficam quatro botões: mover os marcados para a direita,
-mover todos para a direita, e os mesmos dois de volta. Cada um tem nome próprio
-("Mover selecionados para Escolhidos") e a dica com o mesmo texto ao pousar o
-ponteiro. O botão fica apagado quando não há o que mover.
+Between the two lists sit four buttons: move the checked ones to the right, move
+all to the right, and the same two back. Each has its own name ("Mover
+selecionados para Escolhidos") and a tooltip with the same text on hover. The
+button is dimmed when there is nothing to move.
 
-"Mover todos" move **o que está à mostra**: com uma busca digitada, só o que a
-busca deixou na lista. O marcado que a busca escondeu também não é movido pelo
-"mover selecionados", para ninguém mover o que não está vendo.
+"Move all" moves **what is showing**: with a search typed in, only what the
+search left in the list. A checked item the search hid is not moved by "move
+selected" either, so nobody moves what they are not seeing.
 
-Item com `disabled` não se marca e não se move, nem pelo "mover todos": ele
-fica onde está. Serve para a permissão que o papel não pode perder ou ganhar.
+An item with `disabled` cannot be checked and does not move, not even through
+"move all": it stays where it is. It serves the permission the role cannot lose
+or gain.
 
-Depois de mover, a frase "3 itens movidos para Escolhidos" é dita numa região
-viva educada, com o plural certo e o nome da lista de destino. Se o botão
-apertado apagou (porque não sobrou nada para mover), o foco passa para a lista
-de destino, e não cai no começo da página.
+After moving, the sentence "3 itens movidos para Escolhidos" is spoken in a
+polite live region, with the right plural and the destination list's name. If
+the pressed button went dimmed (because nothing was left to move), focus moves
+to the destination list, and does not fall to the start of the page.
 
-## A contagem e a busca
+## The count and the search
 
-O cabeçalho de cada lista diz quantos itens ela tem ("10 itens") e, com itens
-marcados, quantos estão marcados ("3 de 10 selecionados"). A contagem é a
-descrição da lista para o leitor de tela.
+Each list's header says how many items it has ("10 itens") and, with checked
+items, how many are checked ("3 de 10 selecionados"). The count is the list's
+description for the screen reader.
 
-A busca no topo de cada lista ignora acento e caixa: "sao" acha "São Paulo" e
-"joao" acha "João Pessoa". Sem resultado, a lista diz "Nada encontrado"; vazia,
-diz "Nenhum item". `searchable={false}` tira as duas buscas, para listas curtas.
+The search at the top of each list ignores accents and case: "sao" finds "São
+Paulo" and "joao" finds "João Pessoa". With no result, the list says "Nada
+encontrado"; empty, it says "Nenhum item". `searchable={false}` removes both
+searches, for short lists.
 
-## Teclado
+## Keyboard
 
-Cada lista é uma parada de Tab e anda pelo padrão de lista com seleção
-múltipla:
+Each list is one Tab stop and moves by the multi-select listbox pattern:
 
-| Tecla | O que faz |
+| Key | What it does |
 | --- | --- |
-| Seta para cima e para baixo | anda pela lista sem marcar |
-| Espaço | marca ou desmarca o item atual |
-| Shift + seta | anda e marca o caminho |
-| Home e End | vão ao primeiro e ao último; com Shift, marcam o trecho |
-| Ctrl + A (⌘ + A) | marca tudo o que está à mostra, ou desmarca se já estava |
-| Enter | move os marcados para a outra lista |
-| Esc | desmarca tudo |
+| Up and down arrow | moves through the list without checking |
+| Space | checks or unchecks the current item |
+| Shift + arrow | moves and checks the way |
+| Home and End | go to the first and the last; with Shift, check the stretch |
+| Ctrl + A (⌘ + A) | checks everything showing, or unchecks if it already was |
+| Enter | moves the checked ones to the other list |
+| Esc | unchecks everything |
 
-Na busca, a seta para baixo desce para a lista.
+In the search, the down arrow drops into the list.
 
-## Textos
+## Texts
 
-`labels` troca os nomes das listas (`available` e `chosen`), as frases de
-vazio (`empty` e `noResults`), o texto de espera da busca (`search`), a
-contagem (`count`) e o anúncio (`moved`). Os
-nomes dos botões e das buscas acompanham os nomes das listas.
+`labels` changes the lists' names (`available` and `chosen`), the empty
+sentences (`empty` and `noResults`), the search placeholder (`search`), the
+count (`count`) and the announcement (`moved`). The names of the buttons and
+the searches follow the lists' names.
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `panel` (cada lista com a moldura),
-`header`, `search`, `list` (a caixa que rola, com 240px de altura), `option`,
-`actions` (a coluna dos botões) e `empty`. A altura da lista se troca em
+`classNames` reaches each node by name: `panel` (each list with its frame),
+`header`, `search`, `list` (the scrolling box, 240px tall), `option`, `actions`
+(the button column) and `empty`. The list's height is changed in
 `classNames.list`.
 
-No celular, as duas listas empilham, e as setas dos botões giram para apontar
-para cima e para baixo.
+On the phone, the two lists stack, and the buttons' arrows rotate to point up
+and down.
 
-## Quando não usar
+## When not to use
 
-- **Marcar algumas opções de uma lista curta** é `CheckboxGroup`. A
-  `TransferList` vale quando a lista é longa e o que importa é ver, lado a lado,
-  o que ficou de fora e o que entrou.
-- **Escolher vários de uma lista longa sem precisar ver o que sobrou** é
-  `Combobox` com `multiple`: ele ocupa uma linha só e mostra o escolhido em
-  fichas.
-- **Pôr os escolhidos numa ordem que só a pessoa sabe** é `SortableList`. A
-  `TransferList` acrescenta no fim, e não arrasta.
-- **Escolher dentro de uma árvore**, como departamentos e equipes, é
-  `TreeSelect`.
+- **Checking a few options from a short list** is `CheckboxGroup`.
+  `TransferList` is worth it when the list is long and what matters is seeing,
+  side by side, what was left out and what went in.
+- **Choosing several from a long list without needing to see what is left** is
+  `Combobox` with `multiple`: it takes a single line and shows the chosen ones
+  as chips.
+- **Putting the chosen ones in an order only the person knows** is
+  `SortableList`. `TransferList` appends at the end, and does not drag.
+- **Choosing inside a tree**, such as departments and teams, is `TreeSelect`.
 
-## No React Native
+## In React Native
 
-Traduz, com os mesmos `items`, `value`, `onValueChange`, `searchable`, `disabled` e `labels`, e as mesmas frases de contagem e de anúncio.
+Translates, with the same `items`, `value`, `onValueChange`, `searchable`, `disabled` and `labels`, and the same count and announcement sentences.
 
-**As listas empilham, e cada uma tem os próprios botões.** No telefone não há largura para duas colunas com botões no meio: a lista de cima é a de disponíveis, a de baixo a de escolhidos, e cada uma fecha com “Mover selecionados para …” e “Mover todos para …”. Cada linha é uma caixa de marcar com alvo de 44 pontos, e a lista rola por dentro a partir de 288 pontos. O anúncio sai pelo leitor de tela do sistema.
+**The lists stack, and each has its own buttons.** On the phone there is no width for two columns with buttons in the middle: the top list is the available one, the bottom one the chosen one, and each ends with “Mover selecionados para …” and “Mover todos para …”. Each row is a checkbox with a 44-point target, and the list scrolls internally from 288 points. The announcement goes out through the system screen reader.
 
-As partes vestem pelo mesmo `classNames` do web: `panel`, `header`, `search`, `list`, `option`, `actions` e `empty`. Como os botões moram em cada lista, `actions` veste a fileira embaixo de cada uma, e não uma coluna no meio.
+The parts are styled through the same `classNames` as the web: `panel`, `header`, `search`, `list`, `option`, `actions` and `empty`. Since the buttons live in each list, `actions` styles the row below each one, not a column in the middle.

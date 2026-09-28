@@ -45,7 +45,7 @@ function shapesOf(screen: ReactTestRenderer) {
 }
 
 for (const theme of THEMES) {
-  test(`o desenho nativo decodifica sem inverter no ${theme}, em varios tamanhos e niveis`, () => {
+  test(`the native drawing decodes without inverting in ${theme}, at several sizes and levels`, () => {
     const cases = [
       { value: PIX, level: "M", size: 200 },
       { value: PIX, level: "H", size: 260 },
@@ -64,7 +64,7 @@ for (const theme of THEMES) {
   });
 }
 
-test("codigo lido por maquina e tinta sobre papel fixos, iguais nos dois temas, e nunca fg sobre surface", () => {
+test("a machine-read code is fixed ink on paper, equal in both themes, and never fg over surface", () => {
   for (const theme of THEMES) {
     const screen = render(<QRCode value={PIX} label="Código" logo={<Text>R</Text>} />, { theme });
     expect(byType(screen, "Path")[0]!.props.fill).toBe(tokens.code["code-ink"]);
@@ -75,13 +75,13 @@ test("codigo lido por maquina e tinta sobre papel fixos, iguais nos dois temas, 
   }
 });
 
-test("e uma imagem com o nome do label", () => {
+test("is an image with the label's name", () => {
   const screen = render(<QRCode value={PIX} label="QR Code Pix para Fulano de Tal" />);
   expect(byRole(screen, "image")).toHaveLength(1);
   expect(byLabel(screen, "QR Code Pix para Fulano de Tal")).toHaveLength(1);
 });
 
-test("com logo o nivel vira H, o centro e apagado e o codigo ainda decodifica", () => {
+test("with a logo the level becomes H, the center is cleared and the code still decodes", () => {
   const screen = render(
     <QRCode value={PIX} label="Código" size={300} logo={<Text>R</Text>} />,
     { theme: "rivocode-light" },
@@ -97,7 +97,7 @@ test("com logo o nivel vira H, o centro e apagado e o codigo ainda decodifica", 
   );
 });
 
-test("logo com nivel abaixo de H nao aparece, e o aviso diz por que", () => {
+test("a logo with a level below H does not appear, and the warning says why", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   const screen = render(<QRCode value={PIX} label="Código" level="Q" logo={<Text>R</Text>} />);
   expect(byType(screen, "Text").some((node) => node.props.children === "R")).toBe(false);
@@ -105,7 +105,7 @@ test("logo com nivel abaixo de H nao aparece, e o aviso diz por que", () => {
   warn.mockRestore();
 });
 
-test("sem valor, o quadrado guarda o lugar com traco pontilhado na superficie, e nao com a placa branca", () => {
+test("without a value, the square holds the place with a dotted line on the surface, not with the white plate", () => {
   const screen = render(<QRCode value="" label="Código" size={144} />);
   const [image] = byRole(screen, "image");
   const classes = String(image!.props.className).split(" ");
@@ -118,7 +118,7 @@ test("sem valor, o quadrado guarda o lugar com traco pontilhado na superficie, e
   expect(classes).toContain("bg-surface");
 });
 
-test("texto que nao cabe em QR nenhum desenha o aviso no lugar, sem derrubar a arvore, e avisa em dev", () => {
+test("text that fits in no QR draws the notice in its place, without bringing the tree down, and warns in dev", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
   try {
     const screen = render(<QRCode value={"a".repeat(5000)} label="QR Code da nota" size={160} />);

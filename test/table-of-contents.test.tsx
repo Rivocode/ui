@@ -74,25 +74,25 @@ const BELOW = { emissao: 800, impostos: 1200, retencoes: 1600, cancelamento: 200
 
 const toc = (props: Partial<TableOfContentsProps> = {}) => <TableOfContents {...props} />;
 
-test("le os titulos da pagina e sai num nav com nome", () => {
+test("reads the page headings and renders in a named nav", () => {
   page(toc());
   const nav = screen.getByRole("navigation", { name: "Nesta página" });
   const links = Array.from(nav.querySelectorAll("a")).map((link) => link.getAttribute("href"));
   expect(links).toEqual(["#emissao", "#impostos", "#retencoes", "#cancelamento"]);
 });
 
-test("o h3 mora numa lista dentro do item do h2 que o antecede", () => {
+test("the h3 lives in a list inside the item of the h2 before it", () => {
   page(toc());
-  const impostos = screen.getByRole("link", { name: "Impostos" });
-  const parent = impostos.closest("ul")!.closest("li")!;
+  const taxes = screen.getByRole("link", { name: "Impostos" });
+  const parent = taxes.closest("ul")!.closest("li")!;
   expect(parent.querySelector("a")!.textContent).toBe("Emissão");
   const cancel = screen.getByRole("link", { name: "Cancelamento" });
   expect(cancel.closest("ul")!.closest("li")).toBeNull();
-  expect(impostos.className.split(" ")).toContain("ps-6");
+  expect(taxes.className.split(" ")).toContain("ps-6");
   expect(cancel.className.split(" ")).toContain("ps-3");
 });
 
-test("marca com aria-current a ultima secao que passou da linha ao rolar", () => {
+test("marks with aria-current the last section that crossed the line on scroll", () => {
   const changes: (string | null)[] = [];
   for (const [id, top] of Object.entries(BELOW)) tops.set(id, top);
   page(toc({ onActiveChange: (id) => changes.push(id) }));
@@ -100,9 +100,9 @@ test("marca com aria-current a ultima secao que passou da linha ao rolar", () =>
   expect(all).toEqual(["emissao", "impostos", "retencoes", "cancelamento"]);
 
   scrollTo({ emissao: 10, impostos: 200, retencoes: 600, cancelamento: 900 });
-  const impostos = screen.getByRole("link", { name: "Impostos" });
-  expect(impostos.getAttribute("aria-current")).toBe("location");
-  expect(impostos.className.split(" ")).toContain("border-accent-text");
+  const taxes = screen.getByRole("link", { name: "Impostos" });
+  expect(taxes.getAttribute("aria-current")).toBe("location");
+  expect(taxes.className.split(" ")).toContain("border-accent-text");
   expect(screen.getByRole("link", { name: "Emissão" }).getAttribute("aria-current")).toBeNull();
 
   scrollTo({ emissao: -900, impostos: -700, retencoes: -300, cancelamento: 100 });
@@ -141,7 +141,7 @@ function scrollBox(height: number, client: number, top: number) {
   return box;
 }
 
-test("no fim da rolagem, a ultima secao visivel fica marcada mesmo sem passar da linha", () => {
+test("at the end of the scroll, the last visible section is marked even without crossing the line", () => {
   const box = scrollBox(1600, 400, 1200);
   for (const [id, top] of Object.entries(BELOW)) tops.set(id, top);
   page(toc({ root: box }));
@@ -162,7 +162,7 @@ test("no fim da rolagem, a ultima secao visivel fica marcada mesmo sem passar da
   box.remove();
 });
 
-test("a rolagem que chega ao fim sem cruzar a linha tambem marca, pelo evento de rolagem", async () => {
+test("a scroll that reaches the end without crossing the line also marks, through the scroll event", async () => {
   const box = scrollBox(1600, 400, 1100);
   tops.set("emissao", -400);
   tops.set("impostos", -100);
@@ -185,7 +185,7 @@ test("a rolagem que chega ao fim sem cruzar a linha tambem marca, pelo evento de
   box.remove();
 });
 
-test("com movimento reduzido, a secao clicada segura a marca ate a pessoa rolar", () => {
+test("with reduced motion, the clicked section holds the mark until the person scrolls", () => {
   const restore = reduceMotion();
   window.scrollTo = (() => {}) as typeof window.scrollTo;
   try {
@@ -206,18 +206,18 @@ test("com movimento reduzido, a secao clicada segura a marca ate a pessoa rolar"
   }
 });
 
-test("palavra longa sem espaco quebra dentro do link, em vez de estourar a pagina", () => {
+test("a long word without spaces wraps inside the link, instead of overflowing the page", () => {
   page(toc({ items: [{ id: "emissao", label: "Notafiscaldeservicoeletronicamunicipal" }] }));
   expect(screen.getByRole("link").className.split(" ")).toContain("wrap-anywhere");
 });
 
-test("antes do primeiro titulo nada fica marcado", () => {
+test("before the first heading nothing is marked", () => {
   for (const [id, top] of Object.entries(BELOW)) tops.set(id, top);
   page(toc());
   expect(document.querySelector("[aria-current]")).toBeNull();
 });
 
-test("a faixa que conta como visivel desconta o offset do cabecalho fixo", () => {
+test("the band that counts as visible discounts the fixed header offset", () => {
   for (const [id, top] of Object.entries(BELOW)) tops.set(id, top);
   page(toc({ offset: 64 }));
   expect(observers[0]!.options.rootMargin).toBe("-64px 0px -70% 0px");
@@ -227,7 +227,7 @@ test("a faixa que conta como visivel desconta o offset do cabecalho fixo", () =>
   );
 });
 
-test("clicar rola suave ate o titulo, desconta o offset e leva o foco para ele", () => {
+test("clicking scrolls smoothly to the heading, discounts the offset and moves focus to it", () => {
   const calls: ScrollToOptions[] = [];
   window.scrollTo = ((options: ScrollToOptions) => calls.push(options)) as typeof window.scrollTo;
   tops.set("retencoes", 500);
@@ -244,7 +244,7 @@ test("clicar rola suave ate o titulo, desconta o offset e leva o foco para ele",
   );
 });
 
-test("com reduzir movimento a rolagem e instantanea", () => {
+test("with reduce motion the scroll is instant", () => {
   const real = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -268,7 +268,7 @@ test("com reduzir movimento a rolagem e instantanea", () => {
   }
 });
 
-test("onItemClick com preventDefault devolve o link ao navegador", () => {
+test("onItemClick with preventDefault hands the link back to the browser", () => {
   const scroll = mock(() => {});
   window.scrollTo = scroll as unknown as typeof window.scrollTo;
   page(toc({ onItemClick: (_item, event) => event.preventDefault() }));
@@ -276,7 +276,7 @@ test("onItemClick com preventDefault devolve o link ao navegador", () => {
   expect(scroll).not.toHaveBeenCalled();
 });
 
-test("updateHash escreve o endereco sem empilhar historico", () => {
+test("updateHash writes the address without stacking history", () => {
   window.scrollTo = (() => {}) as typeof window.scrollTo;
   const length = window.history.length;
   page(toc({ updateHash: true }));
@@ -286,7 +286,7 @@ test("updateHash escreve o endereco sem empilhar historico", () => {
   window.history.replaceState(null, "", window.location.pathname);
 });
 
-test("titulo sem id ganha um id legivel e unico", () => {
+test("a heading without an id gets a readable, unique id", () => {
   render(
     <RivoProvider scope="local">
       <section>
@@ -302,7 +302,7 @@ test("titulo sem id ganha um id legivel e unico", () => {
   expect(hrefs).toEqual(["#nota-de-credito", "#nota-de-credito-2"]);
 });
 
-test("a lista pronta dispensa a leitura e o seletor escolhe os niveis", () => {
+test("a ready list skips the reading and the selector picks the levels", () => {
   page(
     toc({
       items: [
@@ -317,12 +317,12 @@ test("a lista pronta dispensa a leitura e o seletor escolhe os niveis", () => {
   ]);
 });
 
-test("so os h2, quando o seletor pede so eles", () => {
+test("only the h2s, when the selector asks for only them", () => {
   page(toc({ selector: "h2" }));
   expect(screen.getAllByRole("link")).toHaveLength(2);
 });
 
-test("sem titulo nenhum, nao sobra um nav vazio", () => {
+test("with no heading at all, no empty nav is left over", () => {
   render(
     <RivoProvider scope="local">
       <p>Pagina curta.</p>
@@ -332,13 +332,13 @@ test("sem titulo nenhum, nao sobra um nav vazio", () => {
   expect(screen.queryByRole("navigation")).toBeNull();
 });
 
-test("hideLabel tira o titulo visivel e mantem o nome do nav", () => {
+test("hideLabel removes the visible title and keeps the nav name", () => {
   page(toc({ hideLabel: true, label: "Sumário" }));
   expect(screen.queryByText("Sumário")).toBeNull();
   expect(screen.getByRole("navigation", { name: "Sumário" })).toBeDefined();
 });
 
-test("classNames alcanca cada parte pelo nome", () => {
+test("classNames reaches each part by name", () => {
   page(toc({ classNames: { label: "c-label", list: "c-list", item: "c-item", link: "c-link" } }));
   const nav = screen.getByRole("navigation");
   expect(nav.querySelector("p")!.className.split(" ")).toContain("c-label");
@@ -347,7 +347,7 @@ test("classNames alcanca cada parte pelo nome", () => {
   expect(nav.querySelector("a")!.className.split(" ")).toContain("c-link");
 });
 
-test("sem IntersectionObserver no ambiente, o indice aparece e nada quebra", () => {
+test("without IntersectionObserver in the environment, the index shows and nothing breaks", () => {
   globalThis.IntersectionObserver = undefined as unknown as typeof IntersectionObserver;
   page(toc());
   expect(screen.getAllByRole("link")).toHaveLength(4);

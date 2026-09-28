@@ -1,17 +1,18 @@
 /**
- * O conteudo que o `@rivocode/ui-mcp` serve, montado da mesma fonte do site.
+ * The content `@rivocode/ui-mcp` serves, built from the same source as the site.
  *
- * O servidor MCP nao fala com a rede: tudo o que ele responde viaja dentro do
- * tarball, num `dist/content.json` escrito por este arquivo no build. A fonte e
- * a mesma que o site publica - `agentFiles()` para o markdown, os dois JSON de
- * props, a tabela de escolha da skill, as tabelas de paridade e de assinatura
- * que `check:parity` e `check:signature` ja seguram contra o codigo, e os
- * tokens pela mesma `exportDtcg` do `rivocode-ui tokens`. Uma segunda copia
- * escrita a mao divergiria do site no primeiro release.
+ * The MCP server does not talk to the network: everything it answers travels
+ * inside the tarball, in a `dist/content.json` this file writes at build time.
+ * The source is the same one the site publishes - `agentFiles()` for the
+ * markdown, the two props JSON files, the skill's choice table, the parity and
+ * signature tables that `check:parity` and `check:signature` already hold
+ * against the code, and the tokens through the same `exportDtcg` as
+ * `rivocode-ui tokens`. A second hand-written copy would drift from the site
+ * on the first release.
  *
- * O teste `test/mcp-server.test.ts` chama `buildContent()` direto, e nao le
- * o `dist/`: teste que le artefato de build passa na maquina que acabou de
- * construir e falha na CI, onde o `check` roda antes do build.
+ * The test `test/mcp-server.test.ts` calls `buildContent()` directly and does
+ * not read `dist/`: a test that reads a build artifact passes on the machine
+ * that just built and fails in CI, where `check` runs before the build.
  *
  *   bun run scripts/mcp-content.ts --out mcp/dist/content.json
  */
@@ -39,17 +40,19 @@ const at = (path: string) => resolve(ROOT, path);
 
 const SKILL = ".claude/skills/rivocode-ui";
 const CHOICE_FILE = `${SKILL}/reference/components.md`;
-const CHOICE_SECTION = "## Escolhas que costumam sair erradas";
+const CHOICE_SECTION = "## Choices that usually go wrong";
 const PARITY_FILE = "apps/docs/src/content/react-native.md";
-const PARITY_SECTION = "## A paridade, peça por peça";
+const PARITY_SECTION = "## Parity, piece by piece";
 const SIGNATURE_FILE = `${SKILL}/reference/native.md`;
-const SIGNATURE_SECTION = "## A assinatura, prop a prop";
+const SIGNATURE_SECTION = "## The signature, prop by prop";
+const AVOID_SECTION = "## When not to use";
 const NATIVE_PROPS = "apps/docs/src/native-props.json";
 const HOUSE_CSS = "src/preset.css";
 
 /**
- * O nome em portugues de cada referencia da skill, no mesmo estilo dos guias do
- * site. Referencia nova sem linha aqui sai com o nome do arquivo, e nao some.
+ * The `get_guide` name of each skill reference, in the same style as the site
+ * guide slugs. A new reference without a line here goes out under its file
+ * name, and does not disappear.
  */
 const REFERENCE_SLUG: Record<string, string> = {
   method: "metodo",
@@ -103,7 +106,7 @@ export function cells(line: string): string[] {
 
 function tableLines(markdown: string, title: string, file: string): string[] {
   const body = section(markdown, title);
-  if (!body) throw new Error(`Nao achei a secao "${title}" em ${file}.`);
+  if (!body) throw new Error(`Section "${title}" not found in ${file}.`);
   return body.split("\n").filter((line) => line.startsWith("|"));
 }
 
@@ -149,10 +152,10 @@ function readSignature() {
 }
 
 /**
- * A primeira frase do primeiro paragrafo, e a seguinte quando a primeira e
- * curta demais para dizer algo ("Acao." e a frase inteira do Button). O
- * `firstSentence` do site le a primeira LINHA, e o markdown quebra a frase no
- * meio: "no topo da area que ela" era a descricao inteira do Banner.
+ * The first sentence of the first paragraph, plus the next one when the first
+ * is too short to say anything ("Action." was the whole Button sentence). The
+ * site's `firstSentence` reads the first LINE, and markdown breaks a sentence
+ * in the middle: "no topo da area que ela" was once the whole Banner summary.
  */
 export function leadSentence(body: string): string {
   const paragraph =
@@ -181,9 +184,9 @@ function readGuides(files: Map<string, string>): Guide[] {
   const guides: Guide[] = [
     {
       slug: "convencoes",
-      title: "Convenções",
+      title: "Conventions",
       summary:
-        "O contrato de uso: Provider, tokens, vocabulário de classes e as regras de toda peça.",
+        "The usage contract: Provider, tokens, class vocabulary and the rules every piece follows.",
       path: "convencoes.md",
     },
   ];
@@ -197,16 +200,17 @@ function readGuides(files: Map<string, string>): Guide[] {
   if (files.has(auditSkill)) {
     guides.push({
       slug: "auditoria",
-      title: titleOf(files.get(auditSkill)!, "Auditoria"),
+      title: titleOf(files.get(auditSkill)!, "Audit"),
       summary:
-        "A skill de auditoria: o laço, as regras mecânicas e de julgamento, e a conta da nota que `audit_screen` devolve.",
+        "The audit skill: the loop, the mechanical and judgment rules, and the score math that `audit_screen` returns.",
       path: auditSkill,
     });
   }
   guides.push({
     slug: "skill-completa",
     title: titleOf(skill, "Skill"),
-    summary: "A skill inteira: o método, o Provider, o vocabulário de classes e o que nunca fazer.",
+    summary:
+      "The whole skill: the method, the Provider, the class vocabulary and what never to do.",
     path: "skill/SKILL.md",
   });
 
@@ -261,7 +265,7 @@ export function buildContent(): Content {
         .sort(),
     });
 
-    const avoidance = section(`\n${doc.body}`, "## Quando não usar");
+    const avoidance = section(`\n${doc.body}`, AVOID_SECTION);
     if (avoidance) avoid[doc.name] = avoidance;
   }
 
@@ -274,12 +278,12 @@ export function buildContent(): Content {
   >;
   const tokens = exportDtcg(readCssTree(at(HOUSE_CSS))).files;
 
-  countAtLeast("pecas no catalogo", components.length, 80);
-  countAtLeast(`linhas da tabela de escolha em ${CHOICE_FILE}`, choices.length, 20);
-  countAtLeast(`linhas de paridade em ${PARITY_FILE}`, Object.keys(parity).length, 80);
-  countAtLeast(`pecas na assinatura de ${SIGNATURE_FILE}`, Object.keys(signature).length, 40);
-  countAtLeast(`pecas em ${NATIVE_PROPS}`, Object.keys(nativeProps).length, 60);
-  countAtLeast("arquivos DTCG", Object.keys(tokens).length, 5);
+  countAtLeast("pieces in the catalog", components.length, 80);
+  countAtLeast(`choice table rows in ${CHOICE_FILE}`, choices.length, 20);
+  countAtLeast(`parity rows in ${PARITY_FILE}`, Object.keys(parity).length, 80);
+  countAtLeast(`pieces in the signature of ${SIGNATURE_FILE}`, Object.keys(signature).length, 40);
+  countAtLeast(`pieces in ${NATIVE_PROPS}`, Object.keys(nativeProps).length, 60);
+  countAtLeast("DTCG files", Object.keys(tokens).length, 5);
 
   const web = JSON.parse(read("package.json")) as { version: string };
   const native = JSON.parse(read("native/package.json")) as { version: string };
@@ -305,7 +309,7 @@ if (import.meta.main) {
   const out = flag >= 0 ? process.argv[flag + 1] : undefined;
 
   if (!out) {
-    console.error("Diga onde eu escrevo: bun run scripts/mcp-content.ts --out <arquivo>");
+    console.error("Say where to write: bun run scripts/mcp-content.ts --out <file>");
     process.exit(1);
   }
 
@@ -314,8 +318,8 @@ if (import.meta.main) {
   writeFileSync(out, JSON.stringify(content));
 
   console.log(
-    `${content.components.length} pecas, ${Object.keys(content.files).length} documentos e` +
-      ` ${content.guides.length} guias em ${out}, da documentacao de @rivocode/ui` +
-      ` ${content.generatedFrom.web} e @rivocode/ui-native ${content.generatedFrom.native}.`,
+    `${content.components.length} pieces, ${Object.keys(content.files).length} documents and` +
+      ` ${content.guides.length} guides in ${out}, from the documentation of @rivocode/ui` +
+      ` ${content.generatedFrom.web} and @rivocode/ui-native ${content.generatedFrom.native}.`,
   );
 }

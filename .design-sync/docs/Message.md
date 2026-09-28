@@ -1,12 +1,12 @@
 ---
-category: IA
+category: AI
 ---
 
 # Message
 
-Uma mensagem de conversa com um assistente: quem fala, o conteúdo, as ações de
-copiar e tentar de novo, e o indicador de que o texto ainda está chegando. Vive
-em `@rivocode/ui/ai`.
+A message in a conversation with an assistant: who is speaking, the content,
+the copy and retry actions, and the indicator that the text is still
+arriving. Lives in `@rivocode/ui/ai`.
 
 ```tsx
 import { Message } from '@rivocode/ui/ai'
@@ -17,27 +17,27 @@ import { Message } from '@rivocode/ui/ai'
 </Message>
 ```
 
-## O papel decide o desenho
+## The role decides the look
 
-- `user` é o balão à direita, no fundo do acento.
-- `assistant` é o texto corrido à esquerda, sem balão: é onde mora a resposta
-  longa, a lista e a tabela, e balão aperta tudo isso.
-- `system` é a linha discreta no centro, para "Conversa iniciada às 14h02" e
-  para o aviso de que o contexto mudou.
+- `user` is the bubble on the right, on the accent background.
+- `assistant` is running text on the left, without a bubble: it is where the
+  long answer, the list and the table live, and a bubble squeezes all of that.
+- `system` is the discreet line in the center, for "Conversa iniciada às
+  14h02" and for the notice that the context changed.
 
-Cada mensagem sai como um `article` com o nome de quem fala ("Você",
-"Assistente", "Sistema"), e o leitor de tela anda de uma para a outra por aí.
-`author` troca o nome, para o assistente que tem nome próprio.
+Each message renders as an `article` with the speaker's name ("Você",
+"Assistente", "Sistema"), and the screen reader moves from one to the next that
+way. `author` swaps the name, for an assistant that has a name of its own.
 
-`avatar` recebe o `Avatar` da casa e fica do lado de quem fala. Em `system` ele
-não sai.
+`avatar` takes the house `Avatar` and sits on the speaker's side. On `system`
+it does not render.
 
-## O conteúdo é seu
+## The content is yours
 
-`children` é o que aparece, e a peça não interpreta nada: quem usa renderiza o
-markdown com a biblioteca que já tem, e passa o resultado. Isso é de propósito.
-Markdown de modelo traz tabela, código e link, e cada produto decide o que
-aceita.
+`children` is what appears, and the piece interprets nothing: the caller
+renders the markdown with the library it already has, and passes the result.
+That is on purpose. Model markdown brings tables, code and links, and each
+product decides what it accepts.
 
 ```tsx
 <Message role="assistant" copyValue={raw}>
@@ -45,27 +45,27 @@ aceita.
 </Message>
 ```
 
-## Chegando
+## Arriving
 
-`streaming` diz que o texto ainda está chegando. Três coisas mudam:
+`streaming` says the text is still arriving. Three things change:
 
-- os três pontos aparecem depois do texto (ou sozinhos, antes do primeiro
-  pedaço), e param de pulsar quando o sistema pede menos movimento;
-- a mensagem anuncia `aria-busy`, e o leitor de tela espera ela terminar em
-  vez de ler cada pedaço que chega;
-- as ações somem: copiar meia resposta e pedir outra enquanto a primeira nem
-  terminou são os dois toques que ninguém quer.
+- the three dots appear after the text (or alone, before the first chunk),
+  and stop pulsing when the system asks for less motion;
+- the message announces `aria-busy`, and the screen reader waits for it to
+  finish instead of reading each chunk that arrives;
+- the actions disappear: copying half an answer and asking for another while
+  the first has not even finished are the two taps nobody wants.
 
-## Ações e erro
+## Actions and error
 
-`copyValue` liga o botão de copiar, com o texto que vai para a área de
-transferência. Passe o texto cru (o markdown, e não o que ele desenha), porque
-é isso que a pessoa cola em outro lugar. `onRetry` liga o "Tentar de novo".
-`actions` recebe os botões próprios, depois dos dois: gostei, não gostei,
-salvar.
+`copyValue` turns on the copy button, with the text that goes to the
+clipboard. Pass the raw text (the markdown, not what it draws), because that is
+what the person pastes elsewhere. `onRetry` turns on "Tentar de novo".
+`actions` takes your own buttons, after those two: like, dislike, save.
 
-`error` é a resposta que falhou. A frase sai embaixo do conteúdo, com ícone e
-no tom de perigo, e as ações aparecem mesmo sem conteúdo nenhum.
+`error` is the answer that failed. The sentence renders below the content, with
+an icon and in the danger tone, and the actions appear even with no content at
+all.
 
 ```tsx
 <Message
@@ -77,27 +77,27 @@ no tom de perigo, e as ações aparecem mesmo sem conteúdo nenhum.
 </Message>
 ```
 
-## Partes
+## Parts
 
-`classNames` alcança `avatar`, `bubble` (o balão do `user`, e a coluna do
-`assistant`), `content`, `indicator`, `error` e `actions`.
+`classNames` reaches `avatar`, `bubble` (the `user` bubble, and the
+`assistant` column), `content`, `indicator`, `error` and `actions`.
 
-## Quando não usar
+## When not to use
 
-- **Conteúdo que não é turno de conversa** é `Card`. Um resumo gerado por IA
-  numa tela de painel é um cartão com um `AILabel`, e não uma mensagem: não há
-  quem pergunte nem a quem responder.
-- **Linha de lista com ícone, texto e ação** é `Item`. Um histórico de
-  conversas antigas, com o título de cada uma, é lista de `Item`; a `Message` é
-  o que aparece depois que a pessoa abre uma delas.
-- **Comentário de pessoa para pessoa**, com data e autor, é `Timeline`. A
-  `Message` pressupõe dois lados alternando, e o alinhamento por papel perde o
-  sentido num fio de cinco pessoas.
+- **Content that is not a conversation turn** is `Card`. An AI-generated
+  summary on a dashboard screen is a card with an `AILabel`, not a message:
+  there is nobody asking and nobody to answer.
+- **A list row with an icon, text and an action** is `Item`. A history of old
+  conversations, with the title of each, is a list of `Item`; `Message` is what
+  appears after the person opens one of them.
+- **A person-to-person comment**, with date and author, is `Timeline`.
+  `Message` assumes two sides taking turns, and alignment by role loses its
+  meaning in a thread of five people.
 
-## No React Native
+## In React Native
 
-Traduz, no caminho próprio `@rivocode/ui-native/ai`, com o mesmo `role`, o mesmo alinhamento, o mesmo `author`, `avatar`, `streaming`, `onRetry`, `actions` e `error`. Em `streaming` a mensagem anuncia `busy` e esconde as ações, como no web.
+Translates, on its own path `@rivocode/ui-native/ai`, with the same `role`, the same alignment, the same `author`, `avatar`, `streaming`, `onRetry`, `actions` and `error`. In `streaming` the message announces `busy` and hides the actions, as on the web.
 
-**Copiar é seu.** O web copia sozinho pelo `copyValue`; aqui a peça tem `onCopy`, porque a área de transferência do celular é o `expo-clipboard`, peer que mora em `@rivocode/ui-native/clipboard` e que o caminho de IA não pode cobrar de quem não copia nada. Texto solto em `children` vira `Text` no corpo da casa; nó entra como veio, para quem renderiza markdown.
+**Copying is yours.** The web copies on its own through `copyValue`; here the piece has `onCopy`, because the phone's clipboard is `expo-clipboard`, a peer that lives in `@rivocode/ui-native/clipboard` and that the AI path cannot charge to whoever copies nothing. Loose text in `children` becomes `Text` in the house body; a node comes in as it came, for whoever renders markdown.
 
-As partes vestem pelo mesmo `classNames` do web: `avatar`, `bubble`, `content`, `indicator`, `error` e `actions`. `content` veste o `Text` que embrulha o texto solto; nó que chega pronto entra como veio.
+The parts are styled through the same `classNames` as the web: `avatar`, `bubble`, `content`, `indicator`, `error` and `actions`. `content` styles the `Text` that wraps loose text; a node that arrives ready comes in as it came.

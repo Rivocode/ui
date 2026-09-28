@@ -23,31 +23,33 @@ export type PostalCodeFieldProps = Omit<
   "value" | "defaultValue" | "onValueChange" | "type" | "inputMode" | "maxLength"
 > & {
   /**
-   * A busca do endereco, escrita por quem usa: recebe os 8 digitos e o
-   * `signal` da busca, e devolve o endereco ou `null` quando o CEP nao existe.
-   * Rejeitar a promessa e falha de rede. A peca nao chama servico nenhum
-   * sozinha.
+   * The address lookup, written by the consumer: receives the 8 digits and the
+   * lookup's `signal`, and returns the address or `null` when the CEP does not exist.
+   * Rejecting the promise is a network failure. The piece calls no service
+   * on its own.
    */
   lookup: PostalCodeLookup;
   /**
-   * Chamado quando a busca acha o endereco, com ele e os 8 digitos. E aqui que
-   * o resto do formulario se preenche.
+   * Called when the lookup finds the address, with it and the 8 digits. This is where
+   * the rest of the form gets filled in.
    */
   onAddress?: (address: PostalAddress, postalCode: string) => void;
-  /** O texto com mascara, quando quem usa controla o estado. Aceita so digitos tambem. */
+  /** The masked text, when the consumer controls the state. Also accepts digits only. */
   value?: string;
-  /** O texto inicial, quando o campo controla o proprio estado. Nao dispara busca. */
+  /** The initial text, when the field controls its own state. Does not trigger a lookup. */
   defaultValue?: string;
-  /** Chamado a cada tecla, com o texto mascarado e os digitos. Guarde os digitos. */
+  /** Called on every keystroke, with the masked text and the digits. Store the digits. */
   onValueChange?: (masked: string, digits: string) => void;
-  /** Chamado a cada troca de estado da busca: `searching`, `found`, `notFound`, `failed`, `idle`. */
+  /**
+   * Called on every change of the lookup state: `searching`, `found`, `notFound`, `failed`, `idle`.
+   */
   onStatusChange?: (status: PostalCodeStatus) => void;
   /**
-   * Os textos da peca, um a um: `searching`, `found`, `notFound`, `failed` e
-   * `retry`. Sem eles, as frases em portugues.
+   * The piece's texts, one by one: `searching`, `found`, `notFound`, `failed` and
+   * `retry`. Without them, the Portuguese sentences.
    */
   labels?: Partial<typeof POSTAL_CODE_MESSAGES>;
-  /** Classe por parte: `input`, `suffix` (o giro e o visto), `message` e `retry`. */
+  /** Class per part: `input`, `suffix` (the spinner and the check), `message` and `retry`. */
   classNames?: Slots<"input" | "suffix" | "message" | "retry">;
 };
 

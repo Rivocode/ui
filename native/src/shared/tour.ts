@@ -1,4 +1,4 @@
-/* Gerado de src/shared/tour.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/tour.ts by bun run gen:shared. Do not edit. */
 
 export type TourLabels = {
   back: string;
@@ -58,5 +58,5 @@ export function planTourMove(
 }
 
 export function missingTargetComplaint(index: number, target: string): string {
-  return `Tour: o alvo do passo ${index + 1} (${target}) não foi encontrado, e o passo foi pulado.`;
+  return `Tour: the target of step ${index + 1} (${target}) was not found, and the step was skipped.`;
 }

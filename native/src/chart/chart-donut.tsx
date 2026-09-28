@@ -19,54 +19,54 @@ const GAP = 2;
 
 export type ChartDonutProps<Slice> = {
   data: Slice[];
-  /** De onde sai o número de cada fatia. */
+  /** Where each slice's number comes from. */
   valueKey: keyof Slice & string;
-  /** De onde sai o nome de cada fatia. É ele que o `config` procura. */
+  /** Where each slice's name comes from. It is what `config` looks up. */
   nameKey: keyof Slice & string;
   config?: ChartConfig;
   /**
-   * O número grande no meio. `string`, e não `ReactNode` como no web: aqui ele
-   * também é o que o leitor de tela ouve quando não há legenda.
+   * The big number in the middle. `string`, and not `ReactNode` as on the web:
+   * here it is also what the screen reader hears when there is no legend.
    */
   centerValue?: string;
-  /** A linha pequena embaixo do número. */
+  /** The small line below the number. */
   centerLabel?: string;
   /**
-   * Espessura do anel, em fração do raio. `1` fecha e vira pizza. Anel mais
-   * fino deixa buraco maior, e é ali que o total precisa caber.
+   * Ring thickness, as a fraction of the radius. `1` closes it into a pie. A
+   * thinner ring leaves a bigger hole, and that is where the total has to fit.
    */
   thickness?: number;
   /**
-   * A lista de fatias embaixo, com nome e valor. **Ligada por padrão, e aqui
-   * ela carrega mais peso que no web**: é a legenda que responde ao toque e
-   * ao leitor de tela, porque nenhuma dica se abre sem ponteiro.
+   * The list of slices below, with name and value. **On by default, and here it
+   * carries more weight than on the web**: the legend is what responds to touch
+   * and to the screen reader, because no tooltip opens without a pointer.
    */
   legend?: boolean;
   /**
-   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
-   * `percent`, `integer`...) ou funcao propria. O mesmo vocabulario do web, do
-   * `Meter` e do `Stat`.
+   * How the number is written: the name of a house formatter (`currencyShort`,
+   * `percent`, `integer`...) or your own function. The same vocabulary as the
+   * web, `Meter` and `Stat`.
    */
   format?: Format;
   className?: string;
   /**
-   * O que o leitor de tela ouve no lugar do desenho.
-   *
-   * Com a legenda ligada (o padrão) ela não é necessária, e nem é usada: o
-   * desenho fica escondido e cada fatia é uma parada de verdade logo abaixo.
-   * Sem legenda, o nome sai das fatias, com valor e tudo.
+   * What the screen reader hears instead of the drawing. With the legend on
+   * (the default) it is not needed, and not even used: the drawing is hidden
+   * and each slice is a real stop just below. Without a legend, the name comes
+   * from the slices, value included.
    */
   label?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `name` monta o nome do desenho
-   * sem `label` e sem legenda, e recebe cada fatia ja escrita com o valor;
-   * `hint` e a dica de cada linha da legenda. Passe so os que mudam.
+   * The component's texts, to change the language: `name` builds the drawing's
+   * name without `label` and without a legend, and receives each slice already
+   * written with its value; `hint` is the hint of each legend row. Pass only
+   * the ones that change.
    */
   labels?: Partial<ChartDonutLabels>;
   /**
-   * O que aparece no lugar da rosca quando nao ha fatia ou a soma da zero. O
-   * mesmo formato do `empty` do `ChartContainer`. Sem ele, fica o anel de
-   * fundo, vazio e calado para o leitor de tela.
+   * What appears in place of the donut when there is no slice or the sum is
+   * zero. The same shape as the `ChartContainer` `empty`. Without it, the
+   * background ring stays, empty and silent to the screen reader.
    */
   empty?: ChartEmptyContent;
 };

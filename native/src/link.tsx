@@ -23,31 +23,32 @@ export type LinkProps = Omit<
 > & {
   children: ReactNode;
   /**
-   * O endereco que o toque abre pelo `Linking` do React Native: `https:`,
-   * `mailto:`, `tel:`. Quando `onPress` vem junto, quem navega e o `onPress`,
-   * e o `href` fica so como dado.
+   * The address the tap opens through React Native `Linking`: `https:`,
+   * `mailto:`, `tel:`. When `onPress` comes along, `onPress` does the
+   * navigating, and `href` stays only as data.
    */
   href?: string;
   /**
-   * Quem navega dentro do app: `onPress={() => router.push("/notas")}`. E o
-   * lugar do `render` do web, que aqui nao existe porque nao ha ancora.
+   * What navigates inside the app: `onPress={() => router.push("/notas")}`. It
+   * takes the place of the web `render`, which does not exist here because
+   * there is no anchor.
    */
   onPress?: (event: GestureResponderEvent) => void;
   /**
-   * O papel de cor, os mesmos quatro do web. `inherit` pega a cor do `Text` de
-   * fora, e e o que vai dentro de um `Alert`.
+   * The color role, the same four as the web. `inherit` takes the color of the
+   * surrounding `Text`, and is what goes inside an `Alert`.
    */
   tone?: LinkTone;
   /**
-   * Sai do app: desenha a seta de saida e avisa o leitor de tela com o
-   * `labels.external`, como dica depois do nome.
+   * Leaves the app: draws the exit arrow and tells the screen reader with
+   * `labels.external`, as a hint after the name.
    */
   external?: boolean;
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `external` e a dica que o leitor
-   * de tela le depois do nome de um link `external`, "Abre fora do app." sem
-   * ele.
+   * The component's texts, to change the language: `external` is the hint the
+   * screen reader reads after the name of an `external` link, "Abre fora do
+   * app." without it.
    */
   labels?: Partial<LinkLabels>;
 };
@@ -78,8 +79,8 @@ export function Link({
     Linking.openURL(href).catch((error: unknown) => {
       if (!__DEV__) return;
       console.warn(
-        `Link: o Linking não abriu "${href}". Endereço relativo não tem app que o abra: ` +
-          "navegue pelo onPress, com o router do app.",
+        `Link: Linking did not open "${href}". A relative address has no app to open it: ` +
+          "navigate through onPress, with the app's router.",
         error,
       );
     });

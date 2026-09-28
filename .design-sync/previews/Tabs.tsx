@@ -1,6 +1,6 @@
 import { Tab, TabList, TabPanel, Tabs } from '@rivocode/ui'
 
-/** Básico */
+/** Basic */
 export function Basic() {
   return (
     <Tabs defaultValue="abertas" className="max-w-lg">
@@ -16,7 +16,7 @@ export function Basic() {
   )
 }
 
-/** Com aba desabilitada */
+/** With a disabled tab */
 export function WithDisabledTab() {
   return (
     <Tabs defaultValue="dados" className="max-w-lg">

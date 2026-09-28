@@ -9,12 +9,12 @@ type BaseX = ComponentProps<typeof XAxis>;
 type BaseY = ComponentProps<typeof YAxis>;
 
 export type ChartXAxisProps = Omit<BaseX, "tickFormatter" | "format"> & {
-  /** `'monthShort'`, `'dayMonth'`, ou uma funcao propria. */
+  /** `'monthShort'`, `'dayMonth'`, or your own function. */
   format?: Format;
 };
 
 export type ChartYAxisProps = Omit<BaseY, "tickFormatter" | "format"> & {
-  /** `'currencyShort'`, `'compact'`, `'percent'`, `'integer'`, ou uma funcao propria. */
+  /** `'currencyShort'`, `'compact'`, `'percent'`, `'integer'`, or your own function. */
   format?: Format;
 };
 

@@ -41,7 +41,7 @@ const paste = (input: HTMLInputElement, text: string) =>
 
 const tokens = (element: Element) => element.className.split(" ");
 
-test("a digitacao entra pela direita, como a mascara de moeda, e sai em centavos", () => {
+test("typing enters from the right, like the currency mask, and comes out in cents", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange });
 
@@ -58,7 +58,7 @@ test("a digitacao entra pela direita, como a mascara de moeda, e sai em centavos
   expect(onValueChange).toHaveBeenLastCalledWith(123456);
 });
 
-test("o R$ fica desenhado ao lado, fora do valor e fora do leitor de tela, e o teclado e o numerico", () => {
+test("the R$ is drawn alongside, outside the value and outside the screen reader, and the keyboard is numeric", () => {
   const { input, prefix } = field();
 
   expect(prefix.textContent).toBe("R$");
@@ -67,7 +67,7 @@ test("o R$ fica desenhado ao lado, fora do valor e fora do leitor de tela, e o t
   expect(input.value).toBe("");
 });
 
-test("apagar tudo devolve null, e nao zero", () => {
+test("erasing everything returns null, and not zero", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange, defaultValue: 12 });
 
@@ -79,7 +79,7 @@ test("apagar tudo devolve null, e nao zero", () => {
   expect(onValueChange).toHaveBeenLastCalledWith(null);
 });
 
-test("zero se digita, e apagar o zero esvazia o campo", () => {
+test("zero can be typed, and erasing the zero empties the field", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange });
 
@@ -92,7 +92,7 @@ test("zero se digita, e apagar o zero esvazia o campo", () => {
   expect(onValueChange).toHaveBeenLastCalledWith(null);
 });
 
-test("colar o valor escrito como a pessoa o ve substitui o campo, com o centavo no lugar", () => {
+test("pasting the value written the way the person sees it replaces the field, with the cents in place", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange });
 
@@ -108,7 +108,7 @@ test("colar o valor escrito como a pessoa o ve substitui o campo, com o centavo 
   expect(onValueChange).toHaveBeenLastCalledWith(15000);
 });
 
-test("colar texto sem numero nao apaga o valor que estava", () => {
+test("pasting text without a number does not erase the existing value", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange, defaultValue: 500 });
 
@@ -117,14 +117,14 @@ test("colar texto sem numero nao apaga o valor que estava", () => {
   expect(onValueChange).not.toHaveBeenCalled();
 });
 
-test("o que chega de uma vez sem evento de colar, como o preenchimento automatico, tambem e lido como valor", () => {
+test("what arrives all at once without a paste event, like autofill, is also read as a value", () => {
   const { input } = field();
 
   replaceWith(input, "R$ 1.234,56");
   expect(input.value).toBe("1.234,56");
 });
 
-test("no celular, a selecao de antes diz o que foi colado por cima", () => {
+test("on mobile, the previous selection tells what was pasted over", () => {
   const all = { start: 0, end: 8 };
   expect(readCurrencyInput("150", "1.234,50", false, all)).toEqual({ cents: 15000, minus: false });
   expect(readCurrencyInput("150", "1.234,50", false)).toEqual({ cents: 150, minus: false });
@@ -134,7 +134,7 @@ test("no celular, a selecao de antes diz o que foi colado por cima", () => {
   });
 });
 
-test("a leitura do colado entende milhar e centavo nos dois costumes", () => {
+test("reading the pasted text understands thousands and cents in both conventions", () => {
   expect(parseCurrencyText("R$ 1.234,56")).toBe(123456);
   expect(parseCurrencyText("1,234.56")).toBe(123456);
   expect(parseCurrencyText("1.234")).toBe(123400);
@@ -143,11 +143,11 @@ test("a leitura do colado entende milhar e centavo nos dois costumes", () => {
   expect(parseCurrencyText("R$")).toBeNull();
 });
 
-test("colar no meio do que ja estava escrito le so o pedaco colado", () => {
+test("pasting in the middle of what was already written reads only the pasted piece", () => {
   expect(readCurrencyInput("1,00R$ 5,00", "1,00", false)).toEqual({ cents: 500, minus: false });
 });
 
-test("sem allowNegative o sinal nao entra, nem digitado nem colado", () => {
+test("without allowNegative the sign does not get in, neither typed nor pasted", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange, defaultValue: 500 });
 
@@ -159,7 +159,7 @@ test("sem allowNegative o sinal nao entra, nem digitado nem colado", () => {
   expect(onValueChange).toHaveBeenLastCalledWith(1000);
 });
 
-test("com allowNegative o - poe o sinal, um segundo - tira, e o teclado deixa de ser o numerico", () => {
+test("with allowNegative the - adds the sign, a second - removes it, and the keyboard stops being numeric", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange, allowNegative: true });
 
@@ -182,7 +182,7 @@ test("com allowNegative o - poe o sinal, um segundo - tira, e o teclado deixa de
   expect(onValueChange).toHaveBeenLastCalledWith(-123456);
 });
 
-test("fora de min e max o campo se marca invalido, e o valor nao e corrigido sozinho", () => {
+test("outside min and max the field marks itself invalid, and the value is not corrected on its own", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange, min: 1000, max: 50000 });
 
@@ -199,12 +199,12 @@ test("fora de min e max o campo se marca invalido, e o valor nao e corrigido soz
   expect(input.getAttribute("aria-invalid")).toBe("true");
 });
 
-test("o campo vazio nao e invalido, mesmo com min: obrigatorio e assunto do formulario", () => {
+test("the empty field is not invalid, even with min: required is the form's business", () => {
   const { input } = field({ min: 1000 });
   expect(input.getAttribute("aria-invalid")).toBeNull();
 });
 
-test("controlado, o campo mostra o valor de fora e acompanha a troca", () => {
+test("when controlled, the field shows the outside value and follows the change", () => {
   function Controlled() {
     const [cents, setCents] = useState<number | null>(123456);
     return (
@@ -230,7 +230,7 @@ test("controlado, o campo mostra o valor de fora e acompanha a troca", () => {
   expect(input.value).toBe("0,99");
 });
 
-test("desabilitado, o campo nao edita e o R$ apaga junto", () => {
+test("when disabled, the field does not edit and the R$ dims along", () => {
   const { input, prefix } = field({ disabled: true, defaultValue: 100 });
 
   expect(input.disabled).toBe(true);
@@ -238,7 +238,7 @@ test("desabilitado, o campo nao edita e o R$ apaga junto", () => {
   expect(tokens(prefix)).not.toContain("text-fg-subtle");
 });
 
-test("com name, o formulario nativo recebe os centavos, e nao o texto pontuado", () => {
+test("with name, the native form receives the cents, and not the punctuated text", () => {
   const { container, input } = field({ name: "amount", defaultValue: 123456 });
   const hidden = container.querySelector("input[type='hidden']") as HTMLInputElement;
 
@@ -250,7 +250,7 @@ test("com name, o formulario nativo recebe os centavos, e nao o texto pontuado",
   expect(hidden.value).toBe("");
 });
 
-test("para em doze digitos, e o valor nunca vira ponto flutuante", () => {
+test("stops at twelve digits, and the value never becomes floating point", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange });
 
@@ -260,7 +260,7 @@ test("para em doze digitos, e o valor nunca vira ponto flutuante", () => {
   expect(onValueChange).toHaveBeenLastCalledWith(999999999999);
 });
 
-test("classNames alcanca o campo e o prefixo, e className veste a raiz", () => {
+test("classNames reaches the field and the prefix, and className dresses the root", () => {
   const { input, prefix } = field({
     className: "raiz-teste",
     classNames: { input: "campo-teste", prefix: "prefixo-teste" },
@@ -293,7 +293,7 @@ function Charge({ onSubmit }: { onSubmit: (data: { amount: number }) => void }) 
   );
 }
 
-test("com o FormField e o forValue, o schema recebe centavos e o erro sai embaixo do campo", async () => {
+test("with FormField and forValue, the schema receives cents and the error shows below the field", async () => {
   const onSubmit = mock((_data: { amount: number }) => {});
   render(<Charge onSubmit={onSubmit} />);
   const input = screen.getByLabelText("Valor da cobrança") as HTMLInputElement;
@@ -309,7 +309,7 @@ test("com o FormField e o forValue, o schema recebe centavos e o erro sai embaix
   expect(onSubmit.mock.calls[0]![0]).toEqual({ amount: 123456 });
 });
 
-test("desabilitado, o campo fica fora do formulario nativo, como qualquer campo desabilitado", () => {
+test("when disabled, the field stays out of the native form, like any disabled field", () => {
   const { container } = render(
     <form>
       <CurrencyInput aria-label="Valor" name="amount" defaultValue={500} disabled />
@@ -319,7 +319,7 @@ test("desabilitado, o campo fica fora do formulario nativo, como qualquer campo 
   expect(data.has("amount")).toBe(false);
 });
 
-test("a ref do consumidor recebe o campo uma vez, e nao a cada render", () => {
+test("the consumer ref receives the field once, and not on every render", () => {
   const calls: (HTMLInputElement | null)[] = [];
   const ref = (node: HTMLInputElement | null) => {
     calls.push(node);
@@ -331,7 +331,7 @@ test("a ref do consumidor recebe o campo uma vez, e nao a cada render", () => {
   expect(calls[0]).toBeInstanceOf(HTMLInputElement);
 });
 
-test("o leitor de tela ouve que o numero e em reais, sem perder a descricao do Field", () => {
+test("the screen reader hears that the number is in reais, without losing the Field description", () => {
   const { input } = field({ "aria-describedby": "outra" });
   const ids = (input.getAttribute("aria-describedby") ?? "").split(" ");
   const said = ids.map((id) => document.getElementById(id)?.textContent);
@@ -341,7 +341,7 @@ test("o leitor de tela ouve que o numero e em reais, sem perder a descricao do F
   expect(ids).toContain("outra");
 });
 
-test("colar mais que doze digitos e recusado, e nao cortado em silencio", () => {
+test("pasting more than twelve digits is refused, and not silently truncated", () => {
   expect(parseCurrencyText("1234567890123,45")).toBeNull();
   expect(parseCurrencyText("R$ 12.345.678.901,23")).toBeNull();
   expect(parseCurrencyText("9.999.999.999,99")).toBe(999999999999);
@@ -357,7 +357,7 @@ test("colar mais que doze digitos e recusado, e nao cortado em silencio", () => 
   expect(input.value).toBe("5,00");
 });
 
-test("texto misturado ao numero e recusado, e parenteses de contabilidade sao o sinal", () => {
+test("text mixed with the number is refused, and accounting parentheses are the sign", () => {
   expect(parseCurrencyText("R$ 10 - desconto 2")).toBeNull();
   expect(parseCurrencyText("10 reais e 2 centavos")).toBeNull();
   expect(parseCurrencyText("Total: R$ 10,00")).toBeNull();
@@ -373,7 +373,7 @@ test("texto misturado ao numero e recusado, e parenteses de contabilidade sao o 
   expect(parseCurrencyText("r$ 1 234,56")).toBe(123456);
 });
 
-test("o que chega de uma vez sem colar, com texto que nao e valor, deixa o valor que estava", () => {
+test("what arrives all at once without pasting, with text that is not a value, keeps the existing value", () => {
   expect(readCurrencyInput("sem valor", "5,00", false)).toEqual({ cents: 500, minus: false });
   expect(readCurrencyInput("R$ 10 - desconto 2", "-5,00", true)).toEqual({
     cents: -500,
@@ -381,7 +381,7 @@ test("o que chega de uma vez sem colar, com texto que nao e valor, deixa o valor
   });
 });
 
-test("dentro de Field com name, o formulario nativo recebe so os centavos, e nunca o texto pontuado", () => {
+test("inside a Field with name, the native form receives only the cents, and never the punctuated text", () => {
   const { container } = render(
     <form>
       <Field name="preco">
@@ -400,7 +400,7 @@ test("dentro de Field com name, o formulario nativo recebe so os centavos, e nun
   expect((screen.getByLabelText("Preço") as HTMLInputElement).hasAttribute("name")).toBe(false);
 });
 
-test("com allowNegative, o sinal digitado nao sobra quando o valor e zerado por fora", () => {
+test("with allowNegative, the typed sign does not linger when the value is zeroed from outside", () => {
   function Controlled() {
     const [cents, setCents] = useState<number | null>(null);
     return (
@@ -424,7 +424,7 @@ test("com allowNegative, o sinal digitado nao sobra quando o valor e zerado por 
   expect(input.value).toBe("0,07");
 });
 
-test("o sinal de menos sozinho some quando o campo perde o foco, mesmo sem o valor mudar por fora", () => {
+test("a lone minus sign disappears when the field loses focus, even without the value changing from outside", () => {
   render(<CurrencyInput aria-label="Ajuste" allowNegative value={null} onValueChange={() => {}} />);
   const input = screen.getByLabelText("Ajuste") as HTMLInputElement;
 

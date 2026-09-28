@@ -17,13 +17,13 @@ function trail(items: Crumb[], max?: number) {
   return shown.join(" ");
 }
 
-test("a trilha dobrada mostra a primeira e as max - 1 ultimas", () => {
+test("the collapsed trail shows the first and the last max - 1", () => {
   expect(trail(CRUMBS, 4)).toBe("A ... C D E");
   expect(trail(CRUMBS, 3)).toBe("A ... D E");
   expect(trail(CRUMBS)).toBe("A ... C D E");
 });
 
-test("com max abaixo de 3 a trilha nao mostra mais migalhas nem repete nenhuma", () => {
+test("with max below 3 the trail shows no extra crumbs and repeats none", () => {
   expect(trail(CRUMBS, 2)).toBe("A ... E");
   expect(trail(CRUMBS, 1)).toBe("A ... E");
   expect(trail(CRUMBS, 0)).toBe("A ... E");
@@ -31,7 +31,7 @@ test("com max abaixo de 3 a trilha nao mostra mais migalhas nem repete nenhuma",
   expect(trail(CRUMBS.slice(-3), 1)).toBe("C ... E");
 });
 
-test("a reticencia so aparece quando esconde ao menos uma migalha", () => {
+test("the ellipsis only appears when it hides at least one crumb", () => {
   expect(trail(CRUMBS.slice(0, 4), 4)).toBe("A B C D");
   expect(trail(CRUMBS.slice(0, 3), 2)).toBe("A ... C");
   expect(trail(CRUMBS.slice(0, 2), 2)).toBe("A B");
@@ -47,21 +47,21 @@ function pager(page: number, pageCount: number) {
   return { onPageChange, previous, next, position, current };
 }
 
-test("sem paginas, a paginacao nao escreve 1 de 0 e trava as duas setas", () => {
+test("without pages, the pagination does not write 1 of 0 and locks both arrows", () => {
   const { position, previous, next } = pager(1, 0);
   expect(position).toBe("1 de 1");
   expect(previous.disabled).toBe(true);
   expect(next.disabled).toBe(true);
 });
 
-test("com uma pagina so, as duas setas ficam travadas", () => {
+test("with a single page, both arrows are locked", () => {
   const { previous, next, current } = pager(1, 1);
   expect(previous.disabled).toBe(true);
   expect(next.disabled).toBe(true);
   expect(current).toBe("1");
 });
 
-test("a pagina alem do fim aparece presa na ultima, marcada, e a seta volta uma so", () => {
+test("a page past the end shows clamped to the last one, marked, and the arrow goes back just one", () => {
   const { position, current, previous, next, onPageChange } = pager(9, 5);
   expect(position).toBe("5 de 5");
   expect(current).toBe("5");
@@ -71,7 +71,7 @@ test("a pagina alem do fim aparece presa na ultima, marcada, e a seta volta uma 
   expect(onPageChange).toHaveBeenCalledWith(4);
 });
 
-test("a pagina antes do comeco aparece presa na primeira", () => {
+test("a page before the start shows clamped to the first one", () => {
   const { position, current, previous, next, onPageChange } = pager(-3, 5);
   expect(position).toBe("1 de 5");
   expect(current).toBe("1");
@@ -94,7 +94,7 @@ function phoneTrail(items: Crumb[], max?: number) {
   return { shown: shown.join(" "), links };
 }
 
-test("no celular a trilha guarda a pagina atual e um link de volta, mesmo com a reticencia no meio", () => {
+test("on mobile the trail keeps the current page and a back link, even with the ellipsis in the middle", () => {
   for (const max of [0, 1, 2, 3, 4]) {
     const { shown, links } = phoneTrail(CRUMBS, max);
     expect(shown.endsWith("E")).toBe(true);

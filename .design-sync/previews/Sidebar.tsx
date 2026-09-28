@@ -18,7 +18,7 @@ import {
 } from '@rivocode/ui'
 import { FileText, Home, Settings, Users, Waves } from 'lucide-react'
 
-/** Tela de operação */
+/** Operations screen */
 export function OperationScreen() {
   return (
     <div className="h-[26rem] overflow-hidden rounded-lg border border-border">
@@ -85,7 +85,7 @@ export function OperationScreen() {
   )
 }
 
-/** Carregando a navegação */
+/** Loading the navigation */
 export function LoadingNavigation() {
   return (
     <div className="h-64 overflow-hidden rounded-lg border border-border">

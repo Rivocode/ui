@@ -27,38 +27,38 @@ const POSITION = {
 
 export type ActionBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /**
-   * Quantos itens estao selecionados. Acima de zero a barra entra e diz o
-   * numero; em zero ela sai. E o `length` do `value` do `DataTable`.
+   * How many items are selected. Above zero the bar comes in and states the
+   * number; at zero it leaves. It is the `length` of the `DataTable`'s `value`.
    */
   count: number;
   /**
-   * As acoes do lote, depois da contagem. Use `Button` `size="sm"`, e deixe a
-   * destrutiva por ultimo.
+   * The batch actions, after the count. Use `Button` `size="sm"`, and put the
+   * destructive one last.
    */
   children?: ReactNode;
   /**
-   * Liga o "Limpar seleção" no fim da barra. Quem zera a selecao e quem
-   * chamou: a barra nao guarda estado nenhum.
+   * Turns on "Limpar seleção" at the end of the bar. Whoever called it resets the
+   * selection: the bar keeps no state at all.
    */
   onClear?: () => void;
   /**
-   * `sticky` gruda no pe da area que a contem e ocupa lugar embaixo dela
-   * enquanto esta aberta; `fixed` gruda no pe da janela, acima da area segura
-   * do celular, e nao ocupa lugar nenhum.
+   * `sticky` sticks to the bottom of the area that contains it and takes up space below it
+   * while open; `fixed` sticks to the bottom of the window, above the phone's safe
+   * area, and takes up no space at all.
    */
   position?: "sticky" | "fixed";
   /**
-   * Para onde o foco vai quando a barra sai com ele dentro - depois do
-   * "Limpar seleção", ou de uma acao que zera a selecao. Sem ele, o foco volta
-   * para onde estava antes de entrar na barra (o checkbox da ultima linha
-   * marcada, quase sempre) e, se aquilo sumiu, fica na raiz da barra.
+   * Where focus goes when the bar leaves with focus inside it - after
+   * "Limpar seleção", or an action that resets the selection. Without it, focus returns
+   * to where it was before entering the bar (the checkbox of the last checked
+   * row, almost always) and, if that is gone, stays on the bar's root.
    */
   finalFocus?: RefObject<HTMLElement | null>;
   /**
-   * Os textos da barra. `selected` recebe a contagem e devolve a frase, para
-   * quem quer nomear o item: `(n) => n === 1 ? "1 nota selecionada" : ...`.
-   * `region` e o nome da regiao, `clear` o do botao e `cleared` o que se
-   * ouve quando a selecao zera.
+   * The bar's texts. `selected` receives the count and returns the sentence, for
+   * those who want to name the item: `(n) => n === 1 ? "1 nota selecionada" : ...`.
+   * `region` is the region's name, `clear` the button's and `cleared` what is
+   * heard when the selection resets.
    */
   labels?: {
     selected?: (count: number) => string;
@@ -66,7 +66,7 @@ export type ActionBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> &
     region?: string;
     cleared?: string;
   };
-  /** Classe por parte: `bar` (o painel), `count`, `actions` e `clear`. */
+  /** Class per part: `bar` (the panel), `count`, `actions` and `clear`. */
   classNames?: Slots<"bar" | "count" | "actions" | "clear">;
 };
 

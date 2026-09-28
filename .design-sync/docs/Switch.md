@@ -1,64 +1,66 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Switch
 
-Chave de liga e desliga, para o que muda na hora.
+An on-off switch, for what changes right away.
 
-O alvo tem 44px de altura mesmo com o trilho de 24, por respiro invisivel: e a
-medida do dedo.
+The target is 44px tall even with a 24px track, through invisible padding: it
+is the size of a finger.
 
-## O rótulo
+## The label
 
-Passe o texto como filho e a chave sai dentro de um `<label>`, então clicar no
-texto também liga:
+Pass the text as a child and the switch comes out inside a `<label>`, so
+clicking the text also turns it on:
 
 ```tsx
 <Switch defaultChecked>Enviar o XML junto com o PDF</Switch>
 ```
 
-Sem filho, sai só a chave. Vale para linha de ajuste onde o texto tem descrição
-embaixo e a chave fica na ponta direita.
+Without a child, only the switch comes out. It works for a settings row where
+the text has a description below and the switch sits at the right end.
 
-## O trilho ligado
+## The track when on
 
-O trilho ligado pinta `accent-text`, e não `accent`: é a mesma lima um passo
-mais escura, e a troca é de contraste. Com a lima cheia o trilho media 1,21:1
-sobre a página no tema claro, contra 3,33:1 do trilho **desligado** - o estado
-ligado ficava menos visível que o desligado, e abaixo dos 3:1 que a WCAG 1.4.11
-pede para controle que não carrega texto. Com `accent-text` ele mede 5,55:1
-sobre a página e 5,75:1 sobre o cartão.
+The track when on paints `accent-text`, not `accent`: it is the same lime one
+step darker, and the swap is about contrast. With the full lime the track
+measured 1.21:1 against the page in the light theme, versus 3.33:1 for the
+**off** track - the on state was less visible than the off one, and below the
+3:1 WCAG 1.4.11 asks for a control that carries no text. With `accent-text` it
+measures 5.55:1 against the page and 5.75:1 against the card.
 
-Não havia lima clara que resolvesse: o passo mais escuro antes do `accent-text`
-é o `accent-active`, e ele para em 1,54:1 sobre branco. No tema escuro os dois
-papéis apontam para o mesmo valor, então lá o trilho não mudou um pixel. O pino
-ligado acompanha em `surface-raised`, e é o que se lê dentro do trilho, a
-5,75:1 no claro e 13,91:1 no escuro.
+There was no light lime that would solve it: the darkest step before
+`accent-text` is `accent-active`, and it stops at 1.54:1 on white. In the dark
+theme both roles point to the same value, so there the track did not change a
+pixel. The on thumb follows in `surface-raised`, and it is what reads inside
+the track, at 5.75:1 in light and 13.91:1 in dark.
 
-Quem escreve tema de cliente herda a garantia sem fazer nada: `accent-text` já
-precisa de 4,5:1 sobre os fundos para o texto de acento, e é a mesma medida que
-o trilho usa.
+Whoever writes a client theme inherits the guarantee without doing anything:
+`accent-text` already needs 4.5:1 against the backgrounds for accent text, and
+it is the same measure the track uses.
 
-## Desabilitado
+## Disabled
 
-Desabilitado se pinta com token, e não com opacidade, como no `Checkbox` e no
-`Radio`. O trilho já é a superfície apagada quando a chave está desligada, então
-aqui quem diz travado é o pino: ele vai de `fg-muted` para `fg-disabled`, e o
-trilho perde o acento quando ligado.
+Disabled is painted with a token, not with opacity, as in `Checkbox` and
+`Radio`. The track is already the dimmed surface when the switch is off, so
+here it is the thumb that says locked: it goes from `fg-muted` to
+`fg-disabled`, and the track loses the accent when on.
 
-Não vale devolver um acento lavado ao trilho ligado-e-travado para o "ligado"
-continuar óbvio: medido, o pino cai para 2,5:1 sobre ele no tema escuro, abaixo
-dos 3:1 da WCAG 1.4.11. E o pino é o único lugar onde se lê a chave.
+Giving a washed-out accent back to the on-and-locked track so that "on" stays
+obvious does not work: measured, the thumb drops to 2.5:1 on it in the dark
+theme, below the 3:1 of WCAG 1.4.11. And the thumb is the only place where the
+switch is read.
 
-## Quando não usar
+## When not to use
 
-Dentro de um formulário que tem botão de salvar, use `Checkbox`. **Não é o mesmo
-controle de outro formato**: a chave age no clique e o efeito é imediato; a
-caixa responde uma pergunta que só vale quando o formulário for enviado. Uma
-chave em cima de um Salvar deixa a pessoa sem saber se já valeu, e se ela sair
-da tela sem salvar, a resposta é não.
+Inside a form that has a save button, use `Checkbox`. **It is not the same
+control in a different shape**: the switch acts on click and the effect is
+immediate; the checkbox answers a question that only counts when the form is
+submitted. A switch above a Save leaves the person not knowing whether it
+already took effect, and if they leave the screen without saving, the answer is
+no.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Switch` - `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `label` é o nome falado, obrigatório sem `children`; `classNames` só com `label`, porque o pino é da plataforma. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Switch` - `checked` and `onCheckedChange` required; the track is the system's, painted by token, and the thumb slides with the platform's own animation; `label` is the spoken name, required without `children`; `classNames` only with `label`, because the thumb belongs to the platform. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

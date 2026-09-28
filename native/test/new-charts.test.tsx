@@ -49,7 +49,7 @@ const BANDS = [
 ] as const;
 
 describe("ChartGauge", () => {
-  test("o nome carrega valor, faixa e a regua das faixas, porque o toque nao tem dica", () => {
+  test("the name carries the value, the band and the band scale, because touch has no tooltip", () => {
     const screen = render(<ChartGauge value={72} bands={BANDS} />);
     const [figure] = byRole(screen, "image");
 
@@ -59,7 +59,7 @@ describe("ChartGauge", () => {
     expect(textOf(screen)).toContain("Atenção");
   });
 
-  test("o arco e as faixas pintam os papeis -text, que sao os medidos sobre o trilho", () => {
+  test("the arc and the bands paint the -text roles, which are the ones measured over the track", () => {
     const screen = render(<ChartGauge value={95} bands={BANDS} />, { theme: "rivocode-dark" });
     const strokes = byType(screen, "Path").map((node) => node.props.stroke);
 
@@ -69,7 +69,7 @@ describe("ChartGauge", () => {
     expect(strokes).not.toContain(dark.danger);
   });
 
-  test("sem faixas, arco de acento e nenhum ponteiro", () => {
+  test("without bands, an accent arc and no needle", () => {
     const screen = render(<ChartGauge value={30} />, { theme: "rivocode-light" });
     const strokes = byType(screen, "Path").map((node) => node.props.stroke);
 
@@ -77,14 +77,14 @@ describe("ChartGauge", () => {
     expect(byLabel(screen, "30 de 100")).toHaveLength(1);
   });
 
-  test("acima do maximo o numero e o real; so o arco e a faixa param na ponta", () => {
+  test("above the maximum the number is the real one; only the arc and the band stop at the end", () => {
     const screen = render(<ChartGauge value={140} bands={BANDS} />);
     const [figure] = byRole(screen, "image");
     expect(figure!.props.accessibilityLabel.startsWith("140 de 100, Crítico.")).toBe(true);
     expect(textOf(screen)).toContain("140");
   });
 
-  test("numero que nao e numero vira travessao, sem faixa", () => {
+  test("a number that is not a number becomes a dash, with no band", () => {
     const screen = render(<ChartGauge value={Number.NaN} bands={BANDS} />);
     const [figure] = byRole(screen, "image");
     expect(figure!.props.accessibilityLabel.startsWith("— de 100.")).toBe(true);
@@ -92,18 +92,18 @@ describe("ChartGauge", () => {
     expect(textOf(screen)).not.toContain("Bom");
   });
 
-  test("com centerValue, o nome diz o mesmo texto que a tela", () => {
+  test("with centerValue, the name says the same text as the screen", () => {
     const screen = render(<ChartGauge value={1234.5} max={2000} centerValue="R$ 1.234,50" />);
     expect(byLabel(screen, "R$ 1.234,50 de 2000")).toHaveLength(1);
   });
 
-  test("sweep de 360 desenha o trilho inteiro, em dois arcos", () => {
+  test("a sweep of 360 draws the whole track, in two arcs", () => {
     const screen = render(<ChartGauge value={50} sweep={360} />, { theme: "rivocode-light" });
     const trail = byType(screen, "Path").find((node) => node.props.stroke === light.skeleton)!;
     expect(trail.props.d.match(/A /g)).toHaveLength(2);
   });
 
-  test("o texto do meio tem a largura do furo do arco, medida pelo desenho", () => {
+  test("the center text has the width of the arc's hole, measured by the drawing", () => {
     const screen = render(<ChartGauge value={72} bands={BANDS} />);
     layout(screen, 600, 176);
     const center = screen.root.findAll(
@@ -121,7 +121,7 @@ const EMISSIONS = [
 ];
 
 describe("ChartHeatmap", () => {
-  test("uma parada ajustavel so, que anda celula a celula e diz o valor", () => {
+  test("a single adjustable stop, which moves cell by cell and says the value", () => {
     const screen = render(
       <ChartHeatmap
         data={EMISSIONS}
@@ -145,7 +145,7 @@ describe("ChartHeatmap", () => {
     );
   });
 
-  test("zero pinta o primeiro degrau; a celula sem dado leva borda tracejada e nenhuma tinta", () => {
+  test("zero paints the first step; a cell with no data gets a dashed border and no paint", () => {
     const screen = render(
       <ChartHeatmap
         data={EMISSIONS}
@@ -168,7 +168,7 @@ describe("ChartHeatmap", () => {
     expect(dashed).toHaveLength(1);
   });
 
-  test("o toque escolhe a celula debaixo do dedo", () => {
+  test("a tap picks the cell under the finger", () => {
     const screen = render(
       <ChartHeatmap
         data={EMISSIONS}
@@ -187,7 +187,7 @@ describe("ChartHeatmap", () => {
     expect(byRole(screen, "adjustable")[0]!.props.accessibilityValue.text).toBe("Seg, 9h: 12");
   });
 
-  test("as linhas e as celulas nao pegam o toque, para o locationX/Y ser da grade", () => {
+  test("the rows and cells do not take the touch, so locationX/Y belongs to the grid", () => {
     const screen = render(
       <ChartHeatmap
         data={EMISSIONS}
@@ -203,7 +203,7 @@ describe("ChartHeatmap", () => {
     for (const node of inside) expect(node.props.pointerEvents).toBe("none");
   });
 
-  test("grade toda em zero pinta o degrau mais ralo", () => {
+  test("an all-zero grid paints the faintest step", () => {
     const screen = render(
       <ChartHeatmap
         data={[
@@ -224,7 +224,7 @@ describe("ChartHeatmap", () => {
     expect(tints).toEqual([HEAT_ALPHAS[0], HEAT_ALPHAS[0]]);
   });
 
-  test("o rotulo de linha comprido tem teto de largura", () => {
+  test("a long row label has a width ceiling", () => {
     const screen = render(
       <ChartHeatmap
         data={[{ dia: "Clínica São Lucas Serviços Médicos Ltda", hora: "8h", total: 1 }]}
@@ -246,7 +246,7 @@ describe("ChartFunnel", () => {
     { etapa: "Primeira nota", total: 100 },
   ];
 
-  test("cada etapa e uma parada com nome, valor e a taxa sobre a anterior", () => {
+  test("each stage is a stop with name, value and the rate over the previous one", () => {
     const screen = render(<ChartFunnel data={STAGES} valueKey="total" nameKey="etapa" />);
 
     expect(byLabel(screen, "Visitas: 1000")).toHaveLength(1);
@@ -255,7 +255,7 @@ describe("ChartFunnel", () => {
     expect(textOf(screen)).toContain("10% do início ao fim");
   });
 
-  test("nome repetido nao repete chave", () => {
+  test("a repeated name does not repeat a key", () => {
     const warn = spyOn(console, "error").mockImplementation(() => {});
     const screen = render(
       <ChartFunnel
@@ -280,7 +280,7 @@ describe("ChartTreemap", () => {
     { natureza: "Retenções de ISS", total: 6 },
   ];
 
-  test("cada categoria e um botao com nome, valor e fatia; o rotulo so aparece onde cabe", () => {
+  test("each category is a button with name, value and share; the label only appears where it fits", () => {
     const screen = render(<ChartTreemap data={NATURES} valueKey="total" nameKey="natureza" />);
     expect(byRole(screen, "button")).toHaveLength(0);
 
@@ -295,7 +295,7 @@ describe("ChartTreemap", () => {
     expect(textOf(screen)).not.toContain("Retenções de ISS");
   });
 
-  test("nome repetido nao repete chave", () => {
+  test("a repeated name does not repeat a key", () => {
     const warn = spyOn(console, "error").mockImplementation(() => {});
     const screen = render(
       <ChartTreemap
@@ -314,7 +314,7 @@ describe("ChartTreemap", () => {
     expect(byRole(screen, "button")).toHaveLength(2);
   });
 
-  test("a tinta da categoria e o alfa medido", () => {
+  test("the category paint is the measured alpha", () => {
     const screen = render(<ChartTreemap data={NATURES} valueKey="total" nameKey="natureza" />, {
       theme: "rivocode-light",
     });
@@ -325,8 +325,8 @@ describe("ChartTreemap", () => {
   });
 });
 
-describe("format aceita o nome do formatador da casa, como no web", () => {
-  test("medidor, funil, mapa de calor e treemap escrevem o numero pelo nome", () => {
+describe("format accepts the name of a house formatter, as on the web", () => {
+  test("gauge, funnel, heatmap and treemap write the number through the name", () => {
     const gauge = render(<ChartGauge value={72} bands={BANDS} format="percent" />);
     expect(byRole(gauge, "image")[0]!.props.accessibilityLabel).toStartWith("72% de 100%");
 
@@ -368,7 +368,7 @@ describe("format aceita o nome do formatador da casa, como no web", () => {
   });
 });
 
-test("ChartDonut e ChartGauge: a dica da legenda e o nome montado saem de labels", () => {
+test("ChartDonut and ChartGauge: the legend hint and the assembled name come from labels", () => {
   const donut = render(
     <ChartDonut
       data={[{ name: "A", value: 1 }]}
@@ -403,10 +403,10 @@ test("ChartDonut e ChartGauge: a dica da legenda e o nome montado saem de labels
   expect(byLabel(gauge, "72 of 100, ok. ok from 0 to 100")).toHaveLength(1);
 });
 
-describe("estado vazio dos graficos", () => {
+describe("the charts' empty state", () => {
   const empty = { title: "Nada no período", description: "Nenhum dado chegou para esta tela." };
 
-  test("ChartFunnel mostra o empty com lista vazia ou soma zero", () => {
+  test("ChartFunnel shows empty with an empty list or a zero sum", () => {
     for (const data of [
       [],
       [
@@ -431,7 +431,7 @@ describe("estado vazio dos graficos", () => {
     expect(textOf(full)).not.toContain("Nada no período");
   });
 
-  test("ChartTreemap mostra o empty com lista vazia ou soma zero", () => {
+  test("ChartTreemap shows empty with an empty list or a zero sum", () => {
     for (const data of [[], [{ nome: "A", total: 0 }]]) {
       const screen = render(
         <ChartTreemap data={data} valueKey="total" nameKey="nome" empty={empty} />,
@@ -450,7 +450,7 @@ describe("estado vazio dos graficos", () => {
     expect(textOf(full)).not.toContain("Nada no período");
   });
 
-  test("ChartHeatmap mostra o empty com lista vazia ou grade toda em zero", () => {
+  test("ChartHeatmap shows empty with an empty list or an all-zero grid", () => {
     for (const data of [[], [{ dia: "Seg", hora: "8h", total: 0 }]]) {
       const screen = render(
         <ChartHeatmap

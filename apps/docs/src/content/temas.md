@@ -1,171 +1,172 @@
-Nenhum componente da biblioteca conhece a cor da marca. Ele pede um papel, "a
-cor de acento", "a superfície levantada", e o tema responde. É isso que permite
-a mesma peça servir a RivoCode num projeto e a um cliente no seguinte, sem tocar
-em componente.
+No component in the library knows the brand color. It asks for a role, "the
+accent color", "the raised surface", and the theme answers. That is what lets
+the same piece serve RivoCode in one project and a client in the next, without
+touching a component.
 
-## As três camadas
+## The three layers
 
 ```
-Camada 1  paleta      --rc-p-lima-500: oklch(...)       a cor crua, sem opinião
-Camada 2  contrato    --color-accent: var(--rc-accent)  vira bg-accent no Tailwind
-Camada 3  tema        --rc-accent: var(--rc-p-lima-500) quem faz o papel, aqui
+Layer 1  palette     --rc-p-lima-500: oklch(...)       the raw color, with no opinion
+Layer 2  contract    --color-accent: var(--rc-accent)  becomes bg-accent in Tailwind
+Layer 3  theme       --rc-accent: var(--rc-p-lima-500) who plays the role, here
 ```
 
-A **paleta** é um dicionário de cores. A **camada de contrato** liga cada papel
-ao vocabulário do Tailwind: todo nome ali vira utilitário, então `--color-surface`
-produz `bg-surface`, `text-surface` e `border-surface`, dentro da biblioteca e
-no layout que você escreve. O **tema** é a única camada que decide qual cor faz
-qual papel.
+The **palette** is a dictionary of colors. The **contract layer** links each
+role to Tailwind's vocabulary: every name there becomes a utility, so
+`--color-surface` produces `bg-surface`, `text-surface` and `border-surface`,
+inside the library and in the layout you write. The **theme** is the only layer
+that decides which color plays which role.
 
-Trocar de cliente é reescrever a camada 3. Nada mais.
+Switching clients is rewriting layer 3. Nothing else.
 
-## Os dois temas prontos
+## The two ready-made themes
 
 ```tsx
-<RivoProvider theme="rivocode-dark">   {/* padrão */}
+<RivoProvider theme="rivocode-dark">   {/* default */}
 <RivoProvider theme="rivocode-light">
-<RivoProvider theme="system">          {/* segue o sistema operacional */}
+<RivoProvider theme="system">          {/* follows the operating system */}
 ```
 
-Com `system`, o Provider lê `prefers-color-scheme` e acompanha a troca enquanto
-a página está aberta, não é só a leitura inicial.
+With `system`, the Provider reads `prefers-color-scheme` and follows the change
+while the page is open; it is not just the initial read.
 
-O `data-rc-theme` que o Provider escreve também **pinta o fundo e a cor de
-texto** do elemento que o carrega. Com `scope="global"` isso é a página; com
-`scope="local"`, só aquela árvore.
+The `data-rc-theme` the Provider writes also **paints the background and the
+text color** of the element that carries it. With `scope="global"` that is the
+page; with `scope="local"`, only that tree.
 
-## Preenchimento e texto são tokens diferentes
+## Fill and text are different tokens
 
-Esta é a distinção que mais economiza tempo depois:
+This is the distinction that saves the most time later:
 
 ```tsx
 <div className="bg-danger text-danger-fg">Botão vermelho, texto por cima</div>
 <p className="text-danger-text">Mensagem de erro sobre o fundo da página</p>
 ```
 
-`bg-danger` é o vermelho que **preenche** e recebe `text-danger-fg` em cima.
-`text-danger-text` é o vermelho que **se lê** sobre o fundo. Nenhuma cor serve
-bem para as duas coisas: a que tem contraste como texto não aguenta texto branco
-por cima, e a que aguenta é clara demais para ler. Vale igual para o acento,
-para `success`, `warning` e `info`.
+`bg-danger` is the red that **fills** and takes `text-danger-fg` on top.
+`text-danger-text` is the red that **is read** on the background. No single
+color does both well: the one with contrast as text cannot hold white text on
+top, and the one that can is too light to read. The same goes for the accent,
+for `success`, `warning` and `info`.
 
-## Todos os papéis
+## Every role
 
-Um tema completo declara todos os que vêm abaixo; faltando um, o componente que o
-usa cai no valor do tema anterior, e o sintoma costuma ser uma cor da RivoCode
-isolada no meio do azul do cliente. Depois deles vêm três papéis de acabamento
-(gradiente, brilho e vidro) que são os únicos opcionais.
+A complete theme declares all of the ones below; if one is missing, the
+component that uses it falls back to the previous theme's value, and the
+symptom is usually an isolated RivoCode color in the middle of the client's
+blue. After them come three finish roles (gradient, glow and glass) that are
+the only optional ones.
 
-### Superfície
+### Surface
 
-| Token | Classe | O que veste |
+| Token | Class | What it dresses |
 |---|---|---|
-| `--rc-bg` | `bg-bg` | O fundo da página |
-| `--rc-surface` | `bg-surface` | Cartão, painel, campo |
-| `--rc-surface-raised` | `bg-surface-raised` | O que salta do resto: menu, dica, cabeçalho de tabela |
-| `--rc-overlay` | `bg-overlay` | A tarja escura atrás de diálogo e folha |
+| `--rc-bg` | `bg-bg` | The page background |
+| `--rc-surface` | `bg-surface` | Card, panel, field |
+| `--rc-surface-raised` | `bg-surface-raised` | What stands out from the rest: menu, tooltip, table header |
+| `--rc-overlay` | `bg-overlay` | The dark scrim behind a dialog and a sheet |
 
-### Texto
+### Text
 
-| Token | Classe | O que veste |
+| Token | Class | What it dresses |
 |---|---|---|
-| `--rc-fg` | `text-fg` | Texto principal |
-| `--rc-fg-muted` | `text-fg-muted` | Texto de apoio, parágrafo secundário |
-| `--rc-fg-subtle` | `text-fg-subtle` | Rótulo, legenda, cabeçalho de coluna |
-| `--rc-fg-disabled` | `text-fg-disabled` | Controle desativado |
+| `--rc-fg` | `text-fg` | Main text |
+| `--rc-fg-muted` | `text-fg-muted` | Supporting text, secondary paragraph |
+| `--rc-fg-subtle` | `text-fg-subtle` | Label, caption, column header |
+| `--rc-fg-disabled` | `text-fg-disabled` | Disabled control |
 
-### Acento
+### Accent
 
-| Token | Classe | O que veste |
+| Token | Class | What it dresses |
 |---|---|---|
-| `--rc-accent` | `bg-accent` | Preenchimento da marca: botão primário, marca de escolha |
-| `--rc-accent-hover` | - | O mesmo com o ponteiro em cima |
-| `--rc-accent-active` | - | O mesmo no instante do clique |
-| `--rc-accent-fg` | `text-accent-fg` | O que se lê **sobre** o acento |
-| `--rc-accent-text` | `text-accent-text`, `bg-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo, trilho da chave ligada |
-| `--rc-accent-subtle` | `bg-accent-subtle` | Fundo tênue de item marcado, item de menu sob o ponteiro |
+| `--rc-accent` | `bg-accent` | The brand fill: primary button, selection mark |
+| `--rc-accent-hover` | - | The same with the pointer over it |
+| `--rc-accent-active` | - | The same at the moment of the click |
+| `--rc-accent-fg` | `text-accent-fg` | What is read **on** the accent |
+| `--rc-accent-text` | `text-accent-text`, `bg-accent-text` | The accent that is read **on the background**: link, active item, the track of a switch that is on |
+| `--rc-accent-subtle` | `bg-accent-subtle` | Faint background of a checked item, menu item under the pointer |
 
-### Linha, foco e estado de linha
+### Line, focus and row state
 
-| Token | Classe | O que veste |
+| Token | Class | What it dresses |
 |---|---|---|
-| `--rc-border` | `border-border` | A linha comum |
-| `--rc-border-strong` | `border-border-strong` | A borda de um controle, que precisa se ver |
-| `--rc-border-disabled` | `border-border-disabled` | A borda de um controle travado, que precisa se ver **menos** |
-| `--rc-line-hover` | - | A borda com o ponteiro em cima |
-| `--rc-ring` | `ring-ring` | O anel de foco do teclado |
-| `--rc-selected` | `bg-selected` | Linha escolhida numa tabela. Área grande pede alfa baixo |
-| `--rc-skeleton` | `bg-skeleton` | Marca de lugar do carregamento |
+| `--rc-border` | `border-border` | The ordinary line |
+| `--rc-border-strong` | `border-border-strong` | A control's border, which needs to be seen |
+| `--rc-border-disabled` | `border-border-disabled` | A locked control's border, which needs to be seen **less** |
+| `--rc-line-hover` | - | The border with the pointer over it |
+| `--rc-ring` | `ring-ring` | The keyboard focus ring |
+| `--rc-selected` | `bg-selected` | The chosen row in a table. A large area calls for low alpha |
+| `--rc-skeleton` | `bg-skeleton` | The loading placeholder |
 
-### Estados
+### States
 
-Quatro famílias com quatro papéis cada, sempre no mesmo formato:
+Four families with four roles each, always in the same shape:
 
-| Padrão | Classe | O que veste |
+| Pattern | Class | What it dresses |
 |---|---|---|
-| `--rc-<estado>` | `bg-<estado>` | Preenche |
-| `--rc-<estado>-fg` | `text-<estado>-fg` | O que se lê sobre o preenchimento |
-| `--rc-<estado>-text` | `text-<estado>-text` | A cor que se lê sobre o fundo da página |
-| `--rc-<estado>-subtle` | `bg-<estado>-subtle` | Fundo tênue de aviso |
+| `--rc-<state>` | `bg-<state>` | Fills |
+| `--rc-<state>-fg` | `text-<state>-fg` | What is read on the fill |
+| `--rc-<state>-text` | `text-<state>-text` | The color that is read on the page background |
+| `--rc-<state>-subtle` | `bg-<state>-subtle` | Faint notice background |
 
-Onde `<estado>` é `success`, `warning`, `danger` ou `info`. São dezesseis
-tokens, e nenhum deles é opcional: um `Alert tone="warning"` sem
-`--rc-warning-subtle` sai sem fundo.
+Where `<state>` is `success`, `warning`, `danger` or `info`. That is sixteen
+tokens, and none of them is optional: an `Alert tone="warning"` without
+`--rc-warning-subtle` comes out with no background.
 
-O perigo é o único estado que também vira botão sólido, então
-`--rc-danger` e `--rc-danger-fg` precisam de contraste de botão, não só de
-etiqueta.
+Danger is the only state that also becomes a solid button, so `--rc-danger`
+and `--rc-danger-fg` need button contrast, not just label contrast.
 
-### Gráfico
+### Chart
 
-| Token | O que veste |
+| Token | What it dresses |
 |---|---|
-| `--rc-chart-1` a `--rc-chart-8` | As oito séries, **na ordem em que devem ser usadas** |
-| `--rc-chart-grid` | A grade de fundo |
+| `--rc-chart-1` to `--rc-chart-8` | The eight series, **in the order they should be used** |
+| `--rc-chart-grid` | The background grid |
 
-Elas têm guarda própria de 3:1 contra a superfície. **Tema de cliente que não as
-declara desenha gráfico sem cor de série.**
+They have their own 3:1 guard against the surface. **A client theme that does
+not declare them draws charts with no series color.**
 
-No CSS use sempre `var(--rc-chart-1)`, e nunca a classe `bg-chart-1`: essa
-classe não existe na folha compilada, porque o Tailwind só gera o que encontra
-ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
+In CSS always use `var(--rc-chart-1)`, never the `bg-chart-1` class: that class
+does not exist in the compiled stylesheet, because Tailwind only generates what
+it finds while scanning, and the result would be a color that never resolves,
+silently.
 
-### Sombra e tipografia de marca
+### Shadow and brand typography
 
-| Token | O que veste |
+| Token | What it dresses |
 |---|---|
-| `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição. Cada uma já carrega o hairline de 1px que separa o flutuante da página |
-| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in (hero de landing e CTA que merece cerimônia); nenhum componente liga sozinho. Para o **tema** acender sem que cada tela peça, veja `--rc-accent-shadow` adiante |
-| `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
-| `--rc-text-hero` | Tamanho de herói, em `clamp()` |
-| `--rc-font-sans` | `font-sans`: a família do corpo, e o padrão de toda a árvore |
-| `--rc-font-display` | `font-display`: a família de título, a que carrega a marca |
-| `--rc-font-mono` | `font-mono`: a família de código, tabela numérica e `Kbd` |
+| `--rc-shadow-1` to `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: row, panel, overlay. Each one already carries the 1px hairline that separates the floating element from the page |
+| `--rc-glow-accent` | `shadow-glow`: the accent's lantern, opt-in (landing hero and a CTA that deserves ceremony); no component turns it on by itself. For the **theme** to light up without each screen asking, see `--rc-accent-shadow` further on |
+| `--rc-text-display` | Marketing title size, in `clamp()` |
+| `--rc-text-hero` | Hero size, in `clamp()` |
+| `--rc-font-sans` | `font-sans`: the body family, and the default for the whole tree |
+| `--rc-font-display` | `font-display`: the display family, the one that carries the brand |
+| `--rc-font-mono` | `font-mono`: the code family, numeric tables and `Kbd` |
 
-Os passos de marketing vivem no tema e não no núcleo de propósito: um sistema
-de operação nunca os usa, e um site de marca quer os seus. O glow segue a mesma
-lógica: no escuro a lima ilumina, no claro quem sombreia é o tom escurecido
-dela, e um tema de cliente decide o próprio brilho.
+The marketing steps live in the theme and not in the core on purpose: an
+operations system never uses them, and a brand site wants its own. The glow
+follows the same logic: in the dark theme the lime lights up, in the light one
+its darkened tone does the shading, and a client theme decides its own glow.
 
-**A fonte é papel de tema, e não escala.** Os dois temas da casa declaram as
-três famílias, e um tema de cliente que não as declara fica **sem família
-nenhuma**: a árvore cai na fonte do navegador, exatamente como acontece com um
-tema que esquece `--rc-bg`. Não há valor de `:root` por baixo para segurar a
-queda, e isso é deliberado: uma fonte de sistema silenciosa por baixo faria a
-falta parecer escolha, e o cliente descobriria meses depois que metade da tela
-nunca vestiu a marca dele.
+**The font is a theme role, not a scale.** Both house themes declare the three
+families, and a client theme that does not declare them ends up with **no
+family at all**: the tree falls back to the browser font, exactly as happens
+with a theme that forgets `--rc-bg`. There is no `:root` value underneath to
+break the fall, and that is deliberate: a silent system font underneath would
+make the gap look like a choice, and the client would find out months later
+that half the screen never wore their brand.
 
-As famílias da RivoCode (Manrope, Poppins e JetBrains Mono) **não vêm mais
-junto com o `styles.css`**. Quem quer a marca importa o arquivo de faces
-separado; quem veste outra fonte instala a dela e nunca baixa as nossas:
+RivoCode's families (Manrope, Poppins and JetBrains Mono) **no longer come
+with `styles.css`**. Whoever wants the brand imports the separate faces file;
+whoever wears another font installs theirs and never downloads ours:
 
 ```css
 @import "@rivocode/ui/styles.css";
-@import "@rivocode/ui/fonts.css";   /* só quem quer as faces da RivoCode */
+@import "@rivocode/ui/fonts.css";   /* only for whoever wants RivoCode's faces */
 ```
 
-Para vestir a fonte do cliente, instale a família e aponte os três tokens no
-mesmo seletor de tema em que você já declarou as cores:
+To dress the client's font, install the family and point the three tokens in
+the same theme selector where you already declared the colors:
 
 ```css
 @import "@rivocode/ui/styles.css";
@@ -176,24 +177,25 @@ mesmo seletor de tema em que você já declarou as cores:
   --rc-font-display: "Inter Variable", system-ui, sans-serif;
   --rc-font-mono: ui-monospace, SFMono-Regular, monospace;
 
-  /* …e os cinquenta papéis de cor. */
+  /* …and the fifty color roles. */
 }
 ```
 
-Repare que o `@rivocode/ui/fonts.css` **não** aparece aí: é assim que dois
-clientes convivem na mesma aplicação, cada um com a sua família, e nenhum dos
-dois carregando os 220 KB de `.woff2` da RivoCode.
+Notice that `@rivocode/ui/fonts.css` does **not** show up there: that is how
+two clients live together in the same application, each with its own family,
+and neither of them loading RivoCode's 220 KB of `.woff2`.
 
-O [montador de tema](/tema) escolhe as três famílias numa lista curada do Google
-Fonts e escreve o CSS acima sozinho: os `@import` do fontsource no topo, o
-`<link>` do Google comentado como alternativa, a pilha de queda de cada papel e
-o `bun add` dos pacotes.
+The [theme builder](/tema) picks the three families from a curated Google Fonts
+list and writes the CSS above on its own: the fontsource `@import` lines at the
+top, the Google `<link>` commented out as an alternative, each role's fallback
+stack and the `bun add` for the packages.
 
-#### Carregar a fonte no web sem piscar
+#### Load the font on the web without a flash
 
-- **Pré-carregue só a face do corpo.** É ela que pinta o primeiro parágrafo; a
-  de título e a de código podem chegar depois. Com o fontsource no Vite, o
-  arquivo tem nome fixo dentro do pacote e o `?url` devolve o caminho com hash:
+- **Preload only the body face.** It is the one that paints the first
+  paragraph; the display and code ones can arrive later. With fontsource in
+  Vite, the file has a fixed name inside the package and `?url` returns the
+  hashed path:
 
   ```tsx
   import inter from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
@@ -201,111 +203,112 @@ o `bun add` dos pacotes.
   <link rel="preload" href={inter} as="font" type="font/woff2" crossOrigin="anonymous" />
   ```
 
-  O `crossOrigin` não é enfeite: fonte é sempre baixada em modo CORS, e o
-  pré-carregamento sem ele é descartado e baixado de novo. Pré-carregar as três
-  disputa banda com o CSS e o JavaScript, e atrasa justamente o que devia
-  adiantar.
-- **`font-display: swap`.** O texto aparece na hora na fonte de queda e troca
-  quando a família chega, em vez de ficar invisível até três segundos. O
-  fontsource já declara assim, e o link do Google precisa do `&display=swap`,
-  que o montador escreve.
-- **Só o subconjunto `latin`.** Português cabe inteiro nele, acentos e `ç`
-  incluídos. O pacote variável declara todos os subconjuntos com
-  `unicode-range`, e o navegador só baixa o que a página usa; no estático,
-  importe `latin-400.css`, `latin-600.css` e assim por diante, em vez do
-  `400.css`, que declara também cirílico, grego e vietnamita.
-- **Não importe o `@rivocode/ui/fonts.css` junto de uma fonte de cliente.** Ele
-  declara Manrope, Poppins e JetBrains Mono, e o empacotador copia os arquivos
-  para o build mesmo que o tema não use nenhuma delas. Pior: qualquer trecho da
-  árvore ainda vestido com o tema da casa (a tela antes de o provider do cliente
-  montar, um portal fora do escopo) baixa as faces da RivoCode e pinta com elas.
-  São duas famílias por página e uma troca de fonte que ninguém encomendou. Se
-  um papel fica com a fonte da casa, importe só o pacote dele, como o montador
-  faz.
+  The `crossOrigin` is not decoration: fonts are always downloaded in CORS
+  mode, and a preload without it is discarded and downloaded again. Preloading
+  all three competes for bandwidth with the CSS and the JavaScript, and delays
+  exactly what it was supposed to speed up.
+- **`font-display: swap`.** The text shows up right away in the fallback font
+  and swaps when the family arrives, instead of staying invisible for up to
+  three seconds. Fontsource already declares it that way, and the Google link
+  needs `&display=swap`, which the builder writes.
+- **Only the `latin` subset.** Portuguese fits entirely in it, accents and `ç`
+  included. The variable package declares every subset with `unicode-range`,
+  and the browser only downloads what the page uses; with the static one,
+  import `latin-400.css`, `latin-600.css` and so on, instead of `400.css`,
+  which also declares Cyrillic, Greek and Vietnamese.
+- **Do not import `@rivocode/ui/fonts.css` alongside a client font.** It
+  declares Manrope, Poppins and JetBrains Mono, and the bundler copies the
+  files into the build even if the theme uses none of them. Worse: any part of
+  the tree still dressed in the house theme (the screen before the client's
+  provider mounts, a portal outside the scope) downloads RivoCode's faces and
+  paints with them. That is two families per page and a font swap nobody
+  ordered. If a role keeps the house font, import only its package, as the
+  builder does.
 
-#### O peso da letra é token, e tem nome de intenção
+#### Font weight is a token, and has an intent name
 
-Trocar a família sem trocar o peso é meia troca. A Poppins da casa tem título
-em 600; a fonte do cliente pode ter o título em 700, ou não ter 600 nenhum. Por
-isso as peças não escrevem `font-medium` nem `font-semibold`: escrevem a
-intenção, e o número mora num token que o tema pode redefinir.
+Changing the family without changing the weight is half a change. The house
+Poppins has titles at 600; the client's font may have titles at 700, or no 600
+at all. That is why the pieces do not write `font-medium` or `font-semibold`:
+they write the intent, and the number lives in a token the theme can redefine.
 
-| Token | Classe | Padrão | O que veste |
+| Token | Class | Default | What it dresses |
 |---|---|---|---|
-| `--rc-weight-regular` | `font-rc-regular` | 400 | O corpo, e o trecho que volta ao normal dentro de um rótulo |
-| `--rc-weight-medium` | `font-rc-medium` | 500 | Rótulo de campo, botão, aba, selo, cabeçalho de tabela, título de aviso |
-| `--rc-weight-strong` | `font-rc-strong` | 600 | Ênfase forte no corpo: o título do cartão do `Kanban`, o `AiLabel`, o `Text weight="semibold"` |
-| `--rc-weight-bold` | `font-rc-bold` | 700 | O negrito do texto rico e o `Text weight="bold"` |
-| `--rc-weight-display` | `font-rc-display` | 600 | Todo texto em `font-display`: `Heading`, títulos de `Card`, `Dialog`, `Sheet`, `PageHeader`, o valor do `Stat` |
+| `--rc-weight-regular` | `font-rc-regular` | 400 | The body, and the stretch that goes back to normal inside a label |
+| `--rc-weight-medium` | `font-rc-medium` | 500 | Field label, button, tab, badge, table header, notice title |
+| `--rc-weight-strong` | `font-rc-strong` | 600 | Strong emphasis in the body: the `Kanban` card title, `AiLabel`, `Text weight="semibold"` |
+| `--rc-weight-bold` | `font-rc-bold` | 700 | The bold of rich text and `Text weight="bold"` |
+| `--rc-weight-display` | `font-rc-display` | 600 | All text in `font-display`: `Heading`, the titles of `Card`, `Dialog`, `Sheet`, `PageHeader`, the `Stat` value |
 
-Os cinco vivem em `src/tokens/forma.css`, com valor de `:root` por baixo, e são
-**opcionais** no tema: quem não declara fica com o peso da casa. Declare no
-mesmo seletor das cores e das famílias:
+The five live in `src/tokens/forma.css`, with a `:root` value underneath, and
+are **optional** in the theme: whoever does not declare them keeps the house
+weight. Declare them in the same selector as the colors and the families:
 
 ```css
 [data-rc-theme="cliente-acme"] {
   --rc-font-display: "Lato", system-ui, sans-serif;
-  --rc-weight-display: 700;   /* a Lato não tem 600 */
+  --rc-weight-display: 700;   /* Lato has no 600 */
 }
 ```
 
-`font-rc-display` anda sempre ao lado de `font-display`: a primeira classe
-escolhe a família, a segunda o peso. As classes do Tailwind (`font-medium`,
-`font-semibold`) continuam compilando para a sua tela, mas não seguem o tema;
-use as de intenção quando o texto precisa acompanhar a marca.
+`font-rc-display` always goes alongside `font-display`: the first class picks
+the family, the second the weight. Tailwind's classes (`font-medium`,
+`font-semibold`) still compile for your screen, but they do not follow the
+theme; use the intent ones when the text needs to follow the brand.
 
-O [montador de tema](/tema) faz a conta sozinho: ao escolher uma família sem o
-peso que um token pede, ele escreve o token com o peso **disponível mais
-próximo**, pela mesma regra de casamento que o navegador usa. A Lato no título
-sai com `--rc-weight-display: 700`, e a DM Serif Display, que só tem 400, sai
-com 400, em vez de o navegador desenhar um negrito sintético por cima dela.
+The [theme builder](/tema) does the math on its own: when you pick a family
+without the weight a token asks for, it writes the token with the **closest
+available** weight, by the same matching rule the browser uses. Lato in the
+display role comes out with `--rc-weight-display: 700`, and DM Serif Display,
+which only has 400, comes out with 400, instead of the browser drawing a
+synthetic bold on top of it.
 
-No React Native os cinco saem no `theme.css` do pacote como
-`--font-weight-rc-*`, com os mesmos valores, e um `@theme` do app os
-sobrescreve antes de compilar, como faz com as cores.
+In React Native the five come out in the package's `theme.css` as
+`--font-weight-rc-*`, with the same values, and an app `@theme` overrides them
+before compiling, as it does with the colors.
 
-### Acabamento: gradiente, vidro e brilho
+### Finish: gradient, glass and glow
 
-Três papéis que não pintam cor, e sim o que vem por cima dela. São os **únicos
-opcionais** do guia: ausentes, o gesto simplesmente não acontece, e é assim que
-os dois temas da casa nascem: os três declarados como `none`.
+Three roles that do not paint color, but what goes on top of it. They are the
+guide's **only optional ones**: absent, the gesture simply does not happen, and
+that is how both house themes are born: all three declared as `none`.
 
-| Token | Onde chega | O gesto |
+| Token | Where it lands | The gesture |
 |---|---|---|
-| `--rc-accent-image` | `background-image` de quem veste `bg-accent` | O acento em gradiente |
-| `--rc-accent-shadow` | `box-shadow` do mesmo `bg-accent` | "Neste tema o primário brilha", sem `shadow-glow` em tela nenhuma |
-| `--rc-overlay-filter` | `backdrop-filter` da tarja, `bg-overlay` | Vidro fosco atrás de diálogo, folha e paleta de comando |
+| `--rc-accent-image` | `background-image` of whoever wears `bg-accent` | The accent as a gradient |
+| `--rc-accent-shadow` | `box-shadow` of the same `bg-accent` | "In this theme the primary glows", without `shadow-glow` on any screen |
+| `--rc-overlay-filter` | `backdrop-filter` of the scrim, `bg-overlay` | Frosted glass behind a dialog, a sheet and the command palette |
 
-O acabamento viaja junto com o papel, e não com a peça: quem já vestia
-`bg-accent` recebe o gradiente e o brilho, quem já vestia `bg-overlay` recebe o
-vidro. É o que torna a tarja alcançável: ela é um nó interno do portal, e
-`classNames={{ backdrop }}` resolve **uma tela**, enquanto o token resolve o
-tema inteiro, nas quatro peças que têm tarja, de uma vez.
+The finish travels with the role, not with the piece: whoever already wore
+`bg-accent` gets the gradient and the glow, whoever already wore `bg-overlay`
+gets the glass. That is what makes the scrim reachable: it is an inner node of
+the portal, and `classNames={{ backdrop }}` solves **one screen**, while the
+token solves the whole theme, in the four pieces that have a scrim, at once.
 
-Quatro coisas para saber antes de usar:
+Four things to know before using it:
 
-- **A classe de quem escreve a tela continua vencendo.** As regras são
-  `:where()`, de especificidade zero: um `bg-none` ou um `shadow-none` no
-  `className` desfaz o acabamento naquela peça, e um `bg-linear-to-r` seu
-  substitui o gradiente do tema.
-- **O gradiente cobre a cor.** `background-image` pinta por cima de
-  `background-color`, então com um gradiente opaco o `hover:bg-accent-hover` do
-  Button acontece embaixo e ninguém vê. Dê alfa ao gradiente e o hover volta a
-  aparecer através dele.
-- **Botão desabilitado fica de fora.** O Button neutraliza o primário morto
-  trocando a cor de fundo, e o gradiente sobreviveria a essa troca; a regra o
-  exclui. Carregando não é desabilitado para esse fim: ali a cor ainda diz qual
-  ação está em andamento.
-- **O alcance é o `bg-accent` escrito direto**: botão primário, barra de
-  progresso. O acento que só chega sob estado, como o `data-[checked]:bg-accent`
-  da caixa de marcar, compila com outro nome de classe e não recebe o
-  acabamento.
+- **The class of whoever writes the screen still wins.** The rules are
+  `:where()`, with zero specificity: a `bg-none` or a `shadow-none` in the
+  `className` undoes the finish on that piece, and a `bg-linear-to-r` of yours
+  replaces the theme's gradient.
+- **The gradient covers the color.** `background-image` paints over
+  `background-color`, so with an opaque gradient the Button's
+  `hover:bg-accent-hover` happens underneath and nobody sees it. Give the
+  gradient alpha and the hover shows through it again.
+- **A disabled button is left out.** Button neutralizes the dead primary by
+  swapping the background color, and the gradient would survive that swap; the
+  rule excludes it. Loading is not disabled for this purpose: there the color
+  still says which action is in progress.
+- **The reach is `bg-accent` written directly**: primary button, progress bar.
+  An accent that only arrives under a state, like the checkbox's
+  `data-[checked]:bg-accent`, compiles under another class name and does not
+  get the finish.
 
-No React Native os três não atravessam: gradiente e `backdrop-filter` não são
-propriedades de `View`, e o gerador de tema nativo os ignora em silêncio, como
-já faz com `box-shadow` e `clamp()`. São papéis de web.
+In React Native the three do not cross over: gradient and `backdrop-filter`
+are not `View` properties, and the native theme generator silently ignores
+them, as it already does with `box-shadow` and `clamp()`. They are web roles.
 
-#### Um tema futurista, os três de uma vez
+#### A futuristic theme, all three at once
 
 ```css
 /* tema-neon.css */
@@ -316,7 +319,7 @@ já faz com `box-shadow` e `clamp()`. São papéis de web.
   --rc-surface: oklch(21% 0.03 285);
   --rc-surface-raised: oklch(26% 0.03 285);
 
-  /* Com vidro, a tarja preta de sempre vira lama: ela clareia e desfoca. */
+  /* With glass, the usual black scrim turns into mud: it lightens and blurs. */
   --rc-overlay: oklch(14% 0.04 285 / 0.55);
   --rc-overlay-filter: blur(10px) saturate(130%);
 
@@ -325,169 +328,175 @@ já faz com `box-shadow` e `clamp()`. São papéis de web.
   --rc-accent-active: oklch(58% 0.21 300);
   --rc-accent-fg: oklch(99% 0 0);
 
-  /* Alfa de propósito: o gradiente cobre a cor, e sem ele o hover do Button
-     acontece embaixo, invisível. */
+  /* Alpha on purpose: the gradient covers the color, and without it the
+     Button's hover happens underneath, invisible. */
   --rc-accent-image: linear-gradient(
     135deg,
     oklch(64% 0.21 300 / 0.92),
     oklch(72% 0.16 200 / 0.92)
   );
 
-  /* O brilho deixa de ser enfeite que cada tela liga e vira estado do acento. */
+  /* The glow stops being decoration each screen turns on and becomes an accent state. */
   --rc-accent-shadow: 0 0 28px oklch(64% 0.21 300 / 0.45);
 
-  /* …e os cinquenta papéis obrigatórios. */
+  /* …and the fifty required roles. */
 }
 ```
 
-O que muda na tela, sem uma linha de componente ou de página: o botão primário
-sai em degradê violeta→ciano e acende sozinho, e volta ao roxo chapado quando
-desabilita; a tarja do `Dialog`, do `AlertDialog`, do `Sheet` e do `Command`
-vira vidro fosco.
+What changes on screen, without a line of component or page code: the primary
+button comes out in a violet→cyan gradient and lights up on its own, and goes
+back to flat purple when disabled; the scrim of `Dialog`, `AlertDialog`,
+`Sheet` and `Command` becomes frosted glass.
 
-### Forma e movimento
+### Shape and motion
 
-Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
-"futurista" antes de qualquer cor, e esses tokens vivem em
-`src/tokens/forma.css`, fora da escala, justamente para o tema poder redefinir:
+Color is not the only thing a theme decides. Square corners and crisp motion
+say "futuristic" before any color, and these tokens live in
+`src/tokens/forma.css`, outside the scale, precisely so the theme can redefine
+them:
 
-| Token | O que decide |
+| Token | What it decides |
 |---|---|
-| `--rc-radius-sm` a `--rc-radius-xl` | O canto de campo, cartão, painel e diálogo |
-| `--rc-radius-pill` | A pílula: chave, badge, avatar, barra |
-| `--rc-duration-fast`, `--rc-duration-base`, `--rc-duration-slow` | O tempo de cada transição |
-| `--rc-duration-sheet`, `--rc-ease-sheet` | O tempo e a curva da folha lateral, que segue o dedo |
-| `--rc-ease` | A curva de todo o resto: seca e mecânica, ou macia |
-| `--rc-ease-enter`, `--rc-ease-exit` | A curva do que chega e a do que sai |
-| `--rc-ease-spatial`, `--rc-ease-expressive`, `--rc-ease-effects` | As três molas, com a duração de cada uma. Veja Movimento, logo abaixo |
-| `--rc-tracking-display`, `--rc-tracking-tight` | O espaçamento de letra do título |
-| `--rc-weight-regular` a `--rc-weight-display` | O peso de cada intenção de texto. Veja "O peso da letra é token", acima |
+| `--rc-radius-sm` to `--rc-radius-xl` | The corner of field, card, panel and dialog |
+| `--rc-radius-pill` | The pill: switch, badge, avatar, bar |
+| `--rc-duration-fast`, `--rc-duration-base`, `--rc-duration-slow` | The time of each transition |
+| `--rc-duration-sheet`, `--rc-ease-sheet` | The time and curve of the side sheet, which follows the finger |
+| `--rc-ease` | The curve of everything else: crisp and mechanical, or soft |
+| `--rc-ease-enter`, `--rc-ease-exit` | The curve of what arrives and of what leaves |
+| `--rc-ease-spatial`, `--rc-ease-expressive`, `--rc-ease-effects` | The three springs, with each one's duration. See Motion, just below |
+| `--rc-tracking-display`, `--rc-tracking-tight` | The title's letter spacing |
+| `--rc-weight-regular` to `--rc-weight-display` | The weight of each text intent. See "Font weight is a token", above |
 
-Redefina no mesmo seletor do tema, junto com os papéis de cor:
+Redefine them in the same theme selector, along with the color roles:
 
 ```css
 [data-rc-theme="acme"] {
-  --rc-radius-md: 0px;                          /* canto reto */
-  --rc-duration-base: 140ms;                    /* movimento seco */
+  --rc-radius-md: 0px;                          /* square corner */
+  --rc-duration-base: 140ms;                    /* crisp motion */
   --rc-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 ```
 
-A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
-`:root` e `[data-rc-theme="x"]` têm a mesma especificidade, então o tema vence.
+The order is already settled by the preset: `forma.css` comes before the
+themes, and `:root` and `[data-rc-theme="x"]` have the same specificity, so the
+theme wins.
 
-### Movimento
+### Motion
 
-O movimento tem nome de intenção, e não de número. A duração diz quanto a coisa
-anda; a curva diz como ela chega.
+Motion has an intent name, not a number. The duration says how far the thing
+travels; the curve says how it arrives.
 
-| Duração | Utilitário | Para quê |
+| Duration | Utility | What for |
 |---|---|---|
-| `--rc-duration-fast`, 120ms | `duration-fast` | Mudança de estado: cor, borda, a marca que aparece |
-| `--rc-duration-base`, 200ms | `duration-base` | O painel que abre, o diálogo que entra |
-| `--rc-duration-slow`, 320ms | `duration-slow` | O que percorre a tela: gráfico que se desenha, barra que enche |
-| `--rc-duration-sheet`, 450ms | `duration-sheet` | A folha lateral, que segue o dedo |
+| `--rc-duration-fast`, 120ms | `duration-fast` | A state change: color, border, the mark that appears |
+| `--rc-duration-base`, 200ms | `duration-base` | The panel that opens, the dialog that comes in |
+| `--rc-duration-slow`, 320ms | `duration-slow` | What travels across the screen: a chart that draws itself, a bar that fills |
+| `--rc-duration-sheet`, 450ms | `duration-sheet` | The side sheet, which follows the finger |
 
-| Curva | Utilitário | Para quê |
+| Curve | Utility | What for |
 |---|---|---|
-| `--rc-ease` | `ease-rc` | O padrão: sai rápido e assenta devagar |
-| `--rc-ease-enter` | `ease-rc-enter` | O que entra na tela: chega freando |
-| `--rc-ease-exit` | `ease-rc-exit` | O que sai: acelera e some, sem chamar o olho de volta |
-| `--rc-ease-sheet` | `ease-rc-sheet` | A folha lateral |
+| `--rc-ease` | `ease-rc` | The default: leaves fast and settles slowly |
+| `--rc-ease-enter` | `ease-rc-enter` | What enters the screen: arrives braking |
+| `--rc-ease-exit` | `ease-rc-exit` | What leaves: speeds up and vanishes, without pulling the eye back |
+| `--rc-ease-sheet` | `ease-rc-sheet` | The side sheet |
 
-As molas vêm do M3 Expressive, que separa o que se **desloca** do que só
-**muda de aparência**. Mola que passa do alvo e volta é boa para posição e
-tamanho, e ruim para cor e opacidade: cor que passa do alvo pisca.
+The springs come from M3 Expressive, which separates what **moves** from what
+only **changes appearance**. A spring that overshoots the target and comes back
+is good for position and size, and bad for color and opacity: a color that
+overshoots blinks.
 
-| Mola | Utilitários | Para quê |
+| Spring | Utilities | What for |
 |---|---|---|
-| `--rc-ease-spatial`, `--rc-duration-spatial` | `ease-rc-spatial duration-spatial` | Posição e tamanho. Passa do alvo por um fio, e é a mola padrão |
-| `--rc-ease-expressive`, `--rc-duration-expressive` | `ease-rc-expressive duration-expressive` | O mesmo, com mais corpo: passa do alvo 1,5% e volta. Para o momento que merece ser notado |
-| `--rc-ease-effects`, `--rc-duration-effects` | `ease-rc-effects duration-effects` | Cor e opacidade: chega sem passar |
+| `--rc-ease-spatial`, `--rc-duration-spatial` | `ease-rc-spatial duration-spatial` | Position and size. It overshoots by a hair, and it is the default spring |
+| `--rc-ease-expressive`, `--rc-duration-expressive` | `ease-rc-expressive duration-expressive` | The same, with more body: it overshoots by 1.5% and comes back. For the moment that deserves to be noticed |
+| `--rc-ease-effects`, `--rc-duration-effects` | `ease-rc-effects duration-effects` | Color and opacity: arrives without overshooting |
 
 ```tsx
 <div className="transition-[translate] duration-spatial ease-rc-spatial" />
 ```
 
-A curva de mola é um `linear()` do CSS: a posição da mola amostrada em 41
-pontos, do começo até ela assentar a um milésimo do alvo. A receita de cada uma
-está ao lado dela, em `--rc-spring-spatial-damping` e
-`--rc-spring-spatial-stiffness`, `--rc-spring-expressive-damping` e
-`--rc-spring-expressive-stiffness`, `--rc-spring-effects-damping` e
-`--rc-spring-effects-stiffness`: o amortecimento (1 chega sem passar, menos que
-1 passa e volta) e a rigidez (mais rígida, mais rápida). **O navegador lê só o
-`linear()` e a duração.** Os dois números são o que o React Native e o Figma
-leem, porque nenhum dos dois tem `linear()`. Mudou a receita num tema, recalcule
-a curva e a duração junto; na biblioteca, um teste refaz a conta e acusa a
-divergência com a linha certa para colar.
+The spring curve is a CSS `linear()`: the spring's position sampled at 41
+points, from the start until it settles within a thousandth of the target. The
+recipe for each one sits next to it, in `--rc-spring-spatial-damping` and
+`--rc-spring-spatial-stiffness`, `--rc-spring-expressive-damping` and
+`--rc-spring-expressive-stiffness`, `--rc-spring-effects-damping` and
+`--rc-spring-effects-stiffness`: the damping (1 arrives without overshooting,
+less than 1 overshoots and comes back) and the stiffness (stiffer, faster).
+**The browser reads only the `linear()` and the duration.** The two numbers
+are what React Native and Figma read, because neither of them has `linear()`.
+If you changed the recipe in a theme, recompute the curve and the duration
+along with it; in the library, a test redoes the math and flags the divergence
+with the right line to paste.
 
-Quando a pessoa pede menos movimento no sistema, **toda** duração vai a zero,
-as das molas inclusive. A curva fica, mas uma transição de 0ms não tem curva
-para mostrar.
+When the person asks the system for less motion, **every** duration goes to
+zero, the springs' included. The curve stays, but a 0ms transition has no
+curve to show.
 
-Seis transições do catálogo, em `Alert`, `DataTable`, `Sidebar`, `Table` e
-`Toast`, ainda correm na curva padrão do Tailwind, e não em `ease-rc`. A
-duração delas já é token. Trocar a curva muda o que se vê, então elas ficam
-como estão até alguém olhar as cinco peças de novo.
+Six transitions in the catalog, in `Alert`, `DataTable`, `Sidebar`, `Table`
+and `Toast`, still run on Tailwind's default curve, not `ease-rc`. Their
+duration is already a token. Changing the curve changes what is seen, so they
+stay as they are until someone looks at those five pieces again.
 
-## O que o tema precisa garantir
+## What the theme needs to guarantee
 
-Os papéis não são independentes. Estas relações precisam valer, e as cinco
-primeiras são medidas por `bun run check`. Um tema que as quebra falha no CI,
-e não na tela do cliente:
+The roles are not independent. These relationships need to hold, and the first
+five are measured by `bun run check`. A theme that breaks them fails in CI, not
+on the client's screen:
 
-| Invariante | Por quê |
+| Invariant | Why |
 |---|---|
-| `--rc-border-strong` a 3:1 da superfície | É a fronteira que identifica o controle (WCAG 1.4.11). Abaixo disso o campo não se distingue da página |
-| `--rc-border-disabled` acima de 1,6:1 da superfície, e a 1,4× **abaixo** de `--rc-border-strong` | É o único papel com teto além de piso. Muito fraca, o controle travado some; igual à viva, ele fica idêntico ao controle que ainda responde, e a WCAG 1.4.11 dispensa componente inativo dos 3:1 justamente para abrir essa faixa |
-| `--rc-<estado>-text` a 4,5:1 sobre `--rc-<estado>-subtle` | É o par que a pessoa lê no `Alert`, e não o texto contra `--rc-bg`. O alfa é composto antes de medir |
-| `--rc-ring` a 3:1 contra `--rc-bg` e contra `--rc-surface` | O foco precisa aparecer nos dois fundos, e não só num |
-| `--rc-accent-text` a 3:1 sobre `--rc-skeleton` **composto** no fundo | É o preenchimento e a borda do pino do `Slider` contra o trilho vazio (WCAG 1.4.11). Empatados, o trilho cheio pesa o mesmo que o vazio e ninguém lê quanto já foi. O trilho carrega alfa, então o cinza medido é o que sobra dele sobre a página e sobre o cartão |
-| `--rc-skeleton` diferente da superfície | Ele é a marca de lugar do que está carregando, e o corpo do `Avatar`. Igual à superfície, os dois somem |
+| `--rc-border-strong` at 3:1 against the surface | It is the boundary that identifies the control (WCAG 1.4.11). Below that the field does not stand out from the page |
+| `--rc-border-disabled` above 1.6:1 against the surface, and 1.4× **below** `--rc-border-strong` | It is the only role with a ceiling as well as a floor. Too faint, the locked control vanishes; equal to the live one, it looks identical to the control that still responds, and WCAG 1.4.11 exempts inactive components from 3:1 precisely to open that band |
+| `--rc-<state>-text` at 4.5:1 on `--rc-<state>-subtle` | It is the pair the person reads in the `Alert`, not the text against `--rc-bg`. The alpha is composited before measuring |
+| `--rc-ring` at 3:1 against `--rc-bg` and against `--rc-surface` | Focus needs to show on both backgrounds, not just one |
+| `--rc-accent-text` at 3:1 over `--rc-skeleton` **composited** on the background | It is the fill and the border of the `Slider` thumb against the empty track (WCAG 1.4.11). Tied, the full track weighs the same as the empty one and nobody reads how far it has gone. The track carries alpha, so the gray measured is what is left of it over the page and over the card |
+| `--rc-skeleton` different from the surface | It is the placeholder of what is loading, and the body of `Avatar`. Equal to the surface, both vanish |
 
-`--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor: no tema claro
-da casa as duas são branco puro, e cartão branco sobre página cinza é o padrão
-de nove entre dez painéis. Componente nenhum pode depender dessa diferença para
-existir visualmente; quem precisa de corpo próprio veste `--rc-skeleton`, e quem
-precisa dizer "travado" veste `--rc-border-disabled`. Os dois tokens existem pelo
-mesmo motivo: são a saída de quem tropeçou em branco sobre branco e tentou
-resolver subindo a superfície.
+`--rc-surface` and `--rc-surface-raised` **can** be the same color: in the
+house light theme both are pure white, and a white card on a gray page is the
+pattern of nine out of ten dashboards. No component may depend on that
+difference to exist visually; whoever needs its own body wears
+`--rc-skeleton`, and whoever needs to say "locked" wears
+`--rc-border-disabled`. Both tokens exist for the same reason: they are the way
+out for whoever tripped over white on white and tried to solve it by raising
+the surface.
 
-## O que **não** entra no tema
+## What does **not** go into the theme
 
-Altura de controle e respiro vivem em `src/tokens/scales.css` e valem para
-todos os temas. Um tema que redefine `--rc-control-md` está resolvendo
-densidade no lugar errado, para isso existe `density="compact"`, e ele muda a
-escala inteira de uma vez. Escala de texto e empilhamento seguem a mesma
-regra: são estrutura, e mudar deixaria de ser tema.
+Control height and breathing room live in `src/tokens/scales.css` and apply to
+every theme. A theme that redefines `--rc-control-md` is solving density in
+the wrong place; that is what `density="compact"` is for, and it changes the
+whole scale at once. Text scale and stacking follow the same rule: they are
+structure, and changing them would stop being a theme.
 
-`--rc-code-ink` e `--rc-code-paper` também moram lá, e por outro motivo: são a
-tinta e o papel do código lido por máquina, o `QRCode` e o `PixCode`. Código
-lido por câmera é sempre escuro sobre claro, e o reflexo invertido (módulo
-claro sobre fundo escuro) é um QR que parte dos apps de banco não lê. Se o par
-fosse papel de tema, todo cliente teria de declarar duas cores cuja única
-resposta certa é preto e branco, e um tema escuro poderia inverter o código sem
-querer. O `check-theme` não os cobra; se um tema os declarar mesmo assim, ele
-mede a tinta sobre o papel a 15:1 e reprova a tinta mais clara que o papel.
+`--rc-code-ink` and `--rc-code-paper` live there too, for another reason: they
+are the ink and the paper of machine-read code, `QRCode` and `PixCode`. Code
+read by a camera is always dark on light, and the inverted reflection (a light
+module on a dark background) is a QR code that some banking apps cannot read.
+If the pair were a theme role, every client would have to declare two colors
+whose only right answer is black and white, and a dark theme could invert the
+code by accident. `check-theme` does not ask for them; if a theme declares them
+anyway, it measures the ink on the paper at 15:1 and fails ink lighter than the
+paper.
 
-Os `--rc-media-*` também: são o palco do `ImageViewer` em tela cheia, escuro
-nos dois esquemas, como a galeria do celular. Se fossem papel de tema, um tema
-claro de cliente clarearia a tela da foto sem querer. O `check:contrast` da
-casa mede os pares do palco (texto a 4,5:1, ícone, contorno e anel a 3:1) e
-reprova o tema da casa que os declare.
+So do the `--rc-media-*`: they are the stage of the full-screen
+`ImageViewer`, dark in both schemes, like the phone's gallery. If they were
+theme roles, a client's light theme would lighten the photo screen by
+accident. The house `check:contrast` measures the stage pairs (text at 4.5:1,
+icon, outline and ring at 3:1) and fails a house theme that declares them.
 
-Os `--rc-signature-*` seguem a mesma conta: são o papel do `SignaturePad`,
-tinta escura sobre papel claro nos dois esquemas, porque a assinatura exportada
-vai para um documento branco e não pode sair clara. O `check:contrast` mede a
-tinta e o "Assine aqui" a 4,5:1, a linha de base a 3:1, reprova a tinta mais
-clara que o papel e o tema da casa que os declare.
+The `--rc-signature-*` follow the same math: they are the `SignaturePad`'s
+paper, dark ink on light paper in both schemes, because the exported signature
+goes onto a white document and cannot come out light. `check:contrast` measures
+the ink and the "Assine aqui" at 4.5:1, the baseline at 3:1, and fails ink
+lighter than the paper and a house theme that declares them.
 
-## Um tema de cliente, do começo ao fim
+## A client theme, from start to finish
 
-Digamos que o cliente é azul.
+Say the client is blue.
 
-**1. Declare os papéis num seletor de tema.** Só os papéis; a paleta pode ser
-sua ou a nossa:
+**1. Declare the roles in a theme selector.** Only the roles; the palette can
+be yours or ours:
 
 ```css
 /* tema-acme.css */
@@ -518,12 +527,12 @@ sua ou a nossa:
   --rc-selected: oklch(62% 0.19 250 / 0.08);
   --rc-skeleton: oklch(100% 0 0 / 0.08);
 
-  /* …e as quatro famílias de estado, as oito séries de gráfico,
-     as três sombras e os dois tamanhos de marca. */
+  /* …and the four state families, the eight chart series,
+     the three shadows and the two brand sizes. */
 }
 ```
 
-**2. Importe depois do preset**, para a sua camada 3 vencer:
+**2. Import it after the preset**, so your layer 3 wins:
 
 ```css
 @import "tailwindcss";
@@ -533,167 +542,172 @@ sua ou a nossa:
 @source '../node_modules/@rivocode/ui/dist';
 ```
 
-**3. Vista a árvore:**
+**3. Dress the tree:**
 
 ```tsx
 <RivoProvider theme="acme">
 ```
 
-A prop aceita o nome do seu tema, e não só os dois de casa. Para guardar a
-escolha num seletor, o tipo é `RivoThemeSetting` (os de casa, `system` e o
-nome do cliente), com o autocomplete dos conhecidos preservado:
+The prop accepts your theme's name, not just the two house ones. To keep the
+choice in a selector, the type is `RivoThemeSetting` (the house ones, `system`
+and the client's name), with autocomplete for the known ones preserved:
 
 ```tsx
-const [tema, setTema] = useState<RivoThemeSetting>("acme")
+const [theme, setTheme] = useState<RivoThemeSetting>("acme")
 ```
 
-O `color-scheme` na primeira linha não é enfeite: sem ele o navegador desenha
-barra de rolagem, campo de data e menu nativo no esquema errado, e nenhum token
-alcança essas peças.
+The `color-scheme` on the first line is not decoration: without it the browser
+draws the scrollbar, the date field and the native menu in the wrong scheme,
+and no token reaches those pieces.
 
-**4. Confira que não falta papel:**
+**4. Check that no role is missing:**
 
 ```bash
 npx rivocode-ui check-theme src/tema-acme.css
 ```
 
-O comando vem no pacote e roda no **seu** projeto, que é onde o tema mora. Ele
-lê os arquivos que você passar, junta as declarações por seletor de tema, e
-cobra os cinquenta e cinco papéis obrigatórios. Se faltar algum ele sai com
-código 1, então uma linha no CI segura a quebra antes do deploy:
+The command ships in the package and runs in **your** project, which is where
+the theme lives. It reads the files you pass, groups the declarations by theme
+selector, and asks for the fifty-five required roles. If any is missing it
+exits with code 1, so one line in CI stops the break before the deploy:
 
 ```yaml
 - run: npx rivocode-ui check-theme src/temas/*.css
 ```
 
-Passe **todos** os arquivos que formam o tema de uma vez. Se você separou cor e
-tipografia em dois arquivos, o comando só junta os dois se os dois estiverem na
-mesma chamada; o que ele não leu conta como faltando. Com `--json` a saída vira
-um objeto com `ok` e a lista de papéis, para o seu pipeline ler sem regex.
+Pass **all** the files that make up the theme at once. If you split color and
+typography into two files, the command only joins them if both are in the same
+call; what it did not read counts as missing. With `--json` the output becomes
+an object with `ok` and the list of roles, for your pipeline to read without a
+regex.
 
-**5. E deixe ele medir o contraste.** Depois da completude, o mesmo comando mede
-os 76 pares por tema: o texto sobre os três fundos, a fronteira de controle de
-3:1 da WCAG 1.4.11, o anel de foco, as oito cores de série, o trilho do `Switch`
-ligado e os pares em que o fundo é alfa e precisa ser composto antes de medir. É
-a mesma conta e a mesma tabela que o design system cobra de si mesmo — ela mora
-num módulo do pacote, e não numa pasta de scripts que o npm não leva.
+**5. And let it measure the contrast.** After completeness, the same command
+measures the 76 pairs per theme: the text over the three backgrounds, WCAG
+1.4.11's 3:1 control boundary, the focus ring, the eight series colors, the
+checked `Switch` track and the pairs where the background is alpha and needs
+to be composited before measuring. It is the same math and the same table the
+design system holds itself to — it lives in a module of the package, not in a
+scripts folder npm does not ship.
 
-A ordem das duas perguntas é decisão: papel faltando primeiro, porque medir o
-contraste de um papel que não existe cai no valor herdado e devolve um número
-bonito por acidente. Se falta papel, o comando para antes de medir.
+The order of the two questions is a decision: missing roles first, because
+measuring the contrast of a role that does not exist falls back to the
+inherited value and returns a pretty number by accident. If a role is missing,
+the command stops before measuring.
 
-**A conta lê os espaços de cor modernos, e converte tudo para sRGB antes de
-medir.** Hexadecimal de 3, 4, 6 e 8 dígitos, `rgb()`, `rgba()`, `hsl()`,
-`hsla()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()` e `color()` nos
-espaços predefinidos do CSS. A paleta do Tailwind 4 é escrita em `oklch()`,
-então cor copiada de lá entra direto, sem passar por conversor — que era o
-caminho mais comum de vestir um cliente e o único que saía **sem medida**.
+**The math reads the modern color spaces, and converts everything to sRGB
+before measuring.** 3, 4, 6 and 8-digit hex, `rgb()`, `rgba()`, `hsl()`,
+`hsla()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()` and `color()` in
+CSS's predefined spaces. Tailwind 4's palette is written in `oklch()`, so a
+color copied from there goes straight in, without a converter — which was the
+most common way to dress a client and the only one that came out **unmeasured**.
 
-Ficam de fora duas coisas, e as duas por não terem medida possível:
-`color-mix()`, que não é uma cor e sim uma conta cujo resultado depende do
-espaço de interpolação e do método de matiz; e nome de cor da CSS, como
-`rebeccapurple`, porque o pacote não carrega a tabela de nomes. Essas saem sem
-medida e o comando reprova, em vez de ficar verde sem ter olhado — o que não se
-mede não se promete.
+Two things are left out, both because no measurement is possible:
+`color-mix()`, which is not a color but a calculation whose result depends on
+the interpolation space and the hue method; and a CSS color name, like
+`rebeccapurple`, because the package does not carry the name table. Those come
+out unmeasured and the command fails, instead of staying green without having
+looked — what is not measured is not promised.
 
-**Cor que o sRGB não alcança é medida no valor que a tela mostra.** Quase um
-terço da paleta do Tailwind 4 — 82 das 286 cores nomeadas — descreve tom fora do
-gamut do sRGB: `red-500`, `blue-500` e companhia estão nessa faixa. O navegador
-corta o excedente canal por canal na hora de pintar, e é esse pixel cortado que
-a pessoa vê e que a conta mede. O comando diz quais papéis caíram ali, e para
-qual valor:
+**A color sRGB cannot reach is measured at the value the screen shows.**
+Almost a third of Tailwind 4's palette — 82 of the 286 named colors — describes
+a tone outside the sRGB gamut: `red-500`, `blue-500` and friends are in that
+range. The browser clips the excess channel by channel when painting, and that
+clipped pixel is what the person sees and what the math measures. The command
+says which roles fell there, and to what value:
 
 ```
-nota   2 papéis descrevem tom fora do sRGB. A tela corta o excedente canal por
-       canal, e é o valor cortado que foi medido — o mesmo pixel que o navegador
-       pinta: accent (oklch(63.7% 0.237 25.331) → #fb2c36), ring (…)
+note   2 roles describe a tone outside sRGB. The screen clips the excess channel
+       by channel, and the clipped value is what was measured — the same pixel
+       the browser paints: accent (oklch(63.7% 0.237 25.331) → #fb2c36), ring (…)
 ```
 
-Recusar seria mais fácil e diria menos: fecharia a porta justamente para as
-cores mais copiadas que existem, e o número que interessa — o contraste do que
-está na tela — é o do valor cortado.
+Refusing would be easier and would say less: it would shut the door on
+precisely the most copied colors there are, and the number that matters — the
+contrast of what is on screen — is that of the clipped value.
 
-**O mapa do React Native entra pelo mesmo comando.** A extensão separa as duas
-formas: `.css` é a camada 3 do web, e `.ts`, `.mjs` ou `.js` é o objeto com
-`light` e `dark` que o `RivoProvider` do `@rivocode/ui-native` recebe — o arquivo
-que `bun run gen:native --tema` escreve.
+**The React Native map goes through the same command.** The extension tells
+the two forms apart: `.css` is the web's layer 3, and `.ts`, `.mjs` or `.js`
+is the object with `light` and `dark` that `@rivocode/ui-native`'s
+`RivoProvider` receives — the file `bun run gen:native --theme` writes.
 
 ```bash
 npx rivocode-ui check-theme acme.theme.ts
 ```
 
-No projeto nativo a mesma tabela de pares está em
-`@rivocode/ui-native/contrast`, para medir por código sem instalar o pacote web.
+In the native project the same table of pairs is in
+`@rivocode/ui-native/contrast`, to measure in code without installing the web
+package.
 
-### O que ele diz, e por que não é só o nome do token
+### What it says, and why it is not just the token name
 
-"Falta `--rc-font-sans`" não faz ninguém consertar nada. O que faz é a linha de
-baixo:
+"Missing `--rc-font-sans`" makes nobody fix anything. What does is the line
+below it:
 
 ```
 [data-rc-theme="neon"]   (src/tema-neon.css)
-  52 dos 55 papéis. Faltam 3.
+  52 of 55 roles. 3 missing.
 
-  QUEBRA CALADA, e é por isso que ninguém reporta:
+  SILENT BREAKAGE, which is why nobody reports it:
 
     --rc-font-sans
-      A página inteira cai na fonte do navegador. Não há valor de `:root` por
-      baixo para segurar a queda, e isso é de propósito: o `tsc` compila, o
-      Vite constrói, e a única coisa errada é a tela.
-      Papel novo na 0.7.0: as três famílias saíram de `src/tokens/scales.css`,
-      que é camada global, e passaram para dentro do seletor de tema. Um tema
-      escrito para a 0.6.x compila, constrói e renderiza sem família nenhuma.
+      The whole page falls back to the browser font. There is no `:root` value
+      underneath to break the fall, and that is on purpose: `tsc` compiles,
+      Vite builds, and the only thing wrong is the screen.
+      New role in 0.7.0: the three families left `src/tokens/scales.css`,
+      which is a global layer, and moved inside the theme selector. A theme
+      written for 0.6.x compiles, builds and renders with no family at all.
 ```
 
-Três coisas que ele decide, e o motivo de cada uma:
+Three things it decides, and the reason for each:
 
-- **Ele cobra os papéis de cor também, e não só os que quebram calados.** Um
-  tema sem `--rc-accent` sai obviamente errado; um sem `--rc-font-sans`, não. Os
-  dois falham, e a diferença fica na apresentação: as faltas vêm separadas em
-  quebra calada e quebra visível. "Visível" quer dizer visível **na tela que usa
-  o papel**, e não na que você abriu para conferir. Um `--rc-warning-subtle`
-  ausente só aparece na tela que tem `Alert tone="warning"`, e ela pode não ser
-  nenhuma das três que você olhou. Cobrar só a fonte ensinaria que o resto é
-  opcional, e o resto não é.
-- **Ele avisa quando o papel nasceu numa versão nova.** É o caso da fonte na
-  0.7.0 e o do `--rc-border-disabled` na mesma versão: quem escreveu o tema para
-  a versão anterior não tem como saber que passou a faltar alguma coisa, porque
-  nada no upgrade avisa. Rodar o comando logo depois de subir a versão é o
-  momento barato de descobrir.
-- **A saída serve às duas leituras.** Texto para quem vai consertar, `--json`
-  para quem vai automatizar, e o código de saída para os dois: 0 quando todo
-  tema está completo, 1 quando falta papel, e também 1 quando nenhum bloco de
-  tema foi encontrado nos arquivos passados, para o comando não passar verde por
-  não ter olhado nada.
+- **It asks for the color roles too, not only the ones that break silently.**
+  A theme without `--rc-accent` comes out obviously wrong; one without
+  `--rc-font-sans` does not. Both fail, and the difference is in the
+  presentation: the gaps come split into silent breakage and visible
+  breakage. "Visible" means visible **on the screen that uses the role**, not
+  on the one you opened to check. A missing `--rc-warning-subtle` only shows
+  on the screen that has `Alert tone="warning"`, and it may be none of the
+  three you looked at. Asking only for the font would teach that the rest is
+  optional, and the rest is not.
+- **It warns when the role was born in a new version.** That is the case of
+  the font in 0.7.0 and of `--rc-border-disabled` in the same version: whoever
+  wrote the theme for the previous version has no way of knowing something
+  went missing, because nothing in the upgrade says so. Running the command
+  right after bumping the version is the cheap moment to find out.
+- **The output serves both readings.** Text for whoever is going to fix it,
+  `--json` for whoever is going to automate it, and the exit code for both: 0
+  when every theme is complete, 1 when a role is missing, and also 1 when no
+  theme block was found in the files passed, so the command does not pass
+  green for having looked at nothing.
 
-Os três papéis de acabamento são os únicos que ele não cobra, porque são os
-únicos opcionais. Os tokens de forma também ficam de fora: eles têm valor de
-`:root` por baixo, e faltar um deles não deixa nada sem valor.
+The three finish roles are the only ones it does not ask for, because they are
+the only optional ones. The shape tokens are left out too: they have a `:root`
+value underneath, and missing one of them leaves nothing without a value.
 
-## O mesmo tema no React Native
+## The same theme in React Native
 
-O arquivo que você acabou de escrever veste as duas plataformas, e **a fonte é
-uma só de propósito**: um segundo lugar para manter a cor de um cliente é como a
-promessa se quebra na prática, não por decisão, por divergência silenciosa seis
-meses depois.
+The file you just wrote dresses both platforms, and **the source is one on
+purpose**: a second place to maintain a client's color is how the promise
+breaks in practice, not by decision, by silent drift six months later.
 
-O que muda é **quando** a cor é decidida. No web a camada 3 é lida em runtime, e
-`<RivoProvider theme="acme">` troca a página inteira com ela aberta. No React
-Native o compilador do `react-native-css` resolve o token **em build** e crava o
-valor dentro da regra: `.bg-accent` vira `{"backgroundColor":"#d4f34a"}`, literal,
-e nos 56 KB de CSS compilado não sobra **uma ocorrência de `--`**. Não existe
-variável viva para redefinir depois.
+What changes is **when** the color is decided. On the web layer 3 is read at
+runtime, and `<RivoProvider theme="acme">` switches the whole page with it
+open. In React Native the `react-native-css` compiler resolves the token **at
+build time** and bakes the value into the rule: `.bg-accent` becomes
+`{"backgroundColor":"#d4f34a"}`, literal, and in the 56 KB of compiled CSS
+there is **not a single occurrence of `--`** left. There is no live variable
+to redefine afterwards.
 
-Escrito de uma vez, para quem está decidindo agora: **tema de cliente no nativo
-é geração de CSS, e não troca em runtime.** O que troca em runtime lá são os dois
-temas de casa, porque eles nasceram dentro do `light-dark()` que o compilador
-entende.
+Written once, for whoever is deciding now: **a client theme on native is CSS
+generation, not a runtime switch.** What switches at runtime there are the two
+house themes, because they were born inside the `light-dark()` the compiler
+understands.
 
-### O caminho que funciona: sobrescrever os papéis antes de compilar
+### The path that works: override the roles before compiling
 
-Um `@theme` seu no `global.css` do app, depois do `theme.css` do pacote, com os
-papéis que a marca troca. É a mesma camada 3 de sempre, escrita no vocabulário
-`--color-*` que o compilador nativo lê:
+An `@theme` of yours in the app's `global.css`, after the package's
+`theme.css`, with the roles the brand changes. It is the same layer 3 as
+always, written in the `--color-*` vocabulary the native compiler reads:
 
 ```css
 @import "tailwindcss/theme.css" layer(theme);
@@ -706,117 +720,121 @@ papéis que a marca troca. É a mesma camada 3 de sempre, escrita no vocabulári
   --color-accent-fg: #ffffff;
   --color-bg: light-dark(#f7f8fa, #0d1220);
   --color-surface: light-dark(#ffffff, #141b2d);
-  /* …e os outros papéis que a marca troca. */
+  /* …and the other roles the brand changes. */
 }
 
 @source "./App.tsx";
 @source "./node_modules/@rivocode/ui-native/src";
 ```
 
-Depois `npx rivocode-ui-native-css`, e o app importa o `generated.css` como
-sempre. Daí em diante a tela é do cliente onde a classe pinta: fundo, cartão,
-botão, selo, borda, série de gráfico.
+Then `npx rivocode-ui-native-css`, and the app imports `generated.css` as
+always. From there on the screen belongs to the client wherever the class
+paints: background, card, button, badge, border, chart series.
 
-**E este caminho tem um teto: dois temas por build.** Cada papel sai como
-`light-dark(claro, escuro)`, e `light-dark()` tem duas vagas, uma clara e uma
-escura. Um app de um cliente cabe folgado, e é o caso normal. Uma vitrine de
-cinco temas, como a que este site tem no web, **não cabe**: são cinco bundles.
-É teto de arquitetura, e não pendência.
+**And this path has a ceiling: two themes per build.** Each role comes out as
+`light-dark(light, dark)`, and `light-dark()` has two slots, a light one and a
+dark one. One client's app fits comfortably, and it is the normal case. A
+showcase of five themes, like the one this site has on the web, **does not
+fit**: that is five bundles. It is an architectural ceiling, not a pending
+item.
 
-### O `@theme` do app agora veste a tela INTEIRA, inclusive o gráfico
+### The app's `@theme` now dresses the WHOLE screen, charts included
 
-Até 27/08/2026 este caminho vestia só metade: a cor pintada por classe seguia a
-marca, e a cor que a peça lê por JS - a fatia do `ChartDonut`, o trilho do
-`Switch`, o giro do `Button` - continuava saindo do mapa de tokens da RivoCode.
-O sintoma **não era a marca ausente: era a tela misturada**, e era isso que
-custava um dia de depuração.
+Until 08/27/2026 this path dressed only half: the color painted by class
+followed the brand, and the color the piece reads through JS - the
+`ChartDonut` slice, the `Switch` track, the `Button` spinner - kept coming from
+RivoCode's token map. The symptom **was not the missing brand: it was the mixed
+screen**, and that is what cost a day of debugging.
 
-Não custa mais. O `RivoProvider` resolve os 45 papéis **lendo o CSS compilado**,
-uma classe `bg-` por papel, e publica o resultado no contexto que as peças já
-liam. Então o que você sobrescreve no `@theme` chega aos dois lados de uma vez:
-classe e contexto dizem sempre a mesma cor.
+Not anymore. `RivoProvider` resolves the 45 roles **by reading the compiled
+CSS**, one `bg-` class per role, and publishes the result on the context the
+pieces already read. So what you override in `@theme` reaches both sides at
+once: class and context always say the same color.
 
-### A prop `theme` não recebe mais um mapa
+### The `theme` prop no longer takes a map
 
 ```tsx
 <RivoProvider theme="rivocode-dark">
 ```
 
-**O mapa saiu.** Ele nunca alcançou a cor pintada por classe, e manter uma
-metade que discorda da outra era pior do que não ter nenhuma. Passou por
-`@deprecated` e por um aviso em `__DEV__`, e agora não existe mais: a prop
-`theme` aceita só `rivocode-dark`, `rivocode-light` e `system`. A prop `scheme`
-saiu junto, porque era ela que escolhia o esquema do mapa.
+**The map is gone.** It never reached the color painted by class, and keeping
+one half that disagrees with the other was worse than having none. It went
+through `@deprecated` and a `__DEV__` warning, and now it no longer exists: the
+`theme` prop accepts only `rivocode-dark`, `rivocode-light` and `system`. The
+`scheme` prop went with it, because it was what picked the map's scheme.
 
-O gerador continua emitindo o arquivo de mapa -
-`bun run gen:native --tema tema-acme.css` -, agora só como conferência de papel
-faltando e como entrada da medição de contraste. Para vestir a tela, use o
-`@theme` de cima.
+The generator still emits the map file -
+`bun run gen:native --theme tema-acme.css` -, now only as a missing-role check
+and as input to the contrast measurement. To dress the screen, use the
+`@theme` above.
 
-### A regra que as peças seguem
+### The rule the pieces follow
 
-Peça que pinta por fora da classe (o trilho do `Switch`, o giro do `Button`, a
-cor da `Sparkline`, a fatia do `ChartDonut`) lê os papéis do contexto
-(`useRivo().colors`), e nunca de `tokens.themes`. O contexto agora É o CSS
-compilado, então ler dali é ler a mesma cor que a classe pinta. Lendo
-`tokens.themes` direto a peça voltaria a discordar da tela do cliente, e há
-teste que falha se alguém voltar a ler direto.
+A piece that paints outside the class (the `Switch` track, the `Button`
+spinner, the `Sparkline` color, the `ChartDonut` slice) reads the roles from
+the context (`useRivo().colors`), and never from `tokens.themes`. The context
+now IS the compiled CSS, so reading from there is reading the same color the
+class paints. Reading `tokens.themes` directly, the piece would go back to
+disagreeing with the client's screen, and there is a test that fails if
+anyone goes back to reading it directly.
 
-No `react-native-web` - a bancada onde se inspeciona a árvore e se tira retrato
-sem simulador - a leitura sai do `getComputedStyle` do documento, e não do
-`useCssElement`: lá a classe vira `className` no DOM, e é o navegador quem
-resolve `var()` e `light-dark()`. Mesma cor, mesma fonte, outro leitor.
+In `react-native-web` - the bench where you inspect the tree and take
+snapshots without a simulator - the read comes from the document's
+`getComputedStyle`, not from `useCssElement`: there the class becomes a
+`className` in the DOM, and the browser is what resolves `var()` and
+`light-dark()`. Same color, same source, a different reader.
 
-## Como pedir isto a um agente
+## How to ask an agent for this
 
-O endereço cru deste guia é
-[`/temas.md`](https://ds.rivocode.com.br/temas.md). Um prompt que costuma
-funcionar:
+This guide's raw address is
+[`/temas.md`](https://ds.rivocode.com.br/temas.md). A prompt that usually
+works:
 
 ```
-Leia https://ds.rivocode.com.br/temas.md e escreva o tema "acme" completo,
-com todos os cinquenta papéis. A marca é azul (#2563eb), fundo escuro.
-Depois confira o contraste de texto contra fundo em cada par.
+Read https://ds.rivocode.com.br/temas.md and write the complete "acme" theme,
+with all fifty roles. The brand is blue (#2563eb), dark background.
+Then check the text-on-background contrast of each pair.
 ```
 
-Pedir "todos os cinquenta papéis" importa: sem isso o agente escreve os dez
-óbvios e deixa gráfico e estados sem cor, que é exatamente a falha silenciosa
-que a lista acima existe para evitar.
+Asking for "all fifty roles" matters: without it the agent writes the ten
+obvious ones and leaves charts and states without color, which is exactly the
+silent failure the list above exists to prevent.
 
-## As guardas
+## The guards
 
-O repositório da biblioteca tem travas que rodam em `bun run check`, e existem
-porque todas essas falhas são silenciosas:
+The library repository has locks that run in `bun run check`, and they exist
+because all of these failures are silent:
 
-**Cor literal.** Nenhum componente pode escrever `#d4f34a`, `bg-lime-400` ou
-`rgb(...)` direto. Se pudesse, o tema do cliente não alcançaria aquela peça, e o
-erro só apareceria na tela dele.
+**Literal color.** No component may write `#d4f34a`, `bg-lime-400` or
+`rgb(...)` directly. If it could, the client's theme would not reach that
+piece, and the error would only show on their screen.
 
-**Contraste.** Os pares de texto, os pares compostos de estado sobre o próprio
-fundo, e a fronteira não-textual de 1.4.11 (nos dois temas, com o alfa
-composto antes de medir). Um tema novo deve passar pela mesma medida, é a
-diferença entre "parece bom no meu monitor" e "dá para ler".
+**Contrast.** The text pairs, the composited state pairs over their own
+background, and 1.4.11's non-text boundary (in both themes, with the alpha
+composited before measuring). A new theme should go through the same
+measurement; it is the difference between "looks good on my monitor" and "it
+can be read".
 
-**Forma documentada.** Todo token que um tema pode declarar precisa estar
-citado neste guia: os papéis de cor e os de forma. Sem isso o guia passa a
-mentir em silêncio, e a mentira aparece meses depois, na tela de um cliente.
+**Documented shape.** Every token a theme can declare needs to be cited in
+this guide: the color roles and the shape ones. Without that the guide starts
+lying silently, and the lie shows up months later, on a client's screen.
 
-## Ajuste fino com className
+## Fine-tuning with className
 
-Toda peça (no web e no React Native) aceita `className` na raiz, e **a classe
-de quem usa vence a da peça**: o merge é por grupo do Tailwind, então um
-`h-14` derruba o `h-10` do Button e um `rounded-pill` derruba o `rounded-md`,
-em vez de conviver com ele.
+Every piece (on the web and in React Native) accepts `className` at the root,
+and **the user's class beats the piece's**: the merge is by Tailwind group, so
+an `h-14` overrides Button's `h-10` and a `rounded-pill` overrides
+`rounded-md`, instead of living alongside it.
 
 ```tsx
 <Button className="h-14 rounded-pill">Assinar agora</Button>
 ```
 
-É isto que torna o wrapper de cliente um arquivo pequeno no projeto dele, em
-vez de um fork:
+That is what makes a client wrapper a small file in their project, instead of
+a fork:
 
 ```tsx
-// o botão da Acme, no repositório da Acme
+// Acme's button, in Acme's repository
 import { Button, type ButtonProps } from '@rivocode/ui'
 import { cn } from './cn'
 
@@ -825,12 +843,12 @@ export function AcmeButton({ className, ...props }: ButtonProps) {
 }
 ```
 
-Duas regras mantêm o gesto saudável:
+Two rules keep the gesture healthy:
 
-- **Token, nunca cor literal.** O `className` do wrapper obedece às mesmas
-  regras da peça: `bg-accent` responde ao tema do cliente, `bg-[#2563eb]` não
-  responde a ninguém.
-- **A raiz, não as partes.** O `className` veste o elemento externo da peça.
-  Nas peças com camadas (Sheet, Dialog, Select), a documentação da prop diz o
-  que ela veste (o painel, o gatilho), e o que é da plataforma continua da
-  plataforma.
+- **Token, never a literal color.** The wrapper's `className` obeys the same
+  rules as the piece: `bg-accent` answers to the client's theme,
+  `bg-[#2563eb]` answers to nobody.
+- **The root, not the parts.** `className` dresses the piece's outer element.
+  On the layered pieces (Sheet, Dialog, Select), the prop's documentation says
+  what it dresses (the panel, the trigger), and what belongs to the platform
+  stays with the platform.

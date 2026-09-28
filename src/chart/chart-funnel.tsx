@@ -10,43 +10,46 @@ import type { Slots } from "../lib/slots";
 import { funnelRates } from "../shared/chart-layout";
 
 export type ChartFunnelProps<Stage> = Omit<ComponentProps<"div">, "children" | "color"> & {
-  /** As etapas, na ordem em que a pessoa atravessa: a primeira e a boca do funil. */
+  /**
+   * The stages, in the order the person goes through them: the first is the mouth of the funnel.
+   */
   data: Stage[];
-  /** De onde sai o numero de cada etapa. */
+  /** Where each stage's number comes from. */
   valueKey: keyof Stage & string;
-  /** De onde sai o nome de cada etapa. */
+  /** Where each stage's name comes from. */
   nameKey: keyof Stage & string;
-  /** A cor das barras. Sem ela, `var(--rc-chart-1)`. */
+  /** The color of the bars. Without it, `var(--rc-chart-1)`. */
   color?: string;
-  /** Como o numero de cada etapa e escrito. */
+  /** How each stage's number is written. */
   format?: Format;
   /**
-   * Como a taxa e escrita, recebendo de 0 a 100. Sem ele, porcentagem com uma
-   * casa: `38,5%`.
+   * How the rate is written, receiving 0 to 100. Without it, a percentage with one
+   * decimal: `38,5%`.
    */
   formatRate?: (rate: number) => string;
   /**
-   * `center` desenha o funil de verdade, cada barra centrada sob a anterior;
-   * `start` alinha as barras a esquerda, que le melhor quando os nomes sao
-   * longos e o olho compara comprimento.
+   * `center` draws a real funnel, each bar centered under the previous one;
+   * `start` aligns the bars to the left, which reads better when the names are
+   * long and the eye compares length.
    */
   align?: "center" | "start";
-  /** O nome da lista para o leitor de tela: "Funil de emissao do mes". */
+  /** The list's name for the screen reader: "Funil de emissao do mes". */
   label?: string;
-  /** Mostra a linha da conversao de ponta a ponta, embaixo. Sem ele, mostra. */
+  /** Shows the end-to-end conversion line, at the bottom. Without it, shows it. */
   showOverall?: boolean;
   /**
-   * Os textos da peca, para trocar o idioma: `rate` e o que vem depois da
-   * taxa entre duas etapas, "da etapa anterior" sem ele, e `overall` a frase
-   * da conversao de ponta a ponta, "do inicio ao fim" sem ela. Passe so os
-   * que mudam.
+   * The piece's texts, to change the language: `rate` is what comes after the
+   * rate between two stages, "da etapa anterior" without it, and `overall` the sentence
+   * of the end-to-end conversion, "do inicio ao fim" without it. Pass only the ones
+   * that change.
    */
   labels?: Partial<ChartFunnelLabels>;
-  /** Classe por parte: `stage`, `bar`, `rate`. */
+  /** Class per part: `stage`, `bar`, `rate`. */
   classNames?: Slots<"stage" | "bar" | "rate">;
   /**
-   * O que aparece no lugar do desenho quando a lista vem vazia ou todas as etapas somam zero. O mesmo formato do
-   * `ChartContainer` e do `DataTable`.
+   * What appears in place of the drawing when the list comes empty or all stages sum to zero. The
+   * same shape as
+   * `ChartContainer` and `DataTable`.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };

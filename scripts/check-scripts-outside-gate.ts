@@ -1,34 +1,35 @@
 /**
- * Guarda de script orfao: arquivo em `scripts/` que o `bun run check` nunca roda.
+ * Orphan script guard: a file in `scripts/` that `bun run check` never runs.
  *
- * O `visual-regression.ts` passou meses assim. Ele so roda por `bun run visual`,
- * nada o chama no gate, e o unico lugar onde estava escrito que ele existe e
- * por que ficou de fora era o cabecalho do proprio arquivo - o lugar que quem
- * nao sabe que ele existe jamais abre. O resultado foi medido no dia em que
- * esta guarda nasceu: numa arvore limpa, `bun run visual` ja acusava tres
- * retratos fora da assinatura comitada, um deles com 50,2% dos quadrados
- * mudados e pior caso de 237 em 255. Ninguem tinha reparado, e nada reparava:
- * a assinatura envelheceu do mesmo jeito que o numero de pecas do README
- * envelheceu trinta pecas antes de o `check:pieces` existir.
+ * `visual-regression.ts` spent months like that. It only runs through
+ * `bun run visual`, nothing calls it in the gate, and the only place where it
+ * was written that it exists and why it was left out was the file's own
+ * header - the place that whoever does not know it exists never opens. The
+ * result was measured on the day this guard was born: on a clean tree,
+ * `bun run visual` already flagged three portraits off the committed
+ * signature, one of them with 50.2% of the squares changed and a worst case of
+ * 237 out of 255. Nobody had noticed, and nothing noticed: the signature grew
+ * stale the same way the README's piece count grew stale by thirty pieces
+ * before `check:pieces` existed.
  *
- * A saida nao e arrastar todo mundo para o gate. Uns nao cabem: o
- * `visual-regression.ts` depende dos PNG do `bun run shot`, que gasta 77s de
- * Chrome num caminho fixo do macOS, e a CI e ubuntu; alem disso a renderizacao
- * de fonte muda entre maquina e sistema, entao assinatura tirada aqui nao bate
- * la. Guarda que exige binario que a CI nao tem nao entra no gate. (Desde
- * 24/09/2026 o Chrome e configuravel por `RC_CHROME` e os tres rodam na
- * bancada da CI, base contra cabeca - mas continuam fora do gate, que tem que
- * rodar em clone limpo e sem navegador.)
+ * The way out is not dragging everyone into the gate. Some do not fit:
+ * `visual-regression.ts` depends on the PNGs of `bun run shot`, which spends
+ * 77s of Chrome on a fixed macOS path, and CI is ubuntu; besides, font
+ * rendering changes between machine and system, so a signature taken here does
+ * not match there. A guard that requires a binary CI does not have does not
+ * enter the gate. (Since 24/09/2026 Chrome is configurable through
+ * `RC_CHROME` and the three run on the CI bench, base against head - but they
+ * stay out of the gate, which has to run on a clean clone with no browser.)
  *
- * O que esta guarda cobra e a DECLARACAO. Todo `scripts/**\/*.ts` tem que ser
- * alcancavel pelo `bun run check` - por comando ou por import, inclusive o
- * import que um teste faz, ja que `bun test` esta no gate - ou ter uma linha
- * no `OUT` dizendo por que nao esta. Assim a proxima pessoa descobre o script
- * lendo uma guarda que ela ja roda, e nao abrindo um arquivo que ninguem abre.
+ * What this guard demands is the DECLARATION. Every `scripts/**\/*.ts` has to
+ * be reachable from `bun run check` - by command or by import, including an
+ * import a test makes, since `bun test` is in the gate - or have a line in
+ * `OUT` saying why it is not. That way the next person finds the script by
+ * reading a guard they already run, and not by opening a file nobody opens.
  *
- * O `OUT` so encolhe, como o `DEBT` do `check:comments`: entrada que virou
- * alcancavel, ou que aponta para arquivo apagado, e erro - lista de excecao que
- * nao encolhe vira o lugar onde o codigo morto mora.
+ * `OUT` only shrinks, like the `DEBT` of `check:comments`: an entry that
+ * became reachable, or that points to a deleted file, is an error - an
+ * exception list that does not shrink becomes the place where dead code lives.
  */
 import { Glob } from "bun";
 import { scanAtLeast } from "./scan";
@@ -38,24 +39,24 @@ const PACKAGE = "package.json";
 const GATE = "check";
 
 /**
- * Quem fica de fora, e a razao em uma linha.
+ * Who stays out, and the reason in one line.
  *
- * A razao e para quem for decidir se ainda vale ficar de fora - por isso diz o
- * que impede, e nao apenas que esta fora.
+ * The reason is for whoever decides whether staying out is still worth it -
+ * that is why it says what prevents it, and not just that it is out.
  */
 const OUT: Record<string, string> = {
   "scripts/visual-regression.ts":
-    "Compara retrato com assinatura: precisa dos PNG do `bun run shot`, que precisa de Chrome, e a renderizacao de fonte muda entre sistemas - a assinatura comitada nasceu no macOS e nao bate no linux. Na maquina: `bun run shot && bun run visual` antes de criar a tag. Na CI roda na bancada (`.github/workflows/bancada.yml`) com `--gravar-em`, base contra cabeca no mesmo runner, e quem julga e o `scripts/bench-comparison.ts`. O que o gate alcanca dela e o `check:portraits`, que cobra a declaracao de cada retrato de secao sem navegador.",
+    "Compares portraits with signatures: it needs the PNGs of `bun run shot`, which needs Chrome, and font rendering changes between systems - the committed signature was born on macOS and does not match on linux. On the machine: `bun run shot && bun run visual` before creating the tag. On CI it runs on the bench (`.github/workflows/bancada.yml`) with `--record-to`, base against head on the same runner, and the judge is `scripts/bench-comparison.ts`. What the gate reaches of it is `check:portraits`, which demands the declaration of each section portrait without a browser.",
   "scripts/shot.ts":
-    "Fotografa a vitrine e as secoes com o Chrome de `RC_CHROME` (o padrao e o do macOS), e gasta minutos de navegador. Roda na bancada da CI, sobre a base e sobre a cabeca, e nao no gate, que tem que rodar em clone limpo sem navegador.",
+    "Photographs the showcase and the sections with the Chrome of `RC_CHROME` (the default is the macOS one), and spends minutes of browser. It runs on the CI bench, over the base and over the head, and not in the gate, which has to run on a clean clone with no browser.",
   "scripts/accessibility.ts":
-    "Bancada de acessibilidade da vitrine (`bun run a11y`): roda o axe-core, o foco depois da acao, o alvo de 24px e o reflow a 320px dentro do Chrome de `RC_CHROME`, e le o `demo/dist` que so existe depois do `bun run demo`. Ela acusa o que as pecas tem HOJE, e entrar no gate antes de a lista zerar deixaria o `check` vermelho em toda arvore. Na CI roda na bancada com `--json`, e o que reprova e problema que a cabeca tem a mais que a base.",
+    "Accessibility bench of the showcase (`bun run a11y`): it runs axe-core, focus after the action, the 24px target and reflow at 320px inside the Chrome of `RC_CHROME`, and reads `demo/dist`, which only exists after `bun run demo`. It flags what the pieces have TODAY, and entering the gate before the list reaches zero would leave `check` red on every tree. On CI it runs on the bench with `--json`, and what fails is a problem the head has that the base does not.",
   "scripts/serve.ts":
-    "Servidor estatico da vitrine: nao confere nada, so serve `demo/` para o Chrome do `shot`.",
+    "Static server for the showcase: it checks nothing, it only serves `demo/` to the Chrome of `shot`.",
   "scripts/native-catalog-props.ts":
-    "Le os tipos do pacote nativo, e react e react-native so estao instalados em `examples/native`, que nao e workspace: `bun install --frozen-lockfile` na raiz nunca os traz. Pior do que falhar, ele PASSARIA mentindo - sem os peers, `Omit<TextInputProps, ...> & {...}` colapsa e dez pecas saem sem props. Por isso a tabela e artefato comitado: quem gera precisa do app instalado, e o `--check` roda no job `nativo` da CI, ao lado do `check:native:types`. O que o gate alcanca dela e o `check:signature`, que le o JSON.",
+    "Reads the native package's types, and react and react-native are only installed in `examples/native`, which is not a workspace: `bun install --frozen-lockfile` at the root never brings them. Worse than failing, it would PASS lying - without the peers, `Omit<TextInputProps, ...> & {...}` collapses and ten pieces come out without props. That is why the table is a committed artifact: whoever generates it needs the app installed, and `--check` runs in the CI `nativo` job, next to `check:native:types`. What the gate reaches of it is `check:signature`, which reads the JSON.",
   "scripts/mcp-smoke.ts":
-    "Sobe o `mcp/dist/cli.js` com `node` pelo stdio, e o `mcp/dist` so existe depois do `bun run build`. Roda no `ci.yml` logo depois do build, e no `release-mcp.yml` antes do `npm publish`. O que o gate alcanca do servidor e o `test/mcp-server.test.ts`, que o sobe em memoria.",
+    "Starts `mcp/dist/cli.js` with `node` over stdio, and `mcp/dist` only exists after `bun run build`. It runs in `ci.yml` right after the build, and in `release-mcp.yml` before `npm publish`. What the gate reaches of the server is `test/mcp-server.test.ts`, which starts it in memory.",
 };
 
 const pkg = (await Bun.file(PACKAGE).json()) as { scripts: Record<string, string> };
@@ -129,11 +130,11 @@ const problems: string[] = [];
 
 if (orphans.length > 0) {
   problems.push(
-    `${orphans.length} script(s) que o \`bun run check\` nunca roda:\n` +
+    `${orphans.length} script(s) that \`bun run check\` never runs:\n` +
       orphans.map((file) => `    ${file}`).join("\n") +
-      "\n\n    Ou entra no gate - um `check:algo` no `package.json`, encadeado" +
-      "\n    no `check` -, ou ganha uma linha no `OUT` desta guarda dizendo o" +
-      "\n    que impede. Script que ninguem roda envelhece calado.",
+      "\n\n    Either it enters the gate - a `check:something` in `package.json`, chained" +
+      "\n    into `check` -, or it gets a line in this guard's `OUT` saying what" +
+      "\n    prevents it. A script nobody runs grows stale in silence.",
   );
 }
 
@@ -145,16 +146,16 @@ const rotten = declared
   .filter(({ file, exists }) => !exists || paid.has(file))
   .map(({ file, exists }) =>
     exists
-      ? `    "${file}" - o gate ja alcanca, e a excecao nao vale mais.`
-      : `    "${file}" - o arquivo nao existe mais.`,
+      ? `    "${file}" - the gate already reaches it, and the exception no longer applies.`
+      : `    "${file}" - the file no longer exists.`,
   );
 
 if (rotten.length > 0) {
   problems.push(
-    `${rotten.length} linha(s) do \`OUT\` que nao descrevem mais nada:\n` +
+    `${rotten.length} \`OUT\` line(s) that no longer describe anything:\n` +
       rotten.join("\n") +
-      "\n\n    Apague do `OUT` em scripts/check-scripts-outside-gate.ts. Lista de" +
-      "\n    excecao que nao encolhe vira o lugar onde o codigo morto mora.",
+      "\n\n    Delete it from `OUT` in scripts/check-scripts-outside-gate.ts. An exception" +
+      "\n    list that does not shrink becomes the place where dead code lives.",
   );
 }
 
@@ -166,6 +167,6 @@ if (problems.length > 0) {
 const names = Object.keys(OUT).map((file) => file.replace(/^scripts\/|\.ts$/g, ""));
 
 console.log(
-  `Todo script de \`scripts/\` esta no gate. Fora dele, por declaracao: ${names.join(", ")}` +
-    " - a razao de cada um esta no OUT desta guarda.",
+  `Every script in \`scripts/\` is in the gate. Outside it, by declaration: ${names.join(", ")}` +
+    " - the reason for each is in this guard's OUT.",
 );

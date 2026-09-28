@@ -5,82 +5,82 @@ import { indexLine, partNote } from "../apps/docs/src/agent-address";
 import { findParent } from "../apps/docs/src/parts";
 
 /*
- * O indice que um agente le.
+ * The index an agent reads.
  *
- * Uma parte nao e uma peca. CardHeader, DialogFooter e SelectItem so existem
- * dentro de outra coisa, e lista-los no mesmo nivel faz o agente contar peca
- * demais, gastar contexto abrindo CardTitle.md como se fosse independente, e
- * perder a unica informacao que importa sobre ela.
+ * A part is not a component. CardHeader, DialogFooter and SelectItem only exist
+ * inside something else, and listing them at the same level makes the agent
+ * count too many components, spend context opening CardTitle.md as if it were
+ * independent, and lose the only information that matters about it.
  */
 
 const names = readdirSync(".design-sync/docs")
-  .filter((arquivo) => arquivo.endsWith(".md"))
-  .map((arquivo) => arquivo.replace(/\.md$/, ""));
+  .filter((file) => file.endsWith(".md"))
+  .map((file) => file.replace(/\.md$/, ""));
 
-const pieces = names.filter((nome) => !findParent(nome, names));
+const pieces = names.filter((name) => !findParent(name, names));
 
-test("a skill diz o mesmo numero de pecas que o catalogo tem", async () => {
+test("the skill states the same component count the catalog has", async () => {
   expect(names.length).toBeGreaterThan(150);
 
-  // O numero na skill e a primeira coisa que um agente le, e era o unico
-  // lugar do sistema onde ele estava certo enquanto o indice contava tudo. Ele
-  // aparece em dois arquivos, e os dois envelhecem juntos.
+  // The number in the skill is the first thing an agent reads, and it was the
+  // only place in the system where it was right while the index counted
+  // everything. It shows up in two files, and both age together.
   const skill = await Bun.file(".claude/skills/rivocode-ui/SKILL.md").text();
   const choice = await Bun.file(".claude/skills/rivocode-ui/reference/components.md").text();
 
-  expect(/S[aã]o (\d+)/.exec(skill)?.[1]).toBe(String(pieces.length));
-  expect(/tem (\d+) peças/.exec(choice)?.[1]).toBe(String(pieces.length));
+  expect(/There are (\d+)/.exec(skill)?.[1]).toBe(String(pieces.length));
+  expect(/catalog has (\d+) pieces/.exec(choice)?.[1]).toBe(String(pieces.length));
 });
 
-test("parte e peca nao se confundem na contagem", () => {
+test("parts and components are not confused in the count", () => {
   expect(findParent("CardHeader", names)).toBe("Card");
   expect(findParent("Card", names)).toBeNull();
-  // DataTable nao vira parte de Table: o nome nao comeca por ele.
+  // DataTable does not become a part of Table: the name does not start with it.
   expect(findParent("DataTable", names)).toBeNull();
   expect(pieces.length).toBeLessThan(names.length);
 });
 
 /*
- * Estes tres mediam o conteudo de `apps/docs/dist/`, e por isso passavam na
- * maquina que acabara de buildar e falhavam no CI, onde o `check` roda antes de
- * qualquer build. Guarda que depende de artefato nao e guarda: e cara ou coroa
- * com aparencia de rigor. Agora medem a funcao que escreve o endereco, que e o
- * que eles sempre quiseram dizer.
+ * These three used to measure the contents of `apps/docs/dist/`, and so they
+ * passed on the machine that had just built and failed in CI, where `check`
+ * runs before any build. A guard that depends on an artifact is not a guard: it
+ * is a coin toss that looks like rigor. Now they measure the function that
+ * writes the address, which is what they always meant to say.
  */
 
 const CARD = { name: "Card", slug: "card" };
 
-test("a parte aponta para dentro da pagina de quem a monta", () => {
+test("a part points inside the page of the component that composes it", () => {
   expect(indexLine("CardHeader", "card-header", CARD)).toBe(
-    "  - [CardHeader](/componentes/card.md#cardheader): parte de Card",
+    "  - [CardHeader](/componentes/card.md#cardheader): part of Card",
   );
 });
 
-test("a peca continua com endereco proprio, e sem indentacao", () => {
+test("a component keeps its own address, and no indentation", () => {
   expect(indexLine("Card", "card")).toBe("- [Card](/componentes/card.md)");
 });
 
-test("a nota da linha segue o formato do llmstxt.org", () => {
+test("the line note follows the llmstxt.org format", () => {
   expect(indexLine("Card", "card", undefined, "Agrupa um assunto.")).toBe(
     "- [Card](/componentes/card.md): Agrupa um assunto.",
   );
   expect(indexLine("CardHeader", "card-header", CARD, "O topo.")).toBe(
-    "  - [CardHeader](/componentes/card.md#cardheader): parte de Card. O topo.",
+    "  - [CardHeader](/componentes/card.md#cardheader): part of Card. O topo.",
   );
 });
 
-test("o endereco antigo da parte responde com o caminho, e nao com o vazio", () => {
-  // Agente que guardou o link nao pode encontrar o vazio.
+test("the part's old address answers with the path, and not with nothing", () => {
+  // An agent that saved the link must not find nothing.
   const note = partNote("CardHeader", CARD);
 
-  expect(note).toContain("é parte de Card");
+  expect(note).toContain("is part of Card");
   expect(note).toContain("/componentes/card.md#cardheader");
 });
 
-test("a ancora que o endereco promete e a que a pagina escreve", async () => {
-  // O `###` do nome da parte e o que vira `#cardheader` no markdown. Se o
-  // renderizador mudar o nivel do titulo, o link para de resolver - e nada
-  // reclamaria, porque link quebrado dentro de um .md nao falha build nenhum.
+test("the anchor the address promises is the one the page writes", async () => {
+  // The `###` of the part name is what becomes `#cardheader` in markdown. If the
+  // renderer changes the heading level, the link stops resolving - and nothing
+  // would complain, because a broken link inside a .md fails no build.
   const { renderDoc } = await import("../apps/docs/src/render-md");
   const page = renderDoc({
     name: "Card",

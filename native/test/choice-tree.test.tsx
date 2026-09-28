@@ -16,18 +16,18 @@ const PLAN: TreeNode[] = [
   { id: "marketing", label: "Marketing" },
 ];
 
-/* O gatilho e o botao que leva o nome da peca; a folha aberta poe o mesmo
-   nome na lista da arvore, que e `list` e nao `button`. */
+/* The trigger is the button that carries the piece's name; the open sheet puts
+   the same name on the tree's list, which is `list` and not `button`. */
 const trigger = (screen: ReturnType<typeof render>) =>
   byRole(screen, "button").find((node) => node.props.accessibilityLabel === "Centro de custo")!;
 
-/* O `Aplicar` e o unico botao pintado de acento na folha: o fundo escurecido
-   e o `bg-overlay`, e as linhas da arvore nao tem fundo proprio. */
+/* `Aplicar` is the only accent-painted button in the sheet: the dimmed
+   backdrop is `bg-overlay`, and the tree rows have no background of their own. */
 const apply = (screen: ReturnType<typeof render>) =>
   byRole(screen, "button").find((node) => node.props.className?.includes("bg-accent "))!;
 
 describe("TreeSelect", () => {
-  test("o gatilho resume com as mesmas palavras do Select, e conta só as folhas que existem", () => {
+  test("the trigger summarizes with the same words as Select, and counts only the leaves that exist", () => {
     const one = render(
       <TreeSelect
         items={PLAN}
@@ -36,7 +36,7 @@ describe("TreeSelect", () => {
         label="Centro de custo"
       />,
     );
-    // Com uma escolha so vale o nome dela, como no `summarize` das outras duas.
+    // With a single choice its name is what counts, as in the other two's `summarize`.
     expect(textOf(one)).toContain("Contas a pagar");
     expect(trigger(one).props.accessibilityValue.text).toBe("Contas a pagar");
 
@@ -48,11 +48,11 @@ describe("TreeSelect", () => {
         label="Centro de custo"
       />,
     );
-    // "sumiu" nao e folha desta arvore: contar tres seria o gatilho mentindo.
+    // "sumiu" is not a leaf of this tree: counting three would be the trigger lying.
     expect(trigger(many).props.accessibilityValue.text).toBe("2 selecionados");
   });
 
-  test("a folha abre com a árvore dentro, e o rodapé conta o rascunho", () => {
+  test("the sheet opens with the tree inside, and the footer counts the draft", () => {
     const screen = render(
       <TreeSelect items={PLAN} value={[]} onValueChange={() => {}} label="Centro de custo" />,
     );
@@ -62,11 +62,11 @@ describe("TreeSelect", () => {
     expect(textOf(screen)).toContain("Nada escolhido");
 
     act(() => byLabel(screen, "Marcar tudo em Financeiro")[0].props.onPress());
-    // A conta do rodape anda enquanto a pessoa marca, sem ninguem confirmar.
+    // The footer count moves while the person checks, without anyone confirming.
     expect(textOf(screen)).toContain("2 selecionados");
   });
 
-  test("marcar não confirma, e sair pela lateral desiste", () => {
+  test("checking does not confirm, and leaving through the side gives up", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <TreeSelect items={PLAN} value={[]} onValueChange={onValueChange} label="Centro de custo" />,
@@ -77,11 +77,11 @@ describe("TreeSelect", () => {
     expect(onValueChange).not.toHaveBeenCalled();
 
     act(() => byLabel(screen, "Fechar")[0].props.onPress());
-    // O toque no fundo escurecido e o gesto de quem se arrependeu: nada saiu.
+    // Tapping the dimmed backdrop is the gesture of someone who changed their mind: nothing came out.
     expect(onValueChange).not.toHaveBeenCalled();
   });
 
-  test("aplicar entrega as folhas e fecha a folha", () => {
+  test("applying delivers the leaves and closes the sheet", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <TreeSelect items={PLAN} value={[]} onValueChange={onValueChange} label="Centro de custo" />,
@@ -91,13 +91,13 @@ describe("TreeSelect", () => {
     act(() => byLabel(screen, "Marcar tudo em Financeiro")[0].props.onPress());
     act(() => apply(screen).props.onPress());
 
-    // As folhas, e nunca o id do pai - a regra do web atravessa inteira.
+    // The leaves, and never the parent's id - the web rule carries over whole.
     expect(onValueChange).toHaveBeenCalledWith(["pagar", "receber"]);
-    // Folha fechada: a arvore saiu da tela.
+    // Sheet closed: the tree left the screen.
     expect(textOf(screen)).not.toContain("Contas a receber");
   });
 
-  test("o rascunho descartado não volta na próxima abertura", () => {
+  test("the discarded draft does not come back on the next opening", () => {
     const screen = render(
       <TreeSelect items={PLAN} value={[]} onValueChange={() => {}} label="Centro de custo" />,
     );
@@ -111,7 +111,7 @@ describe("TreeSelect", () => {
     expect(textOf(screen)).toContain("Nada escolhido");
   });
 
-  test("desligado não abre a folha", () => {
+  test("disabled does not open the sheet", () => {
     const screen = render(
       <TreeSelect
         items={PLAN}

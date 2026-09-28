@@ -1,50 +1,52 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # FileUpload
 
-A área de anexar: clique abre o seletor, arrastar acende, soltar valida.
+The attach area: a click opens the picker, dragging lights it up, dropping
+validates.
 
-A peça não conhece rede, de propósito, como o `DataTable` não conhece React
-Query. Subir o arquivo (fetch, progresso real, nova tentativa) é do app, que
-sabe o endpoint e a autenticação. A peça valida `accept` e `maxSize` na
-entrada, entrega os aceitos em `onSelect` e os recusados em `onReject`, cada
-recusa com o motivo pronto para um toast: "maior que 5 MB", "tipo não aceito".
-Sem `multiple`, soltar vários entrega o primeiro, e os outros chegam em
-`onReject` com "só um arquivo por vez", em vez de sumirem calados.
+The piece knows nothing about the network, on purpose, just as `DataTable`
+knows nothing about React Query. Uploading the file (fetch, real progress,
+retry) belongs to the app, which knows the endpoint and the authentication.
+The piece validates `accept` and `maxSize` on the way in, delivers the accepted
+ones in `onSelect` and the rejected ones in `onReject`, each rejection with the
+reason ready for a toast: "maior que 5 MB", "tipo não aceito". Without
+`multiple`, dropping several delivers the first one, and the others arrive in
+`onReject` with "só um arquivo por vez", instead of vanishing silently.
 
-A lista é apresentação do estado que o app informar: `progress` de 0 a 100
-vira barra anunciada como `progressbar`; `error` vence o progresso, mostra o
-texto e oferece "Tentar de novo"; sem os dois, o arquivo está pronto. O
-tamanho sai formatado pela peça (`48,2 KB`, `1,2 MB`), nunca digitado.
+The list presents the state the app reports: `progress` from 0 to 100 becomes
+a bar announced as `progressbar`; `error` beats progress, shows the text and
+offers "Tentar de novo"; with neither, the file is ready. The size is
+formatted by the piece (`48,2 KB`, `1,2 MB`), never typed.
 
-A área é um `<button>` de verdade, então teclado e leitor de tela funcionam
-sem esforço; o `<input type="file">` escondido carrega `accept` e `multiple`,
-e o diálogo do sistema já filtra os tipos.
+The area is a real `<button>`, so keyboard and screen reader work
+effortlessly; the hidden `<input type="file">` carries `accept` and
+`multiple`, and the system dialog already filters the types.
 
-Quem informa o formato e o limite no `hint` evita a recusa: a pessoa lê "XML
-ou PDF, até 5 MB" antes de escolher errado.
+Stating the format and the limit in `hint` avoids the rejection: the person
+reads "XML ou PDF, até 5 MB" before choosing wrong.
 
-## As partes
+## Parts
 
-`FileUploadList` é a lista do que já entrou, e `FileUploadItem` é cada arquivo
-nela, com nome, tamanho, `progress` e `error`. A barra de cada arquivo anda até
-o valor novo pela largura, no tempo `--rc-duration-base`, em vez de pular de
-um número para o outro a cada aviso do envio. Subir é do app: a peça valida na
-entrada e mostra o que o app disser depois. Quem controla o envio é quem sabe
-quando ele terminou.
+`FileUploadList` is the list of what has already come in, and `FileUploadItem`
+is each file in it, with name, size, `progress` and `error`. Each file's bar
+moves to the new value along its width, at `--rc-duration-base`, instead of
+jumping from one number to the next on every upload update. Uploading belongs
+to the app: the piece validates on the way in and shows what the app says
+afterwards. Whoever controls the upload is whoever knows when it finished.
 
-## Movimento
+## Motion
 
-Cada `FileUploadItem` entra esmaecendo e subindo 4px (`animate-enter`, `--rc-duration-base`), então o arquivo recém-escolhido é visto chegando à lista. A barra de envio anda pela largura.
+Each `FileUploadItem` enters fading in and rising 4px (`animate-enter`, `--rc-duration-base`), so the newly chosen file is seen arriving in the list. The upload bar moves along its width.
 
-## No React Native
+## In React Native
 
-Traduz, no caminho próprio `@rivocode/ui-native/file-upload`: o `expo-document-picker` é peer **opcional** e módulo nativo (`npx expo install expo-document-picker`), e tem caminho separado do `Clipboard` pela mesma conta: a regra da casa é **um subcaminho por peer**, e não um por assunto. O que não muda é o principal: **a peça continua não conhecendo rede**. Ela valida `accept` e `maxSize` na entrada, entrega os aceitos em `onSelect` e os recusados em `onReject`, cada recusa com o motivo pronto para um aviso.
+Translates, on its own path `@rivocode/ui-native/file-upload`: `expo-document-picker` is an **optional** peer and a native module (`npx expo install expo-document-picker`), and it has a path separate from `Clipboard` by the same math: the house rule is **one subpath per peer**, and not one per subject. What does not change is the main thing: **the piece still knows nothing about the network**. It validates `accept` and `maxSize` on input, delivers the accepted ones in `onSelect` and the rejected ones in `onReject`, each rejection with its reason ready for a message.
 
-**A área de soltar vira um botão, e isso é a peça inteira mudando de forma.** No celular não há arrastar: nada pode ser solto em lugar nenhum, e o retângulo tracejado de 96px do web é, letra por letra, o idioma de "solte aqui": desenhá-lo numa tela de toque promete um gesto que o aparelho não tem. Tirado o soltar, o que sobra daquela caixa é um botão com muito espaço vazio em volta: **o espaço era o alvo de soltar, e não a affordance**. Então sobra o botão, numa altura de controle. E a altura que ele devolve é da **lista**, que é onde o arquivo aparece, sobe, falha e é removido. O `hint` continua existindo, e entra no nome falado do botão pelo mesmo motivo que no web ele mora dentro do `<button>`: quem ouve a tela precisa saber "XML ou PDF, até 5 MB" antes de abrir o seletor, e não depois de ser recusado.
+**The drop area becomes a button, and that is the whole piece changing shape.** On the phone there is no dragging: nothing can be dropped anywhere, and the web's 96px dashed rectangle is, letter for letter, the idiom of "drop here": drawing it on a touch screen promises a gesture the device does not have. Take away the dropping, and what remains of that box is a button with a lot of empty space around it: **the space was the drop target, not the affordance**. So the button remains, at a control height. And the height it gives back goes to the **list**, which is where the file appears, uploads, fails and is removed. `hint` still exists, and goes into the button's spoken name for the same reason that on the web it lives inside the `<button>`: whoever listens to the screen needs to know "XML ou PDF, até 5 MB" before opening the picker, not after being rejected.
 
-**O `accept` fala MIME.** O seletor do Expo filtra por tipo (`text/xml`, `image/*`), e não por extensão: um `.xml` mandado para lá não casaria nada e abriria o diálogo vazio. Então a extensão com ponto continua valendo (na validação de volta, contra o nome do arquivo), mas não vai para o sistema. E o que volta não é um `File`: é um `PickedFile` (`uri`, `name`, `size?`, `mimeType?`), com o `uri` local que o app usa para subir. **O `size` pode faltar**, porque nem todo provedor de arquivo do Android o informa, e por isso `maxSize` só recusa o que conseguiu medir. Fechar o seletor devolve `canceled` e nenhum callback dispara, como fechar a janela do seletor do web.
+**`accept` speaks MIME.** Expo's picker filters by type (`text/xml`, `image/*`), not by extension: an `.xml` sent there would match nothing and open an empty dialog. So the dotted extension still works (in the validation on the way back, against the file name), but it does not go to the system. And what comes back is not a `File`: it is a `PickedFile` (`uri`, `name`, `size?`, `mimeType?`), with the local `uri` the app uses to upload. **`size` may be missing**, because not every Android file provider reports it, and so `maxSize` only rejects what it managed to measure. Closing the picker returns `canceled` and no callback fires, like closing the web picker's window.
 
-`FileUploadList` e `FileUploadItem` atravessam com o mesmo contrato (`progress` de 0 a 100 vira barra anunciada, `error` vence o progresso e oferece "Tentar de novo"), com duas diferenças de plataforma: o corte do nome é `numberOfLines`, que lá é prop e não classe, e o tamanho sai formatado **sem `Intl`** ("47,1 KB", com a vírgula escrita à mão).
+`FileUploadList` and `FileUploadItem` cross over with the same contract (`progress` from 0 to 100 becomes an announced bar, `error` wins over progress and offers "Tentar de novo"), with two platform differences: the name truncation is `numberOfLines`, which there is a prop and not a class, and the size is formatted **without `Intl`** ("47,1 KB", with the comma written by hand).

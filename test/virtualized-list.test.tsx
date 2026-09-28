@@ -59,7 +59,7 @@ const items = (container: HTMLElement) => [...container.querySelectorAll("[role=
 
 const track = (container: HTMLElement) => container.querySelector("[role='list']") as HTMLElement;
 
-test("quatro mil itens entram, e so um punhado vai para o DOM", () => {
+test("four thousand items go in, and only a handful reach the DOM", () => {
   const { container } = list();
 
   const drawn = items(container).length;
@@ -67,7 +67,7 @@ test("quatro mil itens entram, e so um punhado vai para o DOM", () => {
   expect(drawn).toBeLessThan(60);
 });
 
-test("a lista diz quantos itens existem, e onde cada um esta", () => {
+test("the list says how many items exist, and where each one is", () => {
   const { container } = list();
 
   const first = items(container)[0]!;
@@ -78,7 +78,7 @@ test("a lista diz quantos itens existem, e onde cada um esta", () => {
   expect(second.getAttribute("aria-posinset")).toBe("2");
 });
 
-test("a contagem acompanha a lista que chegou, e nao a que foi desenhada", () => {
+test("the count follows the list that arrived, and not the one that was drawn", () => {
   const { container } = list({ items: EVENTS.slice(0, 7) });
 
   for (const item of items(container)) {
@@ -86,24 +86,24 @@ test("a contagem acompanha a lista que chegou, e nao a que foi desenhada", () =>
   }
 });
 
-test("o nome da lista carrega o total, e nao o que esta montado", () => {
+test("the list name carries the total, and not what is mounted", () => {
   const { container } = list();
 
   const role = track(container);
-  const montados = items(container).length;
+  const mounted = items(container).length;
 
   expect(role.getAttribute("aria-label")).toBe("Log de envio, 4000 itens");
-  expect(montados).toBeGreaterThan(0);
-  expect(montados).toBeLessThan(4000);
+  expect(mounted).toBeGreaterThan(0);
+  expect(mounted).toBeLessThan(4000);
 });
 
-test("a contagem concorda com o singular, em vez de anunciar 1 itens", () => {
+test("the count agrees with the singular, instead of announcing 1 itens", () => {
   const { container } = list({ items: EVENTS.slice(0, 1) });
 
   expect(track(container).getAttribute("aria-label")).toBe("Log de envio, 1 item");
 });
 
-test("a contagem se traduz junto com o nome, para a lista nao sair em duas linguas", () => {
+test("the count is translated along with the name, so the list does not come out in two languages", () => {
   const { container } = list({
     label: "Shipping log",
     labels: { count: (total) => `${total} items` },
@@ -112,7 +112,7 @@ test("a contagem se traduz junto com o nome, para a lista nao sair em duas lingu
   expect(track(container).getAttribute("aria-label")).toBe("Shipping log, 4000 items");
 });
 
-test("a moldura rola por dentro em vez de empurrar a pagina", () => {
+test("the frame scrolls inside instead of pushing the page", () => {
   const { container } = list({ maxHeight: 320 });
 
   const viewport = container.querySelector("[data-rc-viewport]") as HTMLElement;
@@ -121,7 +121,7 @@ test("a moldura rola por dentro em vez de empurrar a pagina", () => {
   expect(viewport.className).toContain("overflow-auto");
 });
 
-test("com medicao, a altura real do item vence o palpite", () => {
+test("with measurement, the item's real height beats the estimate", () => {
   const { container } = list({ itemHeight: 20 });
 
   const drawn = items(container) as HTMLElement[];
@@ -132,7 +132,7 @@ test("com medicao, a altura real do item vence o palpite", () => {
   expect(Number.parseInt(track(container).style.height, 10)).toBeGreaterThan(4000 * 20);
 });
 
-test("o palpite continua valendo para quem ainda nao foi desenhado", () => {
+test("the estimate still applies to items not yet drawn", () => {
   const { container } = list({ itemHeight: 20 });
 
   const total = Number.parseInt(track(container).style.height, 10);
@@ -141,14 +141,14 @@ test("o palpite continua valendo para quem ainda nao foi desenhado", () => {
   expect(total).toBeLessThan(4000 * ITEM_HEIGHT);
 });
 
-test("sem medicao, o palpite e a lei e cada item recebe a altura cravada", () => {
+test("without measurement, the estimate is the law and each item gets the fixed height", () => {
   const { container } = list({ itemHeight: 20, measure: false });
 
   expect(track(container).style.height).toBe(`${4000 * 20}px`);
   expect((items(container)[0] as HTMLElement).style.height).toBe("20px");
 });
 
-test("o palpite pode variar por indice", () => {
+test("the estimate can vary by index", () => {
   const { container } = list({
     items: EVENTS.slice(0, 4),
     measure: false,
@@ -160,7 +160,7 @@ test("o palpite pode variar por indice", () => {
   expect((items(container)[1] as HTMLElement).style.height).toBe("70px");
 });
 
-test("o respiro entre itens entra na conta da rolagem", () => {
+test("the gap between items enters the scroll math", () => {
   const withoutGap = list({ items: EVENTS.slice(0, 10), measure: false, itemHeight: 20 });
   expect(track(withoutGap.container).style.height).toBe("200px");
   withoutGap.unmount();
@@ -169,7 +169,7 @@ test("o respiro entre itens entra na conta da rolagem", () => {
   expect(track(withGap.container).style.height).toBe(`${200 + 9 * 8}px`);
 });
 
-test("carregando nao finge lista: sai esqueleto e nenhum item anunciado", () => {
+test("loading does not fake a list: a skeleton renders and no item is announced", () => {
   const { container } = list({ items: undefined, skeletonItems: 3 });
 
   expect(items(container)).toEqual([]);
@@ -177,21 +177,21 @@ test("carregando nao finge lista: sai esqueleto e nenhum item anunciado", () => 
   expect(container.querySelectorAll(".animate-pulse").length).toBe(3);
 });
 
-test("o esqueleto ocupa a altura que os itens vao ocupar", () => {
+test("the skeleton takes the height the items will take", () => {
   const { container } = list({ items: undefined, skeletonItems: 2, itemHeight: 56 });
 
   const fakes = [...container.querySelectorAll("[aria-hidden='true'] > div")] as HTMLElement[];
   expect(fakes.map((fake) => fake.style.height)).toEqual(["56px", "56px"]);
 });
 
-test("o erro vence o carregando", () => {
+test("error beats loading", () => {
   const { container } = list({ items: undefined, isError: true });
 
   expect(screen.getByText("Não foi possível carregar")).toBeTruthy();
   expect(container.querySelector("[data-rc-viewport]")).toBeNull();
 });
 
-test("o erro fala da lista que falhou quando lhe dizem o nome", () => {
+test("the error mentions the list that failed when given its name", () => {
   const retry = mock();
   list({
     items: undefined,
@@ -208,7 +208,7 @@ test("o erro fala da lista que falhou quando lhe dizem o nome", () => {
   expect(retry).toHaveBeenCalledTimes(1);
 });
 
-test("o vazio so vale depois que a consulta voltou", () => {
+test("the empty state only applies after the query returned", () => {
   const blank = {
     title: "Nenhum evento",
     description: "Quando a primeira nota for enviada, ela aparece aqui.",
@@ -223,14 +223,14 @@ test("o vazio so vale depois que a consulta voltou", () => {
   expect(screen.getByText("Quando a primeira nota for enviada, ela aparece aqui.")).toBeTruthy();
 });
 
-test("lista vazia sem `empty` continua sendo uma moldura vazia, e nao um buraco", () => {
+test("an empty list without `empty` is still an empty frame, and not a hole", () => {
   const { container } = list({ items: [] });
 
   expect(container.querySelector("[data-rc-viewport]")).toBeTruthy();
   expect(items(container)).toEqual([]);
 });
 
-test("classNames veste cada parte sem ninguem alcancar o no interno", () => {
+test("classNames dresses each part without anyone reaching the inner node", () => {
   const { container } = list({
     className: "border-dashed",
     classNames: { list: "bg-elevated", item: "px-4" },
@@ -242,7 +242,7 @@ test("classNames veste cada parte sem ninguem alcancar o no interno", () => {
   expect((items(container)[0] as HTMLElement).className).toContain("px-4");
 });
 
-test("da para chegar num item que nao esta no DOM", () => {
+test("an item that is not in the DOM can be reached", () => {
   const ref = createRef<VirtualListHandle>();
   const { container } = list({ ref, measure: false, itemHeight: ITEM_HEIGHT });
 
@@ -270,7 +270,7 @@ test("da para chegar num item que nao esta no DOM", () => {
   expect(call![0].top).toBe(3000 * ITEM_HEIGHT);
 });
 
-test("o item desenhado carrega o indice que o virtualizador precisa medir", () => {
+test("the drawn item carries the index the virtualizer needs to measure", () => {
   const { container } = list();
 
   expect(items(container).map((item) => item.getAttribute("data-index"))).toEqual(

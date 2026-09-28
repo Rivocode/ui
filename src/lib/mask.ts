@@ -14,9 +14,9 @@ export {
 export function applyMask(text: string, mask: Mask): string {
   if (!isKnownMask(mask) && process.env.NODE_ENV !== "production") {
     console.warn(
-      `[rivocode/ui] mask="${mask}" nao e um molde conhecido nem parece um molde. ` +
-        `Os prontos sao: ${Object.keys(MASKS).join(", ")}, moeda. ` +
-        `Molde escrito na mao usa 9 para digito, A para letra e * para os dois.`,
+      `[rivocode/ui] mask="${mask}" is not a known mask and does not look like a pattern. ` +
+        `The built-in ones are: ${Object.keys(MASKS).join(", ")}, moeda. ` +
+        `A hand-written pattern uses 9 for a digit, A for a letter and * for either.`,
     );
   }
   if (mask === "boleto") return applyPattern(text, boletoPatternFor(text));

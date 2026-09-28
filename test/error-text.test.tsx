@@ -7,13 +7,13 @@ import { DataTable, type Column } from "../src/components/data-table";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * Tres textos estavam cravados no JSX, e nenhum deles tinha prop: os dois
- * titulos de erro e a linha de busca sem resultado. Uma tela que carrega tres
- * listagens nao conseguia dizer qual delas falhou, e um produto que nao fala
- * portugues nao conseguia dizer nada.
+ * Three texts were hardcoded in the JSX, and none of them had a prop: the two
+ * error titles and the no-results search line. A screen that loads three
+ * listings could not say which of them failed, and a product that does not
+ * speak Portuguese could not say anything.
  *
- * `errorTitle` tem o mesmo nome nas duas pecas de proposito - e o mesmo par
- * que o `errorMessage` ja formava.
+ * `errorTitle` has the same name in both pieces on purpose - it is the same
+ * pair that `errorMessage` already formed.
  */
 
 type Invoice = { id: string; number: string };
@@ -45,12 +45,12 @@ function chart(props: Partial<React.ComponentProps<typeof ChartContainer>> = {})
   );
 }
 
-test("sem errorTitle, o titulo do erro continua o de sempre", () => {
+test("without errorTitle, the error title stays the usual one", () => {
   table({ isError: true, data: undefined });
   expect(screen.getByText("Não foi possível carregar")).toBeDefined();
 });
 
-test("errorTitle diz o que falhou, e nao so que algo falhou", () => {
+test("errorTitle says what failed, not just that something failed", () => {
   table({
     isError: true,
     data: undefined,
@@ -62,19 +62,19 @@ test("errorTitle diz o que falhou, e nao so que algo falhou", () => {
   expect(screen.queryByText("Não foi possível carregar")).toBeNull();
 });
 
-test("sem noResultsMessage, a busca vazia continua com a linha de sempre", () => {
+test("without noResultsMessage, the empty search keeps the usual line", () => {
   table({ filter: "prefeitura" });
   expect(screen.getByText("Nenhum resultado para a busca.")).toBeDefined();
 });
 
-test("noResultsMessage troca a linha da busca vazia, sem tocar no empty", () => {
+test("noResultsMessage replaces the empty search line, without touching empty", () => {
   table({ filter: "prefeitura", noResultsMessage: "Nenhuma nota bate com esse texto." });
 
   expect(screen.getByText("Nenhuma nota bate com esse texto.")).toBeDefined();
   expect(screen.queryByText("Nenhum resultado para a busca.")).toBeNull();
 });
 
-test("a busca vazia nao vira estado vazio: o empty fica reservado para o banco", () => {
+test("the empty search does not become an empty state: empty is reserved for the database", () => {
   table({
     filter: "prefeitura",
     noResultsMessage: "Nenhuma nota bate com esse texto.",
@@ -84,19 +84,19 @@ test("a busca vazia nao vira estado vazio: o empty fica reservado para o banco",
   expect(screen.queryByText("Nenhuma nota por aqui")).toBeNull();
 });
 
-test("sem errorTitle, o grafico continua com o titulo de sempre", () => {
+test("without errorTitle, the chart keeps the usual title", () => {
   chart({ isError: true });
   expect(screen.getByText("Não foi possível carregar o gráfico")).toBeDefined();
 });
 
-test("errorTitle diz qual grafico do painel falhou", () => {
+test("errorTitle says which chart of the dashboard failed", () => {
   chart({ isError: true, errorTitle: "Não foi possível carregar o faturamento" });
 
   expect(screen.getByText("Não foi possível carregar o faturamento")).toBeDefined();
   expect(screen.queryByText("Não foi possível carregar o gráfico")).toBeNull();
 });
 
-test("errorTitle e errorMessage sao o par, e continuam aparecendo juntos", () => {
+test("errorTitle and errorMessage are the pair, and keep showing together", () => {
   chart({
     isError: true,
     errorTitle: "Não foi possível carregar o faturamento",
@@ -108,23 +108,23 @@ test("errorTitle e errorMessage sao o par, e continuam aparecendo juntos", () =>
 });
 
 /*
- * O erro vence o carregando, e as quatro pecas tem que concordar nisso.
+ * Error beats loading, and the four pieces have to agree on it.
  *
- * O `ChartContainer` ordenava ao contrario - `isLoading ? esqueleto : isError`
- * -, entao uma consulta que falhou durante um refetch mostrava esqueleto e
- * escondia a falha: quem olhava via carregamento eterno e nao tinha o botao de
- * tentar de novo. O `DataTable` sempre ordenou certo, e `DataTable.md` e a
- * tabela de paridade ja afirmavam que essa era a regra da casa - a peca e que
- * discordava do texto, calada.
+ * `ChartContainer` ordered it the other way - `isLoading ? skeleton : isError`
+ * -, so a query that failed during a refetch showed a skeleton and hid the
+ * failure: whoever looked saw endless loading and had no retry button.
+ * `DataTable` always ordered it right, and `DataTable.md` and the parity table
+ * already stated that this was the house rule - it was the piece that
+ * silently disagreed with the text.
  */
-test("com erro e carregando juntos, o DataTable mostra o erro e nao o esqueleto", () => {
+test("with error and loading together, DataTable shows the error and not the skeleton", () => {
   const { container } = table({ isLoading: true, isError: true });
 
   expect(screen.getByText("Não foi possível carregar")).toBeDefined();
   expect(container.querySelectorAll(".bg-skeleton")).toHaveLength(0);
 });
 
-test("com erro e carregando juntos, o ChartContainer mostra o erro e nao o esqueleto", () => {
+test("with error and loading together, ChartContainer shows the error and not the skeleton", () => {
   const { container } = chart({ isLoading: true, isError: true });
 
   expect(screen.getByText("Não foi possível carregar o gráfico")).toBeDefined();

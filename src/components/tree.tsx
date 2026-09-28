@@ -18,7 +18,7 @@ import { Checkbox } from "./checkbox";
 export type TreeNode = {
   id: string;
   label: ReactNode;
-  /** Texto usado na busca. Sem ele, a busca so acha pelo `label` de string. */
+  /** Text used in the search. Without it, the search only finds by a string `label`. */
   search?: string;
   children?: TreeNode[];
   disabled?: boolean;
@@ -27,26 +27,26 @@ export type TreeNode = {
 export type TreeProps = Omit<ComponentPropsWithoutRef<"ul">, "defaultValue" | "children"> & {
   items: TreeNode[];
   /**
-   * Ids marcados, quando quem usa controla o estado. Pai marcado nao entra
-   * aqui: quem vale e a folha.
+   * Checked ids, when the consumer controls the state. A checked parent does not go
+   * in here: what counts is the leaf.
    */
   value?: string[];
-  /** Os ids iniciais, quando a arvore controla o proprio estado. */
+  /** The initial ids, when the tree controls its own state. */
   defaultValue?: string[];
   onValueChange?: (ids: string[]) => void;
-  /** Sem isto, so uma folha por vez. */
+  /** Without this, only one leaf at a time. */
   multiple?: boolean;
-  /** Ids dos galhos abertos, para quem controla. Anda junto com `onOpenChange`. */
+  /** Ids of the open branches, for whoever controls them. Goes together with `onOpenChange`. */
   open?: string[];
-  /** Os galhos abertos na primeira pintura, sem controlar. */
+  /** The branches open on the first paint, uncontrolled. */
   defaultOpen?: string[];
   onOpenChange?: (ids: string[]) => void;
-  /** Filtra pela busca, mantendo o caminho ate quem casou. */
+  /** Filters by the search, keeping the path up to what matched. */
   filter?: string;
   className?: string;
   /**
-   * Os textos da peca, para trocar o idioma: `expand` e `collapse` sao os
-   * nomes do botao que abre e fecha um ramo. Passe so os que mudam.
+   * The piece's texts, to change the language: `expand` and `collapse` are the
+   * names of the button that opens and closes a branch. Pass only the ones that change.
    */
   labels?: Partial<TreeLabels>;
 };
@@ -203,7 +203,6 @@ function Branch({
   node: TreeNode;
   level: number;
   tabbable: string | undefined;
-  /** `null` quer dizer tudo aberto, que e o estado da busca. */
   openIds: string[] | null;
   picked: string[];
   multiple?: boolean;

@@ -1,6 +1,6 @@
 import { Field, FieldLabel, Fieldset, FieldsetLegend, Input } from '@rivocode/ui'
 
-/** Endereço */
+/** Address */
 export function Address() {
   return (
     <Fieldset className="w-80">

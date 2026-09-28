@@ -1,29 +1,29 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # DescriptionList
 
-Pares de rótulo e valor, na marcação que já existe para isso: `<dl>`.
+Label and value pairs, in the markup that already exists for this: `<dl>`.
 
-É a folha de detalhes de toda listagem (CNPJ, emissão, vencimento, valor)
-que cada tela montava com um par de `<span>` num flex. Aqui o leitor de tela
-ouve "termo, definição" em vez de dois textos soltos, e as linhas saem
-divididas pelo mesmo fio.
+It is the details sheet of every listing (CNPJ, issue date, due date, amount)
+that each screen used to build with a pair of `<span>` in a flex. Here the
+screen reader hears "term, definition" instead of two loose texts, and the
+rows come out divided by the same hairline.
 
-O valor aceita qualquer nó: `Badge` para situação, `font-mono` para número,
-dinheiro do `currencyShort`. O rótulo não encolhe; valor comprido quebra do
-lado dele.
+The value accepts any node: a `Badge` for status, `font-mono` for a number,
+money from `currencyShort`. The label does not shrink; a long value wraps on
+its own side.
 
-Vive bem dentro de `Sheet` e `Dialog` de detalhes, e ao lado de um
-`Separator` quando a folha tem mais de um bloco.
+It sits well inside a details `Sheet` or `Dialog`, and next to a `Separator`
+when the sheet has more than one block.
 
-## As partes
+## Parts
 
-`DescriptionItem` é uma linha: `label` de um lado, filho do outro. O valor
-aceita o que for: `Badge` para situação, `font-mono` para número de nota,
-`Clipboard` para o que a pessoa vai levar embora.
+`DescriptionItem` is one row: `label` on one side, the child on the other. The
+value accepts anything: a `Badge` for status, `font-mono` for an invoice
+number, `Clipboard` for what the person is going to take away.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `DescriptionList` - as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `DescriptionList` - the borders come in through `Children`: Tailwind's divide utility does not exist in RN. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

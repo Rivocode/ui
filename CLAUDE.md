@@ -142,7 +142,7 @@ Each `scripts/check-*.ts` opens with the JSDoc of the incident that made it
 exist - read the one on top before touching what it guards. The guards that
 surprise the most:
 
-- `check:opacity` - `opacity-<n>` in `src/` has to be in `DECLARADAS`, with
+- `check:opacity` - `opacity-<n>` in `src/` has to be in `DECLARED`, with
   a reason, and the line that declares a color pair has the ratio MEASURED in
   both themes with the alpha applied. It was born because `check:contrast`
   measures the FULL pair and does not see alpha: the `Alert` close button
@@ -193,7 +193,7 @@ surprise the most:
   to `check:native:types`.
 - `check:tests` - the count the home page shows.
 - `check:demo` - every piece has to appear in `demo/*.tsx`, or have a line in
-  `SEM_VITRINE` with the reason. It was born because seven pieces were
+  `WITHOUT_SHOWCASE` with the reason. It was born because seven pieces were
   published to npm without anyone having looked at any of them: they passed
   1072 tests, and the process step that says to look in both themes and both
   densities was skipped with nothing flagging it. Measured afterwards, 28 of
@@ -308,7 +308,7 @@ of the 50 portraits different from the ones committed on macOS, the twelve
 section frames among them, and `a11y` flags today what the pieces already
 have. It fails an accessibility problem the base did not have, and a portrait
 that changed without its entry in `demo/assinaturas.json` changing along -
-accepting is still `bun run shot && bun run visual --aceitar` on the machine,
+accepting is still `bun run shot && bun run visual --accept` on the machine,
 and the `retrato-aceito` label on the PR is the valve for a difference that
 only exists on linux. It measures with a floor: fewer than 15 audited pages
 or 30 compared portraits fails. It is its own workflow, not a job of
@@ -374,16 +374,16 @@ twenty starts.
 Three answers are valid, and all of them have to be WRITTEN in
 `scripts/native-parity.ts` at the time:
 
-- **`traduz` / `vira`** - the piece was born on both sides. The default case.
-- **`nao`** - a desk idiom that makes no sense on touch, or something the
+- **`same` / `renamed`** - the piece was born on both sides. The default case.
+- **`no`** - a desk idiom that makes no sense on touch, or something the
   platform already gives out of the box. A decision, not a delay; the reason
   goes on the line.
-- **`fila`** - only when the piece depends on a GESTURE DECISION not yet made,
-  and never for lack of time. It requires an entry in `FILA_DECLARADA` with
+- **`queued`** - only when the piece depends on a GESTURE DECISION not yet made,
+  and never for lack of time. It requires an entry in `DECLARED_QUEUE` with
   the reason, and `bun run check:parity` refuses a queue without a
   declaration.
 
-The `FILA_DECLARADA` list **only shrinks**, like the `DEBT` of the other
+The `DECLARED_QUEUE` list **only shrinks**, like the `DEBT` of the other
 guards: an entry that no longer flags is an error, and the guard says to
 delete the line.
 
@@ -522,9 +522,9 @@ Three dry runs, and none of them spends a version:
 
 - `gh workflow run tag` runs the whole decision, with the four guards truly
   measured, and creates no tag - the box comes checked.
-- `gh workflow run release --field ensaio=true`,
-  `gh workflow run release-native --field ensaio=true` and
-  `gh workflow run release-mcp --field ensaio=true` go through the publishing
+- `gh workflow run release --field dry_run=true`,
+  `gh workflow run release-native --field dry_run=true` and
+  `gh workflow run release-mcp --field dry_run=true` go through the publishing
   path up to the step before `npm publish`. The native one was born because
   the first real publish failed with `ENEEDAUTH`, someone published by hand,
   and the three following attempts got `403`.
@@ -556,8 +556,8 @@ authenticate to npm through the same OIDC as provenance: each package has, on
 npmjs.com, a trusted publisher pointing to `Rivocode/ui` and to its workflow
 file, and there is no `NPM_TOKEN` nor `registry-url` - without `registry-url`
 setup-node does not write `.npmrc`, and no empty token is left for npm to
-read. It requires npm 11.5.1 or newer, which is why the "Check the trusted
-publishing npm" step updates npm and fails early if the version does not get
+read. It requires npm 11.5.1 or newer, which is why the "Check the npm for trusted
+publishing" step updates npm and fails early if the version does not get
 there. Renaming one of these three files breaks publishing: the name is
 registered in the registry. The dry run does not prove authentication,
 because `--dry-run` does not exchange the token; only the first real release

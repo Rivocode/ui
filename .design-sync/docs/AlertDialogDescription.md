@@ -1,11 +1,11 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # AlertDialogDescription
 
-A consequência, em uma frase, ligada ao painel por `aria-describedby`.
+The consequence, in one sentence, tied to the panel by `aria-describedby`.
 
-É onde mora o que não volta atrás: o que se perde junto, quem mais enxerga a
-mudança, se há como desfazer. Confirmação sem essa linha pede um sim sobre uma
-informação que ninguém deu.
+This is where what cannot be undone lives: what is lost along with it, who else
+sees the change, whether there is a way to undo it. A confirmation without this
+line asks for a yes about information nobody gave.

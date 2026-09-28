@@ -1,7 +1,7 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # InputSuffix
 
-O encosto depois do campo, dentro do `InputGroup`.
+The addon after the field, inside the `InputGroup`.

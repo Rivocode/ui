@@ -6,17 +6,17 @@ import { Text } from "./text";
 
 export type PageHeaderProps = {
   title: string;
-  /** A frase de contexto embaixo do titulo, nao um subtitulo decorativo. */
+  /** The context sentence below the title, not a decorative subtitle. */
   description?: string;
-  /** A etiqueta ao lado do titulo: um Badge, tipicamente. */
+  /** The tag next to the title: a Badge, typically. */
   badge?: ReactNode;
-  /** As acoes da tela: um Button primario, no maximo dois. */
+  /** The screen's actions: a primary Button, at most two. */
   actions?: ReactNode;
-  /** Veste a raiz, a mesma fileira de `classNames.row`. */
+  /** Styles the root, the same row as `classNames.row`. */
   className?: string;
   /**
-   * Classe por parte: `row` (a fileira do titulo com as acoes), `heading` (a
-   * coluna do titulo e da descricao), `title`, `description` e `actions`.
+   * Class per part: `row` (the title row with the actions), `heading` (the
+   * title and description column), `title`, `description` and `actions`.
    */
   classNames?: Slots<"row" | "heading" | "title" | "description" | "actions">;
 };

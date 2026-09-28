@@ -1,17 +1,19 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # Menubar
 
-A barra de menus de aplicativo: Arquivo, Editar, Exibir.
+The application menu bar: File, Edit, View.
 
-Coordena vários `Menu` lado a lado: com um aberto, passar o mouse sobre o
-vizinho já troca, sem novo clique, e as setas andam entre eles.
+It coordinates several `Menu` side by side: with one open, hovering over the
+neighbor already switches, with no new click, and the arrows move between
+them.
 
-**Em tela de web isso quase nunca e o certo.** Barra de menus e vocabulário de
-programa de mesa; num painel, `Sidebar` e `Tabs` dizem mais. Ela existe para
-editor e ferramenta, onde o usuário já espera esse arranjo.
+**On a web screen this is almost never the right thing.** A menu bar is
+desktop-program vocabulary; in a dashboard, `Sidebar` and `Tabs` say more. It
+exists for editors and tools, where the user already expects this
+arrangement.
 
 ```tsx
 <Menubar>
@@ -25,12 +27,12 @@ editor e ferramenta, onde o usuário já espera esse arranjo.
 </Menubar>
 ```
 
-## As partes
+## Parts
 
-`MenubarTrigger` é o gatilho de cada menu da barra: "Arquivo", "Editar",
-"Exibir". Ele já vem vestido, inclusive com o anel de foco. Dentro da barra é
-ele que se usa, e não um `MenuTrigger` com classe na mão.
+`MenubarTrigger` is the trigger of each menu in the bar: "Arquivo", "Editar",
+"Exibir". It comes already dressed, including the focus ring. Inside the bar
+it is the one to use, and not a `MenuTrigger` with a class by hand.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão - idioma de mesa; navegação nativa é tab bar e drawer do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Does not port, by decision - a desktop idiom; native navigation is the router's tab bar and drawer. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.

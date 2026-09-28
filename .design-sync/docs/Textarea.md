@@ -1,17 +1,17 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Textarea
 
-Campo de várias linhas. Passa pelo `Field.Control` da Base UI como o `Input`,
-então rótulo, ajuda e erro se ligam sozinhos dentro de um `Field`.
+A multi-line field. It goes through Base UI's `Field.Control` like `Input`, so
+label, help and error tie themselves together inside a `Field`.
 
-Altura aqui é número de linhas: `rows` diz quantas o campo mostra antes de rolar.
-O `size` (`sm`, `md` padrão e `lg`) é o mesmo do `Input` e não mexe nas linhas:
-muda o recuo lateral, o corpo do texto e a altura mínima, que é a de dois campos
-do mesmo tamanho. Serve para a observação caber no mesmo formulário que um
-`Input size="sm"` sem destoar dele.
+Height here is a number of lines: `rows` says how many the field shows before
+scrolling. `size` (`sm`, `md` default and `lg`) is the same as `Input`'s and
+does not touch the lines: it changes the side padding, the body text and the
+minimum height, which is that of two fields of the same size. It lets a note
+fit in the same form as an `Input size="sm"` without clashing with it.
 
 ```tsx
 <Field>
@@ -20,8 +20,8 @@ do mesmo tamanho. Serve para a observação caber no mesmo formulário que um
 </Field>
 ```
 
-## No React Native
+## In React Native
 
-Traduz: `rows` é a altura inicial e o campo cresce com o conteúdo, como no web. O `size` do web não atravessa: ele só casa o recuo, o corpo do texto e a altura mínima com o `Input` vizinho, e no nativo o `Input` também tem uma altura só.
+Translates: `rows` is the initial height and the field grows with the content, as on the web. The web's `size` does not cross over: it only matches the padding, the text size and the minimum height with the neighboring `Input`, and on native `Input` also has a single height.
 
-O texto chega por `onValueChange`, com o mesmo nome do web e do resto dos campos nativos. O `onChangeText` do `TextInput` continua valendo e é chamado junto, e é nele que o `forText` do `@rivocode/ui-native/form` se apoia, igual para o `Input` e para o `Textarea`.
+The text arrives through `onValueChange`, with the same name as the web and the rest of the native fields. The `TextInput`'s `onChangeText` still works and is called along with it, and it is what `@rivocode/ui-native/form`'s `forText` relies on, the same for `Input` and for `Textarea`.

@@ -16,25 +16,25 @@ function Example() {
   );
 }
 
-test("as abas saem com papel de aba", () => {
+test("the tabs render with the tab role", () => {
   render(<Example />);
   expect(screen.getAllByRole("tab")).toHaveLength(2);
   expect(screen.getByRole("tablist")).toBeDefined();
 });
 
-test("so o painel da aba ativa aparece", () => {
+test("only the active tab's panel shows", () => {
   render(<Example />);
   expect(screen.getByText("doze notas abertas")).toBeDefined();
   expect(screen.queryByText("quarenta notas pagas")).toBeNull();
 });
 
-test("a aba ativa se anuncia como selecionada", () => {
+test("the active tab announces itself as selected", () => {
   render(<Example />);
-  const ativa = screen.getByRole("tab", { name: "Abertas" });
-  expect(ativa.getAttribute("aria-selected")).toBe("true");
+  const active = screen.getByRole("tab", { name: "Abertas" });
+  expect(active.getAttribute("aria-selected")).toBe("true");
 });
 
-test("a aba ativa usa o acento como texto, nunca a lima crua", () => {
+test("the active tab uses the accent as text, never the raw lime", () => {
   render(<Example />);
   expect(screen.getByRole("tab", { name: "Abertas" }).className).toContain(
     "data-[active]:text-accent-text",

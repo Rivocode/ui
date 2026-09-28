@@ -16,23 +16,24 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "../src/components/tooltip";
 
 /*
- * As cinco pecas que dividem o `floatingPanel` dividiam a aparencia e nao o
- * contrato: o Popover expunha `side`, `align` e `sideOffset`, o Tooltip so o
- * `side`, e o Menu, o Select e o Combobox nenhum dos tres. Quem escrevia a
- * tela descobria a diferenca uma peca de cada vez, e o contorno era montar o
- * `Positioner` da Base UI na mao - que e o que a skill manda nunca fazer.
+ * The five pieces that share `floatingPanel` shared the look and not the
+ * contract: Popover exposed `side`, `align` and `sideOffset`, Tooltip only
+ * `side`, and Menu, Select and Combobox none of the three. Whoever wrote the
+ * screen found the difference one piece at a time, and the workaround was to
+ * assemble Base UI's `Positioner` by hand - which is what the skill says never
+ * to do.
  *
- * O lado e o alinhamento sao mensuraveis sem navegador: a Base UI espelha os
- * dois no proprio popup, em `data-side` e `data-align`. A folga nao e - ela
- * so existe depois do calculo de layout, que o happy-dom nao faz - e por isso
- * quem a guarda e o teste de fonte no fim do arquivo.
+ * Side and alignment are measurable without a browser: Base UI mirrors both
+ * on the popup itself, in `data-side` and `data-align`. The offset is not - it
+ * only exists after layout, which happy-dom does not compute - and that is why
+ * the source test at the end of the file guards it.
  */
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/** O popup, achado pelo texto que ele carrega. */
+/** The popup, found by the text it carries. */
 function panelOf(text: string) {
   return screen.getByText(text).closest("[data-side]")!;
 }
@@ -40,7 +41,7 @@ function panelOf(text: string) {
 const CUSTOMERS = ["Clinica Sao Lucas"];
 const OPTIONS = [{ label: "Abertas", value: "abertas" }];
 
-test("o painel de conteudo livre aceita lado e alinhamento", () => {
+test("the free-content panel accepts side and alignment", () => {
   withTheme(
     <Popover defaultOpen>
       <PopoverTrigger>Filtros</PopoverTrigger>
@@ -55,7 +56,7 @@ test("o painel de conteudo livre aceita lado e alinhamento", () => {
   expect(panel.getAttribute("data-align")).toBe("start");
 });
 
-test("o menu aceita lado e alinhamento", () => {
+test("the menu accepts side and alignment", () => {
   withTheme(
     <Menu defaultOpen>
       <MenuTrigger aria-label="Mais acoes">...</MenuTrigger>
@@ -70,7 +71,7 @@ test("o menu aceita lado e alinhamento", () => {
   expect(panel.getAttribute("data-align")).toBe("end");
 });
 
-test("a lista do select aceita lado e alinhamento", () => {
+test("the select list accepts side and alignment", () => {
   withTheme(
     <Select items={OPTIONS} defaultOpen>
       <SelectTrigger aria-label="Status">Abertas</SelectTrigger>
@@ -85,12 +86,12 @@ test("a lista do select aceita lado e alinhamento", () => {
   expect(panel.getAttribute("data-align")).toBe("start");
 });
 
-test("sem pedido de lado, o select mantem o alinhamento pelo item escolhido", () => {
-  // O modo padrao da Base UI sobrepoe o painel ao gatilho para casar o item
-  // escolhido com o texto dele, e nesse modo o posicionador responde
-  // `data-side="none"`. E o que o select sempre fez, e continua fazendo para
-  // quem nao pede nada - as tres props novas e que desligam o modo, senao
-  // seriam tres props sem efeito.
+test("with no side requested, the select keeps aligning by the chosen item", () => {
+  // Base UI's default mode lays the panel over the trigger to match the chosen
+  // item with its text, and in that mode the positioner answers
+  // `data-side="none"`. It is what the select always did, and it keeps doing
+  // so for whoever asks for nothing - it is the three new props that turn the
+  // mode off, otherwise they would be three props with no effect.
   withTheme(
     <Select items={OPTIONS} defaultOpen>
       <SelectTrigger aria-label="Status">Abertas</SelectTrigger>
@@ -104,7 +105,7 @@ test("sem pedido de lado, o select mantem o alinhamento pelo item escolhido", ()
   expect(panel.getAttribute("data-side")).toBe("none");
 });
 
-test("o painel da busca aceita lado e alinhamento", () => {
+test("the search panel accepts side and alignment", () => {
   withTheme(
     <Combobox items={CUSTOMERS} defaultOpen>
       <ComboboxInput placeholder="Buscar cliente" />
@@ -125,7 +126,7 @@ test("o painel da busca aceita lado e alinhamento", () => {
   expect(panel.getAttribute("data-align")).toBe("end");
 });
 
-test("a dica ganha o alinhamento que so o popover tinha", () => {
+test("the tooltip gains the alignment that only the popover had", () => {
   withTheme(
     <Tooltip defaultOpen>
       <TooltipTrigger aria-label="Excluir">x</TooltipTrigger>
@@ -140,11 +141,11 @@ test("a dica ganha o alinhamento que so o popover tinha", () => {
   expect(panel.getAttribute("data-align")).toBe("end");
 });
 
-test("as cinco tiram a folga padrao do mesmo lugar", async () => {
-  // O Popover abria a 8 e as outras quatro a 6, e a diferenca so aparece com
-  // dois paineis abertos lado a lado - que e onde ninguem vai conferir. O
-  // numero agora e um so, e este teste guarda que nenhuma peca volte a cravar
-  // o proprio: o que a fonte pode escrever e o nome da constante.
+test("all five take the default offset from the same place", async () => {
+  // Popover opened at 8 and the other four at 6, and the difference only shows
+  // with two panels open side by side - which is where nobody will check. The
+  // number is now a single one, and this test guards that no piece goes back
+  // to hardcoding its own: what the source may write is the constant's name.
   const files = ["popover", "menu", "select", "combobox", "tooltip"];
 
   expect(FLOATING_SIDE_OFFSET).toBe(6);

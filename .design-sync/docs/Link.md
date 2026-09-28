@@ -1,33 +1,36 @@
 ---
-category: Tipografia
+category: Typography
 ---
 
 # Link
 
-A âncora da casa: sublinhada, com anel de foco visível, nos tons de texto do
-tema.
+The house anchor: underlined, with a visible focus ring, in the theme's text
+tones.
 
 ```tsx
 <Link href="/notas">Ver notas</Link>
 ```
 
-O sublinhado vem ligado. No meio de uma frase a cor sozinha não basta para
-separar o link do texto em volta, e quem não distingue a cor fica sem saber
-onde clicar. `underline="hover"` só sublinha ao passar, e só vale fora do
-texto corrido: numa lista de links do rodapé ou da navegação, onde a posição
-já diz que aquilo é link.
+The underline is on by default. In the middle of a sentence, color alone is
+not enough to separate the link from the surrounding text, and someone who
+cannot tell the color apart is left not knowing where to click.
+`underline="hover"` only underlines on hover, and only applies outside running
+text: in a list of links in the footer or the navigation, where the position
+already says that it is a link.
 
-`tone` escolhe a cor: `accent` é o link solto na página, `neutral` e `muted`
-servem à lista de links, e `inherit` pega a cor da frase. Use `inherit`
-dentro de um `Alert` ou de qualquer fundo de estado, onde a cor do tom já foi
-medida contra aquele fundo e o acento não foi.
+`tone` picks the color: `accent` is the standalone link on the page, `neutral`
+and `muted` serve lists of links, and `inherit` takes the sentence's color. Use
+`inherit` inside an `Alert` or on any status background, where the tone's
+color has already been measured against that background and the accent has
+not.
 
-## Para fora do site
+## Off the site
 
-`external` abre em outra aba com `rel="noopener noreferrer"`, desenha a seta
-de saída e diz "(abre em nova aba)" ao leitor de tela, depois do texto do
-link. Quem enxerga vê a seta; quem ouve, a frase. O `labels.external` troca a
-frase, e o `rel` que você passar é mantido, somado aos dois de segurança.
+`external` opens in another tab with `rel="noopener noreferrer"`, draws the
+outbound arrow and says "(abre em nova aba)" to the screen reader, after the
+link text. Sighted users see the arrow; listeners hear the sentence.
+`labels.external` swaps the sentence, and the `rel` you pass is kept, added to
+the two security values.
 
 ```tsx
 <Link href="https://www.gov.br/nfse" external>
@@ -35,10 +38,10 @@ frase, e o `rel` que você passar é mantido, somado aos dois de segurança.
 </Link>
 ```
 
-## Com o link do router
+## With the router's link
 
-O `render` troca a âncora pelo link do seu router, e o desenho continua o
-daqui. O `href`, a navegação e o pré-carregamento passam a ser do router.
+`render` swaps the anchor for your router's link, and the look stays the one
+from here. The `href`, navigation and prefetching become the router's.
 
 ```tsx
 import { Link } from '@rivocode/ui'
@@ -47,27 +50,27 @@ import { NavLink } from 'react-router'
 <Link render={<NavLink to="/clientes" />}>Ver todos os clientes</Link>
 ```
 
-Quase todo router também exporta um `Link`, e os dois nomes não cabem no
-mesmo arquivo. Renomeie um deles na importação
-(`import { Link as RouterLink } from 'react-router'`), ou use o `NavLink`,
-como acima.
+Almost every router also exports a `Link`, and the two names do not fit in the
+same file. Rename one of them on import
+(`import { Link as RouterLink } from 'react-router'`), or use `NavLink`, as
+above.
 
-## Quando não usar
+## When not to use
 
-- **Ação que muda alguma coisa:** `Button`. Link navega, botão age: salvar,
-  excluir, abrir um diálogo e enviar um formulário são ações, e um link que
-  faz isso não responde à barra de espaço, não abre em outra aba e mente para
-  quem ouve a tela.
-- **Navegação que precisa parecer botão**, como o "Nova nota" do topo da
-  página: `Button` com `render={<a href="…" />}`. A tag continua sendo de
-  link, e o desenho é o do botão.
-- **Item de menu que leva a outra página:** `MenuLinkItem`, que anda pelas
-  setas junto com os outros itens do menu.
+- **An action that changes something:** `Button`. A link navigates, a button
+  acts: saving, deleting, opening a dialog and submitting a form are actions,
+  and a link that does that does not respond to the space bar, does not open
+  in another tab and lies to whoever listens to the screen.
+- **Navigation that needs to look like a button**, like the "Nova nota" at the
+  top of the page: `Button` with `render={<a href="…" />}`. The tag is still a
+  link, and the look is the button's.
+- **A menu item that leads to another page:** `MenuLinkItem`, which moves with
+  the arrows along with the other menu items.
 
-## No React Native
+## In React Native
 
-Traduz, como um `Text` com `accessibilityRole="link"`, e por isso vai dentro da frase como no web: `<Text>Veja o <Link href="…">espelho</Link>.</Text>` quebra linha junto com o texto em volta. `tone` tem os mesmos quatro valores, e o sublinhado é fixo.
+Translates, as a `Text` with `accessibilityRole="link"`, and so it goes inside the sentence as on the web: `<Text>Veja o <Link href="…">espelho</Link>.</Text>` wraps along with the surrounding text. `tone` has the same four values, and the underline is fixed.
 
-**Quem navega é o `onPress`, e não um `render`.** Não há âncora no React Native para trocar pela do router, então a composição do web vira callback: `onPress={() => router.push("/notas")}`. Sem `onPress`, o toque abre o `href` pelo `Linking`, que é o caminho para `https:`, `mailto:` e `tel:`.
+**`onPress` is what navigates, not a `render`.** There is no anchor in React Native to swap for the router's, so the web's composition becomes a callback: `onPress={() => router.push("/notas")}`. Without `onPress`, a tap opens the `href` through `Linking`, which is the path for `https:`, `mailto:` and `tel:`.
 
-**`external` desenha a seta e avisa pela dica**, a `accessibilityHint`, que o leitor de tela lê depois do nome; o texto é o `labels.external`, e o padrão é “Abre fora do app.”. Quando o filho é texto puro, o nome acessível é ele, sem a seta. Não há `underline`: no toque não existe passar por cima, e o sublinhado é sempre o do texto corrido.
+**`external` draws the arrow and warns through the hint**, the `accessibilityHint`, which the screen reader reads after the name; the text is `labels.external`, and the default is “Abre fora do app.”. When the child is plain text, the accessible name is that text, without the arrow. There is no `underline`: on touch there is no hovering, and the underline is always the running text's.

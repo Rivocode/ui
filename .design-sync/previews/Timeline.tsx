@@ -2,7 +2,7 @@ import { RelativeTime, Timeline, TimelineItem } from '@rivocode/ui'
 
 const AGORA = new Date('2026-08-25T18:00:00Z')
 
-/** Trilha de uma nota */
+/** An invoice's trail */
 export function InvoiceTrail() {
   return (
     <div className="w-96">

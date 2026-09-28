@@ -1,70 +1,72 @@
 /**
- * Guarda dos nomes citados nos exemplos de `.design-sync/docs/`.
+ * Guard of the names cited in the examples of `.design-sync/docs/`.
  *
- * A pagina do `ChartContainer` ensinou, por meses, a chamar um
- * `useAreaGradient('faturado')` que NUNCA existiu: a funcao real e
- * `areaGradient(id, name)`, e o mesmo exemplo ainda esquecia o `id`
- * obrigatorio do `<ChartAreaGradient>`. Quem copiava do site nao compilava, e
- * o paragrafo logo abaixo do bloco explicava justamente o `id` que o bloco nao
- * passava - a pagina se contradizia a dois centimetros de distancia.
+ * The `ChartContainer` page taught, for months, calling a
+ * `useAreaGradient('faturado')` that NEVER existed: the real function is
+ * `areaGradient(id, name)`, and the same example also forgot the required `id`
+ * of `<ChartAreaGradient>`. Whoever copied from the site did not compile, and
+ * the paragraph right below the block explained precisely the `id` the block
+ * did not pass - the page contradicted itself two centimeters apart.
  *
- * Nada acusava. O `check:doc` confere que peca e pagina existem uma para a
- * outra, o `check:skill` confere as props citadas na SKILL, e o
- * `check:previews` compila `.design-sync/previews/`. O corpo das paginas, que
- * e o que a pessoa copia, nao passava por compilador nenhum.
+ * Nothing flagged it. `check:doc` checks that piece and page exist for each
+ * other, `check:skill` checks the props cited in the SKILL, and
+ * `check:previews` compiles `.design-sync/previews/`. The body of the pages,
+ * which is what a person copies, went through no compiler at all.
  *
- * Ela nao compila os blocos: confere que todo `useAlgo(` e toda tag `<Algo`
- * citados existam na SUPERFICIE PUBLICA dos dois pacotes. Nome de fora que nao
- * e nosso - o `useState` do React, o `<Svg>` do react-native-svg, o `<NavLink>`
- * do roteador - mora em `FOREIGN`, e essa lista e fechada de proposito: ela
- * nomeia o que vem de biblioteca de terceiro, e NUNCA abriga excecao nossa.
- * Peca nossa citada errada se conserta na pagina ou no `index.ts`, jamais
- * aqui. O `<App />` que a pagina desenha como sendo do leitor tem lista
- * propria, `READER_CODE`, para `FOREIGN` continuar auditavel como lista de
- * terceiro.
+ * It does not compile the blocks: it checks that every `useSomething(` and
+ * every `<Something` tag cited exists in the PUBLIC SURFACE of both packages.
+ * Outside names that are not ours - React's `useState`, react-native-svg's
+ * `<Svg>`, the router's `<NavLink>` - live in `FOREIGN`, and that list is
+ * closed on purpose: it names what comes from a third-party library, and NEVER
+ * shelters an exception of ours. A piece of ours cited wrong is fixed in the
+ * page or in `index.ts`, never here. The `<App />` the page draws as being the
+ * reader's has its own list, `READER_CODE`, so `FOREIGN` stays auditable as a
+ * third-party list.
  *
- * SEGUNDO EPISODIO, no MESMO dia 28/08/2026, e ele e o motivo de este bloco
- * ter dobrado de tamanho. Nascida de manha contra o `useAreaGradient`, a
- * guarda foi auditada a tarde por duas leituras independentes, e as duas
- * acharam a mesma coisa por caminhos diferentes: ela media o ARQUIVO, e nao o
- * `.d.ts` que o cliente recebe.
+ * SECOND EPISODE, on the SAME day 28/08/2026, and it is the reason this block
+ * doubled in size. Born in the morning against `useAreaGradient`, the guard
+ * was audited in the afternoon by two independent readings, and both found the
+ * same thing by different paths: it measured the FILE, and not the `.d.ts` the
+ * client receives.
  *
- * O conjunto de nomes validos saia de um varrimento de `export function|const|
- * class` em TODO `src/**` e `native/src/**`. Nome interno de arquivo caia no
- * mesmo saco que nome de entrada do pacote, e um `as` no `index.ts` era
- * invisivel para ela. Duas paginas estavam no ar assim:
+ * The set of valid names came from a sweep of `export function|const|
+ * class` across ALL of `src/**` and `native/src/**`. A file-internal name fell
+ * into the same bag as a package entry name, and an `as` in `index.ts` was
+ * invisible to it. Two pages were live like that:
  *
- * - `Toolbar.md` ensinava `<ToolbarRoot>`; `src/index.ts` exporta
+ * - `Toolbar.md` taught `<ToolbarRoot>`; `src/index.ts` exports
  *   `ToolbarRoot as Toolbar`.
- * - `Fieldset.md` ensinava `<FieldsetRoot>`; `src/index.ts` exporta
+ * - `Fieldset.md` taught `<FieldsetRoot>`; `src/index.ts` exports
  *   `FieldsetRoot as Fieldset`.
  *
- * Quem copiava do site quebrava no primeiro build, com o empacotador dizendo
- * que `ToolbarRoot` nao e exportado por `@rivocode/ui`, e a guarda ficava VERDE
- * por cima - ela enxergava o `export function ToolbarRoot` no arquivo da peca e
- * dava por respondida uma pergunta que nunca chegou a fazer.
+ * Whoever copied from the site broke on the first build, with the bundler
+ * saying `ToolbarRoot` is not exported by `@rivocode/ui`, and the guard stayed
+ * GREEN on top of it - it saw the `export function ToolbarRoot` in the piece's
+ * file and took as answered a question it never actually asked.
  *
- * O segundo buraco era o que escondia o primeiro: a varredura de tag so olhava
- * `<(Chart|Rivo)[A-Z]\w*`. `<ToolbarRoot>` e `<FieldsetRoot>` nao comecam por
- * nenhum dos dois prefixos, entao passavam sem ser lidos. Guarda estreita nao
- * acha nada e parece limpa.
+ * The second hole was the one hiding the first: the tag sweep only looked at
+ * `<(Chart|Rivo)[A-Z]\w*`. `<ToolbarRoot>` and `<FieldsetRoot>` start with
+ * neither prefix, so they passed without being read. A narrow guard finds
+ * nothing and looks clean.
  *
- * O conserto e um so, e vale para os dois: o conjunto vem das ENTRADAS - as
- * tres do web e as do campo `exports` de `native/package.json` -, com o `as`
- * ja resolvido, e a varredura le `<[A-Z]\w*`, qualquer componente. E a familia
- * "assercao que passa sem medir" do CLAUDE.md: guarda verde nao e guarda que
- * mediu, e o jeito de saber e quebrar de proposito o que ela deveria pegar.
+ * The fix is a single one, and it covers both: the set comes from the ENTRIES
+ * - the three of the web and those of the `exports` field of
+ * `native/package.json` -, with `as` already resolved, and the sweep reads
+ * `<[A-Z]\w*`, any component. It is the "assertion that passes without
+ * measuring" family from CLAUDE.md: a green guard is not a guard that
+ * measured, and the way to know is to break on purpose what it should catch.
  */
 import { countAtLeast, scanAtLeast } from "./scan";
 
 /**
- * O que vem de biblioteca de terceiro e a pagina cita de propria vontade.
+ * What comes from a third-party library and the page cites of its own accord.
  *
- * A Recharts NAO mora aqui: `src/chart/index.ts` reexporta `<AreaChart>`,
- * `<Bar>`, `<XAxis>` e companhia, entao eles ja sao superficie publica nossa e
- * a guarda os alcanca sozinha pela entrada. Entrada aqui e confissao de que o
- * nome nasceu FORA dos dois pacotes, e nunca atalho para peca nossa citada
- * errada - essa se conserta na pagina ou no `index.ts`.
+ * Recharts does NOT live here: `src/chart/index.ts` re-exports `<AreaChart>`,
+ * `<Bar>`, `<XAxis>` and company, so they are already our public surface and
+ * the guard reaches them on its own through the entry. An entry here is a
+ * confession that the name was born OUTSIDE both packages, and never a
+ * shortcut for a piece of ours cited wrong - that one is fixed in the page or
+ * in `index.ts`.
  */
 export const FOREIGN = new Set([
   "useState",
@@ -88,12 +90,12 @@ export const FOREIGN = new Set([
 ]);
 
 /**
- * O componente que a pagina desenha como sendo do LEITOR, e nao do catalogo.
+ * The component the page draws as being the READER's, and not the catalog's.
  *
- * `<App />` e `<Invoices />` sao o buraco onde a pessoa encaixa a tela dela: o
- * exemplo perderia o sentido se citasse uma peca nossa ali. Nao entram em
- * `FOREIGN` porque nao vem de biblioteca nenhuma, e a separacao e o que
- * mantem `FOREIGN` auditavel como lista de terceiro.
+ * `<App />` and `<Invoices />` are the hole where the person fits their own
+ * screen: the example would lose its meaning if it cited a piece of ours
+ * there. They do not go into `FOREIGN` because they come from no library, and
+ * the separation is what keeps `FOREIGN` auditable as a third-party list.
  */
 export const READER_CODE = new Set(["App", "Invoices"]);
 
@@ -107,27 +109,27 @@ export const WEB_ENTRIES = [
 ];
 
 /**
- * As entradas do nativo saem do proprio manifesto, e nao de uma lista aqui:
- * subcaminho novo em `native/package.json` entra na conta no mesmo commit.
+ * The native entries come from the manifest itself, and not from a list here:
+ * a new subpath in `native/package.json` enters the count in the same commit.
  */
 export async function nativeEntries(): Promise<string[]> {
   const manifest: { exports?: Record<string, string> } =
     await Bun.file("native/package.json").json();
   const paths = Object.values(manifest.exports ?? {}).filter((path) => path.endsWith(".ts"));
 
-  countAtLeast("entradas `.ts` no campo `exports` de native/package.json", paths.length, 4);
+  countAtLeast("`.ts` entries in the `exports` field of native/package.json", paths.length, 4);
 
   return paths.map((path) => `native/${path.replace(/^\.\//, "")}`);
 }
 
 /**
- * O nome que a entrada PUBLICA, com o `as` ja resolvido.
+ * The name the entry PUBLISHES, with `as` already resolved.
  *
- * So o que sai pela entrada conta: `export function ToolbarRoot` no arquivo da
- * peca nao e importavel se o `index.ts` a publica como `Toolbar`. Ela le o
- * texto de UMA entrada, e e pura de proposito - a decisao inteira desta guarda
- * cabe em duas funcoes sem disco, e `test/doc-example.test.ts` quebra as
- * duas de proposito para ver se elas mordem.
+ * Only what leaves through the entry counts: `export function ToolbarRoot` in
+ * the piece's file is not importable if `index.ts` publishes it as `Toolbar`.
+ * It reads the text of ONE entry, and is pure on purpose - the whole decision
+ * of this guard fits in two functions without disk, and
+ * `test/doc-example.test.ts` breaks both on purpose to see whether they bite.
  */
 export function namesFromEntry(text: string): string[] {
   const names: string[] = [];
@@ -153,11 +155,12 @@ export function namesFromEntry(text: string): string[] {
 export type Cited = { hooks: string[]; tags: string[] };
 
 /**
- * O que um bloco `tsx` cita: hook chamado e tag montada.
+ * What a `tsx` block cites: a hook called and a tag mounted.
  *
- * O `<` de generico vem colado num identificador - `useForm<Values>`,
- * `Array<Item>` -, e o de tag nunca vem. Sem essa borda a guarda leria
- * parametro de tipo como se fosse componente, e o barulho desligaria a guarda.
+ * A generic's `<` comes glued to an identifier - `useForm<Values>`,
+ * `Array<Item>` -, and a tag's never does. Without that edge the guard would
+ * read a type parameter as if it were a component, and the noise would get the
+ * guard switched off.
  */
 export function citedNames(code: string): Cited {
   const hooks = [...code.matchAll(/\b(use[A-Z]\w*)\s*\(/g)].map((found) => found[1]!);
@@ -166,7 +169,7 @@ export function citedNames(code: string): Cited {
   return { hooks, tags };
 }
 
-/** Os blocos `tsx` de uma pagina, que e o que a pessoa copia. */
+/** The `tsx` blocks of a page, which is what a person copies. */
 export function tsxBlocks(page: string): string[] {
   return [...page.matchAll(/```tsx\n([\s\S]*?)```/g)].map((block) => block[1]!);
 }
@@ -183,10 +186,10 @@ export async function publicNames(entries: string[]): Promise<Set<string>> {
 
 async function main() {
   const entries = [...WEB_ENTRIES, ...(await nativeEntries())];
-  countAtLeast("entradas publicas dos dois pacotes", entries.length, 8);
+  countAtLeast("public entries of both packages", entries.length, 8);
 
   const exported = await publicNames(entries);
-  countAtLeast("nomes publicados pelas entradas dos dois pacotes", exported.size, 300);
+  countAtLeast("names published by the entries of both packages", exported.size, 300);
 
   const problems: string[] = [];
 
@@ -199,7 +202,7 @@ async function main() {
       for (const name of hooks) {
         if (!FOREIGN.has(name) && !exported.has(name)) {
           problems.push(
-            `${file}: o exemplo chama \`${name}()\`, que nenhuma entrada dos dois pacotes exporta.`,
+            `${file}: the example calls \`${name}()\`, which no entry of either package exports.`,
           );
         }
       }
@@ -207,7 +210,7 @@ async function main() {
       for (const name of tags) {
         if (!FOREIGN.has(name) && !READER_CODE.has(name) && !exported.has(name)) {
           problems.push(
-            `${file}: o exemplo monta \`<${name}>\`, que nenhuma entrada dos dois pacotes exporta.`,
+            `${file}: the example mounts \`<${name}>\`, which no entry of either package exports.`,
           );
         }
       }
@@ -217,20 +220,20 @@ async function main() {
   const unique = [...new Set(problems)];
 
   if (unique.length > 0) {
-    console.error("Exemplo de doc citando nome que nao existe:\n");
+    console.error("Doc example citing a name that does not exist:\n");
     for (const problem of unique) console.error(`  ${problem}`);
     console.error(
-      "\nE o codigo que a pessoa copia da pagina publicada, e o que vale e o nome\n" +
-        "que sai pela ENTRADA do pacote - `ToolbarRoot` no arquivo da peca nao se\n" +
-        "importa se o `index.ts` a publica como `Toolbar`. Corrija o exemplo, ou\n" +
-        "exporte o nome - nao acrescente excecao: `FOREIGN` e so para nome de\n" +
-        "biblioteca de terceiro.",
+      "\nIt is the code a person copies from the published page, and what counts is the name\n" +
+        "that leaves through the package ENTRY - `ToolbarRoot` in the piece's file cannot be\n" +
+        "imported if `index.ts` publishes it as `Toolbar`. Fix the example, or\n" +
+        "export the name - do not add an exception: `FOREIGN` is only for\n" +
+        "third-party library names.",
     );
     process.exit(1);
   }
 
   console.log(
-    `Exemplos de .design-sync/docs conferidos contra ${exported.size} nomes publicados por ${entries.length} entradas dos dois pacotes.`,
+    `Examples in .design-sync/docs checked against ${exported.size} names published by ${entries.length} entries of both packages.`,
   );
 }
 

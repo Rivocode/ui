@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type UseClipboardOptions = {
-  /** Quanto tempo `copied` fica verdadeiro depois de copiar, em ms. */
+  /** How long `copied` stays true after copying, in ms. */
   timeout?: number;
 };
 

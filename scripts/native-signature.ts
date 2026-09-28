@@ -1,71 +1,72 @@
 /**
- * A assinatura de cada peca nos dois pacotes, escrita uma vez e conferida.
+ * The signature of each piece in both packages, written once and checked.
  *
- * O `check:parity` responde "existe no nativo?" e para ai. Quem porta uma
- * tela ja passou dessa pergunta: ele sabe que o `Meter` existe, e o que custa
- * a tarde e descobrir, uma peca de cada vez, que `format` la se chamava
- * `valueLabel`, que o `at` da `Timeline` deixou de aceitar `RelativeTime`, e
- * que o molde do `MaskedInput` troca de `9` para `#`.
+ * `check:parity` answers "does it exist on native?" and stops there. Whoever
+ * ports a screen is already past that question: they know `Meter` exists, and
+ * what eats the afternoon is finding out, one piece at a time, that `format`
+ * was called `valueLabel` there, that `Timeline`'s `at` stopped accepting
+ * `RelativeTime`, and that `MaskedInput`'s mask switches from `9` to `#`.
  *
- * Nenhum desses seis casos estava escrito em lugar nenhum quando foram
- * medidos, em 28/08/2026, e os seis quebram o `tsc` na hora de portar. Erro de
- * compilacao acha o defeito; ele nao diz o que escrever no lugar. Esta tabela
- * diz.
+ * None of those six cases was written down anywhere when they were measured,
+ * on 2026-08-28, and all six break `tsc` at porting time. A compile error
+ * finds the defect; it does not say what to write instead. This table does.
  *
- * ## O que a guarda mede, e o que ela nao mede
+ * ## What the guard measures, and what it does not
  *
- * A judgment - qual prop do web corresponde a qual prop do nativo - e humana:
- * nenhum cruzamento de tipos descobre que `format` e `valueLabel` sao a mesma
- * intencao. O que a maquina confere e se a linha ainda descreve o codigo:
+ * The judgment - which web prop corresponds to which native prop - is human:
+ * no cross-check of types finds out that `format` and `valueLabel` are the
+ * same intent. What the machine checks is whether the row still describes the
+ * code:
  *
- * 1. Prop citada de um lado tem que EXISTIR naquele lado.
- * 2. Linha que diz "so no web" tem que ter a prop AUSENTE no nativo, e
- *    vice-versa. Sem isto a tabela continuaria mandando reescrever uma chamada
- *    que ja porta.
- * 3. Linha de mesmo nome nos dois lados tem que ter assinatura DIFERENTE - por
- *    tipo ou por obrigatoriedade. Linha que descreve divergencia que acabou e
- *    ruido, e ruido e o comeco de tabela que ninguem le.
- * 4. Toda variante que existe de um lado so - prop de mesmo nome cujos
- *    literais divergem - tem que ter linha. Foi ela que pegou o `Spinner`,
- *    que ninguem tinha citado: o web fala `sm`/`md`/`lg` e o nativo fala
+ * 1. A prop cited on one side has to EXIST on that side.
+ * 2. A row that says "web only" has to have the prop ABSENT on native, and
+ *    vice versa. Without this the table would keep telling people to rewrite
+ *    a call that already ports.
+ * 3. A row with the same name on both sides has to have a DIFFERENT
+ *    signature - by type or by requiredness. A row describing a divergence
+ *    that ended is noise, and noise is the beginning of a table nobody reads.
+ * 4. Every variant that exists on one side only - a same-name prop whose
+ *    literals diverge - has to have a row. That is what caught `Spinner`,
+ *    which nobody had cited: the web speaks `sm`/`md`/`lg` and native speaks
  *    `small`/`large`.
- * 5. Todo `classNames` do web que nao atravessa inteiro - a peca existe no
- *    nativo e la a prop falta, ou o conjunto de partes e outro - tem que ter
- *    linha `classNames`, e a nota tem que nomear cada parte que falta. Nasceu
- *    em 25/09/2026: vinte pecas nativas tinham o `classNames` do web faltando
- *    e nenhuma linha dizia, porque a guarda so cobrava cobertura de variante.
- *    Quem porta a tela escrevia `classNames={{ indicator }}` e descobria no
- *    `tsc`.
+ * 5. Every web `classNames` that does not cross over whole - the piece exists
+ *    on native and the prop is missing there, or the set of parts is
+ *    different - has to have a `classNames` row, and the note has to name
+ *    each missing part. Born on 2026-09-25: twenty native pieces were missing
+ *    the web's `classNames` and no row said so, because the guard only
+ *    demanded variant coverage. Whoever ported the screen wrote
+ *    `classNames={{ indicator }}` and found out from `tsc`.
  *
- * As regras 4 e 5 sao as familias de divergencia que se derivam sozinhas, e
- * por isso as unicas cuja COBERTURA a guarda cobra.
+ * Rules 4 and 5 are the divergence families that derive themselves, and
+ * therefore the only ones whose COVERAGE the guard demands.
  *
- * O que fica de fora, e de proposito: prop com nome diferente que ninguem
- * declarou aqui. Derivar isso seria adivinhar intencao, e o resultado seria
- * uma lista de excecao do tamanho do catalogo - as pecas comuns divergem em
- * quase toda prop, porque `defaultValue`, `render` e a metade controlada do
- * web simplesmente nao existem no toque. Essas regras gerais ja estao na prosa
- * da pagina; a tabela e para o que sobra.
+ * What is left out, on purpose: a prop with a different name that nobody
+ * declared here. Deriving that would be guessing intent, and the result would
+ * be an exception list the size of the catalog - common pieces diverge on
+ * almost every prop, because `defaultValue`, `render` and the web's
+ * uncontrolled half simply do not exist on touch. Those general rules are
+ * already in the page's prose; the table is for what remains.
  *
- * ## De onde saem os dois lados
+ * ## Where the two sides come from
  *
- * `apps/docs/src/component-props.json` (web) e `apps/docs/src/native-props.json`
- * (nativo), os dois gerados do compilador e comitados. O nativo precisa de
- * `examples/native` instalado para ser GERADO, e por isso ele e artefato: assim
- * a conferencia custa dois `JSON.parse` e cabe no gate. O cabecalho de
- * `scripts/native-catalog-props.ts` conta por que nao da para gerar na
- * hora.
+ * `apps/docs/src/component-props.json` (web) and
+ * `apps/docs/src/native-props.json` (native), both generated from the
+ * compiler and committed. The native one needs `examples/native` installed to
+ * be GENERATED, and that is why it is an artifact: this way the check costs
+ * two `JSON.parse` calls and fits in the gate. The header of
+ * `scripts/native-catalog-props.ts` explains why it cannot be generated on
+ * the spot.
  *
- * Um limite herdado do catalogo do web, e vale saber antes de escrever linha:
- * `children`, `className`, `style` e `id` nunca aparecem la, e prop propria que
- * tem o mesmo nome de um atributo de DOM tambem nao - o `value` do `Clipboard`
- * e obrigatorio e nao esta no JSON. Prop assim nao serve de ancora, e a linha
- * se escreve pela outra ponta.
+ * One limit inherited from the web catalog, worth knowing before writing a
+ * row: `children`, `className`, `style` and `id` never appear there, and
+ * neither does an own prop that has the same name as a DOM attribute - the
+ * `Clipboard`'s `value` is required and is not in the JSON. A prop like that
+ * cannot serve as an anchor, and the row is written from the other end.
  *
- * Rodar de novo:
+ * Run again:
  *
- *   bun run gen:signature            escreve a secao em native.md
- *   bun run check:signature          so confere, para o gate
+ *   bun run gen:signature            writes the section in native.md
+ *   bun run check:signature          only checks, for the gate
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -74,22 +75,23 @@ import { countAtLeast } from "./scan";
 const WEB_CATALOG = "apps/docs/src/component-props.json";
 const NATIVE_CATALOG = "apps/docs/src/native-props.json";
 const GUIDE = ".claude/skills/rivocode-ui/reference/native.md";
-const SECTION_TITLE = "## A assinatura, prop a prop";
+const SECTION_TITLE = "## The signature, prop by prop";
 
 export type Row = {
   /**
-   * A prop no web, ou `null` quando o dado nao entra por prop desse nome la -
-   * composicao, filho, ou o atributo cru do elemento.
+   * The prop on the web, or `null` when the data does not come in through a
+   * prop of that name there - composition, a child, or the element's raw
+   * attribute.
    */
   web: string | null;
-  /** A prop no nativo, ou `null` quando ela nao existe la. */
+  /** The prop on native, or `null` when it does not exist there. */
   native: string | null;
-  /** A celula da tabela: uma linha, minuscula, sem ponto final. */
+  /** The table cell: one line, lowercase, no final period. */
   note: string;
 };
 
 export type Signature = {
-  /** O nome da peca no nativo, quando ela muda de nome. */
+  /** The piece's name on native, when it changes name. */
   nativePiece?: string;
   rows: Row[];
 };
@@ -98,7 +100,7 @@ export type Prop = { name: string; type: string; required: boolean };
 export type Catalog = Record<string, { props: Prop[] }>;
 
 /* --------------------------------------------------------------------------
- * O julgamento
+ * The judgment
  * ----------------------------------------------------------------------- */
 
 export const SIGNATURES: Record<string, Signature> = {
@@ -107,7 +109,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "title",
-        note: "o título vira prop; no web ele é `AlertTitle` por filho",
+        note: "the title becomes a prop; on the web it is `AlertTitle` as a child",
       },
     ],
   },
@@ -116,22 +118,22 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "position",
         native: null,
-        note: "não há `sticky` nem `fixed`: a barra é sempre `absolute` sobre a lista, no pé da tela",
+        note: "there is no `sticky` or `fixed`: the bar is always `absolute` over the list, at the foot of the screen",
       },
       {
         web: null,
         native: "bottomInset",
-        note: "a área segura de baixo entra por número, `useSafeAreaInsets().bottom`, porque o pacote não depende do `react-native-safe-area-context`",
+        note: "the bottom safe area comes in as a number, `useSafeAreaInsets().bottom`, because the package does not depend on `react-native-safe-area-context`",
       },
       {
         web: "finalFocus",
         native: null,
-        note: "no toque não há foco de teclado para devolver quando a barra sai",
+        note: "on touch there is no keyboard focus to give back when the bar leaves",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `actions`: as ações são filhas diretas do painel, e `className` veste o mesmo painel de `bar`",
+        note: "no `actions`: the actions are direct children of the panel, and `className` styles the same panel as `bar`",
       },
     ],
   },
@@ -140,23 +142,23 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "title",
-        note: "`title` e `description` viram props obrigatórias, no lugar de `AlertDialogTitle` e `AlertDialogDescription`",
+        note: "`title` and `description` become required props, in place of `AlertDialogTitle` and `AlertDialogDescription`",
       },
       {
         web: null,
         native: "onConfirm",
-        note: "o botão que confirma é `onConfirm` mais `labels.confirm`, e não um `AlertDialogClose` no rodapé",
+        note: "the confirming button is `onConfirm` plus `labels.confirm`, not an `AlertDialogClose` in the footer",
       },
       {
         web: "open",
         native: "open",
-        note: "`open` e `onOpenChange` são obrigatórios, e não fecha no toque fora",
+        note: "`open` and `onOpenChange` are required, and it does not close on a tap outside",
       },
     ],
   },
   Accordion: {
     rows: [
-      { web: null, native: "children", note: "a raiz só empilha; quem tem prop é o item" },
+      { web: null, native: "children", note: "the root only stacks; the item is what has props" },
     ],
   },
   Autocomplete: {
@@ -164,17 +166,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "`value` e `onValueChange` são obrigatórios, e o valor é sempre o texto (`string`)",
+        note: "`value` and `onValueChange` are required, and the value is always the text (`string`)",
       },
       {
         web: "mode",
         native: null,
-        note: "não há completar inline: a folha filtra as sugestões e a pessoa toca ou segue digitando",
+        note: "there is no inline completion: the sheet filters the suggestions and the person taps or keeps typing",
       },
       {
         web: null,
         native: "label",
-        note: "o nome do campo vira prop obrigatória, e é o título da folha; no web é o `aria-label` do `AutocompleteInput`",
+        note: "the field's name becomes a required prop, and it is the sheet's title; on the web it is the `AutocompleteInput`'s `aria-label`",
       },
     ],
   },
@@ -183,7 +185,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "fallback",
         native: "fallback",
-        note: "vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar",
+        note: "becomes required: it is what takes the place while the photo downloads, and it is what comes back if the photo fails",
       },
     ],
   },
@@ -192,12 +194,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "description",
         native: "description",
-        note: "`title` e `description` viram `string`: texto no nativo mora dentro de um `Text`",
+        note: "`title` and `description` become `string`: text on native lives inside a `Text`",
       },
       {
         web: "icon",
         native: "icon",
-        note: "sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho",
+        note: "no default icon, because the package ships no icons; the function receives the tone's color and the size",
       },
     ],
   },
@@ -206,9 +208,13 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "size",
         native: "size",
-        note: "`xl` não porta: o nativo tem `sm`, `md` e `lg`, e o `lg` já é a chamada no toque. Botão só de ícone é o `IconButton` nos dois lados",
+        note: "`xl` does not port: native has `sm`, `md` and `lg`, and `lg` is already the call to action on touch. An icon-only button is `IconButton` on both sides",
       },
-      { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
+      {
+        web: "shape",
+        native: null,
+        note: "no pill: the radius is the token's, the same on every button",
+      },
     ],
   },
   Spoiler: {
@@ -216,7 +222,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "fadeOver",
-        note: "o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara",
+        note: "the fade is painted in the color of the background the block sits on, because touch has no mask",
       },
     ],
   },
@@ -225,22 +231,22 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "open",
         native: "open",
-        note: "vira obrigatório, com `onOpenChange`: não há `defaultOpen`",
+        note: "becomes required, with `onOpenChange`: there is no `defaultOpen`",
       },
       {
         web: "step",
         native: "step",
-        note: "vira obrigatório, com `onStepChange`: não há `defaultStep`, e é no `onStepChange` que a tela rola o alvo",
+        note: "becomes required, with `onStepChange`: there is no `defaultStep`, and `onStepChange` is where the screen scrolls to the target",
       },
       {
         web: "interactive",
         native: null,
-        note: "o `Modal` é outra janela, e o toque não atravessa o recorte até o alvo",
+        note: "the `Modal` is another window, and a tap does not pass through the cutout to the target",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `spotlight`: o recorte é o vão entre as quatro faixas de `mask`, e não um nó",
+        note: "no `spotlight`: the cutout is the gap between the four `mask` bands, not a node",
       },
     ],
   },
@@ -249,19 +255,23 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "index",
         native: "index",
-        note: "vira obrigatório, com `onIndexChange`: não há `defaultIndex`, e `null` é o fechado",
+        note: "becomes required, with `onIndexChange`: there is no `defaultIndex`, and `null` is closed",
       },
     ],
   },
   IconButton: {
     rows: [
-      { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
+      {
+        web: "shape",
+        native: null,
+        note: "no pill: the radius is the token's, the same on every button",
+      },
       {
         web: "tooltip",
         native: null,
-        note: "no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto",
+        note: "on touch there is no hovering; an icon that does not read on its own calls for a `Button` with text",
       },
-      { web: "tooltipSide", native: null, note: "sai junto com o `tooltip`" },
+      { web: "tooltipSide", native: null, note: "goes away along with `tooltip`" },
     ],
   },
   Carousel: {
@@ -269,27 +279,27 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "items",
-        note: "os slides vêm por `items` e `renderItem`, e não como filhos",
+        note: "the slides come through `items` and `renderItem`, not as children",
       },
       {
         web: "index",
         native: "index",
-        note: "vira obrigatório, com `onIndexChange`: não há `defaultIndex`",
+        note: "becomes required, with `onIndexChange`: there is no `defaultIndex`",
       },
       {
         web: "slidesPerView",
         native: "slidesPerView",
-        note: 'só número: o objeto por largura e o `"auto"` não portam',
+        note: 'number only: the per-width object and `"auto"` do not port',
       },
       {
         web: "autoplay",
         native: null,
-        note: "no toque a fileira que anda sozinha briga com o dedo; não há rotação nem pausa",
+        note: "on touch a row that moves on its own fights the finger; there is no rotation and no pause",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `pause`, porque não há `autoplay`",
+        note: "no `pause`, because there is no `autoplay`",
       },
     ],
   },
@@ -298,12 +308,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "mode",
         native: null,
-        note: "só data única, que no web é o caminho sem `mode`: intervalo é o `DateRangePicker`, e várias datas soltas não portam",
+        note: "single date only, which on the web is the path without `mode`: a range is `DateRangePicker`, and multiple loose dates do not port",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "os nomes do `DayPicker`, só os que têm nó no mês desenhado à mão: sem `months`, `month`, `month_caption`, `week`, `outside`, `hidden`, os `range_*` de intervalo e os de animação",
+        note: "the `DayPicker` names, only those that have a node in the hand-drawn month: no `months`, `month`, `month_caption`, `week`, `outside`, `hidden`, the range `range_*` ones or the animation ones",
       },
     ],
   },
@@ -312,7 +322,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `arc`: o arco é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe",
+        note: "no `arc`: the arc is a stroke inside the `Svg`, and `react-native-svg` does not take classes",
       },
     ],
   },
@@ -321,17 +331,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "children",
-        note: "`children` é função e recebe `{ width, height, colors }`: não há `ResponsiveContainer` para medir por você, e a medida chega zerada no primeiro quadro",
+        note: "`children` is a function and receives `{ width, height, colors }`: there is no `ResponsiveContainer` to measure for you, and the measurement arrives zeroed on the first frame",
       },
       {
         web: "empty",
         native: "empty",
-        note: "`title` e `description` do vazio são `string`, e não `ReactNode`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo",
+        note: "the empty state's `title` and `description` are `string`, not `ReactNode`; `icon` crosses over, and also accepts the native `EmptyState`'s function",
       },
       {
         web: "errorTitle",
         native: "errorTitle",
-        note: "`errorTitle` e `errorMessage` viram `string`",
+        note: "`errorTitle` and `errorMessage` become `string`",
       },
     ],
   },
@@ -340,7 +350,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "centerValue",
         native: "centerValue",
-        note: "`centerValue` e `centerLabel` viram `string`",
+        note: "`centerValue` and `centerLabel` become `string`",
       },
     ],
   },
@@ -349,7 +359,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "color",
         native: "color",
-        note: "no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema",
+        note: "on the web it is any CSS color; on native it is a token role (`chart-1`…`chart-8`), otherwise the piece is deaf to the theme",
       },
     ],
   },
@@ -358,12 +368,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "parent",
         native: null,
-        note: "o pai de um grupo se monta à mão, com `indeterminate` e o estado dos filhos: o `CheckboxGroup` nativo não tem `allValues`",
+        note: "a group's parent is assembled by hand, with `indeterminate` and the children's state: the native `CheckboxGroup` has no `allValues`",
       },
       {
         web: null,
         native: "label",
-        note: "o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório, e o tipo recusa a caixa sem os dois",
+        note: "the spoken name is `label`, in place of `aria-label`; without `children` it is required, and the type rejects a box with neither",
       },
     ],
   },
@@ -372,7 +382,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "toast",
-        note: "o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado",
+        note: "the spoken toast comes along and `toast={false}` turns it off: a label changed under the finger is not re-announced",
       },
     ],
   },
@@ -381,7 +391,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "classNames",
         native: "classNames",
-        note: "só `logo`: `code` é o `Svg`, e o `react-native-svg` não recebe classe",
+        note: "only `logo`: `code` is the `Svg`, and `react-native-svg` does not take classes",
       },
     ],
   },
@@ -390,12 +400,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "renderCopy",
-        note: "o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro, e por isso o `PixCodeLabels` daqui não tem `copy` nem `copied`",
+        note: "the copy button comes from `@rivocode/ui-native/clipboard` through a function; on the web it is already inside, and that is why the `PixCodeLabels` here has no `copy` or `copied`",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `copy`: o botão é o que `renderCopy` devolve, e quem o escreve o veste",
+        note: "no `copy`: the button is what `renderCopy` returns, and whoever writes it styles it",
       },
     ],
   },
@@ -404,7 +414,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "children",
-        note: "`children` é `string`, e não `ReactNode`: o trecho é texto",
+        note: "`children` is `string`, not `ReactNode`: the snippet is text",
       },
     ],
   },
@@ -413,7 +423,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "label",
-        note: "o cabeçalho vira `label`, no lugar de `CollapsibleTrigger` e `CollapsiblePanel`",
+        note: "the header becomes `label`, in place of `CollapsibleTrigger` and `CollapsiblePanel`",
       },
     ],
   },
@@ -422,7 +432,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "label",
         native: "label",
-        note: "`label` é `string`: sem `ReactNode`, como em toda peça do nativo",
+        note: "`label` is `string`: no `ReactNode`, as in every native piece",
       },
     ],
   },
@@ -431,19 +441,23 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "items",
         native: "items",
-        note: "`items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `ComboboxItem` por filho",
+        note: "`items` on the root and required, flat or in `{ label, items }` groups; no `ComboboxItem` per child",
       },
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório: é ele que o leitor de tela anuncia, no lugar do `aria-label`",
+        note: "`label` is required: it is what the screen reader announces, in place of `aria-label`",
       },
       {
         web: null,
         native: "searchPlaceholder",
-        note: "a folha tem busca própria; `emptyMessage` é o texto de lista vazia",
+        note: "the sheet has its own search; `emptyMessage` is the empty list text",
       },
-      { web: "filter", native: null, note: "o filtro é da peça e ignora acento; não se troca" },
+      {
+        web: "filter",
+        native: null,
+        note: "the filter belongs to the piece and ignores accents; it cannot be swapped",
+      },
     ],
   },
   ContextMenu: {
@@ -452,22 +466,22 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "children",
-        note: "o `ContextMenuTrigger` vira `children` do `Menu`, e o gesto é o toque longo, não o botão direito",
+        note: "`ContextMenuTrigger` becomes the `Menu`'s `children`, and the gesture is the long press, not the right click",
       },
       {
         web: null,
         native: "actions",
-        note: "os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo",
+        note: "the items become `actions`, in place of a `MenuItem` per child, and the sheet rises from the bottom",
       },
       {
         web: null,
         native: "title",
-        note: "a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata",
+        note: "the sheet has a required header: with no anchoring, it is what says what the menu is about",
       },
       {
         web: "open",
         native: "open",
-        note: "`open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe",
+        note: "`open` and `onOpenChange` are required, and `defaultOpen` does not exist",
       },
     ],
   },
@@ -477,29 +491,29 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "columns",
         native: "renderItem",
-        note: "não há coluna: `renderItem` desenha a linha inteira",
+        note: "there are no columns: `renderItem` draws the whole row",
       },
-      { web: "rowKey", native: "keyExtractor", note: "mesmo papel, nome do React Native" },
-      { web: "onRowClick", native: "onRowPress", note: "mesmo papel, nome do toque" },
+      { web: "rowKey", native: "keyExtractor", note: "same role, React Native's name" },
+      { web: "onRowClick", native: "onRowPress", note: "same role, the touch name" },
       {
         web: "labels",
         native: "labels",
-        note: "só `retry` e `selectRow`: sem página e sem cabeçalho, não há `selectAll`, `range`, `pagination`, `loading` nem `loaded`",
+        note: "only `retry` and `selectRow`: with no pages and no header, there is no `selectAll`, `range`, `pagination`, `loading` or `loaded`",
       },
       {
         web: "pageSize",
         native: null,
-        note: "lista de celular rola: sem página, e `virtual`, `rowHeight` e `maxHeight` saem junto",
+        note: "a phone list scrolls: no pages, and `virtual`, `rowHeight` and `maxHeight` go away with it",
       },
       {
         web: null,
         native: "filterValue",
-        note: "o `filter` só busca no que esta função devolve, porque não há coluna de onde tirar texto",
+        note: "`filter` only searches what this function returns, because there is no column to take text from",
       },
       {
         web: "classNames",
         native: null,
-        note: "a linha é o que `renderItem` devolve, e quem a escreve a veste: não há `table`, `head` nem `cell`",
+        note: "the row is what `renderItem` returns, and whoever writes it styles it: there is no `table`, `head` or `cell`",
       },
     ],
   },
@@ -508,13 +522,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "disabledDays",
         native: null,
-        note: "dia bloqueado avulso não porta: a faixa é `min`/`max`",
+        note: "an individual blocked day does not port: the range is `min`/`max`",
       },
-      { web: "confirm", native: null, note: "a folha sempre confirma: escolher já fecha" },
+      {
+        web: "confirm",
+        native: null,
+        note: "the sheet always confirms: choosing already closes it",
+      },
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório, e o campo não vive dentro de um `Field`",
+        note: "`label` is required, and the field does not live inside a `Field`",
       },
     ],
   },
@@ -523,15 +541,19 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "`value` e `onValueChange` são obrigatórios e só em ISO: o `IsoDateRange` do web, que aqui se chama `DateRange`; o contrato é o mesmo, intervalo fechado ou `null`",
+        note: "`value` and `onValueChange` are required and ISO only: the web's `IsoDateRange`, which here is called `DateRange`; the contract is the same, a closed range or `null`",
       },
-      { web: "numberOfMonths", native: null, note: "um mês por folha, sempre" },
-      { web: "confirm", native: null, note: "a folha sempre confirma: o toque fora dela é desistir" },
+      { web: "numberOfMonths", native: null, note: "one month per sheet, always" },
+      {
+        web: "confirm",
+        native: null,
+        note: "the sheet always confirms: a tap outside it is giving up",
+      },
     ],
   },
   DescriptionItem: {
     rows: [
-      { web: "label", native: "label", note: "`label` é `string`, e o corpo continua sendo filho" },
+      { web: "label", native: "label", note: "`label` is `string`, and the body is still a child" },
     ],
   },
   Dialog: {
@@ -539,12 +561,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "title",
-        note: "`title` é prop obrigatória e `description` é prop: sem `DialogTitle` e sem `DialogTrigger`",
+        note: "`title` is a required prop and `description` is a prop: no `DialogTitle` and no `DialogTrigger`",
       },
       {
         web: "open",
         native: "open",
-        note: "`open` e `onOpenChange` são obrigatórios: quem abre é quem chama",
+        note: "`open` and `onOpenChange` are required: the caller is the one who opens it",
       },
     ],
   },
@@ -553,17 +575,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "`value` e `onValueChange` obrigatórios; quem abre é o toque longo, e há um `Cancelar` visível",
+        note: "`value` and `onValueChange` required; a long press opens it, and there is a visible `Cancelar`",
       },
     ],
   },
   EmptyState: {
     rows: [
-      { web: "title", native: "title", note: "`title` e `description` são `string`" },
+      { web: "title", native: "title", note: "`title` and `description` are `string`" },
       {
         web: "icon",
         native: "icon",
-        note: "aceita também uma função que recebe `color` e `size`, porque a cor não desce da `View` para o SVG",
+        note: "also accepts a function that receives `color` and `size`, because color does not flow down from the `View` to the SVG",
       },
     ],
   },
@@ -572,7 +594,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "label",
-        note: "`label`, `description` e `error` viram props: sem `FieldLabel`, `FieldDescription` e `FieldError`",
+        note: "`label`, `description` and `error` become props: no `FieldLabel`, `FieldDescription` and `FieldError`",
       },
     ],
   },
@@ -581,7 +603,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "legend",
-        note: "`legend` vira prop obrigatória, no lugar do `FieldsetLegend`",
+        note: "`legend` becomes a required prop, in place of `FieldsetLegend`",
       },
     ],
   },
@@ -590,17 +612,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "onSelect",
         native: "onSelect",
-        note: "o que volta é `PickedFile` com `uri` local, e não `File`: `size` pode faltar",
+        note: "what comes back is a `PickedFile` with a local `uri`, not a `File`: `size` may be missing",
       },
       {
         web: "accept",
         native: "accept",
-        note: "aceita lista, e fala MIME: é o que o seletor do sistema sabe filtrar",
+        note: "accepts a list, and speaks MIME: it is what the system picker knows how to filter",
       },
       {
         web: "label",
         native: "label",
-        note: "`label` e `hint` são `string`, e a área de soltar vira um botão",
+        note: "`label` and `hint` are `string`, and the drop area becomes a button",
       },
     ],
   },
@@ -609,13 +631,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "labels",
         native: "labels",
-        note: "`labels.empty` é `string`, e `labels.scroll` não existe: quem rola é a lista",
+        note: "`labels.empty` is `string`, and `labels.scroll` does not exist: the list is what scrolls",
       },
     ],
   },
   FilterChip: {
     rows: [
-      { web: "value", native: "value", note: "`value` é `string`: a pílula não recebe elemento" },
+      {
+        web: "value",
+        native: "value",
+        note: "`value` is `string`: the pill does not take an element",
+      },
     ],
   },
   Form: {
@@ -623,7 +649,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "children",
-        note: '`children` é função e recebe `{ submit, isSubmitting }`: nada envia sozinho, porque não há `<form>` nem `type="submit"`',
+        note: '`children` is a function and receives `{ submit, isSubmitting }`: nothing submits on its own, because there is no `<form>` or `type="submit"`',
       },
     ],
   },
@@ -632,9 +658,9 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "label",
         native: "label",
-        note: "`label` vira obrigatório e é `string`: é ele que vira `accessibilityLabel` no controle",
+        note: "`label` becomes required and is `string`: it is what becomes `accessibilityLabel` on the control",
       },
-      { web: "description", native: "description", note: "`description` é `string`" },
+      { web: "description", native: "description", note: "`description` is `string`" },
     ],
   },
   NotificationCenter: {
@@ -642,32 +668,32 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "open",
         native: "open",
-        note: "vira obrigatório, com `onOpenChange`: não há `defaultOpen`",
+        note: "becomes required, with `onOpenChange`: there is no `defaultOpen`",
       },
       {
         web: null,
         native: "icon",
-        note: "o sino entra por `icon`, obrigatório, porque o pacote não traz ícone; a função recebe a cor do botão",
+        note: "the bell comes in through `icon`, required, because the package ships no icons; the function receives the button's color",
       },
       {
         web: "onItemClick",
         native: "onItemPress",
-        note: "a linha não é link: sem `href` no item, quem navega é o router a partir do item recebido",
+        note: "the row is not a link: with no `href` on the item, the router navigates from the item received",
       },
       {
         web: "defaultFilter",
         native: null,
-        note: "o filtro começa em `all`; `filter` com `onFilterChange` controla",
+        note: "the filter starts at `all`; `filter` with `onFilterChange` controls it",
       },
       {
         web: "align",
         native: null,
-        note: "a lista é sempre uma folha de baixo, e não um painel ancorado ao sino",
+        note: "the list is always a bottom sheet, not a panel anchored to the bell",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `footer`: o “Carregar mais” fica direto na folha",
+        note: "no `footer`: “Carregar mais” sits directly in the sheet",
       },
     ],
   },
@@ -676,13 +702,13 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "label",
         native: "label",
-        note: "`label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase",
+        note: "`label` becomes required: the pill is a single screen reader stop, and what it says is the sentence",
       },
     ],
   },
   Input: {
     rows: [
-      { web: null, native: "font", note: "escolhe o papel de fonte, que o web resolve por classe" },
+      { web: null, native: "font", note: "picks the font role, which the web resolves by class" },
     ],
   },
   InputGroup: {
@@ -690,17 +716,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "prefix",
-        note: "`prefix`, `suffix` e `actions` viram props: sem `InputPrefix`, `InputSuffix` e `InputAction`",
+        note: "`prefix`, `suffix` and `actions` become props: no `InputPrefix`, `InputSuffix` and `InputAction`",
       },
       {
         web: null,
         native: "value",
-        note: "a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro",
+        note: "the frame draws the field itself: `value` and `onValueChange` belong to it, not to an `Input` inside",
       },
       {
         web: null,
         native: "classNames",
-        note: "as partes que no web são peças vestem pelo `classNames`, com o nome delas: `input`, `prefix`, `suffix` e `action`",
+        note: "the parts that are pieces on the web are styled through `classNames`, with their names: `input`, `prefix`, `suffix` and `action`",
       },
     ],
   },
@@ -709,12 +735,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "title",
-        note: "`title`, `description`, `media` e `actions` viram props: sem `ItemTitle`, `ItemDescription` e `ItemMedia`",
+        note: "`title`, `description`, `media` and `actions` become props: no `ItemTitle`, `ItemDescription` and `ItemMedia`",
       },
       {
         web: "interactive",
         native: "onPress",
-        note: "quem torna a linha tocável é o `onPress`, e não um booleano",
+        note: "`onPress` is what makes the row tappable, not a boolean",
       },
     ],
   },
@@ -723,12 +749,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "render",
         native: "onPress",
-        note: 'o link do router entra por callback, `onPress={() => router.push("/notas")}`: não há âncora para trocar',
+        note: 'the router link comes in through a callback, `onPress={() => router.push("/notas")}`: there is no anchor to swap',
       },
       {
         web: "underline",
         native: null,
-        note: "o sublinhado é fixo: sem ponteiro, não existe o `hover`",
+        note: "the underline is fixed: with no pointer, there is no `hover`",
       },
     ],
   },
@@ -737,9 +763,9 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "render",
         native: null,
-        note: "o elemento é sempre `Text`; o bloco é uma `View` em volta",
+        note: "the element is always `Text`; a block is a `View` around it",
       },
-      { web: null, native: "font", note: "escolhe o papel de fonte, que o web resolve por classe" },
+      { web: null, native: "font", note: "picks the font role, which the web resolves by class" },
     ],
   },
   MaskedInput: {
@@ -747,7 +773,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "no web `value` é o texto COM máscara; no nativo é só dígito, e a máscara é do campo",
+        note: "on the web `value` is the text WITH the mask; on native it is only the digits, and the mask belongs to the field",
       },
     ],
   },
@@ -756,33 +782,33 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "items",
-        note: "as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho",
+        note: "the questions come through `items`, with `type` `single`, `multiple` or `text`, in place of `QuestionnaireItem` and the parts as children",
       },
       {
         web: "item",
         native: "item",
-        note: "vira obrigatório: a pergunta aberta é sempre controlada, junto com `onItemChange`",
+        note: "becomes required: the open question is always controlled, together with `onItemChange`",
       },
-      { web: "defaultItem", native: null, note: "não há estado interno de pergunta aberta" },
+      { web: "defaultItem", native: null, note: "there is no internal open-question state" },
       {
         web: null,
         native: "value",
-        note: "as respostas são controladas; no web elas moram nos `<input>` do formulário",
+        note: "the answers are controlled; on the web they live in the form's `<input>`s",
       },
       {
         web: "onSubmit",
         native: "onSubmit",
-        note: "vira obrigatório e recebe só as respostas: não há `FormData` fora do navegador",
+        note: "becomes required and receives only the answers: there is no `FormData` outside the browser",
       },
       {
         web: "shortcuts",
         native: null,
-        note: "sem teclado físico, não há atalho de letra nem de número",
+        note: "with no physical keyboard, there is no letter or number shortcut",
       },
       {
         web: null,
         native: "onStatusChange",
-        note: "um só na raiz, com o `name` da pergunta; no web ele é de cada `QuestionnaireItem`",
+        note: "a single one on the root, with the question's `name`; on the web it belongs to each `QuestionnaireItem`",
       },
     ],
   },
@@ -791,7 +817,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "vira obrigatório, com `onValueChange`: não há `defaultValue`",
+        note: "becomes required, with `onValueChange`: there is no `defaultValue`",
       },
     ],
   },
@@ -800,9 +826,13 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "vira obrigatório e são só os dígitos; no web aceita o texto com máscara",
+        note: "becomes required and is only the digits; on the web it accepts the masked text",
       },
-      { web: "defaultValue", native: null, note: "não há estado interno: o campo é controlado" },
+      {
+        web: "defaultValue",
+        native: null,
+        note: "there is no internal state: the field is controlled",
+      },
     ],
   },
   Menu: {
@@ -810,47 +840,45 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "actions",
-        note: "os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo",
+        note: "the items become `actions`, in place of a `MenuItem` per child, and the sheet rises from the bottom",
       },
       {
         web: null,
         native: "title",
-        note: "a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata",
+        note: "the sheet has a required header: with no anchoring, it is what says what the menu is about",
       },
       {
         web: null,
         native: "children",
-        note: "não há `MenuTrigger`: `children` é a área que abre no toque longo, e o botão de três pontinhos é seu",
+        note: "there is no `MenuTrigger`: `children` is the area that opens on long press, and the three-dot button is yours",
       },
       {
         web: "open",
         native: "open",
-        note: "`open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe",
+        note: "`open` and `onOpenChange` are required, and `defaultOpen` does not exist",
       },
       {
         web: null,
         native: "classNames",
-        note: "o que no web é `MenuTrigger`, `MenuContent` e `MenuItem` veste pelo `classNames`: `trigger`, `content` e `item`",
+        note: "what on the web is `MenuTrigger`, `MenuContent` and `MenuItem` is styled through `classNames`: `trigger`, `content` and `item`",
       },
     ],
   },
   Meter: {
-    rows: [
-      { web: "label", native: "label", note: "`label` vira obrigatório e é `string`" },
-    ],
+    rows: [{ web: "label", native: "label", note: "`label` becomes required and is `string`" }],
   },
   NumberField: {
     rows: [
       {
         web: "value",
         native: "value",
-        note: "`value` é `number` e nunca `null`: o stepper sempre tem um número, e o `min` nasce em 0 porque o teclado numérico do iPhone não tem sinal de menos",
+        note: "`value` is `number` and never `null`: the stepper always has a number, and `min` starts at 0 because the iPhone's numeric keyboard has no minus sign",
       },
-      { web: "step", native: "step", note: 'sem `"any"`: o passo do stepper é um número' },
+      { web: "step", native: "step", note: 'no `"any"`: the stepper\'s step is a number' },
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório: é ele que nomeia os dois botões de passo",
+        note: "`label` is required: it is what names the two step buttons",
       },
     ],
   },
@@ -859,23 +887,23 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "mask",
         native: null,
-        note: "sem esconder o dígito, e sem `autoSubmit`, `normalizeValue` e `validationType`",
+        note: "no hiding the digit, and no `autoSubmit`, `normalizeValue` or `validationType`",
       },
       {
         web: null,
         native: "label",
-        note: "o nome falado é `label`, no lugar do `aria-label`; sem ele, o leitor diz quantos dígitos o código tem",
+        note: "the spoken name is `label`, in place of `aria-label`; without it, the reader says how many digits the code has",
       },
     ],
   },
   PageHeader: {
     rows: [
-      { web: "breadcrumb", native: null, note: "o caminho de volta é o botão de voltar do router" },
-      { web: null, native: "badge", note: "a pastilha ao lado do título vira prop" },
+      { web: "breadcrumb", native: null, note: "the way back is the router's back button" },
+      { web: null, native: "badge", note: "the pill next to the title becomes a prop" },
       {
         web: "titleAs",
         native: null,
-        note: "não há nível de título: o cabeçalho é uma parada só do leitor de tela",
+        note: "there is no heading level: the header is a single screen reader stop",
       },
     ],
   },
@@ -884,7 +912,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "labels",
         native: "labels",
-        note: "`labels.show` e `labels.hide` são obrigatórios juntos, porque o botão troca de nome com o estado",
+        note: "`labels.show` and `labels.hide` are required together, because the button changes its name with the state",
       },
     ],
   },
@@ -894,29 +922,29 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "trigger",
         native: null,
-        note: "não há ancoragem: você desenha o próprio botão e controla `open`",
+        note: "there is no anchoring: you draw your own button and control `open`",
       },
       {
         web: "description",
         native: "description",
-        note: "vira `string` obrigatória: o modal não abre sem dizer o que se perde",
+        note: "becomes a required `string`: the modal does not open without saying what is lost",
       },
       {
         web: "side",
         native: null,
-        note: "`align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela",
+        note: "`align`, `sideOffset` and `finalFocus` go away with it: the modal takes the middle of the screen",
       },
       {
         web: "classNames",
         native: null,
-        note: "o `AlertDialog` nativo não se veste por classe, nem pela raiz: `title`, `description`, `footer`, `confirm` e `cancel` são o desenho fixo do modal",
+        note: "the native `AlertDialog` is not styled by class, not even at the root: `title`, `description`, `footer`, `confirm` and `cancel` are the modal's fixed design",
       },
     ],
   },
   Progress: {
     rows: [
-      { web: "min", native: null, note: "a escala é 0 a 100, e `max` sai junto" },
-      { web: "label", native: "label", note: "`label` vira obrigatório e é `string`" },
+      { web: "min", native: null, note: "the scale is 0 to 100, and `max` goes away with it" },
+      { web: "label", native: "label", note: "`label` becomes required and is `string`" },
     ],
   },
   QueryBoundary: {
@@ -924,12 +952,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "empty",
         native: "empty",
-        note: "`title` e `description` do vazio são `string`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo",
+        note: "the empty state's `title` and `description` are `string`; `icon` crosses over, and also accepts the native `EmptyState`'s function",
       },
       {
         web: "errorTitle",
         native: "errorTitle",
-        note: "`errorTitle` e `errorMessage` viram `string`",
+        note: "`errorTitle` and `errorMessage` become `string`",
       },
     ],
   },
@@ -938,22 +966,22 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "density",
         native: null,
-        note: "a prop não existe: alvo de toque não encolhe, e `comfortable` é a única altura",
+        note: "the prop does not exist: a touch target does not shrink, and `comfortable` is the only height",
       },
       {
         web: "theme",
         native: "theme",
-        note: "só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD",
+        note: "only `rivocode-dark`, `rivocode-light` and `system`: a client theme is a BUILD decision",
       },
       {
         web: null,
         native: "fonts",
-        note: "as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem",
+        note: "the fonts come in through the provider, with `isFontLoaded` to hold the screen until they load",
       },
       {
         web: "toastPosition",
         native: null,
-        note: "o aviso sobe de baixo, e `scope` e `dir` saem junto",
+        note: "the toast rises from the bottom, and `scope` and `dir` go away with it",
       },
     ],
   },
@@ -962,7 +990,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "classNames",
-        note: "só `footer`, a faixa presa embaixo da rolagem; o conteúdo que rola continua no `contentContainerClassName` da `ScrollView`",
+        note: "only `footer`, the strip pinned below the scroll; the scrolling content stays on the `ScrollView`'s `contentContainerClassName`",
       },
     ],
   },
@@ -971,12 +999,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "onClear",
         native: null,
-        note: 'o limpar é botão da própria peça, e ele chama `onValueChange("")`',
+        note: 'the clear button belongs to the piece itself, and it calls `onValueChange("")`',
       },
       {
         web: "shortcut",
         native: null,
-        note: "não há teclado para desenhar o `Kbd` dentro do campo",
+        note: "there is no keyboard to draw the `Kbd` inside the field",
       },
     ],
   },
@@ -985,17 +1013,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "items",
         native: "items",
-        note: "`items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `SelectTrigger`, `SelectContent` e `SelectItem`",
+        note: "`items` on the root and required, flat or in `{ label, items }` groups; no `SelectTrigger`, `SelectContent` and `SelectItem`",
       },
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório: é ele que o leitor de tela anuncia",
+        note: "`label` is required: it is what the screen reader announces",
       },
       {
         web: "value",
         native: "value",
-        note: "o valor é `string` ou `string[]`, e não o item genérico do web",
+        note: "the value is `string` or `string[]`, not the web's generic item",
       },
     ],
   },
@@ -1004,9 +1032,13 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "side",
         native: null,
-        note: "só de baixo, que já era o modo estreito do web; `snapPoints` sai junto",
+        note: "bottom only, which was already the web's narrow mode; `snapPoints` goes away with it",
       },
-      { web: null, native: "title", note: "`title` é prop obrigatória e `description` é prop" },
+      {
+        web: null,
+        native: "title",
+        note: "`title` is a required prop and `description` is a prop",
+      },
     ],
   },
   Rating: {
@@ -1014,17 +1046,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe",
+        note: "becomes required: there is no `defaultValue`, and without `onValueChange` the piece only displays",
       },
       {
         web: "icon",
         native: "icon",
-        note: "é função, e recebe `{ color, size, filled }`: a cor não desce da `View` para o SVG",
+        note: "it is a function, and receives `{ color, size, filled }`: color does not flow down from the `View` to the SVG",
       },
       {
         web: "name",
         native: null,
-        note: "não há `<form>` para levar a nota num campo escondido",
+        note: "there is no `<form>` to carry the rating in a hidden field",
       },
     ],
   },
@@ -1033,34 +1065,34 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe",
+        note: "becomes required: there is no `defaultValue`, and without `onValueChange` the piece only displays",
       },
       {
         web: "name",
         native: null,
-        note: "não há `<form>` para levar o SVG num campo escondido",
+        note: "there is no `<form>` to carry the SVG in a hidden field",
       },
       {
         web: null,
         native: "onDrawingChange",
-        note: "avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar",
+        note: "reports the start and end of a stroke, so the surrounding `ScrollView` stops scrolling",
       },
       {
         web: null,
         native: "label",
-        note: "o nome do grupo é `label`, no lugar do `aria-label`; sem ele vale `labels.group`",
+        note: "the group's name is `label`, in place of `aria-label`; without it `labels.group` applies",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `baseline`: a linha de base é um traço dentro do `Svg`",
+        note: "no `baseline`: the baseline is a stroke inside the `Svg`",
       },
     ],
   },
   Slider: {
     rows: [
-      { web: "value", native: "value", note: "um valor só: `number`, e não `number[]`" },
-      { web: "label", native: "label", note: "`label` vira obrigatório e é `string`" },
+      { web: "value", native: "value", note: "a single value: `number`, not `number[]`" },
+      { web: "label", native: "label", note: "`label` becomes required and is `string`" },
     ],
   },
   Sparkline: {
@@ -1068,14 +1100,18 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "variant",
         native: "variant",
-        note: "`area` não porta: pede polígono preenchido, e o desenho nativo é `View`",
+        note: "`area` does not port: it needs a filled polygon, and the native drawing is `View`",
       },
       {
         web: "color",
         native: "color",
-        note: "no web é qualquer cor de CSS; no nativo é papel de token",
+        note: "on the web it is any CSS color; on native it is a token role",
       },
-      { web: null, native: "height", note: "a altura é prop, porque não há CSS que a dê de fora" },
+      {
+        web: null,
+        native: "height",
+        note: "the height is a prop, because there is no CSS to give it from outside",
+      },
     ],
   },
   Stat: {
@@ -1083,17 +1119,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "`value` é `string` já formatada, com `currencyShort` e os outros formatadores que a raiz exporta",
+        note: "`value` is an already formatted `string`, with `currencyShort` and the other formatters the root exports",
       },
       {
         web: "deltaVariant",
         native: null,
-        note: "a variação é sempre texto com seta, sem a pastilha preenchida",
+        note: "the change is always text with an arrow, without the filled pill",
       },
       {
         web: "icon",
         native: null,
-        note: "sem ícone, sem `footer`, sem `hint` e sem `actions`: o cartão é rótulo, valor e variação",
+        note: "no icon, no `footer`, no `hint` and no `actions`: the card is label, value and change",
       },
     ],
   },
@@ -1102,7 +1138,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "onStepChange",
         native: null,
-        note: "só o modo estreito do web (texto e barra), e ele nunca foi clicável",
+        note: "only the web's narrow mode (text and bar), and it was never clickable",
       },
     ],
   },
@@ -1111,17 +1147,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: null,
-        note: "não há formulário nativo para carregar valor: o estado é `checked`",
+        note: "there is no native form to carry a value: the state is `checked`",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "só `label`: sem `thumb`, porque o polegar é do `Switch` da plataforma, que não recebe classe",
+        note: "only `label`: no `thumb`, because the thumb belongs to the platform's `Switch`, which does not take classes",
       },
       {
         web: null,
         native: "label",
-        note: "o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório",
+        note: "the spoken name is `label`, in place of `aria-label`; without `children` it is required",
       },
     ],
   },
@@ -1130,9 +1166,9 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "items",
-        note: "`items` na raiz, no lugar de `TabList`, `Tab` e `TabPanel`: é a caixinha segmentada, e o painel é seu",
+        note: "`items` on the root, in place of `TabList`, `Tab` and `TabPanel`: it is the segmented box, and the panel is yours",
       },
-      { web: "value", native: "value", note: "o valor é `string`, e não o genérico do web" },
+      { web: "value", native: "value", note: "the value is `string`, not the web's generic" },
     ],
   },
   TimeField: {
@@ -1140,7 +1176,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório, e as setas viram dois botões de passo",
+        note: "`label` is required, and the arrows become two step buttons",
       },
     ],
   },
@@ -1149,12 +1185,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório, e a folha tem duas colunas: NÃO embute o `TimeField`",
+        note: "`label` is required, and the sheet has two columns: it does NOT embed the `TimeField`",
       },
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `field`: não há campo de digitar dentro do gatilho, e o gatilho é o `trigger`",
+        note: "no `field`: there is no typing field inside the trigger, and the trigger is `trigger`",
       },
     ],
   },
@@ -1163,12 +1199,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "items",
-        note: "os eventos vêm por `items`, e não por `TimelineItem` filho",
+        note: "the events come through `items`, not through `TimelineItem` children",
       },
       {
         web: null,
         native: "label",
-        note: "`label` diz o que a linha conta, e entra no anúncio de cada parada",
+        note: "`label` says what the timeline tells, and goes into the announcement of each stop",
       },
     ],
   },
@@ -1178,17 +1214,17 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "at",
         native: null,
-        note: "vira `items[].at` e é `string` já escrita: um `RelativeTime` vivo lá dentro deixaria o rótulo falado preso na hora em que montou",
+        note: "becomes `items[].at` and is an already written `string`: a live `RelativeTime` inside would leave the spoken label stuck at the time it was built",
       },
       {
         web: "tone",
         native: null,
-        note: "`tone` e `pending` viram campos de `items[]`, e `by` e `title` também",
+        note: "`tone` and `pending` become fields of `items[]`, and so do `by` and `title`",
       },
       {
         web: "classNames",
         native: null,
-        note: "o item vira `items[]`, sem classe por item: o `Timeline` nativo veste só pela raiz, sem `marker`, `content`, `title` nem `meta`",
+        note: "the item becomes `items[]`, with no class per item: the native `Timeline` is styled only at the root, with no `marker`, `content`, `title` or `meta`",
       },
     ],
   },
@@ -1197,7 +1233,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "classNames",
         native: "classNames",
-        note: "sem `label`: o nome da faixa é só o `accessibilityLabel` dela, sem texto escondido que se vista",
+        note: "no `label`: the strip's name is only its `accessibilityLabel`, with no hidden text to style",
       },
     ],
   },
@@ -1206,7 +1242,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: null,
-        note: "não há formulário nativo para carregar valor: o estado é `pressed`",
+        note: "there is no native form to carry a value: the state is `pressed`",
       },
     ],
   },
@@ -1215,7 +1251,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "items",
-        note: "`items` na raiz, no lugar de `Toggle` por filho; `multiple` continua igual",
+        note: "`items` on the root, in place of a `Toggle` per child; `multiple` stays the same",
       },
     ],
   },
@@ -1224,27 +1260,27 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "open",
         native: null,
-        note: "não há aberto: um nível por vez, e tocar num galho empurra o de dentro",
+        note: "there is no open state: one level at a time, and tapping a branch pushes the inner one",
       },
       {
         web: "filter",
         native: null,
-        note: "sem busca dentro da árvore; `emptyMessage` é o texto de nada encontrado",
+        note: "no search inside the tree; `emptyMessage` is the nothing-found text",
       },
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório: é ele que nomeia o nível para o leitor de tela",
+        note: "`label` is required: it is what names the level for the screen reader",
       },
     ],
   },
   TreeSelect: {
     rows: [
-      { web: "searchable", native: null, note: "sem busca na folha" },
+      { web: "searchable", native: null, note: "no search in the sheet" },
       {
         web: null,
         native: "label",
-        note: "`label` é obrigatório, e o rodapé traz a contagem do rascunho e o `Aplicar`",
+        note: "`label` is required, and the footer brings the draft count and `Aplicar`",
       },
     ],
   },
@@ -1253,12 +1289,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado",
+        note: "required, together with `onValueChange` and `onSubmit`: on native every field is controlled",
       },
       {
         web: "defaultValue",
         native: null,
-        note: "sem estado próprio: quem limpa o campo depois do envio é quem chamou",
+        note: "no state of its own: clearing the field after submitting is the caller's job",
       },
     ],
   },
@@ -1267,12 +1303,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "copyValue",
         native: "onCopy",
-        note: "o botão chama quem copia, porque o `expo-clipboard` mora em `@rivocode/ui-native/clipboard`",
+        note: "the button calls whoever copies, because `expo-clipboard` lives in `@rivocode/ui-native/clipboard`",
       },
       {
         web: "error",
         native: "error",
-        note: "`string`: texto no nativo mora dentro de um `Text`",
+        note: "`string`: text on native lives inside a `Text`",
       },
     ],
   },
@@ -1281,12 +1317,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "items",
-        note: "as mensagens vêm por `items`, `renderItem` e `keyExtractor`, e não por filhos; a ordem é a mesma, a mais nova por último",
+        note: "the messages come through `items`, `renderItem` and `keyExtractor`, not through children; the order is the same, newest last",
       },
       {
         web: "empty",
         native: "empty",
-        note: "`title` e `description` viram `string`, e o `icon` é a função que recebe a cor",
+        note: "`title` and `description` become `string`, and `icon` is the function that receives the color",
       },
     ],
   },
@@ -1295,7 +1331,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "title",
         native: "title",
-        note: "`string`, como o `error`: texto no nativo mora dentro de um `Text`",
+        note: "`string`, like `error`: text on native lives inside a `Text`",
       },
     ],
   },
@@ -1304,20 +1340,20 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "explanation",
         native: "explanation",
-        note: "`string`, que vira a descrição da `Sheet` onde a explicação abre",
+        note: "`string`, which becomes the description of the `Sheet` where the explanation opens",
       },
-      { web: "side", native: null, note: "a explicação abre numa `Sheet`, que não tem lado" },
+      { web: "side", native: null, note: "the explanation opens in a `Sheet`, which has no side" },
     ],
   },
 };
 
 /* --------------------------------------------------------------------------
- * A medida
+ * The measurement
  * ----------------------------------------------------------------------- */
 
 const nativeNameOf = (piece: string) => SIGNATURES[piece]?.nativePiece ?? piece;
 
-/** Os literais de uma uniao de string, ou `undefined` quando o tipo nao e isso. */
+/** The literals of a string union, or `undefined` when the type is not one. */
 export function literals(type: string): Set<string> | undefined {
   const found = new Set<string>();
 
@@ -1332,11 +1368,11 @@ export function literals(type: string): Set<string> | undefined {
 }
 
 /**
- * As variantes que existem de um lado so.
+ * The variants that exist on one side only.
  *
- * E a unica familia de divergencia que se deriva sozinha: prop de mesmo nome
- * nos dois lados, com uniao de literais dos dois lados, e os conjuntos
- * diferentes. Por isso e a unica cuja cobertura a guarda cobra.
+ * It is the one divergence family that derives itself: a prop with the same
+ * name on both sides, with a union of literals on both sides, and different
+ * sets. That is why it is the one whose coverage the guard demands.
  */
 export function variantGaps(web: Catalog, native: Catalog) {
   const gaps: { piece: string; prop: string; onlyWeb: string[]; onlyNative: string[] }[] = [];
@@ -1364,7 +1400,7 @@ export function variantGaps(web: Catalog, native: Catalog) {
   return gaps;
 }
 
-/** As pecas que perdem `size` no nativo. Derivado, e por isso escrito por maquina. */
+/** The pieces that lose `size` on native. Derived, and so written by machine. */
 export function sizeGone(web: Catalog, native: Catalog) {
   return Object.keys(web)
     .sort()
@@ -1376,7 +1412,7 @@ export function sizeGone(web: Catalog, native: Catalog) {
     });
 }
 
-/** As partes de um `classNames`, pela forma `Partial<Record<...>>` ou pelo objeto literal. */
+/** The parts of a `classNames`, by the `Partial<Record<...>>` form or by the object literal. */
 export function parts(type: string): Set<string> | undefined {
   const record = /^Partial<Record<(.+), string>>$/.exec(type.trim());
   if (record) return literals(record[1]!);
@@ -1389,11 +1425,12 @@ export function parts(type: string): Set<string> | undefined {
 }
 
 /**
- * As pecas cujo `classNames` nao atravessa inteiro.
+ * The pieces whose `classNames` does not cross over whole.
  *
- * Segunda familia que se deriva sozinha: o web tem `classNames`, a peca existe
- * no nativo, e la ou a prop falta, ou o conjunto de partes e outro. Quem porta
- * a tela escreve `classNames={{ indicator: ... }}` e descobre no `tsc`.
+ * The second family that derives itself: the web has `classNames`, the piece
+ * exists on native, and there either the prop is missing or the set of parts
+ * is different. Whoever ports the screen writes
+ * `classNames={{ indicator: ... }}` and finds out from `tsc`.
  */
 export function slotGaps(web: Catalog, native: Catalog) {
   const gaps: { piece: string; absent: boolean; onlyWeb: string[]; onlyNative: string[] }[] = [];
@@ -1432,8 +1469,9 @@ export function validate(
 ): string[] {
   const problems: string[] = [];
   const covered = new Set<string>();
-  // A frase de `size` embaixo da tabela e DERIVADA, e uma linha a mao dizendo o
-  // mesmo e a copia que vai divergir dela: a lista mede, a linha nao.
+  // The `size` sentence under the table is DERIVED, and a hand-written row
+  // saying the same is the copy that will diverge from it: the list measures,
+  // the row does not.
   const gone = new Set(sizeGone(web, native));
 
   for (const [piece, signature] of Object.entries(signatures)) {
@@ -1443,24 +1481,24 @@ export function validate(
 
     if (!here) {
       problems.push(
-        `\`${piece}\` tem linha de assinatura e nao esta no catalogo do web.\n` +
-          "    Ou a peca saiu, ou o nome mudou. A tabela esta descrevendo o que nao existe.",
+        `\`${piece}\` has a signature row and is not in the web catalog.\n` +
+          "    Either the piece left, or the name changed. The table is describing what does not exist.",
       );
       continue;
     }
 
     if (!there) {
       problems.push(
-        `\`${piece}\` aponta para \`${nativePiece}\` no nativo, que nao esta no catalogo de la.\n` +
-          "    Confira o `nativePiece` da linha, ou a peca deixou de ser exportada.",
+        `\`${piece}\` points to \`${nativePiece}\` on native, which is not in that catalog.\n` +
+          "    Check the row's `nativePiece`, or the piece is no longer exported.",
       );
       continue;
     }
 
     if (signature.rows.length === 0) {
       problems.push(
-        `\`${piece}\` tem entrada sem nenhuma linha.\n` +
-          "    Entrada vazia nao diz nada e nao e conferida: apague, ou escreva a linha.",
+        `\`${piece}\` has an entry with no rows.\n` +
+          "    An empty entry says nothing and is not checked: delete it, or write the row.",
       );
       continue;
     }
@@ -1472,22 +1510,22 @@ export function validate(
 
       if (row.note.includes("\n")) {
         problems.push(
-          `${address} tem quebra de linha na nota, e nota e CELULA de tabela.\n` +
-            "    Markdown fecha a tabela na primeira quebra e o resto da pagina se desmancha.",
+          `${address} has a line break in the note, and a note is a table CELL.\n` +
+            "    Markdown closes the table at the first break and the rest of the page falls apart.",
         );
       }
 
       if (row.web === null && row.native === null) {
         problems.push(
-          `${address} nao cita prop nenhuma dos dois lados.\n` +
-            "    Linha assim nao e conferivel: escreva ao menos uma ponta.",
+          `${address} cites no prop on either side.\n` +
+            "    A row like that cannot be checked: write at least one end.",
         );
         continue;
       }
 
       const key = `${row.web ?? ""}>${row.native ?? ""}`;
       if (seen.has(key)) {
-        problems.push(`${address} esta escrita duas vezes na mesma peca.`);
+        problems.push(`${address} is written twice in the same piece.`);
       }
       seen.add(key);
 
@@ -1497,28 +1535,29 @@ export function validate(
 
       if (row.web !== null && !onWeb) {
         problems.push(
-          `${address}: \`${piece}\` nao tem a prop \`${row.web}\` no web.\n` +
-            `    O catalogo do web lista: ${here.props.map((p) => p.name).join(", ") || "(nenhuma)"}.\n` +
-            "    Prop que nao existe mais ensina uma chamada que nao compila.",
+          `${address}: \`${piece}\` does not have the prop \`${row.web}\` on the web.\n` +
+            `    The web catalog lists: ${here.props.map((p) => p.name).join(", ") || "(none)"}.\n` +
+            "    A prop that no longer exists teaches a call that does not compile.",
         );
       }
 
       if (row.native !== null && !onNative) {
         problems.push(
-          `${address}: \`${nativePiece}\` nao tem a prop \`${row.native}\` no nativo.\n` +
-            `    O catalogo do nativo lista: ${there.props.map((p) => p.name).join(", ") || "(nenhuma)"}.\n` +
-            "    Se a peca acabou de mudar, rode `bun run gen:props:native` antes.",
+          `${address}: \`${nativePiece}\` does not have the prop \`${row.native}\` on native.\n` +
+            `    The native catalog lists: ${there.props.map((p) => p.name).join(", ") || "(none)"}.\n` +
+            "    If the piece just changed, run `bun run gen:props:native` first.",
         );
       }
 
-      // Linha que diz "so de um lado" tem que ter a prop AUSENTE do outro. Sem
-      // isto a tabela manda reescrever uma chamada que ja atravessa igual.
+      // A row that says "one side only" has to have the prop ABSENT from the
+      // other. Without this the table tells people to rewrite a call that
+      // already crosses over unchanged.
       if (row.web !== null && row.native === null) {
         if (there.props.some((p) => p.name === row.web)) {
           problems.push(
-            `${address}: a linha diz que \`${row.web}\` nao existe no nativo, e \`${nativePiece}\` TEM essa prop.\n` +
-              "    Ou a peca portou depois que a linha foi escrita, ou a linha nasceu errada.\n" +
-              "    A prop atravessa: apague a linha, ou reescreva o que muda nela.",
+            `${address}: the row says \`${row.web}\` does not exist on native, and \`${nativePiece}\` HAS that prop.\n` +
+              "    Either the piece was ported after the row was written, or the row was born wrong.\n" +
+              "    The prop crosses over: delete the row, or rewrite what changes in it.",
           );
         }
       }
@@ -1526,8 +1565,8 @@ export function validate(
       if (row.native !== null && row.web === null) {
         if (here.props.some((p) => p.name === row.native)) {
           problems.push(
-            `${address}: a linha trata \`${row.native}\` como coisa do nativo, e \`${piece}\` TEM essa prop no web.\n` +
-              "    Escreva a linha pelas duas pontas, ou apague.",
+            `${address}: the row treats \`${row.native}\` as a native thing, and \`${piece}\` HAS that prop on the web.\n` +
+              "    Write the row from both ends, or delete it.",
           );
         }
       }
@@ -1535,34 +1574,34 @@ export function validate(
       if (row.web !== null && row.native !== null && row.web !== row.native) {
         if (there.props.some((p) => p.name === row.web)) {
           problems.push(
-            `${address}: a linha diz que \`${row.web}\` virou \`${row.native}\`, e \`${nativePiece}\` tem as DUAS.\n` +
-              "    Renomeacao que nao aconteceu: confira qual das duas e a de verdade.",
+            `${address}: the row says \`${row.web}\` became \`${row.native}\`, and \`${nativePiece}\` has BOTH.\n` +
+              "    A rename that did not happen: check which of the two is the real one.",
           );
         }
         if (here.props.some((p) => p.name === row.native)) {
           problems.push(
-            `${address}: a linha diz que \`${row.web}\` virou \`${row.native}\`, e \`${piece}\` tem as DUAS no web.\n` +
-              "    Renomeacao que nao aconteceu.",
+            `${address}: the row says \`${row.web}\` became \`${row.native}\`, and \`${piece}\` has BOTH on the web.\n` +
+              "    A rename that did not happen.",
           );
         }
       }
 
-      // Mesmo nome dos dois lados so vira linha quando a assinatura DIFERE.
+      // The same name on both sides only becomes a row when the signature DIFFERS.
       if (row.web !== null && row.web === row.native && onWeb && onNative) {
         const same = onWeb.type === onNative.type && onWeb.required === onNative.required;
         if (same) {
           problems.push(
-            `${address}: \`${row.web}\` tem a MESMA assinatura nos dois lados (\`${onWeb.type}\`).\n` +
-              "    A divergencia que a linha descrevia acabou: apague a linha.\n" +
-              "    Tabela com linha que nao vale mais e o comeco de tabela que ninguem le.",
+            `${address}: \`${row.web}\` has the SAME signature on both sides (\`${onWeb.type}\`).\n` +
+              "    The divergence the row described is over: delete the row.\n" +
+              "    A table with rows that no longer hold is the beginning of a table nobody reads.",
           );
         }
       }
 
       if (row.web === "size" && row.native === null && gone.has(piece)) {
         problems.push(
-          `${address}: a frase derivada embaixo da tabela ja diz que \`${piece}\` perde \`size\`.\n` +
-            "    Linha a mao repetindo dado derivado e a copia que envelhece: apague a linha.",
+          `${address}: the derived sentence under the table already says \`${piece}\` loses \`size\`.\n` +
+            "    A hand-written row repeating derived data is the copy that ages: delete the row.",
         );
       }
 
@@ -1575,16 +1614,16 @@ export function validate(
     if (covered.has(`${gap.piece}.${gap.prop}`)) continue;
 
     const missing = [
-      gap.onlyWeb.length ? `so no web: ${gap.onlyWeb.join(", ")}` : "",
-      gap.onlyNative.length ? `so no nativo: ${gap.onlyNative.join(", ")}` : "",
+      gap.onlyWeb.length ? `web only: ${gap.onlyWeb.join(", ")}` : "",
+      gap.onlyNative.length ? `native only: ${gap.onlyNative.join(", ")}` : "",
     ]
       .filter(Boolean)
       .join("; ");
 
     problems.push(
-      `\`${gap.piece}.${gap.prop}\` tem variante que existe de um lado so (${missing}),\n` +
-        "    e nenhuma linha diz isso. Quem porta a tela escreve a variante que conhece e\n" +
-        "    descobre no `tsc`, uma de cada vez. Escreva a linha em SIGNATURES.",
+      `\`${gap.piece}.${gap.prop}\` has a variant that exists on one side only (${missing}),\n` +
+        "    and no row says so. Whoever ports the screen writes the variant they know and\n" +
+        "    finds out from `tsc`, one at a time. Write the row in SIGNATURES.",
     );
   }
 
@@ -1593,17 +1632,17 @@ export function validate(
 
     if (!row) {
       const what = gap.absent
-        ? "e o nativo nao tem `classNames`"
-        : `e as partes divergem (${[
-            gap.onlyWeb.length ? `so no web: ${gap.onlyWeb.join(", ")}` : "",
-            gap.onlyNative.length ? `so no nativo: ${gap.onlyNative.join(", ")}` : "",
+        ? "and native does not have `classNames`"
+        : `and the parts diverge (${[
+            gap.onlyWeb.length ? `web only: ${gap.onlyWeb.join(", ")}` : "",
+            gap.onlyNative.length ? `native only: ${gap.onlyNative.join(", ")}` : "",
           ]
             .filter(Boolean)
             .join("; ")})`;
       problems.push(
-        `\`${gap.piece}.classNames\` existe no web ${what},\n` +
-          "    e nenhuma linha diz isso. Quem porta a tela escreve a parte que conhece e\n" +
-          "    descobre no `tsc`. Escreva a linha `classNames` em SIGNATURES, ou porte a prop.",
+        `\`${gap.piece}.classNames\` exists on the web ${what},\n` +
+          "    and no row says so. Whoever ports the screen writes the part they know and\n" +
+          "    finds out from `tsc`. Write the `classNames` row in SIGNATURES, or port the prop.",
       );
       continue;
     }
@@ -1613,8 +1652,8 @@ export function validate(
       .filter((part) => !row.note.includes(`\`${part}\``));
     if (unnamed.length > 0) {
       problems.push(
-        `\`${gap.piece}\` (classNames): a nota nao nomeia ${unnamed.map((part) => `\`${part}\``).join(", ")}.\n` +
-          "    Parte que falta de um lado se escreve pelo nome, com o motivo, para quem porta nao procurar.",
+        `\`${gap.piece}\` (classNames): the note does not name ${unnamed.map((part) => `\`${part}\``).join(", ")}.\n` +
+          "    A part missing from one side is written by name, with the reason, so whoever ports does not have to search.",
       );
     }
   }
@@ -1623,12 +1662,12 @@ export function validate(
 }
 
 /* --------------------------------------------------------------------------
- * O texto
+ * The text
  * ----------------------------------------------------------------------- */
 
 function inWords(items: string[]) {
   if (items.length < 2) return items.join("");
-  return `${items.slice(0, -1).join(", ")} e ${items[items.length - 1]}`;
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
 export function section(web: Catalog, native: Catalog): string {
@@ -1637,14 +1676,14 @@ export function section(web: Catalog, native: Catalog): string {
   const gone = sizeGone(web, native);
 
   const intro =
-    `**${rows} divergências de assinatura em ${pieces.length} peças.** As duas regras acima ` +
-    "(tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que " +
-    "sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um " +
-    "lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas " +
-    "são conferidas contra os dois pacotes por `bun run check:signature`.";
+    `**${rows} signature divergences in ${pieces.length} pieces.** The two rules above ` +
+    "(everything controlled, lists through `items`) hold across the whole catalog; what is here is what " +
+    "is left over from them — a prop that changes name, a type that changes shape, and a variant that exists on one " +
+    "side only. `—` means there is no equivalent prop on that side. All three columns " +
+    "are checked against both packages by `bun run check:signature`.";
 
   const table = [
-    "| Peça | No web | No React Native | O que muda na chamada |",
+    "| Piece | On the web | In React Native | What changes in the call |",
     "| --- | --- | --- | --- |",
   ];
 
@@ -1661,9 +1700,9 @@ export function section(web: Catalog, native: Catalog): string {
   }
 
   const size =
-    `Fora da tabela, uma perda que se repete: **${gone.length} peças perdem \`size\` no ` +
-    `nativo** — ${inWords(gone.map((piece) => `\`${piece}\``))}. Alvo de toque não encolhe, e ` +
-    "`comfortable` é a única altura. Esta lista é medida a cada geração, e não escrita à mão.";
+    `Outside the table, one loss that repeats: **${gone.length} pieces lose \`size\` on ` +
+    `native** — ${inWords(gone.map((piece) => `\`${piece}\``))}. A touch target does not shrink, and ` +
+    "`comfortable` is the only height. This list is measured on every generation, not written by hand.";
 
   return `${intro}\n\n${table.join("\n")}\n\n${size}`;
 }
@@ -1672,15 +1711,15 @@ function withReplacedSection(markdown: string, title: string, body: string) {
   const target = new RegExp(`(^|\\n)${title}\\n[\\s\\S]*?(?=\\n## |$)`);
   if (!target.test(markdown)) {
     throw new Error(
-      `Nao achei a secao "${title}" em ${GUIDE}. Ela e o lugar onde a tabela e publicada:\n` +
-        "escreva o titulo no arquivo, ou corrija o titulo aqui.",
+      `Could not find the section "${title}" in ${GUIDE}. It is where the table is published:\n` +
+        "write the title in the file, or fix the title here.",
     );
   }
   return markdown.replace(target, (_, before: string) => `${before}${title}\n\n${body}\n`);
 }
 
 /* --------------------------------------------------------------------------
- * Rodar
+ * Run
  * ----------------------------------------------------------------------- */
 
 if (import.meta.main) {
@@ -1689,18 +1728,18 @@ if (import.meta.main) {
   const web = JSON.parse(readFileSync(WEB_CATALOG, "utf8")) as Catalog;
   const native = JSON.parse(readFileSync(NATIVE_CATALOG, "utf8")) as Catalog;
 
-  countAtLeast(`pecas em ${WEB_CATALOG}`, Object.keys(web).length, 150);
-  countAtLeast(`pecas em ${NATIVE_CATALOG}`, Object.keys(native).length, 60);
+  countAtLeast(`pieces in ${WEB_CATALOG}`, Object.keys(web).length, 150);
+  countAtLeast(`pieces in ${NATIVE_CATALOG}`, Object.keys(native).length, 60);
 
   const problems = validate(SIGNATURES, web, native);
 
   if (problems.length > 0) {
-    console.error(`${problems.length} divergencia(s) entre a tabela de assinatura e o codigo:\n`);
+    console.error(`${problems.length} divergence(s) between the signature table and the code:\n`);
     for (const problem of problems) console.error(`  ${problem}\n`);
     console.error(
-      "A tabela vive em scripts/native-signature.ts e e publicada em\n" +
-        `${GUIDE}. Ela e o que quem porta uma tela le em vez de abrir a fonte:\n` +
-        "linha errada la custa mais do que linha nenhuma.",
+      "The table lives in scripts/native-signature.ts and is published in\n" +
+        `${GUIDE}. It is what whoever ports a screen reads instead of opening the source:\n` +
+        "a wrong row there costs more than no row at all.",
     );
     process.exit(1);
   }
@@ -1711,16 +1750,16 @@ if (import.meta.main) {
 
   if (checking) {
     if (before !== after) {
-      console.error(`${GUIDE} esta fora da tabela de assinatura.`);
-      console.error("Rode `bun run gen:signature` e comite o resultado.");
+      console.error(`${GUIDE} is out of sync with the signature table.`);
+      console.error("Run `bun run gen:signature` and commit the result.");
       process.exit(1);
     }
     console.log(
-      `${rows} divergencias de assinatura conferidas contra os dois catalogos, ` +
-        `em ${Object.keys(SIGNATURES).length} pecas.`,
+      `${rows} signature divergences checked against both catalogs, ` +
+        `in ${Object.keys(SIGNATURES).length} pieces.`,
     );
   } else {
     if (before !== after) writeFileSync(GUIDE, after);
-    console.log(`${GUIDE}: ${rows} divergencias em ${Object.keys(SIGNATURES).length} pecas.`);
+    console.log(`${GUIDE}: ${rows} divergences in ${Object.keys(SIGNATURES).length} pieces.`);
   }
 }

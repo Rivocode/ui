@@ -14,27 +14,30 @@ type FieldVerdict = string | string[] | null | void;
 export type FieldProps = {
   label: string;
   children: ReactNode;
-  /** A ajuda embaixo do campo. */
+  /** The help text below the field. */
   description?: string;
-  /** O erro vence a descricao, como no web. Vence tambem o que o `validate` devolveu. */
+  /**
+   * The error wins over the description, as on the web. It also wins over what
+   * `validate` returned.
+   */
   error?: string;
   /**
-   * A validacao do proprio campo, com a assinatura do web: recebe o valor do
-   * controle e devolve a mensagem, uma lista delas, ou nada quando o valor
-   * serve. Pode ser assincrona, e so a resposta da ultima chamada vale. O
-   * `formValues` chega vazio: no nativo nao ha `<form>` para ler.
+   * The field's own validation, with the web signature: receives the control's
+   * value and returns the message, a list of them, or nothing when the value is
+   * fine. It can be async, and only the answer to the last call counts.
+   * `formValues` arrives empty: in native there is no `<form>` to read.
    */
   validate?: (
     value: unknown,
     formValues: Record<string, unknown>,
   ) => FieldVerdict | Promise<FieldVerdict>;
   /**
-   * Quando o `validate` roda, como no web. `onSubmit` e a tecla de envio do
-   * teclado, `onBlur` e a saida do campo, `onChange` e cada tecla. Fora do
-   * `onChange`, digitar apaga o erro ate a proxima validacao.
+   * When `validate` runs, as on the web. `onSubmit` is the keyboard's submit
+   * key, `onBlur` is leaving the field, `onChange` is every keystroke. Outside
+   * `onChange`, typing clears the error until the next validation.
    */
   validationMode?: FieldValidationMode;
-  /** Espera, em milissegundos, entre a tecla e o `validate` no modo `onChange`. */
+  /** Wait, in milliseconds, between the keystroke and `validate` in `onChange` mode. */
   validationDebounceTime?: number;
   className?: string;
 };
@@ -259,7 +262,10 @@ export function WithoutField({ children }: { children: ReactNode }) {
 
 export type InputProps = TextInputProps & {
   invalid?: boolean;
-  /** Recebe o texto a cada tecla, como o `onValueChange` do Input web. Convive com o `onChangeText`: os dois sao chamados. */
+  /**
+   * Receives the text on every keystroke, like the web Input `onValueChange`.
+   * Coexists with `onChangeText`: both are called.
+   */
   onValueChange?: (value: string) => void;
 };
 

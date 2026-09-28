@@ -1,14 +1,14 @@
 ---
-category: Dados
+category: Data
 ---
 
 # SortableList
 
-A lista que a pessoa põe em ordem com as próprias mãos: a fila de emissão das
-notas, as etapas de um processo, a prioridade das tarefas. Arrasta com o
-ponteiro, com o dedo e com o teclado, e o leitor de tela ouve cada passo. Vive
-em `@rivocode/ui/dnd`, atrás do `@dnd-kit/core` e do `@dnd-kit/sortable`, que
-são dependências opcionais: só quem importa este caminho as instala.
+The list the person puts in order with their own hands: the invoice issuing
+queue, the steps of a process, the priority of tasks. It drags with the pointer,
+with a finger and with the keyboard, and the screen reader hears each step. It
+lives in `@rivocode/ui/dnd`, behind `@dnd-kit/core` and `@dnd-kit/sortable`,
+which are optional dependencies: only whoever imports this path installs them.
 
 ```bash
 npm install @dnd-kit/core @dnd-kit/sortable
@@ -36,37 +36,39 @@ const [notes, setNotes] = useState(initialNotes)
 />
 ```
 
-## A peça é controlada
+## The piece is controlled
 
-`items` entra, a ordem nova sai pronta em `onReorder(items, { key, from, to })`,
-e a peça desenha o que voltar. Ela não guarda ordem nenhuma sozinha: sem o pai
-trocar `items`, o item volta para o lugar ao ser solto. É isso que deixa a
-ordem ir ao servidor antes de mudar na tela, e voltar atrás se ele recusar.
+`items` goes in, the new order comes out ready in
+`onReorder(items, { key, from, to })`, and the piece draws whatever comes back.
+It keeps no order on its own: without the parent changing `items`, the item
+goes back to its place when dropped. That is what lets the order go to the
+server before changing on the screen, and go back if the server refuses.
 
-Soltar no mesmo lugar e cancelar com Esc não chamam `onReorder`.
+Dropping in the same place and canceling with Esc do not call `onReorder`.
 
-`getKey` é a identidade do item, e tem que ser única e estável: a chave que
-anda com o item, e não a posição dele.
+`getKey` is the item's identity, and has to be unique and stable: the key that
+travels with the item, not its position.
 
-## Teclado e leitor de tela
+## Keyboard and screen reader
 
-O teclado não é uma alternativa de segunda: é o caminho de quem não usa mouse.
+The keyboard is not a second-class alternative: it is the path of whoever does
+not use a mouse.
 
-| Tecla | O que faz |
+| Key | What it does |
 | --- | --- |
-| Espaço ou Enter | pega o item com o foco na alça |
-| Setas | movem o item uma posição |
-| Espaço ou Enter | solta no lugar novo |
-| Esc | cancela, e o item volta para onde estava |
+| Space or Enter | picks up the item with focus on the handle |
+| Arrows | move the item one position |
+| Space or Enter | drops it in the new place |
+| Esc | cancels, and the item goes back to where it was |
 
-Cada passo é anunciado numa região viva, com o nome que `getLabel` devolve:
+Each step is announced in a live region, with the name `getLabel` returns:
 "Item Nota 1043 pego. Posição 2 de 8.", "Item Nota 1043 movido para a
-posição 3 de 8.", "Item Nota 1043 solto na posição 3 de 8.". A alça se chama
-"Reordenar Nota 1043", e a instrução de teclado fica ligada a ela por
-`aria-describedby`, para o leitor ler ao chegar e não a cada passo.
+posição 3 de 8.", "Item Nota 1043 solto na posição 3 de 8.". The handle is
+called "Reordenar Nota 1043", and the keyboard instruction is tied to it through
+`aria-describedby`, so the reader reads it on arrival and not on every step.
 
-`labels` troca qualquer um desses textos, inclusive a palavra "Item", quando a
-lista é de outra coisa:
+`labels` changes any of these texts, including the word "Item", when the list
+is of something else:
 
 ```tsx
 <SortableList
@@ -81,17 +83,17 @@ lista é de outra coisa:
 />
 ```
 
-## A alça
+## The handle
 
-`handle`, ligado por padrão, desenha um `IconButton` com o ícone de pegar no
-início de cada linha, e **só ele arrasta**. O resto da linha continua
-clicável, selecionável e, no celular, rolável: é a alça que trava a rolagem
-enquanto o dedo está nela, e não a linha inteira.
+`handle`, on by default, draws an `IconButton` with the grab icon at the start
+of each row, and **only it drags**. The rest of the row stays clickable,
+selectable and, on the phone, scrollable: it is the handle that locks scrolling
+while the finger is on it, not the whole row.
 
-Com `handle={false}` a peça não desenha alça, e quem arrasta é o elemento onde
-você espalhar `handleProps`: a sua própria alça, ou a linha toda. Nesse modo o
-toque pede para **segurar** o item antes de ele sair do lugar, e deslizar sem
-segurar continua rolando a tela.
+With `handle={false}` the piece draws no handle, and whatever drags is the
+element you spread `handleProps` onto: your own handle, or the whole row. In
+this mode touch asks you to **hold** the item before it leaves its place, and
+swiping without holding still scrolls the screen.
 
 ```tsx
 <SortableList
@@ -109,46 +111,46 @@ segurar continua rolando a tela.
 
 ## Horizontal
 
-`orientation="horizontal"` vira uma fileira que rola de lado quando não cabe, e
-as setas que andam passam a ser esquerda e direita.
+`orientation="horizontal"` becomes a row that scrolls sideways when it does not
+fit, and the arrows that move become left and right.
 
-## Movimento
+## Motion
 
-Os vizinhos abrem espaço com a mola espacial dos tokens
-(`--rc-duration-spatial` e `--rc-ease-spatial`), e o item arrastado sobe com
-`shadow-2`. Com "reduzir movimento" ligado no sistema a duração dos tokens vai a
-zero: os vizinhos trocam de lugar sem deslizar, e a rolagem que o teclado
-provoca ao chegar à borda também deixa de ser suave.
+The neighbors make room with the tokens' spatial spring
+(`--rc-duration-spatial` and `--rc-ease-spatial`), and the dragged item lifts
+with `shadow-2`. With "reduce motion" on in the system the tokens' duration
+goes to zero: the neighbors swap places without sliding, and the scrolling the
+keyboard causes on reaching the edge also stops being smooth.
 
-## Estados
+## States
 
-- **Vazia**: a lista monta sem nenhum item e sem alça. Diga o que falta com um
-  `EmptyState` no lugar dela.
-- **`disabled`**: a alça sai desabilitada e nada arrasta, nem pelo teclado. Use
-  enquanto a ordem anterior ainda está sendo salva.
+- **Empty**: the list mounts with no items and no handle. Say what is missing
+  with an `EmptyState` in its place.
+- **`disabled`**: the handle comes out disabled and nothing drags, not even
+  from the keyboard. Use it while the previous order is still being saved.
 
-## Partes
+## Parts
 
-`classNames` alcança `item` (o `li` que anda), `handle` (a alça) e `content`
-(a caixa em volta do que `renderItem` desenha).
+`classNames` reaches `item` (the `li` that moves), `handle` (the handle) and
+`content` (the box around what `renderItem` draws).
 
-## Quando não usar
+## When not to use
 
-- **Ordem por critério é `DataTable`.** Se a pessoa quer ver as notas por valor
-  ou por data, a coluna `sortable` resolve com um clique e sem ninguém mexer
-  em nada. A `SortableList` é para a ordem que só a pessoa sabe, e que não
-  sai de campo nenhum.
-- **Mudar de grupo é `Kanban`.** Quando o item muda de situação ("A emitir"
-  para "Emitida") e não só de posição, as colunas são a informação, e o quadro
-  mostra as duas coisas.
-- **Hierarquia é `Tree`.** Pôr um item dentro de outro não é reordenar.
+- **Ordering by a criterion is `DataTable`.** If the person wants to see the
+  invoices by amount or by date, the `sortable` column solves it with one
+  click and without anyone moving anything. `SortableList` is for the order
+  only the person knows, and that comes out of no field.
+- **Changing group is `Kanban`.** When the item changes status ("A emitir" to
+  "Emitida") and not only position, the columns are the information, and the
+  board shows both.
+- **Hierarchy is `Tree`.** Putting one item inside another is not reordering.
 
-## No React Native
+## In React Native
 
-Traduz, no caminho próprio `@rivocode/ui-native/dnd`, com os mesmos `items`, `getKey`, `renderItem`, `onReorder`, `getLabel`, `handle`, `orientation`, `disabled` e `labels`.
+Translates, on its own path `@rivocode/ui-native/dnd`, with the same `items`, `getKey`, `renderItem`, `onReorder`, `getLabel`, `handle`, `orientation`, `disabled` and `labels`.
 
-**Sem peer novo.** O gesto é o `PanResponder` do React Native, o mesmo do `Slider`, e não o react-native-gesture-handler: arrastar pela alça, num eixo só, é um gesto que o core resolve sozinho. A alça tem 44pt e segura o gesto até o dedo sair (ela não cede à rolagem da tela no meio do arrasto), e o resto da linha continua rolando a lista, como na alça de reordenar do iOS. Por isso, no celular, **só a alça arrasta**: com a linha inteira como alça, todo toque para rolar viraria um arrasto.
+**No new peer.** The gesture is React Native's `PanResponder`, the same as the `Slider`'s, and not react-native-gesture-handler: dragging by the handle, on a single axis, is a gesture the core solves on its own. The handle is 44pt and holds the gesture until the finger lifts (it does not yield to the screen's scroll in the middle of a drag), and the rest of the row keeps scrolling the list, as with iOS's reorder handle. That is why, on the phone, **only the handle drags**: with the whole row as a handle, every touch to scroll would become a drag.
 
-**O leitor de tela não arrasta: ele move.** Cada alça traz duas ações, "Mover para cima" e "Mover para baixo" (ou esquerda e direita, na horizontal), e cada uma anda um passo e anuncia a posição nova com o mesmo texto do web: "Item Nota 1043 movido para a posição 3 de 8". O arrasto também anuncia ao pegar, a cada posição e ao soltar.
+**The screen reader does not drag: it moves.** Each handle brings two actions, "Mover para cima" and "Mover para baixo" (or left and right, horizontally), and each one moves one step and announces the new position with the same text as the web: "Item Nota 1043 movido para a posição 3 de 8". The drag also announces on picking up, at each position and on dropping.
 
-Durante o arrasto uma cópia do item segue o dedo por cima da lista, e os vizinhos abrem espaço com a duração `base` dos tokens, sem movimento quando o sistema pede para reduzir. `handleProps` são o gesto e as ações, para espalhar numa `View` sua com `handle={false}`.
+During the drag a copy of the item follows the finger over the list, and the neighbors make room with the tokens' `base` duration, with no motion when the system asks to reduce it. `handleProps` are the gesture and the actions, to spread on a `View` of your own with `handle={false}`.

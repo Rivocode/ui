@@ -10,17 +10,17 @@ import { Sheet, SheetContent, SheetHandle, SheetTrigger } from "./sheet";
 export type CalendarPanelProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  /** O elemento que abre. O mesmo nos dois formatos. */
+  /** The element that opens it. The same in both formats. */
   trigger: ReactElement;
-  /** Titulo lido no celular, onde o painel vira folha e perde o contexto. */
+  /** Title read on the phone, where the panel becomes a sheet and loses its context. */
   title: string;
   children: ReactNode;
   footer?: ReactNode;
   align?: "start" | "end";
   /**
-   * Veste a casca, seja qual for a que o corte estiver mostrando: a folha no
-   * celular e o painel ancorado na mesa. E uma casca so por vez, entao a
-   * mesma classe nao vaza para a outra.
+   * Dresses the shell, whichever one the breakpoint is showing: the sheet on the
+   * phone and the anchored panel on desktop. It is one shell at a time, so the
+   * same class does not leak into the other.
    */
   className?: string;
 };

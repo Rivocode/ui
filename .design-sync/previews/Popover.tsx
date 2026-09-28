@@ -1,6 +1,6 @@
 import { Button, Popover, PopoverClose, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from '@rivocode/ui'
 
-/** Painel */
+/** Panel */
 export function Panel() {
   return (
     <div className="min-h-60">

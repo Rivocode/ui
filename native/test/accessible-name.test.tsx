@@ -24,8 +24,8 @@ const { SignaturePad } = await import("../src/chart");
 
 const noop = () => {};
 
-describe("o nome da peca entra por label", () => {
-  test("Checkbox sem texto ao lado e nomeado pelo label", () => {
+describe("the piece's name comes in through label", () => {
+  test("a Checkbox with no text beside it is named by label", () => {
     const screen = render(
       <Checkbox label="Selecionar a nota 4813" checked onCheckedChange={noop} />,
     );
@@ -33,7 +33,7 @@ describe("o nome da peca entra por label", () => {
     expect(box!.props.accessibilityLabel).toBe("Selecionar a nota 4813");
   });
 
-  test("Checkbox com texto ao lado fala o texto, e o label troca o nome quando vem", () => {
+  test("a Checkbox with text beside it speaks the text, and label replaces the name when given", () => {
     const plain = render(
       <Checkbox checked onCheckedChange={noop}>
         Enviar o PDF
@@ -49,13 +49,13 @@ describe("o nome da peca entra por label", () => {
     expect(byRole(named, "checkbox")[0]!.props.accessibilityLabel).toBe("Aceito os termos");
   });
 
-  test("Switch sem texto ao lado leva o label ao interruptor da plataforma", () => {
+  test("a Switch with no text beside it takes label to the platform switch", () => {
     const screen = render(<Switch label="Notificar por e-mail" checked onCheckedChange={noop} />);
     const [control] = byType(screen, "Switch");
     expect(control!.props.accessibilityLabel).toBe("Notificar por e-mail");
   });
 
-  test("Switch com texto ao lado nomeia a linha, e nao o interruptor de dentro", () => {
+  test("a Switch with text beside it names the row, not the inner switch", () => {
     const screen = render(
       <Switch label="Notificar por e-mail" checked onCheckedChange={noop}>
         E-mail
@@ -65,7 +65,7 @@ describe("o nome da peca entra por label", () => {
     expect(byType(screen, "Switch")[0]!.props.accessibilityLabel).toBeUndefined();
   });
 
-  test("OTPField troca o nome padrao pelo label", () => {
+  test("OTPField replaces the default name with label", () => {
     const fallback = render(<OTPField value="" onValueChange={noop} />);
     const spoken = byType(fallback, "TextInput")[0]!.props.accessibilityLabel;
     expect(spoken).toBe("Código de 6 dígitos");
@@ -74,7 +74,7 @@ describe("o nome da peca entra por label", () => {
     expect(byType(named, "TextInput")[0]!.props.accessibilityLabel).toBe("Código do SMS");
   });
 
-  test("SignaturePad abre o nome do grupo com o label, e sem ele com labels.group", () => {
+  test("SignaturePad opens the group name with label, and without it with labels.group", () => {
     const group = (screen: ReturnType<typeof render>) =>
       byType(screen, "View").find((node) => /: /.test(String(node.props.accessibilityLabel ?? "")));
 
@@ -87,7 +87,7 @@ describe("o nome da peca entra por label", () => {
   });
 });
 
-describe("os adaptadores entregam o rotulo no nome que a peca le", () => {
+describe("the adapters deliver the label under the name the piece reads", () => {
   const row = {
     name: "field" as const,
     value: undefined,
@@ -99,26 +99,26 @@ describe("os adaptadores entregam o rotulo no nome que a peca le", () => {
     invalid: false,
   };
 
-  test("forChecked e forDate dao label, e nao o accessibilityLabel que a peca ignora", () => {
+  test("forChecked and forDate give label, not the accessibilityLabel the piece ignores", () => {
     for (const props of [forChecked(row as never), forDate(row as never)]) {
       expect(props).toMatchObject({ label: "Campo" });
       expect(Object.keys(props)).not.toContain("accessibilityLabel");
     }
   });
 
-  test("forValue da os dois: label para a peca, accessibilityLabel para o TextInput", () => {
+  test("forValue gives both: label for the piece, accessibilityLabel for the TextInput", () => {
     expect(forValue(row as never)).toMatchObject({ label: "Campo", accessibilityLabel: "Campo" });
   });
 
-  test("forText fica no accessibilityLabel, porque o Input e o TextInput", () => {
+  test("forText stays on accessibilityLabel, because the Input is the TextInput", () => {
     const props = forText(row as never);
     expect(props.accessibilityLabel).toBe("Campo");
     expect(Object.keys(props)).not.toContain("label");
   });
 });
 
-describe("o catalogo nativo", () => {
-  test("so o Item declara accessibilityLabel, porque a linha ja tem texto proprio", async () => {
+describe("the native catalog", () => {
+  test("only Item declares accessibilityLabel, because the row already has its own text", async () => {
     const published = (await Bun.file(
       new URL("../../apps/docs/src/native-props.json", import.meta.url),
     ).json()) as Record<string, { props: { name: string }[] }>;

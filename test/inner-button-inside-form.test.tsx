@@ -32,7 +32,7 @@ function openingTags(source: string) {
   return found;
 }
 
-test("todo botao que uma peca desenha por dentro declara type, e nao envia o formulario em volta", () => {
+test("every button a piece renders internally declares type, and does not submit the surrounding form", () => {
   const files = [...new Glob("src/**/*.tsx").scanSync(ROOT)].filter(
     (file) => !PUBLIC_DEFAULT.has(file),
   );
@@ -61,7 +61,7 @@ function insideForm(ui: React.ReactNode) {
   return onSubmit;
 }
 
-test("tentar de novo no QueryBoundary dentro de um formulario nao envia o formulario", () => {
+test("retrying in a QueryBoundary inside a form does not submit the form", () => {
   const onRetry = mock(() => {});
   const onSubmit = insideForm(
     <QueryBoundary isError onRetry={onRetry} data={undefined}>
@@ -75,7 +75,7 @@ test("tentar de novo no QueryBoundary dentro de um formulario nao envia o formul
   expect(onSubmit).not.toHaveBeenCalled();
 });
 
-test("decidir no aviso de cookies dentro de um formulario nao envia o formulario", () => {
+test("deciding on the cookie notice inside a form does not submit the form", () => {
   const onSubmit = insideForm(
     <CookieConsent open onDecision={() => {}} policyHref="/privacidade" />,
   );

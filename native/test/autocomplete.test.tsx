@@ -42,8 +42,8 @@ const done = (screen: ReturnType<typeof render>) =>
 const labels = (screen: ReturnType<typeof render>) =>
   suggestions(screen).map((node) => node.props.accessibilityLabel);
 
-describe("Autocomplete nativo", () => {
-  test("o campo fechado e um combobox com nome, valor e estado de expandido", () => {
+describe("native Autocomplete", () => {
+  test("the closed field is a combobox with name, value and expanded state", () => {
     const screen = render(<Controlled value="Cabedelo" />);
     const closed = field(screen);
     expect(closed.props.accessibilityLabel).toBe("Cidade");
@@ -57,12 +57,12 @@ describe("Autocomplete nativo", () => {
     expect(input(screen).props.accessibilityLabel).toBe("Cidade");
   });
 
-  test("sem texto, o placeholder e o que o leitor de tela ouve como valor", () => {
+  test("without text, the placeholder is what the screen reader hears as the value", () => {
     const screen = render(<Controlled />);
     expect(field(screen).props.accessibilityValue.text).toBe("Cidade");
   });
 
-  test("o texto filtra as sugestoes sem ligar para acento nem caixa", () => {
+  test("the text filters the suggestions ignoring accents and case", () => {
     const screen = render(<Controlled />);
     act(() => field(screen).props.onPress());
     expect(labels(screen)).toEqual(CITIES);
@@ -74,7 +74,7 @@ describe("Autocomplete nativo", () => {
     expect(labels(screen)).toEqual(["Campina Grande", "Cabedelo"]);
   });
 
-  test("o texto fora da lista vale: cada tecla chega ao onValueChange e fica no campo ao concluir", () => {
+  test("text outside the list counts: every keystroke reaches onValueChange and stays in the field on submit", () => {
     const onChange = mock(() => {});
     const screen = render(<Controlled onChange={onChange} />);
     act(() => field(screen).props.onPress());
@@ -89,7 +89,7 @@ describe("Autocomplete nativo", () => {
     expect(field(screen).props.accessibilityValue.text).toBe("Sousa");
   });
 
-  test("tocar numa sugestao preenche o texto inteiro e fecha a folha", () => {
+  test("tapping a suggestion fills in the whole text and closes the sheet", () => {
     const onChange = mock(() => {});
     const screen = render(<Controlled onChange={onChange} />);
     act(() => field(screen).props.onPress());
@@ -101,14 +101,14 @@ describe("Autocomplete nativo", () => {
     expect(field(screen).props.accessibilityValue.text).toBe("Campina Grande");
   });
 
-  test("a sugestao igual ao texto sai marcada como escolhida, e so ela", () => {
+  test("the suggestion equal to the text comes out marked as chosen, and only it", () => {
     const screen = render(<Controlled value="patos" />);
     act(() => field(screen).props.onPress());
     const marked = suggestions(screen).filter((node) => node.props.accessibilityState.selected);
     expect(marked.map((node) => node.props.accessibilityLabel)).toEqual(["Patos"]);
   });
 
-  test("cada sugestao e um botao com o proprio nome e alvo de 44pt", () => {
+  test("each suggestion is a button with its own name and a 44pt target", () => {
     const screen = render(<Controlled />);
     act(() => field(screen).props.onPress());
     for (const node of suggestions(screen)) {
@@ -119,7 +119,7 @@ describe("Autocomplete nativo", () => {
     expect(suggestions(screen)).toHaveLength(CITIES.length);
   });
 
-  test("a contagem de sugestoes e anunciada ao abrir e a cada mudanca, e so com a folha aberta", () => {
+  test("the suggestion count is announced on open and on every change, and only with the sheet open", () => {
     const screen = render(<Controlled />);
     expect(spoken.announced).toEqual([]);
 
@@ -131,7 +131,7 @@ describe("Autocomplete nativo", () => {
     expect(spoken.announced).toEqual(["5 sugestões.", "1 sugestão.", "Nenhuma sugestão."]);
   });
 
-  test("grupos viram secoes com cabecalho, e o grupo sem sugestao some", () => {
+  test("groups become sections with a header, and a group with no suggestion disappears", () => {
     const groups: AutocompleteItemGroup[] = [
       { label: "Paraíba", items: ["João Pessoa", "Campina Grande"] },
       { label: "Pernambuco", items: ["Recife", "Caruaru"] },
@@ -147,7 +147,7 @@ describe("Autocomplete nativo", () => {
     expect(labels(screen)).toEqual(["Recife"]);
   });
 
-  test("desabilitado anuncia o estado e nao abre", () => {
+  test("disabled announces the state and does not open", () => {
     const screen = render(<Controlled disabled />);
     expect(field(screen).props.accessibilityState.disabled).toBe(true);
     const pressable = screen.root.findAll(

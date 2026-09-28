@@ -8,7 +8,7 @@ const INVOICES = Array.from({ length: 40 }, (_, index) => ({
   ],
 }))
 
-/** Numa lista que rola por dentro */
+/** In a list that scrolls inside */
 export function InsideBox() {
   const [box, setBox] = useState<HTMLDivElement | null>(null)
 

@@ -1,18 +1,18 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # NavigationMenu
 
-A navegação de topo de site, com painel por secao.
+A site's top navigation, with a panel per section.
 
-Não e `Menu`: aquele lista ações que se executam, este lista lugares para onde
-ir, e o painel pode ter texto, imagem e várias colunas. O leitor de tela anuncia
-os dois de formas diferentes, e trocar um pelo outro faz o menu de ações
-prometer navegação que não existe.
+It is not `Menu`: that one lists actions that get executed, this one lists
+places to go, and the panel can have text, images and several columns. The
+screen reader announces the two in different ways, and swapping one for the
+other makes the action menu promise navigation that does not exist.
 
-**Em tela de aplicação, `Sidebar` costuma servir melhor.** Este e para página de
-marketing e portal.
+**On an application screen, `Sidebar` usually serves better.** This one is for
+marketing pages and portals.
 
 ```tsx
 <NavigationMenu>
@@ -28,15 +28,16 @@ marketing e portal.
 </NavigationMenu>
 ```
 
-O painel e único e fica fora da lista: e ele que desliza de uma secao para a
-outra em vez de piscar entre paineis.
+The panel is a single one and lives outside the list: it is what slides from
+one section to the other instead of flickering between panels.
 
-## As partes
+## Parts
 
-`NavigationMenuViewport` é o painel onde o conteúdo do item aberto aparece.
-Fica fora dos itens, e não dentro de cada um: assim a troca entre dois menus
-vizinhos anima de um para o outro em vez de fechar e abrir.
+`NavigationMenuViewport` is the panel where the content of the open item
+appears. It lives outside the items, and not inside each one: that way the
+switch between two neighboring menus animates from one to the other instead of
+closing and opening.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão - idioma de mesa; navegação nativa é tab bar e drawer do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Does not port, by decision - a desktop idiom; native navigation is the router's tab bar and drawer. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.

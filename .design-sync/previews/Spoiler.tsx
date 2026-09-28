@@ -1,6 +1,6 @@
 import { Spoiler } from '@rivocode/ui'
 
-/** Descrição longa de produto */
+/** Long product description */
 export function ProductDescription() {
   return (
     <Spoiler maxHeight={96} className="max-w-prose text-base text-fg-muted">
@@ -21,7 +21,7 @@ export function ProductDescription() {
   )
 }
 
-/** Texto curto: sem botão */
+/** Short text: no button */
 export function ShortText() {
   return (
     <Spoiler maxHeight={96} className="max-w-prose text-base text-fg-muted">
@@ -30,7 +30,7 @@ export function ShortText() {
   )
 }
 
-/** Com outros textos no botão */
+/** With other button texts */
 export function CustomLabels() {
   return (
     <Spoiler

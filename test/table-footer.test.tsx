@@ -15,13 +15,13 @@ import {
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * Toda listagem financeira brasileira termina em "Total: R$ 248,3K", e ate
- * aqui essa linha era uma <div> embaixo da tabela: sem largura de coluna, ela
- * nunca ficava debaixo do valor que soma, e com `maxHeight` rolava embora.
+ * Every Brazilian financial listing ends in "Total: R$ 248,3K", and until now
+ * that line was a <div> below the table: without column widths, it never sat
+ * under the value it sums, and with `maxHeight` it scrolled away.
  *
- * O que estes testes guardam e a diferenca entre as duas: que o total sai
- * dentro de um <tfoot> de verdade, com uma celula por coluna, e que ele conta
- * o filtro e nao a pagina.
+ * What these tests guard is the difference between the two: that the total
+ * renders inside a real <tfoot>, with one cell per column, and that it counts
+ * the filter and not the page.
  */
 
 type Invoice = { id: string; number: string; customer: string; amount: number };
@@ -63,9 +63,9 @@ function table(props: Partial<React.ComponentProps<typeof DataTable<Invoice>>> =
 
 const footRow = (container: HTMLElement) => container.querySelector("tfoot tr");
 
-/* --- a peca crua --------------------------------------------------------- */
+/* --- the raw component --------------------------------------------------- */
 
-test("o TableFooter sai como <tfoot>, e nao como mais uma linha do corpo", () => {
+test("TableFooter renders as <tfoot>, and not as one more body row", () => {
   const { container } = render(
     <Table>
       <TableHeader>
@@ -91,13 +91,13 @@ test("o TableFooter sai como <tfoot>, e nao como mais uma linha do corpo", () =>
 
   const foot = container.querySelector("tfoot");
   expect(foot).not.toBeNull();
-  // Dentro da mesma <table>, e nao numa <div> irma: e isso que da a ele a
-  // largura das colunas de cima.
+  // Inside the same <table>, and not in a sibling <div>: that is what gives it
+  // the widths of the columns above.
   expect(foot!.closest("table")).toBe(container.querySelector("table"));
   expect(screen.getByText("Total")).toBeDefined();
 });
 
-test("a classe de quem usa vence a do TableFooter", () => {
+test("the consumer's class beats the TableFooter one", () => {
   const { container } = render(
     <Table>
       <TableFooter className="bg-surface-raised">
@@ -113,20 +113,20 @@ test("a classe de quem usa vence a do TableFooter", () => {
   expect(foot.className).not.toContain("bg-surface ");
 });
 
-/* --- a linha que o DataTable produz -------------------------------------- */
+/* --- the row DataTable produces ------------------------------------------ */
 
-test("basta uma coluna declarar total para o rodape existir", () => {
+test("one column declaring total is enough for the footer to exist", () => {
   const { container } = table();
 
   const row = footRow(container);
   expect(row).not.toBeNull();
-  // Uma celula por coluna, e nao uma celula esticada: e o alinhamento que a
-  // <div> perdia.
+  // One cell per column, and not one stretched cell: that is the alignment the
+  // <div> lost.
   expect(row!.querySelectorAll("td")).toHaveLength(COLUMNS.length);
   expect(row!.querySelectorAll("td")[2]!.textContent).toBe(currencyShort(sum(INVOICES)));
 });
 
-test("sem coluna com total, nao ha rodape nenhum", () => {
+test("without a column with total, there is no footer at all", () => {
   const { container } = table({
     columns: [
       { key: "number", header: "Numero" },
@@ -137,7 +137,7 @@ test("sem coluna com total, nao ha rodape nenhum", () => {
   expect(container.querySelector("tfoot")).toBeNull();
 });
 
-test("a celula do total herda o alinhamento e o esconde-no-celular da coluna", () => {
+test("the total cell inherits the column's alignment and hide-on-mobile", () => {
   const { container } = table();
   const cells = footRow(container)!.querySelectorAll("td");
 
@@ -145,13 +145,13 @@ test("a celula do total herda o alinhamento e o esconde-no-celular da coluna", (
   expect(cells[2]!.className).toContain("text-right");
 });
 
-test("o total conta o que sobrou do filtro, e nao a lista inteira", () => {
+test("the total counts what is left after the filter, and not the whole list", () => {
   const { container } = table({ filter: "Padaria" });
 
   expect(footRow(container)!.querySelectorAll("td")[2]!.textContent).toBe(currencyShort(1620));
 });
 
-test("virar de pagina nao muda o total: ele e o da busca, nao o da pagina", () => {
+test("turning the page does not change the total: it is the search's, not the page's", () => {
   const { container } = table({ pageSize: 2 });
 
   const total = currencyShort(sum(INVOICES));
@@ -161,7 +161,7 @@ test("virar de pagina nao muda o total: ele e o da busca, nao o da pagina", () =
   expect(footRow(container)!.querySelectorAll("td")[2]!.textContent).toBe(total);
 });
 
-test("com selecao, o rodape ganha a celula vazia da coluna de marcar", () => {
+test("with selection, the footer gets the empty cell of the checkbox column", () => {
   const { container } = table({ selectable: true });
 
   const cells = footRow(container)!.querySelectorAll("td");
@@ -169,20 +169,20 @@ test("com selecao, o rodape ganha a celula vazia da coluna de marcar", () => {
   expect(cells[0]!.textContent).toBe("");
 });
 
-test("carregando nao mostra total, porque nao ha o que somar", () => {
+test("loading shows no total, because there is nothing to sum", () => {
   const { container } = table({ data: undefined });
 
   expect(container.querySelector("tfoot")).toBeNull();
 });
 
-test("busca sem resultado nao mostra total debaixo do aviso", () => {
+test("a search with no results shows no total under the notice", () => {
   const { container } = table({ filter: "prefeitura" });
 
   expect(screen.getByText("Nenhum resultado para a busca.")).toBeDefined();
   expect(container.querySelector("tfoot")).toBeNull();
 });
 
-test("com moldura propria, o total gruda embaixo como o cabecalho gruda em cima", () => {
+test("with its own frame, the total sticks to the bottom as the header sticks to the top", () => {
   const { container } = table({ maxHeight: 200 });
 
   const foot = container.querySelector("tfoot")!;
@@ -191,17 +191,17 @@ test("com moldura propria, o total gruda embaixo como o cabecalho gruda em cima"
   expect(foot.className).toContain("z-[var(--rc-z-sticky)]");
 });
 
-test("sem moldura propria nao ha o que grudar, e o rodape nao gruda", () => {
+test("without its own frame there is nothing to stick to, and the footer does not stick", () => {
   const { container } = table();
 
   expect(container.querySelector("tfoot")!.className).not.toContain("sticky");
 });
 
-test("virtualizada, o total entra na contagem de linhas do leitor de tela", () => {
+test("virtualized, the total enters the screen reader row count", () => {
   const { container } = table({ virtual: true, maxHeight: 200 });
 
   const rows = INVOICES.length;
-  // Cabecalho + linhas de dado + a linha de totais.
+  // Header + data rows + the totals row.
   expect(container.querySelector("table")!.getAttribute("aria-rowcount")).toBe(String(rows + 2));
   expect(footRow(container)!.getAttribute("aria-rowindex")).toBe(String(rows + 2));
 });

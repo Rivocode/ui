@@ -11,7 +11,7 @@ function field() {
   return screen.getByPlaceholderText("dd/mm/aaaa") as HTMLInputElement;
 }
 
-test("digitar poe as barras sozinho", () => {
+test("typing inserts the slashes by itself", () => {
   render(
     <RivoProvider scope="local">
       <DatePicker />
@@ -21,42 +21,42 @@ test("digitar poe as barras sozinho", () => {
   expect(field().value).toBe("03/03/2026");
 });
 
-test("a data digitada chega em quem escuta", () => {
-  let recebida: Date | undefined;
+test("the typed date reaches the listener", () => {
+  let received: Date | undefined;
   render(
     <RivoProvider scope="local">
-      <DatePicker onValueChange={(d) => (recebida = d)} />
+      <DatePicker onValueChange={(d) => (received = d)} />
     </RivoProvider>,
   );
   fireEvent.change(field(), { target: { value: "25/12/2026" } });
-  expect(recebida?.getFullYear()).toBe(2026);
-  expect(recebida?.getMonth()).toBe(11);
-  expect(recebida?.getDate()).toBe(25);
+  expect(received?.getFullYear()).toBe(2026);
+  expect(received?.getMonth()).toBe(11);
+  expect(received?.getDate()).toBe(25);
 });
 
-test("data pela metade nao avisa ninguem ainda", () => {
-  let avisos = 0;
+test("a half-typed date notifies nobody yet", () => {
+  let calls = 0;
   render(
     <RivoProvider scope="local">
-      <DatePicker onValueChange={() => avisos++} />
+      <DatePicker onValueChange={() => calls++} />
     </RivoProvider>,
   );
   fireEvent.change(field(), { target: { value: "0303" } });
-  expect(avisos).toBe(0);
+  expect(calls).toBe(0);
 });
 
-test("apagar o campo limpa a data", () => {
-  let recebida: Date | undefined = new Date(2026, 2, 3);
+test("erasing the field clears the date", () => {
+  let received: Date | undefined = new Date(2026, 2, 3);
   render(
     <RivoProvider scope="local">
-      <DatePicker defaultValue={recebida} onValueChange={(d) => (recebida = d)} />
+      <DatePicker defaultValue={received} onValueChange={(d) => (received = d)} />
     </RivoProvider>,
   );
   fireEvent.change(field(), { target: { value: "" } });
-  expect(recebida).toBeUndefined();
+  expect(received).toBeUndefined();
 });
 
-test("texto que nao virou data volta para a ultima data ao sair do campo", () => {
+test("text that did not become a date reverts to the last date on blur", () => {
   render(
     <RivoProvider scope="local">
       <DatePicker defaultValue={new Date(2026, 2, 3)} />
@@ -67,7 +67,7 @@ test("texto que nao virou data volta para a ultima data ao sair do campo", () =>
   expect(field().value).toBe("03/03/2026");
 });
 
-test("o campo espelha a data que muda de fora", () => {
+test("the field mirrors a date changed from outside", () => {
   function Controlled() {
     const [data, setData] = useState<Date | undefined>(new Date(2026, 2, 3));
     return (
@@ -82,17 +82,17 @@ test("o campo espelha a data que muda de fora", () => {
   expect(field().value).toBe("25/12/2026");
 });
 
-test("com name, o formulario nativo recebe aaaa-mm-dd", () => {
+test("with name, the native form receives yyyy-mm-dd", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <DatePicker name="vencimento" defaultValue={new Date(2026, 2, 3)} />
     </RivoProvider>,
   );
-  const escondido = container.querySelector('input[type="hidden"][name="vencimento"]');
-  expect((escondido as HTMLInputElement).value).toBe("2026-03-03");
+  const hiddenInput = container.querySelector('input[type="hidden"][name="vencimento"]');
+  expect((hiddenInput as HTMLInputElement).value).toBe("2026-03-03");
 });
 
-test("controlado a partir do vazio, voltar ao vazio por fora limpa o campo, e nao ressuscita a primeira data", () => {
+test("controlled from empty, going back to empty from outside clears the field, and does not revive the first date", () => {
   function Controlled() {
     const [data, setData] = useState<Date | undefined>();
     return (
@@ -112,33 +112,33 @@ test("controlado a partir do vazio, voltar ao vazio por fora limpa o campo, e na
 
   fireEvent.click(screen.getByText("Zerar"));
   expect(field().value).toBe("");
-  const escondido = container.querySelector('input[type="hidden"][name="vencimento"]') as HTMLInputElement;
-  expect(escondido.value).toBe("");
+  const hiddenInput = container.querySelector('input[type="hidden"][name="vencimento"]') as HTMLInputElement;
+  expect(hiddenInput.value).toBe("");
 });
 
-test("data digitada num dia desabilitado nao vale, como nao vale no calendario", () => {
-  const avisos: (Date | undefined)[] = [];
+test("a date typed on a disabled day does not count, as it does not in the calendar", () => {
+  const calls: (Date | undefined)[] = [];
   render(
     <RivoProvider scope="local">
-      <DatePicker disabledDays={{ dayOfWeek: [0] }} onValueChange={(d) => avisos.push(d)} />
+      <DatePicker disabledDays={{ dayOfWeek: [0] }} onValueChange={(d) => calls.push(d)} />
     </RivoProvider>,
   );
 
   fireEvent.change(field(), { target: { value: "15/03/2026" } });
-  expect(avisos).toHaveLength(0);
+  expect(calls).toHaveLength(0);
 
   fireEvent.change(field(), { target: { value: "16/03/2026" } });
-  expect(avisos).toHaveLength(1);
-  expect(avisos[0]?.getDate()).toBe(16);
+  expect(calls).toHaveLength(1);
+  expect(calls[0]?.getDate()).toBe(16);
 });
 
-test("o calendario controlado a partir do vazio tambem volta ao vazio por fora", () => {
+test("the calendar controlled from empty also goes back to empty from outside", () => {
   function Controlled() {
-    const [dia, setDia] = useState<Date | undefined>();
+    const [picked, setPicked] = useState<Date | undefined>();
     return (
       <RivoProvider scope="local">
-        <Calendar value={dia} onValueChange={setDia} defaultMonth={new Date(2026, 2, 1)} />
-        <button onClick={() => setDia(undefined)}>Zerar</button>
+        <Calendar value={picked} onValueChange={setPicked} defaultMonth={new Date(2026, 2, 1)} />
+        <button onClick={() => setPicked(undefined)}>Zerar</button>
       </RivoProvider>
     );
   }
@@ -155,7 +155,7 @@ test("o calendario controlado a partir do vazio tambem volta ao vazio por fora",
   expect(selected()).toEqual([]);
 });
 
-test("o calendario abre pelo botao do campo", () => {
+test("the calendar opens through the field button", () => {
   render(
     <RivoProvider scope="local">
       <DatePicker defaultValue={new Date(2026, 2, 3)} />
@@ -165,7 +165,7 @@ test("o calendario abre pelo botao do campo", () => {
   expect(screen.getByRole("grid")).toBeDefined();
 });
 
-test("o calendario fala portugues por padrao", () => {
+test("the calendar speaks Portuguese by default", () => {
   render(
     <RivoProvider scope="local">
       <Calendar month={new Date(2026, 2, 1)} />
@@ -174,7 +174,7 @@ test("o calendario fala portugues por padrao", () => {
   expect(screen.getByRole("grid").getAttribute("aria-label")).toContain("março");
 });
 
-test("o gatilho do intervalo mostra o periodo escolhido", () => {
+test("the range trigger shows the chosen period", () => {
   render(
     <RivoProvider scope="local">
       <DateRangePicker defaultValue={{ from: new Date(2026, 2, 3), to: new Date(2026, 2, 10) }} />
@@ -183,7 +183,7 @@ test("o gatilho do intervalo mostra o periodo escolhido", () => {
   expect(screen.getByText("03/03/2026 – 10/03/2026")).toBeDefined();
 });
 
-test("sem intervalo, o gatilho mostra o convite", () => {
+test("without a range, the trigger shows the invitation", () => {
   render(
     <RivoProvider scope="local">
       <DateRangePicker />
@@ -192,9 +192,9 @@ test("sem intervalo, o gatilho mostra o convite", () => {
   expect(screen.getByText("Escolha o período")).toBeDefined();
 });
 
-test("no celular o calendario mostra um mes so, mesmo pedindo dois", () => {
-  // O happy-dom nao implementa matchMedia com resposta verdadeira, entao o
-  // teste troca a resposta para simular a tela estreita.
+test("on mobile the calendar shows a single month, even when asked for two", () => {
+  // happy-dom does not implement matchMedia with a true answer, so the test
+  // swaps the answer to simulate the narrow screen.
   const original = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -216,7 +216,7 @@ test("no celular o calendario mostra um mes so, mesmo pedindo dois", () => {
   }
 });
 
-test("na largura de mesa os dois meses aparecem", () => {
+test("at desktop width both months appear", () => {
   render(
     <RivoProvider scope="local">
       <Calendar mode="range" numberOfMonths={2} month={new Date(2026, 2, 1)} />
@@ -225,37 +225,37 @@ test("na largura de mesa os dois meses aparecem", () => {
   expect(screen.getAllByRole("grid")).toHaveLength(2);
 });
 
-test("com rodape, o clique no dia e so rascunho ate o Aplicar", async () => {
-  let recebida: Date | undefined;
+test("with a footer, clicking a day is only a draft until Aplicar", async () => {
+  let received: Date | undefined;
   render(
     <RivoProvider scope="local">
-      <DatePicker confirm onValueChange={(d) => (recebida = d)} />
+      <DatePicker confirm onValueChange={(d) => (received = d)} />
     </RivoProvider>,
   );
 
   fireEvent.click(screen.getByLabelText("Abrir calendário"));
   fireEvent.click(screen.getAllByRole("gridcell")[10]!.querySelector("button")!);
-  expect(recebida).toBeUndefined();
+  expect(received).toBeUndefined();
 
   fireEvent.click(screen.getByText("Aplicar"));
-  expect(recebida).toBeDefined();
+  expect(received).toBeDefined();
 });
 
-test("sem rodape, o clique no dia ja vale e o painel fecha", () => {
-  let recebida: Date | undefined;
+test("without a footer, clicking a day counts right away and the panel closes", () => {
+  let received: Date | undefined;
   render(
     <RivoProvider scope="local">
-      <DatePicker onValueChange={(d) => (recebida = d)} />
+      <DatePicker onValueChange={(d) => (received = d)} />
     </RivoProvider>,
   );
 
   fireEvent.click(screen.getByLabelText("Abrir calendário"));
   fireEvent.click(screen.getAllByRole("gridcell")[10]!.querySelector("button")!);
-  expect(recebida).toBeDefined();
+  expect(received).toBeDefined();
   expect(screen.queryByRole("grid")).toBeNull();
 });
 
-test("o Aplicar do intervalo so libera com o periodo fechado", () => {
+test("the range Aplicar only unlocks with a closed period", () => {
   render(
     <RivoProvider scope="local">
       <DateRangePicker />
@@ -263,20 +263,20 @@ test("o Aplicar do intervalo so libera com o periodo fechado", () => {
   );
   fireEvent.click(screen.getByText("Escolha o período"));
 
-  const aplicar = screen.getByText("Aplicar").closest("button")!;
-  expect(aplicar.disabled).toBe(true);
+  const apply = screen.getByText("Aplicar").closest("button")!;
+  expect(apply.disabled).toBe(true);
 
-  // O primeiro clique ja fecha um periodo de um dia so, que e escolha
-  // legitima. O que o Aplicar barra e o periodo vazio.
-  const dias = screen.getAllByRole("gridcell");
-  fireEvent.click(dias[10]!.querySelector("button")!);
+  // The first click already closes a one-day period, which is a legitimate
+  // choice. What Aplicar blocks is the empty period.
+  const cells = screen.getAllByRole("gridcell");
+  fireEvent.click(cells[10]!.querySelector("button")!);
   expect((screen.getByText("Aplicar").closest("button") as HTMLButtonElement).disabled).toBe(false);
 
-  fireEvent.click(dias[14]!.querySelector("button")!);
+  fireEvent.click(cells[14]!.querySelector("button")!);
   expect((screen.getByText("Aplicar").closest("button") as HTMLButtonElement).disabled).toBe(false);
 });
 
-test("o calendario mostra a inicial do dia numa letra so", () => {
+test("the calendar shows the day initial as a single letter", () => {
   render(
     <RivoProvider scope="local">
       <Calendar month={new Date(2026, 2, 1)} />
@@ -286,17 +286,17 @@ test("o calendario mostra a inicial do dia numa letra so", () => {
   expect(columns).toEqual(["D", "S", "T", "Q", "Q", "S", "S"]);
 });
 
-test("a legenda do mes vira lista de mes e ano", () => {
+test("the month caption becomes month and year lists", () => {
   render(
     <RivoProvider scope="local">
       <Calendar month={new Date(2026, 2, 1)} />
     </RivoProvider>,
   );
-  const listas = screen.getAllByRole("combobox");
-  expect(listas.length).toBe(2);
+  const lists = screen.getAllByRole("combobox");
+  expect(lists.length).toBe(2);
 });
 
-test("no celular estreito o dia do calendario encolhe com a tela, para as sete colunas caberem em 320 pixels", () => {
+test("on a narrow phone the calendar day shrinks with the screen, so the seven columns fit in 320 pixels", () => {
   render(
     <RivoProvider scope="local">
       <Calendar onValueChange={() => {}} month={new Date(2026, 2, 1)} />

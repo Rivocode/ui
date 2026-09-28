@@ -6,27 +6,28 @@ import { ChartContainer, type ChartConfig } from "../src/chart/chart";
 import { ChartTooltipContent } from "../src/chart/chart-tooltip";
 
 /*
- * A dica do grafico nao era anunciada.
+ * The chart tooltip was not announced.
  *
- * A Recharts anda de ponto em ponto com as setas, e o `ChartContainer` ja
- * entrega `role="img"` com nome - mas quem usa leitor de tela ouvia so o nome
- * do grafico: a dica aparecia na tela e nada a lia. O valor exato ficava
- * disponivel apenas para quem enxerga.
+ * Recharts moves from point to point with the arrows, and `ChartContainer`
+ * already provides `role="img"` with a name - but screen reader users heard
+ * only the chart name: the tooltip showed on screen and nothing read it. The
+ * exact value was available only to sighted users.
  *
- * O que se prova aqui e o mecanismo da moldura: existe regiao viva, ela copia
- * a dica quando a mudanca veio do teclado, e ela fica calada no ponteiro.
+ * What is proven here is the container's mechanism: there is a live region,
+ * it copies the tooltip when the change came from the keyboard, and it stays
+ * silent on pointer.
  *
- * A dica entra no DOM pela mao do teste, e nao pela Recharts, por uma
- * limitacao do ambiente: o `ResponsiveContainer` mede o pai, o happy-dom
- * responde 0x0 e a Recharts nao desenha grafico nenhum aqui - ela avisa isso
- * no console e devolve arvore vazia. Entao o teste faz o papel dela: insere na
- * moldura a mesma `.recharts-tooltip-wrapper` que ela insere, com o HTML que a
- * nossa `ChartTooltipContent` produz de verdade.
+ * The tooltip enters the DOM by the test's hand, and not through Recharts,
+ * because of an environment limitation: `ResponsiveContainer` measures the
+ * parent, happy-dom answers 0x0 and Recharts draws no chart here - it warns
+ * about it on the console and returns an empty tree. So the test plays its
+ * part: it inserts into the container the same `.recharts-tooltip-wrapper` it
+ * inserts, with the HTML our `ChartTooltipContent` really produces.
  */
 
 const CONFIG: ChartConfig = { pagas: { label: "Pagas" } };
 
-/** O HTML que a nossa dica desenha, para o teste nao inventar marcacao. */
+/** The HTML our tooltip draws, so the test does not invent markup. */
 function tipHtml(label: string, value: number) {
   const { container, unmount } = render(
     <ChartTooltipContent
@@ -56,7 +57,7 @@ function chart() {
 
   const root = view.container.querySelector<HTMLElement>("[data-rc-chart]")!;
 
-  /** O que a Recharts faz a cada ponto: por a dica na moldura, ou troca-la. */
+  /** What Recharts does at each point: put the tooltip in the container, or swap it. */
   const showTip = (label: string, value: number) => {
     const wrapper =
       root.querySelector<HTMLElement>(".recharts-tooltip-wrapper") ??
@@ -69,7 +70,7 @@ function chart() {
   return { root, showTip };
 }
 
-test("a moldura publica uma regiao viva, e ela nasce calada", () => {
+test("the container publishes a live region, and it starts silent", () => {
   chart();
 
   const live = activePoint();
@@ -78,7 +79,7 @@ test("a moldura publica uma regiao viva, e ela nasce calada", () => {
   expect(live.textContent).toBe("");
 });
 
-test("a seta anuncia o ponto ativo, com rotulo e valor", async () => {
+test("the arrow announces the active point, with label and value", async () => {
   const { root, showTip } = chart();
 
   fireEvent.keyDown(root, { key: "ArrowRight" });
@@ -89,7 +90,7 @@ test("a seta anuncia o ponto ativo, com rotulo e valor", async () => {
   });
 });
 
-test("andar para o proximo ponto troca o que a regiao diz", async () => {
+test("moving to the next point changes what the region says", async () => {
   const { root, showTip } = chart();
 
   fireEvent.keyDown(root, { key: "ArrowRight" });
@@ -104,11 +105,12 @@ test("andar para o proximo ponto troca o que a regiao diz", async () => {
 });
 
 /*
- * O ponteiro atravessa doze meses num segundo, e o leitor de tela fila tudo
- * que a regiao viva escreve: anunciar por ponteiro faria a pessoa ouvir marco
- * enquanto o cursor ja esta em dezembro. Quem enxerga ja tem a dica na tela.
+ * The pointer crosses twelve months in a second, and the screen reader queues
+ * everything the live region writes: announcing on pointer would make the
+ * person hear March while the cursor is already on December. Sighted users
+ * already have the tooltip on screen.
  */
-test("o ponteiro nao anuncia nada", async () => {
+test("the pointer announces nothing", async () => {
   const { root, showTip } = chart();
 
   fireEvent.pointerMove(root);
@@ -118,7 +120,7 @@ test("o ponteiro nao anuncia nada", async () => {
   expect(activePoint().textContent).toBe("");
 });
 
-test("depois do ponteiro, a tecla volta a anunciar", async () => {
+test("after the pointer, the key announces again", async () => {
   const { root, showTip } = chart();
 
   fireEvent.pointerMove(root);
@@ -133,10 +135,10 @@ test("depois do ponteiro, a tecla volta a anunciar", async () => {
 });
 
 /*
- * Regiao viva so fala quando o texto MUDA. Sem apagar ao sair, voltar ao mesmo
- * ponto depois seria silencio.
+ * A live region only speaks when the text CHANGES. Without clearing on leave,
+ * coming back to the same point later would be silence.
  */
-test("sair do grafico apaga o que foi dito", async () => {
+test("leaving the chart clears what was said", async () => {
   const { root, showTip } = chart();
 
   fireEvent.keyDown(root, { key: "ArrowRight" });
@@ -148,10 +150,10 @@ test("sair do grafico apaga o que foi dito", async () => {
 });
 
 /*
- * O nome do grafico ja esta no `aria-label` da superficie. Repeti-lo a cada
- * ponto faria o leitor dizer "Grafico de Pagas" doze vezes seguidas.
+ * The chart name is already in the surface `aria-label`. Repeating it at each
+ * point would make the reader say "Grafico de Pagas" twelve times in a row.
  */
-test("o anuncio nao repete o nome do grafico", async () => {
+test("the announcement does not repeat the chart name", async () => {
   const { root, showTip } = chart();
 
   fireEvent.keyDown(root, { key: "ArrowRight" });

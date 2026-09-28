@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { PageHeader } from "../src/components/page-header";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
-test("o titulo e um h1, porque cabecalho de pagina e o topo da pagina", () => {
+test("the title is an h1, because a page header is the top of the page", () => {
   render(
     <RivoProvider scope="local">
       <PageHeader title="Notas fiscais" description="Tudo que foi emitido no mês." />
@@ -16,22 +16,22 @@ test("o titulo e um h1, porque cabecalho de pagina e o topo da pagina", () => {
   expect(screen.getByText("Tudo que foi emitido no mês.")).toBeDefined();
 });
 
-test("acoes e trilha entram por slot", () => {
+test("actions and breadcrumb come in through slots", () => {
   render(
     <RivoProvider scope="local">
       <PageHeader
         title="Notas fiscais"
-        breadcrumb={<nav data-testid="trilha" />}
+        breadcrumb={<nav data-testid="breadcrumb" />}
         actions={<button type="button">Nova nota</button>}
       />
     </RivoProvider>,
   );
 
-  expect(screen.getByTestId("trilha")).toBeDefined();
+  expect(screen.getByTestId("breadcrumb")).toBeDefined();
   expect(screen.getByRole("button", { name: "Nova nota" })).toBeDefined();
 });
 
-test("a caixa de acoes nasce shrink-0, e o chamador alcanca ela para deixar encolher", () => {
+test("the actions box is born shrink-0, and the caller reaches it to let it shrink", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <PageHeader

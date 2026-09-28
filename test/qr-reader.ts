@@ -23,11 +23,11 @@ function tokensOf(theme: string | null) {
 
 export function paintOf(node: Element) {
   const fill = (node.getAttribute("class") ?? "").split(" ").find((name) => name.startsWith("fill-"));
-  if (!fill) throw new Error(`<${node.tagName}> sem classe fill-*: a cor nao sai de token`);
+  if (!fill) throw new Error(`<${node.tagName}> without a fill-* class: the color does not come from a token`);
   const theme = node.closest("[data-rc-theme]")?.getAttribute("data-rc-theme") ?? null;
   const color = tokensOf(theme)[`--rc-${fill.slice("fill-".length)}`];
   if (!color || !readColor(color)) {
-    throw new Error(`${fill} nao resolve para cor ${theme ? `no tema ${theme}` : "sem tema montado"}`);
+    throw new Error(`${fill} does not resolve to a color ${theme ? `in theme ${theme}` : "with no theme mounted"}`);
   }
   return color;
 }
@@ -104,7 +104,7 @@ export function rasterize(viewBox: number, width: number, shapes: Shape[]) {
   for (const shape of shapes) {
     const edges = edgesOf(shape.d);
     const paint = readColor(shape.color);
-    if (!paint) throw new Error(`cor que o leitor nao entende: ${shape.color}`);
+    if (!paint) throw new Error(`color the reader does not understand: ${shape.color}`);
     const tone = [paint.red, paint.green, paint.blue].map(Math.round);
 
     for (let row = 0; row < width; row++) {

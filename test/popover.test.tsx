@@ -26,36 +26,36 @@ function Example({ theme }: { theme?: "rivocode-dark" | "rivocode-light" } = {})
   );
 }
 
-test("o painel abre com titulo, descricao e o botao de fechar", () => {
+test("the panel opens with title, description and the close button", () => {
   render(<Example />);
   expect(screen.getByText("Periodo")).toBeDefined();
   expect(screen.getByText("Escolha o intervalo do relatorio.")).toBeDefined();
   expect(screen.getByText("Fechar")).toBeDefined();
 });
 
-test("o gatilho anuncia o painel para o leitor de tela", () => {
+test("the trigger announces the panel to the screen reader", () => {
   render(<Example />);
   const trigger = screen.getByText("Filtros");
   expect(trigger.getAttribute("aria-expanded")).toBe("true");
   expect(trigger.getAttribute("aria-controls")).toBeTruthy();
 });
 
-test("o painel abre dentro do container que carrega o tema", () => {
+test("the panel opens inside the container that carries the theme", () => {
   render(<Example theme="rivocode-light" />);
   const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]');
   expect(container!.textContent).toContain("Periodo");
 });
 
-test("o painel troca o respiro de lista pelo de leitura", () => {
+test("the panel swaps list padding for reading padding", () => {
   render(<Example />);
   const panel = screen.getByText("Periodo").closest("[data-open]");
-  // O respiro vem do token de painel, que encolhe junto com a densidade, e
-  // nao do `p-1` de item de menu que a casca compartilhada traz.
+  // The padding comes from the panel token, which shrinks along with density,
+  // and not from the menu item `p-1` that the shared shell brings.
   expect(panel!.className).toContain("p-[var(--rc-pad-panel-sm)]");
   expect(panel!.className).not.toContain("p-1 ");
 });
 
-test("o className de quem usa vence o padrao", () => {
+test("the consumer's className beats the default", () => {
   render(
     <RivoProvider scope="local">
       <Popover defaultOpen>

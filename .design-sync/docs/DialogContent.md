@@ -1,13 +1,14 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # DialogContent
 
-O painel do diálogo, com a tarja de fundo e o portal já montados.
+The dialog panel, with the backdrop and the portal already mounted.
 
-No desktop ele centraliza. **No celular ele encosta embaixo e ocupa a largura
-toda**, que é onde o polegar alcança, centralizado, sobraria tarja dos dois
-lados e o conteúdo ficaria espremido no meio da tela.
+On desktop it centers. **On a phone it sits at the bottom and takes the full
+width**, which is where the thumb reaches; centered, there would be backdrop
+left over on both sides and the content would be squeezed into the middle of
+the screen.
 
-O portal usa o contêiner do `RivoProvider`, então o tema vale dentro dele.
+The portal uses the `RivoProvider` container, so the theme applies inside it.

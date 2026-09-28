@@ -21,7 +21,7 @@ const SERVICES: ChartConfig = {
   '25.01': { label: 'Funerários' },
 }
 
-/** Faturamento por serviço */
+/** Revenue by service */
 export function RevenueByService() {
   return (
     <Card className="w-[34rem]">
@@ -53,7 +53,7 @@ const STORAGE = [
   { kind: 'Certificados', total: 0.4 },
 ]
 
-/** O rótulo que não cabe some */
+/** The label that does not fit disappears */
 export function SmallTiles() {
   return (
     <div className="w-72">
@@ -69,7 +69,7 @@ export function SmallTiles() {
   )
 }
 
-/** Soma zero, com o vazio */
+/** Zero sum, with the empty state */
 export function EmptyTreemap() {
   return (
     <div className="w-full max-w-lg">

@@ -17,38 +17,36 @@ const WHOLE = 359.9;
 const CENTER_WIDTH = { width: "60%" } as const;
 
 export type ChartRadialProps = {
-  /** De 0 a `max`. Acima disso o arco para no fim, e não dá a volta. */
+  /** From 0 to `max`. Above that the arc stops at the end, and does not wrap around. */
   value: number;
   max?: number;
   /**
-   * A cor do arco, como papel de token. Sem ela, o acento do tema.
-   *
-   * Papel, e não cor de CSS como no web, pela mesma razão do `config` da
-   * moldura: aqui a peça pinta com o valor final, e cor escrita à mão seria a
-   * única coisa da tela surda ao tema do cliente.
+   * The arc color, as a token role. Without it, the theme accent. A role, and
+   * not a CSS color as on the web, for the same reason as the frame's `config`:
+   * here the component paints with the final value, and a hand-written color
+   * would be the only thing on screen deaf to the client's theme.
    */
   color?: RivoNativeColorRole;
-  /** O número grande no meio. Sem ele, a porcentagem. */
+  /** The big number in the middle. Without it, the percentage. */
   centerValue?: string;
-  /** A linha pequena embaixo do número. */
+  /** The small line below the number. */
   centerLabel?: string;
-  /** Quantos graus o arco cobre. `360` fecha o círculo. */
+  /** How many degrees the arc covers. `360` closes the circle. */
   sweep?: number;
   className?: string;
   /**
-   * O que o leitor de tela ouve.
-   *
-   * Sem ela, o nome sai do que está escrito no meio: o número e a linha de
-   * baixo, nessa ordem. O web usa só a porcentagem, e é pouco: "82 por cento"
-   * sozinho não diz por cento de quê.
+   * What the screen reader hears. Without it, the name comes from what is
+   * written in the middle: the number and the line below, in that order. The
+   * web uses only the percentage, and that is too little: "82 por cento" alone
+   * does not say percent of what.
    */
   label?: string;
   /**
-   * `solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que
-   * é a variação mais pedida de medidor em painel.
+   * `solid` draws a smooth arc; `segmented` draws the arc in dashes, the most
+   * requested gauge variation in dashboards.
    */
   variant?: "solid" | "segmented";
-  /** Quantos tracinhos, no `segmented`. */
+  /** How many dashes, in `segmented`. */
   segments?: number;
 };
 

@@ -4,9 +4,10 @@ category: Feedback
 
 # NotificationCenter
 
-O sininho do cabeçalho: diz quantas notificações a pessoa ainda não leu e abre
-a lista delas. Na mesa a lista é um painel ancorado ao sino; no celular, uma
-folha que sobe de baixo, como a do `DatePicker`.
+The header's little bell: it says how many notifications the person has not
+read yet and opens the list of them. On desktop the list is a panel anchored to
+the bell; on a phone, a sheet that rises from the bottom, like the one in
+`DatePicker`.
 
 ```tsx
 <NotificationCenter
@@ -17,64 +18,69 @@ folha que sobe de baixo, como a do `DatePicker`.
 />
 ```
 
-**A peça não busca nada.** A lista entra por `items`, e o que a pessoa faz sai
-por callback: marcar uma, marcar todas, abrir uma, trocar o filtro, pedir a
-próxima página. Quem guarda o `read` e quem fala com o servidor é a aplicação.
+**The piece fetches nothing.** The list comes in through `items`, and what the
+person does goes out through callbacks: marking one, marking all, opening one,
+changing the filter, asking for the next page. The application is what holds
+`read` and talks to the server.
 
-## Cada notificação
+## Each notification
 
-| Campo         | O que faz                                                            |
+| Field         | What it does                                                         |
 | ------------- | -------------------------------------------------------------------- |
-| `id`          | identifica nos callbacks                                             |
-| `title`       | o que aconteceu; em negrito enquanto não foi lida                    |
-| `description` | o detalhe, em até duas linhas                                        |
-| `time`        | quando; sai como `RelativeTime`, "há 5 minutos", com a data no `title` |
-| `read`        | já foi lida                                                          |
-| `href`        | para onde leva; com ele, a linha vira link                           |
-| `icon`        | o símbolo à esquerda; sem ele, o sino                                |
-| `tone`        | pinta o símbolo no texto do estado: `info`, `success`, `warning`, `danger` |
+| `id`          | identifies it in the callbacks                                       |
+| `title`       | what happened; in bold while unread                                  |
+| `description` | the detail, in up to two lines                                       |
+| `time`        | when; renders as `RelativeTime`, "há 5 minutos", with the date in `title` |
+| `read`        | has already been read                                                |
+| `href`        | where it leads; with it, the row becomes a link                      |
+| `icon`        | the symbol on the left; without it, the bell                         |
+| `tone`        | paints the symbol in the status text color: `info`, `success`, `warning`, `danger` |
 
-A não lida tem três sinais, e nenhum deles é só cor: o ponto, o negrito e, para
-o leitor de tela, "Não lida:" antes do título.
+An unread one has three signals, and none of them is color alone: the dot, the
+bold and, for the screen reader, "Não lida:" before the title.
 
-## O contador
+## The counter
 
-O número do sino é o `Indicator` da casa, e ele some quando não há nada para
-ler: uma pastilha com zero chama atenção para dizer que não há nada. Acima de
-`max` (99) sai "99+".
+The bell's number is the house `Indicator`, and it disappears when there is
+nothing to read: a pill with zero draws attention to say there is nothing.
+Above `max` (99) it shows "99+".
 
-O nome do botão diz a contagem por extenso, "3 notificações não lidas", e vira
-só "Notificações" quando zera. Uma região viva educada repete a frase quando o
-número muda, e quem usa leitor de tela fica sabendo que chegou coisa nova sem
-precisar voltar ao sino.
+The button's name spells out the count, "3 notificações não lidas", and
+becomes just "Notificações" when it reaches zero. A polite live region repeats
+the sentence when the number changes, and a screen reader user finds out that
+something new arrived without having to go back to the bell.
 
-`unreadCount` vence a conta dos itens carregados: é para quando o servidor sabe
-que há 140 não lidas e a página só trouxe 20.
+`unreadCount` beats the count of loaded items: it is for when the server knows
+there are 140 unread and the page only brought 20.
 
-## Ler, marcar e filtrar
+## Reading, marking and filtering
 
-- **Abrir uma notificação conta como ler.** O clique chama `onItemClick` e,
-  se ela não estava lida, `onMarkRead` junto, e fecha o painel.
-- `onMarkRead` liga o botão de marcar em cada não lida, sem abrir.
-- `onMarkAllRead` liga o "Marcar todas como lidas" no topo, que fica
-  desabilitado quando não há o que marcar. Texto longo nele quebra a linha, e
-  não vaza do painel com a tela ampliada.
-- **Marcar não derruba o foco.** O botão de marcar some quando a notificação
-  vira lida, e o foco vai para o link ou o botão da mesma linha; sem eles, para
-  o próximo "Marcar como lida"; sem nenhum, para o filtro. O "Marcar todas"
-  desabilita com o foco nele, e o foco vai para o filtro. Quem navega pelo
-  teclado continua dentro do painel, e não volta ao começo da página.
-- O filtro "Todas" e "Não lidas" filtra `items` sozinho. `filter` e
-  `onFilterChange` controlam, para quem prefere buscar as não lidas no servidor.
+- **Opening a notification counts as reading it.** The click calls
+  `onItemClick` and, if it was not read, `onMarkRead` along with it, and closes
+  the panel.
+- `onMarkRead` turns on the mark button on each unread one, without opening it.
+- `onMarkAllRead` turns on "Marcar todas como lidas" at the top, which is
+  disabled when there is nothing to mark. Long text on it wraps, and does not
+  overflow the panel with the screen zoomed in.
+- **Marking does not drop focus.** The mark button disappears when the
+  notification becomes read, and focus goes to the link or button on the same
+  row; without them, to the next "Marcar como lida"; without any, to the
+  filter. "Marcar todas" disables with focus on it, and focus goes to the
+  filter. A keyboard user stays inside the panel, and does not go back to the
+  top of the page.
+- The "Todas" and "Não lidas" filter filters `items` on its own. `filter` and
+  `onFilterChange` control it, for whoever prefers to fetch the unread ones on
+  the server.
 
-## Os finais da consulta
+## The query's outcomes
 
-- **Carregando** (`isLoading`): a lista vira marca de lugar, com `aria-busy`, e
-  o leitor ouve "Carregando…". O vazio não aparece enquanto o dado não chegou.
-- **Vazio**: um `EmptyState` que diz "Nenhuma notificação", ou "Tudo lido"
-  quando o filtro de não lidas esvaziou.
-- **Mais páginas**: `hasMore` com `onLoadMore` liga o "Carregar mais" no fim;
-  `isLoadingMore` faz o botão girar e recusar o segundo clique.
+- **Loading** (`isLoading`): the list becomes placeholders, with `aria-busy`,
+  and the reader hears "Carregando…". The empty state does not appear while the
+  data has not arrived.
+- **Empty**: an `EmptyState` that says "Nenhuma notificação", or "Tudo lido"
+  when the unread filter emptied out.
+- **More pages**: `hasMore` with `onLoadMore` turns on "Carregar mais" at the
+  end; `isLoadingMore` makes the button spin and refuse a second click.
 
 ```tsx
 <NotificationCenter
@@ -88,39 +94,41 @@ que há 140 não lidas e a página só trouxe 20.
 />
 ```
 
-## Partes
+## Parts
 
-`classNames` alcança cada nó pelo nome: `trigger` (o sino), `panel` (o painel
-ou a folha), `header`, `filters`, `list`, `item`, `footer` e `empty`.
+`classNames` reaches each node by name: `trigger` (the bell), `panel` (the
+panel or the sheet), `header`, `filters`, `list`, `item`, `footer` and `empty`.
 
-## Textos
+## Texts
 
-`labels` troca todos os textos: `title`, `trigger`, `unreadCount` (a função que
-diz a contagem), `unreadItem`, `markRead`, `markAllRead`, `filter`, `all`,
-`unread`, os dois vazios (`emptyTitle`, `emptyDescription`, `emptyUnreadTitle`,
-`emptyUnreadDescription`) e `loadMore`.
+`labels` swaps all the texts: `title`, `trigger`, `unreadCount` (the function
+that states the count), `unreadItem`, `markRead`, `markAllRead`, `filter`,
+`all`, `unread`, the two empties (`emptyTitle`, `emptyDescription`,
+`emptyUnreadTitle`, `emptyUnreadDescription`) and `loadMore`.
 
-## Quando não usar
+## When not to use
 
-- **Aviso que precisa ser visto agora** é `Toast`. O `Toast` passa na frente
-  da tela; a notificação espera no sino até a pessoa ir buscar.
-- **Aviso que fica na tela até o motivo acabar** é `Alert`, junto do trecho
-  de que fala, ou `Banner`, no topo da página. O que está no sino some da
-  vista assim que o painel fecha.
-- **Só o número em cima de um ícone** é `Indicator`. Se não há lista para
-  abrir, o sininho promete o que não tem.
-- **O histórico de um registro** (quem emitiu, quem cancelou a nota) é
-  `Timeline`. A notificação é da pessoa; a linha do tempo é da coisa.
+- **A notice that needs to be seen now** is `Toast`. The `Toast` jumps in front
+  of the screen; the notification waits in the bell until the person goes
+  looking for it.
+- **A notice that stays on screen until its cause is gone** is `Alert`, next to
+  the part it talks about, or `Banner`, at the top of the page. What is in the
+  bell disappears from view as soon as the panel closes.
+- **Just the number on top of an icon** is `Indicator`. If there is no list to
+  open, the little bell promises what it does not have.
+- **The history of a record** (who issued, who cancelled the invoice) is
+  `Timeline`. The notification belongs to the person; the timeline belongs to
+  the thing.
 
-## No React Native
+## In React Native
 
-Traduz, com a lista numa `Sheet` que sobe de baixo, que é o que o web já faz no celular. `items`, `unreadCount`, `onMarkRead`, `onMarkAllRead`, o filtro, `hasMore`, `onLoadMore`, `isLoadingMore`, `isLoading` e `labels` têm o mesmo nome e o mesmo sentido, e os textos saem da mesma fonte.
+Translates, with the list in a `Sheet` that rises from the bottom, which is what the web already does on the phone. `items`, `unreadCount`, `onMarkRead`, `onMarkAllRead`, the filter, `hasMore`, `onLoadMore`, `isLoadingMore`, `isLoading` and `labels` have the same name and the same meaning, and the texts come from the same source.
 
-**`open` é controlado**, com `onOpenChange`, como em todo o pacote nativo. **O sino entra por `icon`**, porque o pacote não traz ícone, e a forma que pinta na cor do botão é a função: `icon={({ color, size }) => <Bell color={color} size={size} />}`.
+**`open` is controlled**, with `onOpenChange`, as in the whole native package. **The bell comes in through `icon`**, because the package ships no icons, and the form that paints in the button's color is the function: `icon={({ color, size }) => <Bell color={color} size={size} />}`.
 
-**A linha não é link.** No celular quem navega é o router, então a notificação não tem `href`: `onItemPress` recebe o item e decide para onde ir. Abrir continua contando como ler, e a folha fecha.
+**The row is not a link.** On the phone the router is what navigates, so the notification has no `href`: `onItemPress` receives the item and decides where to go. Opening still counts as reading, and the sheet closes.
 
-A contagem é o nome do botão ("3 notificações não lidas"), e quando ela muda o leitor de tela ouve a frase nova pelo anúncio do sistema.
+The count is the button's name ("3 notificações não lidas"), and when it changes the screen reader hears the new sentence through the system announcement.
 
 ```tsx
 <NotificationCenter
@@ -133,4 +141,4 @@ A contagem é o nome do botão ("3 notificações não lidas"), e quando ela mud
 />
 ```
 
-As partes vestem pelo mesmo `classNames` do web: `trigger`, `panel`, `header`, `filters`, `list`, `item` e `empty`. O `className` continua no botão do sino, o mesmo nó de `trigger`. `footer` não existe aqui: o "Carregar mais" fica direto na folha, sem faixa própria.
+The parts are styled through the same `classNames` as the web: `trigger`, `panel`, `header`, `filters`, `list`, `item` and `empty`. `className` stays on the bell button, the same node as `trigger`. `footer` does not exist here: "Carregar mais" sits directly in the sheet, with no strip of its own.

@@ -33,7 +33,7 @@ function Long({ height = 400 }: { height?: number }) {
 const viewport = (container: HTMLElement) =>
   container.querySelector("[data-clipped], [id]") as HTMLElement;
 
-test("texto que cabe na altura nao ganha botao, nem corte, nem degrade", () => {
+test("text that fits the height gets no button, no clipping, no fade", () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long height={80} />
@@ -47,7 +47,7 @@ test("texto que cabe na altura nao ganha botao, nem corte, nem degrade", () => {
   expect(tokens(box)).not.toContain("mask-b-to-100%");
 });
 
-test("texto que estoura corta na altura, com degrade, e o botao diz Ler mais recolhido", () => {
+test("text that overflows is clipped at the height, with a fade, and the button says Ler mais collapsed", () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long />
@@ -63,7 +63,7 @@ test("texto que estoura corta na altura, com degrade, e o botao diz Ler mais rec
   expect(tokens(box)).toContain("mask-b-to-100%");
 });
 
-test("Ler mais abre na altura inteira e anuncia expandido; Ler menos volta", () => {
+test("Ler mais opens to the full height and announces expanded; Ler menos goes back", () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long />
@@ -85,7 +85,7 @@ test("Ler mais abre na altura inteira e anuncia expandido; Ler menos volta", () 
   expect(box.style.maxHeight).toBe("120px");
 });
 
-test("controlado, quem manda e o open, e o clique so avisa", () => {
+test("controlled, open is in charge, and the click only notifies", () => {
   const onOpenChange = mock((_: boolean) => {});
   const { rerender } = render(
     <Spoiler maxHeight={120} open={false} onOpenChange={onOpenChange}>
@@ -106,7 +106,7 @@ test("controlado, quem manda e o open, e o clique so avisa", () => {
   expect(button.getAttribute("aria-expanded")).toBe("true");
 });
 
-test("defaultOpen nasce aberto, e labels troca os dois textos", () => {
+test("defaultOpen starts open, and labels swaps both texts", () => {
   render(
     <Spoiler defaultOpen labels={{ more: "Ver tudo", less: "Ver menos" }}>
       <Long />
@@ -133,7 +133,7 @@ function linkAt(container: HTMLElement, bottom: number, scrollTop: number) {
   return { box, link };
 }
 
-test("o foco num link que o navegador ja rolou para dentro do corte abre o bloco, volta o texto ao comeco e traz o link a vista", async () => {
+test("focus on a link the browser already scrolled into the clipped area opens the block, returns the text to the start and brings the link into view", async () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long />
@@ -150,7 +150,7 @@ test("o foco num link que o navegador ja rolou para dentro do corte abre o bloco
   expect(shown).toHaveBeenCalledWith({ block: "nearest" });
 });
 
-test("o foco num link parado dentro do degrade abre o bloco, mesmo sem rolagem", () => {
+test("focus on a link sitting inside the fade opens the block, even without scrolling", () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long />
@@ -162,7 +162,7 @@ test("o foco num link parado dentro do degrade abre o bloco, mesmo sem rolagem",
   expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("true");
 });
 
-test("o foco que entra no que ja esta a vista nao abre nada", () => {
+test("focus entering what is already in view opens nothing", () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long />
@@ -174,7 +174,7 @@ test("o foco que entra no que ja esta a vista nao abre nada", () => {
   expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("false");
 });
 
-test("a decisao do foco mede dentro do conteudo, desconta o degrade e abre com qualquer rolagem", () => {
+test("the focus decision measures inside the content, discounts the fade and opens with any scroll", () => {
   expect(revealsFocus({ bottom: 30, scrollTop: 0, maxHeight: 120, fade: 48 })).toBe(false);
   expect(revealsFocus({ bottom: 72, scrollTop: 0, maxHeight: 120, fade: 48 })).toBe(false);
   expect(revealsFocus({ bottom: 73, scrollTop: 0, maxHeight: 120, fade: 48 })).toBe(true);
@@ -182,7 +182,7 @@ test("a decisao do foco mede dentro do conteudo, desconta o degrade e abre com q
   expect(revealsFocus({ bottom: 205, scrollTop: 105, maxHeight: 96, fade: 48 })).toBe(true);
 });
 
-test("classNames alcanca a caixa que corta e o botao", () => {
+test("classNames reaches the clipping box and the button", () => {
   const { container } = render(
     <Spoiler classNames={{ content: "rc-content", trigger: "rc-trigger" }}>
       <Long />

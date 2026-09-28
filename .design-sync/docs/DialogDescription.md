@@ -1,10 +1,10 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # DialogDescription
 
-A frase abaixo do título, com o que o diálogo pede.
+The sentence below the title, saying what the dialog asks for.
 
-Vira o `aria-describedby` do painel, então o leitor de tela lê o contexto junto
-com o título, antes de chegar aos botões.
+It becomes the panel's `aria-describedby`, so the screen reader reads the
+context together with the title, before reaching the buttons.

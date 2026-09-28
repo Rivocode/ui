@@ -33,7 +33,7 @@ function Example() {
   );
 }
 
-test("sai como tabela de verdade, nao como grade de divs", () => {
+test("renders as a real table, not as a grid of divs", () => {
   render(<Example />);
   expect(screen.getByRole("table")).toBeDefined();
   expect(screen.getAllByRole("columnheader")).toHaveLength(2);
@@ -43,7 +43,7 @@ test("sai como tabela de verdade, nao como grade de divs", () => {
 const pickedRow = () =>
   screen.getAllByRole("row").find((row) => row.className.includes("bg-selected"))!;
 
-test("a linha selecionada se marca para o leitor de tela, nao so com cor", () => {
+test("the selected row is marked for the screen reader, not only with color", () => {
   render(<Example />);
   const picked = pickedRow();
   expect(picked).toBeDefined();
@@ -52,7 +52,7 @@ test("a linha selecionada se marca para o leitor de tela, nao so com cor", () =>
   expect(picked.textContent).toContain("Selecionada");
 });
 
-test("o marcador abre a primeira celula, e nao aparece nas outras linhas", () => {
+test("the marker opens the first cell, and does not show on the other rows", () => {
   render(<Example />);
   const cells = [...pickedRow().querySelectorAll("td")];
   expect(cells[0]!.textContent).toBe("Selecionada Clinica Sao Lucas");
@@ -63,14 +63,14 @@ test("o marcador abre a primeira celula, e nao aparece nas outras linhas", () =>
   expect(loose.textContent).not.toContain("Selecionada");
 });
 
-test("nao promete aria-selected, que role=table descarta", () => {
+test("does not promise aria-selected, which role=table discards", () => {
   render(<Example />);
   for (const row of screen.getAllByRole("row")) {
     expect(row.hasAttribute("aria-selected")).toBe(false);
   }
 });
 
-test("o marcador troca de idioma pela prop labels", () => {
+test("the marker changes language through the labels prop", () => {
   render(
     <Table>
       <TableBody>
@@ -85,18 +85,18 @@ test("o marcador troca de idioma pela prop labels", () => {
   expect(cell.textContent).not.toContain("Selecionada");
 });
 
-test("a tabela rola de lado sem empurrar a pagina", () => {
+test("the table scrolls sideways without pushing the page", () => {
   render(<Example />);
   const frame = screen.getByRole("table").parentElement;
   expect(frame?.className).toContain("overflow-x-auto");
 });
 
-test("o espacamento da celula segue a densidade", () => {
+test("the cell spacing follows the density", () => {
   render(<Example />);
   expect(screen.getAllByRole("cell")[0]!.className).toContain("--rc-control-pad");
 });
 
-test("a moldura que rola e o bloco de posicao, para o texto sr-only da celula nao alargar a pagina", () => {
+test("the scrolling frame is the positioning block, so the cell's sr-only text does not widen the page", () => {
   const { container } = render(<Example />);
   const frame = container.querySelector("table")!.parentElement!;
   const tokens = frame.className.split(" ");

@@ -4,10 +4,10 @@ import { render, screen } from "@testing-library/react";
 import { Button } from "../src/components/button";
 import { IconButton } from "../src/components/icon-button";
 
-const CONTORNADAS = ["primary", "secondary", "outline", "danger"] as const;
+const OUTLINED = ["primary", "secondary", "outline", "danger"] as const;
 
-for (const variant of CONTORNADAS) {
-  test(`o ${variant} desabilitado desenha o contorno de inativo, e nao some sobre a superficie`, () => {
+for (const variant of OUTLINED) {
+  test(`disabled ${variant} draws the inactive outline, and does not vanish over the surface`, () => {
     render(
       <Button variant={variant} disabled>
         Travado
@@ -21,7 +21,7 @@ for (const variant of CONTORNADAS) {
   });
 }
 
-test("o primario e o destrutivo guardam a borda transparente viva, e o tamanho nao pula ao desabilitar", () => {
+test("primary and destructive keep the transparent border alive, and the size does not jump when disabling", () => {
   for (const variant of ["primary", "danger"] as const) {
     const { unmount } = render(<Button variant={variant}>Emitir</Button>);
     const classes = screen.getByRole("button").className.split(" ");
@@ -31,7 +31,7 @@ test("o primario e o destrutivo guardam a borda transparente viva, e o tamanho n
   }
 });
 
-test("o fantasma desabilitado continua sem contorno, porque vivo ele nunca teve", () => {
+test("disabled ghost stays without an outline, because enabled it never had one", () => {
   render(
     <Button variant="ghost" disabled>
       Voltar
@@ -42,7 +42,7 @@ test("o fantasma desabilitado continua sem contorno, porque vivo ele nunca teve"
   expect(classes).not.toContain("border-2");
 });
 
-test("o IconButton desabilitado herda o contorno de inativo", () => {
+test("disabled IconButton inherits the inactive outline", () => {
   render(
     <IconButton label="Diminuir o zoom" variant="secondary" disabled>
       <svg />
@@ -53,7 +53,7 @@ test("o IconButton desabilitado herda o contorno de inativo", () => {
   expect(classes).toContain("border");
 });
 
-test("carregando, o contorno segue o da variante, e nao o de inativo", () => {
+test("while loading, the outline follows the variant, and not the inactive one", () => {
   render(
     <Button variant="secondary" loading>
       Emitindo

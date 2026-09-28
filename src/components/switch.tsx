@@ -8,11 +8,11 @@ import type { Slots } from "../lib/slots";
 
 export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children"> & {
   /**
-   * O texto ao lado. Com ele, a chave sai dentro de um `<label>`, entao clicar
-   * no texto tambem liga e desliga.
+   * The text beside it. With it, the switch is rendered inside a `<label>`, so clicking
+   * the text also toggles it.
    */
   children?: ReactNode;
-  /** Classe por parte: `thumb`, `label`. */
+  /** Class per part: `thumb`, `label`. */
   classNames?: Slots<"thumb" | "label">;
 };
 

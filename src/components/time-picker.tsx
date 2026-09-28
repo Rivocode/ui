@@ -106,32 +106,35 @@ function TimeColumn({
 }
 
 export type TimePickerLabels = {
-  /** Nome do botao que abre o painel. */
+  /** Name of the button that opens the panel. */
   open?: string;
-  /** Titulo lido no celular, onde o painel vira folha e perde o contexto. */
+  /** Title read on the phone, where the panel becomes a sheet and loses its context. */
   title?: string;
-  /** Nome da coluna das horas. */
+  /** Name of the hours column. */
   hours?: string;
-  /** Nome da coluna dos minutos. */
+  /** Name of the minutes column. */
   minutes?: string;
 };
 
 export type TimePickerProps = Omit<ComponentProps<typeof TimeField>, "className" | "classNames"> & {
   /**
-   * Vai para o `<input>`, e nao para a moldura.
+   * Goes to the `<input>`, and not to the frame.
    *
-   * O mesmo vale para `aria-label`, `aria-describedby` e o resto do que o
-   * `TimeField` aceita: quem precisa de nome aqui e o campo, e e nele que o
-   * `<label htmlFor>` tem que pousar. A consequencia e que
-   * `getElementById` devolve o campo, e nao a caixa que junta campo e
-   * relogio - para alcancar a moldura, use `className`.
+   * The same applies to `aria-label`, `aria-describedby` and the rest of what
+   * `TimeField` accepts: what needs a name here is the field, and it is on it that the
+   * `<label htmlFor>` has to land. The consequence is that
+   * `getElementById` returns the field, and not the box that joins field and
+   * clock - to reach the frame, use `className`.
    */
   id?: string;
-  /** Veste a moldura que junta campo e botao, e nao o campo. */
+  /** Dresses the frame that joins field and button, and not the field. */
   className?: string;
-  /** Classe por parte: `field`, `trigger`, `panel`, `column`, `option`. */
+  /** Class per part: `field`, `trigger`, `panel`, `column`, `option`. */
   classNames?: Slots<"field" | "trigger" | "panel" | "column" | "option">;
-  /** Os textos que o leitor de tela ouve. Cada um tem padrao proprio, e trocar um nao apaga os outros. */
+  /**
+   * The texts the screen reader hears. Each one has its own default, and changing one does not
+   * erase the others.
+   */
   labels?: TimePickerLabels;
 };
 

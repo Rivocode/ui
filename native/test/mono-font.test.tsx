@@ -13,25 +13,25 @@ const REFUSAL_REGISTRY = "native/src/font.ts";
 
 const OWN_FAMILY: Record<string, string> = {
   "native/src/chart/signature-pad.tsx":
-    "a cursiva do nome digitado e escolha de quem usa a peca, pela prop `font`, e nao um dos tres papeis do provider; a padrao e fonte instalada de verdade, Snell Roundhand no iOS e `cursive` no Android",
+    "the cursive of the typed name is the consumer's choice, through the `font` prop, and not one of the provider's three roles; the default is a truly installed font, Snell Roundhand on iOS and `cursive` on Android",
 };
 
 /*
- * O que esta suite mede nao e a plataforma, e sim que a letra de largura fixa
- * chega ao aparelho.
+ * What this suite measures is not the platform, but that the fixed-width
+ * typeface reaches the device.
  *
- * A classe `font-mono` compilava para `{ fontFamily: "ui-monospace" }` - o
- * react-native-css guarda so a primeira familia da lista, e a generica de CSS
- * nao existe instalada em celular nenhum. O RN, sem nome que case, cai calado
- * na letra padrao: o defeito nao levantava erro, nao pintava a tela de
- * vermelho e sobreviveu meses em seis pecas.
+ * The `font-mono` class compiled to `{ fontFamily: "ui-monospace" }` -
+ * react-native-css keeps only the first family of the list, and the CSS generic
+ * is not installed on any phone. RN, with no matching name, silently falls back
+ * to the default typeface: the defect raised no error, did not paint the
+ * screen red and survived for months in six pieces.
  *
- * Por isso a afirmacao de baixo e negativa antes de ser positiva: nome real de
- * fonte, e nunca a generica. O `Platform` do duble responde iOS fixo, e a
- * escolha do OS nao entra em nenhuma conta daqui.
+ * That is why the assertion below is negative before being positive: a real
+ * font name, and never the generic one. The double's `Platform` answers a fixed
+ * iOS, and the OS choice enters no calculation here.
  */
 
-/** A familia que sobrou no no. O `style` do Code e array; o das outras, objeto. */
+/** The family left on the node. Code's `style` is an array; the others', an object. */
 function familyOf(node: ReactTestInstance): unknown {
   for (const layer of [node.props?.style].flat(3)) {
     const family = (layer as { fontFamily?: unknown } | null | undefined)?.fontFamily;
@@ -44,17 +44,17 @@ function monoNodes(screen: ReactTestRenderer): ReactTestInstance[] {
   return screen.root.findAll((node) => typeof node.type === "string" && familyOf(node) === mono);
 }
 
-describe("a fonte mono", () => {
-  test("e nome de fonte instalada, e nunca a familia generica do CSS", () => {
+describe("the mono font", () => {
+  test("is the name of an installed font, and never the CSS generic family", () => {
     expect(mono).not.toBe("ui-monospace");
     expect(["Menlo", "monospace"]).toContain(mono);
 
-    // Uma familia so: o RN nao le lista de fallback, e a virgula viraria um
-    // nome inteiro que nenhum aparelho tem.
+    // A single family: RN does not read a fallback list, and the comma would
+    // become a whole name no device has.
     expect(mono).not.toContain(",");
   });
 
-  test("o Code sai na letra do codigo pelo estilo, e nao pela classe", () => {
+  test("Code comes out in the code typeface through style, not through a class", () => {
     const screen = render(<Code>app.json</Code>);
     const [piece] = monoNodes(screen);
 
@@ -63,7 +63,7 @@ describe("a fonte mono", () => {
     expect(piece!.props.className).toContain("bg-surface-raised");
   });
 
-  test("a classe de quem usa continua vencendo, com o estilo por baixo", () => {
+  test("the consumer's class keeps winning, with the style underneath", () => {
     const screen = render(<Code className="text-danger-text">emitida_em</Code>);
     const [piece] = monoNodes(screen);
 
@@ -71,18 +71,18 @@ describe("a fonte mono", () => {
     expect(piece!.props.className).not.toContain("text-fg-muted");
   });
 
-  test("um style de quem usa vence o da peca, sem perder o resto", () => {
+  test("a consumer's style wins over the piece's, without losing the rest", () => {
     const screen = render(<Code style={{ fontFamily: "Courier New" }}>app.json</Code>);
     const [piece] = screen.root.findAll(
       (node) => typeof node.type === "string" && node.type === "Text",
     );
 
     expect(familyOf(piece!)).toBe(mono);
-    // A ultima camada e a de quem usa: e ela que o RN aplica.
+    // The last layer is the consumer's: it is the one RN applies.
     expect([piece!.props.style].flat(3).at(-1)).toEqual({ fontFamily: "Courier New" });
   });
 
-  test("o carimbo da Timeline alinha por largura fixa", () => {
+  test("the Timeline stamp aligns by fixed width", () => {
     const screen = render(
       <Timeline items={[{ title: "Nota emitida", at: "12/03 às 14:20", by: "Ana Duarte" }]} />,
     );
@@ -90,13 +90,13 @@ describe("a fonte mono", () => {
     expect(monoNodes(screen).length).toBe(1);
   });
 
-  test("as sete iniciais de dia da semana do Calendar saem na mesma largura", () => {
+  test("the Calendar's seven weekday initials come out at the same width", () => {
     const screen = render(<Calendar value="2026-08-10" onValueChange={() => {}} />);
 
     expect(monoNodes(screen).length).toBeGreaterThanOrEqual(7);
   });
 
-  test("o campo hexadecimal do ColorPicker nao dança com a cor digitada", () => {
+  test("the ColorPicker hexadecimal field does not jitter with the typed color", () => {
     const screen = render(<ColorPicker value="#d4f34a" onValueChange={() => {}} />);
     const field = byLabel(screen, "Código hexadecimal da cor")[0]!;
 
@@ -104,7 +104,7 @@ describe("a fonte mono", () => {
     expect(field.props.className).not.toContain("font-mono");
   });
 
-  test("nenhuma peça do pacote nativo pede classe de fonte", async () => {
+  test("no piece of the native package asks for a font class", async () => {
     const offenders: string[] = [];
     const trees = ["native/src/**/*.{ts,tsx}", "examples/native/**/*.{ts,tsx}"];
     const files: string[] = [];
@@ -137,7 +137,7 @@ describe("a fonte mono", () => {
     ]);
   });
 
-  test("só o text.tsx escreve fontFamily: o resto pede o papel e o provider responde", async () => {
+  test("only text.tsx writes fontFamily: the rest asks for the role and the provider answers", async () => {
     const offenders: string[] = [];
     const files = await Array.fromAsync(new Glob("native/src/**/*.{ts,tsx}").scan("."));
 

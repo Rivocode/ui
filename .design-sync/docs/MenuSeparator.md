@@ -1,10 +1,10 @@
 ---
-category: Navegação
+category: Navigation
 ---
 
 # MenuSeparator
 
-A linha entre grupos de ação.
+The line between groups of actions.
 
-Separa o que muda a tela do que muda o dado, e o comum do destrutivo. Duas
-separações seguidas viram enfeite.
+It separates what changes the screen from what changes the data, and the
+ordinary from the destructive. Two separators in a row become decoration.

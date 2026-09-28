@@ -1,6 +1,6 @@
 import { Field, FieldLabel, PasswordInput } from '@rivocode/ui'
 
-/** Entrar */
+/** Sign in */
 export function SignIn() {
   return (
     <div className="w-72">

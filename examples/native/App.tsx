@@ -61,14 +61,15 @@ import {
   WizardFooter,
   useWizard,
 } from "../../native/src";
-/* O grafico entra pelo subcaminho, e nao pelo indice acima: o react-native-svg
-   e peer opcional, e este app o instalou porque desenha. Quem nao desenha nao
-   paga - e `scripts/check-chart-boundary.ts` guarda essa fronteira. */
+/* The chart comes in through the subpath, not through the index above:
+   react-native-svg is an optional peer, and this app installed it because it
+   draws. Whoever does not draw does not pay - and
+   `scripts/check-chart-boundary.ts` guards that boundary. */
 import { ChartBar, ChartContainer, ChartDonut, ChartRadial } from "../../native/src/chart";
-/* Copiar e anexar tem cada um o SEU subcaminho, e um peer do Expo atras de
-   cada um: expo-clipboard e expo-document-picker. Um subcaminho por peer, e
-   nao um por assunto - quem so copia a chave nao instala o seletor de
-   documentos. Este app instalou os dois porque faz as duas coisas. */
+/* Copy and attach each have THEIR OWN subpath, with an Expo peer behind each
+   one: expo-clipboard and expo-document-picker. One subpath per peer, not one
+   per subject - whoever only copies the key does not install the document
+   picker. This app installed both because it does both things. */
 import { Clipboard } from "../../native/src/clipboard";
 import { FileUpload, FileUploadItem, FileUploadList } from "../../native/src/file-upload";
 import type { PickedFile } from "../../native/src/file-upload";
@@ -82,10 +83,10 @@ type Invoice = {
   tone: "success" | "info" | "danger";
 };
 
-/** A chave de acesso de uma NF-e: 44 digitos que ninguem redigita. */
+/** An NF-e access key: 44 digits nobody retypes. */
 const ACCESS_KEY = "35240612345678000199550010000048131000048139";
 
-/** A paleta do cliente. O leque padrao serve para experimentar, nao para marca. */
+/** The client's palette. The default range is for experimenting, not for a brand. */
 const BRAND_COLORS = [
   { value: "#d4f34a", label: "Lima" },
   { value: "#3ddc97", label: "Teal" },
@@ -147,9 +148,10 @@ const NATURE_SERIES = {
   locacao: { label: "Locação" },
 } as const;
 
-/* A mesma tela que a demo web abre: painel de notas. E o argumento inteiro
-   do ui-native - os mesmos papeis, o mesmo vocabulario, outra plataforma. */
-function Painel({
+/* The same screen the web demo opens: the invoice dashboard. It is the whole
+   argument for ui-native - the same roles, the same vocabulary, another
+   platform. */
+function Dashboard({
   lightTheme,
   onLightThemeChange,
 }: {
@@ -319,8 +321,8 @@ function Painel({
                 setRefused(null);
                 setAttachments((current) => [...current, ...files]);
               }}
-              // A peca nao conhece rede: quem sobe, avisa e tenta de novo e o
-              // app. Aqui ela so mostra o motivo da recusa.
+              // The piece knows nothing about the network: uploading, notifying
+              // and retrying is the app's job. Here it only shows why it refused.
               onReject={(rejections) =>
                 setRefused(`${rejections[0]!.file.name}: ${rejections[0]!.reason}`)
               }
@@ -778,14 +780,14 @@ function Painel({
 }
 
 export default function App() {
-  // As cores foram compiladas como light-dark(), entao trocar a prop e
-  // trocar a tela inteira em runtime - o interruptor vive no card Controles.
+  // The colors were compiled as light-dark(), so changing the prop changes
+  // the whole screen at runtime - the switch lives in the Controles card.
   const [theme, setTheme] = useState<RivoNativeTheme>("rivocode-dark");
 
   return (
     <SafeAreaProvider>
       <RivoProvider theme={theme}>
-        <Painel
+        <Dashboard
           lightTheme={theme === "rivocode-light"}
           onLightThemeChange={(light) => setTheme(light ? "rivocode-light" : "rivocode-dark")}
         />

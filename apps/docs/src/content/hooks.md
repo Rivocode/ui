@@ -1,24 +1,26 @@
-A biblioteca exporta, da raiz, os hooks que toda tela acaba escrevendo à mão:
-abrir e fechar, esperar a pessoa parar de digitar, lembrar um filtro entre
-visitas, pedir a próxima página quando a lista chega ao fim. Eles não trazem
-dependência nova, e são os mesmos que as peças usam por dentro: o `Clipboard`
-copia com `useClipboard`, o `Carousel` e os gráficos param de animar com
-`useReducedMotion`, e o `EventCalendar` move a linha de agora com `useInterval`.
+The library exports, from the root, the hooks every screen ends up writing by
+hand: open and close, wait for the person to stop typing, remember a filter
+between visits, ask for the next page when the list reaches the end. They bring
+no new dependency, and they are the same ones the pieces use inside:
+`Clipboard` copies with `useClipboard`, `Carousel` and the charts stop
+animating with `useReducedMotion`, and `EventCalendar` moves the now line with
+`useInterval`.
 
 ```tsx
 import { useDebouncedValue, useDisclosure, useLocalStorage } from '@rivocode/ui'
 ```
 
-Todos limpam o que abriram quando o componente desmonta: timer, escuta de
-evento, observer. E todos renderizam no servidor sem tocar em `window`: o que
-depende do navegador devolve o valor neutro no HTML e se corrige na hidratação.
+They all clean up what they opened when the component unmounts: timer, event
+listener, observer. And they all render on the server without touching
+`window`: what depends on the browser returns the neutral value in the HTML and
+corrects itself on hydration.
 
-## Estado
+## State
 
 ### useDisclosure
 
-Aberto ou fechado, com as três ações. `onOpen` e `onClose` só disparam na
-passagem de estado, e não a cada chamada.
+Open or closed, with the three actions. `onOpen` and `onClose` only fire on a
+state transition, not on every call.
 
 ```tsx
 const [opened, { open, close, toggle }] = useDisclosure(false, {
@@ -31,9 +33,9 @@ const [opened, { open, close, toggle }] = useDisclosure(false, {
 
 ### useToggle
 
-Alterna entre `false` e `true`, ou gira numa lista de opções. Um argumento que
-é uma das opções vira o valor; qualquer outro, como o evento de um `onClick`,
-só alterna.
+Toggles between `false` and `true`, or cycles through a list of options. An
+argument that is one of the options becomes the value; anything else, like a
+`onClick` event, just toggles.
 
 ```tsx
 const [view, toggleView] = useToggle(['tabela', 'cartões'] as const)
@@ -43,7 +45,8 @@ const [view, toggleView] = useToggle(['tabela', 'cartões'] as const)
 
 ### useCounter
 
-Um número com piso, teto e passo. Passar do limite para no limite, sem erro.
+A number with a floor, a ceiling and a step. Going past the limit stops at the
+limit, with no error.
 
 ```tsx
 const [quantity, { increment, decrement }] = useCounter(1, { min: 1, max: 10 })
@@ -51,9 +54,9 @@ const [quantity, { increment, decrement }] = useCounter(1, { min: 1, max: 10 })
 
 ### useListState
 
-Uma lista com as operações imutáveis de que uma tela precisa: `append`,
-`prepend`, `insert`, `remove`, `reorder`, `swap`, `replace`, `update`, `filter`
-e `set`. Cada uma devolve uma lista nova, e os handlers são os mesmos entre
+A list with the immutable operations a screen needs: `append`, `prepend`,
+`insert`, `remove`, `reorder`, `swap`, `replace`, `update`, `filter` and
+`set`. Each one returns a new list, and the handlers are the same across
 renders.
 
 ```tsx
@@ -66,8 +69,8 @@ handlers.remove(index)
 
 ### useSetState
 
-Um objeto de estado que aceita o pedaço que mudou, e mescla. É o `setState` das
-classes, para quem guarda filtros num objeto só.
+A state object that takes the slice that changed, and merges. It is the class
+components' `setState`, for whoever keeps filters in a single object.
 
 ```tsx
 const [filters, setFilters] = useSetState({ status: 'todas', page: 1 })
@@ -78,20 +81,20 @@ setFilters((current) => ({ page: current.page + 1 }))
 
 ### usePrevious
 
-O valor anterior **diferente** do atual, e não o do render anterior: renderizar
-de novo com o mesmo valor não apaga a memória.
+The previous value **different** from the current one, not the one from the
+previous render: rendering again with the same value does not erase the memory.
 
 ```tsx
 const previous = usePrevious(total)
 const grew = previous !== undefined && total > previous
 ```
 
-## Tempo
+## Time
 
 ### useDebouncedValue
 
-O valor só assenta depois de uma pausa. É o que se passa para a consulta,
-enquanto o campo continua ligado ao valor cru. O segundo item cancela a espera.
+The value only settles after a pause. It is what gets passed to the query,
+while the field stays bound to the raw value. The second item cancels the wait.
 
 ```tsx
 const [query, setQuery] = useState('')
@@ -99,22 +102,23 @@ const [settled] = useDebouncedValue(query, 300)
 const invoices = useInvoices({ search: settled })
 ```
 
-### useDebouncedCallback e useThrottledCallback
+### useDebouncedCallback and useThrottledCallback
 
-A função devolvida é estável e chama sempre a versão mais nova da sua. O
-debounce roda uma vez, com o último argumento, depois da pausa; o throttle roda
-na hora e entrega o último da janela no fim dela. As duas têm `cancel`, `flush`
-e `isPending`, e cancelam sozinhas no desmonte.
+The returned function is stable and always calls the newest version of yours.
+The debounce runs once, with the last argument, after the pause; the throttle
+runs right away and delivers the window's last call at its end. Both have
+`cancel`, `flush` and `isPending`, and cancel on their own on unmount.
 
 ```tsx
 const save = useDebouncedCallback((draft: Draft) => api.save(draft), 800)
 const track = useThrottledCallback((top: number) => setShadow(top > 0), 100)
 ```
 
-### useInterval e useTimeout
+### useInterval and useTimeout
 
-Declarativos: `null` no atraso pausa. O `useTimeout` devolve `clear` e
-`reset`, para o aviso que some sozinho e recomeça a contar quando o mouse passa.
+Declarative: `null` as the delay pauses. `useTimeout` returns `clear` and
+`reset`, for the notice that goes away on its own and starts counting again
+when the mouse passes over it.
 
 ```tsx
 useInterval(() => refetch(), online ? 30_000 : null)
@@ -124,20 +128,21 @@ const { clear, reset } = useTimeout(() => setVisible(false), 5000)
 
 ### useIdle
 
-Verdadeiro depois de um prazo sem teclado, ponteiro, roda ou toque.
+True after a period with no keyboard, pointer, wheel or touch.
 
 ```tsx
 const idle = useIdle(5 * 60_000)
 ```
 
-## Navegador
+## Browser
 
-### useLocalStorage e useSessionStorage
+### useLocalStorage and useSessionStorage
 
-O valor guardado em JSON, com o padrão enquanto nada foi gravado. Duas chamadas
-com a mesma chave andam juntas na mesma aba, e o `localStorage` acompanha a
-outra aba pelo evento `storage`. Armazenamento bloqueado ou cheio não derruba a
-tela: o valor segue em memória. No servidor, vale o padrão.
+The value stored as JSON, with the default while nothing has been written. Two
+calls with the same key move together in the same tab, and `localStorage`
+follows the other tab through the `storage` event. Blocked or full storage does
+not bring the screen down: the value carries on in memory. On the server, the
+default applies.
 
 ```tsx
 const [columns, setColumns, resetColumns] = useLocalStorage({
@@ -148,23 +153,23 @@ const [columns, setColumns, resetColumns] = useLocalStorage({
 
 ### useClickOutside
 
-Devolve a `ref` do elemento; o clique fora dele chama a função. `nodes` diz o
-que mais conta como dentro, como o gatilho que abriu o painel.
+Returns the element's `ref`; a click outside it calls the function. `nodes`
+says what else counts as inside, like the trigger that opened the panel.
 
 ```tsx
 const ref = useClickOutside<HTMLDivElement>(() => setOpen(false), { enabled: open })
 ```
 
-Antes de usar, confira se a peça já não resolve: `Popover`, `Menu`, `Dialog` e
-`Sheet` fecham no clique fora sozinhos.
+Before using it, check whether the piece already handles it: `Popover`,
+`Menu`, `Dialog` and `Sheet` close on an outside click on their own.
 
 ### useHotkeys
 
-Atalho de teclado no documento. `mod` é Cmd no Mac e Ctrl fora dele, e os
-modificadores precisam bater exatamente: `mod+k` não dispara com
-`mod+shift+k`. Com o foco num campo de texto o atalho não dispara, para `k` não
-roubar a letra de quem digita; desligue com `ignoreFields: false` quando o
-atalho precisar valer dentro do campo.
+A keyboard shortcut on the document. `mod` is Cmd on the Mac and Ctrl
+elsewhere, and the modifiers have to match exactly: `mod+k` does not fire with
+`mod+shift+k`. With focus in a text field the shortcut does not fire, so `k`
+does not steal the letter from whoever is typing; turn that off with
+`ignoreFields: false` when the shortcut has to work inside the field.
 
 ```tsx
 useHotkeys([
@@ -174,28 +179,30 @@ useHotkeys([
 ])
 ```
 
-A tecla é comparada pelo caractere que ela digita, e não pela posição no
-teclado. Três regras saem disso:
+The key is compared by the character it types, not by its position on the
+keyboard. Three rules follow from that:
 
-- **Símbolo ignora o shift.** Em `?`, `+`, `!` ou nos dígitos, o shift é o que
-  o layout exige para chegar ao caractere, então ele não conta: `?` dispara com
-  o `shift+/` do teclado americano e com a tecla própria do ABNT2, e `1` dispara
-  no AZERTY, onde o dígito pede shift. Escreva o caractere que sai (`?`), e não
-  a combinação que o produz: `shift+/` também é aceito, mas é traduzido pelo
-  teclado americano. Em letra o shift conta, e `a` não dispara com `A`.
-- **Letra vale pelo caractere.** No AZERTY, `z` dispara na tecla que digita
-  `z`, e não na tecla que fica onde o `Z` americano fica.
-- **A posição só vale quando o caractere não diz qual é a tecla**: o `˚` do
-  Option+K no Mac, a letra cirílica do Ctrl+C num teclado russo, o
-  `Unidentified`. A fileira de números vale sempre pela posição, para `mod+1`
-  funcionar no AZERTY, onde a tecla digita `&`.
+- **A symbol ignores shift.** In `?`, `+`, `!` or the digits, shift is what
+  the layout requires to reach the character, so it does not count: `?` fires
+  with the US keyboard's `shift+/` and with the ABNT2's own key, and `1` fires
+  on AZERTY, where the digit needs shift. Write the character that comes out
+  (`?`), not the combination that produces it: `shift+/` is also accepted, but
+  it is translated through the US keyboard. On a letter shift counts, and `a`
+  does not fire with `A`.
+- **A letter goes by the character.** On AZERTY, `z` fires on the key that
+  types `z`, not on the key where the US `Z` sits.
+- **Position only counts when the character does not say which key it is**:
+  the `˚` of Option+K on the Mac, the Cyrillic letter of Ctrl+C on a Russian
+  keyboard, `Unidentified`. The number row always goes by position, so `mod+1`
+  works on AZERTY, where the key types `&`.
 
 ### useInfiniteScroll
 
-A próxima página quando a sentinela no fim da lista entra na tela, com folga de
-200px. Nada é pedido enquanto `loading` for verdadeiro ou `hasMore` for falso,
-e a sentinela é observada de novo quando a página chega: se a lista ainda não
-encheu a tela, a próxima é pedida sem esperar rolagem.
+The next page when the sentinel at the end of the list enters the screen, with
+200px of slack. Nothing is requested while `loading` is true or `hasMore` is
+false, and the sentinel is observed again when the page arrives: if the list
+has not filled the screen yet, the next page is requested without waiting for
+a scroll.
 
 ```tsx
 const { sentinelRef } = useInfiniteScroll({
@@ -208,12 +215,12 @@ const { sentinelRef } = useInfiniteScroll({
 <div ref={sentinelRef} />
 ```
 
-Para milhares de linhas, junte com a `VirtualList`: ela desenha só o que está
-na tela.
+For thousands of rows, combine it with `VirtualList`: it draws only what is on
+screen.
 
 ### useIntersection
 
-A última entrada do `IntersectionObserver` para o elemento da `ref`.
+The latest `IntersectionObserver` entry for the `ref`'s element.
 
 ```tsx
 const { ref, entry } = useIntersection<HTMLDivElement>({ threshold: 0.5 })
@@ -222,20 +229,20 @@ const seen = entry?.isIntersecting ?? false
 
 ### useElementSize
 
-Largura e altura do elemento, pelo `ResizeObserver`. Zero no servidor.
+The element's width and height, through `ResizeObserver`. Zero on the server.
 
 ```tsx
 const { ref, width } = useElementSize<HTMLDivElement>()
 const columns = width > 720 ? 3 : 1
 ```
 
-Se a pergunta é sobre a janela, e não sobre um elemento, é classe utilitária
-com `sm:` e `lg:`, ou `useMobile()`.
+If the question is about the window, not an element, it is a utility class
+with `sm:` and `lg:`, or `useMobile()`.
 
 ### useClipboard
 
-`copy` devolve se deu certo; `copied` fica verdadeiro pelo `timeout` e volta
-sozinho. A falha fica em `error`.
+`copy` returns whether it worked; `copied` stays true for the `timeout` and
+goes back on its own. A failure lands in `error`.
 
 ```tsx
 const { copy, copied } = useClipboard({ timeout: 2000 })
@@ -245,10 +252,10 @@ const { copy, copied } = useClipboard({ timeout: 2000 })
 </Button>
 ```
 
-Para o botão de copiar comum, a peça `Clipboard` já é isso, com o ícone e o
-nome acessível que muda.
+For the ordinary copy button, the `Clipboard` piece already is that, with the
+icon and the accessible name that changes.
 
-### useReducedMotion, useDocumentTitle e useNetworkStatus
+### useReducedMotion, useDocumentTitle and useNetworkStatus
 
 ```tsx
 const reduced = useReducedMotion()
@@ -256,59 +263,60 @@ useDocumentTitle(`${count} faturas vencidas`)
 const { online } = useNetworkStatus()
 ```
 
-`useReducedMotion` segue a preferência do sistema; `useDocumentTitle` ignora
-título vazio e só devolve o de antes com `restoreOnUnmount`; `useNetworkStatus`
-diz `true` no servidor, para a faixa de "sem conexão" não piscar no primeiro
-quadro.
+`useReducedMotion` follows the system preference; `useDocumentTitle` ignores
+an empty title and only restores the previous one with `restoreOnUnmount`;
+`useNetworkStatus` says `true` on the server, so the "offline" banner does not
+flash on the first frame.
 
-### useMounted e useIsFirstRender
+### useMounted and useIsFirstRender
 
-`useMounted` é falso no servidor e na hidratação, e verdadeiro depois: é o
-que separa o que só existe no navegador. `useIsFirstRender` é verdadeiro só no
-primeiro render.
+`useMounted` is false on the server and during hydration, and true afterwards:
+it is what separates what only exists in the browser. `useIsFirstRender` is
+true only on the first render.
 
 ```tsx
 const mounted = useMounted()
 return mounted ? <RelativeTime value={sentAt} /> : null
 ```
 
-### useMediaQuery e useMobile
+### useMediaQuery and useMobile
 
-Já existiam, e continuam onde estavam: `useMobile()` é o mesmo corte de 640px
-que as peças leem.
+They already existed, and stay where they were: `useMobile()` is the same
+640px cut the pieces read.
 
-## O que não existe, de propósito
+## What does not exist, on purpose
 
-**`useFocusTrap`.** A Base UI já prende o foco onde ele precisa ficar preso:
-`Dialog`, `AlertDialog`, `Sheet`, e o `Popover` com `modal` e um
-`PopoverClose` dentro. Prender o foco fora de
-uma sobreposição é o que a WCAG 2.1.2 chama de armadilha de teclado; se a tela
-pede isso, ela pede uma dessas peças.
+**`useFocusTrap`.** Base UI already traps focus where it needs to be trapped:
+`Dialog`, `AlertDialog`, `Sheet`, and `Popover` with `modal` and a
+`PopoverClose` inside. Trapping focus outside an overlay is what WCAG 2.1.2
+calls a keyboard trap; if the screen asks for that, it is asking for one of
+those pieces.
 
-## No React Native
+## In React Native
 
-`@rivocode/ui-native` exporta os doze que não dependem do navegador, com o
-mesmo código do web - o arquivo é gerado a partir da mesma fonte, e não copiado:
-`useDisclosure`, `useToggle`, `useCounter`, `useListState`, `useSetState`,
-`usePrevious`, `useIsFirstRender`, `useDebouncedValue`, `useDebouncedCallback`,
-`useThrottledCallback`, `useInterval` e `useTimeout`.
+`@rivocode/ui-native` exports the twelve that do not depend on the browser,
+with the same code as the web - the file is generated from the same source,
+not copied: `useDisclosure`, `useToggle`, `useCounter`, `useListState`,
+`useSetState`, `usePrevious`, `useIsFirstRender`, `useDebouncedValue`,
+`useDebouncedCallback`, `useThrottledCallback`, `useInterval` and
+`useTimeout`.
 
 ```tsx
 import { useDebouncedValue, useDisclosure } from '@rivocode/ui-native'
 ```
 
-Os outros não portam, e cada um tem o motivo:
+The others do not port, and each has its reason:
 
-| Hook | Por que não | No lugar |
+| Hook | Why not | Instead |
 | --- | --- | --- |
-| `useLocalStorage`, `useSessionStorage` | Não há Web Storage; o AsyncStorage é assíncrono e não é peer | o armazenamento do app |
-| `useClickOutside` | Não há clique fora de uma árvore de toque | o `Sheet` e o `Dialog` fecham no fundo |
-| `useHotkeys` | Não há teclado global no aparelho | — |
-| `useInfiniteScroll`, `useIntersection` | A lista nativa já faz | `onEndReached` e `onViewableItemsChanged` da `FlatList` |
-| `useElementSize` | O layout já mede | `onLayout` |
-| `useClipboard` | O `expo-clipboard` é peer opcional, atrás de `./clipboard` | a peça `Clipboard` de lá |
-| `useReducedMotion` | A Reanimated, que já é peer, exporta o seu | `useReducedMotion` da Reanimated |
-| `useDocumentTitle` | Não há documento | — |
-| `useNetworkStatus` | Pediria o NetInfo, que não é peer | `@react-native-community/netinfo` no app |
-| `useIdle` | Não há evento de atividade global | `AppState` |
-| `useMounted` | Não há servidor nem hidratação | — |
+| `useLocalStorage`, `useSessionStorage` | There is no Web Storage; AsyncStorage is asynchronous and is not a peer | the app's storage |
+| `useClickOutside` | There is no click outside in a touch tree | `Sheet` and `Dialog` close on the backdrop |
+| `useHotkeys` | There is no global keyboard on the device | — |
+| `useInfiniteScroll`, `useIntersection` | The native list already does it | `FlatList`'s `onEndReached` and `onViewableItemsChanged` |
+| `useElementSize` | Layout already measures | `onLayout` |
+| `useClipboard` | `expo-clipboard` is an optional peer, behind `./clipboard` | the `Clipboard` piece there |
+| `useReducedMotion` | Reanimated, which is already a peer, exports its own | Reanimated's `useReducedMotion` |
+| `useDocumentTitle` | There is no document | — |
+| `useNetworkStatus` | It would require NetInfo, which is not a peer | `@react-native-community/netinfo` in the app |
+| `useIdle` | There is no global activity event | `AppState` |
+| `useMounted` | There is no server and no hydration | — |

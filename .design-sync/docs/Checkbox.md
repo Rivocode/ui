@@ -1,92 +1,97 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Checkbox
 
-Caixa de marcar.
+A checkbox.
 
-`indeterminate` e o estado misto: alguns itens marcados, nem todos. E o que a
-caixa de "selecionar todas" mostra quando parte da lista esta selecionada.
+`indeterminate` is the mixed state: some items checked, not all. It is what the
+"select all" box shows when part of the list is selected.
 
-Sem rótulo visível ao lado, passe `aria-label`.
+With no visible label beside it, pass `aria-label`.
 
-## O rótulo
+## The label
 
-Passe o texto como filho e a caixa sai dentro de um `<label>`, então clicar no
-texto também marca:
+Pass the text as children and the box renders inside a `<label>`, so clicking
+the text also checks it:
 
 ```tsx
 <Checkbox defaultChecked>ISS retido na fonte</Checkbox>
 ```
 
-Sem filho, sai só a caixa, e o arranjo fica com quem monta a tela. Use assim
-quando o rótulo tiver estrutura própria: um título com descrição embaixo, um
-link no meio da frase. Nesse caso, o `<label>` em volta é seu, e é ele que faz
-o clique no texto valer.
+Without children, only the box renders, and the arrangement is up to whoever
+builds the screen. Use it this way when the label has its own structure: a
+title with a description below, a link in the middle of the sentence. In that
+case, the `<label>` around it is yours, and it is what makes the click on the
+text count.
 
-## A caixa marcada
+## The checked box
 
-A caixa marcada pinta `accent-text`, e não `accent`, com o tique em
-`surface-raised`. É a mesma troca do trilho do `Switch`, e pelo mesmo motivo:
-com a lima cheia o preenchimento media 1,21:1 sobre a página no tema claro e
-1,26:1 sobre o cartão, abaixo dos 3:1 que a WCAG 1.4.11 pede para controle sem
-texto.
+The checked box paints `accent-text`, not `accent`, with the tick in
+`surface-raised`. It is the same swap as the `Switch` track, and for the same
+reason: with the full lime the fill measured 1.21:1 over the page in the light
+theme and 1.26:1 over the card, below the 3:1 WCAG 1.4.11 asks for a control
+without text.
 
-Aqui o estado ainda se lia, e é o que fazia o defeito passar: o tique era
-grafite e se via de qualquer jeito. O que desaparecia era a **fronteira da
-caixa** - sobrava um tique flutuando no lugar de uma caixa marcada. Com
-`accent-text` a fronteira mede 5,55:1 sobre a página e 5,75:1 sobre o cartão, e
-o tique mede 5,75:1 dentro do preenchimento.
+Here the state could still be read, and that is what let the defect through:
+the tick was graphite and was visible either way. What disappeared was the
+**boundary of the box** - what was left was a tick floating where a checked box
+should be. With `accent-text` the boundary measures 5.55:1 over the page and
+5.75:1 over the card, and the tick measures 5.75:1 inside the fill.
 
-O estado misto entra na mesma troca, pelo mesmo par de tokens: ele pintava a
-lima cheia também, e a caixa de selecionar-todas sumia igual.
+The mixed state goes into the same swap, with the same token pair: it painted
+the full lime too, and the select-all box disappeared the same way.
 
-Não havia lima clara que resolvesse: o passo mais escuro antes do `accent-text`
-é o `accent-active`, e ele para em 1,49:1 sobre a página. No tema escuro os dois
-papéis apontam para o mesmo valor, então lá a caixa não mudou de cor, e o tique
-foi de 15,06:1 para 13,91:1.
+No lighter lime would solve it: the darkest step before `accent-text` is
+`accent-active`, and it stops at 1.49:1 over the page. In the dark theme the two
+roles point to the same value, so there the box did not change color, and the
+tick went from 15.06:1 to 13.91:1.
 
-Quem escreve tema de cliente herda a garantia sem fazer nada: `accent-text` já
-precisa de 4,5:1 sobre `bg`, `surface` e `surface-raised`, e contraste é
-simétrico - é a mesma medida que a fronteira e o tique usam.
+Whoever writes a client theme inherits the guarantee without doing anything:
+`accent-text` already needs 4.5:1 over `bg`, `surface` and `surface-raised`,
+and contrast is symmetric - it is the same measurement the boundary and the
+tick use.
 
-## Desabilitado
+## Disabled
 
-Desabilitado se pinta com token, e não com opacidade: o fundo passa a
-`surface-raised` e o visto vai para `fg-disabled`. Vale marcada, desmarcada e no
-estado misto. Antes o `indeterminate` vencia o desabilitado, e a caixa de
-selecionar-todas saía pintada de acento cheio.
+Disabled is painted with a token, not with opacity: the background becomes
+`surface-raised` and the check mark goes to `fg-disabled`. It holds checked,
+unchecked and in the mixed state. Before, `indeterminate` won over disabled,
+and the select-all box rendered painted in full accent.
 
-A borda desce um degrau, para `border-disabled`. Os dois vizinhos não serviam:
-`border` dá 1,3:1 contra o próprio preenchimento e a caixa travada sumiria, e
-`border-strong` (a fronteira de controle nos 3:1 da WCAG 1.4.11) deixaria
-travada igual a viva. O token do meio existe para esta faixa, e é o único par da
-casa com teto além de piso: pelo menos 1,6:1 contra o fundo, e a fronteira viva
-pesando 1,4 vez mais. A 1.4.11 dispensa controle inativo dos 3:1, e é essa folga
-que ele ocupa.
+The border drops one step, to `border-disabled`. The two neighbors did not
+work: `border` gives 1.3:1 against the fill itself and the locked box would
+disappear, and `border-strong` (the control boundary at WCAG 1.4.11's 3:1)
+would make the locked one look the same as the live one. The middle token
+exists for this range, and it is the only pair in the house with a ceiling as
+well as a floor: at least 1.6:1 against the background, and the live boundary
+weighing 1.4 times more. 1.4.11 exempts an inactive control from the 3:1, and
+it is that slack the token occupies.
 
-Isso importa mais onde não há rótulo. Numa coluna de seleção do `DataTable`, uma
-caixa desmarcada e travada não tem texto apagado ao lado para dizer o estado. E
-`surface` e `surface-raised` são a mesma branca no tema claro, então o
-preenchimento também não diz nada. Sobrava a borda, e ela não dizia.
+This matters most where there is no label. In a `DataTable` selection column,
+an unchecked, locked box has no dimmed text beside it to state its state. And
+`surface` and `surface-raised` are the same white in the light theme, so the
+fill says nothing either. The border was what was left, and it said nothing.
 
-## Quando não usar
+## When not to use
 
-Para o ajuste que vale na hora (notificação que liga, modo escuro, recurso que
-a conta passa a ter), use `Switch`. A caixa promete um Salvar depois; a chave
-promete que já valeu. Uma caixa de marcar numa tela de preferências sem botão
-de salvar deixa a pessoa esperando por um botão que não existe.
+For a setting that takes effect immediately (a notification that turns on, dark
+mode, a feature the account gains), use `Switch`. The box promises a Save
+later; the switch promises it already took effect. A checkbox on a preferences
+screen without a save button leaves the person waiting for a button that does
+not exist.
 
-Para escolher uma opção entre várias que se excluem, é `RadioGroup`: caixa que
-desmarca a irmã ao ser marcada é um rádio malfeito.
+To choose one option among several mutually exclusive ones, it is
+`RadioGroup`: a box that unchecks its sibling when checked is a badly made
+radio.
 
-## No React Native
+## In React Native
 
-Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é **sempre controlado**. `checked` e `onCheckedChange` são obrigatórios e não há `defaultChecked`. Copiar `<Checkbox defaultChecked>ISS retido</Checkbox>` do web não compila.
+Translates, with a catch that bites on the first line: on native the `Checkbox` is **always controlled**. `checked` and `onCheckedChange` are required and there is no `defaultChecked`. Copying `<Checkbox defaultChecked>ISS retido</Checkbox>` from the web does not compile.
 
-**O terceiro estado atravessa.** `indeterminate` desenha um traço na caixa cheia e anuncia `mixed` ao leitor de tela; ele vence o `checked` no desenho, e o toque marca tudo. A caixa de selecionar-todas se monta à mão, porque o `parent` do web não existe lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda.
+**The third state crosses over.** `indeterminate` draws a dash in the filled box and announces `mixed` to the screen reader; it wins over `checked` in the drawing, and a tap checks everything. The select-all box is assembled by hand, because the web's `parent` does not exist there: `indeterminate` when part of the list is checked, `checked` when all of it is.
 
-**O nome falado é `label`, no lugar do `aria-label` do web**, o mesmo nome que as outras peças nativas usam. Com `children` ele é opcional e troca o texto que o leitor de tela lê; sem `children` ele é obrigatório, e o tipo recusa a caixa sem os dois - a de marcar uma linha de lista seria anunciada só como "caixa de seleção, marcado". Dentro do `FormField`, o `forChecked` já entrega o `label`.
+**The spoken name is `label`, in place of the web's `aria-label`**, the same name the other native pieces use. With `children` it is optional and replaces the text the screen reader reads; without `children` it is required, and the type rejects a box with neither - the one that checks a list row would be announced only as "caixa de seleção, marcado". Inside `FormField`, `forChecked` already provides the `label`.
 
-As partes vestem pelo mesmo `classNames` do web: `box`, `indicator` (o tique ou o traço) e `label`.
+The parts are styled through the same `classNames` as the web: `box`, `indicator` (the check mark or the dash) and `label`.

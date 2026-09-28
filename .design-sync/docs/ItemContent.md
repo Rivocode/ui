@@ -1,12 +1,12 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # ItemContent
 
-O miolo de texto, entre a mídia e as ações.
+The text core, between the media and the actions.
 
-É a única parte que encolhe, e é assim que o título corta com reticências em vez
-de empurrar os botões para fora da linha. Uma linha de lista que quebra o
-arranjo em telas estreitas quase sempre é texto solto aqui, sem esta peça em
-volta.
+It is the only part that shrinks, and that is how the title truncates with an
+ellipsis instead of pushing the buttons out of the row. A list row that breaks
+the layout on narrow screens is almost always loose text here, without this
+piece around it.

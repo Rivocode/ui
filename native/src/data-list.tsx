@@ -18,15 +18,13 @@ export type DataListProps<Row> = {
   isError?: boolean;
   onRetry?: () => void;
   /**
-   * Uma linha de titulo acima da mensagem de erro. Sem ele, o aviso continua
-   * de uma linha so.
-   *
-   * O nome e o do `DataTable`, mas o padrao NAO: la o titulo e quem diz "Nao
-   * foi possivel carregar" e a mensagem detalha; aqui o aviso nasceu com uma
-   * linha so, e essa linha e a `errorMessage`. Dar padrao ao titulo poria duas
-   * frases quase iguais uma em cima da outra em toda tela que ja usa a peca.
-   * Passe os dois quando a tela carregar mais de uma lista e precisar dizer
-   * qual delas caiu.
+   * A title line above the error message. Without it, the notice stays a single
+   * line. The name is the one from `DataTable`, but the default is NOT: there
+   * the title says "Nao foi possivel carregar" and the message details it; here
+   * the notice was born with a single line, and that line is `errorMessage`.
+   * Giving the title a default would stack two nearly identical sentences on
+   * every screen that already uses the component. Pass both when the screen
+   * loads more than one list and needs to say which one failed.
    */
   errorTitle?: string;
   errorMessage?: string;
@@ -37,12 +35,11 @@ export type DataListProps<Row> = {
     icon?: EmptyStateProps["icon"];
   };
   /**
-   * A linha discreta de quando o `filter` zerou. Sem ela, "Nenhum resultado
-   * para a busca."
-   *
-   * Nao se confunde com o `empty`: filtro que zerou nao e consulta vazia, e o
-   * remedio de um - limpar a busca - nao serve ao outro. O mesmo nome e o
-   * mesmo padrao do `DataTable`.
+   * The discreet line for when `filter` narrowed to zero. Without it, "Nenhum
+   * resultado para a busca." Not to be confused with `empty`: a filter that
+   * narrowed to zero is not an empty query, and the remedy for one - clearing
+   * the search - does not serve the other. The same name and the same default
+   * as `DataTable`.
    */
   noResultsMessage?: string;
 
@@ -51,30 +48,33 @@ export type DataListProps<Row> = {
   className?: string;
 
   /**
-   * Filtro controlado, o mesmo nome e o mesmo formato do `DataTable`: a tela
-   * poe o `SearchInput` onde quiser e passa o texto; a lista estreita
-   * ignorando caixa e acento.
+   * Controlled filter, the same name and the same shape as `DataTable`: the
+   * screen places the `SearchInput` wherever it wants and passes the text; the
+   * list narrows ignoring case and accents.
    */
   filter?: string;
 
   /**
-   * O que o `filter` le em cada linha. Sem ele, a busca ve TODO campo raso da
-   * linha - inclusive o id, entao digitar "12" acha a linha de id 12. No web
-   * quem delimita isso sao as colunas declaradas; aqui nao ha colunas, o
-   * `renderItem` devolve JSX e ninguem consegue ler texto de dentro dele.
-   * Passe este acessor quando o falso positivo incomodar.
+   * What `filter` reads in each row. Without it, the search sees EVERY shallow
+   * field of the row - including the id, so typing "12" finds the row with id
+   * 12. On the web the declared columns delimit this; here there are no
+   * columns, `renderItem` returns JSX and nobody can read text from inside it.
+   * Pass this accessor when false positives get in the way.
    */
   filterValue?: (row: Row) => string;
 
-  /** Caixa de marcar a esquerda de cada linha. As chaves vem do `keyExtractor`. */
+  /** Checkbox to the left of each row. The keys come from `keyExtractor`. */
   selectable?: boolean;
-  /** As chaves marcadas, quando quem usa controla a selecao, como no `DataTable` web. Sem ela, a lista guarda a propria selecao. */
+  /**
+   * The checked keys, when the consumer controls the selection, as in the web
+   * `DataTable`. Without it, the list keeps its own selection.
+   */
   value?: string[];
   onValueChange?: (keys: string[]) => void;
   /**
-   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
-   * `onRetry` - a mesma chave do `DataTable` do web -, e `selectRow` o nome da
-   * caixa de marcar de cada linha. Passe so os que mudam.
+   * The component's texts, to change the language: `retry` is the button that
+   * runs `onRetry` - the same key as the web `DataTable` -, and `selectRow` the
+   * name of each row's checkbox. Pass only the ones that change.
    */
   labels?: Partial<DataListLabels>;
 };

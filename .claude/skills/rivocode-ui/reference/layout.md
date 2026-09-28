@@ -1,24 +1,24 @@
-# Layout com o @rivocode/ui
+# Layout with @rivocode/ui
 
-## Conteúdo
+## Contents
 
-- Os quatro esqueletos de página
-- O ritmo do espaçamento
-- Grid ou flex, e a armadilha do `min-w-0`
-- Largura de leitura e alinhamento
-- Densidade, e o que ela move
-- Estreito primeiro
-- Erros de layout que aparecem sempre
+- The four page skeletons
+- The spacing rhythm
+- Grid or flex, and the `min-w-0` trap
+- Reading width and alignment
+- Density, and what it moves
+- Narrow first
+- Layout mistakes that always show up
 
-## Os quatro esqueletos de página
+## The four page skeletons
 
-Quase toda tela de produto é uma destas quatro. Comece pela que se parece com o
-pedido e ajuste, em vez de montar do zero.
+Almost every product screen is one of these four. Start from the one that looks
+like the request and adjust, instead of building from scratch.
 
-### 1. Operação: barra lateral e área de trabalho
+### 1. Operations: sidebar and work area
 
-O padrão de sistema interno. A barra guarda a navegação, o `SidebarInset`
-recebe a página.
+The internal-system pattern. The sidebar holds navigation, `SidebarInset`
+receives the page.
 
 ```tsx
 <SidebarProvider defaultOpen>
@@ -26,7 +26,7 @@ recebe a página.
     <SidebarHeader><SidebarBrand mark={<Waves size={18} />}>RivoCode</SidebarBrand></SidebarHeader>
     <SidebarContent>
       <SidebarGroup label="Operação">
-        <SidebarMenu>{/* itens */}</SidebarMenu>
+        <SidebarMenu>{/* items */}</SidebarMenu>
       </SidebarGroup>
     </SidebarContent>
   </Sidebar>
@@ -35,24 +35,24 @@ recebe a página.
     <header className="sticky top-0 z-[var(--rc-z-sticky)] flex items-center gap-3 border-b border-border bg-bg/90 px-4 py-3 backdrop-blur-md">
       <SidebarTrigger />
       <Breadcrumb items={trilha} className="min-w-0" />
-      <div className="ml-auto flex items-center gap-2">{/* ações */}</div>
+      <div className="ml-auto flex items-center gap-2">{/* actions */}</div>
     </header>
 
-    <div className="p-4 sm:p-6">{/* a tela */}</div>
+    <div className="p-4 sm:p-6">{/* the screen */}</div>
   </SidebarInset>
 </SidebarProvider>
 ```
 
-O `ml-auto` no bloco de ações é o que separa navegação de ação sem precisar de
-`justify-between`, que brigaria com o `gap`.
+The `ml-auto` on the actions block is what separates navigation from action
+without needing `justify-between`, which would fight with `gap`.
 
-### 2. Listagem: filtros, tabela, paginação
+### 2. Listing: filters, table, pagination
 
 ```tsx
 <div className="space-y-4">
   <Card>
     <CardContent className="flex flex-wrap items-center gap-3 py-4">
-      {/* busca com flex-1, filtros com largura própria */}
+      {/* search with flex-1, filters with their own width */}
     </CardContent>
   </Card>
 
@@ -64,148 +64,150 @@ O `ml-auto` no bloco de ações é o que separa navegação de ação sem precis
 </div>
 ```
 
-`flex-wrap` na barra de filtros, sempre. Sem ela, o quinto filtro empurra a
-busca para fora da tela em vez de descer uma linha.
+`flex-wrap` on the filter bar, always. Without it, the fifth filter pushes the
+search off the screen instead of dropping a line.
 
-### 3. Formulário longo: régua de passos e um cartão
+### 3. Long form: step ruler and one card
 
 ```tsx
 <div className="mx-auto max-w-3xl space-y-6">
   <Steps steps={STEPS} step={wizard.step} onStepChange={wizard.goTo} />
   <Card>
     <CardContent className="py-6">
-      <div className="grid gap-4 sm:grid-cols-2">{/* campos */}</div>
-      <WizardFooter>{/* voltar e continuar */}</WizardFooter>
+      <div className="grid gap-4 sm:grid-cols-2">{/* fields */}</div>
+      <WizardFooter>{/* back and continue */}</WizardFooter>
     </CardContent>
   </Card>
 </div>
 ```
 
-`max-w-3xl` e não a largura toda: formulário esticado numa tela de 1440 vira
-campo de 1200px de largura para digitar um CNPJ.
+`max-w-3xl` and not the full width: a form stretched across a 1440 screen
+becomes a 1200px-wide field to type a CNPJ.
 
-### 4. Painel: indicadores em cima, gráficos embaixo
+### 4. Dashboard: indicators on top, charts below
 
 ```tsx
 <div className="space-y-4">
   <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 [&>*]:min-w-0">
-    {/* quatro indicadores */}
+    {/* four indicators */}
   </div>
   <div className="grid gap-4 xl:grid-cols-3 [&>*]:min-w-0">
-    <Card className="xl:col-span-2">{/* o gráfico principal */}</Card>
-    <Card>{/* a rosca ou a lista */}</Card>
+    <Card className="xl:col-span-2">{/* the main chart */}</Card>
+    <Card>{/* the donut or the list */}</Card>
   </div>
 </div>
 ```
 
-Indicador vem antes do gráfico porque responde em um segundo; o gráfico pede
-dez.
+The indicator comes before the chart because it answers in one second; the
+chart asks for ten.
 
-## O ritmo do espaçamento
+## The spacing rhythm
 
-Use poucos valores, sempre os mesmos. A escala do Tailwind é fina demais para
-decidir a cada componente, então trate assim:
+Use few values, always the same. Tailwind's scale is too fine to decide per
+component, so treat it like this:
 
-| Distância | Onde |
+| Distance | Where |
 |---|---|
-| `gap-2` | dentro de um controle: ícone e texto, botões irmãos |
-| `gap-3` | itens de uma mesma barra: filtros, ações do cabeçalho |
-| `gap-4` | entre cartões, entre colunas de um grid |
-| `space-y-4` | entre blocos de uma tela |
-| `space-y-6` | entre seções que mudam de assunto |
-| `p-4 sm:p-6` | respiro da página |
+| `gap-2` | inside a control: icon and text, sibling buttons |
+| `gap-3` | items of the same bar: filters, header actions |
+| `gap-4` | between cards, between grid columns |
+| `space-y-4` | between blocks of a screen |
+| `space-y-6` | between sections that change subject |
+| `p-4 sm:p-6` | page breathing room |
 
-Dentro de `Card`, use `CardContent` em vez de inventar `padding`: ele já traz o
-`--rc-pad-panel`, que a densidade move junto.
+Inside a `Card`, use `CardContent` instead of inventing `padding`: it already
+brings `--rc-pad-panel`, which the density moves along.
 
-**Uma distância só entre irmãos.** Se um bloco precisa de mais ar que o vizinho,
-o problema quase sempre é falta de hierarquia, não falta de pixel.
+**A single distance between siblings.** If a block needs more air than its
+neighbor, the problem is almost always a lack of hierarchy, not a lack of
+pixels.
 
-## Grid ou flex, e a armadilha do `min-w-0`
+## Grid or flex, and the `min-w-0` trap
 
-- **Grid** quando as colunas são a estrutura: painel, formulário de duas
-  colunas, listagem com barra lateral de filtro.
-- **Flex** quando os itens são uma fila que pode quebrar: ações, filtros,
-  etiquetas.
+- **Grid** when the columns are the structure: dashboard, two-column form,
+  listing with a filter sidebar.
+- **Flex** when the items are a row that may wrap: actions, filters, tags.
 
-A armadilha vale para os dois: **item de grid e item de flex têm
-`min-width: auto`**, ou seja, nunca encolhem abaixo do próprio `min-content`.
-Uma tabela larga dentro de uma coluna estica a coluna inteira, e o vizinho vai
-junto para fora da tela.
+The trap applies to both: **grid items and flex items have
+`min-width: auto`**, that is, they never shrink below their own
+`min-content`. A wide table inside a column stretches the whole column, and the
+neighbor goes off the screen with it.
 
 ```tsx
-// A tabela volta a rolar dentro da própria caixa.
+// The table scrolls inside its own box again.
 <div className="grid gap-4 lg:grid-cols-[16rem_1fr] [&>*]:min-w-0">
 ```
 
-O mesmo vale para texto que promete cortar: `truncate` sem `min-w-0` não corta
-nada, ele empurra.
+The same goes for text that promises to truncate: `truncate` without `min-w-0`
+truncates nothing, it pushes.
 
 ```tsx
 <span className="min-w-0 flex-1 truncate">{nome}</span>
 ```
 
-Quando o conteúdo é largo por natureza, deixe **ele** rolar, e não a página:
-`overflow-x-auto` na caixa dele. A `Table` já faz isso sozinha.
+When the content is wide by nature, let **it** scroll, and not the page:
+`overflow-x-auto` on its box. `Table` already does this on its own.
 
-Cuidado com um efeito do CSS: num elemento com `overflow-y-auto`, o eixo X
-deixa de ser `visible` e vira `auto` também. Uma área de página que rola
-verticalmente rola de lado sem ninguém pedir, e o vazamento não aparece no
-`scrollWidth` do documento.
+Watch out for a CSS effect: on an element with `overflow-y-auto`, the X axis
+stops being `visible` and becomes `auto` too. A page area that scrolls
+vertically scrolls sideways without anyone asking, and the overflow does not
+show up in the document's `scrollWidth`.
 
-## Largura de leitura e alinhamento
+## Reading width and alignment
 
-- Texto corrido: `max-w-prose`. Linha de 200 caracteres não se lê.
-- Formulário: `max-w-3xl` centralizado com `mx-auto`, que é o `<Container size="md">`.
-- Painel e listagem: largura toda, porque a informação é a densidade.
-- Número em tabela: `text-right` e `font-mono`. Alinhados à direita e com dígito
-  de largura fixa, os valores se comparam na vertical sem esforço.
-- Rótulo acima do campo, nunca ao lado: no celular não cabe ao lado, e uma tela
-  que muda de arranjo entre larguras custa mais do que ganha.
+- Running text: `max-w-prose`. A 200-character line cannot be read.
+- Form: `max-w-3xl` centered with `mx-auto`, which is `<Container size="md">`.
+- Dashboard and listing: full width, because the information is the density.
+- Number in a table: `text-right` and `font-mono`. Right-aligned and with
+  fixed-width digits, the values compare vertically without effort.
+- Label above the field, never beside it: on a phone it does not fit beside,
+  and a screen that changes arrangement between widths costs more than it
+  gains.
 
-## Densidade, e o que ela move
+## Density, and what it moves
 
-`density="compact"` encolhe altura de controle, `--rc-item-y`, o respiro dos
-painéis e o `gap` de `Stack` e `Grid`, que sai de `--rc-gap-*`. Ela **não** mexe
-no `gap` nem no `padding` que você escreve à mão.
+`density="compact"` shrinks the control height, `--rc-item-y`, the panels'
+breathing room and the `gap` of `Stack` and `Grid`, which comes from
+`--rc-gap-*`. It does **not** touch the `gap` or the `padding` you write by
+hand.
 
-Por isso: altura de controle sempre por token.
+Hence: control height always by token.
 
 ```tsx
-<div className="h-[var(--rc-control-md)]" />   // acompanha a densidade
-<div className="h-10" />                        // não acompanha
+<div className="h-[var(--rc-control-md)]" />   // follows the density
+<div className="h-10" />                        // does not follow
 ```
 
-Compacta é para tela de operação, onde caber mais linha vale mais do que o
-respiro. Não use em cadastro nem em formulário longo.
+Compact is for operations screens, where fitting more rows is worth more than
+breathing room. Do not use it in a registration or a long form.
 
-## Estreito primeiro
+## Narrow first
 
-Escreva a versão de celular e acrescente `sm:` e `lg:` por cima. O contrário
-gera layout que "desmonta" ao encolher, porque o caso estreito nunca foi
-pensado.
+Write the phone version and add `sm:` and `lg:` on top. The opposite produces a
+layout that "falls apart" when shrinking, because the narrow case was never
+thought through.
 
-Cortes que a biblioteca já usa, e que vale acompanhar:
+Breakpoints the library already uses, and worth following:
 
-| Corte | O que muda |
+| Breakpoint | What changes |
 |---|---|
-| `sm` (640px) | a folha encosta embaixo, a barra lateral vira folha, o calendário mostra um mês |
-| `lg` (1024px) | a segunda coluna aparece |
-| `xl` (1280px) | o painel abre para três ou quatro colunas |
+| `sm` (640px) | the sheet docks at the bottom, the sidebar becomes a sheet, the calendar shows one month |
+| `lg` (1024px) | the second column appears |
+| `xl` (1280px) | the dashboard opens to three or four columns |
 
-Quando a decisão não couber em classe, leia o mesmo corte que os componentes
-leem, com `useMobile()`, em vez de escrever `640` de novo.
+When the decision does not fit in a class, read the same breakpoint the
+components read, with `useMobile()`, instead of writing `640` again.
 
-## Erros de layout que aparecem sempre
+## Layout mistakes that always show up
 
-- Item de grid ou de flex sem `min-w-0`, com conteúdo largo dentro.
-- `truncate` sem `min-w-0`: promete cortar e empurra.
-- Barra de filtros sem `flex-wrap`.
-- Altura cravada em controle, quebrando a densidade compacta.
-- Gráfico sem altura: `ChartContainer` sem `h-*` some.
-- `justify-between` numa fila que tem `gap`: use `ml-auto` no que deve ir para
-  a ponta.
-- Página inteira com `overflow-hidden` para "resolver" vazamento lateral. Isso
-  esconde o sintoma e corta menu e dica junto.
-- Espaço vertical resolvido com `<br>` ou `mt-*` solto em vez de `space-y-*` no
-  contêiner.
+- A grid or flex item without `min-w-0`, with wide content inside.
+- `truncate` without `min-w-0`: promises to truncate and pushes.
+- A filter bar without `flex-wrap`.
+- A hardcoded control height, breaking the compact density.
+- A chart without height: `ChartContainer` without `h-*` disappears.
+- `justify-between` on a row that has `gap`: use `ml-auto` on what should go
+  to the end.
+- The whole page with `overflow-hidden` to "solve" a sideways overflow. That
+  hides the symptom and clips menus and tooltips along with it.
+- Vertical space solved with `<br>` or a loose `mt-*` instead of `space-y-*` on
+  the container.

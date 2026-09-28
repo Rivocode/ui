@@ -1,58 +1,60 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # Editable
 
-Edição no lugar: o texto vira campo ao ser clicado, e volta a ser texto ao ser
-confirmado.
+In-place editing: the text turns into a field when clicked, and goes back to
+being text when confirmed.
 
-É o gesto que separa painel de leitura de painel de operação. Corrigir o nome de
-um cliente sem abrir uma tela de edição, sem perder a posição na lista e sem
-esperar duas navegações é a diferença entre a pessoa corrigir e a pessoa deixar
-errado.
+It is the gesture that separates a reading dashboard from an operating one.
+Fixing a customer's name without opening an edit screen, without losing the
+position in the list and without waiting for two navigations is the difference
+between the person fixing it and the person leaving it wrong.
 
-Duas decisões que a peça toma, e que são a razão de ela existir. **O Escape
-desfaz**: sair pela lateral é o gesto de quem se arrependeu, e salvar ali
-transforma um clique errado numa edição que ninguém pediu. **Sair do campo
-salva**: é o oposto do Escape de propósito, porque quem clicou fora seguiu
-adiante, e exigir um Enter depois disso perde o que foi escrito sem avisar.
+Two decisions the piece makes, and that are the reason it exists. **Escape
+undoes**: leaving sideways is the gesture of someone who changed their mind,
+and saving there turns a wrong click into an edit nobody asked for. **Leaving
+the field saves**: it is the opposite of Escape on purpose, because whoever
+clicked outside has moved on, and demanding an Enter after that loses what was
+written without warning.
 
-A troca entre texto e campo esmaece, curta, no tempo `--rc-duration-base`: o
-salto seco fazia a linha parecer que piscou. Na primeira pintura não há fade, e
-com "reduzir movimento" o token vai a zero e a troca volta a ser seca.
+The switch between text and field fades, briefly, at `--rc-duration-base`:
+the hard jump made the row look like it blinked. On first paint there is no
+fade, and with "reduce motion" the token goes to zero and the switch is hard
+again.
 
-Fechado, o texto é um `button`. Quem navega pelo teclado precisa saber que
-aquilo abre alguma coisa, e um `div` com `onClick` não diz isso a ninguém.
+Closed, the text is a `button`. A keyboard user needs to know that it opens
+something, and a `div` with `onClick` tells nobody that.
 
-## Quem guarda o valor
+## Who holds the value
 
-Guarda o próprio quando recebe só `defaultValue`, e obedece ao de fora quando
-recebe `value`, o mesmo par das outras peças de formulário. Controle quando o
-valor precisa voltar do servidor depois de salvo; deixe solto quando a correção
-só vale nesta tela.
+It holds its own when it receives only `defaultValue`, and obeys the outside
+one when it receives `value`, the same pair as the other form pieces. Control
+it when the value needs to come back from the server after being saved; leave
+it uncontrolled when the fix only matters on this screen.
 
 ```tsx
 <Editable defaultValue="Clínica São Lucas" label="Cliente" onValueChange={save} />
 ```
 
-O `label` continua obrigatório: aberto, a peça é um `<input>` sem rótulo
-visível, e sem ele o campo fica sem nome.
+`label` is still required: open, the piece is an `<input>` without a visible
+label, and without it the field has no name.
 
-## Quando não usar
+## When not to use
 
-Quando a mudança precisa de confirmação explícita: valor, alíquota, qualquer
-campo que o servidor valida e pode recusar. Ali um `Dialog` com Salvar e
-Cancelar diz o que está em jogo; a edição no lugar promete que é barato desfazer.
+When the change needs explicit confirmation: an amount, a tax rate, any field
+the server validates and may refuse. There a `Dialog` with Save and Cancel
+says what is at stake; in-place editing promises that undoing is cheap.
 
-## No React Native
+## In React Native
 
-Traduz, com os dois gestos trocados. E os dois eram a peça inteira no web, então vale ler antes de portar a tela.
+Translates, with both gestures swapped. And the two were the whole piece on the web, so it is worth reading before porting the screen.
 
-**Quem abre é o toque longo**, e não o toque. É o gesto que o sistema já usa para agir sobre um texto, e a escolha é defensiva: num painel de leitura o dedo encosta em tudo enquanto rola, e com o toque curto abrindo o campo o teclado subia sozinho a cada esbarrão. Para quem usa leitor de tela o gesto não existe, então a peça declara também uma ação de acessibilidade `longpress` chamada "Editar", que aparece no rotor.
+**A long press opens it**, not a tap. It is the gesture the system already uses to act on text, and the choice is defensive: on a reading panel the finger touches everything while scrolling, and with a short tap opening the field the keyboard came up on its own at every bump. For screen reader users the gesture does not exist, so the piece also declares a `longpress` accessibility action called "Editar", which appears in the rotor.
 
-**Sair do campo não salva.** No web, clicar fora confirma; aqui não há clicar fora: há o teclado que se esconde, e o próprio `Cancelar` tira o foco do campo antes de rodar, então um `blur` que salvasse salvaria o rascunho no caminho de cancelá-lo. Nada sai daqui sem confirmação explícita (o botão de retorno do teclado) e nada se perde sem o `Cancelar`, que é visível ao lado do campo porque sem Escape não existe saída invisível.
+**Leaving the field does not save.** On the web, clicking outside confirms; here there is no clicking outside: there is the keyboard hiding, and `Cancelar` itself takes focus off the field before running, so a `blur` that saved would save the draft on the way to canceling it. Nothing leaves here without explicit confirmation (the keyboard's return button) and nothing is lost without `Cancelar`, which is visible next to the field because without Escape there is no invisible exit.
 
-O resto é o contrato de sempre: `value` e `onValueChange` **obrigatórios**, sem `defaultValue`, e `label` obrigatório. Fechada, a peça anuncia `label` e valor juntos, porque "Nome do cliente" sozinho manda a pessoa abrir a edição só para descobrir o que há lá dentro.
+The rest is the usual contract: `value` and `onValueChange` **required**, no `defaultValue`, and `label` required. Closed, the piece announces `label` and value together, because "Nome do cliente" alone makes the person open editing just to find out what is in there.
 
-As partes vestem pelo mesmo `classNames` do web: `preview`, a área que se segura para editar, e `input`, o campo aberto.
+The parts are styled through the same `classNames` as the web: `preview`, the area you hold to edit, and `input`, the open field.

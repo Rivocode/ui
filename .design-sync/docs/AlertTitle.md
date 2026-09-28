@@ -4,8 +4,8 @@ category: Feedback
 
 # AlertTitle
 
-A primeira linha do aviso: o que aconteceu, em uma frase.
+The first line of the alert: what happened, in one sentence.
 
-Sai como `<p>` e não como `<h*>` de propósito, um aviso no meio da tela não
-entra no sumário da página, e um heading fora de ordem atrapalha quem navega
-por headings no leitor de tela.
+It renders as `<p>` and not as `<h*>` on purpose: an alert in the middle of the
+screen does not belong in the page outline, and an out-of-order heading gets in
+the way of whoever navigates by headings with a screen reader.

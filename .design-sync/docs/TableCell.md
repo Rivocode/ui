@@ -1,11 +1,11 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # TableCell
 
-Uma célula de dado.
+A data cell.
 
-Respiro e altura vêm da densidade, então a mesma tabela encolhe junto com o
-resto em `density="compact"`. Para número, alinhe à direita e use fonte mono
-pela `className`.
+Padding and height come from density, so the same table shrinks along with the
+rest in `density="compact"`. For numbers, align right and use a mono font
+through `className`.

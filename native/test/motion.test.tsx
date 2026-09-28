@@ -74,8 +74,8 @@ const entered = (screen: ReturnType<typeof render>) =>
 
 const bezier = (name: keyof typeof tokens.easings) => ({ bezier: [...tokens.easings[name]] });
 
-describe("os tokens de movimento", () => {
-  test("a curva e as duracoes do nativo sao as do forma.css do web", () => {
+describe("the motion tokens", () => {
+  test("the native curve and durations are those of the web's forma.css", () => {
     const css = readFileSync(
       fileURLToPath(new URL("../../src/tokens/forma.css", import.meta.url)),
       "utf8",
@@ -109,7 +109,7 @@ describe("Button", () => {
     return animated?.transform[0]?.scale;
   };
 
-  test("o toque afunda o botao com a duracao e a curva da casa, e o soltar devolve", () => {
+  test("a press sinks the button with the house duration and curve, and release brings it back", () => {
     const onPressIn = mock(() => {});
     const screen = render(<Button onPressIn={onPressIn}>Emitir</Button>);
     const [button] = byRole(screen, "button");
@@ -133,7 +133,7 @@ describe("Button", () => {
     expect(scaleOf(byRole(screen, "button")[0]!)).toBe(1);
   });
 
-  test("com reduzir movimento, o toque nao escala e o handler de quem usa continua valendo", () => {
+  test("with reduce motion, the press does not scale and the consumer's handler still applies", () => {
     reduceMotion(true);
     const onPressIn = mock(() => {});
     const screen = render(<Button onPressIn={onPressIn}>Emitir</Button>);
@@ -157,7 +157,7 @@ describe("useToast", () => {
   const toastLayer = (screen: ReturnType<typeof render>) =>
     byType(screen, "View").find((node) => node.props.entering !== undefined || node.props.layout);
 
-  test("o aviso sobe e desce com os tokens slow e base", () => {
+  test("the notice rises and falls with the slow and base tokens", () => {
     const screen = render(<Emitter />);
     act(() => byRole(screen, "button")[0]!.props.onPress());
 
@@ -175,7 +175,7 @@ describe("useToast", () => {
     expect((layer.props.layout as Built).preset).toBe("LinearTransition");
   });
 
-  test("com reduzir movimento, o aviso aparece sem animacao nenhuma", () => {
+  test("with reduce motion, the notice appears with no animation at all", () => {
     reduceMotion(true);
     const screen = render(<Emitter />);
     act(() => byRole(screen, "button")[0]!.props.onPress());
@@ -189,7 +189,7 @@ describe("useToast", () => {
   });
 });
 
-describe("Accordion e Collapsible", () => {
+describe("Accordion and Collapsible", () => {
   const turnOf = (screen: ReturnType<typeof render>) =>
     byType(screen, "View")
       .map(
@@ -198,7 +198,7 @@ describe("Accordion e Collapsible", () => {
       )
       .find((style) => style?.transform?.[0]?.rotate !== undefined)!.transform![0]!.rotate;
 
-  test("a seta gira meia volta no tempo base, e o corpo entra por fade", () => {
+  test("the arrow turns half a turn in the base duration, and the body fades in", () => {
     const screen = render(
       <Accordion>
         <AccordionItem title="Como emitir?">
@@ -227,7 +227,7 @@ describe("Accordion e Collapsible", () => {
     expect((item.props.layout as Built).config.duration).toBe(tokens.scales["duration-base"]);
   });
 
-  test("com reduzir movimento, a seta salta e nada entra nem sai animado", () => {
+  test("with reduce motion, the arrow jumps and nothing enters or leaves animated", () => {
     reduceMotion(true);
     const screen = render(
       <Collapsible label="Ver o detalhe">
@@ -249,10 +249,10 @@ describe("Accordion e Collapsible", () => {
   });
 });
 
-describe("Dialog, AlertDialog e Sheet", () => {
+describe("Dialog, AlertDialog and Sheet", () => {
   const modalOf = (screen: ReturnType<typeof render>) => byType(screen, "Modal")[0]!;
 
-  test("abrem com o movimento da plataforma, e sem ele quando o sistema pede", () => {
+  test("they open with the platform motion, and without it when the system asks", () => {
     const dialog = () => <Dialog open onOpenChange={() => {}} title="Nota 4813" />;
     const alert = () => (
       <AlertDialog
@@ -276,7 +276,7 @@ describe("Dialog, AlertDialog e Sheet", () => {
     expect(modalOf(render(sheet())).props.animationType).toBe("none");
   });
 
-  test("a preferencia trocada com a tela aberta vale na hora, sem remontar", () => {
+  test("a preference changed with the screen open applies at once, without remounting", () => {
     const screen = render(<Sheet open onOpenChange={() => {}} title="Filtros" />);
     expect(modalOf(screen).props.animationType).toBe("slide");
 
@@ -306,8 +306,8 @@ function sourceFiles(): string[] {
   return found;
 }
 
-describe("nenhuma peca anima por fora do useMotion", () => {
-  test("todo movimento do pacote passa pela preferencia do sistema", () => {
+describe("no piece animates outside useMotion", () => {
+  test("every motion in the package goes through the system preference", () => {
     const files = sourceFiles();
 
     const animating = files.filter((file) =>
@@ -321,16 +321,16 @@ describe("nenhuma peca anima por fora do useMotion", () => {
       if (name === "motion.tsx") continue;
       const code = readFileSync(file, "utf8");
 
-      if (!/from "(?:\.\.?\/)+motion"/.test(code)) offenders.push(`${name}: nao importa ./motion`);
+      if (!/from "(?:\.\.?\/)+motion"/.test(code)) offenders.push(`${name}: does not import ./motion`);
       for (const hit of code.matchAll(/withTiming\(([^;]*?)\)\s*;/g)) {
         if (!/motion\.(timing\(|pulse)/.test(hit[1]!))
-          offenders.push(`${name}: withTiming sem motion.timing`);
+          offenders.push(`${name}: withTiming without motion.timing`);
       }
       for (const hit of code.matchAll(/\b(entering|exiting|layout)=\{([^}]*)\}/g)) {
-        if (!/\bmotion\./.test(hit[2]!)) offenders.push(`${name}: ${hit[1]} sem motion.`);
+        if (!/\bmotion\./.test(hit[2]!)) offenders.push(`${name}: ${hit[1]} without motion.`);
       }
       for (const hit of code.matchAll(/animationType=(\{[^}]*\}|"[^"]*")/g)) {
-        if (!/reduced \?/.test(hit[1]!)) offenders.push(`${name}: animationType sem reduced`);
+        if (!/reduced \?/.test(hit[1]!)) offenders.push(`${name}: animationType without reduced`);
       }
     }
 
@@ -338,13 +338,13 @@ describe("nenhuma peca anima por fora do useMotion", () => {
   });
 });
 
-describe("barras que andam: Progress, Meter e Steps", () => {
+describe("moving bars: Progress, Meter and Steps", () => {
   const widthOf = (screen: ReturnType<typeof render>) =>
     views(screen)
       .map((node) => node.props.style as { width?: string } | undefined)
       .find((style) => typeof style?.width === "string")!.width;
 
-  test("a barra enche do zero na entrada e anda ate o valor novo no tempo slow", () => {
+  test("the bar fills from zero on entry and moves to the new value in the slow duration", () => {
     const slowly = {
       duration: tokens.scales["duration-slow"],
       easing: bezier("ease"),
@@ -372,7 +372,7 @@ describe("barras que andam: Progress, Meter e Steps", () => {
     expect(widthOf(meter)).toBe("75%");
   });
 
-  test("com reduzir movimento, a barra nasce cheia no valor", () => {
+  test("with reduce motion, the bar starts filled at the value", () => {
     reduceMotion(true);
     sharedStarts.length = 0;
     timingCalls.length = 0;
@@ -381,7 +381,7 @@ describe("barras que andam: Progress, Meter e Steps", () => {
     expect(timings()).toEqual([]);
   });
 
-  test("o passo novo entra por fade e a barra do Steps anda; o primeiro nao anima", () => {
+  test("the new step fades in and the Steps bar moves; the first one does not animate", () => {
     const steps = [
       { id: "dados", title: "Dados" },
       { id: "revisao", title: "Revisão" },
@@ -399,7 +399,7 @@ describe("barras que andam: Progress, Meter e Steps", () => {
     expect(timings().at(-1)!.config.duration).toBe(tokens.scales["duration-slow"]);
   });
 
-  test("com reduzir movimento, a barra salta e o passo troca parado", () => {
+  test("with reduce motion, the bar jumps and the step changes still", () => {
     reduceMotion(true);
     const steps = [
       { id: "dados", title: "Dados" },
@@ -416,8 +416,8 @@ describe("barras que andam: Progress, Meter e Steps", () => {
   });
 });
 
-describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
-  test("o erro que chega depois entra por fade; o que ja estava nao anima", () => {
+describe("form: Field, Checkbox, RadioGroup, Toggle and TagsInput", () => {
+  test("an error that arrives later fades in; one already there does not animate", () => {
     const field = (error?: string) => (
       <Field label="CNPJ" description="Só os números." error={error}>
         <Text>campo</Text>
@@ -432,7 +432,7 @@ describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
     expect(built!.config.duration).toBe(tokens.scales["duration-base"]);
   });
 
-  test("a marca do Checkbox e do RadioGroup aparece crescendo, e so ao marcar", () => {
+  test("the Checkbox and RadioGroup mark appears growing, and only when checking", () => {
     const box = (checked: boolean) => (
       <Checkbox label="Aceito" checked={checked} onCheckedChange={() => {}} />
     );
@@ -462,7 +462,7 @@ describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
     expect(entered(radio).map((built) => built.preset)).toEqual(["ZoomIn"]);
   });
 
-  test("o Toggle afunda no toque como o Button", () => {
+  test("Toggle sinks on press like Button", () => {
     const screen = render(
       <Toggle pressed={false} onPressedChange={() => {}}>
         Negrito
@@ -474,7 +474,7 @@ describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
     expect(layers).toContainEqual({ transform: [{ scale: 0.97 }] });
   });
 
-  test("a ficha nova do TagsInput entra crescendo, sai por fade, e as outras se reacomodam", () => {
+  test("a new TagsInput chip enters growing, fades out, and the others resettle", () => {
     const tags = (value: string[]) => (
       <TagsInput value={value} onValueChange={() => {}} accessibilityLabel="Etiquetas" />
     );
@@ -491,7 +491,7 @@ describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
     expect((chips[1]!.props.entering as Built).preset).toBe("ZoomIn");
   });
 
-  test("com reduzir movimento, nenhuma peca de formulario anima", () => {
+  test("with reduce motion, no form piece animates", () => {
     reduceMotion(true);
     const field = render(
       <Field label="CNPJ">
@@ -533,7 +533,7 @@ describe("Tabs", () => {
   const indicatorOf = (screen: ReturnType<typeof render>) =>
     views(screen).find((node) => node.props.className?.split(" ").includes("bg-surface-raised"));
 
-  test("antes de medir, a aba ativa se pinta sozinha; medida, o indicador desliza no tempo base", () => {
+  test("before measuring, the active tab paints itself; once measured, the indicator slides in the base duration", () => {
     const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);
     expect(byRole(screen, "tab")[0]!.props.className.split(" ")).toContain("bg-surface-raised");
 
@@ -552,7 +552,7 @@ describe("Tabs", () => {
     expect(timings()[0]!.config.duration).toBe(tokens.scales["duration-base"]);
   });
 
-  test("com reduzir movimento, o indicador salta", () => {
+  test("with reduce motion, the indicator jumps", () => {
     reduceMotion(true);
     const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);
     lay(screen);
@@ -564,8 +564,8 @@ describe("Tabs", () => {
   });
 });
 
-describe("Skeleton e Calendar", () => {
-  test("o Skeleton pulsa sem fim no ciclo do web, e fica parado com reduzir movimento", () => {
+describe("Skeleton and Calendar", () => {
+  test("Skeleton pulses endlessly on the web cycle, and stays still with reduce motion", () => {
     render(<Skeleton className="h-4 w-24" />);
     expect(repeatCalls.at(-1)).toEqual({ times: -1, steps: [0.5, 1] });
     expect(timings().at(-1)!.config.duration).toBe(1000);
@@ -581,7 +581,7 @@ describe("Skeleton e Calendar", () => {
     expect(bone!.props.style).toEqual({ opacity: 1 });
   });
 
-  test("o mes seguinte entra por fade, e o primeiro nao anima", () => {
+  test("the next month fades in, and the first one does not animate", () => {
     const screen = render(<Calendar value="2026-08-10" onValueChange={() => {}} />);
     expect(entered(screen)).toEqual([]);
 
@@ -599,7 +599,7 @@ describe("Editable", () => {
     <Editable value="Clínica São Lucas" onValueChange={() => {}} label="Nome do cliente" />
   );
 
-  test("a leitura nasce parada, e a troca para a edicao e de volta entra por fade", () => {
+  test("reading mode starts still, and the switch to editing and back fades in", () => {
     const screen = render(editable());
     expect(entered(screen)).toEqual([]);
     const layer = () =>
@@ -623,7 +623,7 @@ describe("Editable", () => {
     expect(byRole(screen, "button")[0]!.props.onLongPress).toBeDefined();
   });
 
-  test("com reduzir movimento, a troca e seca", () => {
+  test("with reduce motion, the switch is instant", () => {
     reduceMotion(true);
     const screen = render(editable());
     act(() => byRole(screen, "button")[0]!.props.onLongPress());
@@ -631,7 +631,7 @@ describe("Editable", () => {
   });
 });
 
-describe("entrada na montagem", () => {
+describe("entry on mount", () => {
   const LIFT = { translateY: 4 };
   const base = tokens.scales["duration-base"];
   const fast = tokens.scales["duration-fast"];
@@ -669,12 +669,12 @@ describe("entrada na montagem", () => {
   ];
 
   for (const [name, element, preset, duration, lift] of cases) {
-    test(`${name} entra uma vez, na montagem, com o token certo`, () => {
+    test(`${name} enters once, on mount, with the right token`, () => {
       expect(landing(element)).toEqual([{ preset, duration, lift, easing: bezier("ease") }]);
     });
   }
 
-  test("a lista entra quando sai do esqueleto para os dados", () => {
+  test("the list enters when it goes from the skeleton to the data", () => {
     const list = (loading: boolean) => (
       <DataList
         data={loading ? undefined : rows}
@@ -689,7 +689,7 @@ describe("entrada na montagem", () => {
     expect(entered(screen).map((built) => built.preset)).toEqual(["FadeIn"]);
   });
 
-  test("com reduzir movimento, nada entra animado", () => {
+  test("with reduce motion, nothing enters animated", () => {
     reduceMotion(true);
     for (const [, element] of cases) expect(landing(element)).toEqual([]);
   });

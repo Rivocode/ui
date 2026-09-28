@@ -1,11 +1,11 @@
 ---
-category: Ações
+category: Actions
 ---
 
 # Toggle
 
-Botão que fica apertado. Vive dentro de um `ToggleGroup`.
+A button that stays pressed. It lives inside a `ToggleGroup`.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Toggle` - `pressed` e `onPressedChange`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Toggle` - `pressed` and `onPressedChange`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

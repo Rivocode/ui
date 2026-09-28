@@ -30,14 +30,14 @@ function asked(key: string): { color: string | undefined; said: string } {
   }
 }
 
-test("a chave que o config conhece devolve a cor e nao acusa nada", () => {
+test("a key the config knows returns the color and flags nothing", () => {
   const { color, said } = asked("emitidas");
 
   expect(color).toBe(dark["chart-1"]);
-  expect(said).not.toContain("não conhece essa série");
+  expect(said).not.toContain("does not know that series");
 });
 
-test("a chave que o config nao tem e acusada, nomeada, com as validas ao lado", () => {
+test("a key the config does not have is flagged, named, with the valid ones beside it", () => {
   const { color, said } = asked("canceladas");
 
   expect(color).toBeUndefined();
@@ -45,7 +45,7 @@ test("a chave que o config nao tem e acusada, nomeada, com as validas ao lado", 
   expect(said).toContain("emitidas, pagas");
 });
 
-test("a mesma chave errada acusa uma vez so, e nao a cada quadro", () => {
+test("the same wrong key is flagged only once, not on every frame", () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   try {
@@ -62,14 +62,14 @@ test("a mesma chave errada acusa uma vez so, e nao a cada quadro", () => {
 
     const repeats = warn.mock.calls
       .flat()
-      .filter((line) => String(line).includes("não conhece essa série"));
+      .filter((line) => String(line).includes("does not know that series"));
     expect(repeats).toHaveLength(1);
   } finally {
     warn.mockRestore();
   }
 });
 
-test("a reclamacao nomeia a chave que falta e lista as que existem", () => {
+test("the complaint names the missing key and lists the ones that exist", () => {
   const wording = unknownSeriesComplaint("canceladas", ["emitidas", "pagas"]);
 
   expect(wording).toContain('"canceladas"');

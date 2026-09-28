@@ -15,7 +15,7 @@ function read(ui: React.ReactElement) {
   };
 }
 
-test("o progresso indeterminado com format nao escreve NaN nem na tela nem no leitor de tela", () => {
+test("indeterminate progress with format writes NaN neither on screen nor to the screen reader", () => {
   for (const value of [null, undefined as unknown as null, Number.NaN]) {
     const { text, spoken } = read(
       <Progress value={value} showValue format="percent" label="Enviando" />,
@@ -26,7 +26,7 @@ test("o progresso indeterminado com format nao escreve NaN nem na tela nem no le
   }
 });
 
-test("o progresso acima do maximo com format escreve o maximo, igual a barra", () => {
+test("progress above the maximum with format writes the maximum, like the bar", () => {
   const { text, spoken, width } = read(
     <Progress value={150} showValue format="percent" label="Enviando" />,
   );
@@ -36,7 +36,7 @@ test("o progresso acima do maximo com format escreve o maximo, igual a barra", (
   expect(spoken).toBe("100%");
 });
 
-test("o medidor abaixo do minimo com format escreve o minimo, e acima do maximo escreve o maximo", () => {
+test("the meter below the minimum with format writes the minimum, and above the maximum writes the maximum", () => {
   const below = read(<Meter value={-20} showValue format="integer" label="Cota" />);
   expect(below.text).not.toContain("-20");
   expect(below.spoken).toBe("0");
@@ -46,7 +46,7 @@ test("o medidor abaixo do minimo com format escreve o minimo, e acima do maximo 
   expect(above.spoken).toBe("100%");
 });
 
-test("dentro da faixa o format continua escrevendo o valor", () => {
+test("within range format keeps writing the value", () => {
   expect(read(<Progress value={42} showValue format="percent" label="Enviando" />).spoken).toBe(
     "42%",
   );

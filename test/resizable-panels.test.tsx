@@ -44,7 +44,7 @@ function three(props: Partial<ResizablePanelGroupProps> = {}) {
 
 const flex = (id: string) => document.getElementById(id)!.style.flexGrow;
 
-test("tres paineis: o que nao diz medida fica com o que sobra, e cada divisoria mede o painel antes dela", () => {
+test("three panels: the one with no size takes what is left, and each divider measures the panel before it", () => {
   three();
 
   expect(flex("arvore")).toBe("20");
@@ -59,7 +59,7 @@ test("tres paineis: o que nao diz medida fica com o que sobra, e cada divisoria 
   expect(second!.getAttribute("aria-valuenow")).toBe("50");
 });
 
-test("a seta move so os dois vizinhos, e o layout inteiro sai no onLayoutChange", () => {
+test("the arrow moves only the two neighbors, and the whole layout comes out in onLayoutChange", () => {
   const { layouts } = three();
   const handle = screen.getByRole("separator", { name: "Entre editor e inspetor" });
 
@@ -69,7 +69,7 @@ test("a seta move so os dois vizinhos, e o layout inteiro sai no onLayoutChange"
   expect(handle.getAttribute("aria-valuenow")).toBe("52");
 });
 
-test("Home e End levam aos extremos que as medidas dos vizinhos permitem", () => {
+test("Home and End go to the extremes the neighbors' sizes allow", () => {
   const { layouts } = three();
   const handle = screen.getByRole("separator", { name: "Entre editor e inspetor" });
 
@@ -83,7 +83,7 @@ test("Home e End levam aos extremos que as medidas dos vizinhos permitem", () =>
   expect(layouts.at(-1)).toEqual([20, 20, 60]);
 });
 
-test("a seta para no minimo de quem encolhe, e nao empurra o painel abaixo dele", () => {
+test("the arrow stops at the shrinking panel's minimum, and does not push the panel below it", () => {
   const { layouts } = three();
   const handle = screen.getByRole("separator", { name: "Entre árvore e editor" });
 
@@ -116,7 +116,7 @@ function collapsible() {
   return { ...view, calls, ref, handle: screen.getByRole("separator") };
 }
 
-test("Enter recolhe o painel colapsavel, e Enter de novo o devolve a medida de antes", () => {
+test("Enter collapses the collapsible panel, and Enter again restores its previous size", () => {
   const { calls, handle } = collapsible();
 
   fireEvent.keyDown(handle, { key: "Enter" });
@@ -135,7 +135,7 @@ test("Enter recolhe o painel colapsavel, e Enter de novo o devolve a medida de a
   expect(calls).toEqual(["collapse", "expand"]);
 });
 
-test("abaixo do minimo o painel colapsavel recolhe, e nao para num tamanho que ele nao aceita", () => {
+test("below the minimum the collapsible panel collapses, and does not stop at a size it does not accept", () => {
   const { handle } = collapsible();
 
   expect(handle.getAttribute("aria-valuemin")).toBe("0");
@@ -153,7 +153,7 @@ test("abaixo do minimo o painel colapsavel recolhe, e nao para num tamanho que e
   expect(flex("lateral")).toBe("0");
 });
 
-test("Enter numa divisoria sem vizinho colapsavel nao faz nada e nao engole a tecla", () => {
+test("Enter on a divider without a collapsible neighbor does nothing and does not swallow the key", () => {
   three();
   const handle = screen.getByRole("separator", { name: "Entre árvore e editor" });
 
@@ -164,7 +164,7 @@ test("Enter numa divisoria sem vizinho colapsavel nao faz nada e nao engole a te
   expect(flex("arvore")).toBe("20");
 });
 
-test("a API por ref recolhe, expande e redimensiona", () => {
+test("the ref API collapses, expands and resizes", () => {
   const { ref, calls } = collapsible();
 
   act(() => ref.current!.collapse());
@@ -185,7 +185,7 @@ function mockBox(group: HTMLElement) {
     ({ left: 0, right: 600, width: 600, top: 0, bottom: 300, height: 300 }) as DOMRect;
 }
 
-test("arrastar alem da metade do minimo recolhe; antes da metade, o painel para no minimo", () => {
+test("dragging past half the minimum collapses; before half, the panel stops at the minimum", () => {
   const { handle } = collapsible();
   handle.setPointerCapture = () => {};
   mockBox(handle.parentElement!);
@@ -200,7 +200,7 @@ test("arrastar alem da metade do minimo recolhe; antes da metade, o painel para 
   fireEvent.pointerUp(window, { pointerId: 1 });
 });
 
-test("em rtl a seta anda para o lado que a pessoa ve, e o arraste mede da borda da leitura", () => {
+test("in rtl the arrow moves toward the side the person sees, and the drag measures from the reading edge", () => {
   const layouts: number[][] = [];
   const view = withTheme(
     <ResizablePanelGroup onLayoutChange={(sizes) => layouts.push(sizes)}>
@@ -223,7 +223,7 @@ test("em rtl a seta anda para o lado que a pessoa ve, e o arraste mede da borda 
   fireEvent.pointerUp(window, { pointerId: 1 });
 });
 
-test("grupo aninhado: a divisoria de dentro mexe so no grupo de dentro", () => {
+test("nested group: the inner divider only moves the inner group", () => {
   const outer: number[][] = [];
   const inner: number[][] = [];
   withTheme(
@@ -266,7 +266,7 @@ function memory(): ResizableStorage & { data: Map<string, string> } {
   };
 }
 
-test("o autoSaveId guarda o layout e o devolve na proxima montagem", () => {
+test("autoSaveId saves the layout and restores it on the next mount", () => {
   const storage = memory();
   const first = three({ autoSaveId: "editor", storage });
 
@@ -282,7 +282,7 @@ test("o autoSaveId guarda o layout e o devolve na proxima montagem", () => {
   expect(flex("editor")).toBe("48");
 });
 
-test("layout guardado que nao cabe nos paineis de hoje e ignorado, e o grupo volta ao defaultSize", () => {
+test("a saved layout that does not fit today's panels is ignored, and the group goes back to defaultSize", () => {
   const storage = memory();
   storage.data.set("rivocode-ui:resizable:editor", JSON.stringify([50, 50]));
   three({ autoSaveId: "editor", storage });
@@ -290,7 +290,7 @@ test("layout guardado que nao cabe nos paineis de hoje e ignorado, e o grupo vol
   expect(flex("arvore")).toBe("20");
 });
 
-test("storage que lanca nao derruba a tela", () => {
+test("a throwing storage does not crash the screen", () => {
   const broken: ResizableStorage = {
     getItem: () => {
       throw new Error("modo privado");
@@ -308,7 +308,7 @@ test("storage que lanca nao derruba a tela", () => {
   expect(flex("arvore")).toBe("22");
 });
 
-test("o layout controlado manda, e a divisoria so propoe", () => {
+test("the controlled layout rules, and the divider only proposes", () => {
   const layouts: number[][] = [];
   withTheme(
     <ResizablePanelGroup layout={[40, 60]} onLayoutChange={(sizes) => layouts.push(sizes)}>
@@ -324,7 +324,7 @@ test("o layout controlado manda, e a divisoria so propoe", () => {
   expect(flex("a")).toBe("40");
 });
 
-test("o alvo da divisoria chega aos 24px da WCAG 2.5.8 nas duas orientacoes", () => {
+test("the divider target reaches the 24px of WCAG 2.5.8 in both orientations", () => {
   withTheme(
     <ResizablePanelGroup>
       <ResizablePanel>A</ResizablePanel>
@@ -349,7 +349,7 @@ test("o alvo da divisoria chega aos 24px da WCAG 2.5.8 nas duas orientacoes", ()
   expect(lying).not.toContain("after:-inset-x-3");
 });
 
-test("a pegadinha do withHandle e desenho, some para o leitor de tela e aceita classe", () => {
+test("the withHandle grip is decoration, hidden from the screen reader and accepts a class", () => {
   withTheme(
     <ResizablePanelGroup>
       <ResizablePanel>A</ResizablePanel>
@@ -363,7 +363,7 @@ test("a pegadinha do withHandle e desenho, some para o leitor de tela e aceita c
   expect(grip.className.split(" ")).toContain("marca-da-pega");
 });
 
-test("a divisoria sem nome de quem chama ainda tem um, e o aria-labelledby vence o padrao", () => {
+test("a divider without a caller-given name still has one, and aria-labelledby beats the default", () => {
   withTheme(
     <ResizablePanelGroup>
       <ResizablePanel>A</ResizablePanel>
@@ -379,7 +379,7 @@ test("a divisoria sem nome de quem chama ainda tem um, e o aria-labelledby vence
   expect(screen.getByRole("separator", { name: "Largura do inspetor" })).toBeDefined();
 });
 
-test("painel e divisoria fora de um grupo montam sem quebrar, e a divisoria solta sai do Tab", () => {
+test("panel and divider outside a group mount without breaking, and the loose divider leaves the Tab order", () => {
   withTheme(
     <>
       <ResizablePanel defaultSize={30}>Solto</ResizablePanel>
@@ -392,7 +392,7 @@ test("painel e divisoria fora de um grupo montam sem quebrar, e a divisoria solt
   expect(handle.hasAttribute("aria-valuenow")).toBe(false);
 });
 
-test("o painel que volta a aparecer volta no defaultSize, e o espaco sai de quem ja estava", () => {
+test("a panel that reappears comes back at defaultSize, and the space comes from those already there", () => {
   function Group({ show }: { show: boolean }) {
     return (
       <RivoProvider scope="local">
@@ -427,7 +427,7 @@ test("o painel que volta a aparecer volta no defaultSize, e o espaco sai de quem
   expect([flex("lista"), flex("nota"), flex("inspetor")]).toEqual(["20", "50", "30"]);
 });
 
-test("o ref do grupo e do Splitter chega ao no raiz", () => {
+test("the group and Splitter ref reach the root node", () => {
   const group = createRef<HTMLDivElement>();
   const splitter = createRef<HTMLDivElement>();
   withTheme(
@@ -445,7 +445,7 @@ test("o ref do grupo e do Splitter chega ao no raiz", () => {
   expect(splitter.current).toBe(screen.getByTestId("divisor"));
 });
 
-test("a linha da divisoria pinta em border-strong, que mede 3:1 sobre o fundo, e nao em border", () => {
+test("the divider line paints in border-strong, which measures 3:1 on the background, and not in border", () => {
   withTheme(
     <>
       <ResizablePanelGroup>
@@ -470,7 +470,7 @@ test("a linha da divisoria pinta em border-strong, que mede 3:1 sobre o fundo, e
   expect(measured).toContain("--rc-surface");
 });
 
-test("com o painel da ponta recolhido, a divisoria se afasta da borda para a pega e o anel caberem", () => {
+test("with the end panel collapsed, the divider moves away from the edge so the grip and the ring fit", () => {
   function Edge({ vertical = false }: { vertical?: boolean }) {
     return (
       <ResizablePanelGroup orientation={vertical ? "vertical" : "horizontal"}>

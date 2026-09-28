@@ -40,14 +40,14 @@ export type ToggleGroupItem = { label: string; value: string };
 
 export type ToggleGroupProps = {
   items: ToggleGroupItem[];
-  /** Os valores apertados. Sem `multiple`, no maximo um. */
+  /** The pressed values. Without `multiple`, at most one. */
   value: string[];
   onValueChange: (value: string[]) => void;
   /**
-   * `multiple` aceita varios ao mesmo tempo; o padrao desaperta o anterior.
-   * O nome e o sentido sao os do web: a mesma peca nao pode responder ao
-   * contrario de cada lado, e antes disto o nativo pedia `single` e vinha
-   * multiplo por padrao - o oposto exato.
+   * `multiple` accepts several at once; the default unpresses the previous one.
+   * The name and meaning are the web's: the same component cannot respond the
+   * opposite way on each side, and before this the native side asked for
+   * `single` and was multiple by default - the exact opposite.
    */
   multiple?: boolean;
   disabled?: boolean;

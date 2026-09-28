@@ -14,9 +14,7 @@ export const itemVariants = cva(
   {
     variants: {
       variant: {
-        /** Linha solta, para lista dentro de card ou de folha. */
         plain: "px-1 py-2",
-        /** Linha com moldura propria, para grade de escolhas. */
         outline: "rounded-lg border border-border bg-surface p-3",
       },
       interactive: {
@@ -35,10 +33,10 @@ export const itemVariants = cva(
 export type ItemProps = ComponentProps<"div"> &
   VariantProps<typeof itemVariants> & {
     /**
-     * Troca o elemento renderizado mantendo a aparencia:
-     * `<Item render={<a href="..." />}>`. E o par obrigatorio do
-     * `interactive`, porque cor de passagem em `div` nao vira alvo de
-     * teclado - o JSDoc ja mandava usar os dois juntos e a prop nao existia.
+     * Swaps the rendered element while keeping the look:
+     * `<Item render={<a href="..." />}>`. It is the required partner of
+     * `interactive`, because a hover color on a `div` does not become a keyboard
+     * target - the JSDoc already said to use both together and the prop did not exist.
      */
     render?: ReactElement;
   };

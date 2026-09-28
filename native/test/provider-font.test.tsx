@@ -31,8 +31,8 @@ function warned(run: () => void): string[] {
   }
 }
 
-describe("a fonte que o app declara", () => {
-  test("sem `fonts`, o texto corrido sai na do sistema e a mono na do aparelho", () => {
+describe("the font the app declares", () => {
+  test("without `fonts`, body text comes out in the system font and mono in the device's", () => {
     expect(systemFonts.sans).toBeUndefined();
     expect(systemFonts.display).toBeUndefined();
 
@@ -40,7 +40,7 @@ describe("a fonte que o app declara", () => {
     expect(families(render(<Code>app.json</Code>))).toEqual([mono]);
   });
 
-  test("declarada uma vez, ela veste corrido, titulo e largura fixa", () => {
+  test("declared once, it dresses body, heading and fixed width", () => {
     expect(families(render(<Text>Nota emitida</Text>, { fonts: BRAND }))).toEqual(["Manrope"]);
     expect(families(render(<Code>app.json</Code>, { fonts: BRAND }))).toEqual(["JetBrainsMono"]);
 
@@ -54,7 +54,7 @@ describe("a fonte que o app declara", () => {
     expect(families(card)).toEqual(["Poppins"]);
   });
 
-  test("o titulo cai na `sans` quando o app so carregou uma familia", () => {
+  test("the heading falls back to `sans` when the app loaded only one family", () => {
     const card = render(
       <Card>
         <CardTitle>Faturamento</CardTitle>
@@ -65,11 +65,11 @@ describe("a fonte que o app declara", () => {
     expect(families(card)).toEqual(["Manrope"]);
   });
 
-  test("declarar so a `sans` nao tira a mono de quem precisa dela", () => {
+  test("declaring only `sans` does not take mono away from whoever needs it", () => {
     expect(families(render(<Code>app.json</Code>, { fonts: { sans: "Manrope" } }))).toEqual([mono]);
   });
 
-  test("o estilo de quem chama continua vencendo, com o do provider por baixo", () => {
+  test("the caller's style keeps winning, with the provider's underneath", () => {
     const screen = render(<Text style={{ fontFamily: "Courier New" }}>emitida_em</Text>, {
       fonts: BRAND,
     });
@@ -78,7 +78,7 @@ describe("a fonte que o app declara", () => {
     expect([node.props.style].flat(3).at(-1)).toEqual({ fontFamily: "Courier New" });
   });
 
-  test("fora do provider, o hook devolve a do sistema em vez de explodir", () => {
+  test("outside the provider, the hook returns the system one instead of blowing up", () => {
     function Probe() {
       return <Text>{String(useRivoFonts().sans)}</Text>;
     }
@@ -88,8 +88,8 @@ describe("a fonte que o app declara", () => {
   });
 });
 
-describe("o nome de fonte errado", () => {
-  test("uma pilha de CSS é acusada, e não sai calada na fonte do sistema", () => {
+describe("the wrong font name", () => {
+  test("a CSS stack is flagged, and does not silently come out in the system font", () => {
     const [message] = warned(() =>
       render(<Text>Nota</Text>, { fonts: { sans: "Manrope, system-ui, sans-serif" } }),
     );
@@ -99,32 +99,32 @@ describe("o nome de fonte errado", () => {
     expect(message).toContain("Manrope, system-ui, sans-serif");
   });
 
-  test("a familia generica do CSS é acusada - foi ela que derrubou a mono", () => {
+  test("the CSS generic family is flagged - it is what brought mono down", () => {
     const [message] = warned(() => render(<Text>Nota</Text>, { fonts: { mono: "ui-monospace" } }));
 
     expect(message).toContain("ui-monospace");
-    expect(message).toContain("genérica");
+    expect(message).toContain("generic");
   });
 
-  test("aspas, variavel de CSS e nome vazio saem todos no mesmo aviso", () => {
+  test("quotes, a CSS variable and an empty name all come out in the same warning", () => {
     const [message] = warned(() =>
       render(<Text>Nota</Text>, {
         fonts: { sans: '"Manrope"', display: "var(--rc-font-display)", mono: "  " },
       }),
     );
 
-    expect(message).toContain("aspas");
-    expect(message).toContain("variável");
-    expect(message).toContain("vazia");
+    expect(message).toContain("quotes");
+    expect(message).toContain("CSS variable");
+    expect(message).toContain("arrived empty");
   });
 
-  test("`monospace` só vale no Android, e o duble responde iOS", () => {
+  test("`monospace` only applies on Android, and the double answers iOS", () => {
     const [message] = warned(() => render(<Text>Nota</Text>, { fonts: { mono: "monospace" } }));
 
     expect(message).toContain("Android");
   });
 
-  test("com o `isLoaded` do expo-font, a familia que nao chegou ao aparelho é nomeada", () => {
+  test("with expo-font's `isLoaded`, a family that did not reach the device is named", () => {
     const loaded = new Set(["Manrope"]);
     const [message] = warned(() =>
       render(<Text>Nota</Text>, {
@@ -138,7 +138,7 @@ describe("o nome de fonte errado", () => {
     expect(message).not.toContain('"Manrope" não');
   });
 
-  test("nome real e carregado nao rende aviso nenhum", () => {
+  test("a real, loaded name yields no warning at all", () => {
     const messages = warned(() =>
       render(<Text>Nota</Text>, { fonts: BRAND, isFontLoaded: () => true }),
     );

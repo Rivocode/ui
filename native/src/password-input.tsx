@@ -8,11 +8,11 @@ export type PasswordInputProps = Omit<
   InputGroupProps,
   "actions" | "prefix" | "suffix" | "secureTextEntry" | "classNames"
 > & {
-  /** O que o leitor de tela ouve no botão, antes e depois de revelar. */
+  /** What the screen reader hears on the button, before and after revealing. */
   labels?: { show: string; hide: string };
   /**
-   * Classe por parte: `wrapper` (a moldura, o mesmo no de `className`), `input`
-   * (o campo) e `action` (o botao do olho).
+   * Class per part: `wrapper` (the frame, the same node as `className`),
+   * `input` (the field) and `action` (the eye button).
    */
   classNames?: Slots<"wrapper" | "input" | "action">;
 };

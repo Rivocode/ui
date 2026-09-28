@@ -21,8 +21,8 @@ afterEach(() => {
 
 const advance = (ms: number) => act(() => void jest.advanceTimersByTime(ms));
 
-describe("debounce e throttle puros", () => {
-  test("debounce roda uma vez so, com o ultimo argumento", () => {
+describe("pure debounce and throttle", () => {
+  test("debounce runs only once, with the last argument", () => {
     const seen: number[] = [];
     const scheduled = debounce((value: number) => seen.push(value), 100);
     scheduled.run(1);
@@ -33,7 +33,7 @@ describe("debounce e throttle puros", () => {
     expect(scheduled.isPending()).toBe(false);
   });
 
-  test("debounce: flush roda ja, e cancel descarta", () => {
+  test("debounce: flush runs now, and cancel discards", () => {
     const seen: number[] = [];
     const scheduled = debounce((value: number) => seen.push(value), 100);
     scheduled.run(1);
@@ -45,7 +45,7 @@ describe("debounce e throttle puros", () => {
     expect(seen).toEqual([1]);
   });
 
-  test("throttle roda na hora, segura o resto e entrega o ultimo no fim da janela", () => {
+  test("throttle runs immediately, holds the rest and delivers the last one at the end of the window", () => {
     const seen: number[] = [];
     const scheduled = throttle((value: number) => seen.push(value), 100);
     scheduled.run(1);
@@ -63,7 +63,7 @@ describe("debounce e throttle puros", () => {
     expect(seen).toEqual([1, 3, 4, 5]);
   });
 
-  test("throttle: flush entrega o que esperava, e cancel descarta", () => {
+  test("throttle: flush delivers what was waiting, and cancel discards", () => {
     const seen: number[] = [];
     const scheduled = throttle((value: number) => seen.push(value), 100);
     scheduled.run(1);
@@ -79,7 +79,7 @@ describe("debounce e throttle puros", () => {
 });
 
 describe("useDebouncedValue", () => {
-  test("so assenta depois da pausa, e cancel segura o valor de antes", () => {
+  test("settles only after the pause, and cancel keeps the previous value", () => {
     const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 200), {
       initialProps: { value: "a" },
     });
@@ -98,7 +98,7 @@ describe("useDebouncedValue", () => {
     expect(result.current[0]).toBe("abc");
   });
 
-  test("desmontar limpa o timer", () => {
+  test("unmounting clears the timer", () => {
     const { unmount, rerender } = renderHook(({ value }) => useDebouncedValue(value, 200), {
       initialProps: { value: 1 },
     });
@@ -108,8 +108,8 @@ describe("useDebouncedValue", () => {
   });
 });
 
-describe("useDebouncedCallback e useThrottledCallback", () => {
-  test("o debounce chama a funcao mais nova, uma vez", () => {
+describe("useDebouncedCallback and useThrottledCallback", () => {
+  test("debounce calls the newest function, once", () => {
     const first = mock((value: string) => void value);
     const second = mock((value: string) => void value);
     const { result, rerender } = renderHook(({ callback }) => useDebouncedCallback(callback, 100), {
@@ -126,14 +126,14 @@ describe("useDebouncedCallback e useThrottledCallback", () => {
     expect(second).toHaveBeenCalledWith("b");
   });
 
-  test("a funcao devolvida e estavel entre renders com o mesmo wait", () => {
+  test("the returned function is stable across renders with the same wait", () => {
     const { result, rerender } = renderHook(() => useDebouncedCallback(() => {}, 100));
     const before = result.current;
     rerender();
     expect(result.current).toBe(before);
   });
 
-  test("desmontar cancela o que estava agendado", () => {
+  test("unmounting cancels what was scheduled", () => {
     const callback = mock(() => {});
     const { result, unmount } = renderHook(() => useDebouncedCallback(callback, 100));
     act(() => result.current());
@@ -143,7 +143,7 @@ describe("useDebouncedCallback e useThrottledCallback", () => {
     expect(callback).not.toHaveBeenCalled();
   });
 
-  test("o throttle entrega o primeiro na hora e o ultimo no fim da janela", () => {
+  test("throttle delivers the first one immediately and the last one at the end of the window", () => {
     const callback = mock((value: number) => void value);
     const { result, unmount } = renderHook(() => useThrottledCallback(callback, 100));
 
@@ -164,8 +164,8 @@ describe("useDebouncedCallback e useThrottledCallback", () => {
   });
 });
 
-describe("trocar o wait com uma chamada pendente", () => {
-  test("o debounce entrega a pendente, e a funcao devolvida continua a mesma", () => {
+describe("changing wait with a pending call", () => {
+  test("debounce delivers the pending call, and the returned function stays the same", () => {
     const callback = mock((value: string) => void value);
     const { result, rerender } = renderHook(({ wait }) => useDebouncedCallback(callback, wait), {
       initialProps: { wait: 100 },
@@ -186,7 +186,7 @@ describe("trocar o wait com uma chamada pendente", () => {
     expect(callback.mock.calls).toEqual([["a"], ["b"]]);
   });
 
-  test("o throttle entrega a que esperava no fim da janela, e a janela seguinte usa o wait novo", () => {
+  test("throttle delivers the waiting call at the end of the window, and the next window uses the new wait", () => {
     const callback = mock((value: number) => void value);
     const { result, rerender } = renderHook(({ wait }) => useThrottledCallback(callback, wait), {
       initialProps: { wait: 100 },
@@ -208,7 +208,7 @@ describe("trocar o wait com uma chamada pendente", () => {
     expect(callback.mock.calls).toEqual([[1], [2], [3]]);
   });
 
-  test("desmontar depois de trocar o wait continua cancelando", () => {
+  test("unmounting after changing wait still cancels", () => {
     const callback = mock(() => {});
     const { result, rerender, unmount } = renderHook(
       ({ wait }) => useDebouncedCallback(callback, wait),
@@ -223,8 +223,8 @@ describe("trocar o wait com uma chamada pendente", () => {
   });
 });
 
-describe("useInterval e useTimeout", () => {
-  test("o intervalo repete, pausa com null e para no desmonte", () => {
+describe("useInterval and useTimeout", () => {
+  test("the interval repeats, pauses with null and stops on unmount", () => {
     const tick = mock(() => {});
     const { rerender, unmount } = renderHook(({ delay }) => useInterval(tick, delay), {
       initialProps: { delay: 100 as number | null },
@@ -245,7 +245,7 @@ describe("useInterval e useTimeout", () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 
-  test("o intervalo chama a funcao mais nova sem reiniciar a contagem", () => {
+  test("the interval calls the newest function without restarting the count", () => {
     const first = mock(() => {});
     const second = mock(() => {});
     const { rerender } = renderHook(({ callback }) => useInterval(callback, 100), {
@@ -258,7 +258,7 @@ describe("useInterval e useTimeout", () => {
     expect(second).toHaveBeenCalledTimes(1);
   });
 
-  test("o timeout roda uma vez, clear cancela e reset recomeca", () => {
+  test("the timeout runs once, clear cancels and reset restarts", () => {
     const done = mock(() => {});
     const { result, unmount } = renderHook(() => useTimeout(done, 100));
 
@@ -281,7 +281,7 @@ describe("useInterval e useTimeout", () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 
-  test("com null o timeout nao agenda nada", () => {
+  test("with null the timeout schedules nothing", () => {
     const done = mock(() => {});
     renderHook(() => useTimeout(done, null));
     expect(jest.getTimerCount()).toBe(0);
@@ -289,7 +289,7 @@ describe("useInterval e useTimeout", () => {
 });
 
 describe("useIdle", () => {
-  test("fica ocioso depois do prazo, e qualquer atividade acorda", () => {
+  test("becomes idle after the timeout, and any activity wakes it", () => {
     const { result, unmount } = renderHook(() => useIdle(1000));
     expect(result.current).toBe(false);
 
@@ -307,7 +307,7 @@ describe("useIdle", () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 
-  test("desmontar tira a escuta da janela", () => {
+  test("unmounting removes the window listener", () => {
     const { unmount } = renderHook(() => useIdle(1000));
     unmount();
     fireEvent.keyDown(window, { key: "a" });

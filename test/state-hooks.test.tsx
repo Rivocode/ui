@@ -23,7 +23,7 @@ import {
 import { clampCount, mergeState, nextOption } from "../src/shared/state";
 
 describe("useDisclosure", () => {
-  test("abre, fecha e alterna, e so avisa na passagem de estado", () => {
+  test("opens, closes and toggles, and only notifies on state transitions", () => {
     const onOpen = mock(() => {});
     const onClose = mock(() => {});
     const { result } = renderHook(() => useDisclosure(false, { onOpen, onClose }));
@@ -41,12 +41,12 @@ describe("useDisclosure", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  test("respeita o estado inicial", () => {
+  test("respects the initial state", () => {
     const { result } = renderHook(() => useDisclosure(true));
     expect(result.current[0]).toBe(true);
   });
 
-  test("duas chamadas no mesmo act leem o estado da primeira, e nao o do render", () => {
+  test("two calls in the same act read the state from the first, and not the render's", () => {
     const onOpen = mock(() => {});
     const onClose = mock(() => {});
     const { result } = renderHook(() => useDisclosure(false, { onOpen, onClose }));
@@ -67,14 +67,14 @@ describe("useDisclosure", () => {
     expect(onOpen).toHaveBeenCalledTimes(2);
   });
 
-  test("os handlers sao os mesmos entre renders, abrindo ou fechando", () => {
+  test("the handlers are the same across renders, opening or closing", () => {
     const { result } = renderHook(() => useDisclosure(false, { onOpen: () => {} }));
     const before = result.current[1];
     act(() => result.current[1].open());
     expect(result.current[1]).toBe(before);
   });
 
-  test("o onOpen chamado e o do render mais novo", () => {
+  test("the onOpen called is the one from the newest render", () => {
     const first = mock(() => {});
     const second = mock(() => {});
     const { result, rerender } = renderHook(({ onOpen }) => useDisclosure(false, { onOpen }), {
@@ -88,7 +88,7 @@ describe("useDisclosure", () => {
 });
 
 describe("useCounter", () => {
-  test("anda pelo passo e para no piso e no teto", () => {
+  test("moves by step and stops at the floor and ceiling", () => {
     const { result } = renderHook(() => useCounter(1, { min: 0, max: 3, step: 2 }));
 
     act(() => result.current[1].increment());
@@ -104,19 +104,19 @@ describe("useCounter", () => {
     expect(result.current[0]).toBe(1);
   });
 
-  test("o valor inicial fora da faixa ja nasce preso nela", () => {
+  test("an initial value outside the range starts clamped to it", () => {
     const { result } = renderHook(() => useCounter(10, { max: 5 }));
     expect(result.current[0]).toBe(5);
   });
 
-  test("clampCount sem limite devolve o proprio valor", () => {
+  test("clampCount without limits returns the value itself", () => {
     expect(clampCount(-7)).toBe(-7);
     expect(clampCount(4, 5, 9)).toBe(5);
   });
 });
 
 describe("useToggle", () => {
-  test("sem opcoes, alterna entre false e true", () => {
+  test("without options, toggles between false and true", () => {
     const { result } = renderHook(() => useToggle());
     expect(result.current[0]).toBe(false);
     act(() => result.current[1]());
@@ -125,7 +125,7 @@ describe("useToggle", () => {
     expect(result.current[0]).toBe(true);
   });
 
-  test("com opcoes, gira nelas e aceita um valor explicito", () => {
+  test("with options, cycles through them and accepts an explicit value", () => {
     const options = ["claro", "escuro", "sistema"] as const;
     const { result } = renderHook(() => useToggle(options));
 
@@ -138,25 +138,25 @@ describe("useToggle", () => {
     expect(result.current[0]).toBe("sistema");
   });
 
-  test("argumento que nao e opcao, como o evento de um onClick, so alterna", () => {
+  test("an argument that is not an option, like an onClick event, just toggles", () => {
     const { result } = renderHook(() => useToggle());
     const toggle = result.current[1] as (value?: unknown) => void;
     act(() => toggle({ type: "click" }));
     expect(result.current[0]).toBe(true);
   });
 
-  test("nextOption volta ao comeco depois da ultima", () => {
+  test("nextOption goes back to the start after the last one", () => {
     expect(nextOption(["a", "b"], "b")).toBe("a");
   });
 
-  test("nextOption sem opcao devolve o valor atual, e nao undefined", () => {
+  test("nextOption without options returns the current value, and not undefined", () => {
     expect(nextOption([], "a")).toBe("a");
     expect(nextOption<number>([], 0)).toBe(0);
   });
 });
 
 describe("useListState", () => {
-  test("cada operacao devolve uma lista nova, sem mexer na anterior", () => {
+  test("each operation returns a new list, without touching the previous one", () => {
     const { result } = renderHook(() => useListState(["a", "b", "c"]));
     const before = result.current[0];
 
@@ -198,14 +198,14 @@ describe("useListState", () => {
     expect(result.current[0]).toEqual([]);
   });
 
-  test("os handlers sao os mesmos entre renders", () => {
+  test("the handlers are the same across renders", () => {
     const { result, rerender } = renderHook(() => useListState<number>());
     const first = result.current[1];
     rerender();
     expect(result.current[1]).toBe(first);
   });
 
-  test("indice fora da lista nao estraga nada", () => {
+  test("an index outside the list breaks nothing", () => {
     const list = Object.freeze([1, 2, 3]);
     expect(reorderItems(list, 0, 9)).toEqual([1, 2, 3]);
     expect(swapItems(list, -1, 2)).toEqual([1, 2, 3]);
@@ -215,7 +215,7 @@ describe("useListState", () => {
     expect(appendItems(list, [])).not.toBe(list);
   });
 
-  test("insertItems com indice que nao e numero poe no fim, e fracao arredonda para baixo", () => {
+  test("insertItems with a non-number index puts at the end, and a fraction rounds down", () => {
     const list = Object.freeze([1, 2, 3]);
     expect(insertItems(list, Number.NaN, [4])).toEqual([1, 2, 3, 4]);
     expect(insertItems(list, Number.POSITIVE_INFINITY, [4])).toEqual([1, 2, 3, 4]);
@@ -225,7 +225,7 @@ describe("useListState", () => {
 });
 
 describe("useSetState", () => {
-  test("mescla o parcial em vez de substituir", () => {
+  test("merges the partial instead of replacing", () => {
     const { result } = renderHook(() => useSetState({ page: 1, query: "", open: false }));
 
     act(() => result.current[1]({ query: "nota" }));
@@ -235,14 +235,14 @@ describe("useSetState", () => {
     expect(result.current[0]).toEqual({ page: 2, query: "nota", open: false });
   });
 
-  test("mergeState nao muta o objeto de antes", () => {
+  test("mergeState does not mutate the previous object", () => {
     const before: { a: number; b: number } = Object.freeze({ a: 1, b: 2 });
     expect(mergeState(before, { b: 3 })).toEqual({ a: 1, b: 3 });
   });
 });
 
 describe("usePrevious", () => {
-  test("devolve o valor anterior diferente, e nao o do render anterior", () => {
+  test("returns the previous different value, and not the previous render's", () => {
     const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
       initialProps: { value: 1 },
     });
@@ -259,20 +259,20 @@ describe("usePrevious", () => {
   });
 });
 
-describe("useIsFirstRender e useMounted", () => {
-  test("useIsFirstRender e verdadeiro so no primeiro render", () => {
+describe("useIsFirstRender and useMounted", () => {
+  test("useIsFirstRender is true only on the first render", () => {
     const { result, rerender } = renderHook(() => useIsFirstRender());
     expect(result.current).toBe(true);
     rerender();
     expect(result.current).toBe(false);
   });
 
-  test("useMounted fica verdadeiro depois de montar", () => {
+  test("useMounted becomes true after mount", () => {
     const { result } = renderHook(() => useMounted());
     expect(result.current).toBe(true);
   });
 
-  test("no servidor, useMounted e false e useIsFirstRender e true", () => {
+  test("on the server, useMounted is false and useIsFirstRender is true", () => {
     function Probe() {
       const mounted = useMounted();
       const first = useIsFirstRender();

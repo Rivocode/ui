@@ -82,7 +82,7 @@ const donut = (servico: number, produto: number) => (
 describe("ChartDonut", () => {
   const middle = (44 + 44 * (1 - 0.34)) / 2;
 
-  test("entra varrendo: cada fatia nasce no zero e anda ate o angulo final no tempo slow", () => {
+  test("enters sweeping: each slice starts at zero and moves to its final angle in the slow duration", () => {
     const screen = render(donut(60, 40));
     expect(sharedStarts).toEqual([0, 0, 0, 0]);
     expect(timings().map((call) => call.to)).toEqual([1, 215, 217, 359]);
@@ -94,7 +94,7 @@ describe("ChartDonut", () => {
     expect(timings()).toEqual([]);
   });
 
-  test("com dado novo, cada fatia anda do angulo de antes ate o novo", () => {
+  test("with new data, each slice moves from its previous angle to the new one", () => {
     const screen = render(donut(60, 40));
     const before = paths(screen);
     quiet();
@@ -108,7 +108,7 @@ describe("ChartDonut", () => {
     for (const call of timings()) expect(call.config).toEqual(slow);
   });
 
-  test("com reduzir movimento, a fatia nasce no lugar e salta para o valor novo", () => {
+  test("with reduce motion, the slice starts in place and jumps to the new value", () => {
     reduceMotion(true);
     quiet();
     const screen = render(donut(60, 40));
@@ -125,7 +125,7 @@ describe("ChartDonut", () => {
 });
 
 describe("ChartRadial", () => {
-  test("o arco nasce no inicio e varre ate o valor; com o valor novo anda, e o trilho fica parado", () => {
+  test("the arc starts at the beginning and sweeps to the value; with a new value it moves, and the track stays still", () => {
     const screen = render(<ChartRadial value={40} />);
     expect(sharedStarts).toEqual([-135]);
     expect(timings()).toEqual([{ to: -135 + 270 * 0.4, config: slow }]);
@@ -136,7 +136,7 @@ describe("ChartRadial", () => {
     expect(paths(screen)).toEqual([arcPath(42, -135, 135), arcPath(42, -135, -135 + 270 * 0.8)]);
   });
 
-  test("o arco em tracinhos acende do primeiro ate o ultimo aceso", () => {
+  test("the dashed arc lights up from the first to the last lit dash", () => {
     const screen = render(<ChartRadial value={50} variant="segmented" segments={10} />);
     expect(sharedStarts).toEqual([0]);
     expect(timings()).toEqual([{ to: 5, config: slow }]);
@@ -148,7 +148,7 @@ describe("ChartRadial", () => {
     expect(strokes[0]).not.toBe(strokes[9]);
   });
 
-  test("com reduzir movimento, o arco nasce no valor e salta", () => {
+  test("with reduce motion, the arc starts at the value and jumps", () => {
     reduceMotion(true);
     quiet();
     const screen = render(<ChartRadial value={40} />);
@@ -160,12 +160,12 @@ describe("ChartRadial", () => {
   });
 });
 
-describe("ChartBar e ChartLine", () => {
+describe("ChartBar and ChartLine", () => {
   const bar = (y: number, height: number) => (
     <ChartBar x={10} y={y} width={20} height={height} fill="#000" radius={2} />
   );
 
-  test("a barra cresce da base na entrada e, com o valor novo, anda o topo e a altura no tempo slow", () => {
+  test("the bar grows from the base on entry and, with a new value, moves its top and height in the slow duration", () => {
     const screen = render(bar(60, 40));
     expect(sharedStarts).toEqual([10, 100, 20, 0]);
     expect(timings()).toEqual([
@@ -183,7 +183,7 @@ describe("ChartBar e ChartLine", () => {
     expect(byType(screen, "Rect")[0]!.props).toMatchObject({ x: 10, y: 20, width: 20, height: 80 });
   });
 
-  test("a linha sobe da base na entrada, anda ponto a ponto com a mesma contagem, e troca de uma vez sem ela", () => {
+  test("the line rises from the base on entry, moves point by point with the same count, and swaps at once without it", () => {
     const line = (ys: number[], baseline?: number) => (
       <ChartLine
         points={ys.map((y, index) => ({ x: index * 10, y }))}
@@ -211,7 +211,7 @@ describe("ChartBar e ChartLine", () => {
     expect(sharedStarts).toEqual([[0, 40, 10, 40]]);
   });
 
-  test("com reduzir movimento, a barra nasce no lugar e salta", () => {
+  test("with reduce motion, the bar starts in place and jumps", () => {
     reduceMotion(true);
     quiet();
     const screen = render(<ChartBar x={0} y={10} width={4} height={10} fill="#000" />);
@@ -230,7 +230,7 @@ const entering = (screen: ReactTestRenderer) =>
     .filter((built): built is Built => built !== undefined);
 
 describe("Sparkline", () => {
-  test("entra so esmaecendo, no tempo base, e nao anda na troca de dados", () => {
+  test("enters only fading in, in the base duration, and does not move when the data changes", () => {
     const source = readFileSync(
       fileURLToPath(new URL("../src/sparkline.tsx", import.meta.url)),
       "utf8",
@@ -247,7 +247,7 @@ describe("Sparkline", () => {
     expect(timings()).toEqual([]);
   });
 
-  test("com reduzir movimento, a Sparkline aparece parada", () => {
+  test("with reduce motion, the Sparkline appears still", () => {
     reduceMotion(true);
     const screen = render(<Sparkline data={[1, 4, 2]} variant="bar" />);
     expect(entering(screen)).toEqual([]);

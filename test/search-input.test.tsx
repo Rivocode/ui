@@ -13,19 +13,19 @@ function query(props: Partial<React.ComponentProps<typeof SearchInput>> = {}) {
   );
 }
 
-test("é um campo de busca com nome acessível", () => {
+test("is a search field with an accessible name", () => {
   query();
   expect(screen.getByRole("searchbox", { name: "Buscar nota" })).toBeDefined();
 });
 
-test("avisa quem digitou", () => {
+test("notifies whoever typed", () => {
   let text = "";
   query({ onChange: (event) => (text = event.target.value) });
   fireEvent.change(screen.getByRole("searchbox"), { target: { value: "clinica" } });
   expect(text).toBe("clinica");
 });
 
-test("onValueChange entrega o texto, e o onChange continua chamado", () => {
+test("onValueChange delivers the text, and onChange is still called", () => {
   let value = "";
   let changed = "";
   query({ onValueChange: (next) => (value = next), onChange: (event) => (changed = event.target.value) });
@@ -34,7 +34,7 @@ test("onValueChange entrega o texto, e o onChange continua chamado", () => {
   expect(changed).toBe("clinica");
 });
 
-test("sem onClear o esc limpa e avisa o onValueChange com texto vazio", () => {
+test("without onClear, esc clears and notifies onValueChange with empty text", () => {
   let value = "algo";
   query({ defaultValue: "algo", onValueChange: (next) => (value = next) });
   const box = screen.getByRole("searchbox") as HTMLInputElement;
@@ -43,19 +43,19 @@ test("sem onClear o esc limpa e avisa o onValueChange com texto vazio", () => {
   expect(value).toBe("");
 });
 
-test("o atalho aparece quando pedido, e escondido do leitor de tela", () => {
+test("the shortcut shows when asked, and hidden from the screen reader", () => {
   const { container } = query({ shortcut: "mod+k" });
   const kbd = container.querySelector("kbd");
   expect(kbd).not.toBeNull();
   expect(kbd?.closest("[aria-hidden='true']")).not.toBeNull();
 });
 
-test("sem shortcut nao ha kbd", () => {
+test("without shortcut there is no kbd", () => {
   const { container } = query();
   expect(container.querySelector("kbd")).toBeNull();
 });
 
-test("esc limpa o campo quando controlado de fora", () => {
+test("esc clears the field when controlled from outside", () => {
   let text = "algo";
   query({
     value: text,
@@ -66,7 +66,7 @@ test("esc limpa o campo quando controlado de fora", () => {
   expect(text).toBe("");
 });
 
-test("controlado so com onChange, o esc limpa o estado de quem usa, e nao so a tela", () => {
+test("controlled with onChange only, esc clears the consumer's state, and not just the screen", () => {
   function Controlled() {
     const [text, setText] = useState("clinica");
     return (
@@ -84,7 +84,7 @@ test("controlado so com onChange, o esc limpa o estado de quem usa, e nao so a t
   expect(box.value).toBe("");
 });
 
-test("controlado que recusa a troca, o esc nao deixa a tela diferente do estado", () => {
+test("controlled and refusing the change, esc does not leave the screen different from the state", () => {
   render(
     <RivoProvider scope="local">
       <SearchInput aria-label="Buscar nota" value="fixo" onChange={() => {}} />
@@ -96,16 +96,16 @@ test("controlado que recusa a troca, o esc nao deixa a tela diferente do estado"
   expect(box.value).toBe("fixo");
 });
 
-test("acompanha os tres tamanhos, para alinhar com as irmas da barra de filtro", () => {
-  // Ele cravava a altura media e nao tinha `size`. Ao lado de um Select
-  // pequeno numa barra de filtro, a busca saia mais alta e a barra torta.
+test("follows the three sizes, to line up with its siblings in the filter bar", () => {
+  // It hardcoded the medium height and had no `size`. Next to a small Select
+  // in a filter bar, the search came out taller and the bar crooked.
   query({ size: "sm" });
   expect(screen.getByRole("searchbox").className).toContain("--rc-control-sm");
 });
 
-test("o respiro do atalho vence o do tamanho", () => {
-  // O Kbd fica dentro do campo, entao o pr do atalho precisa vir depois do pr
-  // do tamanho no cn - senao o texto digitado passa por baixo dele.
+test("the shortcut padding beats the size padding", () => {
+  // The Kbd sits inside the field, so the shortcut pr must come after the size
+  // pr in cn - otherwise the typed text runs underneath it.
   query({ size: "sm", shortcut: "mod+k" });
   expect(screen.getByRole("searchbox").className).toContain("pr-16");
 });

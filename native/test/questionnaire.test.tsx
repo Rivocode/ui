@@ -79,18 +79,18 @@ const buttonNamed = (screen: Screen, text: string) => named(screen, "button", te
 
 const press = (screen: Screen, label: string) => {
   const target = named(screen, "radio", label) ?? named(screen, "checkbox", label);
-  if (!target) throw new Error(`nao achei ${label}`);
+  if (!target) throw new Error(`not found: ${label}`);
   act(() => target.props.onPress());
 };
 
 const tap = (screen: Screen, text: string) => {
   const button = buttonNamed(screen, text);
-  if (!button) throw new Error(`sem botao ${text}`);
+  if (!button) throw new Error(`no button ${text}`);
   act(() => button.props.onPress());
 };
 
 describe("Questionnaire", () => {
-  test("mostra uma pergunta por vez, com o progresso em texto e em barra", () => {
+  test("shows one question at a time, with progress as text and as a bar", () => {
     const screen = render(<Survey />);
     const text = textOf(screen);
     expect(text).toContain("Pergunta 1 de 3");
@@ -104,7 +104,7 @@ describe("Questionnaire", () => {
     );
   });
 
-  test("obrigatoria sem resposta nao avanca, mostra e anuncia o erro, e nao oferece pular", () => {
+  test("required without an answer does not advance, shows and announces the error, and does not offer to skip", () => {
     const screen = render(<Survey />);
     expect(buttonNamed(screen, "Pular")).toBeUndefined();
     tap(screen, "Próxima");
@@ -113,7 +113,7 @@ describe("Questionnaire", () => {
     expect(spoken.announced).toContain("Responda esta pergunta para continuar.");
   });
 
-  test("responder marca a opcao, limpa o erro, e avancar anuncia a proxima", () => {
+  test("answering checks the option, clears the error, and advancing announces the next one", () => {
     const screen = render(<Survey />);
     tap(screen, "Próxima");
     press(screen, "Lucro Presumido");
@@ -126,7 +126,7 @@ describe("Questionnaire", () => {
     expect(byRole(screen, "checkbox")).toHaveLength(2);
   });
 
-  test("opcional vale por resposta ou por pular; sem nenhum, o erro pede um dos dois", () => {
+  test("optional counts by answering or skipping; with neither, the error asks for one of the two", () => {
     const onStatusChange = mock((_name: string, _status: string) => {});
     const screen = render(<Survey start="canais" onStatusChange={onStatusChange} />);
     tap(screen, "Próxima");
@@ -139,7 +139,7 @@ describe("Questionnaire", () => {
     expect(textOf(screen)).toContain("Pergunta 3 de 3");
   });
 
-  test("o campo outra resposta entra na lista do multiple, e o envio limpa pulada e vazia", () => {
+  test("the other-answer field goes into the multiple list, and submitting clears skipped and empty", () => {
     const onSubmit = mock((_answers: QuestionnaireAnswers) => {});
     const screen = render(<Survey onSubmit={onSubmit} />);
     press(screen, "Simples Nacional");
@@ -158,7 +158,7 @@ describe("Questionnaire", () => {
     });
   });
 
-  test("o envio valida tudo e leva a primeira pergunta invalida", () => {
+  test("submitting validates everything and goes to the first invalid question", () => {
     const onSubmit = mock(() => {});
     const screen = render(<Survey start="obs" onSubmit={onSubmit} />);
     const input = byType(screen, "TextInput")[0]!;
@@ -169,7 +169,7 @@ describe("Questionnaire", () => {
     expect(textOf(screen)).toContain("Responda esta pergunta para continuar.");
   });
 
-  test("pergunta desabilitada aparece, nao responde, e nao trava o caminho", () => {
+  test("a disabled question appears, does not answer, and does not block the way", () => {
     const onSubmit = mock((_answers: QuestionnaireAnswers) => {});
     const items: QuestionnaireQuestion[] = [
       { ...ITEMS[0]!, required: true, disabled: true },
@@ -185,7 +185,7 @@ describe("Questionnaire", () => {
     expect(onSubmit.mock.calls[0]![0]).toEqual({ obs: "Ok" });
   });
 
-  test("labels troca os textos, com os mesmos nomes do web", () => {
+  test("labels changes the texts, with the same names as the web", () => {
     const screen = render(
       <Survey labels={{ progress: (current, total) => `${current}/${total}`, next: "Seguir" }} />,
     );
@@ -193,7 +193,7 @@ describe("Questionnaire", () => {
     expect(buttonNamed(screen, "Seguir")).toBeDefined();
   });
 
-  test("voltar fica desabilitado na primeira e volta depois", () => {
+  test("back is disabled on the first and comes back afterwards", () => {
     const screen = render(<Survey start="canais" />);
     tap(screen, "Voltar");
     expect(textOf(screen)).toContain("Pergunta 1 de 3");

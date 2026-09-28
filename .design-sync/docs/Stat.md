@@ -1,24 +1,25 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # Stat
 
-O número de painel: rótulo, valor, variação e tendência, na hierarquia que todo
-painel reinventa na mão.
+The dashboard number: label, value, change and trend, in the hierarchy every
+dashboard reinvents by hand.
 
-O valor chega formatado porque formatar é decisão de domínio: dinheiro sai
-abreviado do `currencyShort`, contagem sai crua, percentual traz o sinal.
+The value arrives formatted because formatting is a domain decision: money
+comes out abbreviated from `currencyShort`, a count comes out raw, a percentage
+carries its sign.
 
-`delta` é a variação, com `deltaLabel` dizendo contra o quê ("sobre julho").
-`delta={0}` sai neutro: sem seta, na cor do texto secundário, e sem "alta de"
-para o leitor de tela, porque não mudar não é subir.
-Quando subir é ruim (vencidas, custo, inadimplência), passe
-`invert`: a seta continua apontando para onde o número foi, o que inverte é o
-julgamento da cor. A direção também é falada para leitor de tela, não só
-pintada.
+`delta` is the change, with `deltaLabel` saying against what ("sobre julho").
+`delta={0}` comes out neutral: no arrow, in the secondary text color, and no
+"alta de" for the screen reader, because not changing is not going up.
+When going up is bad (overdue, cost, delinquency), pass `invert`: the arrow
+still points where the number went; what inverts is the color's judgment. The
+direction is also spoken for the screen reader, not only painted.
 
-A tendência entra pelo slot `chart`, com a `Sparkline` de `@rivocode/ui/chart`:
+The trend comes in through the `chart` slot, with the `Sparkline` from
+`@rivocode/ui/chart`:
 
 ```tsx
 <Stat
@@ -30,33 +31,36 @@ A tendência entra pelo slot `chart`, com a `Sparkline` de `@rivocode/ui/chart`:
 />
 ```
 
-O núcleo não importa a `Sparkline` de propósito: ela traz o recharts junto, e
-um painel sem gráfico não deveria pagar por ele.
+The core does not import `Sparkline` on purpose: it brings Recharts along, and
+a dashboard without a chart should not pay for it.
 
-## A variação nem sempre é porcentagem
+## The change is not always a percentage
 
-O `%` era cravado no JSX, e o `Stat` era a única peça de número da casa fora do
-vocabulário de formatação que `Progress`, `Meter` e `Slider` já falam. Um delta
-em reais ou em pontos-base saía com um por-cento que não era verdade.
+The `%` used to be hard-coded in the JSX, and `Stat` was the only number piece
+in the house outside the formatting vocabulary that `Progress`, `Meter` and
+`Slider` already speak. A delta in reais or in basis points came out with a
+percent sign that was not true.
 
-`deltaFormat` é o mesmo `format` das irmãs, nome de formatador da casa ou
-função própria:
+`deltaFormat` is the same `format` as its siblings, the name of a house
+formatter or a function of your own:
 
 ```tsx
 <Stat label="Faturado" value={currencyShort(246_700)} delta={12_400}
       deltaFormat="currencyShort" deltaLabel="sobre julho" />
 ```
 
-Sem ele, `percent`, que é o que sempre saiu. O `percent` da casa arredonda para
-inteiro; para casa decimal, passe a função: `deltaFormat={(value) => percent(value, 1)}`.
+Without it, `percent`, which is what always came out. The house `percent`
+rounds to an integer; for a decimal place, pass the function:
+`deltaFormat={(value) => percent(value, 1)}`.
 
-O que chega ao formatador é o **módulo** do `delta`: quem carrega o sinal é a
-seta, e o "alta de"/"queda de" que o leitor de tela ouve antes do número.
+What reaches the formatter is the **absolute value** of `delta`: the sign is
+carried by the arrow, and by the "alta de"/"queda de" the screen reader hears
+before the number.
 
-## Movimento
+## Motion
 
-O conteúdo do cartão esmaece na montagem (`animate-appear`, `--rc-duration-base`), e a moldura fica parada: o número chega, o cartão já estava ali. Os dígitos não contam do zero, de propósito: número que corre até o valor é ilegível enquanto corre, e é ele que a pessoa veio ler.
+The card's content fades in on mount (`animate-appear`, `--rc-duration-base`), and the frame stays still: the number arrives, the card was already there. The digits do not count up from zero, on purpose: a number racing to its value is unreadable while it races, and it is what the person came to read.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Stat` - `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Stat` - `value` already formatted, a numeric `delta` written by the web's `deltaFormat`, and the `chart` slot that the native `Sparkline` fills. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

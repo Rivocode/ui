@@ -51,17 +51,20 @@ async function labelsOf(file: string) {
   return labels.filter((label) => /[A-Za-zÀ-ÿ]{3}/.test(label));
 }
 
+const ENGLISH = /\b(?:the|of|is|are|and|it|this|that|with|which|when|does|cannot)\b/i;
+
 async function missesIn(files: string[]) {
   const misses: string[] = [];
 
   for (const file of files) {
     for (const label of await labelsOf(file)) {
+      if (ENGLISH.test(label)) continue;
       const written = label.replace(/\$\{[^}]*\}/g, " ").replace(/\{[^}]*\}/g, " ");
 
       for (const word of written.matchAll(/[A-Za-zÀ-ÿ]+/g)) {
         const right = WORDS[word[0]!.toLowerCase()];
         if (right && right !== word[0]!.toLowerCase()) {
-          misses.push(`${file}: "${label.trim()}" -> ${word[0]} deveria ser ${right}`);
+          misses.push(`${file}: "${label.trim()}" -> ${word[0]} should be ${right}`);
         }
       }
     }
@@ -70,7 +73,7 @@ async function missesIn(files: string[]) {
   return [...new Set(misses)];
 }
 
-test("todo texto que a biblioteca escreve na tela sai acentuado", async () => {
+test("every text the library writes to the screen carries its accents", async () => {
   const trees = ["src/**/*.{ts,tsx}", "native/src/**/*.{ts,tsx}"];
   const files: string[] = [];
   for (const tree of trees) {
@@ -82,7 +85,7 @@ test("todo texto que a biblioteca escreve na tela sai acentuado", async () => {
   expect(await missesIn(files)).toEqual([]);
 });
 
-test("todo texto de tela dos exemplos publicados no site sai acentuado", async () => {
+test("every screen text of the examples published on the site carries its accents", async () => {
   const files: string[] = [];
   for await (const file of new Glob(".design-sync/previews/*.tsx").scan({ cwd: ".", dot: true })) {
     files.push(file);

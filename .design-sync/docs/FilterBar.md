@@ -1,17 +1,17 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # FilterBar
 
-A fileira dos filtros aplicados, o botão de limpar e a contagem: as três
-coisas que toda listagem remonta à mão em volta do `DataTable`.
+The row of applied filters, the clear button and the count: the three things
+every listing rebuilds by hand around `DataTable`.
 
-Ela **não gerencia consulta**. Não sabe o que é uma página, um `queryKey` nem
-um `refetch`, pela mesma razão que o `DataTable` não conhece React Query:
-estado de consulta é arquitetura de aplicação, e a casa decidiu deixá-lo de
-fora. A peça recebe `filters`, apresenta o que recebeu e avisa quando alguma
-coisa saiu.
+It **does not manage the query**. It does not know what a page, a `queryKey`
+or a `refetch` is, for the same reason `DataTable` does not know React Query:
+query state is application architecture, and the house decided to leave it
+out. The piece receives `filters`, presents what it received and reports when
+something left.
 
 ```tsx
 const [filters, setFilters] = useState<AppliedFilter[]>([
@@ -22,244 +22,250 @@ const [filters, setFilters] = useState<AppliedFilter[]>([
 <FilterBar filters={filters} onFiltersChange={setFilters} />
 ```
 
-`onFiltersChange` recebe **o que sobrou**, no xis e no limpar. É o mesmo par
-do `onValueChange` do `TagsInput`, e sozinho ele já basta. `onRemove` existe
-ao lado dele para quem precisa saber *qual* filtro saiu, e recebe o objeto
-inteiro; `onClear` dispara antes do `onFiltersChange`, para a telemetria
-que conta "quantas vezes alguém desiste de tudo". O limpar entrega a lista só
-com os filtros travados, e não a lista vazia (veja "Filtro que o app trava").
+`onFiltersChange` receives **what is left**, on the X and on clear. It is the
+same pair as `TagsInput`'s `onValueChange`, and on its own it is already
+enough. `onRemove` exists next to it for whoever needs to know *which* filter
+left, and receives the whole object; `onClear` fires before `onFiltersChange`,
+for the telemetry that counts "how many times someone gives up on everything".
+Clear delivers the list with only the locked filters, and not the empty list
+(see "A filter the app locks").
 
-Cada filtro é `{ id, label, value }`. O `id` é a chave estável: é por ele que
-a peça remove, e não por índice. O `label` é o campo (`Cliente`) e o `value` é
-o escolhido (`Clínica São Lucas`); os dois juntos são o que o leitor de tela
-ouve no xis, porque "Remover" repetido quatro vezes não distingue nada.
+Each filter is `{ id, label, value }`. The `id` is the stable key: it is by it
+that the piece removes, and not by index. The `label` is the field (`Cliente`)
+and the `value` is the chosen one (`Clínica São Lucas`); the two together are
+what the screen reader hears on the X, because "Remover" repeated four times
+distinguishes nothing.
 
-## A linha fica, mesmo vazia
+## The row stays, even when empty
 
-Sem filtro nenhum a barra **continua ocupando a linha**, com "Nenhum filtro
-aplicado" em texto apagado. A tela que pula quando o primeiro filtro entra é um
-defeito conhecido, e o `Tracker` do React Native já pagou por ele: lá a linha
-de leitura existe desde o primeiro quadro justamente para o espaço ficar
-reservado e nada saltar no primeiro toque. Aqui é a mesma conta, e ela custa
-uma altura de controle (`--rc-control-sm`), a mesma da densidade escolhida no
-provider, e não um número cravado.
+With no filter at all the bar **keeps taking up the row**, with "Nenhum filtro
+aplicado" in muted text. A screen that jumps when the first filter comes in is
+a known defect, and React Native's `Tracker` already paid for it: there the
+reading line exists from the first frame precisely so that the space stays
+reserved and nothing jumps on the first tap. Here it is the same math, and it
+costs one control height (`--rc-control-sm`), the same as the density chosen
+in the provider, and not a hard-coded number.
 
-Quem realmente não pode gastar a linha passa `reserve={false}`. **O aviso ao
-leitor de tela continua montado mesmo assim**: uma região viva precisa existir
-*antes* da mudança para anunciá-la, e uma barra que se desmonta ao perder o
-último filtro anunciaria o silêncio.
+Whoever really cannot spend the row passes `reserve={false}`. **The screen
+reader notice stays mounted even so**: a live region needs to exist *before*
+the change in order to announce it, and a bar that unmounts on losing its last
+filter would announce silence.
 
-## Quando os filtros não cabem
+## When the filters do not fit
 
-A 390px, três filtros não cabem. A barra **rola na horizontal dentro da própria
-moldura**, com o "limpar" ancorado fora do trecho que rola.
+At 390px, three filters do not fit. The bar **scrolls horizontally inside its
+own frame**, with "clear" anchored outside the scrolling part.
 
-Não quebra linha porque a altura da barra passaria a depender de quantos
-filtros existem: quatro fichas de "Cliente: Clínica São Lucas" viram quatro
-linhas, e a listagem (que é o conteúdo) desce para fora da dobra. A barra é
-moldura, e moldura que cresce até metade da tela deixou de ser moldura.
+It does not wrap because the bar's height would start depending on how many
+filters there are: four chips of "Cliente: Clínica São Lucas" become four
+lines, and the listing (which is the content) drops below the fold. The bar is
+a frame, and a frame that grows to half the screen has stopped being a frame.
 
-Não colapsa em "+3" porque a barra existe justamente para dizer que o resultado
-está filtrado. Filtro escondido atrás de um contador é a origem do chamado
-"sumiram meus dados", e desdobrá-lo pediria uma segunda superfície flutuante
-para uma fileira de fichas.
+It does not collapse into "+3" because the bar exists precisely to say that the
+result is filtered. A filter hidden behind a counter is the source of the "my
+data disappeared" ticket, and unfolding it would call for a second floating
+surface for a row of chips.
 
-Cada ficha corta o valor com reticências em 10rem, então um valor comprido
-encolhe a si mesmo em vez de empurrar os vizinhos para fora do alcance. O
-teclado chega a todos: o navegador rola até o xis que recebe foco.
+Each chip truncates the value with an ellipsis at 10rem, so a long value
+shrinks itself instead of pushing its neighbors out of reach. The keyboard
+reaches them all: the browser scrolls to the X that receives focus.
 
-Quando **nenhum xis é alcançável** (barra só de filtros travados, ou barra
-`disabled`) **e** a fileira **realmente transborda**, o trecho que rola vira
-uma parada de tabulação, senão o teclado não teria como chegar ao que está fora
-da vista. As duas condições são necessárias, e por um tempo só a primeira era
-cobrada. O preço saiu em paradas que não levavam a lugar nenhum: `disabled`,
-cujo propósito é *tirar* controles do caminho enquanto a consulta refaz,
-**acrescentava** uma; e uma fileira de filtros travados que cabia inteira na
-linha (`scrollWidth` igual ao `clientWidth`, medido em Chrome) virava outra,
-sem ter um pixel para rolar. Tabular para dentro de uma lista que não sai do
-lugar é tabular para lugar nenhum.
+When **no X is reachable** (a bar of only locked filters, or a `disabled` bar)
+**and** the row **actually overflows**, the scrolling part becomes a tab stop,
+otherwise the keyboard would have no way to reach what is out of view. Both
+conditions are required, and for a while only the first was enforced. The price
+came out in stops that led nowhere: `disabled`, whose purpose is to *take*
+controls out of the way while the query reruns, **added** one; and a row of
+locked filters that fit entirely on the line (`scrollWidth` equal to
+`clientWidth`, measured in Chrome) became another, without a single pixel to
+scroll. Tabbing into a list that does not move is tabbing into nowhere.
 
-Sendo parada, ela **tem nome**: "Filtros aplicados: role para ver todos", o
-`label` da fileira mais o que fazer ali. Sem nome, o leitor de tela anuncia
-"lista" e deixa a pessoa adivinhar onde caiu. O texto se troca por
-`labels.scroll`, que recebe o `label` e devolve a frase.
+Being a stop, it **has a name**: "Filtros aplicados: role para ver todos", the
+row's `label` plus what to do there. Without a name, the screen reader
+announces "list" and leaves the person guessing where they landed. The text is
+swapped through `labels.scroll`, which receives the `label` and returns the
+sentence.
 
-## A borda esmaece quando há mais
+## The edge fades when there is more
 
-Rolar resolve o alcance e não resolve o aviso, e por um tempo a peça só teve a
-primeira metade. Medido em Chrome, com seis filtros de razão social: a 390px
-cabia **uma ficha e meia**, e a segunda era cortada no meio da letra
-(`Emissão 01/`), num corte reto, sem reticências e sem nada dizendo que havia
-mais cinco. Na largura de mesa o mesmo corte caía na quinta ficha. A ironia é
-que a peça tinha recusado o "+3" para não esconder filtro atrás de contador, e
-acabou escondendo filtro sem contador nenhum.
+Scrolling solves reach and does not solve the signal, and for a while the
+piece only had the first half. Measured in Chrome, with six filters of company
+legal names: at 390px **a chip and a half** fit, and the second was cut in the
+middle of a letter (`Emissão 01/`), with a straight cut, no ellipsis and
+nothing saying there were five more. At desktop width the same cut fell on the
+fifth chip. The irony is that the piece had refused "+3" so as not to hide a
+filter behind a counter, and ended up hiding filters with no counter at all.
 
-Reticências não resolvem, porque **quem corta é o rolador, e não a ficha**: o
-truncamento em 10rem da `FilterChip` já tinha acontecido antes, dentro da
-pílula, e a borda da moldura corta o que sobrou.
+An ellipsis does not solve it, because **what cuts is the scroller, not the
+chip**: `FilterChip`'s truncation at 10rem had already happened before, inside
+the pill, and the frame's edge cuts what was left.
 
-A borda que tem conteúdo escondido atrás **esmaece** (`mask-image`, 1,5rem de
-dissolução) e some sozinha quando não há mais o que rolar daquele lado: no
-começo só a direita, no meio as duas, no fim só a esquerda, e nenhuma quando
-tudo coube. Nada sai da fileira: as seis fichas continuam lá, alcançáveis pelo
-arrasto e pela tabulação, que é a decisão que esta seção defende desde o
-começo.
+The edge that has hidden content behind it **fades** (`mask-image`, 1.5rem of
+dissolve) and goes away on its own when there is nothing more to scroll on that
+side: at the start only the right, in the middle both, at the end only the
+left, and neither when everything fit. Nothing leaves the row: the six chips
+are still there, reachable by dragging and by tabbing, which is the decision
+this section has defended from the start.
 
-O esmaecido foi escolhido por ser a única pista que **não custa largura**, e
-largura é exatamente o que falta numa linha de 390px que já divide espaço com o
-"limpar":
+The fade was chosen because it is the only cue that **costs no width**, and
+width is exactly what is missing on a 390px line that already shares space
+with "clear":
 
-- **Setas de rolar** comeriam uns 56px de alvo justamente na largura onde o
-  problema é pior, e serviriam só ao ponteiro: o dedo já arrasta e o teclado
-  já tabula. Ainda precisariam da mesma medida de rolagem que o esmaecido usa,
-  então não substituem o custo: somam a ele.
-- **Um contador "+3"** ao lado do limpar duplicaria uma contagem que já está na
-  tela (é o mesmo motivo pelo qual o contador separado não existe), e "+3" é o
-  vocabulário do colapso: quem o vê tenta clicar esperando desdobrar a fileira,
-  que é a segunda superfície flutuante recusada acima.
+- **Scroll arrows** would eat some 56px of target precisely at the width where
+  the problem is worst, and would only serve the pointer: the finger already
+  drags and the keyboard already tabs. They would still need the same scroll
+  measurement the fade uses, so they do not replace the cost: they add to it.
+- **A "+3" counter** next to clear would duplicate a count that is already on
+  screen (that is the same reason the separate counter does not exist), and
+  "+3" is the vocabulary of collapsing: whoever sees it tries to click
+  expecting the row to unfold, which is the second floating surface refused
+  above.
 
-**O botão não mente.** "Limpar 6 filtros" ao lado de três fichas visíveis conta
-os filtros **aplicados**, que é a pergunta que importa antes de tocar nele, e
-era a única coisa verdadeira na tela. O que faltava não era corrigir o 6: era a
-fileira admitir que estava cortada. Lidos juntos, os dois fecham a conta: seis
-aplicados, três à vista, o resto continua para a direita.
+**The button does not lie.** "Limpar 6 filtros" next to three visible chips
+counts the **applied** filters, which is the question that matters before
+touching it, and was the only true thing on the screen. What was missing was
+not fixing the 6: it was the row admitting it was cut off. Read together, the
+two add up: six applied, three in view, the rest continues to the right.
 
-O esmaecido não come o anel de foco. O trecho que rola leva `scroll-padding` da
-mesma 1,5rem, então o xis que recebe foco sempre para depois da dissolução; e
-quando a fileira é só de filtros travados e o rolador vira a parada de
-tabulação, o esmaecido sai enquanto ele está focado, para o anel aparecer
-inteiro.
+The fade does not eat the focus ring. The scrolling part carries
+`scroll-padding` of the same 1.5rem, so the X that receives focus always stops
+past the dissolve; and when the row is only locked filters and the scroller
+becomes the tab stop, the fade goes away while it is focused, so the ring shows
+whole.
 
-Por `classNames.list` a medida se redesenha (`mask-r-from-*`), para quem quiser
-outra dissolução.
+Through `classNames.list` the measurement can be redrawn (`mask-r-from-*`), for
+whoever wants a different dissolve.
 
-## O foco depois de tirar um filtro
+## Focus after removing a filter
 
-O xis que recebe o toque **sai do DOM junto com a ficha**, e o foco ia junto:
-medido em Chrome, o `activeElement` voltava para o `<body>` a cada remoção. A
-região viva anunciava "5 filtros aplicados" na hora certa, e o anúncio chegava
-de lugar nenhum: numa barra de seis, seis reinícios no topo do documento para
-quem navega por teclado.
+The X that receives the tap **leaves the DOM together with the chip**, and
+focus went with it: measured in Chrome, `activeElement` went back to `<body>`
+on every removal. The live region announced "5 filtros aplicados" at the right
+moment, and the announcement came from nowhere: in a bar of six, six restarts
+at the top of the document for a keyboard user.
 
-A peça escolhe onde o foco pousa, nesta ordem:
+The piece chooses where focus lands, in this order:
 
-1. **o xis da ficha seguinte**, que é a que ocupou o lugar da que saiu. É o que
-   deixa tirar seis filtros seguidos sem soltar o teclado;
-2. **o "limpar"**, quando a que saiu era a última da fileira;
-3. **o xis da ficha anterior**, quando não há limpar (`clearFrom={Infinity}`,
-   ou contagem que caiu abaixo da régua);
-4. **o trecho que rola** (ou a raiz `role="group"`, quando o último filtro saiu
-   e a fileira inteira desmontou). Nos dois casos o `tabindex="-1"` é posto na
-   hora e devolvido no `blur`: pouso de emergência não deixa parada de
-   tabulação nova para trás.
+1. **the X of the next chip**, which is the one that took the place of the
+   one that left. That is what lets you remove six filters in a row without
+   letting go of the keyboard;
+2. **"clear"**, when the one that left was the last in the row;
+3. **the X of the previous chip**, when there is no clear
+   (`clearFrom={Infinity}`, or a count that dropped below the threshold);
+4. **the scrolling part** (or the `role="group"` root, when the last filter
+   left and the whole row unmounted). In both cases `tabindex="-1"` is set on
+   the spot and given back on `blur`: an emergency landing does not leave a
+   new tab stop behind.
 
-Controle travado não entra na conta. A barra que fica `disabled` no mesmo passo
-da remoção (a consulta já refazendo) teria mandado o foco para um xis que não
-pode recebê-lo, que é o `<body>` de novo por outro caminho; nesse caso o pouso
-salta para o primeiro degrau que aceita foco.
+A locked control does not count. A bar that becomes `disabled` in the same
+step as the removal (the query already rerunning) would have sent focus to an
+X that cannot receive it, which is `<body>` again by another route; in that
+case the landing skips to the first step that accepts focus.
 
-**O foco só se move se ele estava na fileira.** Quem clicou com o ponteiro
-tendo o cursor em outro lugar da página não é puxado para dentro da barra.
+**Focus only moves if it was in the row.** Whoever clicked with the pointer
+while the cursor was elsewhere on the page is not pulled into the bar.
 
-## O limpar aparece a partir de dois
+## Clear shows up from two onward
 
-Com um filtro só, o xis da própria ficha faz exatamente o mesmo, à mesma
-distância do dedo: um segundo controle para o mesmo efeito não ensina nada e
-ainda come 110px de uma linha de 390px. O botão passa a valer quando "tirar um
-por um" vira trabalho.
+With a single filter, the chip's own X does exactly the same, at the same
+distance from the finger: a second control for the same effect teaches nothing
+and still eats 110px of a 390px line. The button starts to be worth it when
+"removing one by one" becomes work.
 
-Ele mostra a contagem ("Limpar 3 filtros") e é lá que a contagem visível
-mora. Um contador separado disputaria a largura escassa com as fichas, que são
-a contagem já visível; no botão ele dobra de função e diz o tamanho do estrago
-antes do toque. Para outra régua, `clearFrom={1}` deixa o botão sempre, e
-`clearFrom={Infinity}` tira-o de vez.
+It shows the count ("Limpar 3 filtros") and that is where the visible count
+lives. A separate counter would compete for the scarce width with the chips,
+which are the count already visible; on the button it doubles in function and
+says the size of the damage before the tap. For a different threshold,
+`clearFrom={1}` always shows the button, and `clearFrom={Infinity}` removes it
+for good.
 
-## Filtro que o app trava
+## A filter the app locks
 
-`removable: false` mostra o filtro sem xis. É o escopo que a aplicação impõe
-(a filial da pessoa, o tenant, o ano fiscal aberto): ele **precisa** aparecer,
-porque explica o resultado, e sair dele não é escolha de quem lê. Hoje esse
-filtro costuma ser simplesmente omitido, e aí a lista mente sobre o próprio
-recorte.
+`removable: false` shows the filter without an X. It is the scope the
+application imposes (the person's branch, the tenant, the open fiscal year): it
+**needs** to show, because it explains the result, and leaving it is not the
+reader's choice. Today that filter is usually just omitted, and then the list
+lies about its own slice.
 
-O limpar **não leva o travado junto**: `onFiltersChange` recebe só os filtros
-com `removable: false`, e a contagem do botão conta só os que ele tira. Com a
-filial travada e dois filtros escolhidos, o botão diz "Limpar 2 filtros", e a
-régua do `clearFrom` também mede só os removíveis. Depois do limpar o foco
-pousa na raiz `role="group"`, com o mesmo `tabindex="-1"` de emergência do
-pouso depois do xis.
+Clear **does not take the locked one along**: `onFiltersChange` receives only
+the filters with `removable: false`, and the button's count counts only the
+ones it removes. With the branch locked and two filters chosen, the button
+says "Limpar 2 filtros", and the `clearFrom` threshold also measures only the
+removable ones. After clear, focus lands on the `role="group"` root, with the
+same emergency `tabindex="-1"` as the landing after the X.
 
-## Enquanto a consulta refaz
+## While the query reruns
 
-`disabled` trava todos os xis e o limpar de uma vez. É o estado em que a lista
-já foi pedida de novo e ainda não voltou: sem ele, o segundo toque dispara uma
-consulta que a primeira ainda vai sobrescrever.
+`disabled` locks every X and clear at once. It is the state in which the list
+has already been requested again and has not come back yet: without it, the
+second tap fires a query that the first one will still overwrite.
 
-O grupo leva `aria-disabled`, e o leitor de tela anuncia a fileira inteira como
-indisponível, e não só cada xis. Cada ficha leva `data-disabled` na raiz, a
-mesma marca que as outras peças usam para o inativo: o texto apagado é de
-componente inativo, que a WCAG 1.4.3 isenta do contraste de texto.
+The group carries `aria-disabled`, and the screen reader announces the whole
+row as unavailable, and not just each X. Each chip carries `data-disabled` on
+its root, the same mark the other pieces use for inactive: the muted text is
+that of an inactive component, which WCAG 1.4.3 exempts from text contrast.
 
-## O nome da fileira
+## The row's name
 
-`label` é a única porta do nome, e o padrão é "Filtros aplicados". Passar
-`aria-label` direto **é recusado pelo tipo**, não por preciosismo: até a 0.7.0
-ele compilava, renderizava e era engolido em silêncio, porque o `{...props}` de
-quem chama era espalhado *antes* do `aria-label` da peça. `<FilterBar
-aria-label="Filtros da listagem" />` continuava se anunciando "Filtros
-aplicados", e nada acusava: o defeito só aparece com um leitor de tela ligado.
+`label` is the only door to the name, and the default is "Filtros aplicados".
+Passing `aria-label` directly **is refused by the type**, and not out of
+fussiness: up to 0.7.0 it compiled, rendered and was silently swallowed,
+because the caller's `{...props}` was spread *before* the piece's
+`aria-label`. `<FilterBar aria-label="Filtros da listagem" />` kept announcing
+itself as "Filtros aplicados", and nothing flagged it: the defect only shows
+with a screen reader on.
 
-Aceitar e ignorar era a pior das três saídas. Entre as duas honestas (deixar
-quem chama vencer, ou proibir), a peça proíbe, porque `label` já existia
-exatamente para isso e porque **o mesmo texto batiza duas coisas**: a fileira e
-o trecho que rola, quando ele vira parada de tabulação. Duas portas dariam dois
-nomes ao mesmo lugar, e a parada herdaria o nome antigo. Quem precisa apontar
-para um título que já está na tela usa `aria-labelledby`, que a peça não
-sobrescreve.
+Accepting and ignoring was the worst of the three ways out. Between the two
+honest ones (let the caller win, or forbid it), the piece forbids it, because
+`label` already existed exactly for this and because **the same text names two
+things**: the row and the scrolling part, when it becomes a tab stop. Two doors
+would give two names to the same place, and the stop would inherit the old
+name. Whoever needs to point to a heading already on the screen uses
+`aria-labelledby`, which the piece does not overwrite.
 
-## As partes
+## Parts
 
-`classNames` veste cada nó pelo nome: `list` é o trecho que rola, `item` é o
-`<li>` de cada filtro, `chip` é a raiz da ficha, `clear` é o botão de limpar e
-`empty` é o texto da linha guardada. Sem eles a única saída seria `[&_li]`, que
-amarra a sua tela à árvore interna da peça.
+`classNames` dresses each node by name: `list` is the scrolling part, `item`
+is the `<li>` of each filter, `chip` is the chip's root, `clear` is the clear
+button and `empty` is the text of the reserved row. Without them the only way
+out would be `[&_li]`, which ties your screen to the piece's internal tree.
 
-A fileira sai como `<ul>` com `role="list"` explícito. O `list-style: none` do
-preflight tira a semântica de lista no Safari, e é ela que faz o leitor de tela
-anunciar "3 itens" sem que ninguém conte nada.
+The row renders as a `<ul>` with an explicit `role="list"`. Preflight's
+`list-style: none` removes the list semantics in Safari, and that is what makes
+the screen reader announce "3 items" without anyone counting anything.
 
-## Movimento
+## Motion
 
-Só a ficha de filtro aplicada depois da montagem cresce ao entrar (`animate-pop`, `--rc-duration-fast`); as que já estavam nascem paradas.
+Only the filter chip applied after mount grows on entering (`animate-pop`, `--rc-duration-fast`); the ones already there start still.
 
-## Quando não usar
+## When not to use
 
-Quando as opções são poucas, fixas e cabem à vista, use `ToggleGroup`: escolher
-e desescolher acontece no mesmo lugar, num toque, e não há o que resumir depois.
-A `FilterBar` é para o caso oposto: o filtro foi escolhido em outro lugar
-(um `Combobox`, um `DateRangePicker`, uma folha inteira de filtros) e a
-listagem precisa dizer o que sobrou valendo.
+When the options are few, fixed and fit in view, use `ToggleGroup`: choosing
+and unchoosing happen in the same place, with one tap, and there is nothing to
+summarize afterwards. `FilterBar` is for the opposite case: the filter was
+chosen somewhere else (a `Combobox`, a `DateRangePicker`, a whole sheet of
+filters) and the listing needs to say what is still in effect.
 
-Quando o filtro é o próprio texto que a pessoa digita, use `TagsInput`: lá a
-lista nasce do campo e o campo é a peça. Aqui a peça não tem campo nenhum, de
-propósito.
+When the filter is the very text the person types, use `TagsInput`: there the
+list is born from the field and the field is the piece. Here the piece has no
+field at all, on purpose.
 
-## No React Native
+## In React Native
 
-Traduz, e é onde a peça vale mais: listagem no celular é onde filtro dói. As decisões de desenho já tinham sido tomadas pensando em 390px, então quase tudo atravessa: rola na horizontal, não quebra linha e não colapsa em `+3`.
+Translates, and this is where the piece is worth the most: a listing on the phone is where filtering hurts. The drawing decisions had already been made with 390px in mind, so almost everything crosses over: it scrolls horizontally, does not wrap and does not collapse into `+3`.
 
-**O limpar fica FORA do que rola.** Se ele rolasse junto, o controle que existe para desfazer tudo seria o único que exige rolar até o fim para achar. Ele ancora à direita da fileira, e o `size="sm"` do `Button` nativo já entrega o alvo de 44pt sozinho.
+**The clear button stays OUTSIDE what scrolls.** If it scrolled along, the control that exists to undo everything would be the only one that requires scrolling to the end to find. It anchors to the right of the row, and the native `Button`'s `size="sm"` already delivers the 44pt target on its own.
 
-**A linha reservada passa a ser medida em dedo.** No web ela guarda a altura de `--rc-control-sm`; aqui guarda 44pt, que é uma altura de alvo de toque. Não há token de controle do lado de cá. A fileira tem a mesma altura vazia e cheia, pelo mesmo motivo do `Tracker`: a tela não pode pular quando o primeiro filtro entra.
+**The reserved row is now measured in fingers.** On the web it keeps the height of `--rc-control-sm`; here it keeps 44pt, which is one touch target tall. There is no control token on this side. The row has the same height empty and full, for the same reason as the `Tracker`: the screen cannot jump when the first filter comes in.
 
-A região viva é um `Text` único que acumula as duas funções, em vez dos dois nós do web: duplicar abriria um `gap` morto na fileira. `accessibilityLiveRegion` é do Android e do web; no iOS, onde ela não existe, a mesma frase sai pelo `announceForAccessibility`, e só quando a contagem muda, como a região viva.
+The live region is a single `Text` that combines both roles, instead of the web's two nodes: duplicating would open a dead `gap` in the row. `accessibilityLiveRegion` is Android's and the web's; on iOS, where it does not exist, the same sentence goes out through `announceForAccessibility`, and only when the count changes, like the live region.
 
-**RTL foi verificado, e a maior parte o próprio React Native resolve.** A fileira e a ficha já são espelhadas pelo Yoga quando a locale é da direita para a esquerda, e o repouso da rolagem já para na borda onde a leitura começa: inverter de novo seria o erro clássico de espelhar duas vezes. O `contentOffset` que chega ao JavaScript é sempre distância física a partir da esquerda, nos dois sentidos e nas duas plataformas, então a régua marca o lado físico que tem conteúdo além dele, e não troca de lado.
+**RTL was verified, and React Native itself solves most of it.** The row and the chip are already mirrored by Yoga when the locale is right-to-left, and the scroll's resting position already stops at the edge where reading starts: flipping again would be the classic mistake of mirroring twice. The `contentOffset` that reaches JavaScript is always a physical distance from the left, in both directions and on both platforms, so the rule marks the physical side that has content beyond it, and does not switch sides.
 
-O que precisou de conta foi o valor de REPOUSO. O código guardava zero até chegar o primeiro evento de rolagem: verdade em LTR, falso em RTL, onde o repouso é o fim do conteúdo. No iOS o defeito durava para sempre enquanto ninguém arrastasse, porque em repouso ele não emite evento nenhum, e a régua aparecia do lado errado.
+What needed math was the RESTING value. The code kept zero until the first scroll event arrived: true in LTR, false in RTL, where the resting position is the end of the content. On iOS the defect lasted forever as long as nobody dragged, because at rest it emits no event at all, and the rule appeared on the wrong side.
 
-**A borda esmaece no web; aqui ela é uma régua.** `mask-image` não existe no React Native, e um esmaecido de verdade só sairia de duas formas. Um peer novo (`expo-linear-gradient`, `MaskedView`), que uma barra de filtros não pode cobrar, porque no celular peer é módulo nativo a ligar e reconstruir. Ou um gradiente pintado NA cor da superfície de trás, que a peça não tem como saber: no tema escuro, `surface` sobre `bg` vira um borrão claro por cima das fichas. O gradiente em si até estava ao alcance, porque o `react-native-css` compila `linear-gradient` para o `experimental_backgroundImage` que o RN traz de fábrica; o que falta é a máscara, e sem ela não há alfa por pixel.
+**The edge fades on the web; here it is a rule.** `mask-image` does not exist in React Native, and a real fade could only come in two ways. A new peer (`expo-linear-gradient`, `MaskedView`), which a filter bar cannot demand, because on the phone a peer is a native module to link and rebuild. Or a gradient painted IN the color of the surface behind, which the piece has no way of knowing: in the dark theme, `surface` over `bg` becomes a light smear over the chips. The gradient itself was even within reach, because `react-native-css` compiles `linear-gradient` to the `experimental_backgroundImage` that RN ships with; what is missing is the mask, and without it there is no per-pixel alpha.
 
-O que ficou: uma régua de 1pt em `border-strong` encostada na borda que tem conteúdo escondido, que aparece e some sozinha conforme a rolagem, não custa largura nenhuma e não come o arrasto que começa nela. É a mesma pista, mais dura, e é o mesmo `inset 1px` com que o `DataTable` marca a coluna congelada no web.
+What remained: a 1pt rule in `border-strong` against the edge that has hidden content, which appears and disappears on its own as the scroll moves, costs no width and does not eat a drag that starts on it. It is the same cue, harder, and it is the same `inset 1px` with which the `DataTable` marks the frozen column on the web.
 
-Cai a parada de tabulação do web, porque não há foco de teclado aqui. As partes vestem pelo mesmo `classNames` do web: `list` no conteúdo do que rola, `item`, `chip`, `clear` e `empty`, esta só na linha reservada.
+The web's tab stop goes away, because there is no keyboard focus here. The parts are styled through the same `classNames` as the web: `list` on the scrolling content, `item`, `chip`, `clear` and `empty`, the last only on the reserved row.

@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 
 const manifest = JSON.parse(readFileSync("package.json", "utf8"));
 
-test("todo subcaminho de src tem entrada no exports do pacote", () => {
+test("every subpath of src has an entry in the package exports", () => {
   const subpaths = readdirSync("src", { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .filter((entry) => readdirSync(`src/${entry.name}`).includes("index.ts"))
@@ -15,7 +15,7 @@ test("todo subcaminho de src tem entrada no exports do pacote", () => {
   }
 });
 
-test("toda pagina da vitrine entra no script demo", () => {
+test("every showcase page is in the demo script", () => {
   const pages = readdirSync("demo").filter(
     (file) => file.endsWith(".tsx") && readFileSync(`demo/${file}`, "utf8").includes("createRoot("),
   );

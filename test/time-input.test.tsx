@@ -24,7 +24,7 @@ function optionsOf(name: string) {
   return [...column.querySelectorAll('[role="option"]')].map((node) => node.textContent);
 }
 
-test("digitar poe os dois pontos sozinho", () => {
+test("typing inserts the colon by itself", () => {
   withTheme(<TimeField aria-label="Entrada" />);
 
   fireEvent.change(field(), { target: { value: "1430" } });
@@ -32,36 +32,36 @@ test("digitar poe os dois pontos sozinho", () => {
   expect(field().value).toBe("14:30");
 });
 
-test("hora pela metade nao avisa ninguem ainda", () => {
-  let avisos = 0;
-  withTheme(<TimeField aria-label="Entrada" onValueChange={() => avisos++} />);
+test("a half-typed time notifies no one yet", () => {
+  let calls = 0;
+  withTheme(<TimeField aria-label="Entrada" onValueChange={() => calls++} />);
 
   fireEvent.change(field(), { target: { value: "14" } });
 
-  expect(avisos).toBe(0);
+  expect(calls).toBe(0);
 });
 
-test("a hora inteira chega em quem escuta, e sempre com dois digitos", () => {
-  let recebida = "";
-  withTheme(<TimeField aria-label="Entrada" onValueChange={(hora) => (recebida = hora)} />);
+test("a complete time reaches the listener, and always with two digits", () => {
+  let received = "";
+  withTheme(<TimeField aria-label="Entrada" onValueChange={(hora) => (received = hora)} />);
 
   fireEvent.change(field(), { target: { value: "0805" } });
 
-  expect(recebida).toBe("08:05");
+  expect(received).toBe("08:05");
 });
 
-test("25:99 nao vira valor nenhum, e o campo se marca invalido na hora", () => {
-  let avisos = 0;
-  withTheme(<TimeField aria-label="Entrada" onValueChange={() => avisos++} />);
+test("25:99 becomes no value at all, and the field marks itself invalid right away", () => {
+  let calls = 0;
+  withTheme(<TimeField aria-label="Entrada" onValueChange={() => calls++} />);
 
   fireEvent.change(field(), { target: { value: "2599" } });
 
   expect(field().value).toBe("25:99");
   expect(field().getAttribute("aria-invalid")).toBe("true");
-  expect(avisos).toBe(0);
+  expect(calls).toBe(0);
 });
 
-test("o texto impossivel volta para a ultima hora valida ao sair do campo", () => {
+test("impossible text reverts to the last valid time on leaving the field", () => {
   withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" />);
 
   fireEvent.change(field(), { target: { value: "2599" } });
@@ -71,22 +71,22 @@ test("o texto impossivel volta para a ultima hora valida ao sair do campo", () =
   expect(field().getAttribute("aria-invalid")).toBeNull();
 });
 
-test("apagar o campo limpa o valor", () => {
-  let recebida = "08:00";
+test("clearing the field clears the value", () => {
+  let received = "08:00";
   withTheme(
     <TimeField
       aria-label="Entrada"
       defaultValue="08:00"
-      onValueChange={(hora) => (recebida = hora)}
+      onValueChange={(hora) => (received = hora)}
     />,
   );
 
   fireEvent.change(field(), { target: { value: "" } });
 
-  expect(recebida).toBe("");
+  expect(received).toBe("");
 });
 
-test("a seta para cima pousa na grade do passo, e nao soma o passo cru", () => {
+test("arrow up lands on the step grid, and does not add the raw step", () => {
   withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
 
   fireEvent.keyDown(field(), { key: "ArrowUp" });
@@ -94,7 +94,7 @@ test("a seta para cima pousa na grade do passo, e nao soma o passo cru", () => {
   expect(field().value).toBe("14:15");
 });
 
-test("a seta para baixo para na primeira hora da janela", () => {
+test("arrow down stops at the first time of the window", () => {
   withTheme(<TimeField aria-label="Entrada" defaultValue="08:10" step={15} min="08:00" />);
 
   fireEvent.keyDown(field(), { key: "ArrowDown" });
@@ -102,7 +102,7 @@ test("a seta para baixo para na primeira hora da janela", () => {
   expect(field().value).toBe("08:00");
 });
 
-test("com o campo vazio, a seta para cima comeca na abertura da janela", () => {
+test("with the field empty, arrow up starts at the window opening", () => {
   withTheme(<TimeField aria-label="Entrada" min="09:30" max="18:00" />);
 
   fireEvent.keyDown(field(), { key: "ArrowUp" });
@@ -110,36 +110,36 @@ test("com o campo vazio, a seta para cima comeca na abertura da janela", () => {
   expect(field().value).toBe("09:30");
 });
 
-test("hora fora da janela chega em quem escuta, e o campo diz que ela esta fora", () => {
-  let recebida = "";
+test("a time outside the window reaches the listener, and the field says it is outside", () => {
+  let received = "";
   withTheme(
     <TimeField
       aria-label="Entrada"
       min="08:00"
       max="18:00"
-      onValueChange={(hora) => (recebida = hora)}
+      onValueChange={(hora) => (received = hora)}
     />,
   );
 
   fireEvent.change(field(), { target: { value: "0700" } });
 
-  expect(recebida).toBe("07:00");
+  expect(received).toBe("07:00");
   expect(field().getAttribute("aria-invalid")).toBe("true");
 });
 
-test("hora digitada fora da grade do passo continua valendo", () => {
-  let recebida = "";
+test("a typed time off the step grid is still valid", () => {
+  let received = "";
   withTheme(
-    <TimeField aria-label="Entrada" step={30} onValueChange={(hora) => (recebida = hora)} />,
+    <TimeField aria-label="Entrada" step={30} onValueChange={(hora) => (received = hora)} />,
   );
 
   fireEvent.change(field(), { target: { value: "1407" } });
 
-  expect(recebida).toBe("14:07");
+  expect(received).toBe("14:07");
   expect(field().getAttribute("aria-invalid")).toBeNull();
 });
 
-test("com name, o formulario nativo recebe a hora inteira e nunca o texto pela metade", () => {
+test("with name, the native form receives the complete time and never the half-typed text", () => {
   const { container } = withTheme(<TimeField aria-label="Entrada" name="entrada" />);
 
   fireEvent.change(field(), { target: { value: "08" } });
@@ -150,7 +150,7 @@ test("com name, o formulario nativo recebe a hora inteira e nunca o texto pela m
   expect((hidden as HTMLInputElement).value).toBe("08:30");
 });
 
-test("o campo espelha a hora que muda de fora", () => {
+test("the field mirrors a time changed from outside", () => {
   function Controlled() {
     const [hora, setHora] = useState("08:00");
     return (
@@ -167,13 +167,13 @@ test("o campo espelha a hora que muda de fora", () => {
   expect(field().value).toBe("19:45");
 });
 
-test("o campo desabilitado nao aceita digitacao", () => {
+test("a disabled field does not accept typing", () => {
   withTheme(<TimeField aria-label="Entrada" disabled />);
 
   expect(field().disabled).toBe(true);
 });
 
-test("o painel abre pelo relogio do campo, com as duas colunas", () => {
+test("the panel opens from the field's clock, with both columns", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -182,7 +182,7 @@ test("o painel abre pelo relogio do campo, com as duas colunas", () => {
   expect(screen.getByRole("listbox", { name: "Minuto" })).toBeDefined();
 });
 
-test("o passo decide quantos minutos a coluna oferece", () => {
+test("the step decides how many minutes the column offers", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" step={15} />);
 
   open();
@@ -190,7 +190,7 @@ test("o passo decide quantos minutos a coluna oferece", () => {
   expect(optionsOf("Minuto")).toEqual(["00", "15", "30", "45"]);
 });
 
-test("a janela recorta as horas oferecidas, em vez de so avisar depois", () => {
+test("the window trims the offered hours, instead of only warning afterwards", () => {
   withTheme(<TimePicker aria-label="Entrega" min="08:00" max="10:00" step={30} />);
 
   open();
@@ -198,7 +198,7 @@ test("a janela recorta as horas oferecidas, em vez de so avisar depois", () => {
   expect(optionsOf("Hora")).toEqual(["08", "09", "10"]);
 });
 
-test("a ultima hora da janela so oferece os minutos que cabem nela", () => {
+test("the last hour of the window only offers the minutes that fit in it", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="10:00" min="08:00" max="10:00" />);
 
   open();
@@ -206,23 +206,23 @@ test("a ultima hora da janela so oferece os minutos que cabem nela", () => {
   expect(optionsOf("Minuto")).toEqual(["00"]);
 });
 
-test("escolher a hora guarda o minuto que ja estava escolhido", () => {
-  let recebida = "";
+test("picking the hour keeps the already chosen minute", () => {
+  let received = "";
   withTheme(
     <TimePicker
       aria-label="Entrega"
       defaultValue="14:30"
-      onValueChange={(hora) => (recebida = hora)}
+      onValueChange={(hora) => (received = hora)}
     />,
   );
 
   open();
   fireEvent.click(screen.getByRole("option", { name: "16" }));
 
-  expect(recebida).toBe("16:30");
+  expect(received).toBe("16:30");
 });
 
-test("a hora nao fecha o painel, e o minuto fecha", () => {
+test("the hour does not close the panel, and the minute does", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -233,7 +233,7 @@ test("a hora nao fecha o painel, e o minuto fecha", () => {
   expect(screen.queryByRole("listbox", { name: "Minuto" })).toBeNull();
 });
 
-test("a hora escolhida no painel volta escrita no campo", () => {
+test("the time picked in the panel comes back written in the field", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -242,54 +242,54 @@ test("a hora escolhida no painel volta escrita no campo", () => {
   expect(field().value).toBe("14:45");
 });
 
-test("com o campo vazio, o minuto escolhido pousa na primeira hora da janela", () => {
-  let recebida = "";
+test("with the field empty, the chosen minute lands on the first hour of the window", () => {
+  let received = "";
   withTheme(
     <TimePicker
       aria-label="Entrega"
       min="09:00"
       max="18:00"
-      onValueChange={(hora) => (recebida = hora)}
+      onValueChange={(hora) => (received = hora)}
     />,
   );
 
   open();
   fireEvent.click(screen.getByRole("option", { name: "30" }));
 
-  expect(recebida).toBe("09:30");
+  expect(received).toBe("09:30");
 });
 
-test("a seta na coluna anda o foco sem gravar valor nenhum", () => {
-  let avisos = 0;
+test("the arrow in the column moves focus without committing any value", () => {
+  let calls = 0;
   withTheme(
-    <TimePicker aria-label="Entrega" defaultValue="14:30" onValueChange={() => avisos++} />,
+    <TimePicker aria-label="Entrega" defaultValue="14:30" onValueChange={() => calls++} />,
   );
 
   open();
   const column = screen.getByRole("listbox", { name: "Minuto" });
   fireEvent.keyDown(column, { key: "ArrowDown" });
 
-  expect(avisos).toBe(0);
+  expect(calls).toBe(0);
   expect(field().value).toBe("14:30");
   expect(document.activeElement?.textContent).toBe("45");
   expect(screen.getByRole("listbox", { name: "Minuto" })).toBeDefined();
 });
 
-test("andar de 08 a 18 na coluna das horas nao dispara consulta nenhuma", () => {
-  let avisos = 0;
+test("moving from 08 to 18 in the hours column fires no query at all", () => {
+  let calls = 0;
   withTheme(
-    <TimePicker aria-label="Entrega" defaultValue="08:00" onValueChange={() => avisos++} />,
+    <TimePicker aria-label="Entrega" defaultValue="08:00" onValueChange={() => calls++} />,
   );
 
   open();
   const column = screen.getByRole("listbox", { name: "Hora" });
-  for (let anda = 0; anda < 10; anda += 1) fireEvent.keyDown(column, { key: "ArrowDown" });
+  for (let presses = 0; presses < 10; presses += 1) fireEvent.keyDown(column, { key: "ArrowDown" });
 
-  expect(avisos).toBe(0);
+  expect(calls).toBe(0);
   expect(document.activeElement?.textContent).toBe("18");
 });
 
-test("e o Enter na opcao focada que grava, e ai o minuto fecha o painel", () => {
+test("Enter on the focused option is what commits, and then the minute closes the panel", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -301,7 +301,7 @@ test("e o Enter na opcao focada que grava, e ai o minuto fecha o painel", () => 
   expect(screen.queryByRole("listbox", { name: "Minuto" })).toBeNull();
 });
 
-test("a opcao so focada nao se anuncia escolhida", () => {
+test("an option that is only focused does not announce itself as chosen", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -311,7 +311,7 @@ test("a opcao so focada nao se anuncia escolhida", () => {
   expect(screen.getByRole("option", { name: "30" }).getAttribute("aria-selected")).toBe("true");
 });
 
-test("a coluna diz qual opcao esta escolhida, e nao so a pinta", () => {
+test("the column says which option is chosen, and does not just paint it", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -323,7 +323,7 @@ test("a coluna diz qual opcao esta escolhida, e nao so a pinta", () => {
   expect(marked).toEqual(["14", "30"]);
 });
 
-test("o relogio desabilitado nao abre o painel", () => {
+test("a disabled clock does not open the panel", () => {
   withTheme(<TimePicker aria-label="Entrega" disabled />);
 
   open();
@@ -331,13 +331,13 @@ test("o relogio desabilitado nao abre o painel", () => {
   expect(screen.queryByRole("listbox", { name: "Hora" })).toBeNull();
 });
 
-test("hora vinda de fora sem o zero da frente aparece com dois digitos", () => {
+test("a time from outside without the leading zero shows with two digits", () => {
   withTheme(<TimeField aria-label="Entrada" value="8:00" />);
 
   expect(field().value).toBe("08:00");
 });
 
-test("janela invertida e ignorada, e o campo aceita o dia inteiro", () => {
+test("an inverted window is ignored, and the field accepts the whole day", () => {
   withTheme(<TimeField aria-label="Entrada" min="22:00" max="06:00" />);
 
   fireEvent.change(field(), { target: { value: "1400" } });
@@ -345,7 +345,7 @@ test("janela invertida e ignorada, e o campo aceita o dia inteiro", () => {
   expect(field().getAttribute("aria-invalid")).toBeNull();
 });
 
-test("na tela estreita o painel sobe como folha, com as mesmas colunas", () => {
+test("on a narrow screen the panel rises as a sheet, with the same columns", () => {
   const original = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -367,30 +367,30 @@ test("na tela estreita o painel sobe como folha, com as mesmas colunas", () => {
   }
 });
 
-test("hora impossivel vinda de fora tambem marca o campo, sem ninguem digitar", () => {
+test("an impossible time from outside also marks the field, without anyone typing", () => {
   withTheme(<TimeField aria-label="Entrada" value="25:99" />);
 
   expect(field().getAttribute("aria-invalid")).toBe("true");
 });
 
-test("trocar a hora preserva o minuto digitado fora da grade", () => {
-  let recebida = "";
+test("changing the hour keeps a minute typed off the grid", () => {
+  let received = "";
   withTheme(
     <TimePicker
       aria-label="Entrega"
       defaultValue="14:07"
       step={15}
-      onValueChange={(hora) => (recebida = hora)}
+      onValueChange={(hora) => (received = hora)}
     />,
   );
 
   open();
   fireEvent.click(screen.getByRole("option", { name: "16" }));
 
-  expect(recebida).toBe("16:07");
+  expect(received).toBe("16:07");
 });
 
-test("hora fora da janela nao deixa a coluna de minutos vazia", () => {
+test("a time outside the window does not leave the minutes column empty", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="07:00" min="08:00" max="18:00" />);
 
   open();
@@ -398,22 +398,22 @@ test("hora fora da janela nao deixa a coluna de minutos vazia", () => {
   expect(optionsOf("Minuto").length).toBeGreaterThan(0);
 });
 
-test("escolher a hora do fim da janela nao passa do maximo", () => {
-  let recebida = "";
+test("picking the hour at the end of the window does not exceed the maximum", () => {
+  let received = "";
   withTheme(
     <TimePicker
       aria-label="Entrega"
       defaultValue="09:30"
       min="08:00"
       max="10:00"
-      onValueChange={(hora) => (recebida = hora)}
+      onValueChange={(hora) => (received = hora)}
     />,
   );
 
   open();
   fireEvent.click(screen.getByRole("option", { name: "10" }));
 
-  expect(recebida).toBe("10:00");
+  expect(received).toBe("10:00");
 });
 
 async function onPhoneWaiting(body: () => Promise<void>) {
@@ -454,7 +454,7 @@ function stepper(name: string) {
   return screen.getByRole("button", { name });
 }
 
-test("na tela estreita o campo ganha os dois botoes de passo, que a seta nao alcanca no dedo", () => {
+test("on a narrow screen the field gets both step buttons, since the arrow cannot be reached by finger", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
 
@@ -464,7 +464,7 @@ test("na tela estreita o campo ganha os dois botoes de passo, que a seta nao alc
   });
 });
 
-test("o botao de menos pousa na grade do passo, e nao subtrai o passo cru", () => {
+test("the minus button lands on the step grid, and does not subtract the raw step", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
 
@@ -474,21 +474,21 @@ test("o botao de menos pousa na grade do passo, e nao subtrai o passo cru", () =
   });
 });
 
-test("o botao anda exatamente onde a seta andaria", () => {
+test("the button moves exactly where the arrow would", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" defaultValue="09:20" step={30} />);
     fireEvent.click(stepper("Aumentar Entrada"));
-    const pelosBotoes = field().value;
+    const byButtons = field().value;
 
     withTheme(<TimeField aria-label="Saída" defaultValue="09:20" step={30} />);
-    const segundo = screen.getAllByPlaceholderText("hh:mm")[1] as HTMLInputElement;
-    fireEvent.keyDown(segundo, { key: "ArrowUp" });
+    const second = screen.getAllByPlaceholderText("hh:mm")[1] as HTMLInputElement;
+    fireEvent.keyDown(second, { key: "ArrowUp" });
 
-    expect(segundo.value).toBe(pelosBotoes);
+    expect(second.value).toBe(byButtons);
   });
 });
 
-test("o botao de passo respeita a janela, como a seta respeita", () => {
+test("the step button respects the window, as the arrow does", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" defaultValue="08:10" step={15} min="08:00" />);
 
@@ -498,7 +498,7 @@ test("o botao de passo respeita a janela, como a seta respeita", () => {
   });
 });
 
-test("com o campo vazio, o botao de mais comeca na abertura da janela", () => {
+test("with the field empty, the plus button starts at the window opening", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" min="09:30" max="18:00" />);
 
@@ -508,7 +508,7 @@ test("com o campo vazio, o botao de mais comeca na abertura da janela", () => {
   });
 });
 
-test("os botoes carregam o nome do campo, para dois horarios na tela nao virarem dois Aumentar", () => {
+test("the buttons carry the field name, so two times on screen do not become two Aumentar", () => {
   onPhone(() => {
     withTheme(
       <>
@@ -524,45 +524,45 @@ test("os botoes carregam o nome do campo, para dois horarios na tela nao virarem
   });
 });
 
-test("o botao de passo tem largura de dedo, e a moldura nunca encolhe abaixo do alvo", () => {
+test("the step button is finger-wide, and the frame never shrinks below the target", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" size="sm" defaultValue="08:00" />);
 
-    const menos = stepper("Diminuir Entrada");
-    expect(menos.className).toContain("w-11");
-    expect(menos.parentElement?.className).toContain("min-h-11");
+    const minus = stepper("Diminuir Entrada");
+    expect(minus.className).toContain("w-11");
+    expect(minus.parentElement?.className).toContain("min-h-11");
   });
 });
 
-test("o campo desabilitado nao anda pelos botoes", () => {
+test("a disabled field does not move through the buttons", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" disabled />);
 
-    const mais = stepper("Aumentar Entrada") as HTMLButtonElement;
-    expect(mais.disabled).toBe(true);
+    const plus = stepper("Aumentar Entrada") as HTMLButtonElement;
+    expect(plus.disabled).toBe(true);
 
-    fireEvent.click(mais);
+    fireEvent.click(plus);
     expect(field().value).toBe("08:00");
   });
 });
 
-test("digitar continua governando o valor com os botoes na tela", () => {
+test("typing still governs the value with the buttons on screen", () => {
   onPhone(() => {
-    let recebida = "";
+    let received = "";
     withTheme(
-      <TimeField aria-label="Entrada" onValueChange={(hora) => (recebida = hora)} name="entrada" />,
+      <TimeField aria-label="Entrada" onValueChange={(hora) => (received = hora)} name="entrada" />,
     );
 
     fireEvent.change(field(), { target: { value: "2599" } });
-    expect(recebida).toBe("");
+    expect(received).toBe("");
     expect(field().getAttribute("aria-invalid")).toBe("true");
 
     fireEvent.change(field(), { target: { value: "0830" } });
-    expect(recebida).toBe("08:30");
+    expect(received).toBe("08:30");
   });
 });
 
-test("a hora impossivel pinta a moldura inteira, e nao um campo sem borda dentro dela", () => {
+test("an impossible time paints the whole frame, and not a borderless field inside it", () => {
   onPhone(() => {
     withTheme(<TimeField aria-label="Entrada" value="25:99" />);
 
@@ -570,7 +570,7 @@ test("a hora impossivel pinta a moldura inteira, e nao um campo sem borda dentro
   });
 });
 
-test("na mesa o campo continua sem botao, e a seta continua sendo o caminho", () => {
+test("on desktop the field stays without buttons, and the arrow is still the way", () => {
   withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
 
   expect(screen.queryByRole("button", { name: "Aumentar Entrada" })).toBeNull();
@@ -579,7 +579,7 @@ test("na mesa o campo continua sem botao, e a seta continua sendo o caminho", ()
   expect(field().value).toBe("14:15");
 });
 
-test("dentro do seletor o campo nao ganha botoes: o painel ja e a porta do passo no dedo", () => {
+test("inside the picker the field gets no buttons: the panel is already the finger's way to step", () => {
   onPhone(() => {
     withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
@@ -590,7 +590,7 @@ test("dentro do seletor o campo nao ganha botoes: o painel ja e a porta do passo
   });
 });
 
-test("o nome da coluna sai do texto que esta na tela, e nao de uma copia dele", () => {
+test("the column name comes from the text on screen, and not from a copy of it", () => {
   withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
 
   open();
@@ -605,7 +605,7 @@ test("o nome da coluna sai do texto que esta na tela, e nao de uma copia dele", 
   }
 });
 
-test("o botao herda o nome do rotulo, e nao so do aria-label", async () => {
+test("the button inherits the label's name, and not only aria-label's", async () => {
   await onPhoneWaiting(async () => {
     withTheme(
       <Field>
@@ -620,7 +620,7 @@ test("o botao herda o nome do rotulo, e nao so do aria-label", async () => {
   });
 });
 
-test("rotulo por label solto tambem chega no botao, sem Field nenhum em volta", () => {
+test("a loose label element also reaches the button, with no Field around", () => {
   onPhone(() => {
     withTheme(
       <>
@@ -633,7 +633,7 @@ test("rotulo por label solto tambem chega no botao, sem Field nenhum em volta", 
   });
 });
 
-test("dois horarios rotulados na tela nao viram quatro botoes com dois nomes", async () => {
+test("two labeled times on screen do not become four buttons with two names", async () => {
   await onPhoneWaiting(async () => {
     withTheme(
       <>
@@ -653,13 +653,13 @@ test("dois horarios rotulados na tela nao viram quatro botoes com dois nomes", a
     expect(new Set(names).size).toBe(4);
 
     fireEvent.click(later);
-    const campos = screen.getAllByPlaceholderText("hh:mm") as HTMLInputElement[];
-    expect(campos[0]!.value).toBe("08:00");
-    expect(campos[1]!.value).toBe("17:15");
+    const fields = screen.getAllByPlaceholderText("hh:mm") as HTMLInputElement[];
+    expect(fields[0]!.value).toBe("08:00");
+    expect(fields[1]!.value).toBe("17:15");
   });
 });
 
-test("campo sem rotulo nenhum nao inventa nome para o botao", () => {
+test("a field with no label at all invents no name for the button", () => {
   onPhone(() => {
     withTheme(<TimeField defaultValue="08:00" />);
 
@@ -667,7 +667,7 @@ test("campo sem rotulo nenhum nao inventa nome para o botao", () => {
   });
 });
 
-test("a regiao viva existe antes de a hora mudar, senao o primeiro passo sai calado", () => {
+test("the live region exists before the time changes, otherwise the first step is silent", () => {
   onPhone(() => {
     const { container } = withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" />);
 
@@ -677,7 +677,7 @@ test("a regiao viva existe antes de a hora mudar, senao o primeiro passo sai cal
   });
 });
 
-test("o passo pelo botao diz em voz alta a hora em que parou", () => {
+test("a step by button says out loud the time it stopped at", () => {
   onPhone(() => {
     const { container } = withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" />);
 
@@ -687,7 +687,7 @@ test("o passo pelo botao diz em voz alta a hora em que parou", () => {
   });
 });
 
-test("a seta no teclado anuncia como o botao anuncia, e o foco fica onde estava", () => {
+test("the keyboard arrow announces as the button does, and focus stays where it was", () => {
   const { container } = withTheme(
     <TimeField aria-label="Entrada" defaultValue="14:07" step={15} />,
   );
@@ -697,7 +697,7 @@ test("a seta no teclado anuncia como o botao anuncia, e o foco fica onde estava"
   expect(container.querySelector('[role="status"]')!.textContent).toBe("14:15");
 });
 
-test("digitar nao anuncia nada: quem digita ja ouve o proprio teclado", () => {
+test("typing announces nothing: whoever types already hears their own keyboard", () => {
   const { container } = withTheme(<TimeField aria-label="Entrada" />);
 
   fireEvent.change(field(), { target: { value: "0830" } });
@@ -705,7 +705,7 @@ test("digitar nao anuncia nada: quem digita ja ouve o proprio teclado", () => {
   expect(container.querySelector('[role="status"]')!.textContent).toBe("");
 });
 
-test("dentro de Field com name, o formulario nativo recebe so a hora inteira, e nunca o texto da tela", () => {
+test("inside a Field with name, the native form receives only the complete time, and never the screen text", () => {
   const { container } = withTheme(
     <form>
       <Field name="entrada">
@@ -724,7 +724,7 @@ test("dentro de Field com name, o formulario nativo recebe so a hora inteira, e 
   expect(screen.getByLabelText("Entrada").hasAttribute("name")).toBe(false);
 });
 
-test("desabilitado, o campo de hora fica fora do formulario nativo", () => {
+test("disabled, the time field stays out of the native form", () => {
   const { container } = withTheme(
     <form>
       <TimeField aria-label="Entrada" name="entrada" defaultValue="08:30" disabled />

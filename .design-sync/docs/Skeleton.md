@@ -4,15 +4,16 @@ category: Feedback
 
 # Skeleton
 
-Marca de lugar enquanto o dado não chegou.
+A placeholder while the data has not arrived.
 
-Da a forma com utilitarios: `<Skeleton className="h-4 w-40" />`. Reproduza o
-formato do conteúdo que vai chegar, senao a tela pula quando ele chega.
+Give it shape with utilities: `<Skeleton className="h-4 w-40" />`. Reproduce the
+shape of the content that is coming, otherwise the screen jumps when it
+arrives.
 
-Fica escondido do leitor de tela de propósito. Marque o container com
-`aria-busy="true"`, que é onde o aviso de carregamento pertence. Respeita
+It is hidden from the screen reader on purpose. Mark the container with
+`aria-busy="true"`, which is where the loading notice belongs. It respects
 `prefers-reduced-motion`.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Skeleton` - mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Skeleton` - same placeholder, same token, and the same 2 s pulse; still with reduce motion. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

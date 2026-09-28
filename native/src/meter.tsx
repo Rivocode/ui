@@ -6,34 +6,37 @@ import { resolveFormat, type Format } from "./shared/format";
 import { Text } from "./text";
 
 export type MeterProps = {
-  /** Onde a medida esta agora, na escala de `min` a `max`. */
+  /** Where the measurement is now, on the scale from `min` to `max`. */
   value: number;
-  /** O piso da escala. Quase sempre zero, e por isso o padrao. */
+  /** The floor of the scale. Almost always zero, hence the default. */
   min?: number;
   /**
-   * O teto da escala: a cota, o limite do plano, o disco contratado. O padrao
-   * 100 e o caso porcentagem, que e o unico que o Progress daqui atende.
+   * The ceiling of the scale: the quota, the plan limit, the contracted disk.
+   * The default 100 is the percentage case, the only one this package's
+   * Progress covers.
    */
   max?: number;
-  /** O nome da medida. Fica na tela E e o que o leitor de tela anuncia. */
+  /** The measurement's name. It stays on screen AND is what the screen reader announces. */
   label: string;
-  /** Escreve a porcentagem ao lado do rotulo. O mesmo nome do web. */
+  /** Writes the percentage next to the label. The same name as the web. */
   showValue?: boolean;
   /**
-   * Como o numero e escrito: nome de formatador da casa (`percent`,
-   * `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do
-   * web. Recebe o `value` cru, e o texto vale na tela e no anuncio.
+   * How the number is written: the name of a house formatter (`percent`,
+   * `currencyShort`, `integer`...) or your own function, the same vocabulary as
+   * the web. Receives the raw `value`, and the text applies on screen and in
+   * the announcement.
    */
   format?: Format;
   /**
-   * A medida ja escrita - "8 GB de 15 GB", "R$ 4.200 de R$ 5.000". Substitui a
-   * porcentagem na tela e no anuncio, e ganha do `format` quando vem junto.
+   * The measurement already written - "8 GB de 15 GB", "R$ 4.200 de R$ 5.000".
+   * Replaces the percentage on screen and in the announcement, and wins over
+   * `format` when both are passed.
    */
   valueLabel?: string;
   className?: string;
   /**
-   * Classe por parte: `label`, `value` (o numero escrito), `track` (o trilho)
-   * e `indicator` (o preenchimento).
+   * Class per part: `label`, `value` (the written number), `track` (the track)
+   * and `indicator` (the fill).
    */
   classNames?: Slots<"label" | "value" | "track" | "indicator">;
 };

@@ -1,30 +1,31 @@
 ---
-category: Sobreposição
+category: Overlays
 ---
 
 # Dialog
 
-Janela modal, para decisão que não pode continuar em segundo plano.
+A modal window, for a decision that cannot carry on in the background.
 
-Compõe com `DialogTrigger`, `DialogContent`, `DialogTitle`, `DialogDescription`,
-`DialogFooter` e `DialogClose`.
+Composes with `DialogTrigger`, `DialogContent`, `DialogTitle`,
+`DialogDescription`, `DialogFooter` and `DialogClose`.
 
-Renderiza em portal dentro do container do `RivoProvider`, que carrega o tema.
-Sem o Provider ele lanca erro, e não renderiza sem estilo.
+Renders in a portal inside the `RivoProvider` container, which carries the
+theme. Without the Provider it throws, rather than rendering unstyled.
 
-## Quando não usar
+## When not to use
 
-Para confirmar o que não volta atrás (excluir, cancelar uma nota, sair sem
-salvar), use `AlertDialog`. Este aqui fecha com Esc e com clique fora, e é isso
-que o separa do outro: uma janela que se dispensa por engano não serve para uma
-pergunta cuja resposta errada não tem desfazer.
+To confirm what cannot be undone (deleting, cancelling an invoice, leaving
+without saving), use `AlertDialog`. This one closes with Esc and with a click
+outside, and that is what sets it apart from the other: a window that can be
+dismissed by accident is no good for a question whose wrong answer has no
+undo.
 
-Para o painel que abre no celular, prefira o `Sheet`: modal centralizado numa
-tela estreita cobre quase tudo e briga com o teclado. E para o que só acrescenta
-contexto ao lado de um botão (uma explicação, um formulário de duas linhas), o
-`Popover` custa menos: o modal tranca o resto da página, e trancar a página para
-mostrar um texto é cobrar caro por pouco.
+For the panel that opens on a phone, prefer the `Sheet`: a centered modal on a
+narrow screen covers almost everything and fights with the keyboard. And for
+what only adds context next to a button (an explanation, a two-line form), the
+`Popover` costs less: the modal locks the rest of the page, and locking the
+page to show a piece of text is charging a lot for little.
 
-## No React Native
+## In React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Dialog` - `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento; o cartão sobe para o espaço acima do teclado. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Translates: `@rivocode/ui-native` exports `Dialog` - `open`, `onOpenChange` and `title` as props; no `DialogTrigger`. It opens with a fade, and with no transition when the system asks to reduce motion; the card rises into the space above the keyboard. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.

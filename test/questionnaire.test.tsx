@@ -78,7 +78,7 @@ const tokens = (element: Element) => (element.getAttribute("class") ?? "").split
 
 const next = () => fireEvent.click(screen.getByRole("button", { name: "Próxima" }));
 
-test("mostra uma pergunta por vez: as outras ficam escondidas e inertes", () => {
+test("shows one question at a time: the others stay hidden and inert", () => {
   const { container } = render(<Survey />);
   const [first, second, third] = items(container);
 
@@ -91,7 +91,7 @@ test("mostra uma pergunta por vez: as outras ficam escondidas e inertes", () => 
   }
 });
 
-test("a pergunta e um fieldset com legend, e a descricao a descreve", () => {
+test("the question is a fieldset with a legend, and the description describes it", () => {
   const { container } = render(<Survey />);
   const first = items(container)[0]!;
   const legend = first.querySelector("legend")!;
@@ -102,7 +102,7 @@ test("a pergunta e um fieldset com legend, e a descricao a descreve", () => {
   expect(first.getAttribute("aria-describedby")).toBe(description.id);
 });
 
-test("o progresso diz a posicao em texto e em valor", () => {
+test("the progress says the position in text and as a value", () => {
   render(<Survey />);
   const bar = screen.getByRole("progressbar");
 
@@ -111,7 +111,7 @@ test("o progresso diz a posicao em texto e em valor", () => {
   expect(bar.getAttribute("aria-valuetext")).toBe("Pergunta 1 de 3");
 });
 
-test("as opcoes sao radio nativo com o nome do item, e cada uma tem atalho de letra", () => {
+test("the options are native radios with the item name, and each has a letter shortcut", () => {
   render(<Survey />);
   const radios = screen.getAllByRole("radio") as HTMLInputElement[];
 
@@ -121,7 +121,7 @@ test("as opcoes sao radio nativo com o nome do item, e cada uma tem atalho de le
   expect(screen.getByRole("radio", { name: "Lucro Presumido" })).toBe(radios[1]!);
 });
 
-test("obrigatoria sem resposta nao avanca: mostra o erro, descreve o item e foca o primeiro controle", () => {
+test("a required question without an answer does not advance: it shows the error, describes the item and focuses the first control", () => {
   const { container } = render(<Survey />);
   next();
 
@@ -135,7 +135,7 @@ test("obrigatoria sem resposta nao avanca: mostra o erro, descreve o item e foca
   expect(screen.getAllByRole("radio")[0]!.getAttribute("aria-invalid")).toBe("true");
 });
 
-test("responder limpa o erro, e avancar abre a proxima com o foco no primeiro controle", () => {
+test("answering clears the error, and advancing opens the next one with focus on the first control", () => {
   const { container } = render(<Survey />);
   next();
   fireEvent.click(screen.getByRole("radio", { name: "Lucro Real" }));
@@ -149,7 +149,7 @@ test("responder limpa o erro, e avancar abre a proxima com o foco no primeiro co
   expect(document.activeElement).toBe(screen.getByRole("checkbox", { name: "E-mail" }));
 });
 
-test("o Pular some na obrigatoria e aparece na opcional", () => {
+test("Pular disappears on a required question and shows on an optional one", () => {
   render(<Survey />);
   expect(screen.queryByRole("button", { name: "Pular" })).toBeNull();
   expect((screen.getByRole("button", { name: "Voltar" }) as HTMLButtonElement).disabled).toBe(true);
@@ -162,7 +162,7 @@ test("o Pular some na obrigatoria e aparece na opcional", () => {
   );
 });
 
-test("a opcional vale por resposta ou por pular: sem nenhum dos dois, o erro pede um deles", () => {
+test("an optional question counts by answer or by skip: with neither, the error asks for one", () => {
   const onStatus = mock((_status: string) => {});
   const { container } = render(<Survey onStatus={onStatus} />);
   fireEvent.click(screen.getByRole("radio", { name: "Simples Nacional" }));
@@ -183,14 +183,14 @@ test("a opcional vale por resposta ou por pular: sem nenhum dos dois, o erro ped
   expect(items(container)[2]!.hidden).toBe(false);
 });
 
-test("o atalho de letra marca a opcao da pergunta aberta, e para enquanto se digita", () => {
+test("the letter shortcut checks the option of the open question, and stops while typing", () => {
   const { container } = render(<Survey />);
   const form = container.querySelector("form")!;
-  const presumido = screen.getByRole("radio", { name: "Lucro Presumido" }) as HTMLInputElement;
+  const presumed = screen.getByRole("radio", { name: "Lucro Presumido" }) as HTMLInputElement;
 
   fireEvent.keyDown(form, { key: "b" });
-  expect(presumido.checked).toBe(true);
-  expect(document.activeElement).toBe(presumido);
+  expect(presumed.checked).toBe(true);
+  expect(document.activeElement).toBe(presumed);
 
   next();
   const other = screen.getByRole("textbox", { name: "Outra resposta" });
@@ -207,7 +207,7 @@ test("o atalho de letra marca a opcao da pergunta aberta, e para enquanto se dig
   );
 });
 
-test("com shortcuts numbers o atalho e o numero, e com false nao ha atalho", () => {
+test("with shortcuts numbers the shortcut is the number, and with false there is no shortcut", () => {
   const numbers = render(<Survey shortcuts="numbers" />);
   const radios = numbers.getAllByRole("radio") as HTMLInputElement[];
   expect(radios.map((radio) => radio.getAttribute("aria-keyshortcuts"))).toEqual(["1", "2", "3"]);
@@ -223,7 +223,7 @@ test("com shortcuts numbers o atalho e o numero, e com false nao ha atalho", () 
   expect(plain[0]!.checked).toBe(false);
 });
 
-test("Ctrl+Enter e Cmd+Enter validam e avancam", () => {
+test("Ctrl+Enter and Cmd+Enter validate and advance", () => {
   const { container } = render(<Survey />);
   const form = container.querySelector("form")!;
 
@@ -238,7 +238,7 @@ test("Ctrl+Enter e Cmd+Enter validam e avancam", () => {
   );
 });
 
-test("o campo livre ao lado de opcao unica e a resposta outra: um apaga o outro", () => {
+test("the free field next to a single choice is the other answer: each erases the other", () => {
   render(
     <Questionnaire>
       <QuestionnaireItem name="como" required>
@@ -262,7 +262,7 @@ test("o campo livre ao lado de opcao unica e a resposta outra: um apaga o outro"
   expect(other.value).toBe("");
 });
 
-test("o campo livre sozinho leva o nome da pergunta", () => {
+test("a free field alone carries the question name", () => {
   render(
     <Questionnaire>
       <QuestionnaireItem name="obs">
@@ -275,7 +275,7 @@ test("o campo livre sozinho leva o nome da pergunta", () => {
   expect(screen.getByText("Opcional")).toBeDefined();
 });
 
-test("o envio entrega as respostas e o FormData, e o item pulado fica ausente dos dois", () => {
+test("submit delivers the answers and the FormData, and the skipped item is absent from both", () => {
   const onSubmit = mock((_answers: QuestionnaireAnswers, _data: FormData) => {});
   const { container } = render(<Survey onSubmit={onSubmit} />);
 
@@ -298,7 +298,7 @@ test("o envio entrega as respostas e o FormData, e o item pulado fica ausente do
   expect(items(container)[2]!.dataset.status).toBe("skipped");
 });
 
-test("o Enviar valida tudo e volta para a primeira pergunta invalida", () => {
+test("Enviar validates everything and goes back to the first invalid question", () => {
   const onSubmit = mock(() => {});
   const { container } = render(<Survey defaultItem="obs" onSubmit={onSubmit} />);
   expect(items(container)[2]!.hidden).toBe(false);
@@ -312,7 +312,7 @@ test("o Enviar valida tudo e volta para a primeira pergunta invalida", () => {
   expect(document.activeElement).toBe(screen.getAllByRole("radio")[0]!);
 });
 
-test("item desabilitado aparece, nao responde, nao trava e nao entra nas respostas", () => {
+test("a disabled item shows, does not answer, does not block and does not enter the answers", () => {
   const onSubmit = mock((_answers: QuestionnaireAnswers, _data: FormData) => {});
   const { container } = render(<Survey disabledChannel onSubmit={onSubmit} />);
   fireEvent.click(screen.getByRole("radio", { name: "Simples Nacional" }));
@@ -336,7 +336,7 @@ test("item desabilitado aparece, nao responde, nao trava e nao entra nas respost
   expect(onSubmit.mock.calls[0]![0]).toEqual({ regime: "simples", obs: "Nada" });
 });
 
-test("controlado: item decide a pergunta aberta e onItemChange pede a troca", () => {
+test("controlled: item decides the open question and onItemChange requests the change", () => {
   const onItemChange = mock((_item: string) => {});
 
   function Controlled() {
@@ -363,14 +363,14 @@ test("controlado: item decide a pergunta aberta e onItemChange pede a troca", ()
   expect(items(container)[0]!.hidden).toBe(false);
 });
 
-test("controlado sem atender o pedido, a pergunta nao muda", () => {
+test("controlled without honoring the request, the question does not change", () => {
   const { container } = render(<Survey item="regime" />);
   fireEvent.click(screen.getByRole("radio", { name: "Lucro Real" }));
   next();
   expect(items(container)[0]!.hidden).toBe(false);
 });
 
-test("a troca anima pela direcao, com os tokens de movimento e sem movimento no reduzido", () => {
+test("the change animates by direction, with the motion tokens and no motion when reduced", () => {
   const { container } = render(<Survey />);
   const [first, second] = items(container);
   expect(tokens(first!)).not.toContain("motion-safe:animate-shift-in-next");
@@ -385,7 +385,7 @@ test("a troca anima pela direcao, com os tokens de movimento e sem movimento no 
   expect(tokens(first!)).not.toContain("motion-safe:animate-shift-in-next");
 });
 
-test("labels troca todos os textos", () => {
+test("labels swaps every text", () => {
   render(
     <Survey
       labels={{
@@ -402,7 +402,7 @@ test("labels troca todos os textos", () => {
   expect(screen.getByRole("alert").textContent).toBe("Obrigatória.");
 });
 
-test("o erro sem QuestionnaireError sai sozinho no fim do item", () => {
+test("the error without QuestionnaireError renders on its own at the end of the item", () => {
   render(
     <Questionnaire>
       <QuestionnaireItem name="a" required>
@@ -425,7 +425,7 @@ test("o erro sem QuestionnaireError sai sozinho no fim do item", () => {
   expect(alert.closest("fieldset")?.getAttribute("aria-describedby")).toBe(alert.id);
 });
 
-test("Enter no campo livre avanca, como o botao", () => {
+test("Enter in the free field advances, like the button", () => {
   const onSubmit = mock(() => {});
   render(
     <Questionnaire onSubmit={onSubmit}>
@@ -447,13 +447,13 @@ test("Enter no campo livre avanca, como o botao", () => {
   expect(onSubmit).toHaveBeenCalledWith({ nome: "Ana" }, expect.any(FormData));
 });
 
-test("parte fora do questionario reclama pelo nome", () => {
+test("a part outside the questionnaire complains by name", () => {
   const quiet = mock(() => {});
   const original = console.error;
   console.error = quiet;
   try {
     expect(() => render(<QuestionnaireTitle>Solta</QuestionnaireTitle>)).toThrow(
-      "QuestionnaireTitle precisa estar dentro de <Questionnaire>.",
+      "QuestionnaireTitle must be inside <Questionnaire>.",
     );
   } finally {
     console.error = original;
@@ -461,7 +461,7 @@ test("parte fora do questionario reclama pelo nome", () => {
   expect(within(document.body).queryByText("Solta")).toBeNull();
 });
 
-test("pular com o campo livre CONTROLADO limpa a tela, o estado de quem controla e o envio", () => {
+test("skipping with a CONTROLLED free field clears the screen, the controller's state and the submission", () => {
   const onSubmit = mock((_answers: QuestionnaireAnswers, _data: FormData) => {});
   function Controlled() {
     const [text, setText] = useState("");
@@ -505,7 +505,7 @@ test("pular com o campo livre CONTROLADO limpa a tela, o estado de quem controla
   expect(onSubmit.mock.calls[0]![0]).toEqual({});
 });
 
-test("marcar a opcao com o campo livre CONTROLADO ao lado limpa o estado de quem controla", () => {
+test("checking the option with a CONTROLLED free field beside it clears the controller's state", () => {
   function Controlled() {
     const [text, setText] = useState("");
     return (
@@ -530,7 +530,7 @@ test("marcar a opcao com o campo livre CONTROLADO ao lado limpa o estado de quem
   expect(screen.getByRole("status").textContent).toBe("");
 });
 
-test("no servidor, a primeira pergunta ja sai aberta e com os botoes", () => {
+test("on the server, the first question already renders open and with the buttons", () => {
   const survey = (props: Partial<QuestionnaireProps> = {}) =>
     renderToString(
       <Questionnaire {...props}>
@@ -572,7 +572,7 @@ test("no servidor, a primeira pergunta ja sai aberta e com os botoes", () => {
   expect(open(survey({ item: "b", onItemChange: () => {} }))).toEqual(["b"]);
 });
 
-test("o nome do campo livre da pergunta opcional separa o titulo do Opcional", () => {
+test("the free field name on an optional question separates the title from Opcional", () => {
   render(
     <Questionnaire>
       <QuestionnaireItem name="obs">
@@ -584,7 +584,7 @@ test("o nome do campo livre da pergunta opcional separa o titulo do Opcional", (
   expect(screen.getByRole("textbox", { name: /^Outra\?\s*,\s*Opcional$/ })).toBeDefined();
 });
 
-test("toda parte leva ao DOM o className de quem a chama", () => {
+test("every part carries the caller's className to the DOM", () => {
   const { container } = render(
     <Questionnaire className="c-root">
       <QuestionnaireProgress className="c-progress" />

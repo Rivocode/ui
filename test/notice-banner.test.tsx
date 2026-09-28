@@ -14,7 +14,7 @@ function banner(props: Partial<BannerProps> = {}) {
   );
 }
 
-test("info e success esperam a frase terminar: role status", () => {
+test("info and success wait for the sentence to finish: role status", () => {
   for (const tone of ["info", "success"] as const) {
     const { unmount } = banner({ tone });
     expect(screen.getByRole("status")).toBeDefined();
@@ -23,7 +23,7 @@ test("info e success esperam a frase terminar: role status", () => {
   }
 });
 
-test("warning e danger interrompem: role alert", () => {
+test("warning and danger interrupt: role alert", () => {
   for (const tone of ["warning", "danger"] as const) {
     const { unmount } = banner({ tone });
     expect(screen.getByRole("alert")).toBeDefined();
@@ -32,14 +32,14 @@ test("warning e danger interrompem: role alert", () => {
   }
 });
 
-test("sem tom, nasce info", () => {
+test("without a tone, it is born info", () => {
   banner();
   const root = screen.getByRole("status");
   expect(root.getAttribute("data-tone")).toBe("info");
   expect(root.className.split(" ")).toContain("bg-info-subtle");
 });
 
-test("ocupa a largura toda e pinta o fundo do tom, sem cantos de cartao", () => {
+test("it takes the full width and paints the tone background, without card corners", () => {
   banner({ tone: "warning" });
   const tokens = screen.getByRole("alert").className.split(" ");
   expect(tokens).toContain("w-full");
@@ -48,7 +48,7 @@ test("ocupa a largura toda e pinta o fundo do tom, sem cantos de cartao", () => 
   expect(tokens.some((token) => token.startsWith("rounded"))).toBe(false);
 });
 
-test("o titulo nomeia a faixa e fica antes da descricao", () => {
+test("the title names the banner and comes before the description", () => {
   banner({ tone: "danger", title: "Conta em atraso" });
   const root = screen.getByRole("alert", { name: "Conta em atraso" });
   const title = screen.getByText("Conta em atraso");
@@ -59,28 +59,28 @@ test("o titulo nomeia a faixa e fica antes da descricao", () => {
   );
 });
 
-test("sem titulo, a faixa nao aponta para nome nenhum", () => {
+test("without a title, the banner points to no name", () => {
   banner();
   expect(screen.getByRole("status").getAttribute("aria-labelledby")).toBeNull();
 });
 
-test("o icone do tom aparece sozinho e mudo", () => {
+test("the tone icon appears on its own and silent", () => {
   const { container } = banner({ tone: "warning" });
   const icon = container.querySelector("svg")!;
   expect(icon).not.toBeNull();
   expect(icon.closest("[aria-hidden='true']")).not.toBeNull();
 });
 
-test("icon troca o simbolo, e null tira", () => {
-  const { unmount } = banner({ icon: <Wrench data-testid="chave" /> });
-  expect(screen.getByTestId("chave")).toBeDefined();
+test("icon replaces the symbol, and null removes it", () => {
+  const { unmount } = banner({ icon: <Wrench data-testid="wrench" /> });
+  expect(screen.getByTestId("wrench")).toBeDefined();
   unmount();
 
   const second = banner({ icon: null });
   expect(second.container.querySelector("svg")).toBeNull();
 });
 
-test("as acoes entram na faixa, e sem elas nao ha botao nenhum", () => {
+test("actions go into the banner, and without them there is no button at all", () => {
   const { unmount } = banner();
   expect(screen.queryByRole("button")).toBeNull();
   unmount();
@@ -96,7 +96,7 @@ test("as acoes entram na faixa, e sem elas nao ha botao nenhum", () => {
   expect(screen.getByRole("button", { name: "Pagar agora" })).toBeDefined();
 });
 
-test("onDismiss liga o xis com nome em portugues, e quem some e quem chamou", () => {
+test("onDismiss turns on the cross with a Portuguese name, and whoever hides it is the caller", () => {
   const onDismiss = mock(() => {});
   banner({ onDismiss });
 
@@ -107,39 +107,39 @@ test("onDismiss liga o xis com nome em portugues, e quem some e quem chamou", ()
   expect(screen.getByRole("status")).toBeDefined();
 });
 
-test("o nome do xis se troca", () => {
+test("the cross name can be replaced", () => {
   banner({ onDismiss: () => {}, labels: { dismiss: "Dispensar aviso de manutenção" } });
   expect(screen.getByRole("button", { name: "Dispensar aviso de manutenção" })).toBeDefined();
 });
 
-test("classNames alcanca cada parte pelo nome", () => {
+test("classNames reaches each part by name", () => {
   banner({
     title: "Modo de teste",
     actions: <Button size="sm">Sair</Button>,
     onDismiss: () => {},
     classNames: {
-      icon: "parte-icone",
-      content: "parte-conteudo",
-      title: "parte-titulo",
-      description: "parte-descricao",
-      actions: "parte-acoes",
-      dismiss: "parte-fechar",
+      icon: "part-icon",
+      content: "part-content",
+      title: "part-title",
+      description: "part-description",
+      actions: "part-actions",
+      dismiss: "part-dismiss",
     },
   });
 
   for (const part of [
-    "parte-icone",
-    "parte-conteudo",
-    "parte-titulo",
-    "parte-descricao",
-    "parte-acoes",
-    "parte-fechar",
+    "part-icon",
+    "part-content",
+    "part-title",
+    "part-description",
+    "part-actions",
+    "part-dismiss",
   ]) {
     expect(document.querySelectorAll(`.${part}`)).toHaveLength(1);
   }
 });
 
-test("rotulo longo quebra dentro do botao da acao, e a faixa nao alarga a pagina a 320px", () => {
+test("a long label wraps inside the action button, and the banner does not widen the page at 320px", () => {
   banner({ actions: <Button size="sm">Reagendar a manutenção para outro domingo</Button> });
 
   const action = screen.getByRole("button", { name: /Reagendar/ });

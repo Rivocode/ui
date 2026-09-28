@@ -26,10 +26,11 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("a chave liga e desliga, e conta o estado", () => {
-  // Sem o <label> em volta: no happy-dom o clique no botao sobe para o rotulo,
-  // que devolve outro clique para o mesmo controle e a chave volta ao inicio.
-  // No navegador isso nao acontece, e o padrao com rotulo esta na vitrine.
+test("the switch turns on and off, and tells its state", () => {
+  // Without the surrounding <label>: in happy-dom the click on the button bubbles
+  // to the label, which sends another click to the same control and the switch
+  // goes back to the start. In the browser this does not happen, and the labeled
+  // pattern is in the showcase.
   withTheme(<Switch defaultChecked={false} aria-label="Avisos por email" />);
   const key = screen.getByRole("switch");
   expect(key.getAttribute("aria-checked")).toBe("false");
@@ -41,7 +42,7 @@ test("a chave liga e desliga, e conta o estado", () => {
   expect(classes).not.toContain("data-[checked]:not-data-disabled:bg-accent");
 });
 
-test("a chave marca invalido junto com o Field", () => {
+test("the switch marks invalid along with the Field", () => {
   withTheme(
     <Field invalid>
       <Switch />
@@ -50,7 +51,7 @@ test("a chave marca invalido junto com o Field", () => {
   expect(screen.getByRole("switch").getAttribute("aria-invalid")).toBe("true");
 });
 
-test("o grupo de radio deixa so um marcado", () => {
+test("the radio group leaves only one checked", () => {
   withTheme(
     <RadioGroup defaultValue="pix">
       <label>
@@ -69,9 +70,9 @@ test("o grupo de radio deixa so um marcado", () => {
   expect(options[0]!.getAttribute("aria-checked")).toBe("false");
   expect(options[1]!.getAttribute("aria-checked")).toBe("true");
 
-  // O mesmo acento do trilho da chave, e pelo mesmo motivo: a lima cheia
-  // media 1,21:1 sobre a pagina no tema claro e o circulo marcado nao tinha
-  // fronteira, so o ponto solto no meio.
+  // The same accent as the switch track, and for the same reason: the full lime
+  // measured 1.21:1 on the page in the light theme and the checked circle had no
+  // boundary, only the loose dot in the middle.
   const circle = options[1]!.className.split(" ");
   expect(circle).toContain("data-[checked]:not-data-disabled:bg-accent-text");
   expect(circle).not.toContain("data-[checked]:not-data-disabled:bg-accent");
@@ -80,7 +81,7 @@ test("o grupo de radio deixa so um marcado", () => {
   expect(dot).not.toContain("bg-accent-fg");
 });
 
-test("o pino e o preenchimento da faixa vestem o acento escuro, e o miolo se le dentro dele", () => {
+test("the range thumb and fill wear the dark accent, and the core reads inside it", () => {
   const { container } = withTheme(
     <Slider
       defaultValue={30}
@@ -100,28 +101,28 @@ test("o pino e o preenchimento da faixa vestem o acento escuro, e o miolo se le 
   expect(thumb).not.toContain("bg-surface");
 });
 
-test("a linha que separa se anuncia como separador", () => {
+test("the dividing line announces itself as a separator", () => {
   withTheme(<Separator />);
   expect(screen.getByRole("separator")).toBeDefined();
 });
 
-test("a linha vertical troca a espessura de eixo", () => {
+test("the vertical line swaps the thickness axis", () => {
   withTheme(<Separator orientation="vertical" />);
   const row = screen.getByRole("separator");
   expect(row.className).toContain("w-px");
   expect(row.className).not.toContain("h-px");
 });
 
-test("o avatar mostra a inicial quando nao ha foto", () => {
+test("the avatar shows the initial when there is no photo", () => {
   withTheme(<Avatar fallback="EB" />);
   expect(screen.getByText("EB")).toBeDefined();
 });
 
-test("o avatar nao se veste de superficie, senao ele some dentro do cartao", () => {
-  // No tema claro da casa, --rc-surface e --rc-surface-raised sao os dois
-  // branco puro: 1,00 para 1. O circulo desaparecia e sobrava a inicial solta,
-  // que numa fila sobreposta ainda se recorta. E o mesmo motivo pelo qual o
-  // --rc-skeleton existe, escrito no proprio tema.
+test("the avatar does not wear surface, otherwise it disappears inside the card", () => {
+  // In the house light theme, --rc-surface and --rc-surface-raised are both
+  // pure white: 1.00 to 1. The circle disappeared and only the loose initial was
+  // left, which in an overlapping row still gets clipped. It is the same reason
+  // --rc-skeleton exists, written in the theme itself.
   withTheme(<Avatar fallback="EB" />);
   const circle = screen.getByText("EB").parentElement!;
 
@@ -129,47 +130,47 @@ test("o avatar nao se veste de superficie, senao ele some dentro do cartao", () 
   expect(circle.className).toContain("bg-skeleton");
 });
 
-test("a barra de progresso conta quanto falta", () => {
+test("the progress bar tells how much is left", () => {
   withTheme(<Progress value={40} label="Enviando" showValue />);
   const bar = screen.getByRole("progressbar");
   expect(bar.getAttribute("aria-valuenow")).toBe("40");
   expect(screen.getByText("Enviando")).toBeDefined();
 });
 
-test("a barra indeterminada nao se parece com tarefa concluida", () => {
-  // Sem largura propria o indicador ocupa a trilha inteira e fica parado, que
-  // e exatamente como se le uma barra em 100%. A espera sem fim previsto
-  // precisa parecer espera: um quinto da trilha, atravessando.
+test("the indeterminate bar does not look like a finished task", () => {
+  // Without its own width the indicator takes the whole track and stands still,
+  // which is exactly how a bar at 100% reads. A wait with no expected end must
+  // look like waiting: a fifth of the track, sweeping across.
   const { container } = withTheme(<Progress value={null} aria-label="Sincronizando" />);
-  // Raiz, trilha e indicador recebem o data-indeterminate; o indicador e o
-  // ultimo, porque e o mais fundo.
+  // Root, track and indicator all get data-indeterminate; the indicator is the
+  // last one, because it is the deepest.
   const marked = container.querySelectorAll("[data-indeterminate]");
   const indicator = marked[marked.length - 1];
 
   expect(indicator).toBeDefined();
   expect(indicator?.className).toContain("data-[indeterminate]:w-1/5");
   expect(indicator?.className).toContain("data-[indeterminate]:animate-indeterminate");
-  // A guarda de movimento repete a variante de dado. Escrita como
-  // `motion-reduce:animate-none` - que e o que este teste cobrava, e o que a
-  // peca tinha - ela compila com uma classe a menos de especificidade que
-  // `data-[indeterminate]:animate-indeterminate` e nunca casa: quem pediu
-  // menos movimento via a barra atravessar do mesmo jeito.
+  // The motion guard repeats the data variant. Written as
+  // `motion-reduce:animate-none` - which is what this test used to check, and
+  // what the component had - it compiles with one class less specificity than
+  // `data-[indeterminate]:animate-indeterminate` and never matches: whoever
+  // asked for reduced motion saw the bar sweep across just the same.
   expect(indicator?.className).toContain("motion-reduce:data-[indeterminate]:animate-none");
-  // E parada ela nao pode continuar valendo um quinto da trilha, que se le
-  // como "20% concluido". Trilha inteira, em faixas.
+  // And when still it cannot keep covering a fifth of the track, which reads
+  // as "20% done". Whole track, in stripes.
   expect(indicator?.className).toContain("motion-reduce:data-[indeterminate]:w-full");
 });
 
-test("a barra em 100% nao carrega a marca da indeterminada", () => {
-  // O que liga a largura parcial e o movimento e o atributo, e nao a classe:
-  // a barra que terminou nao pode receber nenhum dos dois.
+test("the bar at 100% does not carry the indeterminate mark", () => {
+  // What turns on the partial width and the motion is the attribute, and not
+  // the class: a finished bar must receive neither.
   const { container } = withTheme(<Progress value={100} aria-label="Enviado" />);
 
   expect(container.querySelectorAll("[data-indeterminate]").length).toBe(0);
   expect(container.querySelectorAll("[data-complete]").length).toBeGreaterThan(0);
 });
 
-test("o giro se anuncia, e da para calar quando ha texto do lado", () => {
+test("the spinner announces itself, and can be silenced when there is text beside it", () => {
   const { rerender } = withTheme(<Spinner />);
   expect(screen.getByRole("status")).toBeDefined();
 
@@ -181,7 +182,7 @@ test("o giro se anuncia, e da para calar quando ha texto do lado", () => {
   expect(screen.queryByRole("status")).toBeNull();
 });
 
-test("a sanfona abre e fecha o painel", () => {
+test("the accordion opens and closes the panel", () => {
   withTheme(
     <Accordion>
       <AccordionItem title="Como emitir">Pelo botao Emitir nota.</AccordionItem>
@@ -193,7 +194,7 @@ test("a sanfona abre e fecha o painel", () => {
   expect(trigger.getAttribute("aria-expanded")).toBe("true");
 });
 
-test("o aviso de acao sem volta se anuncia como alertdialog", () => {
+test("the irreversible action warning announces itself as alertdialog", () => {
   withTheme(
     <AlertDialog defaultOpen>
       <AlertDialogTrigger>Excluir</AlertDialogTrigger>
@@ -210,7 +211,7 @@ test("o aviso de acao sem volta se anuncia como alertdialog", () => {
   expect(screen.getByText("Excluir nota?")).toBeDefined();
 });
 
-test("o botao que fica apertado conta que esta apertado", () => {
+test("the toggle button tells that it is pressed", () => {
   withTheme(
     <ToggleGroup defaultValue={["lista"]}>
       <Toggle value="lista">Lista</Toggle>
@@ -218,14 +219,14 @@ test("o botao que fica apertado conta que esta apertado", () => {
     </ToggleGroup>,
   );
   const list = screen.getByRole("button", { name: "Lista" });
-  const grade = screen.getByRole("button", { name: "Grade" });
+  const grid = screen.getByRole("button", { name: "Grade" });
   expect(list.getAttribute("aria-pressed")).toBe("true");
-  fireEvent.click(grade);
-  expect(grade.getAttribute("aria-pressed")).toBe("true");
+  fireEvent.click(grid);
+  expect(grid.getAttribute("aria-pressed")).toBe("true");
   expect(list.getAttribute("aria-pressed")).toBe("false");
 });
 
-test("o campo de varias linhas se liga ao rotulo como o Input", () => {
+test("the multiline field binds to the label like Input", () => {
   withTheme(
     <Field>
       <FieldLabel>Observacao</FieldLabel>

@@ -1,80 +1,82 @@
 /* ---------------------------------------------------------------------------
- * O markdown cru
+ * The raw markdown
  *
- * O que `/componentes/table.md` responde. So a prosa nao bastava: um agente que
- * a le ainda tem que adivinhar o caminho de import, os nomes das props e quais
- * pecas compoem o componente - e ele adivinha com confianca, o que e pior que
- * falhar.
+ * What `/componentes/table.md` answers. The prose alone was not enough: an
+ * agent reading it still has to guess the import path, the prop names and
+ * which pieces compose the component - and it guesses with confidence, which
+ * is worse than failing.
  *
- * Entao o arquivo e montado das mesmas fontes que a pagina HTML desenha: a doc,
- * o preview que roda na pagina, e o `.d.ts` que o build emite. Nada aqui e
- * segunda copia para manter; renomeie uma prop e os dois mudam.
+ * So the file is assembled from the same sources the HTML page draws: the doc,
+ * the preview that runs on the page, and the `.d.ts` the build emits. Nothing
+ * here is a second copy to maintain; rename a prop and both change.
  * ------------------------------------------------------------------------- */
 
 import type { Prop } from './prop-types'
 
 export type Part = {
   name: string
-  /** A doc da propria parte, sem o titulo dela. */
+  /** The part's own doc, without its title. */
   body: string
   props: Prop[]
 }
 
 export type RenderInput = {
   name: string
-  /** O corpo da doc, ainda carregando o proprio `# Nome`. */
+  /** The doc body, still carrying its own `# Name`. */
   body: string
   importPath: string
   props: Prop[]
   forwardsRootProps: boolean
   stories: Array<{ title: string; code: string }>
   parts: Part[]
-  /** As pecas irmas da mesma familia, para continuar lendo. */
+  /** The sibling pieces of the same family, to keep reading. */
   related: Array<{ name: string; slug: string }>
 }
 
-/** Tipo de uniao carrega `|`, que encerraria a celula antes da hora. */
+/** A union type carries `|`, which would end the cell too early. */
 const cell = (text: string) => text.replace(/\|/g, '\\|').replace(/\n+/g, ' ').trim()
 
 function propsTable(props: Prop[]) {
   const rows = props
     .map(
       (prop) =>
-        `| \`${prop.name}\` | \`${cell(prop.type)}\` | ${prop.required ? 'sim' : ''} | ${
+        `| \`${prop.name}\` | \`${cell(prop.type)}\` | ${prop.required ? 'yes' : ''} | ${
           prop.since ?? '-'
         } | ${prop.note ? cell(prop.note) : ''} |`,
     )
     .join('\n')
 
-  // A coluna de versao existe para o agente que le isto sem saber qual versao o
-  // projeto tem instalada: `-` e prop que ainda nao saiu em versao nenhuma.
-  return `| Prop | Tipo | Obrigatória | Desde | O que faz |\n| --- | --- | --- | --- | --- |\n${rows}`
+  // The version column exists for the agent that reads this without knowing
+  // which version the project has installed: `-` is a prop not yet released in
+  // any version.
+  return `| Prop | Type | Required | Since | What it does |\n| --- | --- | --- | --- | --- |\n${rows}`
 }
 
 export function renderDoc(input: RenderInput) {
   const blocks: string[] = []
 
-  // A doc abre com o proprio `# Nome` e com a prosa que explica quando a peca
-  // serve; isso fica primeiro, porque e o que decide se vale ler o resto.
+  // The doc opens with its own `# Name` and with the prose that explains when
+  // the piece fits; that goes first, because it decides whether the rest is
+  // worth reading.
   blocks.push(input.body.trim())
 
-  blocks.push(`## Importação\n\n\`\`\`tsx\nimport { ${input.name} } from '${input.importPath}'\n\`\`\``)
+  blocks.push(`## Import\n\n\`\`\`tsx\nimport { ${input.name} } from '${input.importPath}'\n\`\`\``)
 
   if (input.stories.length) {
     const examples = input.stories
       .map((story) => `### ${story.title}\n\n\`\`\`tsx\n${story.code.trim()}\n\`\`\``)
       .join('\n\n')
 
-    blocks.push(`## Exemplos\n\n${examples}`)
+    blocks.push(`## Examples\n\n${examples}`)
   }
 
-  const PASSES = 'Repassa `className`, `style`, `id` e os demais atributos do elemento raiz.'
+  const PASSES = 'Forwards `className`, `style`, `id` and the other attributes of the root element.'
 
   if (input.props.length) {
     const table = propsTable(input.props)
-    blocks.push(`## Props\n\n${table}${input.forwardsRootProps ? `\n\nAlém dessas: ${PASSES.charAt(0).toLowerCase()}${PASSES.slice(1)}` : ''}`)
+    blocks.push(`## Props\n\n${table}${input.forwardsRootProps ? `\n\nBeyond these: ${PASSES.charAt(0).toLowerCase()}${PASSES.slice(1)}` : ''}`)
   } else if (input.forwardsRootProps) {
-    blocks.push(`## Props\n\nNão tem prop própria. ${PASSES}`)
+    blocks.push(`## Props\n\nHas no props of its own. ${PASSES}`)
   }
 
   if (input.parts.length) {
@@ -88,17 +90,17 @@ export function renderDoc(input: RenderInput) {
       .join('\n\n')
 
     blocks.push(
-      `## Partes\n\nO componente se monta com as peças abaixo. Todas vêm de \`${input.importPath}\`.\n\n${parts}`,
+      `## Parts\n\nThe component is assembled with the pieces below. All of them come from \`${input.importPath}\`.\n\n${parts}`,
     )
   }
 
   const links = [
     ...input.related.map((item) => `- [${item.name}](/componentes/${item.slug}.md)`),
-    '- [Convenções da biblioteca](/convencoes.md): Provider, tokens e as regras que valem para toda peça',
-    '- [Índice completo](/llms.txt)',
+    '- [Library conventions](/convencoes.md): Provider, tokens and the rules that apply to every piece',
+    '- [Full index](/llms.txt)',
   ].join('\n')
 
-  blocks.push(`## Ver também\n\n${links}`)
+  blocks.push(`## See also\n\n${links}`)
 
   return `${blocks.join('\n\n')}\n`
 }

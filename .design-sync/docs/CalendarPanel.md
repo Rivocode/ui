@@ -1,20 +1,19 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # CalendarPanel
 
-A casca do calendário: painel ancorado na mesa, folha de baixo no celular.
+The calendar's shell: a panel anchored on desktop, a bottom sheet on a phone.
 
-O `DatePicker` e o `DateRangePicker` já a usam por dentro. Ela sai exportada
-para o seletor de data que a sua tela inventa (o filtro de período de um
-relatório, o calendário de agendamento) continuar trocando de formato do mesmo
-jeito que os da casa.
+`DatePicker` and `DateRangePicker` already use it inside. It is exported so
+the date picker your screen invents (a report's period filter, a scheduling
+calendar) keeps switching format the same way the house ones do.
 
-A troca é de formato e não de conteúdo. Calendário ancorado num campo perto do
-rodapé do celular abre para fora da tela ou por cima do teclado, e a pessoa
-precisa rolar a página com o painel aberto. A folha resolve isso sem mexer em
-nada do que vai dentro.
+The switch is of format, not of content. A calendar anchored to a field near
+the bottom of a phone screen opens off the screen or on top of the keyboard,
+and the person has to scroll the page with the panel open. The sheet solves
+that without touching anything that goes inside.
 
 ```tsx
 const [aberto, setAberto] = useState(false)
@@ -30,8 +29,8 @@ const [aberto, setAberto] = useState(false)
 </CalendarPanel>
 ```
 
-`open`, `onOpenChange` e `title` são obrigatórios, e os três pelo mesmo motivo.
-A abertura é controlada porque quem confirma com um rodapé precisa fechar o
-painel no momento certo, e não no clique. O `title` é o nome que o leitor de
-tela anuncia no celular, onde o painel vira folha e perde o campo ao lado que
-dava o contexto.
+`open`, `onOpenChange` and `title` are required, all three for the same
+reason. Opening is controlled because whoever confirms with a footer needs to
+close the panel at the right moment, not on the click. The `title` is the name
+the screen reader announces on a phone, where the panel becomes a sheet and
+loses the field beside it that gave the context.

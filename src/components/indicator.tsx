@@ -8,31 +8,31 @@ export function indicatorWidthComplaint(width: number): string | undefined {
   if (!(width > widest)) return undefined;
 
   return (
-    `[rivocode/ui] <Indicator>: o filho mede ${Math.round(width)}px de largura, e a ` +
-    `pastilha fica por cima dele sem reservar espaco - acima de ${widest}px ela cobre ` +
-    "conteudo. A peca marca alvo pequeno: o botao do sino, o item da barra, o avatar. " +
-    "Para marcar uma linha inteira, ponha a contagem ao lado, com um `Badge`."
+    `[rivocode/ui] <Indicator>: the child is ${Math.round(width)}px wide, and the ` +
+    `pill sits on top of it without reserving space - above ${widest}px it covers ` +
+    "content. The component marks a small target: the bell button, the bar item, the avatar. " +
+    "To mark a whole row, put the count beside it, with a `Badge`."
   );
 }
 
 export type IndicatorProps = ComponentProps<"span"> & {
-  /** O que recebe a marca: o botao do sino, o item da barra, o avatar. */
+  /** What receives the mark: the bell button, the sidebar item, the avatar. */
   children: ReactNode;
   /**
-   * Quantos. Zero nao desenha nada - uma pastilha com "0" chama atencao para
-   * dizer que nao ha nada, que e o contrario do trabalho dela.
+   * How many. Zero draws nothing - a pill with "0" draws attention to
+   * say there is nothing, which is the opposite of its job.
    */
   count?: number;
-  /** O teto: acima dele sai "99+", em vez de a pastilha esticar. */
+  /** The cap: above it "99+" is shown, instead of the pill stretching. */
   max?: number;
   /**
-   * O que o leitor de tela ouve. Sem isto ele le so o numero solto, e "7" nao
-   * diz o que sao sete.
+   * What the screen reader hears. Without this it reads only the bare number, and "7" does not
+   * say what the seven are.
    */
   label?: string;
-  /** Sem contagem: so o ponto, para "tem algo novo aqui". */
+  /** No count: just the dot, for "there is something new here". */
   dot?: boolean;
-  /** Classe por parte: `badge`. */
+  /** Class per part: `badge`. */
   classNames?: Slots<"badge">;
 };
 

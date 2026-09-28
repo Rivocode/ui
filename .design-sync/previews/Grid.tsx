@@ -8,7 +8,7 @@ const CLIENTS = [
   'Padaria Manaíra',
 ]
 
-/** Colunas que cabem */
+/** Columns that fit */
 export function AutoFill() {
   return (
     <Grid minItemWidth="12rem" gap="md" className="w-full max-w-3xl">
@@ -23,7 +23,7 @@ export function AutoFill() {
   )
 }
 
-/** Três colunas fixas */
+/** Three fixed columns */
 export function FixedColumns() {
   return (
     <Grid columns={3} gap="lg" className="w-full max-w-3xl">

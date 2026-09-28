@@ -18,14 +18,14 @@ const schema = z.object({
   aceite: z.boolean().refine((checked) => checked, "Aceite para continuar"),
 });
 
-function Example({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schema>) => void }) {
+function Example({ onSend = () => {} }: { onSend?: (v: z.output<typeof schema>) => void }) {
   const form = useZodForm(schema, {
     defaultValues: { email: "", dueDate: undefined, aceite: false },
   });
 
   return (
     <RivoProvider scope="local">
-      <Form form={form} onSubmit={aoEnviar}>
+      <Form form={form} onSubmit={onSend}>
         <FormField name="email" label="E-mail" description="Para onde vai a nota">
           {(field) => <Input {...field} placeholder="voce@empresa.com" />}
         </FormField>
@@ -42,7 +42,7 @@ function Example({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schem
   );
 }
 
-test("o rotulo aponta para o controle, inclusive no DatePicker", () => {
+test("the label points to the control, including in DatePicker", () => {
   render(<Example />);
 
   const emailLabel = screen.getByText("E-mail") as HTMLLabelElement;
@@ -55,7 +55,7 @@ test("o rotulo aponta para o controle, inclusive no DatePicker", () => {
   expect(data.id).toBeTruthy();
 });
 
-test("o campo de data invalido se marca como o resto do catalogo", async () => {
+test("the invalid date field marks itself like the rest of the catalog", async () => {
   render(<Example />);
   fireEvent.click(screen.getByText("Emitir"));
 
@@ -66,14 +66,14 @@ test("o campo de data invalido se marca como o resto do catalogo", async () => {
   });
 });
 
-test("a ajuda do campo e anunciada pelo leitor de tela", () => {
+test("the field help is announced by the screen reader", () => {
   render(<Example />);
   const email = screen.getByPlaceholderText("voce@empresa.com");
   const help = screen.getByText("Para onde vai a nota");
   expect(email.getAttribute("aria-describedby")).toContain(help.id);
 });
 
-test("enviar vazio mostra a mensagem do schema, nao a do navegador", async () => {
+test("submitting empty shows the schema message, not the browser one", async () => {
   render(<Example />);
   fireEvent.click(screen.getByText("Emitir"));
 
@@ -84,7 +84,7 @@ test("enviar vazio mostra a mensagem do schema, nao a do navegador", async () =>
   expect(screen.getByText("Aceite para continuar")).toBeDefined();
 });
 
-test("o campo invalido se marca e aponta para o erro", async () => {
+test("the invalid field marks itself and points to the error", async () => {
   render(<Example />);
   fireEvent.click(screen.getByText("Emitir"));
 
@@ -96,9 +96,9 @@ test("o campo invalido se marca e aponta para o erro", async () => {
   });
 });
 
-test("com tudo preenchido, o onSubmit recebe os valores ja convertidos", async () => {
-  let recebido: z.output<typeof schema> | undefined;
-  render(<Example aoEnviar={(v) => (recebido = v)} />);
+test("with everything filled in, onSubmit receives the values already converted", async () => {
+  let received: z.output<typeof schema> | undefined;
+  render(<Example onSend={(v) => (received = v)} />);
 
   fireEvent.change(screen.getByPlaceholderText("voce@empresa.com"), {
     target: { value: "financeiro@rivocode.com" },
@@ -110,14 +110,14 @@ test("com tudo preenchido, o onSubmit recebe os valores ja convertidos", async (
   fireEvent.click(screen.getByText("Emitir"));
 
   await waitFor(() => {
-    expect(recebido).toBeDefined();
+    expect(received).toBeDefined();
   });
-  expect(recebido!.email).toBe("financeiro@rivocode.com");
-  expect(recebido!.dueDate.getDate()).toBe(3);
-  expect(recebido!.aceite).toBe(true);
+  expect(received!.email).toBe("financeiro@rivocode.com");
+  expect(received!.dueDate.getDate()).toBe(3);
+  expect(received!.aceite).toBe(true);
 });
 
-test("o formulario nao deixa o navegador validar por conta propria", () => {
+test("the form does not let the browser validate on its own", () => {
   const { container } = render(<Example />);
   expect(container.querySelector("form")!.noValidate).toBe(true);
 });

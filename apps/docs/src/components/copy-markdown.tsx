@@ -2,12 +2,13 @@ import { Clipboard } from '@rivocode/ui'
 import { useEffect, useState } from 'react'
 
 /**
- * Copia o `.md` da pagina, o mesmo que o agent le no endereco ao lado.
+ * Copies the page's `.md`, the same one the agent reads at the address next to
+ * it.
  *
- * O texto e buscado ao montar, e nao no clique: o Safari so aceita escrever na
- * area de transferencia dentro do gesto, e um `fetch` no meio do clique ja
- * tira a escrita de dentro dele. Enquanto o texto nao chega o botao fica
- * desabilitado, porque copiar o vazio e confirmar seria mentir.
+ * The text is fetched on mount, not on click: Safari only accepts writing to
+ * the clipboard inside the gesture, and a `fetch` in the middle of the click
+ * already takes the write out of it. Until the text arrives the button stays
+ * disabled, because copying nothing and confirming would be a lie.
  */
 export function CopyMarkdown({ href }: { href: string }) {
   const [text, setText] = useState('')
@@ -30,9 +31,9 @@ export function CopyMarkdown({ href }: { href: string }) {
     <Clipboard
       value={text}
       disabled={!text}
-      labels={{ copy: 'Copiar como Markdown', copied: 'Markdown copiado' }}
+      labels={{ copy: 'Copy as Markdown', copied: 'Markdown copied' }}
     >
-      Copiar como Markdown
+      Copy as Markdown
     </Clipboard>
   )
 }

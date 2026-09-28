@@ -29,19 +29,27 @@ function usable(nodes: (HTMLButtonElement | null)[]): HTMLButtonElement | null {
 }
 
 export type FilterChipProps = ComponentPropsWithoutRef<"span"> & {
-  /** O campo filtrado: "Cliente", "Vencimento". Sai em peso normal, a esquerda. */
+  /** The filtered field: "Cliente", "Vencimento". Rendered in normal weight, on the left. */
   label: string;
-  /** O que foi escolhido nesse campo. Sai em peso medio, e corta com reticencias quando passa de 10rem. */
+  /**
+   * What was chosen in that field. Rendered in medium weight, and truncated with an ellipsis past
+   * 10rem.
+   */
   value?: ReactNode;
-  /** O que acontece no xis. Sem ele nao ha xis: e assim que se mostra filtro que o app trava. */
+  /**
+   * What happens on the x. Without it there is no x: that is how a filter the app locks is shown.
+   */
   onRemove?: () => void;
-  /** Trava o xis e apaga a ficha, para a consulta que refaz nao aceitar um segundo toque. */
+  /** Locks the x and dims the chip, so the refetching query does not accept a second tap. */
   disabled?: boolean;
-  /** As mesmas duas alturas do `Badge`. */
+  /** The same two heights as `Badge`. */
   size?: "sm" | "md";
-  /** O que o leitor de tela ouve no xis. `remove` recebe "Cliente: Acme" quando o valor e texto, e so "Cliente" quando nao e. */
+  /**
+   * What the screen reader hears on the x. `remove` receives "Cliente: Acme" when the value is
+   * text, and only "Cliente" when it is not.
+   */
   labels?: { remove?: (filter: string) => string };
-  /** Classe por parte: `label`, `value`, `remove`. */
+  /** Class per part: `label`, `value`, `remove`. */
   classNames?: Slots<"label" | "value" | "remove">;
 };
 
@@ -105,36 +113,55 @@ export function FilterChip({
 }
 
 export type AppliedFilter = {
-  /** Chave estavel do filtro, e o que identifica a ficha na fileira. */
+  /** The filter's stable key, and what identifies the chip in the row. */
   id: string;
-  /** O campo filtrado: "Cliente". */
+  /** The filtered field: "Cliente". */
   label: string;
-  /** O que foi escolhido: "Acme", "01/08 a 31/08". */
+  /** What was chosen: "Acme", "01/08 a 31/08". */
   value?: ReactNode;
-  /** `false` tira o xis desta ficha: o filtro aparece, e sair dele nao e escolha de quem le. */
+  /**
+   * `false` removes the x from this chip: the filter shows, and leaving it is not the reader's
+   * choice.
+   */
   removable?: boolean;
 };
 
 export type FilterBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
-  /** Os filtros de agora. A peca nao guarda lista propria nem conhece a consulta: ela mostra esta. */
+  /**
+   * The current filters. The piece keeps no list of its own and does not know the query: it shows
+   * this one.
+   */
   filters: AppliedFilter[];
-  /** O filtro que saiu, com o objeto inteiro, quando o xis dele e apertado. */
+  /** The filter that left, with the whole object, when its x is pressed. */
   onRemove?: (filter: AppliedFilter) => void;
-  /** Chamado quando o "limpar" e apertado, antes do `onFiltersChange`. */
+  /** Called when "limpar" is pressed, before `onFiltersChange`. */
   onClear?: () => void;
-  /** Recebe o que sobrou, tanto no xis quanto no limpar. Sozinho ele ja basta. */
+  /** Receives what is left, both on the x and on clear. On its own it is enough. */
   onFiltersChange?: (filters: AppliedFilter[]) => void;
-  /** O nome da fileira para o leitor de tela. O mesmo texto batiza o trecho que rola quando ele vira parada de tabulacao, entao um `aria-label` escrito de fora troca os dois de uma vez. */
+  /**
+   * The row's name for the screen reader. The same text names the scrolling stretch when it becomes
+   * a tab stop, so an `aria-label` written from outside changes both at once.
+   */
   label?: string;
-  /** Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao pular quando o primeiro entra. `false` some com a linha e mantem so o aviso. */
+  /**
+   * Keeps the row's height when there is no filter at all, so the screen does not jump when the
+   * first one comes in. `false` removes the row and keeps only the notice.
+   */
   reserve?: boolean;
-  /** A partir de quantos filtros removiveis o "limpar" aparece; o travado nao conta nem sai. Com `1` ele fica sempre, e com `Infinity` nunca. */
+  /**
+   * From how many removable filters "limpar" appears; a locked one neither counts nor leaves. With
+   * `1` it is always there, and with `Infinity` never.
+   */
   clearFrom?: number;
-  /** A altura das fichas. */
+  /** The height of the chips. */
   size?: "sm" | "md";
-  /** Trava todos os xis e o limpar, para a consulta que refaz nao aceitar um segundo toque. */
+  /** Locks every x and clear, so the refetching query does not accept a second tap. */
   disabled?: boolean;
-  /** Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` na regiao viva, `empty` na linha guardada e `scroll` no trecho que rola, quando ele vira parada de tabulacao. */
+  /**
+   * The texts the piece writes: `remove` on the x, `clear` on the clear button, `status` in the
+   * live region, `empty` on the kept row and `scroll` on the scrolling stretch, when it becomes a
+   * tab stop.
+   */
   labels?: {
     remove?: (filter: string) => string;
     clear?: (total: number) => string;
@@ -142,7 +169,7 @@ export type FilterBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> &
     scroll?: (name: string) => string;
     empty?: ReactNode;
   };
-  /** Classe por parte: `list`, `item`, `chip`, `clear`, `empty`. */
+  /** Class per part: `list`, `item`, `chip`, `clear`, `empty`. */
   classNames?: Slots<"list" | "item" | "chip" | "clear" | "empty">;
 };
 

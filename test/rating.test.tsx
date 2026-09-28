@@ -29,7 +29,7 @@ function Controlled(props: Partial<RatingProps>) {
 const fills = (container: HTMLElement) =>
   [...container.querySelectorAll("[data-fill]")].map((node) => node.getAttribute("data-fill"));
 
-test("e um radiogroup com o nome Avaliacao e uma opcao por estrela", () => {
+test("is a radiogroup named Avaliacao with one option per star", () => {
   rating();
   const group = screen.getByRole("radiogroup", { name: "Avaliação" });
   const radios = screen.getAllByRole("radio");
@@ -44,19 +44,19 @@ test("e um radiogroup com o nome Avaliacao e uma opcao por estrela", () => {
   ]);
 });
 
-test("max muda quantas estrelas, e o padrao e cinco", () => {
+test("max changes how many stars, and the default is five", () => {
   rating({ max: 10 });
   expect(screen.getAllByRole("radio")).toHaveLength(10);
 });
 
-test("sem nota, nenhuma opcao marcada e o foco entra pela primeira", () => {
+test("without a rating, no option is checked and focus enters at the first", () => {
   rating();
   const radios = screen.getAllByRole("radio");
   expect(radios.every((radio) => radio.getAttribute("aria-checked") === "false")).toBe(true);
   expect(radios.map((radio) => radio.tabIndex)).toEqual([0, -1, -1, -1, -1]);
 });
 
-test("clicar escolhe a nota, pinta ate ela e so a marcada fica no tab", () => {
+test("clicking picks the rating, paints up to it and only the checked one stays in the tab order", () => {
   const { container } = render(<Controlled />);
   fireEvent.click(screen.getByRole("radio", { name: "3 estrelas" }));
 
@@ -67,7 +67,7 @@ test("clicar escolhe a nota, pinta ate ela e so a marcada fica no tab", () => {
   expect(fills(container)).toEqual(["1", "1", "1", "0", "0"]);
 });
 
-test("as setas andam uma estrela, param nas pontas, e o foco vai junto", () => {
+test("arrows move one star, stop at the ends, and focus follows", () => {
   render(<Controlled defaultValue={2} />);
   const radio = screen.getByRole("radio", { name: "2 estrelas" });
   radio.focus();
@@ -90,7 +90,7 @@ test("as setas andam uma estrela, param nas pontas, e o foco vai junto", () => {
   expect(screen.getByTestId("nota").textContent).toBe("1");
 });
 
-test("allowHalf divide cada estrela em duas metades, com nome de meio", () => {
+test("allowHalf splits each star into two halves, with a half name", () => {
   const { container } = render(<Controlled allowHalf defaultValue={2.5} />);
   const radios = screen.getAllByRole("radio");
   expect(radios).toHaveLength(10);
@@ -106,20 +106,20 @@ test("allowHalf divide cada estrela em duas metades, com nome de meio", () => {
   expect(screen.getByTestId("nota").textContent).toBe("3");
 });
 
-test("sem clearable, clicar de novo na nota nao limpa", () => {
+test("without clearable, clicking the rating again does not clear", () => {
   const { onValueChange } = rating({ defaultValue: 4 });
   fireEvent.click(screen.getByRole("radio", { name: "4 estrelas" }));
   expect(onValueChange).toHaveBeenLastCalledWith(4);
 });
 
-test("com clearable, clicar de novo na nota volta a zero", () => {
+test("with clearable, clicking the rating again returns to zero", () => {
   render(<Controlled clearable defaultValue={4} />);
   fireEvent.click(screen.getByRole("radio", { name: "4 estrelas" }));
   expect(screen.getByTestId("nota").textContent).toBe("0");
   expect(screen.queryByRole("radio", { checked: true })).toBeNull();
 });
 
-test("o ponteiro por cima mostra a previa sem mudar a nota, e sair apaga a previa", () => {
+test("hovering shows the preview without changing the rating, and leaving erases the preview", () => {
   const { container } = render(<Controlled defaultValue={1} />);
   fireEvent.pointerEnter(screen.getByRole("radio", { name: "4 estrelas" }));
   expect(fills(container)).toEqual(["1", "1", "1", "1", "0"]);
@@ -129,7 +129,7 @@ test("o ponteiro por cima mostra a previa sem mudar a nota, e sair apaga a previ
   expect(fills(container)).toEqual(["1", "0", "0", "0", "0"]);
 });
 
-test("a estrela cheia pinta com warning e a vazia com border-strong, medidas a 3:1", () => {
+test("the full star paints with warning and the empty one with border-strong, measured at 3:1", () => {
   const { container } = rating({ defaultValue: 1 });
   const filled = container.querySelector("[data-fill] > span")!;
   expect(filled.className.split(" ")).toContain("text-warning");
@@ -137,7 +137,7 @@ test("a estrela cheia pinta com warning e a vazia com border-strong, medidas a 3
   expect(empty.className.split(" ")).toContain("text-border-strong");
 });
 
-test("desabilitado: ninguem entra pelo tab, clique nao muda, e as cores sao de desabilitado", () => {
+test("disabled: nothing is reachable by tab, click does not change, and the colors are the disabled ones", () => {
   const { container, onValueChange } = rating({ disabled: true, defaultValue: 2 });
   expect(screen.getByRole("radiogroup").getAttribute("aria-disabled")).toBe("true");
   expect(screen.getAllByRole("radio").every((radio) => radio.tabIndex === -1)).toBe(true);
@@ -151,7 +151,7 @@ test("desabilitado: ninguem entra pelo tab, clique nao muda, e as cores sao de d
   expect(filled.className.split(" ")).not.toContain("text-warning");
 });
 
-test("readOnly sai como uma imagem so, com a media dita em portugues", () => {
+test("readOnly renders as a single image, with the average said in Portuguese", () => {
   const { container } = rating({ readOnly: true, value: 4.5 });
   expect(screen.queryByRole("radiogroup")).toBeNull();
   expect(screen.queryAllByRole("radio")).toHaveLength(0);
@@ -159,7 +159,7 @@ test("readOnly sai como uma imagem so, com a media dita em portugues", () => {
   expect(fills(container)).toEqual(["1", "1", "1", "1", "0.5"]);
 });
 
-test("readOnly aceita fracao qualquer e pinta a parte que ela vale", () => {
+test("readOnly accepts any fraction and paints the part it is worth", () => {
   const { container } = rating({ readOnly: true, value: 4.3 });
   expect(screen.getByRole("img", { name: "4,3 de 5" })).toBeDefined();
   const last = container.querySelectorAll<HTMLElement>("[data-fill]")[4]!;
@@ -167,7 +167,7 @@ test("readOnly aceita fracao qualquer e pinta a parte que ela vale", () => {
   expect(last.style.width).toBe("30%");
 });
 
-test("labels troca os textos do leitor de tela", () => {
+test("labels swaps the screen reader texts", () => {
   rating({
     labels: { group: "Nota do atendimento", item: (value) => `${value} de 5` },
   });
@@ -175,7 +175,7 @@ test("labels troca os textos do leitor de tela", () => {
   expect(screen.getByRole("radio", { name: "2 de 5" })).toBeDefined();
 });
 
-test("aria-labelledby toma o lugar do nome padrao", () => {
+test("aria-labelledby takes the place of the default name", () => {
   render(
     <RivoProvider scope="local">
       <p id="titulo">Como foi a entrega?</p>
@@ -185,13 +185,13 @@ test("aria-labelledby toma o lugar do nome padrao", () => {
   expect(screen.getByRole("radiogroup", { name: "Como foi a entrega?" })).toBeDefined();
 });
 
-test("icon troca o desenho nas duas camadas", () => {
+test("icon swaps the drawing on both layers", () => {
   const { container } = rating({ icon: <Heart data-testid="coracao" />, max: 3 });
   expect(screen.getAllByTestId("coracao")).toHaveLength(6);
   expect(container.querySelector(".lucide-star")).toBeNull();
 });
 
-test("name leva a nota num input escondido para o formulario", () => {
+test("name carries the rating in a hidden input for the form", () => {
   const { container } = rating({ name: "nota", defaultValue: 3 });
   const input = container.querySelector<HTMLInputElement>("input[type='hidden']")!;
   expect(input.name).toBe("nota");
@@ -213,7 +213,7 @@ function boxAt(element: Element, left: number, width: number) {
     ({ left, width, right: left + width, top: 0, bottom: width, height: width }) as DOMRect;
 }
 
-test("com allowHalf o alvo do ponteiro e a estrela inteira, e a metade sai de onde o ponteiro caiu", () => {
+test("with allowHalf the pointer target is the whole star, and the half comes from where the pointer landed", () => {
   const { container } = render(<Directed dir="ltr" allowHalf size="sm" />);
   const radios = screen.getAllByRole("radio");
   expect(radios).toHaveLength(10);
@@ -240,7 +240,7 @@ test("com allowHalf o alvo do ponteiro e a estrela inteira, e a metade sai de on
   expect(screen.getByTestId("nota").textContent).toBe("3.5");
 });
 
-test("em rtl a seta direita tira, a esquerda soma, o cheio nasce da borda de inicio e a metade se espelha", () => {
+test("in rtl the right arrow subtracts, the left adds, the fill starts from the start edge and the half mirrors", () => {
   const { container } = render(<Directed dir="rtl" allowHalf defaultValue={3} />);
 
   fireEvent.keyDown(screen.getByRole("radio", { checked: true }), { key: "ArrowRight" });
@@ -263,7 +263,7 @@ test("em rtl a seta direita tira, a esquerda soma, o cheio nasce da borda de ini
   expect(screen.getByTestId("nota").textContent).toBe("0.5");
 });
 
-test("cada estrela tem caixa de pelo menos 24px de alvo nos tres tamanhos", () => {
+test("each star has a target box of at least 24px in all three sizes", () => {
   for (const [size, box] of [
     ["sm", "size-6"],
     ["md", "size-7"],

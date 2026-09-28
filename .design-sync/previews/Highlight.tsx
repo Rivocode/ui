@@ -10,7 +10,7 @@ const CUSTOMERS = [
   'Açaí da Praça',
 ]
 
-/** A busca que marca o que achou */
+/** A search that marks what it found */
 export function Search() {
   const [query, setQuery] = useState('sao')
   const found = CUSTOMERS.filter((name) => matchesSearch(name, query))
@@ -34,7 +34,7 @@ export function Search() {
   )
 }
 
-/** Vários termos num parágrafo */
+/** Several terms in a paragraph */
 export function ManyTerms() {
   return (
     <p className="max-w-prose text-base text-fg-muted">

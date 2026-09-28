@@ -1,16 +1,16 @@
 ---
-category: Dados
+category: Data
 ---
 
 # EventCalendar
 
-O calendário de compromissos: o que acontece, quando, e por quanto tempo.
+The appointments calendar: what happens, when, and for how long.
 
-O `Calendar` da casa responde "que dia?". O dado que ele carrega é uma data, ou
-duas, e o desenho dele é um mês de números com um deles pintado. O
-`EventCalendar` carrega uma lista de compromissos com começo e fim, e existe
-para mostrar as duas coisas que uma lista de texto não mostra: **quanto tempo
-cada um ocupa** e **quais se atropelam**.
+The house `Calendar` answers "which day?". The data it carries is a date, or
+two, and its drawing is a month of numbers with one of them painted.
+`EventCalendar` carries a list of appointments with a start and an end, and
+exists to show the two things a text list does not show: **how much time each
+one takes** and **which ones run over each other**.
 
 ```tsx
 <EventCalendar
@@ -24,7 +24,8 @@ cada um ocupa** e **quais se atropelam**.
 />
 ```
 
-Um compromisso é um objeto pequeno, e o vocabulário de cor é o fechado da casa:
+An appointment is a small object, and the color vocabulary is the house's
+closed one:
 
 ```ts
 type CalendarEvent = {
@@ -37,160 +38,167 @@ type CalendarEvent = {
 }
 ```
 
-**`tone`, e não `color`.** É a primeira tentação de um calendário, um hexa por
-evento, e ela não tem como dar certo aqui: cor literal fora de `src/tokens` é
-reprovada pela guarda, e um hexa vindo do app não tem par de contraste medido.
-Quem precisa de mais tem `renderEvent` e `classNames.event`, com as classes da
-casa. E cor nunca é o dado: se vermelho significa "cancelado", alguma coisa
-precisa escrever "cancelado", ou a informação não existe para metade das
-pessoas.
+**`tone`, not `color`.** It is a calendar's first temptation, one hex per
+event, and it cannot work here: a literal color outside `src/tokens` is
+rejected by the guard, and a hex coming from the app has no measured contrast
+pair. Whoever needs more has `renderEvent` and `classNames.event`, with the
+house classes. And color is never the data: if red means "cancelled",
+something needs to write "cancelled", or the information does not exist for
+half the people.
 
-## As quatro vistas, e os três motores
+## The four views, and the three engines
 
-São quatro vistas e três motores de desenho, porque `day` é `week` com uma
-coluna só.
+There are four views and three drawing engines, because `day` is `week` with a
+single column.
 
-- **`agenda`** é uma lista agrupada por dia. Funciona em qualquer largura, é a
-  única que não pede geometria nenhuma, e é o que o leitor de tela ouve em
-  todas as outras (ver "Acessibilidade").
-- **`week`** é a razão de a peça existir. Sete colunas de tempo lado a lado é a
-  única forma de ver que a quinta está lotada e a sexta está vazia.
-- **`day`** é a mesma grade com uma coluna, e ganha valor próprio por ser a
-  única grade de tempo que cabe em 390px.
-- **`month`** é o mapa de densidade: quantas coisas em cada dia, e em que
-  ordem. É a vista que responde "quando vence" melhor do que qualquer outra.
+- **`agenda`** is a list grouped by day. It works at any width, it is the only
+  one that asks for no geometry at all, and it is what the screen reader hears
+  in all the others (see "Accessibility").
+- **`week`** is the reason the piece exists. Seven time columns side by side is
+  the only way to see that Thursday is packed and Friday is empty.
+- **`day`** is the same grid with one column, and earns its own value by being
+  the only time grid that fits in 390px.
+- **`month`** is the density map: how many things on each day, and in what
+  order. It is the view that answers "when is it due" better than any other.
 
-### O que a `month` não mostra, e é preciso saber antes de escolhê-la
+### What `month` does not show, and you need to know before choosing it
 
-Numa célula de mês **não cabe duração** e **não cabe sobreposição**. Todo
-compromisso vira uma tarja da mesma altura: uma reunião de quinze minutos e um
-treinamento de oito horas ficam idênticos. E dois eventos às 14h ficam um
-embaixo do outro exatamente como dois eventos às 9h e às 17h, então a tela não
-diz que eles batem.
+A month cell has **no room for duration** and **no room for overlap**. Every
+appointment becomes a strip of the same height: a fifteen-minute meeting and an
+eight-hour training look identical. And two events at 14h sit one below the
+other exactly like two events at 9h and 17h, so the screen does not say they
+clash.
 
-**Quem precisa ver choque de horário usa `day` ou `week`.** A `month` serve
-para a pergunta anterior a essa: em que dia isso cai, e esse dia já está cheio?
-Dentro da célula a ordem é cronológica, o que passa de `maxLanes` (três, de
-saída) vira um `+N mais`, e esse botão abre a lista daquele dia, que é a vista
-`agenda` de um dia só.
+**Whoever needs to see scheduling clashes uses `day` or `week`.** `month`
+serves the question before that one: which day does this fall on, and is that
+day already full? Inside the cell the order is chronological, what exceeds
+`maxLanes` (three, out of the box) becomes a `+N mais`, and that button opens
+the list for that day, which is the `agenda` view of a single day.
 
-## O que acontece a 390px
+## What happens at 390px
 
-A largura útil da casa a 390px é 358px, e a partir daí a aritmética decide
-sozinha:
+The house's usable width at 390px is 358px, and from there the arithmetic
+decides on its own:
 
-- **`week`**: 358 menos 44 da calha das horas dá 314px, dividido por sete dá
-  **44,8px por coluna**. A coluna atinge o alvo de toque e é só isso que ela
-  atinge: em 44px cabem umas cinco letras, e "Reunião com o contador" vira
-  "Reun…". Sete colunas dessas são uma tela sem informação nenhuma.
-- **`day`**: 314px de coluna única, com texto legível e sobreposição visível.
-- **`month`**: 358 dividido por sete dá **51px por célula**.
+- **`week`**: 358 minus 44 for the hours gutter gives 314px, divided by seven
+  gives **44.8px per column**. The column reaches the touch target and that is
+  all it reaches: 44px fits some five letters, and "Reunião com o contador"
+  becomes "Reun…". Seven columns like that are a screen with no information at
+  all.
+- **`day`**: 314px of a single column, with readable text and visible
+  overlap.
+- **`month`**: 358 divided by seven gives **51px per cell**.
 
-**A decisão:** abaixo de 640px a `week` some do seletor, e `view="week"` recebido
-por prop resolve para `agenda`, calado, do mesmo jeito que o `Calendar` ignora
-`numberOfMonths` no celular e que o `Dialog` vira `Sheet`. É precedente da casa
-em três lugares.
+**The decision:** below 640px `week` disappears from the selector, and
+`view="week"` received through a prop resolves to `agenda`, silently, the same
+way `Calendar` ignores `numberOfMonths` on a phone and `Dialog` becomes
+`Sheet`. It is house precedent in three places.
 
-**A `month` fica**, e o motivo é que ela não é a `week` com outro nome. Uma
-coluna de `week` precisa mostrar *hora e duração* em 44px, e não mostra; uma
-célula de `month` precisa mostrar *que existe alguma coisa, e mais ou menos o
-quê*, em 51px, e isso sobrevive ao corte: a tarja continua legível pelas
-primeiras palavras, a contagem do dia continua exata, e o `+N mais` abre a
-lista completa numa folha de baixo. No celular, quem procura duração vai para a
-`day`; quem procura "que dia" fica na `month`.
+**`month` stays**, and the reason is that it is not `week` under another name.
+A `week` column needs to show *time and duration* in 44px, and does not; a
+`month` cell needs to show *that something exists, and roughly what*, in 51px,
+and that survives the cut: the strip stays readable by its first words, the
+day's count stays exact, and `+N mais` opens the full list in a bottom sheet.
+On a phone, whoever looks for duration goes to `day`; whoever looks for "which
+day" stays on `month`.
 
-**O que não se faz, e é a saída que todo mundo tenta primeiro: rolagem
-horizontal na semana.** A grade de tempo já rola na vertical, e somar rolagem
-horizontal cria duas direções de gesto disputando o mesmo dedo. O dedo perde.
+**What is not done, and it is the way out everyone tries first: horizontal
+scrolling in the week.** The time grid already scrolls vertically, and adding
+horizontal scrolling creates two gesture directions fighting over the same
+finger. The finger loses.
 
-## O compromisso que atravessa dias
+## The appointment that spans days
 
-Um compromisso de 14/03 às 22h a 16/03 às 9h não é um retângulo, são três
-pedaços em três colunas, e o dado é um só. **A peça não guarda evento partido:
-ela o parte na apresentação.** Cada segmento carrega `continuesBefore` e
-`continuesAfter`, e é isso que tira o arredondamento da beirada e que faz o
-texto acessível dizer "continua do dia anterior". Sem esses dois sinalizadores,
-um evento de três dias vira três compromissos idênticos e ninguém sabe se são
-três reuniões ou uma.
+An appointment from 14/03 at 22h to 16/03 at 9h is not a rectangle, it is three
+pieces in three columns, and the data is a single one. **The piece does not
+store a split event: it splits it in the presentation.** Each segment carries
+`continuesBefore` and `continuesAfter`, and that is what removes the rounding
+from the edge and makes the accessible text say "continues from the previous
+day". Without those two flags, a three-day event becomes three identical
+appointments and nobody knows whether they are three meetings or one.
 
-São dois casos, e eles vão para lugares diferentes da tela:
+There are two cases, and they go to different places on the screen:
 
-1. **Dia inteiro e multi-dia** (`allDay`, ou duração de 24 horas ou mais) vão
-   para a **faixa de dia inteiro**, acima da grade, como barras que
-   atravessam colunas. A faixa empilha em lanes (ordena por começo e, empatado,
-   por duração decrescente, e põe cada barra na primeira lane livre), tem teto
-   de `maxLanes`, e o resto vira `+N`.
-2. **A noite que cruza a meia-noite** (22h às 9h) é partida em dois segmentos e
-   **não** sobe para a faixa, porque a hora dela é informação: 22h é tarde da
-   noite, e a faixa de cima diria só "quarta e quinta". Vale também para o
-   plantão das 19h às 9h, que tem mais horas do que a janela de
-   `dayStart`/`dayEnd` mostra: ele continua com hora na grade e na agenda, e
-   nunca é anunciado como "dia inteiro" — isso só o `allDay` diz.
+1. **All-day and multi-day** (`allDay`, or a duration of 24 hours or more) go
+   to the **all-day band**, above the grid, as bars that span columns. The
+   band stacks in lanes (sorts by start and, on a tie, by decreasing duration,
+   and puts each bar in the first free lane), has a ceiling of `maxLanes`, and
+   the rest becomes `+N`.
+2. **The night that crosses midnight** (22h to 9h) is split into two segments
+   and does **not** go up to the band, because its time is information: 22h is
+   late at night, and the band on top would only say "Wednesday and Thursday".
+   The same goes for the on-call shift from 19h to 9h, which has more hours
+   than the `dayStart`/`dayEnd` window shows: it keeps its time on the grid and
+   in the agenda, and is never announced as "all day" - only `allDay` says
+   that.
 
-Onde o evento se parte depende do fuso do navegador. O mesmo compromisso visto
-de outro fuso pode não cruzar a meia-noite, e então não se parte. É consequência
-direta de a peça não conhecer fuso, e é comportamento, não defeito.
+Where the event splits depends on the browser's time zone. The same
+appointment seen from another time zone may not cross midnight, and then it
+does not split. It is a direct consequence of the piece not knowing time
+zones, and it is behavior, not a defect.
 
-## O compromisso que se sobrepõe a outro
+## The appointment that overlaps another
 
-O algoritmo é o mesmo do Google Agenda, e vale escrever porque o erro é sempre o
-mesmo: quem tenta resolver evento a evento produz larguras que não fecham.
+The algorithm is the same as Google Calendar's, and it is worth writing down
+because the mistake is always the same: whoever tries to solve it event by
+event produces widths that do not add up.
 
-1. **Agrupar em conjuntos.** Um conjunto é um grupo ligado por sobreposição
-   transitiva: A bate em B, B bate em C, então A, B e C são um conjunto, mesmo
-   que A e C não se toquem. A largura se divide por conjunto, nunca por par.
-2. **Colunas dentro do conjunto.** Percorre em ordem de começo e põe cada evento
-   na primeira coluna onde ele não bate em nada.
-3. **Expandir para a direita.** Quem tem espaço livre à direita cresce até
-   esbarrar. É o que impede a tela de virar quatro tirinhas finas quando só dois
-   horários realmente colidem.
+1. **Group into clusters.** A cluster is a group connected by transitive
+   overlap: A clashes with B, B clashes with C, so A, B and C are one cluster,
+   even if A and C do not touch. Width is divided per cluster, never per pair.
+2. **Columns within the cluster.** Walk in start order and put each event in
+   the first column where it clashes with nothing.
+3. **Expand to the right.** Whoever has free space to the right grows until it
+   bumps into something. That is what keeps the screen from turning into four
+   thin strips when only two slots actually collide.
 
-`maxColumns` (três, de saída) é o teto. O que passa dele vira um `+N mais` na
-última coluna, que abre a lista do dia. A 314px de coluna única no celular, três
-colunas dão 104px cada, que ainda têm texto; a quarta não teria.
+`maxColumns` (three, out of the box) is the ceiling. What exceeds it becomes a
+`+N mais` in the last column, which opens the day's list. At 314px of a single
+column on a phone, three columns give 104px each, which still hold text; the
+fourth would not.
 
-## O piso de altura, e o que ele custa
+## The height floor, and what it costs
 
-A 48px por hora, um compromisso de quinze minutos tem 12px e um de cinco minutos
-tem 4px. Nenhum dos dois é alvo de toque, e em nenhum dos dois cabe texto. A
-tarja tem então um **piso de altura desenhada**: `--rc-control-md` na mesa (40px
-confortável, 32px compacto, portanto sensível à densidade) e 44px no celular.
+At 48px per hour, a fifteen-minute appointment is 12px and a five-minute one is
+4px. Neither is a touch target, and neither fits text. So the strip has a
+**drawn height floor**: `--rc-control-md` on desktop (40px comfortable, 32px
+compact, therefore sensitive to density) and 44px on a phone.
 
-**O piso é só do desenho. O cálculo de sobreposição roda nos horários reais**, e
-essa separação é a decisão inteira. A consequência precisa estar escrita, porque
-ela aparece na tela: dois compromissos de dez minutos separados por quinze
-minutos não se sobrepõem no dado e **se sobrepõem na tela**. Eles se desenham
-empilhados, com sombra, e não roubam coluna um do outro.
+**The floor is only for the drawing. The overlap calculation runs on the real
+times**, and that separation is the whole decision. The consequence needs to be
+written down, because it shows on screen: two ten-minute appointments fifteen
+minutes apart do not overlap in the data and **overlap on the screen**. They
+draw stacked, with a shadow, and do not steal a column from each other.
 
-É um defeito visual assumido, e a alternativa é pior: deixar o layout usar as
-alturas pisadas faz a grade inteira mentir, porque aí a largura de todo mundo
-passa a depender de um número que não é o horário. Um erro fica na beirada de
-dois eventos curtos; o outro se espalha pelo dia.
+It is an accepted visual defect, and the alternative is worse: letting the
+layout use the floored heights makes the whole grid lie, because then
+everyone's width starts depending on a number that is not the time. One error
+stays at the edge of two short events; the other spreads across the day.
 
-A área que rola tem `maxHeight` (560px de saída) na `agenda`, na `day` e na
-`week`; a `month` cresce com o número de linhas e rola junto com a página,
-porque uma célula de mês só serve inteira.
+The scrolling area has `maxHeight` (560px out of the box) in `agenda`, `day`
+and `week`; `month` grows with the number of rows and scrolls along with the
+page, because a month cell is only useful whole.
 
-Pelo mesmo motivo, quem cai fora da janela de `dayStart`/`dayEnd` não some:
-encosta na beirada da calha, com o piso de altura, e continua na `agenda` e na
-`month`. `dayStart`/`dayEnd` existem porque 24 horas a 48px são 1152px de
-altura, e ninguém tem expediente à meia-noite: de 7h às 20h dá 624px, que cabe
-numa tela.
+For the same reason, whatever falls outside the `dayStart`/`dayEnd` window does
+not disappear: it sits against the edge of the gutter, with the height floor,
+and stays in `agenda` and `month`. `dayStart`/`dayEnd` exist because 24 hours
+at 48px are 1152px of height, and nobody works at midnight: from 7h to 20h it
+is 624px, which fits on a screen.
 
-**Horário de verão.** A peça desenha pelo relógio de parede: a linha das 14h
-fica em `14 * hourHeight`, sempre. Num dia de virada, o bloco que atravessa a
-mudança sai uma hora maior ou menor do que a duração real, e nenhuma linha de
-hora se desloca. É a troca escolhida: o erro fica num bloco, e não na grade
-inteira.
+**Daylight saving time.** The piece draws by the wall clock: the 14h line sits
+at `14 * hourHeight`, always. On a changeover day, the block that crosses the
+change comes out an hour longer or shorter than its real duration, and no hour
+line shifts. That is the chosen trade: the error stays in one block, and not in
+the whole grid.
 
-## Outro idioma
+## Another language
 
-Os nomes de mês e de dia da semana e a hora saem do `locale`, uma tag BCP 47
-(`"en-US"`, `"es"`), e o padrão é `"pt-BR"`. As palavras fixas em volta saem de
-`labels`: os botões da barra, o nome das vistas, o que o leitor de tela ouve em
-cada compromisso e a contagem. Passe só as chaves que mudam. O seletor "Ir para
-a data" segue o mesmo `locale` nos nomes de mês e de dia, e começa a semana no
-mesmo `weekStartsOn` da grade.
+Month and weekday names and the time come from `locale`, a BCP 47 tag
+(`"en-US"`, `"es"`), and the default is `"pt-BR"`. The fixed words around them
+come from `labels`: the bar's buttons, the view names, what the screen reader
+hears on each appointment and the count. Pass only the keys that change. The
+"Ir para a data" picker follows the same `locale` for month and day names, and
+starts the week on the same `weekStartsOn` as the grid.
 
 ```tsx
 <EventCalendar
@@ -205,176 +213,181 @@ mesmo `weekStartsOn` da grade.
 />
 ```
 
-## Acessibilidade
+## Accessibility
 
-Uma grade de calendário é duas coisas incompatíveis: uma tabela bidimensional
-para quem navega por teclado, e uma lista cronológica para quem ouve.
+A calendar grid is two incompatible things: a two-dimensional table for
+keyboard users, and a chronological list for listeners.
 
-**Para quem ouve, toda vista é a vista `agenda`.** O andaime visual (as linhas
-de hora, a calha, os cabeçalhos de coluna, os nomes dos dias da semana no mês)
-sai `aria-hidden`. O que se expõe é, por dia, um grupo com nome acessível
-("Terça-feira, 17 de março, 3 compromissos") e, dentro dele, uma lista em ordem
-cronológica com `aria-setsize` e `aria-posinset` por evento. É o mesmo par que a
-`VirtualList` escolheu, e pelo mesmo motivo: a contagem tem que ser a real, e
-não a desenhada, porque o que está escondido atrás de um `+N mais` continua
-existindo.
+**For listeners, every view is the `agenda` view.** The visual scaffolding (the
+hour lines, the gutter, the column headers, the weekday names in the month)
+renders `aria-hidden`. What is exposed is, per day, a group with an accessible
+name ("Terça-feira, 17 de março, 3 compromissos") and, inside it, a list in
+chronological order with `aria-setsize` and `aria-posinset` per event. It is
+the same pair `VirtualList` chose, and for the same reason: the count has to be
+the real one, not the drawn one, because what is hidden behind a `+N mais`
+still exists.
 
-A faixa de dia inteiro é um grupo à parte, chamado "Dia inteiro", com a própria
-lista e a própria contagem. O nome do grupo de cada dia continua somando tudo o
-que cai naquele dia, a faixa inclusive: é a resposta certa para "quão cheia está
-a terça".
+The all-day band is a separate group, called "Dia inteiro", with its own list
+and its own count. The name of each day's group keeps adding up everything that
+falls on that day, band included: it is the right answer to "how full is
+Tuesday".
 
-**O que não se faz:** `role="grid"` com uma célula por meia hora. Uma semana de
-24 horas em blocos de trinta minutos dá 336 células, quase todas vazias, e cada
-uma é uma parada. É o erro que a maioria das bibliotecas de calendário comete, e
-é o mesmo erro do `Tracker` numa forma nova.
+**What is not done:** `role="grid"` with one cell per half hour. A 24-hour week
+in thirty-minute blocks gives 336 cells, almost all empty, and each one is a
+stop. It is the mistake most calendar libraries make, and it is the same
+mistake as `Tracker` in a new form.
 
-**Para o teclado, uma parada de tabulação para a peça inteira**, com foco
-itinerante entre **eventos**, e não entre células. Precedente direto do
-`Tracker`, que é uma parada só para 365 quadrados.
+**For the keyboard, one tab stop for the whole piece**, with roving focus
+between **events**, and not between cells. Direct precedent from `Tracker`,
+which is a single stop for 365 squares.
 
-| Tecla | O que faz |
+| Key | What it does |
 |---|---|
-| `↑` `↓` | evento anterior e próximo dentro do dia, em ordem de hora |
-| `↑` `↓` na `month` | no primeiro e no último do dia, pula para a mesma coluna da semana de cima ou de baixo |
-| `↑` `↓` na `agenda` | anterior e próximo da lista, atravessando os dias |
-| `←` `→` | o evento mais próximo em hora, no dia anterior ou seguinte |
-| `Home` `End` | primeiro e último evento do período visível |
-| `PageUp` `PageDown` | período anterior e seguinte |
-| `Enter` `Espaço` | dispara `onEventSelect`, ou abre o `+N mais` |
-| `Esc` | devolve o foco à barra de ferramentas |
+| `↑` `↓` | previous and next event within the day, in time order |
+| `↑` `↓` in `month` | on the first and last of the day, jumps to the same column of the week above or below |
+| `↑` `↓` in `agenda` | previous and next in the list, crossing days |
+| `←` `→` | the closest event in time, on the previous or next day |
+| `Home` `End` | first and last event of the visible period |
+| `PageUp` `PageDown` | previous and next period |
+| `Enter` `Space` | fires `onEventSelect`, or opens the `+N mais` |
+| `Esc` | returns focus to the toolbar |
 
-`←` e `→` seguem a direção da escrita: em RTL, `←` anda para o dia seguinte. A
-direção vem do `RivoProvider`, e isso entrou na v1 e não depois, porque espelhar
-o desenho sem espelhar a conta já custou defeito real em quatro peças da casa.
+`←` and `→` follow the writing direction: in RTL, `←` goes to the next day. The
+direction comes from `RivoProvider`, and that went into v1 and not later,
+because mirroring the drawing without mirroring the math has already cost real
+defects in four house pieces.
 
-Mais três coisas:
+Three more things:
 
-- **A troca de período se anuncia** numa região viva: "16 a 22 de março de 2026,
-  7 compromissos". Desenho não chega a quem ouve, e a paginação é a única
-  mudança grande que não move o foco.
-- **`aria-current="date"` viaja com o grupo do dia**, e não com o cabeçalho da
-  coluna. O cabeçalho é andaime e sai `aria-hidden`, então um `aria-current`
-  nele não seria lido por ninguém; o grupo de hoje ainda diz "hoje" no nome.
-- **A linha do agora é decorativa** (`aria-hidden`). Ela não é dado, é um
-  relógio, e quem ouve tem o relógio do próprio aparelho.
+- **A period change is announced** in a live region: "16 a 22 de março de
+  2026, 7 compromissos". A drawing does not reach listeners, and paging is the
+  only big change that does not move focus.
+- **`aria-current="date"` travels with the day's group**, not with the column
+  header. The header is scaffolding and renders `aria-hidden`, so an
+  `aria-current` on it would be read by no one; today's group still says
+  "today" in its name.
+- **The now line is decorative** (`aria-hidden`). It is not data, it is a
+  clock, and listeners have their own device's clock.
 
-## Os quatro finais, e onde o vazio aparece
+## The four outcomes, and where the empty state appears
 
-Os mesmos do `DataTable` e da `VirtualList`, na mesma ordem e com os mesmos
-nomes de prop: **erro vence carregando, e vazio só vale depois que a consulta
-voltou**. `isLoading` e `events === undefined` são a mesma coisa. `errorTitle`,
-`errorMessage`, `onRetry` e `labels.retry` são o conjunto do erro. A espera se
-anuncia em voz alta na mesma região viva das irmãs.
+The same as `DataTable` and `VirtualList`, in the same order and with the same
+prop names: **error beats loading, and empty only counts after the query has
+come back**. `isLoading` and `events === undefined` are the same thing.
+`errorTitle`, `errorMessage`, `onRetry` and `labels.retry` are the error set.
+Waiting is announced out loud in the same live region as the siblings.
 
-O vazio tem uma diferença que é decisão desta peça: **na `agenda` ele ocupa o
-lugar da lista; nas grades ele fica por cima, e a grade continua desenhada**.
-Uma grade é também a superfície onde se clica para criar, e esconder a semana
-quando a semana está livre é esconder exatamente o horário vago que a pessoa
-procurava.
+The empty state has a difference that is this piece's decision: **in `agenda`
+it takes the place of the list; in the grids it sits on top, and the grid stays
+drawn**. A grid is also the surface you click to create, and hiding the week
+when the week is free is hiding exactly the empty slot the person was looking
+for.
 
-## O que sai quando o período muda
+## What comes out when the period changes
 
-`onRangeChange` avisa que o período visível mudou, e é o gancho para o app
-buscar. **O fim é exclusivo**: é a meia-noite do dia seguinte ao último dia
-mostrado, o que faz a comparação no servidor ser `start <= x < end` sem
-milissegundo de sobra. A `agenda` e a `month` compartilham o mês como período,
-com uma diferença: a `month` desenha semanas inteiras, então ela mostra os dias
-vizinhos que completam a primeira e a última linha, e o intervalo emitido inclui
-esses dias.
+`onRangeChange` reports that the visible period changed, and it is the hook
+for the app to fetch. **The end is exclusive**: it is midnight of the day after
+the last day shown, which makes the comparison on the server
+`start <= x < end` without a stray millisecond. `agenda` and `month` share the
+month as a period, with one difference: `month` draws whole weeks, so it shows
+the neighboring days that complete the first and the last row, and the emitted
+range includes those days.
 
-## Partes
+## Parts
 
-`classNames` veste cada parte sem ninguém alcançar o nó interno por `[&>div>div]`:
+`classNames` dresses each part without anyone reaching the inner node through
+`[&>div>div]`:
 
-- **`toolbar`**: a barra com navegação, "ir para a data" e seletor de vista.
-- **`body`**: a moldura que envolve a vista.
-- **`header`**: a linha de cabeçalho de dia, na grade e no mês.
-- **`gutter`**: a calha das horas.
-- **`column`**: a coluna de um dia na grade de tempo.
-- **`cell`**: a célula de um dia no mês.
-- **`band`**: a faixa de dia inteiro.
-- **`section`**: o bloco de um dia na agenda.
-- **`event`**: a caixa de cada compromisso, nas três formas.
+- **`toolbar`**: the bar with navigation, "go to date" and the view selector.
+- **`body`**: the frame that wraps the view.
+- **`header`**: the day header row, in the grid and in the month.
+- **`gutter`**: the hours gutter.
+- **`column`**: a day's column in the time grid.
+- **`cell`**: a day's cell in the month.
+- **`band`**: the all-day band.
+- **`section`**: a day's block in the agenda.
+- **`event`**: each appointment's box, in all three forms.
 
-`renderEvent` troca só o miolo da tarja. A caixa, o foco, o posicionamento e o
-rótulo acessível continuam da peça, porque são eles que sustentam a navegação
-por teclado.
+`renderEvent` swaps only the strip's core. The box, the focus, the positioning
+and the accessible label remain the piece's, because they are what sustain
+keyboard navigation.
 
-## O que ela não faz
+## What it does not do
 
-Cada linha aqui é uma porta que alguém vai tentar abrir, e é o que impede a peça
-de virar aplicação.
+Each line here is a door someone will try to open, and it is what keeps the
+piece from becoming an application.
 
-1. **Não busca dado.** Entram `events`, `isLoading`, `isError`, `onRetry` e
-   `empty`; sai `onRangeChange`. Mesma divisão do `DataTable`, da `VirtualList` e
-   do `QueryBoundary`.
-2. **Não conhece fuso de servidor.** Tudo é `Date`, na hora local do navegador,
-   como o `DatePicker` já decidiu. Um compromisso gravado em `America/Sao_Paulo`
-   e visto de Lisboa aparece na hora de Lisboa; se não é isso que se quer,
-   converta antes de entregar. Uma peça que conhecesse fuso precisaria de banco
-   de fusos, e banco de fusos é o começo de uma biblioteca de datas.
-3. **Não edita.** Sem arrastar para mover, sem esticar para redimensionar. Ela
-   emite `onEventSelect` e `onSlotSelect` (o clique no vazio devolve o intervalo
-   de meia hora que foi clicado, ou o dia inteiro no mês) e o app abre o
-   `Dialog` que quiser. Arrastar num touch disputa com a rolagem, e é a linha
-   exata onde um componente vira aplicação.
-4. **Não expande recorrência.** Sem RRULE, sem exceção de série: o app entrega
-   as instâncias já expandidas.
-5. **Não faz recurso.** Colunas por sala ou por profissional, em vez de por dia,
-   é o mesmo motor com outro eixo, e é necessidade real de clínica e de
-   barbearia. Fica para depois, e a porta está aberta.
-6. **Não imprime**, não exporta `.ics`, não sincroniza com nada.
+1. **It does not fetch data.** `events`, `isLoading`, `isError`, `onRetry` and
+   `empty` come in; `onRangeChange` goes out. Same split as `DataTable`,
+   `VirtualList` and `QueryBoundary`.
+2. **It knows no server time zone.** Everything is `Date`, in the browser's
+   local time, as `DatePicker` already decided. An appointment stored in
+   `America/Sao_Paulo` and viewed from Lisbon appears at Lisbon time; if that is
+   not what you want, convert before handing it over. A piece that knew time
+   zones would need a time zone database, and a time zone database is the start
+   of a date library.
+3. **It does not edit.** No dragging to move, no stretching to resize. It emits
+   `onEventSelect` and `onSlotSelect` (a click on empty space returns the
+   half-hour range that was clicked, or the whole day in the month) and the app
+   opens whatever `Dialog` it wants. Dragging on touch fights with scrolling,
+   and it is the exact line where a component becomes an application.
+4. **It does not expand recurrence.** No RRULE, no series exceptions: the app
+   delivers the instances already expanded.
+5. **It does not do resources.** Columns per room or per professional, instead
+   of per day, is the same engine on another axis, and it is a real need of
+   clinics and barbershops. It is left for later, and the door is open.
+6. **It does not print**, does not export `.ics`, does not sync with anything.
 
-## Duas escolhas de construção que se veem de fora
+## Two build choices you can see from outside
 
-**A `agenda` não é virtualizada, de propósito.** A estrutura que a
-acessibilidade exige aqui (um grupo por dia, com a lista dele dentro, e
-`aria-setsize` por evento) é aninhada, e uma janela virtual é uma lista plana:
-não dá para expressar as duas ao mesmo tempo sem mentir na contagem. Some-se que
-o foco itinerante precisa que o elemento exista no DOM para receber foco, e o
-período visível é no máximo um mês, o que limita a lista a algumas dezenas de
-seções. Para um ano inteiro numa rolagem só, o caminho é a `VirtualList` com o
-`renderItem` que você já tem.
+**`agenda` is not virtualized, on purpose.** The structure accessibility
+requires here (one group per day, with its list inside, and `aria-setsize` per
+event) is nested, and a virtual window is a flat list: you cannot express both
+at once without lying about the count. On top of that, roving focus needs the
+element to exist in the DOM to receive focus, and the visible period is at most
+a month, which limits the list to a few dozen sections. For a whole year in a
+single scroll, the path is `VirtualList` with the `renderItem` you already
+have.
 
-**No mês, o compromisso de vários dias é desenhado por dia**, e não como uma
-barra única atravessando a linha. Todos os pedaços ficam na mesma lane, então a
-leitura continua sendo de uma faixa contínua, e as beiradas de continuação
-perdem o arredondamento. O que se ganha com isso é o grupo do dia: cada célula
-contém os compromissos daquele dia, que é o que o leitor de tela precisa ouvir.
+**In the month, a multi-day appointment is drawn per day**, and not as a single
+bar across the row. All the pieces sit in the same lane, so it still reads as a
+continuous strip, and the continuation edges lose their rounding. What you gain
+from that is the day's group: each cell contains that day's appointments, which
+is what the screen reader needs to hear.
 
-## Quando não usar
+## When not to use
 
-**Se ninguém precisa ver duração nem choque de horário, use `DataTable`.** Esta
-é a mais importante, e é a que mais se erra. Uma listagem de agendamentos com
-coluna de cliente, hora, status, ordenação e filtro é uma tabela, e a tabela já
-faz tudo isso melhor. O `EventCalendar` só se paga quando a resposta que se
-procura é geométrica: "esse bloco é grande demais", "esses dois batem". Fora
-disso ele é uma tabela cara e com menos recursos.
+**If nobody needs to see duration or scheduling clashes, use `DataTable`.**
+This is the most important one, and the one most often gotten wrong. A listing
+of appointments with columns for customer, time, status, sorting and filtering
+is a table, and the table already does all of that better. `EventCalendar` only
+pays off when the answer you are looking for is geometric: "this block is too
+big", "these two clash". Otherwise it is an expensive table with fewer
+features.
 
-**Se a pergunta é "que dia?", use `Calendar`, `DatePicker` ou
-`DateRangePicker`.** Escolher um vencimento não é ver uma agenda, e um
-`EventCalendar` para isso é uma grade de 24 horas onde a pessoa queria sete
-números.
+**If the question is "which day?", use `Calendar`, `DatePicker` or
+`DateRangePicker`.** Picking a due date is not looking at an agenda, and an
+`EventCalendar` for that is a 24-hour grid where the person wanted seven
+numbers.
 
-**Se a pergunta é "o que aconteceu com esta coisa?", use `Timeline`.** Ela olha
-para trás, é sobre um objeto só (uma nota fiscal, um contrato) e os eventos dela
-são instantes sem duração. Um `EventCalendar` de uma nota fiscal desenharia
-cinco carimbos de zero minuto espalhados por três meses de grade vazia.
+**If the question is "what happened to this thing?", use `Timeline`.** It
+looks back, it is about a single object (an invoice, a contract) and its
+events are instants with no duration. An `EventCalendar` of an invoice would
+draw five zero-minute stamps scattered across three months of empty grid.
 
-**Se a pergunta é "quantos, por período?", use `Tracker`.** Ele conta
-ocorrências discretas, não tem hora e cabe dentro de um `Stat`.
+**If the question is "how many, per period?", use `Tracker`.** It counts
+discrete occurrences, has no time of day and fits inside a `Stat`.
 
-## No React Native
+## In React Native
 
-Na fila, e a fila e por DESENHO de gesto, nao por tempo. Tres das quatro vistas portam: a `agenda` vira `SectionList` (virtualizacao de fabrica, o mesmo argumento que tirou a `VirtualList` do catalogo nativo), a `day` e uma coluna unica de 314px, que e coluna de verdade, e a `month` sobrevive aos 51px por celula porque a celula so precisa mostrar que existe alguma coisa e mais ou menos o que.
+Queued, and the queue is about GESTURE design, not time. Three of the four views port: `agenda` becomes a `SectionList` (virtualization out of the box, the same argument that removed `VirtualList` from the native catalog), `day` is a single 314px column, which is a real column, and `month` survives at 51px per cell because the cell only needs to show that something exists and roughly what.
 
-**A `week` nao porta.** Sete colunas em 358px dao 44,8px cada, e a coluna de semana existe para mostrar hora e duracao. Em 44,8px ela mostra um retangulo colorido, que e o que a `month` ja faz melhor e mais barato. O web tomou a mesma decisao para a propria tela estreita: abaixo de `sm` a `week` some do seletor e `view="week"` resolve para `agenda`.
+**`week` does not port.** Seven columns in 358px give 44.8px each, and the week column exists to show time and duration. At 44.8px it shows a colored rectangle, which is what `month` already does better and cheaper. The web made the same decision for its own narrow screen: below `sm`, `week` disappears from the switcher and `view="week"` resolves to `agenda`.
 
-**A decisao foi tomada em 27/08/2026, e e nao.** Ela esteve em `FILA_DECLARADA` esperando decisao de gesto; o desenho foi escrito, medido, e a conta dele decidiu contra a peca. Esta em `docs/2026-08-27-event-calendar-nativo-desenho.md`, e continua valendo como registro do que foi medido.
+**The decision was made on 2026-08-27, and it is no.** It sat in `DECLARED_QUEUE` waiting for a gesture decision; the design was written, measured, and its math decided against the piece. It is in `docs/2026-08-27-event-calendar-nativo-desenho.md`, and remains valid as a record of what was measured.
 
-O custo nao se distribui por igual entre as vistas, e e isso que decide. A `agenda` e o `month` sao baratos: um e lista, o outro e grade de mes, e os dois ja tem resposta no pacote. A `day` e a `week` sao a peca inteira - o desenhador de tempo, o alvo de 44 pontos sobre tarja de 12, o conflito entre deslizar para trocar de periodo e arrastar para ler, e a maior parte das mil e duzentas linhas. Elas custam de 15 a 18% do pacote, compiladas pelo metro no aplicativo de quem importa um `Button`, porque o nativo publica FONTE.
+The cost is not spread evenly across the views, and that is what decides it. `agenda` and `month` are cheap: one is a list, the other is a month grid, and both already have an answer in the package. `day` and `week` are the whole piece - the time layout engine, the 44-point target over a 12-point strip, the conflict between swiping to change the period and dragging to read, and most of the twelve hundred lines. They cost 15 to 18% of the package, compiled by metro in the app of anyone who imports a `Button`, because the native package publishes SOURCE.
 
-E o que elas comprariam nao cabe na tela: sete colunas em 358px dao 44,8px cada, onde a coluna de semana existe para mostrar hora e duracao. Grade de tempo e idioma de mesa - ela responde "o que choca com o que", e essa pergunta se faz com o olho passeando, e nao com o dedo cobrindo o que ele toca.
+And what they would buy does not fit on the screen: seven columns in 358px give 44.8px each, where the week column exists to show time and duration. A time grid is a desktop idiom - it answers "what clashes with what", and that question is asked with the eye wandering, and not with the finger covering what it touches.
 
-**No telefone, a resposta e outra peca.** Compromisso por dia e lista, e a lista se monta com o que ja existe. Data com valor - vencimento, prazo, entrega - e o `Calendar`, que no nativo ja pinta por dia pelo `DayPaint`. Quem precisa de grade de tempo no celular esta pedindo a tela de mesa num aparelho que nao a comporta.
+**On the phone, the answer is another piece.** Appointments by day are a list, and the list is built from what already exists. A date with a value - due date, deadline, delivery - is the `Calendar`, which on native already paints per day through `DayPaint`. Whoever needs a time grid on the phone is asking for the desktop screen on a device that cannot hold it.

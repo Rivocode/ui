@@ -11,10 +11,10 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("copiar leva o valor e confirma no proprio botao", async () => {
+test("copying takes the value and confirms on the button itself", async () => {
   const written: string[] = [];
-  // O happy-dom entrega um navigator.clipboard somente-leitura, entao a
-  // dublagem entra por defineProperty em vez de atribuicao.
+  // happy-dom provides a read-only navigator.clipboard, so the stub goes in
+  // through defineProperty instead of assignment.
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,
     value: { writeText: async (text: string) => void written.push(text) },
@@ -27,21 +27,21 @@ test("copiar leva o valor e confirma no proprio botao", async () => {
   await new Promise((resolve) => setTimeout(resolve, 0));
 
   expect(written).toEqual(["35240612345678000199550010000048131234567890"]);
-  // Copiar sem confirmacao nao existiu para quem nao ve o icone mudar: o
-  // proprio nome do botao muda, e o leitor anuncia a mudanca.
+  // Copying without confirmation did not exist for whoever cannot see the icon
+  // change: the button name itself changes, and the reader announces it.
   expect(screen.getByRole("button", { name: "Copiado" })).toBeDefined();
 });
 
-test("o tipo recusa aria-label no Clipboard, e o nome vem so de labels", () => {
+test("the type refuses aria-label on Clipboard, and the name comes only from labels", () => {
   withTheme(
-    // @ts-expect-error aria-label sai do tipo; o nome e labels.copy
+    // @ts-expect-error aria-label is out of the type; the name is labels.copy
     <Clipboard value="4813" aria-label="Outro" labels={{ copy: "Copiar CNPJ" }} />,
   );
   expect(screen.getByRole("button", { name: "Copiar CNPJ" })).toBeDefined();
   expect(screen.queryByRole("button", { name: "Outro" })).toBeNull();
 });
 
-test("o texto copiado volta ao normal sozinho", async () => {
+test("the copied text goes back to normal on its own", async () => {
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,
     value: { writeText: async () => {} },
@@ -63,7 +63,7 @@ const CHECK_INK = [
 ] as const;
 
 for (const [variant, ink] of CHECK_INK) {
-  test(`o visto do Clipboard ${variant} sai em ${ink}`, async () => {
+  test(`the Clipboard ${variant} check mark comes out in ${ink}`, async () => {
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
       value: { writeText: async () => {} },
@@ -82,21 +82,21 @@ for (const [variant, ink] of CHECK_INK) {
 
 const NOW = new Date("2026-08-25T12:00:00Z");
 
-test("o tempo relativo escreve em portugues, com a data absoluta por tras", () => {
+test("relative time writes in Portuguese, with the absolute date behind it", () => {
   const { container } = withTheme(
     <RelativeTime value={new Date("2026-08-25T11:58:00Z")} now={NOW} />,
   );
   const time = container.querySelector("time")!;
 
   expect(time.textContent).toBe("há 2 minutos");
-  // A data exata continua alcancavel: o relativo e resumo, e resumo perde
-  // informacao que as vezes e a que importa.
+  // The exact date stays reachable: the relative one is a summary, and a
+  // summary loses information that is sometimes the one that matters.
   expect(time.getAttribute("datetime")).toBe("2026-08-25T11:58:00.000Z");
-  // O title leva a data por extenso, que e o que uma pessoa le em voz alta.
+  // The title carries the spelled-out date, which is what a person reads aloud.
   expect(time.getAttribute("title")).toContain("25 de agosto de 2026");
 });
 
-test("o corte entre agora e ha um minuto e uma decisao, e nao um acaso", () => {
+test("the cutoff between now and a minute ago is a decision, and not an accident", () => {
   const { container } = withTheme(
     <RelativeTime value={new Date("2026-08-25T11:59:30Z")} now={NOW} />,
   );
@@ -104,8 +104,8 @@ test("o corte entre agora e ha um minuto e uma decisao, e nao um acaso", () => {
   expect(container.querySelector("time")!.textContent).toBe("agora");
 });
 
-test("passado o corte, ele mostra a data em vez de contar para sempre", () => {
-  // "ha 412 dias" nao diz nada; a data diz.
+test("past the cutoff, it shows the date instead of counting forever", () => {
+  // "ha 412 dias" says nothing; the date does.
   const { container } = withTheme(
     <RelativeTime value={new Date("2025-05-02T09:30:00Z")} now={NOW} cutoff="month" />,
   );
@@ -113,7 +113,7 @@ test("passado o corte, ele mostra a data em vez de contar para sempre", () => {
   expect(container.querySelector("time")!.textContent).toBe("02/05/2025");
 });
 
-test("o futuro tambem se escreve", () => {
+test("the future is written too", () => {
   const { container } = withTheme(
     <RelativeTime value={new Date("2026-08-28T12:00:00Z")} now={NOW} />,
   );
@@ -121,7 +121,7 @@ test("o futuro tambem se escreve", () => {
   expect(container.querySelector("time")!.textContent).toBe("em 3 dias");
 });
 
-test("o codigo em linha sai num code, com a fonte mono do sistema", () => {
+test("inline code renders in a code element, with the system mono font", () => {
   const { container } = withTheme(<Code>npx rivocode-ui skill</Code>);
   const code = container.querySelector("code")!;
 
@@ -129,16 +129,16 @@ test("o codigo em linha sai num code, com a fonte mono do sistema", () => {
   expect(code.className).toContain("font-mono");
 });
 
-test("o bloco rola sozinho, em vez de esticar a pagina", () => {
-  // Painel de log e JSON na tela, e JSON nao quebra linha: sem rolagem
-  // propria, a linha longa empurra a largura da pagina inteira.
+test("the block scrolls on its own, instead of stretching the page", () => {
+  // Log panels and JSON on screen, and JSON does not wrap: without its own
+  // scroll, the long line pushes the width of the whole page.
   const { container } = withTheme(<CodeBlock>{'{ "numero": "4813" }'}</CodeBlock>);
   const pre = container.querySelector("pre")!;
 
   expect(pre.className).toContain("overflow-x-auto");
 });
 
-test("o bloco que rola de lado e alcancavel pelo teclado, como regiao com nome", () => {
+test("the block that scrolls sideways is keyboard reachable, as a named region", () => {
   const view = withTheme(<CodeBlock>{"const nota = 4813;"}</CodeBlock>);
   const region = screen.getByRole("region", { name: "Bloco de código" });
 
@@ -155,13 +155,13 @@ test("o bloco que rola de lado e alcancavel pelo teclado, como regiao com nome",
   expect(screen.getByRole("region", { name: "Resposta da SEFAZ" })).toBeDefined();
 });
 
-test("o bloco numera as linhas quando se pede", () => {
+test("the block numbers the lines when asked", () => {
   withTheme(<CodeBlock lineNumbers>{"um\ndois\ntres"}</CodeBlock>);
 
   expect(screen.getByText("3")).toBeDefined();
 });
 
-test("a linha do tempo sai como lista ordenada, porque a ordem e o dado", () => {
+test("the timeline renders as an ordered list, because the order is the data", () => {
   const { container } = withTheme(
     <Timeline>
       <TimelineItem title="Emitida" at="12:04" by="Ana" tone="accent" />
@@ -178,9 +178,9 @@ test("a linha do tempo sai como lista ordenada, porque a ordem e o dado", () => 
   expect(screen.getByText(/dados do destinatário/)).toBeDefined();
 });
 
-test("o que ainda nao aconteceu nao se veste de acontecido", () => {
-  // Preencher o marcador de um evento futuro faz a linha prometer que ele ja
-  // ocorreu - o erro que uma trilha de auditoria nao pode cometer.
+test("what has not happened yet does not dress as happened", () => {
+  // Filling the marker of a future event makes the line promise it already
+  // happened - the mistake an audit trail cannot make.
   const { container } = withTheme(
     <Timeline>
       <TimelineItem title="Paga" tone="success" />

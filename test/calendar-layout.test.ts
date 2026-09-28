@@ -26,7 +26,7 @@ function event(id: string, from: number, to: number, minutes: [number, number] =
   return { id, start: at(from, minutes[0]), end: at(to, minutes[1]) };
 }
 
-test("conjunto transitivo divide a largura entre os tres, e nao entre os pares", () => {
+test("a transitive set splits the width among the three, and not between the pairs", () => {
   const events = [event("a", 9, 10), event("b", 9, 10, [30, 30]), event("c", 10, 11, [15, 0])];
 
   const { placed } = layoutDay(splitEvents(events, [DAY]));
@@ -43,7 +43,7 @@ test("conjunto transitivo divide a largura entre os tres, e nao entre os pares",
   expect(columns.get("c")!.column).toBe(0);
 });
 
-test("quem tem espaco livre a direita cresce ate esbarrar", () => {
+test("whoever has free space to the right grows until it bumps", () => {
   const events = [
     event("longo", 9, 12),
     event("manha", 9, 10),
@@ -60,7 +60,7 @@ test("quem tem espaco livre a direita cresce ate esbarrar", () => {
   expect(columns.get("depois")!.columns).toBe(3);
 });
 
-test("o que passa do teto de colunas vira um transbordo com a contagem", () => {
+test("whatever exceeds the column cap becomes an overflow with the count", () => {
   const events = [event("a", 9, 11), event("b", 9, 11), event("c", 9, 11), event("d", 9, 11)];
 
   const { placed, overflow } = layoutDay(splitEvents(events, [DAY]), 3);
@@ -71,7 +71,7 @@ test("o que passa do teto de colunas vira um transbordo com a contagem", () => {
   expect(overflow[0]!.dayIndex).toBe(0);
 });
 
-test("o compromisso que cruza a meia-noite vira dois segmentos, com os sinalizadores certos", () => {
+test("an appointment crossing midnight becomes two segments, with the right flags", () => {
   const days = [DAY, addDays(DAY, 1)];
   const night: Event = { id: "plantao", start: at(22), end: at(9, 0, addDays(DAY, 1)) };
 
@@ -87,7 +87,7 @@ test("o compromisso que cruza a meia-noite vira dois segmentos, com os sinalizad
   expect(segments[1]!.end.getHours()).toBe(9);
 });
 
-test("a noite que cruza a meia-noite nao sobe para a faixa de dia inteiro", () => {
+test("a night crossing midnight does not move up to the all-day lane", () => {
   const night: Event = { id: "plantao", start: at(22), end: at(9, 0, addDays(DAY, 1)) };
   const trip: Event = { id: "viagem", start: at(0), end: at(0, 0, addDays(DAY, 3)) };
 
@@ -96,7 +96,7 @@ test("a noite que cruza a meia-noite nao sobe para a faixa de dia inteiro", () =
   expect(spansFullDay({ id: "feriado", start: at(9), end: at(10), allDay: true })).toBe(true);
 });
 
-test("o plantao de 14 horas, maior que a janela visivel, continua sendo evento com hora", () => {
+test("a 14-hour shift, longer than the visible window, is still a timed event", () => {
   const shift: Event = { id: "plantao", start: at(19), end: at(9, 0, addDays(DAY, 1)) };
   const almost: Event = { id: "quase", start: at(8), end: at(7, 59, addDays(DAY, 1)) };
   const whole: Event = { id: "inteiro", start: at(8), end: at(8, 0, addDays(DAY, 1)) };
@@ -106,7 +106,7 @@ test("o plantao de 14 horas, maior que a janela visivel, continua sendo evento c
   expect(spansFullDay(whole)).toBe(true);
 });
 
-test("tres barras que nao cabem em duas faixas deixam a terceira contada por dia", () => {
+test("three bars that do not fit in two lanes leave the third counted per day", () => {
   const days = eachDay(DAY, 5);
   const bars = toBars(
     [
@@ -127,7 +127,7 @@ test("tres barras que nao cabem em duas faixas deixam a terceira contada por dia
   expect(packed.hiddenByDay[2]).toBe(1);
 });
 
-test("o piso de altura e do desenho, e nao muda a conta de colunas", () => {
+test("the height floor belongs to the drawing, and does not change the column count", () => {
   const events = [event("um", 9, 9, [0, 10]), event("outro", 9, 9, [25, 35])];
 
   const segments = splitEvents(events, [DAY]);
@@ -142,7 +142,7 @@ test("o piso de altura e do desenho, e nao muda a conta de colunas", () => {
   expect(boxes[1]!.top - (boxes[0]!.top + boxes[0]!.height)).toBeLessThan(44);
 });
 
-test("o que cai fora da janela de horas encosta na beirada, e diz de que lado", () => {
+test("what falls outside the hour window sticks to the edge, and says which side", () => {
   const early = splitEvents([event("cedo", 5, 6)], [DAY])[0]!;
   const late = splitEvents([event("tarde", 21, 22)], [DAY])[0]!;
   const window = { dayStart: 7, dayEnd: 20, hourHeight: 48 };
@@ -154,7 +154,7 @@ test("o que cai fora da janela de horas encosta na beirada, e diz de que lado", 
   expect(segmentBox(late, window).outsideAfter).toBe(true);
 });
 
-test("a semana comeca no dia pedido, e o mes sai em semanas inteiras", () => {
+test("the week starts on the requested day, and the month comes out in whole weeks", () => {
   expect(startOfWeek(DAY, 1).getDay()).toBe(1);
   expect(startOfWeek(DAY, 0).getDay()).toBe(0);
 

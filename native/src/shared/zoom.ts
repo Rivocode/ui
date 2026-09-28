@@ -1,4 +1,4 @@
-/* Gerado de src/shared/zoom.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/shared/zoom.ts by bun run gen:shared. Do not edit. */
 
 export const ZOOM_STEP = 1.5;
 

@@ -12,7 +12,7 @@ const spoken = AccessibilityInfo as unknown as {
 beforeEach(() => spoken.clearAnnouncements());
 
 describe("ActionBar", () => {
-  test("com zero selecionados nao ha barra, e nada e anunciado", () => {
+  test("with zero selected there is no bar, and nothing is announced", () => {
     const screen = render(<ActionBar count={0} onClear={() => {}} />);
     expect(byRole(screen, "button")).toHaveLength(0);
     expect(byLabel(screen, "Ações em lote")).toHaveLength(0);
@@ -20,7 +20,7 @@ describe("ActionBar", () => {
     expect(spoken.announced).toEqual([]);
   });
 
-  test("acima de zero ela diz a contagem com o plural certo, na regiao nomeada", () => {
+  test("above zero it says the count with the right plural, in the named region", () => {
     const screen = render(<ActionBar count={1} />);
     expect(textOf(screen)).toContain("1 selecionado");
     expect(byLabel(screen, "Ações em lote")).toHaveLength(1);
@@ -29,7 +29,7 @@ describe("ActionBar", () => {
     expect(textOf(screen)).toContain("1.234 selecionados");
   });
 
-  test("a contagem e anunciada, e a limpeza tambem", () => {
+  test("the count is announced, and so is clearing", () => {
     const screen = render(<ActionBar count={2} />);
     expect(spoken.announced).toEqual(["2 selecionados"]);
 
@@ -38,7 +38,7 @@ describe("ActionBar", () => {
     expect(spoken.announced).toEqual(["2 selecionados", "3 selecionados", "Seleção limpa"]);
   });
 
-  test("o Limpar seleção so existe com onClear, e chama quem controla", () => {
+  test("\"Limpar seleção\" only exists with onClear, and calls the controller", () => {
     const without = render(<ActionBar count={2} />);
     expect(byLabel(without, "Limpar seleção")).toHaveLength(0);
     expect(textOf(without)).not.toContain("Limpar seleção");
@@ -57,7 +57,7 @@ describe("ActionBar", () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
-  test("fica acima da area segura de baixo que quem monta informa", () => {
+  test("sits above the bottom safe area the mounter reports", () => {
     const bottomOf = (inset?: number) => {
       const screen = render(<ActionBar count={1} bottomInset={inset} />);
       const style = screen.root.findAll(
@@ -71,7 +71,7 @@ describe("ActionBar", () => {
     expect(bottomOf(34)).toBe(50);
   });
 
-  test("labels nomeia o item nos dois lugares: na tela e no anuncio", () => {
+  test("labels names the item in both places: on screen and in the announcement", () => {
     const screen = render(
       <ActionBar
         count={2}

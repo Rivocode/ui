@@ -31,7 +31,7 @@ function day(label: string, scope: HTMLElement = document.body) {
     .find((button) => button.textContent === label)! as HTMLButtonElement;
 }
 
-test("a data em texto e o dia do calendario, e nao meia-noite em UTC", () => {
+test("a date as text is the calendar day, and not midnight in UTC", () => {
   expect(new Date("2026-09-25").getDate()).toBe(24);
 
   const date = dateFromIso("2026-09-25")!;
@@ -42,14 +42,14 @@ test("a data em texto e o dia do calendario, e nao meia-noite em UTC", () => {
   expect(formatIsoDate("2026-09-25")).toBe("25/09/2026");
 });
 
-test("texto que nao e dia do calendario nao vira data", () => {
+test("text that is not a calendar day does not become a date", () => {
   expect(dateFromIso("2026-02-31")).toBeUndefined();
   expect(dateFromIso("25/09/2026")).toBeUndefined();
   expect(dateFromIso("2026-9-5")).toBeUndefined();
   expect(dateFromIso("")).toBeUndefined();
 });
 
-test("o campo mostra a data em texto no dia certo, mesmo no fuso do pais", () => {
+test("the field shows the text date on the right day, even in the country time zone", () => {
   render(
     <RivoProvider scope="local">
       <DatePicker value="2026-09-25" onValueChange={() => {}} />
@@ -58,7 +58,7 @@ test("o campo mostra a data em texto no dia certo, mesmo no fuso do pais", () =>
   expect(field().value).toBe("25/09/2026");
 });
 
-test("quem passa texto recebe texto, e o campo vazio chega como texto vazio", () => {
+test("whoever passes text receives text, and the empty field arrives as empty text", () => {
   const received: string[] = [];
   function Controlled() {
     const [date, setDate] = useState<string | null>(null);
@@ -84,7 +84,7 @@ test("quem passa texto recebe texto, e o campo vazio chega como texto vazio", ()
   expect(received).toEqual(["2026-12-25", ""]);
 });
 
-test("o texto inicial tambem responde em texto, e o calendario abre no mes dele", () => {
+test("the initial text also answers as text, and the calendar opens on its month", () => {
   let received: unknown;
   render(
     <RivoProvider scope="local">
@@ -99,7 +99,7 @@ test("o texto inicial tambem responde em texto, e o calendario abre no mes dele"
   expect(received).toBe("2026-09-10");
 });
 
-test("quem passa Date continua recebendo Date", () => {
+test("whoever passes Date keeps receiving Date", () => {
   let received: unknown;
   render(
     <RivoProvider scope="local">
@@ -111,7 +111,7 @@ test("quem passa Date continua recebendo Date", () => {
   expect((received as Date).getDate()).toBe(1);
 });
 
-test("com name, a data em texto chega ao formulario do jeito que entrou", () => {
+test("with name, the text date reaches the form the way it came in", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <DatePicker name="vencimento" defaultValue="2026-09-25" />
@@ -121,7 +121,7 @@ test("com name, a data em texto chega ao formulario do jeito que entrou", () => 
   expect((hidden as HTMLInputElement).value).toBe("2026-09-25");
 });
 
-test("o min e o max do campo barram a data digitada fora da janela", () => {
+test("the field min and max block a typed date outside the window", () => {
   const received: string[] = [];
   render(
     <RivoProvider scope="local">
@@ -143,7 +143,7 @@ test("o min e o max do campo barram a data digitada fora da janela", () => {
   expect(received).toEqual(["2026-09-10", "2026-09-20"]);
 });
 
-test("o min e o max do campo desabilitam os dias fora da janela no calendario", () => {
+test("the field min and max disable the days outside the window in the calendar", () => {
   render(
     <RivoProvider scope="local">
       <DatePicker defaultValue="2026-09-15" min="2026-09-10" max="2026-09-20" />
@@ -157,7 +157,7 @@ test("o min e o max do campo desabilitam os dias fora da janela no calendario", 
   expect(day("21").disabled).toBe(true);
 });
 
-test("o Calendar fala value e onValueChange, no formato de quem chama", () => {
+test("Calendar speaks value and onValueChange, in the caller's format", () => {
   const received: string[] = [];
   function Controlled() {
     const [date, setDate] = useState<string | null>("2026-09-25");
@@ -187,7 +187,7 @@ test("o Calendar fala value e onValueChange, no formato de quem chama", () => {
   expect(day("12").closest("td")!.getAttribute("aria-selected")).toBe("true");
 });
 
-test("o Calendar com Date responde com Date", () => {
+test("Calendar with Date answers with Date", () => {
   let received: unknown;
   render(
     <RivoProvider scope="local">
@@ -199,7 +199,7 @@ test("o Calendar com Date responde com Date", () => {
   expect((received as Date).getDate()).toBe(3);
 });
 
-test("o min e o max do Calendar desabilitam os dias de fora e param a navegacao", () => {
+test("Calendar min and max disable the outside days and stop navigation", () => {
   render(
     <RivoProvider scope="local">
       <Calendar value="2026-09-15" min="2026-09-10" max="2026-09-20" onValueChange={() => {}} />
@@ -217,7 +217,7 @@ test("o min e o max do Calendar desabilitam os dias de fora e param a navegacao"
   expect(previous.className.split(" ")).toContain("aria-disabled:text-fg-disabled");
 });
 
-test("o intervalo em texto aparece no gatilho e sai em texto pelo Aplicar", () => {
+test("the text range appears in the trigger and comes out as text through Aplicar", () => {
   const received: Array<IsoDateRange | null> = [];
   render(
     <RivoProvider scope="local">
@@ -239,7 +239,7 @@ test("o intervalo em texto aparece no gatilho e sai em texto pelo Aplicar", () =
   expect(received[0]!.to).toBe("2026-09-18");
 });
 
-test("o Limpar do intervalo em texto responde null, como no nativo", () => {
+test("Limpar on the text range answers null, as on native", () => {
   const received: Array<IsoDateRange | null> = [];
   render(
     <RivoProvider scope="local">
@@ -254,7 +254,7 @@ test("o Limpar do intervalo em texto responde null, como no nativo", () => {
   expect(received).toEqual([null]);
 });
 
-test("o min do intervalo desabilita os dias antes dele", () => {
+test("the range min disables the days before it", () => {
   render(
     <RivoProvider scope="local">
       <DateRangePicker defaultValue={{ from: "2026-09-12", to: "2026-09-14" }} min="2026-09-10" />
@@ -277,7 +277,7 @@ function OwnCalendar(props: CalendarProps) {
   return <Calendar {...props} />;
 }
 
-test("o componente de quem embrulha com o tipo de props exportado continua repassando tudo", () => {
+test("a wrapper component typed with the exported props type still forwards everything", () => {
   let received: unknown;
   render(
     <RivoProvider scope="local">
@@ -294,7 +294,7 @@ test("o componente de quem embrulha com o tipo de props exportado continua repas
 type Same<A, B> =
   (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 
-test("o value null literal escolhe o intervalo em texto, e o onValueChange nao vira any", () => {
+test("a literal null value picks the text range, and onValueChange does not become any", () => {
   const received: Array<IsoDateRange | null> = [];
   render(
     <RivoProvider scope="local">

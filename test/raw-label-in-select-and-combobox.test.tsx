@@ -76,7 +76,7 @@ function comboboxWithoutMapping(props: {
   );
 }
 
-test("o Select sem items escreve a chave no gatilho, e agora ele reclama disso", () => {
+test("a Select without items writes the key in the trigger, and now it complains about it", () => {
   const error = quiet();
 
   render(selectWithoutItems());
@@ -93,7 +93,7 @@ test("o Select sem items escreve a chave no gatilho, e agora ele reclama disso",
   error.mockRestore();
 });
 
-test("com items o gatilho mostra o rotulo, e o aviso nao aparece", () => {
+test("with items the trigger shows the label, and the warning does not appear", () => {
   const error = quiet();
 
   render(
@@ -116,7 +116,7 @@ test("com items o gatilho mostra o rotulo, e o aviso nao aparece", () => {
   error.mockRestore();
 });
 
-test("quando o SelectValue resolve o rotulo sozinho, avisar seria gritar em uso correto", () => {
+test("when SelectValue resolves the label on its own, warning would be shouting at correct usage", () => {
   const error = quiet();
 
   render(
@@ -140,7 +140,7 @@ test("quando o SelectValue resolve o rotulo sozinho, avisar seria gritar em uso 
   error.mockRestore();
 });
 
-test("valor que ja e o proprio rotulo nao virou aviso, porque nada saiu errado na tela", () => {
+test("a value that already is its own label does not become a warning, because nothing went wrong on screen", () => {
   const error = quiet();
 
   render(
@@ -163,7 +163,7 @@ test("valor que ja e o proprio rotulo nao virou aviso, porque nada saiu errado n
   error.mockRestore();
 });
 
-test("o Combobox com item objeto e sem mapeamento escreve a chave no campo, e reclama", () => {
+test("a Combobox with object items and no mapping writes the key in the field, and complains", () => {
   const error = quiet();
 
   render(comboboxWithoutMapping({}));
@@ -179,7 +179,7 @@ test("o Combobox com item objeto e sem mapeamento escreve a chave no campo, e re
   error.mockRestore();
 });
 
-test("com itemToStringLabel o campo mostra o rotulo, e o aviso nao aparece", () => {
+test("with itemToStringLabel the field shows the label, and the warning does not appear", () => {
   const error = quiet();
 
   render(comboboxWithoutMapping({ itemToStringLabel: (item) => item.name }));
@@ -192,7 +192,7 @@ test("com itemToStringLabel o campo mostra o rotulo, e o aviso nao aparece", () 
   error.mockRestore();
 });
 
-test("item na forma value e label ja tem rotulo, entao o Combobox fica calado", () => {
+test("an item shaped as value and label already has a label, so the Combobox stays quiet", () => {
   const error = quiet();
   const pairs = [
     { label: "Freire Contabilidade", value: "freire" },
@@ -224,7 +224,7 @@ test("item na forma value e label ja tem rotulo, entao o Combobox fica calado", 
   error.mockRestore();
 });
 
-test("item em texto nao tem chave para vazar, e o Combobox fica calado", () => {
+test("a text item has no key to leak, and the Combobox stays quiet", () => {
   const error = quiet();
   const names = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
 
@@ -253,7 +253,7 @@ test("item em texto nao tem chave para vazar, e o Combobox fica calado", () => {
   error.mockRestore();
 });
 
-test("item objeto cujo rotulo repete a chave e uso legitimo, e nao rende aviso", () => {
+test("an object item whose label repeats the key is legitimate usage, and yields no warning", () => {
   const error = quiet();
   const methods = [{ value: "Pix" }, { value: "Boleto" }];
 
@@ -280,22 +280,22 @@ test("item objeto cujo rotulo repete a chave e uso legitimo, e nao rende aviso",
   error.mockRestore();
 });
 
-test("as duas reclamacoes dizem a peca, o que apareceu, o conserto, e saem acentuadas", () => {
+test("both complaints name the component, what showed up, the fix, and are written in English", () => {
   const fromSelect = missingSelectItemsComplaint("todas", "Todas as situações");
   expect(fromSelect).toContain("<Select>");
   expect(fromSelect).toContain('"todas"');
   expect(fromSelect).toContain('"Todas as situações"');
   expect(fromSelect).toContain("items");
-  expect(fromSelect).toContain("rótulo");
-  expect(fromSelect).toContain("não");
-  expect(fromSelect.split(" ")).not.toContain("rotulo");
+  expect(fromSelect).toContain("the label");
+  expect(fromSelect).toContain("raw key");
+  expect(fromSelect).not.toMatch(/rótulo|não/);
 
   const fromCombobox = missingComboboxLabelComplaint("freire", "Freire Contabilidade");
   expect(fromCombobox).toContain("<Combobox>");
   expect(fromCombobox).toContain('"freire"');
   expect(fromCombobox).toContain('"Freire Contabilidade"');
   expect(fromCombobox).toContain("itemToStringLabel");
-  expect(fromCombobox).toContain("está");
-  expect(fromCombobox).toContain("não");
-  expect(fromCombobox.split(" ")).not.toContain("esta");
+  expect(fromCombobox).toContain("is showing");
+  expect(fromCombobox).toContain("raw key");
+  expect(fromCombobox).not.toMatch(/está|não/);
 });

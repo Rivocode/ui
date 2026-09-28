@@ -3,18 +3,19 @@ import { expect, test } from "bun:test";
 import { readCssTree } from "../src/tokens/css-tree";
 
 /*
- * O montador de tema do site (`apps/docs/src/theme-builder/engine.ts`) copia as
- * tabelas de derivacao do `rivocode-ui-native-theme`, porque aquele modulo le
- * o disco no topo e nao roda no navegador. Copia envelhece calada: o comando
- * ganha uma regra, o site continua com a velha, e o link que a pessoa leva do
- * site gera um tema que o comando escreveria diferente.
+ * The site theme builder (`apps/docs/src/theme-builder/engine.ts`) copies the
+ * derivation tables of `rivocode-ui-native-theme`, because that module reads
+ * the disk at the top level and does not run in the browser. A copy ages
+ * silently: the command gains a rule, the site keeps the old one, and the link
+ * the person takes from the site generates a theme the command would write
+ * differently.
  *
- * Esta guarda roda os dois com as mesmas sementes e cobra papel por papel, o
- * CSS nativo byte a byte, e que o que o site exporta passa no `check-theme`.
+ * This guard runs both with the same seeds and checks role by role, the native
+ * CSS byte for byte, and that what the site exports passes `check-theme`.
  *
- * O caminho do motor e montado em tempo de execucao de proposito: o `tsc` da
- * raiz nao tem o `resolveJsonModule` que o site tem, e o motor importa o
- * `tokens.json` do nativo.
+ * The engine path is built at runtime on purpose: the root `tsc` does not have
+ * the `resolveJsonModule` the site has, and the engine imports the native
+ * `tokens.json`.
  */
 
 const ENGINE = ["..", "apps", "docs", "src", "theme-builder", "engine.ts"].join("/");
@@ -35,7 +36,7 @@ const SEEDS: Array<{ name: string; light: Palette; dark: Palette }> = [
   },
 ];
 
-test("o montador deriva cada papel igual ao rivocode-ui-native-theme", async () => {
+test("the builder derives each role the same as rivocode-ui-native-theme", async () => {
   const engine = await import(ENGINE);
   const native = await import(NATIVE);
 
@@ -65,7 +66,7 @@ test("o montador deriva cada papel igual ao rivocode-ui-native-theme", async () 
   expect(compared).toBeGreaterThan(150);
 });
 
-test("o tema que o montador exporta declara todos os papeis e passa na medida", async () => {
+test("the theme the builder exports declares every role and passes the measurement", async () => {
   const engine = await import(ENGINE);
   const house = engine.houseBlocks(readCssTree("src/preset.css"));
   const state = engine.DEFAULT_STATE;
@@ -93,7 +94,7 @@ test("o tema que o montador exporta declara todos os papeis e passa na medida", 
   expect(dtcg.themes).toEqual(["acme-light", "acme-dark"]);
 });
 
-test("par reprovado sai escrito no cabecalho do CSS exportado", async () => {
+test("a failing pair is written in the exported CSS header", async () => {
   const engine = await import(ENGINE);
   const house = engine.houseBlocks(readCssTree("src/preset.css"));
   const seeds = { ...engine.DEFAULT_STATE.seeds.light, fg: "#9a9a9a" };
@@ -102,11 +103,13 @@ test("par reprovado sai escrito no cabecalho do CSS exportado", async () => {
 
   expect(failing.length).toBeGreaterThan(0);
   const css = engine.emitWebCss("acme", { light: built.tokens, dark: built.tokens }, "house", failing.map((pair: { text: string }) => pair.text));
-  expect(css).toContain(`ATENÇÃO: ${failing.length} pares reprovaram`);
+  expect(css).toContain(
+    `WARNING: ${failing.length} ${failing.length === 1 ? "pair failed" : "pairs failed"} the WCAG contrast measurement`,
+  );
   expect(css).toContain(failing[0].text);
 });
 
-test("o estado do montador vai e volta pela URL", async () => {
+test("the builder state round-trips through the URL", async () => {
   const engine = await import(ENGINE);
   const state = {
     name: "clinica-sao-lucas",
@@ -145,7 +148,7 @@ async function builtWith(fonts: Record<string, string>) {
 
 const importsIn = (css: string) => css.split("\n").filter((line) => line.startsWith("@import"));
 
-test("a fonte escolhida vira os tres tokens no CSS e no DTCG, com os imports no topo", async () => {
+test("the chosen font becomes the three tokens in CSS and DTCG, with the imports at the top", async () => {
   const engine = await import(ENGINE);
   const choice = { sans: "inter", display: "fraunces", mono: "space-mono" };
   const { tokens } = await builtWith(choice);
@@ -184,7 +187,7 @@ test("a fonte escolhida vira os tres tokens no CSS e no DTCG, com os imports no 
   );
 });
 
-test("o papel da casa ao lado de uma fonte de cliente sai com o pacote da casa, e nao com o fonts.css", async () => {
+test("a house role next to a client font comes with the house package, and not with fonts.css", async () => {
   const engine = await import(ENGINE);
   const tools = await import(FONTS);
   const choice = { sans: "lato", display: "house", mono: "system" };
@@ -211,7 +214,7 @@ test("o papel da casa ao lado de uma fonte de cliente sai com o pacote da casa, 
   expect(house).toContain('@import "@rivocode/ui/fonts.css"');
 });
 
-test("o peso que falta sai nomeado pelo token, com o vizinho que o navegador escolheria", async () => {
+test("a missing weight is named by the token, with the neighbor the browser would pick", async () => {
   const tools = await import(FONTS);
   expect(tools.weightFits("sans", tools.familyOf("inter"))).toEqual([]);
   expect(tools.weightFits("display", tools.familyOf("inter"))).toEqual([]);
@@ -233,7 +236,7 @@ test("o peso que falta sai nomeado pelo token, com o vizinho que o navegador esc
   expect(tools.weightFits("mono", tools.familyOf("dm-mono"))).toEqual([]);
 });
 
-test("o peso de casa do montador e o do forma.css, lido pelo tokens.json", async () => {
+test("the builder's house weight is the one in forma.css, read through tokens.json", async () => {
   const tools = await import(FONTS);
   const shape = await Bun.file("src/tokens/forma.css").text();
   for (const intent of tools.WEIGHT_INTENTS as string[]) {
@@ -242,7 +245,7 @@ test("o peso de casa do montador e o do forma.css, lido pelo tokens.json", async
   expect(tools.USED_WEIGHTS).toEqual([400, 500, 600, 700]);
 });
 
-test("titulo sem 600 cai no peso disponivel mais proximo no proprio tema, e a casa nao declara peso", async () => {
+test("a heading without 600 falls to the nearest available weight in its own theme, and the house declares no weight", async () => {
   const tools = await import(FONTS);
   const engine = await import(ENGINE);
 
@@ -277,7 +280,7 @@ test("titulo sem 600 cai no peso disponivel mais proximo no proprio tema, e a ca
   expect(house).not.toContain("--rc-weight-");
 });
 
-test("a familia baixa a face do peso que o token escreveu, e nao a que ela nao tem", async () => {
+test("the family downloads the face for the weight the token wrote, and not one it does not have", async () => {
   const tools = await import(FONTS);
   expect(tools.facesOf(tools.familyOf("lato"))).toEqual([400, 700]);
   expect(tools.facesOf(tools.familyOf("dm-serif-display"))).toEqual([400]);
@@ -287,7 +290,7 @@ test("a familia baixa a face do peso que o token escreveu, e nao a que ela nao t
   );
 });
 
-test("o trecho do React Native usa os nomes que o expo-google-fonts registra", async () => {
+test("the React Native snippet uses the names expo-google-fonts registers", async () => {
   const tools = await import(FONTS);
   const snippet: string = tools.nativeFontsSnippet({ sans: "ibm-plex-sans", display: "dm-serif-display", mono: "house" });
   expect(snippet).toContain('import { IBMPlexSans_400Regular } from "@expo-google-fonts/ibm-plex-sans";');
@@ -303,7 +306,7 @@ test("o trecho do React Native usa os nomes que o expo-google-fonts registra", a
   expect(tools.nativeFontsSnippet({ sans: "system", display: "system", mono: "system" })).not.toContain("useFonts");
 });
 
-test("a escolha de fonte vai e volta pela URL, e so o que difere da casa entra", async () => {
+test("the font choice round-trips through the URL, and only what differs from the house goes in", async () => {
   const engine = await import(ENGINE);
   const state = { ...engine.DEFAULT_STATE, fonts: { sans: "plus-jakarta-sans", display: "house", mono: "system" } };
   const query = engine.writeQuery(state);
@@ -317,7 +320,7 @@ test("a escolha de fonte vai e volta pela URL, e so o que difere da casa entra",
   });
 });
 
-test("toda familia da lista tem pacote, categoria e o peso 400", async () => {
+test("every family in the list has a package, a category and weight 400", async () => {
   const tools = await import(FONTS);
   const families = tools.FAMILIES as Array<{ id: string; family: string; category: string; variable: boolean; weights: number[] }>;
 

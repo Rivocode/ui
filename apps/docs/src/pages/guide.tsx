@@ -7,9 +7,9 @@ import { findGuide, type Guide } from '@/guides'
 import { ThemePlayground } from '@/components/theme-playground'
 
 /**
- * Uma pagina de prosa. Duas delas carregam uma demonstracao viva embaixo do
- * texto, porque ler sobre densidade nao e o mesmo que ver a mesma tela nas
- * duas.
+ * A prose page. Some of them carry a live demonstration below the text,
+ * because reading about density is not the same as seeing the same screen in
+ * both.
  */
 export function GuidePage({ slug }: { slug: string }) {
   const guide = findGuide(slug)
@@ -19,8 +19,8 @@ export function GuidePage({ slug }: { slug: string }) {
       <div className="py-20">
         <EmptyState
           icon={<FileText size={20} />}
-          title="Essa página não existe"
-          description="Confira o endereço, ou volte pela lista lateral."
+          title="This page does not exist"
+          description="Check the address, or go back through the sidebar."
         />
       </div>
     )
@@ -40,7 +40,7 @@ export function GuidePage({ slug }: { slug: string }) {
             <FileCode2 size={13} />/{guide.slug}.md
           </a>
           <span className="text-fg-subtle">
-            markdown cru, para quem lê com agent em vez de olho
+            raw markdown, for whoever reads with an agent instead of eyes
           </span>
         </div>
       </header>
@@ -54,19 +54,19 @@ export function GuidePage({ slug }: { slug: string }) {
   )
 }
 
-/** O texto do guia, que suspende a pagina ate chegar. Ver o `Body` da peca. */
+/** The guide text, which suspends the page until it arrives. See the piece's `Body`. */
 function Prose({ guide }: { guide: Guide }) {
   return <Markdown source={use(guide.loadBody())} />
 }
 
-/** O mesmo formulario nas duas densidades, lado a lado. */
+/** The same form in both densities, side by side. */
 function DensityDemo() {
   const [compact, setCompact] = useState(false)
 
   return (
     <section className="mt-10">
-      <h2 className="font-display text-xl text-fg">Ver a diferença</h2>
-      <p className="mt-2 text-fg-muted">A mesma tela, nas duas alturas.</p>
+      <h2 className="font-display text-xl text-fg">See the difference</h2>
+      <p className="mt-2 text-fg-muted">The same screen, at both heights.</p>
 
       <div className="mt-4 overflow-hidden rounded-lg border border-border">
         <div className="flex items-center gap-2 border-b border-border bg-surface px-4 py-2.5">
@@ -91,9 +91,9 @@ function DensityDemo() {
             <Button>Emitir nota</Button>
             <Button variant="outline">Cancelar</Button>
             <div className="flex gap-2">
-              <Button size="sm">Pequeno</Button>
-              <Button size="md">Medio</Button>
-              <Button size="lg">Grande</Button>
+              <Button size="sm">Small</Button>
+              <Button size="md">Medium</Button>
+              <Button size="lg">Large</Button>
             </div>
           </div>
         </RivoProvider>

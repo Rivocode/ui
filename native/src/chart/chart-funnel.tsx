@@ -11,44 +11,48 @@ import { resolveFormat, type Format } from "../shared/format";
 import { ChartEmpty, type ChartEmptyContent } from "./empty";
 
 export type ChartFunnelProps<Stage> = {
-  /** As etapas, na ordem em que a pessoa atravessa: a primeira é a boca do funil. */
+  /**
+   * The stages, in the order the person goes through them: the first is the
+   * mouth of the funnel.
+   */
   data: Stage[];
-  /** De onde sai o número de cada etapa. */
+  /** Where each stage's number comes from. */
   valueKey: keyof Stage & string;
-  /** De onde sai o nome de cada etapa. */
+  /** Where each stage's name comes from. */
   nameKey: keyof Stage & string;
   /**
-   * A cor das barras, como papel de token. Sem ela, `chart-1`. Papel, e não
-   * cor de CSS como no web, pela mesma razão do `config` da moldura.
+   * The bar color, as a token role. Without it, `chart-1`. A role, and not a
+   * CSS color as on the web, for the same reason as the frame's `config`.
    */
   color?: RivoNativeColorRole;
   /**
-   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
-   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
+   * How the number is written: the name of a house formatter (`currencyShort`,
+   * `percent`, `integer`...) or your own function, the same vocabulary as the
+   * web.
    */
   format?: Format;
-  /** Como a taxa é escrita, recebendo de 0 a 100. Sem ele, `38,5%`. */
+  /** How the rate is written, receiving 0 to 100. Without it, `38,5%`. */
   formatRate?: (rate: number) => string;
-  /** `center` desenha o funil centrado; `start` alinha as barras à esquerda. */
+  /** `center` draws the funnel centered; `start` aligns the bars to the left. */
   align?: "center" | "start";
   className?: string;
-  /** Mostra a linha da conversao de ponta a ponta, embaixo. Sem ele, mostra. */
+  /** Shows the end-to-end conversion line, below. Without it, it shows. */
   showOverall?: boolean;
   /**
-   * Os textos da peca, para trocar o idioma: `rate` e o que vem depois da
-   * taxa entre duas etapas, "da etapa anterior" sem ele, e `overall` a frase
-   * da conversao de ponta a ponta, "do inicio ao fim" sem ela. Passe so os
-   * que mudam.
+   * The component's texts, to change the language: `rate` is what follows the
+   * rate between two stages, "da etapa anterior" without it, and `overall` the
+   * end-to-end conversion sentence, "do inicio ao fim" without it. Pass only
+   * the ones that change.
    */
   labels?: Partial<ChartFunnelLabels>;
   /**
-   * Classe por parte: `stage` (o bloco de cada etapa), `bar` (a barra) e
-   * `rate` (a linha da taxa entre duas etapas).
+   * Class per part: `stage` (each stage's block), `bar` (the bar) and `rate`
+   * (the rate line between two stages).
    */
   classNames?: Slots<"stage" | "bar" | "rate">;
   /**
-   * O que aparece no lugar do desenho quando a lista chega vazia ou a soma da
-   * zero. O mesmo formato do `empty` do `ChartContainer`.
+   * What appears in place of the drawing when the list arrives empty or the sum
+   * is zero. The same shape as the `ChartContainer` `empty`.
    */
   empty?: ChartEmptyContent;
 };

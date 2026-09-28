@@ -6,25 +6,25 @@ import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
 
 export type PaginationProps = Omit<ComponentProps<"nav">, "onChange"> & {
-  /** A pagina atual, contando de 1. */
+  /** The current page, counting from 1. */
   page: number;
   /**
-   * Quantas paginas existem. Abaixo de 1 conta como 1, e o `page` fora da
-   * faixa aparece preso a ela, com as setas travadas na ponta.
+   * How many pages exist. Below 1 it counts as 1, and a `page` outside the
+   * range appears clamped to it, with the arrows locked at the end.
    */
   pageCount: number;
   /**
-   * Chamado com a pagina nova, contando de 1, pelas setas e pelos numeros. A
-   * peca nao guarda a pagina: quem troca o `page` e quem chamou.
+   * Called with the new page, counting from 1, by the arrows and the numbers. The
+   * piece does not keep the page: whoever called it changes `page`.
    */
   onPageChange: (page: number) => void;
-  /** Quantos numeros aparecem em volta da pagina atual. */
+  /** How many numbers appear around the current page. */
   siblings?: number;
   /**
-   * Os textos da peca, para trocar o idioma: `navigation` e o nome da regiao,
-   * `previous` e `next` os das setas, `page` o de cada numero e `position` a
-   * contagem que aparece no lugar dos numeros em tela estreita. Passe so os que
-   * mudam.
+   * The piece's texts, to change the language: `navigation` is the region's name,
+   * `previous` and `next` those of the arrows, `page` that of each number and `position` the
+   * count that appears in place of the numbers on a narrow screen. Pass only the ones that
+   * change.
    */
   labels?: Partial<PaginationLabels>;
 };

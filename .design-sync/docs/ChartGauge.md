@@ -1,11 +1,12 @@
 ---
-category: Gráfico
+category: Charts
 ---
 
 # ChartGauge
 
-Um medidor de 0 a `max` com faixas que dizem se o número está bom: em dia,
-atenção, crítico. O valor fica escrito no meio, e o nome da faixa embaixo dele.
+A gauge from 0 to `max` with bands that say whether the number is good: on
+track, attention, critical. The value is written in the middle, and the band's
+name below it.
 
 ```tsx
 <ChartGauge
@@ -20,73 +21,74 @@ atenção, crítico. O valor fica escrito no meio, e o nome da faixa embaixo del
 />
 ```
 
-Cada faixa vai de onde a anterior parou até o seu `until`, e o limite é
-inclusivo: em `5`, ainda está em dia. O anel fino de fora desenha as faixas, o
-arco grosso de dentro vai de zero até o valor na cor da faixa em que ele caiu, e
-um ponteiro marca o lugar exato sobre o anel. Sem `bands`, o medidor é um arco
-neutro de acento, sem ponteiro.
+Each band goes from where the previous one stopped up to its `until`, and the
+limit is inclusive: at `5`, it is still on track. The thin outer ring draws the
+bands, the thick inner arc goes from zero to the value in the color of the band
+it fell in, and a needle marks the exact spot on the ring. Without `bands`, the
+gauge is a neutral accent arc, with no needle.
 
-## Fora da escala
+## Out of scale
 
-O número escrito é sempre o real. Com `value={140}` e `max={100}`, o meio diz
-"140" e o leitor de tela ouve "140 de 100, Crítico": só o arco, o ponteiro e a
-faixa param na ponta, porque o desenho não tem para onde ir, mas a pessoa
-precisa saber o quanto passou. Abaixo de zero vale o mesmo, na outra ponta. Um
-`NaN` ou um infinito não é número nenhum: o meio mostra "—", sem faixa, sem
-ponteiro e sem arco pintado.
+The written number is always the real one. With `value={140}` and `max={100}`,
+the middle says "140" and the screen reader hears "140 de 100, Crítico": only
+the arc, the needle and the band stop at the end, because the drawing has
+nowhere to go, but the person needs to know by how much it went over. Below
+zero the same applies, at the other end. A `NaN` or an infinity is no number at
+all: the middle shows "—", with no band, no needle and no painted arc.
 
-Com `centerValue`, o nome acessível diz o mesmo texto que está na tela ("R$
-1.234.567,89 de 2.000.000"), e não o número cru. O texto do meio tem a largura
-do furo do arco, e a fonte encolhe até caber: um valor comprido fica menor, e
-nunca cobre o arco nem sai do cartão.
+With `centerValue`, the accessible name says the same text that is on the
+screen ("R$ 1.234.567,89 de 2.000.000"), not the raw number. The middle text
+has the width of the arc's hole, and the font shrinks until it fits: a long
+value gets smaller, and never covers the arc or leaves the card.
 
-O `sweep` vai de 0 a 360, e 360 fecha o anel.
+`sweep` goes from 0 to 360, and 360 closes the ring.
 
-## A cor nunca está sozinha
+## Color is never alone
 
-O nome da faixa sai escrito embaixo do número (troque por `centerLabel` se
-quiser outra frase), e é ele que o leitor de tela ouve junto com o valor: "8,4
-de 20, Atenção". A régua das faixas inteira vai na descrição, para quem quer
-saber onde começa o crítico sem ver o anel.
+The band's name is written below the number (replace it with `centerLabel` if
+you want another phrase), and it is what the screen reader hears along with the
+value: "8,4 de 20, Atenção". The whole band scale goes in the description, for
+whoever wants to know where critical starts without seeing the ring.
 
-As faixas pintam os papéis `success-text`, `warning-text` e `danger-text`, e não
-`success`, `warning` e `danger`. A diferença é medida: o arco é desenhado por
-cima do trilho, e o `danger` do tema escuro sobre o trilho dava 2,99:1, abaixo
-dos 3:1 que a norma pede para um objeto que precisa ser percebido. A faixa
-crítica, justamente, era a única que sumia.
+The bands paint the `success-text`, `warning-text` and `danger-text` roles, not
+`success`, `warning` and `danger`. The difference is measured: the arc is drawn
+over the track, and the dark theme's `danger` over the track gave 2.99:1, below
+the 3:1 the standard asks for an object that has to be perceived. The critical
+band, of all of them, was the only one that disappeared.
 
-## Contra o Meter e o ChartRadial
+## Versus Meter and ChartRadial
 
-As três mostram uma medida só, e a escolha é pela pergunta:
+All three show a single measure, and the choice is by the question:
 
-- **`Meter`** é uma barra que cabe numa linha de formulário ou de tabela, e não
-  julga o número: diz quanto, e quem lê decide se é muito.
-- **`ChartRadial`** é o arco de uma medida que tem **meta**: quanto falta para
-  chegar. Não tem faixas, e subir é sempre melhor.
-- **`ChartGauge`** é o medidor que **julga**: o número cai numa faixa com nome,
-  e a faixa pode dizer que subir é pior (inadimplência, uso de cota, tempo de
-  resposta). É a única das três em que a mesma cor pode ser boa num cartão e
-  ruim no vizinho, porque quem decide é a faixa, e não a direção.
+- **`Meter`** is a bar that fits in a form or table row, and does not judge the
+  number: it says how much, and the reader decides whether it is a lot.
+- **`ChartRadial`** is the arc of a measure that has a **target**: how much is
+  left to get there. It has no bands, and going up is always better.
+- **`ChartGauge`** is the gauge that **judges**: the number falls in a named
+  band, and the band can say going up is worse (default rate, quota usage,
+  response time). It is the only one of the three where the same color can be
+  good on one card and bad on the next, because the band decides, not the
+  direction.
 
-## Movimento
+## Motion
 
-Na primeira vez que aparece, o arco e o ponteiro saem do zero até o valor, em
-`--rc-duration-slow` com a curva `--rc-ease`; quando o valor muda, andam do
-velho ao novo. Com "reduzir movimento", nascem no lugar.
+The first time it appears, the arc and the needle go from zero to the value, in
+`--rc-duration-slow` with the `--rc-ease` curve; when the value changes, they
+move from the old to the new. With "reduce motion", they are born in place.
 
-## Quando não usar
+## When not to use
 
-Sem faixa que diga bom ou ruim, é o `ChartRadial`, que ocupa o mesmo cartão e
-não finge um julgamento que ninguém fez. Numa linha de formulário, é o `Meter`.
-E para mostrar como o número andou no mês, nenhum dos três: é `Sparkline` ou
-`LineChart`, porque o medidor só sabe o agora.
+Without a band that says good or bad, it is `ChartRadial`, which takes the same
+card and does not fake a judgment nobody made. In a form row, it is `Meter`.
+And to show how the number moved over the month, none of the three: it is
+`Sparkline` or `LineChart`, because the gauge only knows the now.
 
-## No React Native
+## In React Native
 
-Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `value`, `max`, `bands`, `sweep`, `centerValue`, `centerLabel`, `label`, `format`. As faixas são as mesmas, com `tone` `success`, `warning` ou `danger`, e pintam os mesmos papéis `-text` do web: a medida do arco sobre o trilho é a mesma nos dois lados, e está no mapa de contraste do nativo.
+Translates, in `@rivocode/ui-native/chart`, with the same props: `value`, `max`, `bands`, `sweep`, `centerValue`, `centerLabel`, `label`, `format`. The bands are the same, with `tone` `success`, `warning` or `danger`, and they paint the same `-text` roles as the web: the measurement of the arc over the track is the same on both sides, and it is in the native contrast map.
 
-Uma mudança de tipo, a da rosca e do arco: `centerValue` e `centerLabel` são `string`. E uma de leitura: no web a régua das faixas vai numa descrição separada, ligada por `aria-describedby`; o celular não tem esse canal, então ela entra no fim do nome acessível ("72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a 85; Crítico de 85 a 100"). O papel é `image`, pela mesma razão do `ChartRadial`.
+One type change, the donut's and the arc's: `centerValue` and `centerLabel` are `string`. And one reading change: on the web the band scale goes in a separate description, linked by `aria-describedby`; the phone has no such channel, so it goes at the end of the accessible name ("72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a 85; Crítico de 85 a 100"). The role is `image`, for the same reason as `ChartRadial`.
 
-O arco e o ponteiro andam juntos até o valor novo, pelo Reanimated, e nascem no lugar com "reduzir movimento".
+The arc and the needle move together to the new value, through Reanimated, and are born in place with "reduce motion".
 
-As partes vestem pelo mesmo `classNames` do web: `value` e `label`, os dois textos do meio. `arc` não porta como parte: o arco é desenhado no `Svg`, e o `react-native-svg` não recebe classe.
+The parts are styled through the same `classNames` as the web: `value` and `label`, the two texts in the middle. `arc` does not port as a part: the arc is drawn in the `Svg`, and `react-native-svg` does not take classes.

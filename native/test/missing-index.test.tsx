@@ -7,8 +7,8 @@ import { byClass, byRole, byType, render, textOf } from "./helpers";
 const classesOf = (node: { props: { className?: string } }) =>
   (node.props.className ?? "").split(" ");
 
-describe("indice que falta nao derruba a peca", () => {
-  test("o Badge com tom desconhecido veste o neutro, e nao nada", () => {
+describe("a missing index does not bring the piece down", () => {
+  test("a Badge with an unknown tone wears neutral, not nothing", () => {
     const screen = render(<Badge tone={"inexistente" as never}>rascunho</Badge>);
     const [box] = byClass(screen, /rounded-pill/);
 
@@ -16,7 +16,7 @@ describe("indice que falta nao derruba a peca", () => {
     expect(textOf(screen)).toContain("rascunho");
   });
 
-  test("o Alert com tom desconhecido veste o info, e nao nada", () => {
+  test("an Alert with an unknown tone wears info, not nothing", () => {
     const screen = render(<Alert tone={"inexistente" as never} title="Aviso" />);
     const [box] = byRole(screen, "alert");
 
@@ -24,7 +24,7 @@ describe("indice que falta nao derruba a peca", () => {
     expect(classesOf(box!)).not.toContain("bg-danger-subtle");
   });
 
-  test("o spinner de variante desconhecida pinta o mesmo do secundario", () => {
+  test("the spinner of an unknown variant paints the same as secondary", () => {
     const unknown = render(
       <Button loading variant={"inexistente" as never}>
         Emitindo
@@ -42,7 +42,7 @@ describe("indice que falta nao derruba a peca", () => {
     expect(color).toBe(byType(secondary, "ActivityIndicator")[0]!.props.color);
   });
 
-  test("o mes fora da faixa da a volta em vez de quebrar", () => {
+  test("an out-of-range month wraps around instead of breaking", () => {
     const month = (value: number) =>
       textOf(
         render(

@@ -1,31 +1,33 @@
 ---
-category: Gráfico
+category: Charts
 ---
 
 # ChartContainer
 
-A moldura de todo gráfico, sobre a Recharts. Vive em `@rivocode/ui/chart`.
+The frame of every chart, on top of Recharts. Lives in `@rivocode/ui/chart`.
 
-Ela publica uma variável de CSS por serie, com o nome da serie: `emitidas` no
-`config` vira `var(--color-emitidas)`, então a linha, a barra e a dica falam do
-mesmo jeito e trocar a cor e mexer num lugar só. Sem cor declarada, entra a
-proxima da paleta de oito na ordem do `config`.
+It publishes one CSS variable per series, named after the series: `emitidas`
+in the `config` becomes `var(--color-emitidas)`, so the line, the bar and the
+tooltip speak the same way and changing the color means touching a single
+place. Without a declared color, the next one from the eight-color palette
+comes in, in the order of the `config`.
 
-A Recharts não le classe do Tailwind e não conhece os nossos tokens, então a
-ponte tem que ser por variável. Escrever a cor direta no `stroke` funciona até
-o tema mudar.
+Recharts does not read Tailwind classes and does not know our tokens, so the
+bridge has to be through variables. Writing the color straight into `stroke`
+works until the theme changes.
 
-A altura fica com quem usa, por classe: gráfico sem altura definida some,
-porque o contentor mede o pai. Onde a moldura mede largura e nenhuma altura, ela
-avisa no console em desenvolvimento em vez de entregar um cartão vazio. O aviso
-espera o layout assentar antes de acusar, porque a caixa mede zero por um quadro
-no caminho normal.
+The height is up to the caller, by class: a chart without a defined height
+disappears, because the container measures the parent. Where the frame
+measures a width and no height, it warns in the console in development instead
+of delivering an empty card. The warning waits for the layout to settle before
+complaining, because the box measures zero for one frame on the normal path.
 
-## Os quatro finais de uma consulta
+## A query's four endings
 
-Os mesmos do `DataTable`, e o `empty` é o mesmo objeto: `title`, `description`,
-`action` e `icon`. A ação é fortemente recomendada: um gráfico que só diz
-"sem dados" empurra para a pessoa o trabalho de adivinhar o que fazer.
+The same as `DataTable`'s, and `empty` is the same object: `title`,
+`description`, `action` and `icon`. The action is strongly recommended: a chart
+that only says "sem dados" pushes onto the person the work of guessing what to
+do.
 
 ```tsx
 <ChartContainer
@@ -44,64 +46,68 @@ Os mesmos do `DataTable`, e o `empty` é o mesmo objeto: `title`, `description`,
 </ChartContainer>
 ```
 
-**O erro diz o que falhou.** `errorTitle` e `errorMessage` são o par: num
-painel de quatro gráficos, "Não foi possível carregar o gráfico" quatro vezes
-não diz qual deles caiu, e num produto que não fala português não diz nada.
-Sem eles, o texto padrão continua o de sempre. Os dois nomes são os mesmos do
-`DataTable`, de propósito, e atravessam para o React Native com os mesmos
-padrões. Só o tipo estreita para `string`, porque o título do `Alert` nativo é
-um `Text`.
+**The error says what failed.** `errorTitle` and `errorMessage` are the pair:
+on a dashboard with four charts, "Não foi possível carregar o gráfico" four
+times does not say which one went down, and in a product that does not speak
+Portuguese it says nothing. Without them, the default text stays as always.
+The two names are the same as `DataTable`'s, on purpose, and they carry over to
+React Native with the same defaults. Only the type narrows to `string`, because
+the native `Alert` title is a `Text`.
 
-**O botão de nova tentativa também se traduz.** `labels.retry` (padrão "Tentar
-de novo") nomeia o botão que executa o `onRetry`, com a mesma chave e o mesmo
-padrão nas peças de consulta. Sem ele, o painel em inglês saía com o título
-traduzido e o botão em português.
+**The retry button is translatable too.** `labels.retry` (default "Tentar de
+novo") names the button that runs `onRetry`, with the same key and the same
+default in the query components. Without it, a dashboard in English came out
+with the title translated and the button in Portuguese.
 
-**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
-leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
-está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
-tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
-(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
-"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
-volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
-estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
+**The wait is announced out loud.** `aria-busy` on a node without a role is not
+read by any screen reader: it describes the state of a region, and only
+reaches whoever is already inside it. Whoever was waiting heard silence, and
+the arrival of the data, which swaps the whole screen, said nothing either. The
+four siblings publish the same live region (`role="status" aria-live="polite"`,
+marked with `data-rc-status`), which says "Carregando…" while the query has not
+returned and "Conteúdo carregado" when it returns. It exists before the text
+changes and is the same node from the first state to the last: a region born
+with its text already inside does not trigger any announcement.
 
-A moldura já tinha uma região viva antes desta, e as duas convivem: a do ponto
-ativo, que copia a dica quando a Recharts anda de ponto em ponto pelo teclado, e
-a da espera. `data-rc-status` e `data-rc-active-point` separam uma da outra.
+The frame already had a live region before this one, and the two coexist: the
+active point's, which copies the tooltip when Recharts moves from point to
+point via the keyboard, and the wait's. `data-rc-status` and
+`data-rc-active-point` tell them apart.
 
-**A contagem de pontos sai do próprio gráfico.** A moldura lê o `data` do filho
-da Recharts, então na forma acima não é preciso repeti-lo. Passe `data` aqui só
-quando os pontos não morarem no filho direto (`<ScatterChart>` com o `data` no
-`<Scatter>`) ou quando a série desenhada não for a que decide o vazio.
+**The point count comes from the chart itself.** The frame reads the `data` of
+the Recharts child, so in the form above there is no need to repeat it. Pass
+`data` here only when the points do not live in the direct child
+(`<ScatterChart>` with the `data` on `<Scatter>`) or when the drawn series is
+not the one that decides emptiness.
 
-Antes disso o vazio exigia `empty` **e** `data`, e quem passava só o primeiro
-nunca via o estado que tinha pedido: o gráfico desenhava eixos sobre o nada, sem
-erro nenhum. Onde a moldura ainda não acha ponto para contar, ela avisa no
-console em desenvolvimento em vez de calar.
+Before this, emptiness required `empty` **and** `data`, and whoever passed only
+the first never saw the state they had asked for: the chart drew axes over
+nothing, with no error at all. Where the frame still finds no point to count,
+it warns in the console in development instead of staying silent.
 
-**Sem `empty`, a lista vazia mostra um aviso curto**, "Sem dados no período",
-no lugar dos eixos sobre o nada. O texto troca por `labels.noData`. O `empty`
-continua sendo o caminho certo quando a tela sabe dizer o porquê e a saída.
+**Without `empty`, an empty list shows a short notice**, "Sem dados no
+período", in place of axes over nothing. The text is changed via
+`labels.noData`. `empty` is still the right path when the screen knows how to
+say why and what to do next.
 
-**A chave do `config` vira o nome da variável**, `var(--color-<chave>)`, quando
-ela é feita de letra, número, `-` e `_`. Chave com espaço, ponto ou barra
-("Receita total", "v1.2") não é nome de variável de CSS válido: antes a
-declaração inteira era descartada pelo navegador e a série saía preta, sem
-aviso. Agora a moldura troca o que não serve por `_` e acrescenta um sufixo
-curto que separa "a b" de "a.b"; ela, a legenda e a dica usam o mesmo nome, e
-nada muda para quem pinta pela moldura. Para escrever `var(--color-...)` à mão,
-prefira chave simples.
+**The `config` key becomes the variable name**, `var(--color-<key>)`, when it
+is made of letters, digits, `-` and `_`. A key with a space, a dot or a slash
+("Receita total", "v1.2") is not a valid CSS variable name: before, the whole
+declaration was discarded by the browser and the series came out black, with
+no warning. Now the frame replaces what does not fit with `_` and appends a
+short suffix that tells "a b" from "a.b"; it, the legend and the tooltip use
+the same name, and nothing changes for whoever paints through the frame. To
+write `var(--color-...)` by hand, prefer a simple key.
 
-As peças da Recharts que a biblioteca veste saem pelo mesmo import:
+The Recharts pieces the library dresses come out of the same import:
 `LineChart`, `Line`, `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`,
-`Cell`, `XAxis`, `YAxis`, `CartesianGrid` e `ReferenceLine`.
+`Cell`, `XAxis`, `YAxis`, `CartesianGrid` and `ReferenceLine`.
 
-## Gradiente de área
+## Area gradient
 
-Área chapada compete com a linha que a delimita: a cor cheia embaixo pesa tanto
-quanto o traço em cima, e num gráfico de duas séries a de trás some atrás da da
-frente.
+A flat area competes with the line that bounds it: the full color below weighs
+as much as the stroke above, and in a two-series chart the one behind
+disappears behind the one in front.
 
 ```tsx
 function Faturamento() {
@@ -120,48 +126,50 @@ function Faturamento() {
 }
 ```
 
-O `id` do gradiente sai do `id` deste gráfico. Sem isso, dois gráficos na mesma
-página com o mesmo nome de série pintariam um com o gradiente do outro, porque
-`id` de SVG é global no documento.
+The gradient's `id` comes from this chart's `id`. Without it, two charts on the
+same page with the same series name would paint one with the other's gradient,
+because an SVG `id` is global to the document.
 
-## Movimento
+## Motion
 
-A moldura cuida do movimento sozinha, e nenhuma marca precisa de prop para
-isso. Toda `Line`, `Bar`, `Area`, `Pie`, `Radar`, `RadialBar` e `Scatter` que
-ela embrulha sai com três props vestidas:
+The frame handles motion on its own, and no mark needs a prop for it. Every
+`Line`, `Bar`, `Area`, `Pie`, `Radar`, `RadialBar` and `Scatter` it wraps comes
+out with three props set:
 
-- **`animationDuration`** lido de `--rc-duration-slow`, e **`animationEasing`**
-  lido de `--rc-ease`, no valor computado da própria moldura. A Recharts
-  interpola em JavaScript e não enxerga variável de CSS; por isso a moldura lê o
-  token depois de montar e entrega o número. O padrão da Recharts (1500 ms, `ease`)
-  não aparece em lugar nenhum.
-- **`isAnimationActive`** ligado antes de a marca montar, e desligado com
-  "reduzir movimento": **na primeira vez que aparece com dados, o gráfico se
-  desenha, e depois anda quando o dado muda.**
+- **`animationDuration`** read from `--rc-duration-slow`, and
+  **`animationEasing`** read from `--rc-ease`, at the frame's own computed
+  value. Recharts interpolates in JavaScript and cannot see CSS variables;
+  that is why the frame reads the token after mounting and hands over the
+  number. The Recharts default (1500 ms, `ease`) does not show up anywhere.
+- **`isAnimationActive`** on before the mark mounts, and off with "reduce
+  motion": **the first time it appears with data, the chart draws itself, and
+  after that it moves when the data changes.**
 
-O segundo é decisão do dono, e substitui a anterior, de que o gráfico nascia
-pronto. A barra cresce da base, a linha e a área se revelam da esquerda, a rosca
-e o arco varrem do zero. O gráfico que chega depois do `isLoading`, do erro ou
-do vazio também entra desenhando: o esqueleto era a espera, e o desenho é o dado
-chegando. Depois disso, o que o movimento informa é a **mudança**: o filtro
-trocou, o mês virou, e a barra que anda do valor velho ao novo mostra quanto
-mudou. A duração é uma só, a de `--rc-duration-slow`, na entrada e na troca: a
-Recharts reinicia a animação quando a duração muda, e trocar o número depois da
-entrada faria o gráfico se desenhar duas vezes.
+The second is the owner's decision, and replaces the previous one, in which the
+chart was born ready. The bar grows from the base, the line and the area reveal
+from the left, the donut and the arc sweep from zero. A chart that arrives
+after `isLoading`, the error or the empty state also enters drawing: the
+skeleton was the wait, and the drawing is the data arriving. After that, what
+motion informs is the **change**: the filter changed, the month turned, and the
+bar that moves from the old value to the new one shows how much it changed.
+There is a single duration, `--rc-duration-slow`, for entering and for
+changing: Recharts restarts the animation when the duration changes, and
+changing the number after the entrance would make the chart draw itself twice.
 
-**No servidor o gráfico não desenha.** A Recharts só pinta depois de medir a
-caixa, então o HTML do SSR sai com a moldura, a legenda e o anúncio, e sem o
-SVG. A moldura lê os tokens num efeito de layout, antes de a medida chegar, e a
-primeira marca que monta no cliente já monta animada: não existe um quadro com
-o desenho pronto que depois some para crescer de novo. O `Alert` do erro e o
-`EmptyState` do vazio entram pelo movimento deles.
+**On the server the chart does not draw.** Recharts only paints after
+measuring the box, so the SSR HTML comes out with the frame, the legend and the
+announcement, and without the SVG. The frame reads the tokens in a layout
+effect, before the measurement arrives, and the first mark that mounts on the
+client already mounts animated: there is no frame with the finished drawing
+that then disappears to grow again. The error `Alert` and the empty
+`EmptyState` enter with their own motion.
 
-Marca com `isAnimationActive={false}` fica parada: a moldura só liga o que
-ninguém desligou. `animationDuration` e `animationEasing` escritos à mão
-também vencem.
+A mark with `isAnimationActive={false}` stays still: the frame only turns on
+what nobody turned off. `animationDuration` and `animationEasing` written by
+hand also win.
 
-`useChartMotion()` continua exportado e devolve o mesmo trio, para quem desenha
-com a Recharts **fora** da moldura:
+`useChartMotion()` is still exported and returns the same trio, for whoever
+draws with Recharts **outside** the frame:
 
 ```tsx
 const motion = useChartMotion()
@@ -169,40 +177,40 @@ const motion = useChartMotion()
 <Line dataKey="pagas" stroke="var(--color-pagas)" {...motion} />
 ```
 
-Dentro do `ChartContainer` ele é dispensável, e espalhá-lo não muda nada: a
-moldura veste a marca do mesmo jeito. Fora dela, a entrada depende de a marca
-montar depois do primeiro efeito, e é o que acontece com o gráfico dentro de um
-`ResponsiveContainer`, que só desenha depois de medir. Num gráfico de largura e
-altura fixas, a marca monta no mesmo quadro do gancho, nasce pronta e só anda
-na troca de dado.
+Inside `ChartContainer` it is unnecessary, and spreading it changes nothing:
+the frame dresses the mark the same way. Outside it, the entrance depends on
+the mark mounting after the first effect, which is what happens with a chart
+inside a `ResponsiveContainer`, which only draws after measuring. In a chart
+with fixed width and height, the mark mounts in the same frame as the hook, is
+born ready and only moves when the data changes.
 
-## As peças da Recharts que saem daqui
+## The Recharts pieces exported from here
 
 `Area`, `AreaChart`, `Bar`, `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`,
 `Cell`, `Scatter`, `ScatterChart`, `Radar`, `RadarChart`, `RadialBar`,
 `RadialBarChart`, `PolarGrid`, `PolarAngleAxis`, `PolarRadiusAxis`,
 `CartesianGrid`, `XAxis`, `YAxis`, `ZAxis`, `LabelList`, `Rectangle`,
-`ReferenceLine` e `ReferenceArea`.
+`ReferenceLine` and `ReferenceArea`.
 
-A lista é curada, e não um `export *`. O `Tooltip` e o `Legend` da Recharts
-**não** saem por aqui: os nossos já embrulham os dois, e o nome colidiria com o
-`Tooltip` do catálogo.
+The list is curated, not an `export *`. Recharts' `Tooltip` and `Legend` do
+**not** come out from here: ours already wrap both, and the name would collide
+with the catalog's `Tooltip`.
 
-## Os eixos
+## The axes
 
-`ChartXAxis` e `ChartYAxis` embrulham os da Recharts com a cor, a fonte e o
-respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
-`format="currencyShort"` no de valor. Sem eles, cada tela escreve o próprio
-`tickFormatter` e um eixo lê diferente do outro: R$ 12.400 aqui, 12400 ali,
-12,4k na terceira.
+`ChartXAxis` and `ChartYAxis` wrap Recharts' with the theme's color, font and
+spacing, and with the house `format`: `format="dayMonth"` on the time axis,
+`format="currencyShort"` on the value axis. Without them, each screen writes
+its own `tickFormatter` and one axis reads differently from another: R$ 12.400
+here, 12400 there, 12,4k on the third.
 
-## No React Native
+## In React Native
 
-Traduz, no caminho próprio `@rivocode/ui-native/chart`, com o mesmo arranjo do formulário e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app precisa ligar e reconstruir.
+Translates, on its own path `@rivocode/ui-native/chart`, with the same arrangement as the form and for the same reason: `react-native-svg` is an **optional** peer, and on the phone it is not just bytes, it is a native module the app has to link and rebuild.
 
-**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `labels.retry`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
+**What crosses over whole are the four endings.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `labels.retry`, `empty` and `data` have the same names and the same meaning, and the loading state draws the same six uneven bars. Three type differences, all because text on native lives inside a `Text`: `errorMessage`, `empty.title` and `empty.description` are `string`. `empty.icon` crosses over, and also accepts the native `EmptyState`'s function. The try-again button sits **outside** the alert: the native `Alert` has a title and a body, and the body is one line of text.
 
-**O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai sozinho e lê a cor de cada série em `var(--color-série)`. Aqui não há Recharts, não há contentor que meça e não há variável viva. Então a moldura mede com `onLayout`, resolve as cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega o `submit`:
+**What changes is the drawing.** On the web the frame wraps a Recharts chart, which measures its parent on its own and reads each series' color from `var(--color-series)`. Here there is no Recharts, no measuring container and no live variable. So the frame measures with `onLayout`, resolves the colors of the `config` and **hands both things** to whoever draws, the way the native `Form` hands over `submit`:
 
 ```tsx
 <ChartContainer config={SERIES} data={meses} className="h-56">
@@ -212,10 +220,10 @@ Traduz, no caminho próprio `@rivocode/ui-native/chart`, com o mesmo arranjo do 
 </ChartContainer>
 ```
 
-O `colors` do quadro é um **mapa pela chave do `config`**, e não um array: é o `var(--color-série)` do web com outro veículo, e quem desenha pede a cor de `receita` pelo nome, que é o que sobrevive a alguém reordenar o `config`. O array é o `PALETTE`, e ele é array dos dois lados: é a ordem de sobra, de onde sai a cor de quem não declarou `color`. A diferença é que aqui ele é **exportado**, porque sem variável viva quem desenha à mão precisa alcançá-lo.
+The frame's `colors` is a **map keyed by the `config` key**, not an array: it is the web's `var(--color-series)` in another vehicle, and whoever draws asks for the color of `receita` by name, which is what survives someone reordering the `config`. The array is `PALETTE`, and it is an array on both sides: it is the fallback order, where the color comes from for a series that did not declare `color`. The difference is that here it is **exported**, because without a live variable whoever draws by hand needs to reach it.
 
-A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefone não existe largura antes do layout. O `children` também aceita JSX comum, e é assim que `ChartDonut` e `ChartRadial` ganham os quatro finais sem precisar de nada da moldura.
+The measurement arrives **zeroed on the first frame** and real on the next: on the phone there is no width before layout. `children` also accepts plain JSX, and that is how `ChartDonut` and `ChartRadial` get the four endings without needing anything from the frame.
 
-Duas regras a mais, as duas por causa do que não existe do lado de cá. O `config.color` pede **papel de token** (`chart-1` a `chart-8`), e não cor de CSS: a cor que a peça recebe é o valor final que vai para o desenho, e um hexadecimal escrito ali seria a única coisa da tela surda ao tema do cliente. E o `label` só vale na forma de função: com filho em JSX quem nomeia é a peça de dentro, e um `accessible` por cima dela fecharia a legenda da rosca numa parada só do leitor de tela.
+Two more rules, both because of what does not exist on this side. `config.color` asks for a **token role** (`chart-1` to `chart-8`), not a CSS color: the color the piece receives is the final value that goes into the drawing, and a hex written there would be the only thing on the screen deaf to the client's theme. And `label` only applies in the function form: with a JSX child, the one naming is the inner piece, and an `accessible` on top of it would close the donut's legend into a single screen reader stop.
 
-**O movimento vem em duas marcas, porque aqui não há `Line` nem `Bar` para a moldura vestir.** `ChartBar` é a barra (`x`, `y`, `width`, `height`, `fill`, `radius`) e `ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`, `baseline`), as duas no mesmo caminho `/chart`. Na montagem elas entram (a barra cresce da base; a linha sobe da `baseline`, ou do ponto mais baixo) e, quando o valor muda, andam até o novo com a duração e a curva dos tokens (`duration-slow`, `ease`), pelo Reanimated sobre o `react-native-svg`: a mesma decisão do web, de que o gráfico se desenha ao aparecer e anda quando o dado muda. Com "reduzir movimento" elas nascem no lugar e saltam. A linha anda ponto a ponto quando a contagem é a mesma de antes, e troca de uma vez quando não é. Quem desenha com `Rect` e `Path` crus continua podendo, e fica parado.
+**Motion comes in two marks, because here there is no `Line` or `Bar` for the frame to dress.** `ChartBar` is the bar (`x`, `y`, `width`, `height`, `fill`, `radius`) and `ChartLine` is the line (`points` in px, `stroke`, `strokeWidth`, `baseline`), both on the same `/chart` path. On mount they enter (the bar grows from its base; the line rises from the `baseline`, or from the lowest point) and, when the value changes, they move to the new one with the duration and curve of the tokens (`duration-slow`, `ease`), through Reanimated over `react-native-svg`: the same decision as the web, that the chart draws itself on appearing and moves when the data changes. With "reduce motion" they are born in place and jump. The line moves point by point when the count is the same as before, and swaps all at once when it is not. Whoever draws with raw `Rect` and `Path` still can, and it stays still.

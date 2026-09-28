@@ -5,10 +5,10 @@ import { ColorPicker } from "../src/components/color-picker";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
- * A peca existe para escolher a cor de marca de um cliente, entao o que os
- * testes cobram e o que separa ela de um <input type="color">: o valor entra e
- * sai em hexadecimal, o campo de texto aceita o que a pessoa cola, e a grade
- * responde ao teclado dizendo qual amostra esta escolhida.
+ * The piece exists to pick a client's brand color, so what the tests demand is
+ * what separates it from an <input type="color">: the value goes in and out as
+ * hexadecimal, the text field accepts what the person pastes, and the grid
+ * responds to the keyboard saying which swatch is chosen.
  */
 
 const SWATCHES = ["#d4f34a", "#3ddc97", "#6aa9ff"];
@@ -24,14 +24,14 @@ function picker(
   );
 }
 
-test("cada amostra tem o valor no nome acessivel", () => {
+test("each swatch has its value in the accessible name", () => {
   picker();
   for (const color of SWATCHES) {
     expect(screen.getByRole("radio", { name: new RegExp(color, "i") })).toBeTruthy();
   }
 });
 
-test("a amostra escolhida e dita, e nao so pintada", () => {
+test("the chosen swatch is announced, and not only painted", () => {
   picker({ value: "#3ddc97" });
 
   const chosen = screen.getByRole("radio", { name: /#3ddc97/i });
@@ -41,7 +41,7 @@ test("a amostra escolhida e dita, e nao so pintada", () => {
   expect(other.getAttribute("aria-checked")).toBe("false");
 });
 
-test("clicar numa amostra avisa a cor em hexadecimal", () => {
+test("clicking a swatch reports the color in hexadecimal", () => {
   const seen: string[] = [];
   picker({ value: "#d4f34a", onValueChange: (color) => seen.push(color) });
 
@@ -49,7 +49,7 @@ test("clicar numa amostra avisa a cor em hexadecimal", () => {
   expect(seen).toEqual(["#6aa9ff"]);
 });
 
-test("amostra escrita em maiuscula ou com tres digitos avisa seis digitos em minuscula", () => {
+test("a swatch written in uppercase or with three digits reports six lowercase digits", () => {
   const seen: string[] = [];
   picker({ swatches: ["#0055FF", "#FFF"], onValueChange: (color) => seen.push(color) });
 
@@ -58,7 +58,7 @@ test("amostra escrita em maiuscula ou com tres digitos avisa seis digitos em min
   expect(seen).toEqual(["#0055ff", "#ffffff"]);
 });
 
-test("a seta anda pela grade e escolhe a amostra que recebeu o foco", () => {
+test("the arrow moves through the grid and picks the swatch that got focus", () => {
   const seen: string[] = [];
   picker({ value: "#d4f34a", onValueChange: (color) => seen.push(color) });
 
@@ -70,7 +70,7 @@ test("a seta anda pela grade e escolhe a amostra que recebeu o foco", () => {
   expect(seen).toEqual(["#3ddc97", "#6aa9ff"]);
 });
 
-test("em rtl a seta anda para o lado que a pessoa ve, e nao para o indice", () => {
+test("in rtl the arrow moves to the side the person sees, and not by index", () => {
   const seen: string[] = [];
   picker({ value: "#3ddc97", onValueChange: (color) => seen.push(color) }, "rtl");
 
@@ -88,14 +88,14 @@ test("em rtl a seta anda para o lado que a pessoa ve, e nao para o indice", () =
   expect(seen).toEqual(["#d4f34a", "#6aa9ff", "#d4f34a", "#6aa9ff"]);
 });
 
-test("so a amostra escolhida entra na ordem de tabulacao", () => {
+test("only the chosen swatch enters the tab order", () => {
   picker({ value: "#3ddc97" });
 
   expect(screen.getByRole("radio", { name: /#3ddc97/i }).getAttribute("tabindex")).toBe("0");
   expect(screen.getByRole("radio", { name: /#d4f34a/i }).getAttribute("tabindex")).toBe("-1");
 });
 
-test("digitar um hexadecimal de tres digitos avisa o valor de seis", () => {
+test("typing a three-digit hexadecimal reports the six-digit value", () => {
   const seen: string[] = [];
   picker({ value: "#d4f34a", onValueChange: (color) => seen.push(color) });
 
@@ -104,7 +104,7 @@ test("digitar um hexadecimal de tres digitos avisa o valor de seis", () => {
   expect(seen).toEqual(["#00ff88"]);
 });
 
-test("colar sem a cerquilha e em maiuscula tambem vale", () => {
+test("pasting without the hash and in uppercase also works", () => {
   const seen: string[] = [];
   picker({ value: "#d4f34a", onValueChange: (color) => seen.push(color) });
 
@@ -112,7 +112,7 @@ test("colar sem a cerquilha e em maiuscula tambem vale", () => {
   expect(seen).toEqual(["#bfdd3a"]);
 });
 
-test("texto invalido nao avisa ninguem, e o campo volta ao valor bom ao sair", () => {
+test("invalid text reports nothing, and the field goes back to the good value on blur", () => {
   const seen: string[] = [];
   picker({ value: "#d4f34a", onValueChange: (color) => seen.push(color) });
 
@@ -125,7 +125,7 @@ test("texto invalido nao avisa ninguem, e o campo volta ao valor bom ao sair", (
   expect(field.value).toBe("#d4f34a");
 });
 
-test("sem valor controlado a peca guarda a propria escolha", () => {
+test("without a controlled value the piece keeps its own choice", () => {
   picker({ value: undefined, defaultValue: "#d4f34a" });
 
   fireEvent.click(screen.getByRole("radio", { name: /#6aa9ff/i }));
@@ -133,13 +133,13 @@ test("sem valor controlado a peca guarda a propria escolha", () => {
   expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("#6aa9ff");
 });
 
-test("a amostra pinta o proprio valor, que e dado e nao decoracao", () => {
+test("the swatch paints its own value, which is data and not decoration", () => {
   picker();
   const swatch = screen.getByRole("radio", { name: /#d4f34a/i });
   expect(swatch.style.backgroundColor).toBeTruthy();
 });
 
-test("sem amostras proprias, a grade traz um leque de tons pronto", () => {
+test("without its own swatches, the grid brings a ready range of tones", () => {
   render(
     <RivoProvider scope="local">
       <ColorPicker label="Cor da marca" />
@@ -148,7 +148,7 @@ test("sem amostras proprias, a grade traz um leque de tons pronto", () => {
   expect(screen.getAllByRole("radio").length).toBeGreaterThan(10);
 });
 
-test("a amostra com nome proprio anuncia o nome junto do valor", () => {
+test("a swatch with its own name announces the name along with the value", () => {
   picker({ swatches: [{ value: "#d4f34a", label: "Lima" }] });
   const swatch = screen.getByRole("radio", { name: /lima/i });
   expect(swatch.getAttribute("aria-label")).toContain("#d4f34a");

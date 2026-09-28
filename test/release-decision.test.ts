@@ -18,13 +18,13 @@ function facts(version: string, over: Partial<ReleaseFacts> = {}): ReleaseFacts 
     version,
     tags: [],
     published: [],
-    changelog: `# Mudancas\n\n## ${version}\n\n### Corrigido: alguma coisa\n\nTexto.\n`,
-    message: "feat: a peca nova nasce nos dois pacotes",
+    changelog: `# Changes\n\n## ${version}\n\n### Fixed: something\n\nText.\n`,
+    message: "feat: the new component is born in both packages",
     ...over,
   };
 }
 
-test("o caminho feliz do web cria a tag `v` e chama o release", () => {
+test("the web happy path creates the `v` tag and calls release", () => {
   const decision = decideRelease(WEB, facts("0.11.0"));
 
   expect(decision.verdict).toBe("release");
@@ -33,7 +33,7 @@ test("o caminho feliz do web cria a tag `v` e chama o release", () => {
   expect(decision.reason).toContain("release.yml");
 });
 
-test("o caminho feliz do nativo cria a tag `native-v` e chama o release-native", () => {
+test("the native happy path creates the `native-v` tag and calls release-native", () => {
   const decision = decideRelease(NATIVE, facts("0.6.0"));
 
   expect(decision.verdict).toBe("release");
@@ -42,7 +42,7 @@ test("o caminho feliz do nativo cria a tag `native-v` e chama o release-native",
   expect(decision.reason).toContain("release-native.yml");
 });
 
-test("a tag que ja existe barra o web", () => {
+test("an existing tag blocks web", () => {
   const decision = decideRelease(WEB, facts("0.11.0", { tags: ["v0.10.0", "v0.11.0"] }));
 
   expect(decision.verdict).toBe("tag-exists");
@@ -50,7 +50,7 @@ test("a tag que ja existe barra o web", () => {
   expect(decision.reason).toContain("v0.11.0");
 });
 
-test("a tag que ja existe barra o nativo", () => {
+test("an existing tag blocks native", () => {
   const decision = decideRelease(
     NATIVE,
     facts("0.6.0", { tags: ["native-v0.5.0", "native-v0.6.0"] }),
@@ -60,33 +60,33 @@ test("a tag que ja existe barra o nativo", () => {
   expect(decision.release).toBe(false);
 });
 
-test("o prefixo separa os dois pacotes: a tag do web nao barra o nativo", () => {
+test("the prefix separates the two packages: the web tag does not block native", () => {
   const decision = decideRelease(NATIVE, facts("0.6.0", { tags: ["v0.6.0"] }));
 
   expect(decision.verdict).toBe("release");
   expect(decision.tag).toBe("native-v0.6.0");
 });
 
-test("a versao ja publicada barra o web, e diz que publicacao nao se desfaz", () => {
+test("an already published version blocks web, and says publishing cannot be undone", () => {
   const decision = decideRelease(WEB, facts("0.11.0", { published: ["0.10.0", "0.11.0"] }));
 
   expect(decision.verdict).toBe("already-published");
   expect(decision.release).toBe(false);
   expect(decision.reason).toContain("@rivocode/ui@0.11.0");
-  expect(decision.reason).toContain("nao se");
+  expect(decision.reason).toContain("cannot be undone");
 });
 
-test("a versao ja publicada barra o nativo", () => {
+test("an already published version blocks native", () => {
   const decision = decideRelease(NATIVE, facts("0.6.0", { published: ["0.6.0"] }));
 
   expect(decision.verdict).toBe("already-published");
   expect(decision.reason).toContain("@rivocode/ui-native@0.6.0");
 });
 
-test("o CHANGELOG do web parado na versao anterior barra a tag", () => {
+test("a web CHANGELOG stuck at the previous version blocks the tag", () => {
   const decision = decideRelease(
     WEB,
-    facts("0.11.0", { changelog: "# Mudancas\n\n## 0.10.0\n\nA versao de tras.\n" }),
+    facts("0.11.0", { changelog: "# Changes\n\n## 0.10.0\n\nThe previous version.\n" }),
   );
 
   expect(decision.verdict).toBe("changelog-open");
@@ -94,18 +94,18 @@ test("o CHANGELOG do web parado na versao anterior barra a tag", () => {
   expect(decision.reason).toContain('"## 0.10.0"');
 });
 
-test("o CHANGELOG do nativo sem secao nenhuma barra a tag", () => {
-  const decision = decideRelease(NATIVE, facts("0.6.0", { changelog: "# Mudancas\n" }));
+test("a native CHANGELOG with no section at all blocks the tag", () => {
+  const decision = decideRelease(NATIVE, facts("0.6.0", { changelog: "# Changes\n" }));
 
   expect(decision.verdict).toBe("changelog-open");
-  expect(decision.reason).toContain("nao ha secao nenhuma");
+  expect(decision.reason).toContain("it has no section at all");
 });
 
-test("a secao da versao tem que estar no TOPO, e nao em qualquer lugar", () => {
+test("the version section must be at the TOP, and not anywhere", () => {
   const decision = decideRelease(
     WEB,
     facts("0.11.0", {
-      changelog: "# Mudancas\n\n## 0.10.0\n\nA de tras.\n\n## 0.11.0\n\nA nova, no lugar errado.\n",
+      changelog: "# Changes\n\n## 0.10.0\n\nThe previous one.\n\n## 0.11.0\n\nThe new one, in the wrong place.\n",
     }),
   );
 
@@ -113,55 +113,55 @@ test("a secao da versao tem que estar no TOPO, e nao em qualquer lugar", () => {
   expect(decision.release).toBe(false);
 });
 
-test("um titulo de terceiro nivel nao conta como a secao do topo", () => {
-  expect(topSection("# Mudancas\n\n### Corrigido: nada\n\n## 0.11.0\n")).toBe("0.11.0");
+test("a third-level heading does not count as the top section", () => {
+  expect(topSection("# Changes\n\n### Fixed: nothing\n\n## 0.11.0\n")).toBe("0.11.0");
 });
 
-test(`${VETO} so no CORPO nao barra: foi assim que a automacao vetou a si mesma`, () => {
+test(`${VETO} only in the BODY does not block: that is how the automation vetoed itself`, () => {
   const message =
-    `ci: a tag nasce do gate verde\n\n` +
-    `A valvula de escape e escrever ${VETO} no assunto do commit.`;
+    `ci: the tag is born from the green gate\n\n` +
+    `The escape valve is writing ${VETO} in the commit subject.`;
 
   expect(decideRelease(WEB, facts("0.11.0", { message })).release).toBe(true);
   expect(decideRelease(NATIVE, facts("0.6.0", { message })).release).toBe(true);
 });
 
-test(`${VETO} na mensagem do commit barra o web`, () => {
+test(`${VETO} in the commit message blocks web`, () => {
   const decision = decideRelease(
     WEB,
-    facts("0.11.0", { message: `chore: o bump espera o resto ${VETO}` }),
+    facts("0.11.0", { message: `chore: the bump waits for the rest ${VETO}` }),
   );
 
   expect(decision.verdict).toBe("vetoed");
   expect(decision.release).toBe(false);
 });
 
-test(`${VETO} na mensagem do commit barra o nativo, em qualquer caixa`, () => {
+test(`${VETO} in the commit message blocks native, in any case`, () => {
   const decision = decideRelease(
     NATIVE,
-    facts("0.6.0", { message: "chore: bump [NO-RELEASE]\n\nCorpo da mensagem." }),
+    facts("0.6.0", { message: "chore: bump [NO-RELEASE]\n\nMessage body." }),
   );
 
   expect(decision.verdict).toBe("vetoed");
   expect(decision.release).toBe(false);
 });
 
-test("toda decisao barrada devolve release falso, e toda liberada devolve verdadeiro", () => {
+test("every blocked decision returns release false, and every allowed one returns true", () => {
   const cases: [ReleaseTarget, ReleaseFacts][] = [
     [WEB, facts("0.11.0")],
     [WEB, facts("0.11.0", { tags: ["v0.11.0"] })],
     [WEB, facts("0.11.0", { published: ["0.11.0"] })],
-    [WEB, facts("0.11.0", { changelog: "# Mudancas\n" })],
+    [WEB, facts("0.11.0", { changelog: "# Changes\n" })],
     [WEB, facts("0.11.0", { message: VETO })],
     [NATIVE, facts("0.6.0")],
     [NATIVE, facts("0.6.0", { tags: ["native-v0.6.0"] })],
     [NATIVE, facts("0.6.0", { published: ["0.6.0"] })],
-    [NATIVE, facts("0.6.0", { changelog: "# Mudancas\n" })],
+    [NATIVE, facts("0.6.0", { changelog: "# Changes\n" })],
     [NATIVE, facts("0.6.0", { message: VETO })],
     [MCP, facts("0.1.0")],
     [MCP, facts("0.1.0", { tags: ["mcp-v0.1.0"] })],
     [MCP, facts("0.1.0", { published: ["0.1.0"] })],
-    [MCP, facts("0.1.0", { changelog: "# Mudancas\n" })],
+    [MCP, facts("0.1.0", { changelog: "# Changes\n" })],
     [MCP, facts("0.1.0", { message: VETO })],
   ];
 
@@ -173,7 +173,7 @@ test("toda decisao barrada devolve release falso, e toda liberada devolve verdad
   }
 });
 
-test("a tabela aponta para os manifestos e os CHANGELOGs que existem", async () => {
+test("the table points at manifests and CHANGELOGs that exist", async () => {
   const keys = Object.keys(TARGETS);
   expect(keys.length).toBeGreaterThan(1);
 
@@ -188,7 +188,7 @@ test("a tabela aponta para os manifestos e os CHANGELOGs que existem", async () 
   expect(new Set(keys.map((key) => TARGETS[key]!.prefix)).size).toBe(keys.length);
 });
 
-test("o caminho feliz do mcp cria a tag `mcp-v` e chama o release-mcp", () => {
+test("the mcp happy path creates the `mcp-v` tag and calls release-mcp", () => {
   const decision = decideRelease(MCP, facts("0.1.0"));
 
   expect(decision.verdict).toBe("release");
@@ -197,7 +197,7 @@ test("o caminho feliz do mcp cria a tag `mcp-v` e chama o release-mcp", () => {
   expect(decision.reason).toContain("release-mcp.yml");
 });
 
-test("a primeira publicacao do mcp passa com o registro vazio, que e o que o 404 vira", () => {
+test("the first mcp publish passes with an empty registry, which is what the 404 becomes", () => {
   const decision = decideRelease(
     MCP,
     facts("0.1.0", { published: [], tags: ["v0.15.0", "native-v0.10.0"] }),
@@ -207,7 +207,7 @@ test("a primeira publicacao do mcp passa com o registro vazio, que e o que o 404
   expect(decision.tag).toBe("mcp-v0.1.0");
 });
 
-test("a tag que ja existe barra o mcp", () => {
+test("an existing tag blocks mcp", () => {
   const decision = decideRelease(MCP, facts("0.1.0", { tags: ["mcp-v0.1.0"] }));
 
   expect(decision.verdict).toBe("tag-exists");
@@ -215,31 +215,31 @@ test("a tag que ja existe barra o mcp", () => {
   expect(decision.reason).toContain("mcp/package.json");
 });
 
-test("o prefixo separa o mcp dos outros dois: `v0.1.0` e `native-v0.1.0` nao o barram", () => {
+test("the prefix separates mcp from the other two: `v0.1.0` and `native-v0.1.0` do not block it", () => {
   const decision = decideRelease(MCP, facts("0.1.0", { tags: ["v0.1.0", "native-v0.1.0"] }));
 
   expect(decision.verdict).toBe("release");
 });
 
-test("a versao ja publicada barra o mcp", () => {
+test("an already published version blocks mcp", () => {
   const decision = decideRelease(MCP, facts("0.1.0", { published: ["0.1.0"] }));
 
   expect(decision.verdict).toBe("already-published");
   expect(decision.reason).toContain("@rivocode/ui-mcp@0.1.0");
 });
 
-test("o CHANGELOG do mcp parado na versao anterior barra a tag", () => {
+test("an mcp CHANGELOG stuck at the previous version blocks the tag", () => {
   const decision = decideRelease(
     MCP,
-    facts("0.2.0", { changelog: "# Mudancas\n\n## 0.1.0\n\nA primeira.\n" }),
+    facts("0.2.0", { changelog: "# Changes\n\n## 0.1.0\n\nThe first one.\n" }),
   );
 
   expect(decision.verdict).toBe("changelog-open");
   expect(decision.reason).toContain("mcp/CHANGELOG.md");
 });
 
-test(`${VETO} no assunto barra o mcp junto com os outros dois`, () => {
-  const message = `chore: bump sem publicar ${VETO}`;
+test(`${VETO} in the subject blocks mcp along with the other two`, () => {
+  const message = `chore: bump without publishing ${VETO}`;
 
   for (const [target, version] of [
     [WEB, "0.11.0"],
@@ -250,7 +250,7 @@ test(`${VETO} no assunto barra o mcp junto com os outros dois`, () => {
   }
 });
 
-test("o tag.yml decide pelos tres pacotes da tabela", async () => {
+test("tag.yml decides for the three packages in the table", async () => {
   const workflow = await Bun.file(".github/workflows/tag.yml").text();
   const matrix = /package:\s*\[([^\]]+)\]/.exec(workflow)?.[1] ?? "";
 
@@ -262,7 +262,7 @@ test("o tag.yml decide pelos tres pacotes da tabela", async () => {
   ).toEqual(Object.keys(TARGETS).sort());
 });
 
-test("cada workflow de release dispara so pelo prefixo do proprio pacote", async () => {
+test("each release workflow fires only on its own package prefix", async () => {
   const keys = Object.keys(TARGETS);
   expect(keys.length).toBeGreaterThan(2);
 

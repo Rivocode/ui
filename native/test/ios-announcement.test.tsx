@@ -53,14 +53,14 @@ describe("Banner", () => {
     again(screen, banner("Tente outro cartão."));
   };
 
-  test("no iOS o tom urgente fala ao montar, e cada troca de texto fala uma vez", () => {
+  test("on iOS the urgent tone speaks on mount, and each text change speaks once", () => {
     expect(heardOn("ios", story)).toEqual([
       "Pagamento recusado. O cartão foi recusado.",
       "Pagamento recusado. Tente outro cartão.",
     ]);
   });
 
-  test("o tom educado nao fala ao montar, so quando o texto muda", () => {
+  test("the polite tone does not speak on mount, only when the text changes", () => {
     const heard = heardOn("ios", () => {
       const screen = render(banner("Sincronizando.", "info"));
       again(screen, banner("Sincronizado.", "info"));
@@ -68,7 +68,7 @@ describe("Banner", () => {
     expect(heard).toEqual(["Pagamento recusado. Sincronizado."]);
   });
 
-  test("no Android e no web quem fala e a regiao viva, e o anuncio nao dobra", () => {
+  test("on Android and on the web the live region is what speaks, and the announcement does not double", () => {
     expect(heardOn("android", story)).toEqual([]);
     expect(heardOn("web", story)).toEqual([]);
   });
@@ -85,12 +85,12 @@ describe("DateRangePicker", () => {
     act(() => byLabel(screen, "05/08/2026")[0]!.props.onPress());
   };
 
-  test("no iOS abrir a folha nao fala, e cada toque diz o resumo novo", () => {
+  test("on iOS opening the sheet does not speak, and each tap says the new summary", () => {
     const heard = heardOn("ios", story);
     expect(heard).toEqual(["20/08/2026 – toque no último dia.", "05/08/2026 – 20/08/2026"]);
   });
 
-  test("no Android o resumo sai so pela regiao viva", () => {
+  test("on Android the summary goes out only through the live region", () => {
     expect(heardOn("android", story)).toEqual([]);
   });
 });
@@ -112,11 +112,11 @@ describe("ImageViewer", () => {
     again(screen, viewer(2));
   };
 
-  test("no iOS abrir nao fala, porque o foco ja le o contador; trocar de foto fala", () => {
+  test("on iOS opening does not speak, because focus already reads the counter; changing photo speaks", () => {
     expect(heardOn("ios", story)).toEqual(["2 de 4: Sala comercial, foto 2"]);
   });
 
-  test("no Android a troca sai so pela regiao viva", () => {
+  test("on Android the change goes out only through the live region", () => {
     expect(heardOn("android", story)).toEqual([]);
   });
 });
@@ -136,11 +136,11 @@ describe("FilterBar", () => {
     again(screen, bar([]));
   };
 
-  test("no iOS montar nao fala, e cada contagem nova fala", () => {
+  test("on iOS mounting does not speak, and each new count speaks", () => {
     expect(heardOn("ios", story)).toEqual(["1 filtro aplicado", "Nenhum filtro aplicado"]);
   });
 
-  test("no Android a contagem sai so pela regiao viva", () => {
+  test("on Android the count goes out only through the live region", () => {
     expect(heardOn("android", story)).toEqual([]);
   });
 });
@@ -160,11 +160,11 @@ describe("useToast", () => {
     act(() => byRole(screen, "button")[0]!.props.onPress());
   };
 
-  test("no iOS o aviso diz o titulo e a descricao quando aparece", () => {
+  test("on iOS the notice says the title and the description when it appears", () => {
     expect(heardOn("ios", story)).toEqual(["Nota emitida. Foi por e-mail."]);
   });
 
-  test("no Android o aviso sai so pela regiao viva", () => {
+  test("on Android the notice goes out only through the live region", () => {
     expect(heardOn("android", story)).toEqual([]);
   });
 });
@@ -188,11 +188,11 @@ describe("Carousel", () => {
     again(screen, carousel(2));
   };
 
-  test("no iOS montar nao fala, e cada slide novo fala", () => {
+  test("on iOS mounting does not speak, and each new slide speaks", () => {
     expect(heardOn("ios", story)).toEqual(["Slide 2 de 3", "Slide 3 de 3"]);
   });
 
-  test("com os pontos nao ha regiao viva, e o iOS tambem fica calado", () => {
+  test("with the dots there is no live region, and iOS stays silent too", () => {
     const heard = heardOn("ios", () => {
       const screen = render(carousel(0, true));
       again(screen, carousel(1, true));
@@ -200,7 +200,7 @@ describe("Carousel", () => {
     expect(heard).toEqual([]);
   });
 
-  test("no Android o slide sai so pela regiao viva", () => {
+  test("on Android the slide goes out only through the live region", () => {
     expect(heardOn("android", story)).toEqual([]);
   });
 });
@@ -234,11 +234,11 @@ describe("Conversation", () => {
     again(screen, conversation([...asked, { ...writing, text: "R$ 9.800,00 em julho.", streaming: false }]));
   };
 
-  test("no iOS a historia montada nao fala, e a resposta fala uma vez, ja inteira", () => {
+  test("on iOS the mounted history does not speak, and the reply speaks once, already complete", () => {
     expect(heardOn("ios", story)).toEqual(["E em julho?", "R$ 9.800,00 em julho."]);
   });
 
-  test("announcement troca o texto dito, e null espera", () => {
+  test("announcement changes the spoken text, and null waits", () => {
     const heard = heardOn("ios", () => {
       const said = (item: Item) => (item.streaming ? null : `Resposta: ${item.text}`);
       const screen = render(
@@ -263,13 +263,13 @@ describe("Conversation", () => {
     expect(heard).toEqual(["Resposta: Pronto"]);
   });
 
-  test("no Android a mensagem nova sai so pela regiao viva", () => {
+  test("on Android the new message goes out only through the live region", () => {
     expect(heardOn("android", story)).toEqual([]);
   });
 });
 
-describe("pecas sem regiao viva", () => {
-  test("o PromptInput continua anunciando o teto no Android, como antes", () => {
+describe("pieces without a live region", () => {
+  test("PromptInput keeps announcing the ceiling on Android, as before", () => {
     const field = (value: string) => (
       <PromptInput value={value} onValueChange={() => {}} onSubmit={() => {}} maxLength={5} />
     );

@@ -72,7 +72,7 @@ afterEach(() => {
   document.documentElement.style.removeProperty("--rc-signature-paper");
 });
 
-test("um traco com o mouse vira pontos nas unidades do desenho, e o valor sai ao soltar", () => {
+test("a mouse stroke becomes points in drawing units, and the value comes out on release", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { pad } = mount({ onValueChange });
 
@@ -100,7 +100,7 @@ test("um traco com o mouse vira pontos nas unidades do desenho, e o valor sai ao
   expect(pad.querySelectorAll("path")).toHaveLength(1);
 });
 
-test("o botao direito do mouse nao desenha, e o segundo dedo nao abre outro traco no meio do primeiro", () => {
+test("the right mouse button does not draw, and a second finger does not start another stroke in the middle of the first", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { pad } = mount({ onValueChange });
 
@@ -121,7 +121,7 @@ test("o botao direito do mouse nao desenha, e o segundo dedo nao abre outro trac
   expect(value.kind === "drawn" && value.strokes[0]!.map(({ x }) => x)).toEqual([20, 160]);
 });
 
-test("a caneta grava a pressao, e o mouse e o dedo nao inventam uma", () => {
+test("the pen records pressure, and the mouse and finger do not invent one", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { pad } = mount({ onValueChange });
 
@@ -135,7 +135,7 @@ test("a caneta grava a pressao, e o mouse e o dedo nao inventam uma", () => {
   expect("pressure" in value.strokes[1]![0]!).toBe(false);
 });
 
-test("vazia, a area mostra a guia, os botoes ficam inativos e o campo escondido vai vazio", () => {
+test("empty, the area shows the guide, the buttons are inactive and the hidden field is sent empty", () => {
   const { container, pad } = mount({ name: "assinatura" });
 
   expect(pad.getAttribute("aria-label")).toBe("Nenhuma assinatura");
@@ -147,7 +147,7 @@ test("vazia, a area mostra a guia, os botoes ficam inativos e o campo escondido 
   expect(tokens(pad.querySelector("line")!)).toContain("stroke-signature-guide");
 });
 
-test("desfazer tira o ultimo traco, e desfazer o unico devolve null", () => {
+test("undo removes the last stroke, and undoing the only one returns null", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { pad } = mount({ onValueChange });
 
@@ -165,7 +165,7 @@ test("desfazer tira o ultimo traco, e desfazer o unico devolve null", () => {
   expect(screen.getByText("Assine aqui")).toBeTruthy();
 });
 
-test("limpar devolve null, avisa o leitor de tela e leva o foco para o botao que continua vivo", () => {
+test("clear returns null, notifies the screen reader and moves focus to the button that stays enabled", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { pad } = mount({ onValueChange });
 
@@ -179,7 +179,7 @@ test("limpar devolve null, avisa o leitor de tela e leva o foco para o botao que
   expect(document.activeElement).toBe(screen.getByRole("button", { name: "Digitar assinatura" }));
 });
 
-test("com name, o campo escondido leva o SVG com um caminho por traco", () => {
+test("with name, the hidden field carries the SVG with one path per stroke", () => {
   const { container, pad } = mount({ name: "assinatura" });
   draw(pad, [[10, 50], [60, 50], [120, 30]]);
   draw(pad, [[200, 50]]);
@@ -190,7 +190,7 @@ test("com name, o campo escondido leva o SVG com um caminho por traco", () => {
   expect(hidden.value).toContain('viewBox="0 0 600 200"');
 });
 
-test("digitar assinatura troca o desenho pelo nome em cursiva, e voltar devolve os tracos", () => {
+test("typing the signature swaps the drawing for the name in cursive, and going back restores the strokes", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { pad } = mount({ onValueChange, font: '"Great Vibes", cursive' });
 
@@ -228,13 +228,13 @@ test("digitar assinatura troca o desenho pelo nome em cursiva, e voltar devolve 
   expect(onValueChange.mock.lastCall![0]).toMatchObject({ kind: "typed", text: "Ana" });
 });
 
-test("defaultMode type abre no nome digitado, para quem nao desenha", () => {
+test("defaultMode type opens on the typed name, for people who do not draw", () => {
   mount({ defaultMode: "type" });
   expect(screen.getByLabelText("Nome para a assinatura")).toBeTruthy();
   expect(screen.getByRole("button", { name: "Desenhar assinatura" })).toBeTruthy();
 });
 
-test("desabilitada, nao desenha, trava os botoes e o nome, e pinta a guia inativa", () => {
+test("disabled, it does not draw, locks the buttons and the name, and paints the guide inactive", () => {
   const onValueChange = mock((_value: SignatureValue | null) => {});
   const { group, pad } = mount({ onValueChange, disabled: true });
 
@@ -247,7 +247,7 @@ test("desabilitada, nao desenha, trava os botoes e o nome, e pinta a guia inativ
   expect(tokens(screen.getByText("Assine aqui"))).not.toContain("text-signature-guide");
 });
 
-test("so leitura exibe a assinatura sem botoes e sem desenho", () => {
+test("read-only shows the signature without buttons and without drawing", () => {
   const value: SignatureValue = {
     kind: "drawn",
     strokes: [[{ x: 10, y: 100, time: 0 }, { x: 80, y: 120, time: 16 }]],
@@ -263,7 +263,7 @@ test("so leitura exibe a assinatura sem botoes e sem desenho", () => {
   expect(pad.querySelectorAll("path")).toHaveLength(1);
 });
 
-test("dentro do Field, o grupo leva o nome do rotulo, a instrucao e a descricao", () => {
+test("inside a Field, the group carries the label name, the instruction and the description", () => {
   const { group } = mount();
   const label = screen.getByText("Assinatura do locatário");
 
@@ -274,7 +274,7 @@ test("dentro do Field, o grupo leva o nome do rotulo, a instrucao e a descricao"
   expect(texts.some((text) => text?.includes("Digitar assinatura"))).toBe(true);
 });
 
-test("fora do Field, sem nome dado, o grupo se chama Assinatura", () => {
+test("outside a Field, with no given name, the group is named Assinatura", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <SignaturePad />
@@ -283,7 +283,7 @@ test("fora do Field, sem nome dado, o grupo se chama Assinatura", () => {
   expect(container.querySelector("[role='group']")!.getAttribute("aria-label")).toBe("Assinatura");
 });
 
-test("invalid pinta a moldura de perigo e anuncia, e o Field invalido liga sozinho", () => {
+test("invalid paints the danger frame and announces, and an invalid Field turns it on by itself", () => {
   const { group, pad } = mount({ invalid: true });
   expect(group.getAttribute("aria-invalid")).toBe("true");
   expect(tokens(pad)).toContain("border-danger");
@@ -322,7 +322,7 @@ function Contract({ onSubmit }: { onSubmit: (data: { signature: SignatureValue |
   );
 }
 
-test("no FormField com o forValue, vazio e sem assinatura e o erro do schema aparece", async () => {
+test("in a FormField with forValue, empty means no signature and the schema error shows", async () => {
   const onSubmit = mock((_data: { signature: SignatureValue | null }) => {});
   const view = render(<Contract onSubmit={onSubmit} />);
 
@@ -338,7 +338,7 @@ test("no FormField com o forValue, vazio e sem assinatura e o erro do schema apa
   expect(onSubmit.mock.calls[0]![0].signature?.kind).toBe("drawn");
 });
 
-test("controlada, a peca desenha o value e nao guarda nada por conta propria", () => {
+test("controlled, the component draws value and keeps nothing on its own", () => {
   function Controlled() {
     const [value, setValue] = useState<SignatureValue | null>(null);
     return (
@@ -358,7 +358,7 @@ test("controlada, a peca desenha o value e nao guarda nada por conta propria", (
   expect(pad.querySelectorAll("path")).toHaveLength(0);
 });
 
-test("o SVG exportado sai com a tinta do token, escura, e nunca com a cor do tema", () => {
+test("the exported SVG comes out with the token ink, dark, and never with the theme color", () => {
   document.documentElement.style.setProperty("--rc-signature-ink", "#0b0d0f");
   document.documentElement.style.setProperty("--rc-signature-paper", "#ffffff");
   const value: SignatureValue = {
@@ -376,7 +376,7 @@ test("o SVG exportado sai com a tinta do token, escura, e nunca com a cor do tem
   expect(signatureToSvg(null)).toBe("");
 });
 
-test("o SVG do nome digitado leva a fonte e escapa o texto", () => {
+test("the typed name SVG carries the font and escapes the text", () => {
   const svg = signatureSvg(
     { kind: "typed", text: 'Ana & "Bia" <Souza>', font: '"Great Vibes", cursive', width: 600, height: 200 },
     { ink: "black" },
@@ -386,7 +386,7 @@ test("o SVG do nome digitado leva a fonte e escapa o texto", () => {
   expect(svg).toContain('text-anchor="middle"');
 });
 
-test("o PNG desenha cada traco no canvas com a tinta, e o nome com fillText", async () => {
+test("the PNG draws each stroke on the canvas with the ink, and the name with fillText", async () => {
   const fills: string[] = [];
   const texts: string[] = [];
   const context = {
@@ -430,7 +430,7 @@ test("o PNG desenha cada traco no canvas com a tinta, e o nome com fillText", as
   }
 });
 
-test("o traco rapido afina e a caneta apertada engrossa", () => {
+test("a fast stroke thins and a pressed pen thickens", () => {
   const slow = [
     { x: 0, y: 0, time: 0 },
     { x: 4, y: 0, time: 40 },
@@ -447,7 +447,7 @@ test("o traco rapido afina e a caneta apertada engrossa", () => {
   expect(strokeWidths(heavy)[1]!).toBeGreaterThan(strokeWidths(light)[1]!);
 });
 
-test("ponto sozinho vira bolinha, ponto colado no anterior nao entra, e vazio e vazio", () => {
+test("a lone point becomes a dot, a point stuck to the previous one is dropped, and empty is empty", () => {
   expect(strokePath([{ x: 10, y: 10, time: 0 }])).toMatch(/^M[\d.]+ 10A.*Z$/);
   const stroke = [{ x: 10, y: 10, time: 0 }];
   expect(extendStroke(stroke, { x: 10.5, y: 10.5, time: 8 })).toBe(stroke);
@@ -457,7 +457,7 @@ test("ponto sozinho vira bolinha, ponto colado no anterior nao entra, e vazio e 
   expect(isSignatureEmpty({ kind: "drawn", strokes: [[]], width: 600, height: 200 })).toBe(true);
 });
 
-test("nome longo encolhe a fonte e, no limite, espreme para caber na linha", () => {
+test("a long name shrinks the font and, at the limit, squeezes to fit the line", () => {
   const short = typedLayout("Ana", 600, 200);
   const long = typedLayout("Maria Aparecida dos Santos Figueiredo de Albuquerque", 600, 200);
   expect(long.fontSize).toBeLessThan(short.fontSize);
@@ -465,7 +465,7 @@ test("nome longo encolhe a fonte e, no limite, espreme para caber na linha", () 
   expect(typedLayout("x".repeat(200), 600, 200).fit).toBe(504);
 });
 
-test("a guarda do papel da assinatura reprova a tinta clara, que sairia invertida no documento", () => {
+test("the signature paper guard rejects light ink, which would come out inverted on the document", () => {
   const good = checkSignaturePaper("casa", {
     ink: "#0b0d0f",
     paper: "#ffffff",
@@ -480,7 +480,7 @@ test("a guarda do papel da assinatura reprova a tinta clara, que sairia invertid
     guide: "#6c737b",
     disabled: "#b9bfc6",
   });
-  expect(inverted.some((finding) => !finding.ok && finding.line.includes("invertida"))).toBe(true);
+  expect(inverted.some((finding) => !finding.ok && finding.line.includes("inverted"))).toBe(true);
 });
 
 function Resettable({ initial = null }: { initial?: SignatureValue | null }) {
@@ -496,7 +496,7 @@ function Resettable({ initial = null }: { initial?: SignatureValue | null }) {
   );
 }
 
-test("o pai zerar o value apaga o nome do campo, e a proxima letra nao herda o nome antigo", () => {
+test("the parent resetting value erases the field name, and the next letter does not inherit the old name", () => {
   const view = render(<Resettable />);
   const { pad } = parts(view.container);
   draw(pad, [[10, 50], [60, 50]]);
@@ -516,7 +516,7 @@ test("o pai zerar o value apaga o nome do campo, e a proxima letra nao herda o n
   expect(pad.querySelectorAll("path")).toHaveLength(0);
 });
 
-test("limpar um nome que veio de fora continua no modo de digitar", () => {
+test("clearing a name that came from outside stays in typing mode", () => {
   render(
     <Resettable initial={{ kind: "typed", text: "Ana", font: "cursive", width: 600, height: 200 }} />,
   );
@@ -529,7 +529,7 @@ test("limpar um nome que veio de fora continua no modo de digitar", () => {
   expect(document.activeElement).toBe(input);
 });
 
-test("desfazer duas vezes seguidas muda o texto da regiao viva, para o leitor anunciar de novo", () => {
+test("undoing twice in a row changes the live region text, so the reader announces again", () => {
   const { pad } = mount();
   draw(pad, [[10, 50], [60, 50]]);
   draw(pad, [[10, 80], [60, 20]]);

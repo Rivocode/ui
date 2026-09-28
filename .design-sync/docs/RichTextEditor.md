@@ -1,22 +1,22 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # RichTextEditor
 
-O campo de texto com formatação: negrito, itálico, sublinhado, tachado,
-código, dois níveis de título, listas, citação, bloco de código e link, com
-desfazer, refazer e limpar formatação. Entrega o documento em HTML, e o
-`RichTextView` exibe o que ele salvou com a mesma tipografia. Vive em
-`@rivocode/ui/editor`, sobre o Tiptap 3.
+The text field with formatting: bold, italic, underline, strikethrough, code,
+two heading levels, lists, quote, code block and link, with undo, redo and
+clear formatting. It delivers the document as HTML, and `RichTextView` displays
+what it saved with the same typography. It lives in `@rivocode/ui/editor`, on
+top of Tiptap 3.
 
 ```bash
 npm install @tiptap/react @tiptap/pm @tiptap/core @tiptap/starter-kit @tiptap/extensions
 ```
 
-Os cinco são peers **opcionais**: quem não importa `@rivocode/ui/editor` não
-instala nenhum, e o resto da biblioteca não os alcança (`check:chart` guarda a
-fronteira, como faz com a Recharts).
+The five are **optional** peers: whoever does not import `@rivocode/ui/editor`
+installs none of them, and the rest of the library does not reach them
+(`check:chart` guards the boundary, as it does with Recharts).
 
 ```tsx
 import { Field, FieldLabel, FieldDescription } from '@rivocode/ui'
@@ -36,86 +36,87 @@ const [descricao, setDescricao] = useState('')
 </Field>
 ```
 
-## O valor
+## The value
 
-`value` e `defaultValue` são HTML, e `onValueChange` devolve o documento
-inteiro em HTML a cada mudança. **O editor em branco entrega string vazia**, e
-não `<p></p>`: é o que deixa `z.string().min(1)` recusar o campo vazio sem
-regra especial.
+`value` and `defaultValue` are HTML, and `onValueChange` returns the whole
+document as HTML on every change. **The blank editor delivers an empty
+string**, not `<p></p>`: that is what lets `z.string().min(1)` reject the empty
+field with no special rule.
 
-Trocar o `value` por fora substitui o documento sem disparar
-`onValueChange`, então o campo controlado não entra em laço.
+Changing `value` from outside replaces the document without firing
+`onValueChange`, so the controlled field does not loop.
 
-`onJsonChange` entrega o mesmo documento no formato JSON do Tiptap. Guarde o
-JSON quando o texto for exibido no celular ou precisar ser lido por máquina; o
-`RichTextView` lê os dois formatos.
+`onJsonChange` delivers the same document in Tiptap's JSON format. Store the
+JSON when the text will be displayed on the phone or needs to be read by a
+machine; `RichTextView` reads both formats.
 
-Com `name`, o HTML viaja num `input` escondido, e o campo entra no envio de um
-`<form>` comum.
+With `name`, the HTML travels in a hidden `input`, and the field joins the
+submission of a plain `<form>`.
 
-## Barra de ferramentas e atalhos
+## Toolbar and shortcuts
 
-A barra é uma `Toolbar`: **uma parada de Tab só**, e as setas andam entre os
-botões. Cada botão de estado é um `Toggle` com `aria-pressed`, agrupado num
-`ToggleGroup` com nome ("Estilo do texto", "Títulos", "Listas", "Blocos"), e
-cada um diz o próprio atalho em `aria-keyshortcuts` e na dica que abre ao
-pousar ou focar.
+The bar is a `Toolbar`: **a single Tab stop**, and the arrows move between the
+buttons. Each state button is a `Toggle` with `aria-pressed`, grouped in a
+named `ToggleGroup` ("Estilo do texto", "Títulos", "Listas", "Blocos"), and
+each one states its own shortcut in `aria-keyshortcuts` and in the tooltip that
+opens on hover or focus.
 
-Em tela estreita a barra quebra **por grupo**, e nunca no meio de um: desfazer,
-refazer e limpar formatação descem juntos, e o separador entre grupos some
-quando o grupo seguinte abre a linha.
+On a narrow screen the bar wraps **by group**, and never in the middle of one:
+undo, redo and clear formatting move down together, and the separator between
+groups disappears when the next group opens the line.
 
-| Ação | Atalho |
+| Action | Shortcut |
 |---|---|
-| Negrito, itálico, sublinhado | `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`U` |
-| Tachado, código | `Ctrl`+`Shift`+`S`, `Ctrl`+`E` |
-| Título, subtítulo | `Ctrl`+`Alt`+`2`, `Ctrl`+`Alt`+`3` |
-| Lista com marcadores, numerada | `Ctrl`+`Shift`+`8`, `Ctrl`+`Shift`+`7` |
-| Citação, bloco de código | `Ctrl`+`Shift`+`B`, `Ctrl`+`Alt`+`C` |
+| Bold, italic, underline | `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`U` |
+| Strikethrough, code | `Ctrl`+`Shift`+`S`, `Ctrl`+`E` |
+| Heading, subheading | `Ctrl`+`Alt`+`2`, `Ctrl`+`Alt`+`3` |
+| Bulleted list, numbered list | `Ctrl`+`Shift`+`8`, `Ctrl`+`Shift`+`7` |
+| Quote, code block | `Ctrl`+`Shift`+`B`, `Ctrl`+`Alt`+`C` |
 | Link | `Ctrl`+`K` |
-| Desfazer, refazer | `Ctrl`+`Z`, `Ctrl`+`Shift`+`Z` |
-| Limpar formatação | `Ctrl`+`\` |
+| Undo, redo | `Ctrl`+`Z`, `Ctrl`+`Shift`+`Z` |
+| Clear formatting | `Ctrl`+`\` |
 
-No Mac, `Ctrl` é `⌘`. Título e subtítulo saem como `h2` e `h3`: o `h1` é da
-página em volta, e um campo de formulário não disputa o esboço dela. HTML
-colado com `h1` ou `h4` vira parágrafo.
+On the Mac, `Ctrl` is `⌘`. Heading and subheading come out as `h2` and `h3`:
+the `h1` belongs to the surrounding page, and a form field does not compete
+with its outline. Pasted HTML with `h1` or `h4` becomes a paragraph.
 
 ## Link
 
-`Ctrl`+`K` ou o botão abre um painel com o endereço. O que se digita sem
-protocolo ganha o que falta: `rivocode.com.br` vira `https://rivocode.com.br`,
-e `nf@rivocode.com.br` vira `mailto:`. **Só passam `http`, `https`, `mailto`,
-`tel` e endereço relativo**; `javascript:` é recusado com a explicação no
-próprio campo. Com o cursor dentro de um link, o botão fica pressionado, com
-`aria-pressed="true"`, e o painel traz "Remover link".
+`Ctrl`+`K` or the button opens a panel with the address. What is typed without
+a protocol gets what is missing: `rivocode.com.br` becomes
+`https://rivocode.com.br`, and `nf@rivocode.com.br` becomes `mailto:`. **Only
+`http`, `https`, `mailto`, `tel` and relative addresses pass**; `javascript:`
+is rejected with the explanation in the field itself. With the cursor inside a
+link, the button stays pressed, with `aria-pressed="true"`, and the panel
+offers "Remover link".
 
-O painel é um formulário próprio, e o envio dele não envia o formulário em
-volta do editor.
+The panel is a form of its own, and submitting it does not submit the form
+around the editor.
 
-## Colar
+## Pasting
 
-Colar do Word, do Google Docs ou de uma página não traz cor, fonte, tamanho,
-classe nem imagem: o documento só aceita o que a barra sabe fazer, e o resto
-cai no caminho. O negrito de verdade fica; o negrito falso que o Google Docs
-põe em volta de tudo, não.
+Pasting from Word, Google Docs or a web page brings no color, font, size, class
+or image: the document only accepts what the bar knows how to do, and the rest
+falls away. Real bold stays; the fake bold Google Docs wraps around everything
+does not.
 
-## Limite
+## Limit
 
-`maxLength` conta **caracteres de texto**, e não o HTML: `<strong>Nota</strong>`
-conta 4. O contador aparece no rodapé, é lido pelo leitor de tela como "120 de
-2000 caracteres" ao entrar no campo, e passa ao tom de perigo no teto, com o
-aviso "Limite de 2000 caracteres atingido." numa região educada. A digitação e
-a colagem que passariam do teto são recusadas.
+`maxLength` counts **text characters**, not HTML: `<strong>Nota</strong>`
+counts 4. The counter shows in the footer, is read by the screen reader as "120
+de 2000 caracteres" on entering the field, and turns to the danger tone at the
+ceiling, with the notice "Limite de 2000 caracteres atingido." in a polite
+region. Typing and pasting that would go past the ceiling are rejected.
 
-Conteúdo salvo maior que o teto abre inteiro, e só aceita apagar: cortar o
-texto de alguém ao abrir é perda de dado silenciosa.
+Saved content longer than the ceiling opens whole, and only accepts deleting:
+cutting someone's text on opening is silent data loss.
 
-## No formulário
+## In a form
 
-Dentro de `Field`, o `FieldLabel` nomeia o texto, o `FieldDescription` e o
-`FieldError` o descrevem, e o `invalid` do `Field` pinta a moldura e anuncia
-`aria-invalid`. Com o `@rivocode/ui/form`, o adaptador é o `forValue`, mais o
-`onBlur` para o campo contar como tocado:
+Inside `Field`, `FieldLabel` names the text, `FieldDescription` and
+`FieldError` describe it, and the `Field`'s `invalid` paints the frame and
+announces `aria-invalid`. With `@rivocode/ui/form`, the adapter is `forValue`,
+plus `onBlur` so the field counts as touched:
 
 ```tsx
 import { Form, FormField, forValue, useZodForm } from '@rivocode/ui/form'
@@ -140,37 +141,38 @@ function ServiceForm() {
 }
 ```
 
-O `defaultValues` com string vazia não é detalhe: sem ele o `value` chega
-`undefined` no primeiro desenho, e o editor começa não controlado.
+The `defaultValues` with an empty string is not a detail: without it `value`
+arrives `undefined` on the first render, and the editor starts uncontrolled.
 
-Fora de `Field`, dê o nome com `aria-label` e pinte o erro com `invalid`.
+Outside `Field`, give the name with `aria-label` and paint the error with
+`invalid`.
 
-## Estados
+## States
 
-- **`readOnly`**: a barra some, o texto continua selecionável e copiável, e o
-  campo anuncia `aria-readonly`.
-- **`disabled`**: barra e texto travados, no tom apagado, com `aria-disabled`.
-  Dentro de um `Field` desabilitado, trava sozinho.
-- **`invalid`**: moldura de perigo e `aria-invalid`.
-- **Carregando no servidor**: o editor não monta no servidor
-  (`immediatelyRender: false`), e no lugar dele sai o conteúdo já formatado,
-  pelo `RichTextView`. A página renderizada no servidor mostra o texto no
-  primeiro desenho, e ele vira editável quando o JavaScript chega.
+- **`readOnly`**: the bar disappears, the text stays selectable and copyable,
+  and the field announces `aria-readonly`.
+- **`disabled`**: bar and text locked, in the dimmed tone, with
+  `aria-disabled`. Inside a disabled `Field`, it locks on its own.
+- **`invalid`**: danger frame and `aria-invalid`.
+- **Loading on the server**: the editor does not mount on the server
+  (`immediatelyRender: false`), and in its place comes the already formatted
+  content, through `RichTextView`. A server-rendered page shows the text on the
+  first paint, and it becomes editable when the JavaScript arrives.
 
-## O que chega ao servidor
+## What reaches the server
 
-O HTML sai de um editor que só escreve o que a barra sabe fazer, e o
-`RichTextView` só exibe isso. Mas o servidor recebe o que o navegador mandar,
-e **quem chama a sua API não é obrigado a usar o editor**. Se o HTML salvo for
-exibido por outro caminho (e-mail, PDF, `dangerouslySetInnerHTML`), passe-o
-por um sanitizador no servidor, como o `sanitize-html` ou o DOMPurify, com a
-mesma lista de tags. O `RichTextView` não precisa disso: ele não usa
-`innerHTML`.
+The HTML comes from an editor that only writes what the bar knows how to do,
+and `RichTextView` only displays that. But the server receives whatever the
+browser sends, and **whoever calls your API is not required to use the
+editor**. If the saved HTML is displayed by another path (email, PDF,
+`dangerouslySetInnerHTML`), run it through a sanitizer on the server, such as
+`sanitize-html` or DOMPurify, with the same tag list. `RichTextView` does not
+need this: it does not use `innerHTML`.
 
-## Nomes
+## Names
 
-Os nomes da barra, do painel e do contador saem em português, e `labels` troca
-os que vierem, um por um:
+The names of the bar, the panel and the counter come out in Portuguese, and
+`labels` swaps whichever ones you pass, one by one:
 
 ```tsx
 <RichTextEditor
@@ -183,28 +185,28 @@ os que vierem, um por um:
 />
 ```
 
-## Partes
+## Parts
 
-`classNames` alcança `toolbar`, `content` (a área editável), `footer` e `count`.
-A altura mínima é de três controles; para rolar por dentro, dê o teto pela
-parte: `classNames={{ content: 'max-h-96 overflow-y-auto' }}`.
+`classNames` reaches `toolbar`, `content` (the editable area), `footer` and
+`count`. The minimum height is three controls; to scroll inside, set the
+ceiling through the part: `classNames={{ content: 'max-h-96 overflow-y-auto' }}`.
 
-## Quando não usar
+## When not to use
 
-- **Observação, motivo, comentário curto** é `Textarea`. Texto sem negrito nem
-  lista não precisa de barra de ferramentas, e o `Textarea` guarda texto puro,
-  que qualquer sistema lê. O `RichTextEditor` guarda HTML.
-- **Mensagem para um assistente** é `PromptInput`: Enter envia. No
-  `RichTextEditor`, Enter abre parágrafo novo.
-- **Mostrar o que foi salvo** é `RichTextView`. Um `RichTextEditor` com
-  `readOnly` carrega o Tiptap inteiro para exibir texto parado.
+- **A note, a reason, a short comment** is `Textarea`. Text with no bold and no
+  lists does not need a toolbar, and `Textarea` stores plain text, which any
+  system reads. `RichTextEditor` stores HTML.
+- **A message to an assistant** is `PromptInput`: Enter sends. In
+  `RichTextEditor`, Enter opens a new paragraph.
+- **Showing what was saved** is `RichTextView`. A `RichTextEditor` with
+  `readOnly` loads all of Tiptap to display static text.
 
-## No React Native
+## In React Native
 
-Não porta, por decisão, e não é fila: a pergunta que faltaria decidir não é de gesto, é de motor.
+Does not port, by decision, and it is not queued: the question left to decide is not about gesture, it is about the engine.
 
-**O editor do web não atravessa.** Ele é o Tiptap sobre o ProseMirror, que vive do `contenteditable` do navegador, e o React Native não tem `contenteditable`. As duas saídas são outro produto: um `WebView` com o mesmo editor dentro, que traz o `react-native-webview` como peer de módulo nativo, teclado e seleção que não são os do sistema, e texto que o leitor de tela lê pelo caminho da página e não pelo do app; ou uma biblioteca de texto rico nativa, que não lê nem escreve o mesmo documento. Nenhuma das duas é a mesma peça com outra API.
+**The web editor does not cross over.** It is Tiptap on top of ProseMirror, which lives on the browser's `contenteditable`, and React Native has no `contenteditable`. The two ways out are another product: a `WebView` with the same editor inside, which brings `react-native-webview` as a native module peer, a keyboard and selection that are not the system's, and text the screen reader reads through the page's path and not the app's; or a native rich text library, which neither reads nor writes the same document. Neither is the same piece with another API.
 
-**E a barra é superfície de mesa.** Ela é uma `Toolbar`, que também não porta: uma parada de tabulação com seta entre os botões, sobre uma seleção feita com o ponteiro. No toque, formatar um trecho é selecionar com o dedo que cobre o trecho, e quinze botões não cabem acima do teclado.
+**And the toolbar is a desktop surface.** It is a `Toolbar`, which also does not port: a single tab stop with arrows between the buttons, over a selection made with the pointer. On touch, formatting a snippet means selecting with the finger that covers the snippet, and fifteen buttons do not fit above the keyboard.
 
-**No celular, a resposta é dividir o trabalho.** O que se escreve no telefone é texto curto, e o campo é o `Textarea`. O que foi escrito formatado no web se lê com o `RichTextView`, que porta sem peer e lê o mesmo HTML e o mesmo JSON.
+**On the phone, the answer is to split the work.** What gets written on the phone is short text, and the field is `Textarea`. What was written formatted on the web is read with `RichTextView`, which ports with no peer and reads the same HTML and the same JSON.

@@ -16,15 +16,15 @@ export type CalendarPassthrough = Pick<CalendarProps, "locale" | "showOutsideDay
 
 type DatePickerDateValue = {
   /**
-   * A data escolhida, quando quem usa controla o estado. Aceita `Date` ou
-   * `aaaa-mm-dd`, e o `onValueChange` responde no mesmo formato.
+   * The chosen date, when the consumer controls the state. Accepts a `Date` or
+   * `aaaa-mm-dd`, and `onValueChange` answers in the same format.
    */
   value?: Date;
-  /** A data inicial, quando o componente controla o proprio estado. `Date` ou `aaaa-mm-dd`. */
+  /** The initial date, when the component controls its own state. `Date` or `aaaa-mm-dd`. */
   defaultValue?: Date;
   /**
-   * Chamado quando a data muda, pela digitacao ou pelo Aplicar. Com `Date`,
-   * vem `undefined` quando o campo esvazia; com `aaaa-mm-dd`, vem `""`.
+   * Called when the date changes, by typing or by Aplicar. With a `Date`,
+   * `undefined` comes when the field empties; with `aaaa-mm-dd`, `""` comes.
    */
   onValueChange?: (date: Date | undefined) => void;
 };
@@ -38,32 +38,32 @@ type DatePickerBase = Omit<
   "value" | "defaultValue" | "onChange" | "onValueChange" | "size" | "min" | "max"
 > &
   CalendarPassthrough & {
-    /** Tamanho do campo, o mesmo vocabulario do Input. */
+    /** The field's size, the same vocabulary as Input. */
     size?: "sm" | "md" | "lg";
     /**
-     * O primeiro dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. Vale para o
-     * calendario e para o que se digita.
+     * The first accepted day, inclusive, as a `Date` or `aaaa-mm-dd`. Applies to the
+     * calendar and to what is typed.
      */
     min?: Date | string;
     /**
-     * O ultimo dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. Vale para o
-     * calendario e para o que se digita.
+     * The last accepted day, inclusive, as a `Date` or `aaaa-mm-dd`. Applies to the
+     * calendar and to what is typed.
      */
     max?: Date | string;
-    /** Dias que nao podem ser escolhidos, nem no calendario nem digitados no campo. */
+    /** Days that cannot be picked, neither in the calendar nor typed into the field. */
     disabledDays?: CalendarProps["disabled"];
     /**
-     * Rodape com Limpar e Aplicar. Desligado por padrao, ao contrario do
-     * `DateRangePicker`: data unica se escolhe num clique so, entao o clique no
-     * dia ja vale e o painel fecha, sem saida dupla a evitar. Ligue quando a
-     * escolha dispara trabalho caro, como recarregar uma listagem.
+     * Footer with Limpar and Aplicar. Off by default, unlike
+     * `DateRangePicker`: a single date is picked in one click, so the click on the
+     * day already counts and the panel closes, with no double output to avoid. Turn it on when the
+     * choice triggers expensive work, like reloading a listing.
      */
     confirm?: boolean;
     /**
-     * Os textos da peca, para trocar o idioma: `open` e o nome do botao do
-     * calendario, `title` o titulo do painel, `clear` e `apply` os dois botoes
-     * do rodape do `confirm`. Os nomes dos meses e dos dias vem do `locale`.
-     * Passe so os que mudam.
+     * The piece's texts, to change the language: `open` is the name of the calendar
+     * button, `title` the panel's title, `clear` and `apply` the two buttons
+     * of the `confirm` footer. The month and day names come from `locale`.
+     * Pass only the ones that change.
      */
     labels?: Partial<DatePickerLabels>;
   };

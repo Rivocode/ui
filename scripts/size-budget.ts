@@ -1,61 +1,61 @@
 /**
- * O orcamento de tamanho do pacote, em bytes de gzip, com o motivo de cada
- * numero. Quem confere e o `check:size` (`scripts/check-package-size.ts`).
+ * The package size budget, in gzip bytes, with the reason for each number.
+ * The one that checks it is `check:size` (`scripts/check-package-size.ts`).
  *
- * Todo limite nasceu como o medido em 24/09/2026 mais 10%, arredondado para
- * cima na centena de bytes. Os 10% sao a folga do que ninguem decide: o
- * minificador e o gzip mudam de versao - a CI roda `bun-version: latest` -, e
- * um ajuste de classe numa peca mexe em dezenas de bytes. Acima disso o
- * crescimento e escolha, e escolha se escreve aqui.
+ * Every limit was born as the value measured on 24/09/2026 plus 10%, rounded
+ * up to the hundred bytes. The 10% is the slack for what nobody decides: the
+ * minifier and gzip change versions - CI runs `bun-version: latest` -, and a
+ * class tweak in a piece moves dozens of bytes. Beyond that, growth is a
+ * choice, and a choice gets written here.
  *
- * Para subir um limite de proposito: no MESMO commit que fez crescer, troque o
- * `limit` pelo numero que a guarda sugere (o medido mais 10%) e reescreva o
- * `why` dizendo o que entrou e por que vale o peso. O piso vale ao contrario:
- * medida abaixo de 80% do limite reprova, e o limite desce no commit que
- * encolheu.
+ * To raise a limit on purpose: in the SAME commit that made it grow, replace
+ * `limit` with the number the guard suggests (the measured value plus 10%) and
+ * rewrite `why` saying what came in and why it is worth the weight. The floor
+ * works the other way: a measurement below 80% of the limit fails, and the
+ * limit goes down in the commit that shrank it.
  */
 export type Budget = { limit: number; why: string };
 
 /**
- * A linha do tree-shaking. `mark` e uma classe que so o `Button` escreve: o
- * pacote medido tem que conte-la, senao o numero e de um arquivo vazio.
+ * The tree-shaking line. `mark` is a class only the `Button` writes: the
+ * measured package has to contain it, otherwise the number is of an empty file.
  */
 export const BUTTON_ALONE = {
-  name: "Button sozinho",
+  name: "Button alone",
   mark: "motion-safe:active:scale-[0.985]",
 };
 
 export const BUDGET: Record<string, Budget> = {
   ".": {
     limit: 159_900,
-    why: "Subiu em 24/09/2026 de 113,9 para 141,9 KB, com as treze pecas da 0.18.0; medido por peca, com as dependencias de fora: Gantt 18,2 KB (datas, rolagem virtual e setas de dependencia, sem peer - fica na raiz porque, com o tree-shaking, so paga quem importa), SignaturePad 6,0, TransferList 5,8, Tour 4,6, ScrollToTop 3,4, TableOfContents 2,5, Affix 1,4, Spoiler 1,1 e Highlight 0,9. Antes: 113,9 KB em 153 arquivos: as pecas do indice da raiz, sem dependencia nenhuma - Base UI, TanStack, react-day-picker e tailwind-merge sao de quem instala e ficam de fora da conta. Quase ninguem baixa isto inteiro; e o teto de quem importa tudo, e o que cresce a cada peca nova. Peca nova que custa mais que uns 2 KB em gzip merece a pergunta de se nao e subcaminho.",
+    why: "Went up on 24/09/2026 from 113.9 to 141.9 KB, with the thirteen pieces of 0.18.0; measured per piece, with dependencies left out: Gantt 18.2 KB (dates, virtual scrolling and dependency arrows, no peer - it stays in the root because, with tree-shaking, only whoever imports it pays), SignaturePad 6.0, TransferList 5.8, Tour 4.6, ScrollToTop 3.4, TableOfContents 2.5, Affix 1.4, Spoiler 1.1 and Highlight 0.9. Before: 113.9 KB in 153 files: the pieces of the root index, with no dependency at all - Base UI, TanStack, react-day-picker and tailwind-merge belong to whoever installs and stay out of the count. Almost nobody downloads all of this; it is the ceiling for whoever imports everything, and it is what grows with each new piece. A new piece that costs more than about 2 KB gzipped deserves the question of whether it should be a subpath.",
   },
   "./styles.css": {
     limit: 20_200,
-    why: "18,2 KB: a CSS que o Tailwind gera das classes das pecas, mais os tokens dos dois temas e das duas densidades. Todo mundo baixa ela inteira, em toda tela, e por isso o limite e o mais apertado em proporcao ao que entrega. Em 25/09/2026 ela tinha chegado a 19,4 KB (98% do limite) e desceu 1,3 KB sem mudar um pixel dos 56 retratos: 0,8 KB do espaco em branco que o `compactCss` (scripts/compact-css.ts) tira - o `--minify` do Tailwind foi medido e recusado, porque quantiza o alfa das cores e mudou a borda do Gantt -, e 0,4 KB de catorze regras que nenhuma peca usa: o scanner lia como classe o `filter(` de array, o `\"resize\"` de evento, o `\"table\"` de tag e o `outline` de nome de variante, e o `.filter`, o `.blur` e o `.invert` arrastavam treze `@property`. Elas saem pelo `@source not inline` de src/styles.css, e o `check:classes` acusa se uma delas virar classe de verdade.",
+    why: "18.2 KB: the CSS Tailwind generates from the pieces' classes, plus the tokens of both themes and both densities. Everyone downloads all of it, on every screen, and that is why this limit is the tightest in proportion to what it delivers. On 25/09/2026 it had reached 19.4 KB (98% of the limit) and went down 1.3 KB without changing a pixel of the 56 portraits: 0.8 KB of whitespace that `compactCss` (scripts/compact-css.ts) removes - Tailwind's `--minify` was measured and refused, because it quantizes the alpha of colors and changed the Gantt border -, and 0.4 KB of fourteen rules no piece uses: the scanner read as a class the array `filter(`, the event `\"resize\"`, the tag `\"table\"` and the variant name `outline`, and `.filter`, `.blur` and `.invert` dragged in thirteen `@property`. They leave through the `@source not inline` of src/styles.css, and `check:classes` flags it if one of them becomes a real class.",
   },
   "./form": {
     limit: 2_700,
-    why: "2,3 KB: a ponte com o react-hook-form e o zod, que sao peers opcionais e nao entram na conta. O subcaminho e pequeno de proposito - quem nao usa formulario nao paga nem isto.",
+    why: "2.3 KB: the bridge to react-hook-form and zod, which are optional peers and do not enter the count. The subpath is small on purpose - whoever does not use forms does not even pay this.",
   },
   "./chart": {
     limit: 24_400,
-    why: "Subiu em 26/09/2026 de 21,2 para 21,7 KB medidos (limite com folga de 10%) com o vazio dos graficos e a dica da rosca fora do buraco: o `empty` com EmptyState na rosca, no funil, no mapa e na grade de calor, o aviso de sem dados do ChartContainer, o anel de fundo e o posicionamento da dica da rosca, e o nome seguro da variavel de cor da serie. Subiu em 24/09/2026 de 10,7 para 19,7 KB com os quatro graficos sem Recharts da 0.18.0: ChartTreemap 4,1 KB (o layout squarified), ChartHeatmap 4,0, ChartGauge 2,3 e ChartFunnel 1,9. Antes, 10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
+    why: "Went up on 26/09/2026 from 21.2 to 21.7 KB measured (limit with 10% slack) with the charts' empty state and the donut tooltip outside the hole: the `empty` with EmptyState in the donut, the funnel, the map and the heat grid, the no-data notice of ChartContainer, the background ring and the positioning of the donut tooltip, and the safe name of the series color variable. Went up on 24/09/2026 from 10.7 to 19.7 KB with the four Recharts-free charts of 0.18.0: ChartTreemap 4.1 KB (the squarified layout), ChartHeatmap 4.0, ChartGauge 2.3 and ChartFunnel 1.9. Before, 10.7 KB: the dressing of Recharts, which is an optional peer and stays out. The weight of Recharts is the reason this code lives in a subpath and not in the root index (`check:chart`).",
   },
   "./ai": {
     limit: 13_700,
-    why: "Subiu em 26/09/2026 de 11,7 para 12,1 KB com o contexto de camada (src/lib/layer.tsx), que as pecas flutuantes de que o subcaminho depende passaram a ler para abrir acima de quem as abriu - um Select dentro de um Dialog abria escondido atras dele. Antes, 10,9 KB: as pecas de conversa com modelo. Subcaminho sem peer, separado pelo peso: quem nao tem tela de IA nao paga os 10 KB.",
+    why: "Went up on 26/09/2026 from 11.7 to 12.1 KB with the layer context (src/lib/layer.tsx), which the floating pieces the subpath depends on started reading to open above whoever opened them - a Select inside a Dialog opened hidden behind it. Before, 10.9 KB: the pieces for conversation with a model. Subpath without a peer, split out for its weight: whoever has no AI screen does not pay the 10 KB.",
   },
   "./dnd": {
     limit: 11_400,
-    why: "Subiu em 26/09/2026 de 9,7 para 10,1 KB com o contexto de camada (src/lib/layer.tsx): o cartao arrastado do Kanban le o degrau de quem o contem e passa por cima do Dialog ou da Sheet onde o quadro mora. Antes, 9,1 KB: o arrastar e soltar sobre o dnd-kit, que e peer opcional e fica fora da conta.",
+    why: "Went up on 26/09/2026 from 9.7 to 10.1 KB with the layer context (src/lib/layer.tsx): the Kanban's dragged card reads the step of whoever contains it and passes over the Dialog or Sheet where the board lives. Before, 9.1 KB: drag and drop on top of dnd-kit, which is an optional peer and stays out of the count.",
   },
   "./editor": {
     limit: 19_900,
-    why: "17,6 KB: a barra, os comandos e o `RichTextView` sobre o Tiptap 3, que e peer opcional e fica fora.",
+    why: "17.6 KB: the toolbar, the commands and `RichTextView` on top of Tiptap 3, which is an optional peer and stays out.",
   },
-  "Button sozinho": {
+  "Button alone": {
     limit: 13_900,
-    why: "12,3 KB, e 36,9 KB minificados, com as dependencias DENTRO e so os peers de fora: o Button, o `cn` com o tailwind-merge (a maior parte), o `useRender` da Base UI e o cva. Antes do `unbundle` no tsdown.config.ts este numero era 129 KB, porque o indice unico arrastava a Base UI inteira. Se ele pular para a casa das centenas, o tree-shaking quebrou de novo - e o `sideEffects` do package.json e o primeiro lugar a olhar.",
+    why: "12.3 KB, and 36.9 KB minified, with dependencies INSIDE and only the peers left out: the Button, `cn` with tailwind-merge (most of it), Base UI's `useRender` and cva. Before `unbundle` in tsdown.config.ts this number was 129 KB, because the single index dragged in all of Base UI. If it jumps to the hundreds, tree-shaking broke again - and the `sideEffects` of package.json is the first place to look.",
   },
 };

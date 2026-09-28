@@ -2,7 +2,7 @@ import { Badge, Button, Field, FieldLabel, Input, Stack } from '@rivocode/ui'
 
 const TAGS = ['Serviço', 'Recorrente', 'ISS retido', 'Simples Nacional', 'Prefeitura de João Pessoa']
 
-/** Coluna de campos */
+/** Column of fields */
 export function Column() {
   return (
     <Stack gap="lg" className="w-80">
@@ -22,7 +22,7 @@ export function Column() {
   )
 }
 
-/** Linha que quebra */
+/** A row that wraps */
 export function RowThatWraps() {
   return (
     <Stack direction="row" gap="xs" wrap className="w-72">
@@ -33,7 +33,7 @@ export function RowThatWraps() {
   )
 }
 
-/** Título e ação nas pontas */
+/** Title and action at the ends */
 export function SpaceBetween() {
   return (
     <Stack direction="row" align="center" justify="between" className="w-96">
@@ -45,7 +45,7 @@ export function SpaceBetween() {
   )
 }
 
-/** Como lista */
+/** As a list */
 export function AsList() {
   return (
     <Stack render={<ul />} gap="sm" className="w-64 text-base text-fg">

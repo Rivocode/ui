@@ -17,13 +17,13 @@ import {
 } from "../src/components/menu";
 
 /*
- * O menu que escolhe, e nao so o que age.
+ * The menu that chooses, and not only the one that acts.
  *
- * "Quais colunas mostrar" e "ordenar por" so davam para montar com um Popover
- * e Checkbox soltos dentro. O que se perdia nao era estilo: o `aria-checked`
- * de cada linha, que e como o leitor de tela diz se a coluna esta ligada, e a
- * navegacao de menu, que anda por seta e por primeira letra. Os dois vem de
- * graca da Base UI e ficavam do lado de dentro do pacote.
+ * "Which columns to show" and "sort by" could only be built with a Popover
+ * and loose Checkboxes inside. What was lost was not style: the `aria-checked`
+ * of each row, which is how the screen reader says whether the column is on,
+ * and menu navigation, which moves by arrow and by first letter. Both come for
+ * free from Base UI and were sitting inside the package.
  */
 
 function withTheme(node: React.ReactNode) {
@@ -47,7 +47,7 @@ function ColumnsMenu() {
   );
 }
 
-test("a coluna ligada se anuncia ligada, e a desligada desligada", () => {
+test("the column that is on announces itself on, and the one that is off, off", () => {
   withTheme(<ColumnsMenu />);
 
   const items = screen.getAllByRole("menuitemcheckbox");
@@ -55,7 +55,7 @@ test("a coluna ligada se anuncia ligada, e a desligada desligada", () => {
   expect(items.map((item) => item.getAttribute("aria-checked"))).toEqual(["true", "true", "false"]);
 });
 
-test("marcar uma coluna nao fecha o menu, porque quem escolhe colunas escolhe varias", () => {
+test("checking a column does not close the menu, because whoever picks columns picks several", () => {
   withTheme(<ColumnsMenu />);
 
   const amount = screen.getByRole("menuitemcheckbox", { name: "Valor" });
@@ -67,17 +67,17 @@ test("marcar uma coluna nao fecha o menu, porque quem escolhe colunas escolhe va
   expect(screen.getAllByRole("menuitemcheckbox")).toHaveLength(3);
 });
 
-test("a marca tem coluna propria, que existe mesmo no item desmarcado", () => {
-  // Sem uma coluna que existe sempre, ligar uma linha empurrava o texto de
-  // todas as outras para o lado: o indicador da Base UI so monta quando o item
-  // esta marcado.
+test("the check mark has its own column, which exists even on the unchecked item", () => {
+  // Without a column that always exists, turning on a row pushed the text of
+  // all the others sideways: the Base UI indicator only mounts when the item
+  // is checked.
   const { container } = withTheme(<ColumnsMenu />);
 
   const marks = container.ownerDocument.querySelectorAll('[role="menuitemcheckbox"] > span.size-4');
   expect(marks).toHaveLength(3);
 });
 
-test("a coluna da marca tem nome de fora, como a trilha da barra", () => {
+test("the check mark column is named from outside, like the bar track", () => {
   withTheme(
     <Menu defaultOpen>
       <MenuTrigger aria-label="Colunas">Colunas</MenuTrigger>
@@ -91,10 +91,10 @@ test("a coluna da marca tem nome de fora, como a trilha da barra", () => {
   expect(mark.className).toContain("text-accent-text");
 });
 
-test("a marca apaga junto com o item desabilitado", () => {
-  // A regra das irmas: no Checkbox e no Radio a marca acompanha o controle
-  // apagado. Aqui ela ficava verde cheia ao lado de um texto apagado, e a
-  // coluna que nao pode ser desligada era a mais viva da lista.
+test("the check mark dims along with the disabled item", () => {
+  // The sibling rule: in Checkbox and Radio the mark follows the dimmed
+  // control. Here it stayed full green next to dimmed text, and the column
+  // that could not be turned off was the most vivid in the list.
   withTheme(
     <Menu defaultOpen>
       <MenuTrigger aria-label="Colunas">Colunas</MenuTrigger>
@@ -125,14 +125,14 @@ function SortMenu(props: { onValueChange?: (value: string) => void } = {}) {
   );
 }
 
-test("a escolha unica do menu marca uma opcao so, e diz qual", () => {
+test("the menu single choice marks only one option, and says which", () => {
   withTheme(<SortMenu />);
 
   const options = screen.getAllByRole("menuitemradio");
   expect(options.map((option) => option.getAttribute("aria-checked"))).toEqual(["true", "false"]);
 });
 
-test("escolher outra ordem desescolhe a anterior", () => {
+test("choosing another order unselects the previous one", () => {
   const seen: string[] = [];
   withTheme(<SortMenu onValueChange={(value) => seen.push(value)} />);
 
@@ -144,10 +144,10 @@ test("escolher outra ordem desescolhe a anterior", () => {
   ).toEqual(["false", "true"]);
 });
 
-test("o titulo do grupo nomeia o grupo, e nao fica solto ao lado dele", () => {
-  // O `label` vem junto porque a Base UI liga o `aria-labelledby` do grupo ao
-  // titulo que vive dentro dele. Titulo escrito por fora nao nomeia nada, e
-  // isso nao quebra teste de tipo nenhum.
+test("the group title names the group, and does not float loose next to it", () => {
+  // The `label` comes along because Base UI wires the group's `aria-labelledby`
+  // to the title that lives inside it. A title written outside names nothing,
+  // and that breaks no type check at all.
   withTheme(<SortMenu />);
 
   const group = screen.getByRole("group");
@@ -176,14 +176,14 @@ function BranchMenu() {
   );
 }
 
-test("o ramo fechado nao entrega os itens de dentro", () => {
+test("the closed branch does not render the items inside", () => {
   withTheme(<BranchMenu />);
 
   expect(screen.getByText("Exportar")).toBeDefined();
   expect(screen.queryByText("XML")).toBeNull();
 });
 
-test("o item que abre o ramo se anuncia como quem tem menu embaixo", () => {
+test("the item that opens the branch announces itself as having a menu below", () => {
   withTheme(<BranchMenu />);
 
   const branch = screen.getByRole("menuitem", { name: "Exportar" });
@@ -198,9 +198,9 @@ test("o item que abre o ramo se anuncia como quem tem menu embaixo", () => {
   expect(screen.getByText("XML")).toBeDefined();
 });
 
-test("o item que navega sai como ancora de verdade", () => {
-  // O ganho e o que so a ancora tem: botao do meio em outra aba, botao direito
-  // copia o endereco, e a barra do navegador mostra para onde ele leva.
+test("the item that navigates renders as a real anchor", () => {
+  // The gain is what only an anchor has: middle click opens another tab, right
+  // click copies the address, and the browser bar shows where it leads.
   withTheme(
     <Menu defaultOpen>
       <MenuTrigger aria-label="Conta">Conta</MenuTrigger>

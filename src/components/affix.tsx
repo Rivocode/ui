@@ -56,28 +56,28 @@ const toLength = (value: AffixOffset | undefined) =>
 
 export type AffixProps = ComponentPropsWithoutRef<"div"> & {
   /**
-   * Onde a peca gruda, em cada lado: numero e pixel, texto e qualquer medida
-   * do CSS (`"var(--rc-pad-panel)"`, `"2rem"`). Lado sem valor fica solto.
+   * Where the piece sticks, on each side: a number is pixels, text is any CSS
+   * measure (`"var(--rc-pad-panel)"`, `"2rem"`). A side without a value stays loose.
    */
   position?: AffixPosition;
   /**
-   * Em relacao a que a peca gruda. `fixed` e a janela, e e o padrao;
-   * `absolute` e o ancestral posicionado mais proximo, para grudar numa caixa
-   * que rola por dentro, e nesse caso nao ha portal.
+   * What the piece sticks relative to. `fixed` is the window, and is the default;
+   * `absolute` is the nearest positioned ancestor, to stick inside a box
+   * that scrolls internally, and in that case there is no portal.
    */
   strategy?: "fixed" | "absolute";
   /**
-   * Renderiza no container de portal do `RivoProvider`, fora da arvore. Livra
-   * a peca de ancestral com `transform` ou `overflow`, que prenderiam o
-   * `fixed`. So vale com `strategy="fixed"`.
+   * Renders in the `RivoProvider` portal container, outside the tree. Frees
+   * the piece from an ancestor with `transform` or `overflow`, which would trap
+   * `fixed`. Only applies with `strategy="fixed"`.
    */
   withinPortal?: boolean;
-  /** A camada de empilhamento, lida de `--rc-z-*`. `sticky` fica abaixo de menu, folha e dialogo. */
+  /** The stacking layer, read from `--rc-z-*`. `sticky` stays below menu, sheet and dialog. */
   layer?: AffixLayer;
   /**
-   * Reserva a altura da peca no `scroll-padding` da pagina, do lado em que ela
-   * gruda, para o foco do teclado nunca parar escondido atras dela. Ligado por
-   * padrao; so vale com `strategy="fixed"`.
+   * Reserves the piece's height in the page's `scroll-padding`, on the side where it
+   * sticks, so keyboard focus never stops hidden behind it. On by
+   * default; only applies with `strategy="fixed"`.
    */
   reserveSpace?: boolean;
 };

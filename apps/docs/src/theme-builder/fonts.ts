@@ -1,19 +1,20 @@
 /* ---------------------------------------------------------------------------
- * As familias que o montador oferece
+ * The families the builder offers
  *
- * A lista e curada e embutida: nenhuma chamada a API do Google Fonts, que
- * exige chave, e nenhuma familia que ninguem conferiu. Cada linha foi medida
- * em 24/09/2026 contra tres fontes - a API publica do Fontsource (categoria,
- * pesos, se e variavel), o registro do npm (o pacote `@fontsource-variable/*`
- * ou `@fontsource/*` existe) e o css2 do Google Fonts (o pedido com os pesos
- * da lista responde 200). O pacote `@expo-google-fonts/*` de cada uma tambem
- * existe, e exporta `<Familia sem espaco>_<peso><Nome>`, que e de onde sai o
- * nome do trecho do React Native.
+ * The list is curated and built in: no call to the Google Fonts API, which
+ * requires a key, and no family nobody checked. Each line was measured on
+ * 2026-09-24 against three sources - the Fontsource public API (category,
+ * weights, whether it is variable), the npm registry (the
+ * `@fontsource-variable/*` or `@fontsource/*` package exists) and Google
+ * Fonts css2 (the request with the listed weights answers 200). Each one's
+ * `@expo-google-fonts/*` package also exists, and exports
+ * `<Family without spaces>_<weight><Name>`, which is where the name in the
+ * React Native snippet comes from.
  *
- * `weights` e a lista de faces estaticas que a familia publica. Para a
- * variavel, e o que o eixo `wght` cobre em passos de cem. Pedir ao css2 um
- * peso que a familia nao tem devolve 400 e nenhuma face, por isso o link so
- * pede a intersecao com os pesos que as pecas usam.
+ * `weights` is the list of static faces the family publishes. For a variable
+ * one, it is what the `wght` axis covers in steps of a hundred. Asking css2
+ * for a weight the family does not have returns 400 and no face, which is why
+ * the link only asks for the intersection with the weights the pieces use.
  * ------------------------------------------------------------------------- */
 
 import TOKENS from '../../../../native/tokens.json'
@@ -102,17 +103,18 @@ export const FAMILIES: FontFamily[] = [
 ]
 
 /* ---------------------------------------------------------------------------
- * Os pesos que as pecas pedem
+ * The weights the pieces ask for
  *
- * As pecas nao escrevem `font-semibold`: escrevem a intencao (`font-rc-medium`,
- * `font-rc-display`), e o numero mora em `--rc-weight-*`, no `forma.css`. O
- * valor da casa vem do `tokens.json` do nativo, que e gerado daquele CSS, para
- * o montador nao ter uma segunda tabela que envelhece calada.
+ * The pieces do not write `font-semibold`: they write the intent
+ * (`font-rc-medium`, `font-rc-display`), and the number lives in
+ * `--rc-weight-*`, in `forma.css`. The house value comes from the native
+ * `tokens.json`, which is generated from that CSS, so the builder does not
+ * have a second table that goes stale silently.
  *
- * Quatro das cinco intencoes vestem o corpo, e a de titulo veste a familia de
- * titulo: e por essa familia que cada token e conferido. O `Kbd` tambem pede
- * `font-rc-medium` na familia de codigo, mas o token e um so para as tres, e o
- * corpo e quem mais o usa.
+ * Four of the five intents dress the body, and the display one dresses the
+ * display family: it is against that family that each token is checked.
+ * `Kbd` also asks for `font-rc-medium` in the code family, but the token is
+ * one for all three, and the body is its main user.
  * ------------------------------------------------------------------------- */
 
 export type WeightIntent = 'regular' | 'medium' | 'strong' | 'bold' | 'display'
@@ -135,7 +137,7 @@ export const WEIGHT_ROLE: Record<WeightIntent, FontRole> = {
 export const weightToken = (intent: WeightIntent) => `--rc-weight-${intent}`
 export const weightClass = (intent: WeightIntent) => `font-rc-${intent}`
 
-/** Os numeros que as pecas pedem com o tema da casa, sem repeticao e em ordem. */
+/** The numbers the pieces ask for with the house theme, without repeats and in order. */
 export const USED_WEIGHTS = [...new Set(Object.values(HOUSE_WEIGHTS))].sort((a, b) => a - b)
 
 export const ROLE_CATEGORIES: Record<FontRole, FontCategory[]> = {
@@ -153,7 +155,7 @@ export function familyOf(id: string): FontFamily | undefined {
   return FAMILIES.find((family) => family.id === id)
 }
 
-/** A familia escolhida para o papel, se for uma da lista e servir a ele. */
+/** The family chosen for the role, if it is one from the list and suits it. */
 export function chosenFamily(role: FontRole, choice: FontChoice): FontFamily | undefined {
   const family = familyOf(choice)
   return family && ROLE_CATEGORIES[role].includes(family.category) ? family : undefined
@@ -163,10 +165,10 @@ export const packageOf = (family: FontFamily) =>
   `${family.variable ? '@fontsource-variable' : '@fontsource'}/${family.id}`
 
 /*
- * O fontsource registra a variavel como "Inter Variable" e a estatica como
- * "Lato"; o css2 do Google registra "Inter". A pilha leva os dois nomes da
- * variavel, e assim o mesmo tema serve a quem instala o pacote e a quem cola
- * o link do Google, sem editar o token.
+ * Fontsource registers the variable one as "Inter Variable" and the static one
+ * as "Lato"; Google's css2 registers "Inter". The stack carries both names of
+ * the variable one, so the same theme serves whoever installs the package and
+ * whoever pastes the Google link, without editing the token.
  */
 export const cssNamesOf = (family: FontFamily) =>
   family.variable ? [`${family.family} Variable`, family.family] : [family.family]
@@ -183,7 +185,7 @@ export const SYSTEM_STACK: Record<FontRole, string> = {
   mono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
 }
 
-/** A pilha do token, ou nada quando o papel fica com a fonte da casa. */
+/** The token's stack, or nothing when the role keeps the house font. */
 export function stackOf(role: FontRole, choice: FontChoice): string | undefined {
   if (choice === 'system') return SYSTEM_STACK[role]
   const family = chosenFamily(role, choice)
@@ -208,15 +210,16 @@ export function applyFonts<T extends Record<string, string>>(tokens: T, fonts: F
 }
 
 /* ---------------------------------------------------------------------------
- * O peso que falta
+ * The missing weight
  *
- * O navegador nao recusa um peso que a familia nao tem: ele procura o vizinho
- * pela regra de casamento da CSS Fonts 4, e sintetiza negrito quando o pedido
- * e 600 ou mais e o vizinho achado e mais leve que isso. O montador faz a mesma
- * conta ANTES, e escreve o vizinho no token de peso: a Lato no titulo sai com
- * `--rc-weight-display: 700`, e a DM Serif Display, que so tem 400, sai com
- * 400. O pedido passa a ser um peso que a familia tem, e o negrito sintetico
- * deixa de existir, em vez de virar aviso.
+ * The browser does not refuse a weight the family lacks: it looks for the
+ * neighbor by CSS Fonts 4's matching rule, and synthesizes bold when the
+ * request is 600 or more and the neighbor found is lighter than that. The
+ * builder does the same math BEFORE, and writes the neighbor into the weight
+ * token: Lato in the display role comes out with `--rc-weight-display: 700`,
+ * and DM Serif Display, which only has 400, comes out with 400. The request
+ * becomes a weight the family has, and synthetic bold stops existing, instead
+ * of becoming a warning.
  * ------------------------------------------------------------------------- */
 
 export function nearestWeight(available: number[], desired: number): number {
@@ -234,7 +237,7 @@ export function nearestWeight(available: number[], desired: number): number {
 
 export type WeightFit = { intent: WeightIntent; wanted: number; falls: number; synthetic: boolean }
 
-/** Os tokens de peso do papel que a familia nao tem, com o vizinho que o montador escreve. */
+/** The role's weight tokens the family lacks, with the neighbor the builder writes. */
 export function weightFits(role: FontRole, family: FontFamily): WeightFit[] {
   return WEIGHT_INTENTS.filter((intent) => WEIGHT_ROLE[intent] === role).flatMap((intent) => {
     const wanted = HOUSE_WEIGHTS[intent]
@@ -244,7 +247,7 @@ export function weightFits(role: FontRole, family: FontFamily): WeightFit[] {
   })
 }
 
-/** O que o tema declara de peso: so o token cuja familia nao tem o numero da casa. */
+/** What the theme declares for weight: only the token whose family lacks the house number. */
 export function weightTokens(fonts: FontState): Record<string, string> {
   const tokens: Record<string, string> = {}
   for (const role of FONT_ROLES) {
@@ -255,18 +258,18 @@ export function weightTokens(fonts: FontState): Record<string, string> {
   return tokens
 }
 
-/** As faces que a familia precisa baixar: o vizinho de cada peso que as pecas pedem. */
+/** The faces the family needs to download: the neighbor of each weight the pieces ask for. */
 export const facesOf = (family: FontFamily) =>
   [...new Set(USED_WEIGHTS.map((weight) => nearestWeight(family.weights, weight)))].sort((a, b) => a - b)
 
 /* ---------------------------------------------------------------------------
- * O que sai para o projeto
+ * What goes out to the project
  *
- * O papel que fica com a fonte da casa, num tema que troca outro papel, sai
- * com o pacote da propria familia, e nao com o `@rivocode/ui/fonts.css`: esse
- * arquivo traz as tres familias, e junto de uma fonte de cliente ele poe no
- * build as faces que o tema ja nao usa. As linhas abaixo sao as do
- * `src/tokens/themes/rivocode-fonts.css`, e o teste do montador cobra isso.
+ * A role that keeps the house font, in a theme that changes another role,
+ * goes out with its own family's package, not with `@rivocode/ui/fonts.css`:
+ * that file brings the three families, and next to a client font it puts into
+ * the build faces the theme no longer uses. The lines below are those of
+ * `src/tokens/themes/rivocode-fonts.css`, and the builder test enforces it.
  * ------------------------------------------------------------------------- */
 
 export const HOUSE_IMPORTS: Record<FontRole, string[]> = {
@@ -290,7 +293,7 @@ const importsOf = (family: FontFamily) =>
     ? [packageOf(family)]
     : facesOf(family).map((weight) => `${packageOf(family)}/latin-${weight}.css`)
 
-/** Os caminhos de `@import`, em ordem de papel e sem repeticao. */
+/** The `@import` paths, in role order and without repeats. */
 export function fontImports(fonts: FontState): string[] {
   if (allHouse(fonts)) return []
   return unique(
@@ -318,7 +321,7 @@ export function fontInstallCommand(fonts: FontState): string | undefined {
   return packages.length === 0 ? undefined : `bun add ${packages.join(' ')}`
 }
 
-/** As familias escolhidas da lista, sem repeticao: e o que o navegador precisa baixar. */
+/** The families chosen from the list, without repeats: what the browser needs to download. */
 export function chosenFamilies(fonts: FontState): FontFamily[] {
   const found: FontFamily[] = []
   for (const role of FONT_ROLES) {
@@ -339,12 +342,12 @@ export function googleFontsUrl(fonts: FontState): string | undefined {
 }
 
 /* ---------------------------------------------------------------------------
- * O React Native
+ * React Native
  *
- * No celular cada peso e um arquivo, registrado com um nome proprio. O
- * `RivoProvider` nativo recebe UM nome por papel, entao o trecho escolhe o
- * peso que cada papel mais usa: 400 no corpo e no codigo, 600 no titulo - o
- * mesmo que a casa carrega da Poppins -, caindo para 700 e depois 400.
+ * On mobile each weight is a file, registered under its own name. The native
+ * `RivoProvider` receives ONE name per role, so the snippet picks the weight
+ * each role uses most: 400 for body and code, 600 for display - the same the
+ * house loads from Poppins -, falling back to 700 and then 400.
  * ------------------------------------------------------------------------- */
 
 const WEIGHT_NAME: Record<number, string> = {

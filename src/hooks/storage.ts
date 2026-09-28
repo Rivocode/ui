@@ -43,13 +43,20 @@ function writeRaw(area: Area, key: string, raw: string | null) {
 }
 
 export type UseStorageOptions<T> = {
-  /** A chave no armazenamento. Duas chamadas com a mesma chave andam juntas, inclusive entre abas. */
+  /** The key in storage. Two calls with the same key move together, including across tabs. */
   key: string;
-  /** O valor enquanto nada foi gravado, no servidor e quando o gravado nao se le. Vale o do primeiro render de cada chave: literal novo a cada render nao muda o valor devolvido. */
+  /**
+   * The value while nothing has been stored, on the server and when the stored value cannot be
+   * read. The first render's value for each key applies: a new literal on every render does not
+   * change the returned value.
+   */
   defaultValue: T;
-  /** Como o valor vira texto. `JSON.stringify` por padrao. */
+  /** How the value becomes text. `JSON.stringify` by default. */
   serialize?: (value: T) => string;
-  /** Como o texto volta a valor. `JSON.parse` por padrao; se lancar, vale o `defaultValue`. */
+  /**
+   * How the text turns back into a value. `JSON.parse` by default; if it throws, `defaultValue`
+   * applies.
+   */
   deserialize?: (raw: string) => T;
 };
 

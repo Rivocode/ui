@@ -6,17 +6,18 @@ import { tokens } from "../tokens";
 import { act, byClass, byLabel, byRole, byType, render, textOf } from "./helpers";
 
 /*
- * O react-native-svg nao esta instalado onde a suite roda, e nao vai estar: ele
- * e peer OPCIONAL e modulo nativo, entao o unico lugar do repositorio que o
- * tem e `examples/native`, que nao e workspace - e onde o `check:native:types`
- * vai buscar os tipos. Aqui ele entra como duble, com cada elemento virando um
- * no host de mesmo nome, e e por isso que os testes abaixo procuram por "Path"
- * e "Circle" como se fossem tags.
+ * react-native-svg is not installed where the suite runs, and will not be: it
+ * is an OPTIONAL peer and a native module, so the only place in the repository
+ * that has it is `examples/native`, which is not a workspace - and where
+ * `check:native:types` goes to fetch the types. Here it comes in as a double,
+ * with each element becoming a host node of the same name, and that is why the
+ * tests below look for "Path" and "Circle" as if they were tags.
  *
- * O `mock.module` PRECISA correr antes de a peca ser avaliada, e `import` e
- * icado para o topo do arquivo: por isso as tres pecas entram por `await
- * import` logo abaixo, e nao pela linha de import que seria natural. Trocar de
- * volta faz o duble chegar tarde e o teste morrer em "Cannot find module".
+ * `mock.module` MUST run before the piece is evaluated, and `import` is
+ * hoisted to the top of the file: that is why the three pieces come in through
+ * `await import` right below, and not through the import line that would be
+ * natural. Switching back makes the double arrive late and the test die with
+ * "Cannot find module".
  */
 mock.module("react-native-svg", () => {
   const host = (name: string) => (props: Record<string, unknown>) => createElement(name, props);
@@ -50,7 +51,7 @@ const SLICES = [
   { natureza: "produto", total: 40 },
 ];
 
-/** Mede a moldura, que no telefone so tem largura depois do layout. */
+/** Measures the frame, which on the phone only has a width after layout. */
 function layout(screen: ReactTestRenderer, width: number, height: number) {
   const [box] = screen.root.findAll(
     (node) => typeof node.type === "string" && typeof node.props?.onLayout === "function",
@@ -58,22 +59,22 @@ function layout(screen: ReactTestRenderer, width: number, height: number) {
   act(() => box!.props.onLayout({ nativeEvent: { layout: { width, height } } }));
 }
 
-/** O `d` de cada caminho desenhado, na ordem. */
+/** The `d` of each drawn path, in order. */
 const paths = (screen: ReactTestRenderer) =>
   byType(screen, "Path").map((node) => String(node.props.d));
 
-/** O sinalizador de arco longo do comando `A`, que decide o lado do desenho. */
+/** The large-arc flag of the `A` command, which decides the side of the drawing. */
 function longFlag(d: string) {
   const arc = /A\s+[\d.-]+\s+[\d.-]+\s+\d+\s+(\d)/.exec(d);
   return Number(arc![1]);
 }
 
 /**
- * Em que angulo o caminho comeca, contado do topo e no sentido do relogio.
+ * At which angle the path starts, counted from the top and clockwise.
  *
- * Ler o angulo de volta do ponto - e nao comparar a string do `d` - e o que
- * deixa o teste falar da geometria que a tela mostra, sem reescrever a conta
- * da peca e concordar com ela por construcao.
+ * Reading the angle back from the point - and not comparing the `d` string -
+ * is what lets the test talk about the geometry the screen shows, without
+ * rewriting the piece's math and agreeing with it by construction.
  */
 function startAngle(d: string) {
   const move = /M\s+([\d.-]+)\s+([\d.-]+)/.exec(d)!;
@@ -87,7 +88,7 @@ describe("ChartContainer", () => {
     </ChartContainer>
   );
 
-  test("os quatro finais de uma consulta saem da moldura, e nao da tela", () => {
+  test("the four endings of a query come from the frame, not from the screen", () => {
     const waiting = render(
       <ChartContainer config={SERIES} isLoading>
         {() => null}
@@ -103,7 +104,7 @@ describe("ChartContainer", () => {
     expect(textOf(broken)).toContain("Não foi possível carregar o gráfico");
     expect(textOf(broken)).toContain("Tentar de novo");
 
-    // Sem `onRetry` o erro nao promete o que nao tem: nada acontece ao tocar.
+    // Without `onRetry` the error does not promise what it lacks: nothing happens on tap.
     const stuck = render(
       <ChartContainer config={SERIES} isError>
         {() => null}
@@ -126,11 +127,11 @@ describe("ChartContainer", () => {
     expect(textOf(nothing)).toContain("Sem emissões no período");
     expect(byType(nothing, "Marker").length).toBe(0);
 
-    // Com ponto, o desenho: o vazio nao pode roubar a tela de quem tem dado.
+    // With a point, the drawing: the empty state must not steal the screen from whoever has data.
     expect(byType(render(drawing()), "Svg").length + 1).toBeGreaterThan(0);
   });
 
-  test("as cores chegam resolvidas, pela chave da serie e na ordem da paleta", () => {
+  test("the colors arrive resolved, by series key and in palette order", () => {
     let seen: Record<string, string> = {};
     render(
       <ChartContainer
@@ -144,13 +145,13 @@ describe("ChartContainer", () => {
       </ChartContainer>,
     );
 
-    // Sem cor escrita, a proxima da paleta na ordem do config.
+    // Without a written color, the next one in the palette, in config order.
     expect(seen.pagas).toBe(dark["chart-1"]);
-    // Com papel escrito, o papel - e ja como valor, que e o que o SVG aceita.
+    // With a written role, the role - already as a value, which is what SVG accepts.
     expect(seen.vencidas).toBe(dark["chart-5"]);
   });
 
-  test("a medida chega zerada no primeiro quadro e verdadeira no seguinte", () => {
+  test("the measurement arrives as zero on the first frame and real on the next", () => {
     const sizes: { width: number; height: number }[] = [];
     const screen = render(
       <ChartContainer config={SERIES} data={[1]}>
@@ -165,13 +166,13 @@ describe("ChartContainer", () => {
     layout(screen, 320, 220);
     expect(sizes[sizes.length - 1]).toEqual({ width: 320, height: 220 });
 
-    // Medir de novo o mesmo tamanho nao troca a medida entregue: o `onLayout`
-    // dispara a cada relayout do pai, e nao so quando o tamanho muda.
+    // Measuring the same size again does not change the delivered measurement:
+    // `onLayout` fires on every parent relayout, not only when the size changes.
     layout(screen, 320, 220);
     expect(sizes[sizes.length - 1]).toEqual({ width: 320, height: 220 });
   });
 
-  test("caixa medida sem altura é acusada: o desenho recebeu height 0 e o cartão fica vazio", async () => {
+  test("a measured box with no height is flagged: the drawing got height 0 and the card stays empty", async () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
 
     try {
@@ -182,13 +183,13 @@ describe("ChartContainer", () => {
 
       expect(warn.mock.calls.length).toBe(1);
       expect(String(warn.mock.calls[0]![0])).toContain("[rivocode/ui-native]");
-      expect(String(warn.mock.calls[0]![0])).toContain("altura");
+      expect(String(warn.mock.calls[0]![0])).toContain("no height");
     } finally {
       warn.mockRestore();
     }
   });
 
-  test("altura medida cala a peça, e o zero antes do primeiro layout também", async () => {
+  test("a measured height silences the piece, and so does the zero before the first layout", async () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
 
     try {
@@ -204,7 +205,7 @@ describe("ChartContainer", () => {
     }
   });
 
-  test("o zero de um passe de layout intermediário não acusa: o passe seguinte cancela", async () => {
+  test("the zero of an intermediate layout pass is not flagged: the next pass cancels it", async () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
 
     try {
@@ -219,7 +220,7 @@ describe("ChartContainer", () => {
     }
   });
 
-  test("filho em JSX não é acusado por caixa chata: a peça de dentro tem tamanho próprio", async () => {
+  test("a JSX child is not flagged for a flat box: the inner piece has its own size", async () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
 
     try {
@@ -237,8 +238,8 @@ describe("ChartContainer", () => {
     }
   });
 
-  test("a moldura nomeia o desenho que ela mesma embrulha, e so esse", () => {
-    // Funcao: a moldura e dona do desenho, entao ela vira uma figura com nome.
+  test("the frame names the drawing it wraps itself, and only that one", () => {
+    // A function: the frame owns the drawing, so it becomes a named figure.
     const own = render(drawing());
     const [figure] = byRole(own, "image");
     expect(figure!.props.accessible).toBe(true);
@@ -252,9 +253,10 @@ describe("ChartContainer", () => {
     expect(byLabel(named, "Faturamento por mês").length).toBe(1);
 
     /*
-     * Filho em JSX e o caso oposto, e e o que protege a rosca: um `accessible`
-     * por cima dela fecharia as fatias numa parada so, e a legenda e a UNICA
-     * forma de ler valor no toque. Nenhum no da arvore pode estar agrupado.
+     * A JSX child is the opposite case, and it is what protects the donut: an
+     * `accessible` on top of it would close the slices into a single stop, and
+     * the legend is the ONLY way to read a value on touch. No node in the tree
+     * may be grouped.
      */
     const wrapped = render(
       <ChartContainer config={SERIES} data={SLICES}>
@@ -267,7 +269,7 @@ describe("ChartContainer", () => {
 });
 
 describe("ChartDonut", () => {
-  test("uma fatia por valor, e a fatia zerada nao desenha nada", () => {
+  test("one slice per value, and a zero slice draws nothing", () => {
     const screen = render(
       <ChartDonut
         data={[...SLICES, { natureza: "isento", total: 0 }]}
@@ -278,33 +280,33 @@ describe("ChartDonut", () => {
     expect(paths(screen)).toHaveLength(2);
   });
 
-  test("a fatia maior que meia volta sai desenhada pelo lado longo", () => {
+  test("a slice larger than half a turn is drawn along the long side", () => {
     const screen = render(<ChartDonut data={SLICES} valueKey="total" nameKey="natureza" />);
     const [first, second] = paths(screen);
 
-    // 60% sao 216 graus: pelo lado curto ela apareceria como 40%.
+    // 60% is 216 degrees: along the short side it would appear as 40%.
     expect(longFlag(first!)).toBe(1);
     expect(longFlag(second!)).toBe(0);
 
-    // E a primeira comeca no topo, que e onde a leitura de uma rosca comeca -
-    // deslocada de meia folga, que e o que separa uma fatia da vizinha.
+    // And the first one starts at the top, which is where reading a donut
+    // starts - offset by half a gap, which is what separates a slice from its neighbor.
     expect(startAngle(first!)).toBeCloseTo(1, 2);
   });
 
-  test("fatia unica e volta inteira, e volta inteira nao e arco", () => {
+  test("a single slice is a full turn, and a full turn is not an arc", () => {
     const screen = render(
       <ChartDonut data={[{ natureza: "servico", total: 9 }]} valueKey="total" nameKey="natureza" />,
     );
 
-    // Um comando `A` que comeca e termina no mesmo ponto nao desenha nada: a
-    // rosca sumiria justamente no caso mais simples.
+    // An `A` command that starts and ends at the same point draws nothing: the
+    // donut would vanish precisely in the simplest case.
     expect(paths(screen)).toHaveLength(0);
     expect(
       byType(screen, "Circle").filter((node) => node.props.stroke !== dark.border),
     ).toHaveLength(1);
   });
 
-  test("o valor do meio cabe no furo: uma linha, largura presa e fonte que encolhe", () => {
+  test("the center value fits in the hole: one line, fixed width and a shrinking font", () => {
     const pieces = [
       render(
         <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" centerValue="R$ 246,7K" />,
@@ -322,7 +324,7 @@ describe("ChartDonut", () => {
     }
   });
 
-  test("o toque na legenda acende a fatia, e o miolo escrito fica no meio", () => {
+  test("tapping the legend lights up the slice, and the written center stays in the middle", () => {
     const screen = render(
       <ChartDonut
         data={SLICES}
@@ -343,8 +345,8 @@ describe("ChartDonut", () => {
     const middle = byType(screen, "Text").find((node) => node.props.adjustsFontSizeToFit === true);
     expect(middle!.props.children).toBe("100");
 
-    // A fatia acesa fica opaca e a outra recua; nenhuma some, senao a rosca
-    // perde a proporcao que ela existe para mostrar.
+    // The lit slice stays opaque and the other recedes; none disappears, or the
+    // donut loses the proportion it exists to show.
     const [lit, dimmed] = byType(screen, "Path");
     expect(lit!.props.strokeOpacity).toBe(1);
     expect(dimmed!.props.strokeOpacity).toBeLessThan(1);
@@ -353,7 +355,7 @@ describe("ChartDonut", () => {
     expect(byType(screen, "Path").every((node) => node.props.strokeOpacity === 1)).toBe(true);
   });
 
-  test("sem miolo escrito, o meio vazio mostra a fatia lida", () => {
+  test("without a written center, the empty middle shows the slice being read", () => {
     const screen = render(
       <ChartDonut
         data={SLICES}
@@ -370,7 +372,7 @@ describe("ChartDonut", () => {
     expect(middle()[0]!.props.children).toBe("R$ 60");
   });
 
-  test("valor negativo aparece como veio na legenda e no leitor; so o arco usa o piso", () => {
+  test("a negative value appears as it came in the legend and the screen reader; only the arc uses the floor", () => {
     const screen = render(
       <ChartDonut
         data={[...SLICES, { natureza: "estorno", total: -15 }]}
@@ -396,7 +398,7 @@ describe("ChartDonut", () => {
     expect(byRole(unlabelled, "image")[0]!.props.accessibilityLabel).toContain("estorno -15");
   });
 
-  test("o anel de fundo fica sempre desenhado, com o token de borda", () => {
+  test("the background ring is always drawn, with the border token", () => {
     for (const data of [SLICES, [], [{ natureza: "servico", total: 0 }]]) {
       const screen = render(<ChartDonut data={data} valueKey="total" nameKey="natureza" />);
       const ring = byType(screen, "Circle").filter((node) => node.props.stroke === dark.border);
@@ -404,7 +406,7 @@ describe("ChartDonut", () => {
     }
   });
 
-  test("sem fatia, com legend false, o desenho nao anuncia uma rosca vazia", () => {
+  test("with no slice and legend false, the drawing does not announce an empty donut", () => {
     const screen = render(
       <ChartDonut data={[]} valueKey="total" nameKey="natureza" legend={false} />,
     );
@@ -412,7 +414,7 @@ describe("ChartDonut", () => {
     expect(textOf(screen)).not.toContain("Rosca");
   });
 
-  test("empty aparece no lugar da rosca com lista vazia ou soma zero", () => {
+  test("empty appears in place of the donut with an empty list or a zero sum", () => {
     const empty = { title: "Nada faturado", description: "Nenhuma nota no período." };
     for (const data of [[], [{ natureza: "servico", total: 0 }]]) {
       const screen = render(
@@ -427,7 +429,7 @@ describe("ChartDonut", () => {
     expect(textOf(full)).not.toContain("Nada faturado");
   });
 
-  test("com legenda o desenho cala, e cada fatia vira uma parada com nome e valor", () => {
+  test("with a legend the drawing goes silent, and each slice becomes a stop with name and value", () => {
     const screen = render(
       <ChartDonut
         data={SLICES}
@@ -449,7 +451,7 @@ describe("ChartDonut", () => {
       "Produto: R$ 40",
     ]);
 
-    // 44px: o alvo que a fatia de 2% jamais ofereceria.
+    // 44px: the target a 2% slice would never offer.
     expect(rows.every((row: ReactTestInstance) => /h-11/.test(row.props.className))).toBe(true);
     expect(rows[0]!.props.accessibilityState.selected).toBe(false);
 
@@ -457,7 +459,7 @@ describe("ChartDonut", () => {
     expect(byRole(screen, "button")[0]!.props.accessibilityState.selected).toBe(true);
   });
 
-  test("format aceita o nome do formatador da casa, como no web", () => {
+  test("format accepts the name of a house formatter, as on the web", () => {
     const screen = render(
       <ChartDonut
         data={[
@@ -475,7 +477,7 @@ describe("ChartDonut", () => {
     ).toEqual(["servico: R$\u00a02,5K", "produto: R$\u00a01,5K"]);
   });
 
-  test("sem legenda o dado tem que caber no nome, porque nao ha dica para abrir", () => {
+  test("without a legend the data has to fit in the name, because there is no tooltip to open", () => {
     const screen = render(
       <ChartDonut
         data={SLICES}
@@ -490,7 +492,7 @@ describe("ChartDonut", () => {
     const [figure] = byRole(screen, "image");
     expect(figure!.props.accessibilityLabel).toBe("Rosca: servico R$ 60, produto R$ 40");
 
-    // Com `label` escrito, ele vence: a rosca responde a pergunta da tela.
+    // With `label` written, it wins: the donut answers the screen's question.
     const asked = render(
       <ChartDonut
         data={SLICES}
@@ -503,7 +505,7 @@ describe("ChartDonut", () => {
     expect(byLabel(asked, "Faturamento por natureza")).toHaveLength(1);
   });
 
-  test("a espessura decide o anel, e `1` fecha a pizza", () => {
+  test("the thickness decides the ring, and `1` closes the pie", () => {
     const thin = render(
       <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" thickness={0.2} />,
     );
@@ -515,26 +517,26 @@ describe("ChartDonut", () => {
       Number(byType(screen, "Path")[0]!.props.strokeWidth);
 
     expect(bandOf(thin)).toBeCloseTo(44 * 0.2, 5);
-    // Espessura cheia: o traco vai do centro a borda, entao o buraco fecha.
+    // Full thickness: the stroke goes from the center to the edge, so the hole closes.
     expect(bandOf(solid)).toBeCloseTo(44, 5);
   });
 });
 
 describe("ChartRadial", () => {
-  test("o trilho fica sempre desenhado, e o arco do valor so quando ha valor", () => {
+  test("the track is always drawn, and the value arc only when there is a value", () => {
     const measured = render(<ChartRadial value={40} />);
     expect(paths(measured)).toHaveLength(2);
 
-    // Em zero, so a escala: ponta redonda num arco de comprimento zero vira um
-    // ponto aceso, que se le como "ja comecou". O caminho do valor continua
-    // montado, para poder voltar andando, mas sem traco e sem tinta.
+    // At zero, only the scale: a round cap on a zero-length arc becomes a lit
+    // dot, which reads as "already started". The value path stays mounted, so
+    // it can animate back, but with no stroke and no paint.
     const zero = render(<ChartRadial value={0} />);
     expect(paths(zero).filter(Boolean)).toHaveLength(1);
     const reach = byType(zero, "Path").find((node) => node.props.d === "")!;
     expect(reach.props.strokeOpacity).toBe(0);
   });
 
-  test("acima do maximo o arco para no fim, e nao da a volta", () => {
+  test("above the maximum the arc stops at the end, and does not wrap around", () => {
     const over = render(<ChartRadial value={130} max={100} sweep={270} />);
     const full = render(<ChartRadial value={100} max={100} sweep={270} />);
 
@@ -542,7 +544,7 @@ describe("ChartRadial", () => {
     expect(textOf(over)).toContain("100%");
   });
 
-  test("a volta inteira vira circulo, senao `sweep={360}` sai em branco", () => {
+  test("a full turn becomes a circle, otherwise `sweep={360}` comes out blank", () => {
     const screen = render(<ChartRadial value={100} sweep={360} />);
     expect(byType(screen, "Circle").length).toBe(1);
     const [reach] = paths(screen);
@@ -550,22 +552,22 @@ describe("ChartRadial", () => {
     expect(byType(screen, "Path")[0]!.props.strokeOpacity).toBe(1);
   });
 
-  test("o nome carrega a medida: sem ele, ouvir a peça nao diz nada", () => {
+  test("the name carries the measurement: without it, hearing the piece says nothing", () => {
     const measured = render(<ChartRadial value={82} centerLabel="da meta do mês" />);
     const [figure] = byRole(measured, "image");
     expect(figure!.props.accessible).toBe(true);
     expect(figure!.props.accessibilityLabel).toBe("82%, da meta do mês");
 
-    // O que esta escrito no meio vence a porcentagem calculada.
+    // What is written in the middle wins over the computed percentage.
     const written = render(<ChartRadial value={82} centerValue="8,2 GB" centerLabel="de 10 GB" />);
     expect(byLabel(written, "8,2 GB, de 10 GB")).toHaveLength(1);
 
-    // E o `label` vence os dois.
+    // And `label` wins over both.
     const asked = render(<ChartRadial value={82} centerLabel="da meta" label="Meta do mês" />);
     expect(byLabel(asked, "Meta do mês")).toHaveLength(1);
   });
 
-  test("o segmentado acende os tracinhos ate o valor e apaga o resto", () => {
+  test("the segmented variant lights the dashes up to the value and dims the rest", () => {
     const screen = render(
       <ChartRadial value={50} variant="segmented" segments={10} color="chart-3" />,
     );
@@ -576,17 +578,17 @@ describe("ChartRadial", () => {
     const lit = ticks.filter((tick: ReactTestInstance) => tick.props.stroke === dark["chart-3"]);
     expect(lit).toHaveLength(5);
 
-    // O apagado continua na tela: sem escala, traco aceso nao significa nada.
+    // The dimmed part stays on screen: without a scale, a lit dash means nothing.
     const off = ticks.filter((tick: ReactTestInstance) => tick.props.stroke === dark.skeleton);
     expect(off).toHaveLength(5);
 
-    // O primeiro traco abre o arco, e o ultimo o fecha, simetricos.
+    // The first dash opens the arc, and the last one closes it, symmetrically.
     expect(Number(ticks[0]!.props.rotation)).toBeCloseTo(-135, 5);
     expect(Number(ticks[9]!.props.rotation)).toBeCloseTo(135, 5);
   });
 });
 
-/** Uma marca qualquer, para dizer se o desenho entrou ou nao. */
+/** Any mark, to tell whether the drawing came in or not. */
 function Marker() {
   return null;
 }

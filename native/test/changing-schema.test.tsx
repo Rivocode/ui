@@ -76,8 +76,8 @@ async function waitFor(ready: () => boolean) {
   for (let round = 0; round < 60 && !ready(); round++) await tick(16);
 }
 
-describe("a paleta relê quando o esquema do documento muda", () => {
-  test("a classe escrita na raiz depois da montagem chega ao contexto", async () => {
+describe("the palette re-reads when the document scheme changes", () => {
+  test("a class written on the root after mounting reaches the context", async () => {
     onWeb();
     cleanRoot();
     sheet(
@@ -96,7 +96,7 @@ describe("a paleta relê quando o esquema do documento muda", () => {
     expect(seen.accent).toBe(NIGHT);
   });
 
-  test("o color-scheme escrito no style da raiz depois da montagem chega ao contexto", async () => {
+  test("a color-scheme written on the root style after mounting reaches the context", async () => {
     onWeb();
     cleanRoot();
     sheet(
@@ -115,7 +115,7 @@ describe("a paleta relê quando o esquema do documento muda", () => {
     expect(seen.accent).toBe(NIGHT);
   });
 
-  test("a folha que o app injeta sem tocar na raiz chega no quadro seguinte", async () => {
+  test("a stylesheet the app injects without touching the root arrives on the next frame", async () => {
     onWeb();
     cleanRoot();
     sheet(`.bg-accent { background-color: ${DAY}; }`);
@@ -129,7 +129,7 @@ describe("a paleta relê quando o esquema do documento muda", () => {
     expect(seen.accent).toBe(NIGHT);
   });
 
-  test("mexer na raiz sem mudar cor nenhuma não repinta o contexto", async () => {
+  test("touching the root without changing any color does not repaint the context", async () => {
     onWeb();
     cleanRoot();
     sheet(`.bg-accent { background-color: ${DAY}; }`);
@@ -149,7 +149,7 @@ describe("a paleta relê quando o esquema do documento muda", () => {
     expect(paints).toBe(quiet);
   });
 
-  test("o listener de prefers-color-scheme entra e sai junto com o provider", async () => {
+  test("the prefers-color-scheme listener comes and goes together with the provider", async () => {
     onWeb();
     cleanRoot();
     sheet(`.bg-accent { background-color: ${DAY}; }`);
@@ -186,7 +186,7 @@ describe("a paleta relê quando o esquema do documento muda", () => {
     expect(listeners.size).toBe(0);
   });
 
-  test("fora da web o caminho é inerte: nada de document, nada de aviso", async () => {
+  test("outside the web the path is inert: no document, no warning", async () => {
     const spoke = console.warn;
     const said: string[] = [];
     console.warn = (...args: unknown[]) => said.push(args.map(String).join(" "));

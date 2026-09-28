@@ -24,14 +24,14 @@ function classesOf(node: ReactTestInstance): string[] {
   return String(node.props.className ?? "").split(/\s+/);
 }
 
-test("o palco tem valor fixo, fora dos temas, e e escuro", () => {
+test("the stage has a fixed value, outside the themes, and is dark", () => {
   expect(MEDIA["media-stage"]).toBe(tokens.palette["p-graphite-950"]);
   for (const theme of Object.values(tokens.themes)) {
     for (const role of Object.keys(MEDIA)) expect(Object.keys(theme)).not.toContain(role);
   }
 });
 
-test("a tela cheia abre no palco escuro, e nao no fundo do tema", () => {
+test("full screen opens on the dark stage, not on the theme background", () => {
   const screen = render(<ImageViewer images={PHOTOS} index={0} onIndexChange={() => {}} />);
   const [modal] = byType(screen, "Modal");
   expect(modal).toBeDefined();
@@ -42,7 +42,7 @@ test("a tela cheia abre no palco escuro, e nao no fundo do tema", () => {
   expect(classesOf(layer)).not.toContain("bg-bg");
 });
 
-test("os controles, o contador e a legenda vestem o palco", () => {
+test("the controls, the counter and the caption wear the stage", () => {
   const screen = render(<ImageViewer images={PHOTOS} index={0} onIndexChange={() => {}} />);
   const names = ["Diminuir o zoom", "Aumentar o zoom", "Fechar", "Imagem anterior", "Próxima imagem"];
   for (const name of names) {

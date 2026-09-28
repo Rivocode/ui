@@ -1,10 +1,10 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # SelectTrigger
 
-O campo fechado do select: mostra a escolha e abre a lista.
+The select's closed field: it shows the choice and opens the list.
 
-Tem a mesma altura e a mesma borda do `Input`, para um formulário misto não sair
-desalinhado. A seta é desenhada aqui, não passe ícone por fora.
+It has the same height and the same border as `Input`, so a mixed form does not
+come out misaligned. The arrow is drawn here; do not pass an icon from outside.

@@ -26,19 +26,19 @@ const justifyClass = {
 } as const;
 
 export type StackProps = {
-  /** O eixo dos filhos. `column` empilha um embaixo do outro; `row` poe lado a lado. */
+  /** The children's axis. `column` stacks one below the other; `row` places them side by side. */
   direction?: "column" | "row";
   /**
-   * O vao entre os filhos, na escala da casa: `xs` 4, `sm` 8, `md` 12, `lg` 16
-   * e `xl` 24 pontos. Sao os numeros da densidade confortavel do web, que no
-   * toque e a unica.
+   * The gap between children, on the house scale: `xs` 4, `sm` 8, `md` 12, `lg`
+   * 16 and `xl` 24 points. These are the numbers of the web's comfortable
+   * density, which on touch is the only one.
    */
   gap?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
-  /** O alinhamento no eixo cruzado. Sem valor, os filhos esticam, como no web. */
+  /** Alignment on the cross axis. With no value, the children stretch, as on the web. */
   align?: "start" | "center" | "end" | "stretch" | "baseline";
-  /** A distribuicao no eixo principal. `between` empurra o primeiro e o ultimo para as pontas. */
+  /** Distribution on the main axis. `between` pushes the first and last to the ends. */
   justify?: "start" | "center" | "end" | "between";
-  /** Deixa os filhos quebrarem linha quando nao cabem. Faz sentido com `direction="row"`. */
+  /** Lets the children wrap when they do not fit. Makes sense with `direction="row"`. */
   wrap?: boolean;
   children?: ReactNode;
   className?: string;

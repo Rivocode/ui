@@ -119,8 +119,8 @@ function sourceFiles(dir: string): string[] {
 
   expect(
     found.length,
-    `a varredura de ${dir} achou ${found.length} arquivo(s):` +
-      " lista vazia deixa as duas guardas abaixo verdes sem terem lido nada",
+    `the scan of ${dir} found ${found.length} file(s):` +
+      " an empty list leaves the two guards below green without having read anything",
   ).toBeGreaterThan(60);
 
   return found;
@@ -142,8 +142,8 @@ function takenFromReactNative(code: string): Taken[] {
   return taken;
 }
 
-describe("o pacote sobe no react-native-web", () => {
-  test("nada e importado do react-native que o react-native-web nao exporte", () => {
+describe("the package runs on react-native-web", () => {
+  test("nothing is imported from react-native that react-native-web does not export", () => {
     const missing: string[] = [];
 
     for (const file of sourceFiles(SOURCE)) {
@@ -156,14 +156,15 @@ describe("o pacote sobe no react-native-web", () => {
 
     expect(
       missing,
-      "O react-native-web e a unica bancada em que da para inspecionar a arvore e tirar retrato " +
-        "sem simulador, e o RivoProvider embrulha o app inteiro: o que nao existe la derruba a " +
-        "tela toda, e nao a peca. Cada nome acima ou entra em WEB_EXPORTS (por existir na versao " +
-        "de agora do react-native-web) ou sai do pacote nativo.",
+      "react-native-web is the only bench where the tree can be inspected and portraits taken " +
+        "without a simulator, and RivoProvider wraps the whole app: what does not exist there " +
+        "brings down the whole screen, not the piece. Each name above either goes into " +
+        "WEB_EXPORTS (because it exists in the current react-native-web version) or leaves the " +
+        "native package.",
     ).toEqual([]);
   });
 
-  test("nada e chamado nesses modulos que o react-native-web nao implemente", () => {
+  test("nothing is called in those modules that react-native-web does not implement", () => {
     const missing: string[] = [];
 
     for (const file of sourceFiles(SOURCE)) {
@@ -180,7 +181,7 @@ describe("o pacote sobe no react-native-web", () => {
 
         const web = WEB_MEMBERS[source];
         if (web === undefined) {
-          missing.push(`${file.slice(SOURCE.length + 1)}: ${source} nao tem linha em WEB_MEMBERS`);
+          missing.push(`${file.slice(SOURCE.length + 1)}: ${source} has no line in WEB_MEMBERS`);
           continue;
         }
 
@@ -194,11 +195,11 @@ describe("o pacote sobe no react-native-web", () => {
 
     expect(
       missing,
-      "Foi assim que `Appearance.setColorScheme` chegou ao npm: existe no react-native, nao " +
-        "existe no react-native-web, e a tela inteira ficou branca com `setColorScheme is not a " +
-        "function`. Chamada que nao esta na lista de cima precisa de guarda - `typeof x === " +
-        '"function"` antes, ou o caminho equivalente que os dois lados tem - e o que a peca faz ' +
-        "quando ela falta tem que ser dito, e nao adivinhado.",
+      "That is how `Appearance.setColorScheme` reached npm: it exists in react-native, it does " +
+        "not exist in react-native-web, and the whole screen went white with `setColorScheme is " +
+        "not a function`. A call that is not in the list above needs a guard - `typeof x === " +
+        '"function"` first, or the equivalent path both sides have - and what the piece does ' +
+        "when it is missing has to be stated, not guessed.",
     ).toEqual([]);
   });
 });
@@ -208,7 +209,7 @@ function withoutSetColorScheme<T>(body: (warnings: string[]) => T): T {
   const spoke = console.warn;
   const warnings: string[] = [];
 
-  // @ts-expect-error: e o mundo do react-native-web, onde o metodo nunca existiu
+  // @ts-expect-error: this is the react-native-web world, where the method never existed
   delete Appearance.setColorScheme;
   console.warn = (...args: unknown[]) => warnings.push(args.map(String).join(" "));
 
@@ -220,14 +221,14 @@ function withoutSetColorScheme<T>(body: (warnings: string[]) => T): T {
   }
 }
 
-describe("o RivoProvider sem Appearance.setColorScheme", () => {
-  test("o app inteiro continua montando", () => {
+describe("RivoProvider without Appearance.setColorScheme", () => {
+  test("the whole app still mounts", () => {
     withoutSetColorScheme(() => {
       expect(textOf(render(<Text>Painel</Text>, { theme: "rivocode-light" }))).toContain("Painel");
     });
   });
 
-  test("avisa que o esquema pedido nao foi imposto, e diz onde declara-lo", () => {
+  test("warns that the requested scheme was not enforced, and says where to declare it", () => {
     withoutSetColorScheme((warnings) => {
       render(<Text>x</Text>, { theme: "rivocode-light" });
 
@@ -238,14 +239,14 @@ describe("o RivoProvider sem Appearance.setColorScheme", () => {
     });
   });
 
-  test("com theme=system nao ha promessa quebrada, e nao ha aviso", () => {
+  test("with theme=system there is no broken promise, and no warning", () => {
     withoutSetColorScheme((warnings) => {
       render(<Text>x</Text>, { theme: "system" });
       expect(warnings.filter((it) => it.includes("setColorScheme"))).toEqual([]);
     });
   });
 
-  test("a cor do contexto segue o tema pedido, e nao o do aparelho", () => {
+  test("the context color follows the requested theme, not the device's", () => {
     function Probe() {
       return <Text>{useRivo().theme}</Text>;
     }

@@ -17,7 +17,7 @@ const outer = (screen: ReturnType<typeof render>) => {
 const layout = (width: number) => ({ nativeEvent: { layout: { width, height: 0, x: 0, y: 0 } } });
 
 describe("Stack", () => {
-  test("nasce em coluna com o vao medio da escala comitada", () => {
+  test("starts as a column with the committed scale's medium gap", () => {
     const screen = render(
       <Stack>
         <Text>Um</Text>
@@ -32,7 +32,7 @@ describe("Stack", () => {
     expect(textOf(screen)).toBe("Um Dois");
   });
 
-  test("em linha alinha, distribui, quebra e zera o vao com none", () => {
+  test("in a row it aligns, distributes, wraps and zeroes the gap with none", () => {
     const screen = render(
       <Stack direction="row" gap="none" align="center" justify="between" wrap>
         <Text>Um</Text>
@@ -54,7 +54,7 @@ describe("Grid", () => {
   const rowsOf = (screen: ReturnType<typeof render>) =>
     byType(screen, "View").filter((node) => classesOf(node).includes("flex-row"));
 
-  test("colunas fixas: a ultima linha guarda o lugar das que faltam", () => {
+  test("fixed columns: the last row keeps the place of the missing ones", () => {
     const screen = render(<Grid columns={3}>{five}</Grid>);
     const rows = rowsOf(screen);
     expect(rows).toHaveLength(2);
@@ -63,7 +63,7 @@ describe("Grid", () => {
     expect(textOf(screen)).toBe("A B C D E");
   });
 
-  test("largura minima: uma coluna antes da medida, e quantas couberem depois", () => {
+  test("minimum width: one column before measuring, and as many as fit afterwards", () => {
     const screen = render(
       <Grid minItemWidth={100} gap="lg">
         {five}
@@ -80,14 +80,14 @@ describe("Grid", () => {
     expect(rows[0].children).toHaveLength(3);
   });
 
-  test("mais estreita que o minimo, sai uma coluna, e nunca zero", () => {
+  test("narrower than the minimum, one column comes out, and never zero", () => {
     const screen = render(<Grid minItemWidth={400}>{five}</Grid>);
     const grid = outer(screen);
     act(() => grid.props.onLayout(layout(320)));
     expect(rowsOf(screen)).toHaveLength(5);
   });
 
-  test("sem filho, a grade nao desenha linha nenhuma", () => {
+  test("without a child, the grid draws no row at all", () => {
     const screen = render(<Grid columns={2} />);
     expect(rowsOf(screen)).toHaveLength(0);
   });

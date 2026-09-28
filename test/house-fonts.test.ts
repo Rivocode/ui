@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 
 import { availableFonts, wantedFonts } from "../scripts/copy-fonts";
 
-test("cada arquivo de fonte que o rivocode-fonts.css pede existe em node_modules", async () => {
+test("every font file that rivocode-fonts.css requests exists in node_modules", async () => {
   const source = await Bun.file("src/tokens/themes/rivocode-fonts.css").text();
   const imports = [...source.matchAll(/@import\s+"([^"]+)";/g)].map((match) => match[1]!);
   expect(imports.length).toBeGreaterThan(2);

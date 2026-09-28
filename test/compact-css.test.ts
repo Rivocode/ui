@@ -2,32 +2,32 @@ import { expect, test } from "bun:test";
 
 import { compactCss } from "../scripts/compact-css";
 
-test("o compactCss tira o espaco em volta de chave e ponto e virgula, e preserva o de dentro do valor", () => {
+test("compactCss strips the space around braces and semicolons, and keeps the one inside the value", () => {
   const css = `.a {
   color: red;
   content: "a b";
 }
 
 .b { margin: 0 auto }
-/* nota curta */
+/* short note */
 `;
   expect(compactCss(css)).toBe(
-    `.a{color: red;content: "a b";}.b{margin: 0 auto}/* nota curta */\n`,
+    `.a{color: red;content: "a b";}.b{margin: 0 auto}/* short note */\n`,
   );
 });
 
-test("o compactCss recusa string com ponto e virgula, que o corte de espaco corromperia", () => {
+test("compactCss rejects a string with a semicolon, which stripping space would corrupt", () => {
   expect(() => compactCss(`.a::after { content: "x ; y"; }`)).toThrow(
-    /compactCss: string ou comentario/,
+    /compactCss: string or comment/,
   );
   expect(() => compactCss(`.a::after { content: 'x { y'; }`)).toThrow(/x \{ y/);
 });
 
-test("o compactCss recusa comentario com chave ou quebra de linha", () => {
+test("compactCss rejects a comment with a brace or a line break", () => {
   expect(() => compactCss(`/* .a { color: red } */\n.b { color: blue; }`)).toThrow(
-    /compactCss: string ou comentario/,
+    /compactCss: string or comment/,
   );
-  expect(() => compactCss(`/* primeira\n segunda */\n.b { color: blue; }`)).toThrow(
-    /compactCss: string ou comentario/,
+  expect(() => compactCss(`/* first\n second */\n.b { color: blue; }`)).toThrow(
+    /compactCss: string or comment/,
   );
 });

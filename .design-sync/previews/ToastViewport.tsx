@@ -1,6 +1,6 @@
 import { Button, useToast } from '@rivocode/ui'
 
-/** Aviso de sucesso */
+/** Success notice */
 export function SuccessNotice() {
   const toast = useToast()
 
@@ -25,7 +25,7 @@ export function SuccessNotice() {
   )
 }
 
-/** Aviso de uma espera */
+/** Notice of a wait */
 export function PromiseNotice() {
   const toast = useToast()
 

@@ -7,7 +7,7 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 
 const preset = await Bun.file("src/preset.css").text();
 
-test("o preenchimento automatico do navegador veste o tema, na camada base", () => {
+test("the browser autofill wears the theme, in the base layer", () => {
   const base = preset.slice(preset.indexOf("@layer base {"));
 
   expect(base).toContain("input:-webkit-autofill");
@@ -16,7 +16,7 @@ test("o preenchimento automatico do navegador veste o tema, na camada base", () 
   expect(preset.slice(0, preset.indexOf("@layer base {"))).not.toContain("autofill");
 });
 
-test("o olho de senha do Edge nao aparece ao lado do olho da peca", () => {
+test("the Edge password eye does not show up next to the component's eye", () => {
   render(
     <RivoProvider scope="local">
       <PasswordInput aria-label="Senha" />
@@ -28,7 +28,7 @@ test("o olho de senha do Edge nao aparece ao lado do olho da peca", () => {
   expect(tokens).toContain("[&::-ms-clear]:hidden");
 });
 
-test("a busca da barra lateral nao desenha o xis do navegador", () => {
+test("the sidebar search does not draw the browser x", () => {
   render(
     <RivoProvider scope="local">
       <SidebarProvider>

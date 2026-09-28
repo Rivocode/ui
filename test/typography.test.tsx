@@ -9,14 +9,14 @@ import { Text } from "../src/components/text";
 const tokens = (element: Element) => element.className.split(" ");
 
 describe("Heading", () => {
-  test("o nivel decide a tag, e o leitor de tela ouve o nivel", () => {
+  test("the level decides the tag, and the screen reader hears the level", () => {
     render(<Heading level={3}>Notas emitidas</Heading>);
     const heading = screen.getByRole("heading", { level: 3, name: "Notas emitidas" });
 
     expect(heading.tagName).toBe("H3");
   });
 
-  test("o tamanho acompanha o nivel quando nao vem", () => {
+  test("the size follows the level when not given", () => {
     const cases = [
       [1, "text-2xl"],
       [2, "text-xl"],
@@ -32,7 +32,7 @@ describe("Heading", () => {
     }
   });
 
-  test("o tamanho muda sem mexer no nivel", () => {
+  test("the size changes without touching the level", () => {
     render(
       <Heading level={1} size="md">
         Faturamento
@@ -45,7 +45,7 @@ describe("Heading", () => {
     expect(tokens(heading)).not.toContain("text-2xl");
   });
 
-  test("veste a familia de titulo e a cor do texto", () => {
+  test("wears the heading family and the text color", () => {
     render(<Heading level={2}>Clientes</Heading>);
     const heading = screen.getByRole("heading");
 
@@ -53,7 +53,7 @@ describe("Heading", () => {
     expect(tokens(heading)).toContain("text-fg");
   });
 
-  test("truncate corta em uma linha", () => {
+  test("truncate clips to one line", () => {
     render(
       <Heading level={2} truncate>
         Clínica São Lucas Serviços Médicos Ltda
@@ -65,7 +65,7 @@ describe("Heading", () => {
 });
 
 describe("Text", () => {
-  test("sai como paragrafo, e troca de elemento pelo render", () => {
+  test("renders as a paragraph, and swaps element through render", () => {
     render(
       <Text>
         Emitida em <Text render={<span />}>12/08</Text>
@@ -76,7 +76,7 @@ describe("Text", () => {
     expect(screen.getByText("12/08").tagName).toBe("SPAN");
   });
 
-  test("sem size, tone e weight nao pinta nada, e herda de quem cerca", () => {
+  test("without size, tone and weight it paints nothing, and inherits from its surroundings", () => {
     render(<Text>Herdado</Text>);
     const classes = tokens(screen.getByText("Herdado")).filter(Boolean);
 
@@ -84,7 +84,7 @@ describe("Text", () => {
     expect(classes.some((name) => name.startsWith("font-"))).toBe(false);
   });
 
-  test("o tom vira o papel de texto, e nunca o de preenchimento", () => {
+  test("the tone becomes the text role, and never the fill role", () => {
     const cases = [
       ["neutral", "text-fg"],
       ["muted", "text-fg-muted"],
@@ -105,7 +105,7 @@ describe("Text", () => {
     }
   });
 
-  test("corpo e peso saem da escala da casa", () => {
+  test("size and weight come from the house scale", () => {
     render(
       <Text size="sm" weight="semibold">
         Total
@@ -117,7 +117,7 @@ describe("Text", () => {
     expect(classes).toContain("font-rc-strong");
   });
 
-  test("truncate corta em uma linha, e lineClamp vence quando os dois vem", () => {
+  test("truncate clips to one line, and lineClamp wins when both are given", () => {
     render(<Text truncate>Uma linha</Text>);
     expect(tokens(screen.getByText("Uma linha"))).toContain("truncate");
 
@@ -132,7 +132,7 @@ describe("Text", () => {
     expect(clamped).not.toContain("truncate");
   });
 
-  test("a classe de quem chama vence a do tom", () => {
+  test("the caller's class beats the tone's", () => {
     render(
       <Text tone="muted" className="text-fg">
         Por cima
@@ -150,7 +150,7 @@ function RouterLink({ to, ...props }: ComponentProps<"a"> & { to: string }) {
 }
 
 describe("Link", () => {
-  test("e ancora sublinhada no tom de acento", () => {
+  test("is an underlined anchor in the accent tone", () => {
     render(<Link href="/notas">Ver notas</Link>);
     const link = screen.getByRole("link", { name: "Ver notas" });
 
@@ -160,7 +160,7 @@ describe("Link", () => {
     expect(link.getAttribute("target")).toBeNull();
   });
 
-  test("tem foco visivel pelo anel, e nao pelo contorno do navegador", () => {
+  test("has visible focus through the ring, and not the browser outline", () => {
     render(<Link href="/notas">Foco</Link>);
     const classes = tokens(screen.getByRole("link"));
 
@@ -169,7 +169,7 @@ describe("Link", () => {
     expect(classes).toContain("outline-none");
   });
 
-  test("underline hover so sublinha ao passar", () => {
+  test("underline hover only underlines on hover", () => {
     render(
       <Link href="/ajuda" underline="hover" tone="muted">
         Ajuda
@@ -183,7 +183,7 @@ describe("Link", () => {
     expect(classes).toContain("text-fg-muted");
   });
 
-  test("inherit nao pinta cor nenhuma", () => {
+  test("inherit paints no color at all", () => {
     render(
       <Link href="/x" tone="inherit">
         Herdado
@@ -194,7 +194,7 @@ describe("Link", () => {
     expect(classes.some((name) => /^text-(fg|accent)/.test(name))).toBe(false);
   });
 
-  test("external abre em outra aba, com rel seguro e aviso para quem ouve", () => {
+  test("external opens in another tab, with a safe rel and a notice for listeners", () => {
     render(
       <Link href="https://www.gov.br/nfse" external>
         Portal da NFS-e
@@ -210,7 +210,7 @@ describe("Link", () => {
     expect(link.querySelector("svg")?.getAttribute("aria-hidden")).toBe("true");
   });
 
-  test("external guarda o rel de quem chama e troca o aviso", () => {
+  test("external keeps the caller's rel and swaps the notice", () => {
     render(
       <Link href="https://exemplo.com" external rel="nofollow" labels={{ external: "(nova janela)" }}>
         Parceiro
@@ -227,7 +227,7 @@ describe("Link", () => {
     expect(link.textContent).not.toContain("(abre em nova aba)");
   });
 
-  test("sem external nao ha seta, nem aviso, nem aba nova", () => {
+  test("without external there is no arrow, no notice and no new tab", () => {
     render(<Link href="/notas">Interno</Link>);
     const link = screen.getByRole("link");
 
@@ -236,7 +236,7 @@ describe("Link", () => {
     expect(link.getAttribute("rel")).toBeNull();
   });
 
-  test("compoe com o link do router pelo render, e mantem o desenho", () => {
+  test("composes with the router link through render, and keeps the styling", () => {
     render(<Link render={<RouterLink to="/clientes" />}>Clientes</Link>);
     const link = screen.getByRole("link", { name: "Clientes" });
 

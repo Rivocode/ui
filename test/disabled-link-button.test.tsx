@@ -5,7 +5,7 @@ import { Button } from "../src/components/button";
 
 const tokens = (element: Element) => (element.getAttribute("class") ?? "").split(" ");
 
-test("o botao como link desabilitado perde o href, se anuncia desabilitado e nao chama o onClick", () => {
+test("a disabled button-as-link loses its href, announces itself disabled and does not call onClick", () => {
   const onClick = mock(() => {});
   render(
     <Button render={<a href="/notas" />} disabled onClick={onClick}>
@@ -24,7 +24,7 @@ test("o botao como link desabilitado perde o href, se anuncia desabilitado e nao
   expect(onClick).not.toHaveBeenCalled();
 });
 
-test("o botao como link carregando tambem deixa de navegar", () => {
+test("a loading button-as-link also stops navigating", () => {
   const onClick = mock(() => {});
   render(
     <Button render={<a href="/notas" onClick={onClick} />} loading>
@@ -40,7 +40,7 @@ test("o botao como link carregando tambem deixa de navegar", () => {
   expect(onClick).not.toHaveBeenCalled();
 });
 
-test("o botao como link habilitado continua navegando e chamando o onClick", () => {
+test("an enabled button-as-link keeps navigating and calling onClick", () => {
   const onClick = mock(() => {});
   render(
     <Button render={<a href="/notas" />} onClick={onClick}>

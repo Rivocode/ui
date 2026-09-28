@@ -10,7 +10,7 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-test("a senha comeca escondida e o olho a revela", () => {
+test("the password starts hidden and the eye reveals it", () => {
   withTheme(<PasswordInput aria-label="Senha" defaultValue="segredo" />);
   const field = screen.getByLabelText("Senha") as HTMLInputElement;
 
@@ -18,14 +18,15 @@ test("a senha comeca escondida e o olho a revela", () => {
 
   fireEvent.click(screen.getByRole("button", { name: "Mostrar senha" }));
   expect(field.type).toBe("text");
-  // O botao diz o que vai fazer, e nao o que esta acontecendo: quem le pelo
-  // leitor de tela precisa saber qual e a acao, nao o estado.
+  // The button says what it will do, not what is happening: whoever reads
+  // through a screen reader needs to know the action, not the state.
   expect(screen.getByRole("button", { name: "Esconder senha" })).toBeDefined();
 });
 
-test("o campo de senha nao guarda o texto revelado ao perder o foco", () => {
-  // Revelar e um gesto momentaneo: deixar a senha visivel na tela depois que a
-  // pessoa saiu do campo e o que faz alguem ser lido por cima do ombro.
+test("the password field does not keep the text revealed when it loses focus", () => {
+  // Revealing is a momentary gesture: leaving the password visible on screen
+  // after the person left the field is what gets someone read over the
+  // shoulder.
   withTheme(<PasswordInput aria-label="Senha" defaultValue="segredo" />);
   const field = screen.getByLabelText("Senha") as HTMLInputElement;
 
@@ -36,7 +37,7 @@ test("o campo de senha nao guarda o texto revelado ao perder o foco", () => {
   expect(field.type).toBe("password");
 });
 
-test("a senha desabilitada nao se revela: o olho desabilita junto", () => {
+test("a disabled password does not reveal: the eye is disabled along with it", () => {
   withTheme(<PasswordInput aria-label="Senha" defaultValue="segredo" disabled />);
   const field = screen.getByLabelText("Senha") as HTMLInputElement;
   const eye = screen.getByRole("button", { name: "Mostrar senha" }) as HTMLButtonElement;
@@ -46,7 +47,7 @@ test("a senha desabilitada nao se revela: o olho desabilita junto", () => {
   expect(field.type).toBe("password");
 });
 
-test("a faixa conta o que aconteceu, um quadrado por periodo", () => {
+test("the tracker tells what happened, one square per period", () => {
   const { container } = withTheme(
     <Tracker
       label="Últimas 5 emissões"
@@ -61,17 +62,18 @@ test("a faixa conta o que aconteceu, um quadrado por periodo", () => {
   );
 
   expect(container.querySelectorAll("[data-rc-track]").length).toBe(5);
-  // Cada quadrado precisa dizer o que e: uma faixa de cor sem texto nao existe
-  // para quem usa leitor de tela.
+  // Each square needs to say what it is: a strip of color without text does
+  // not exist for screen reader users.
   expect(screen.getByText("4815 rejeitada")).toBeDefined();
 });
 
 /**
- * A faixa com `count` periodos, ja com a medida que o happy-dom nao da.
+ * The tracker with `count` periods, already with the size happy-dom does not
+ * give.
  *
- * Ele devolve 0x0 em `getBoundingClientRect`, e a faixa decide o periodo lido
- * por regra de tres sobre a largura - sem largura, o ponteiro nao le nada e o
- * teste passaria por engano, com a dica fechada.
+ * It returns 0x0 from `getBoundingClientRect`, and the tracker picks the period
+ * being read by a rule of three over the width - without a width, the pointer
+ * reads nothing and the test would pass by mistake, with the tip closed.
  */
 function tracker(count: number, dir: "ltr" | "rtl" = "ltr") {
   const view = render(
@@ -92,28 +94,28 @@ function tracker(count: number, dir: "ltr" | "rtl" = "ltr") {
   return { ...view, track };
 }
 
-test("a dica e uma so, com cinco periodos ou com um ano deles", () => {
-  // O motivo desta peca ter sido reescrita: cada quadrado montava a propria
-  // raiz de Tooltip, entao um ano de emissoes montava 365 delas para que no
-  // maximo uma aparecesse. O que se prova aqui e que o numero de paineis nao
-  // acompanha mais o numero de pontos - so os quadrados acompanham.
-  const semana = tracker(5);
-  fireEvent.pointerMove(semana.track, { clientX: 50 });
+test("there is a single tip, with five periods or with a year of them", () => {
+  // The reason this piece was rewritten: each square mounted its own Tooltip
+  // root, so a year of issuances mounted 365 of them so that at most one would
+  // show. What is proven here is that the number of panels no longer follows
+  // the number of points - only the squares do.
+  const week = tracker(5);
+  fireEvent.pointerMove(week.track, { clientX: 50 });
 
-  expect(semana.container.querySelectorAll("[data-rc-track]").length).toBe(5);
-  expect(semana.container.querySelectorAll("[data-rc-track-cursor]").length).toBe(1);
+  expect(week.container.querySelectorAll("[data-rc-track]").length).toBe(5);
+  expect(week.container.querySelectorAll("[data-rc-track-cursor]").length).toBe(1);
   expect(document.querySelectorAll('[role="tooltip"]').length).toBe(1);
-  semana.unmount();
+  week.unmount();
 
-  const ano = tracker(365);
-  fireEvent.pointerMove(ano.track, { clientX: 50 });
+  const year = tracker(365);
+  fireEvent.pointerMove(year.track, { clientX: 50 });
 
-  expect(ano.container.querySelectorAll("[data-rc-track]").length).toBe(365);
-  expect(ano.container.querySelectorAll("[data-rc-track-cursor]").length).toBe(1);
+  expect(year.container.querySelectorAll("[data-rc-track]").length).toBe(365);
+  expect(year.container.querySelectorAll("[data-rc-track-cursor]").length).toBe(1);
   expect(document.querySelectorAll('[role="tooltip"]').length).toBe(1);
 });
 
-test("o ponteiro le o periodo que esta embaixo dele", () => {
+test("the pointer reads the period underneath it", () => {
   const { track } = tracker(10);
 
   fireEvent.pointerMove(track, { clientX: 25 });
@@ -123,16 +125,17 @@ test("o ponteiro le o periodo que esta embaixo dele", () => {
   expect(screen.getByRole("tooltip").textContent).toBe("Dia 10");
 });
 
-test("a dica segue o foco, e nao so o ponteiro", () => {
-  // Antes da dica unica nenhum quadrado era focavel, e ler o texto exato de um
-  // periodo era coisa de quem tem mouse.
+test("the tip follows focus, not just the pointer", () => {
+  // Before the single tip no square was focusable, and reading the exact text
+  // of a period was only for mouse users.
   const { track } = tracker(4);
   expect(track.tabIndex).toBe(0);
 
   fireEvent.focus(track);
-  // Comeca no periodo mais recente, que e o da direita.
+  // It starts on the most recent period, which is the one on the right.
   expect(screen.getByRole("tooltip").textContent).toBe("Dia 4");
-  // O teclado tambem fala: a dica e desenho, e desenho nao chega a quem ouve.
+  // The keyboard speaks too: the tip is drawing, and drawing does not reach
+  // screen reader users.
   expect(screen.getByRole("status").textContent).toBe("Dia 4");
 
   fireEvent.keyDown(track, { key: "ArrowLeft" });
@@ -142,13 +145,13 @@ test("a dica segue o foco, e nao so o ponteiro", () => {
   fireEvent.keyDown(track, { key: "Home" });
   expect(screen.getByRole("tooltip").textContent).toBe("Dia 1");
 
-  // Fechar no Escape sem devolver o foco a lugar nenhum: a dica cobre o que
-  // esta embaixo dela, e quem esta no teclado precisa de um jeito de tira-la.
+  // Close on Escape without sending focus anywhere: the tip covers what is
+  // underneath it, and keyboard users need a way to remove it.
   fireEvent.keyDown(track, { key: "Escape" });
   expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
-test("em rtl o ponteiro le o periodo que esta embaixo do dedo, e nao o espelhado", () => {
+test("in rtl the pointer reads the period under the finger, not the mirrored one", () => {
   const { track } = tracker(10, "rtl");
 
   fireEvent.pointerMove(track, { clientX: 25 });
@@ -158,7 +161,7 @@ test("em rtl o ponteiro le o periodo que esta embaixo do dedo, e nao o espelhado
   expect(screen.getByRole("tooltip").textContent).toBe("Dia 1");
 });
 
-test("em rtl a seta anda para o lado que a pessoa ve, e nao para o indice", () => {
+test("in rtl the arrow moves toward the side the person sees, not toward the index", () => {
   const { track } = tracker(4, "rtl");
 
   fireEvent.focus(track);
@@ -174,9 +177,10 @@ test("em rtl a seta anda para o lado que a pessoa ve, e nao para o indice", () =
   expect(screen.getByRole("tooltip").textContent).toBe("Dia 1");
 });
 
-test("a faixa sem dado nao abre balao nenhum", () => {
-  // O foco cai no periodo mais recente, e numa lista vazia esse indice e -1:
-  // sem guarda, focar a faixa abriria uma dica com texto nenhum dentro.
+test("the tracker without data opens no tip at all", () => {
+  // Focus lands on the most recent period, and in an empty list that index is
+  // -1: without a guard, focusing the tracker would open a tip with no text in
+  // it.
   const { track } = tracker(0);
 
   fireEvent.focus(track);
@@ -185,7 +189,7 @@ test("a faixa sem dado nao abre balao nenhum", () => {
   expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
-test("o nome da faixa e dito uma vez, e sai do proprio texto que a peca escreve", () => {
+test("the tracker name is said once, and comes from the text the piece itself writes", () => {
   const { track } = tracker(3);
 
   expect(track.getAttribute("aria-label")).toBeNull();
@@ -196,7 +200,7 @@ test("o nome da faixa e dito uma vez, e sai do proprio texto que a peca escreve"
   expect(source.getAttribute("aria-hidden")).toBe("true");
 });
 
-test("o texto que nomeia a faixa continua sendo o que classNames.label veste", () => {
+test("the text that names the tracker is still what classNames.label dresses", () => {
   withTheme(
     <Tracker
       label="Emissões por dia"
@@ -211,7 +215,7 @@ test("o texto que nomeia a faixa continua sendo o que classNames.label veste", (
   expect(source.className).toContain("text-fg-subtle");
 });
 
-test("o aria-label de quem chama pousa no no que tem papel, e nao numa div solta", () => {
+test("the caller's aria-label lands on the node that has a role, not on a loose div", () => {
   const { container } = withTheme(
     <Tracker
       aria-label="Faixa de disponibilidade"
@@ -227,7 +231,7 @@ test("o aria-label de quem chama pousa no no que tem papel, e nao numa div solta
   expect(track.getAttribute("aria-labelledby")).toBeNull();
 });
 
-test("o texto vira ficha no Enter, e a ficha sai no proprio botao", () => {
+test("the text becomes a chip on Enter, and the chip leaves through its own button", () => {
   let current: string[] = ["nf-e"];
   function Controlled() {
     return (
@@ -249,9 +253,9 @@ test("o texto vira ficha no Enter, e a ficha sai no proprio botao", () => {
   expect(current).toEqual(["nf-e", "urgente"]);
 });
 
-test("apagar com o campo vazio tira a ultima ficha", () => {
-  // E o gesto que todo mundo tenta primeiro, e sem ele a pessoa vai com o
-  // mouse ate o x de uma ficha que ela acabou de digitar.
+test("deleting with the field empty removes the last chip", () => {
+  // It is the gesture everyone tries first, and without it the person goes
+  // with the mouse to the x of a chip they just typed.
   let current: string[] = ["nf-e", "urgente"];
   withTheme(
     <TagsInput
@@ -267,7 +271,7 @@ test("apagar com o campo vazio tira a ultima ficha", () => {
   expect(current).toEqual(["nf-e"]);
 });
 
-test("a ficha repetida nao entra duas vezes", () => {
+test("a repeated chip does not go in twice", () => {
   let current: string[] = ["nf-e"];
   withTheme(
     <TagsInput
@@ -286,7 +290,7 @@ test("a ficha repetida nao entra duas vezes", () => {
   expect(current).toEqual(["nf-e"]);
 });
 
-test("no teto de fichas o campo continua focado, e o Backspace ainda tira a ultima", () => {
+test("at the chip cap the field stays focused, and Backspace still removes the last one", () => {
   withTheme(<TagsInput aria-label="Marcadores" defaultValue={["nf-e"]} max={2} />);
   const field = screen.getByLabelText("Marcadores") as HTMLInputElement;
   field.focus();
@@ -303,7 +307,7 @@ test("no teto de fichas o campo continua focado, e o Backspace ainda tira a ulti
   expect(field.readOnly).toBe(false);
 });
 
-test("colar uma lista separada por virgula vira uma ficha para cada item, sem passar do teto", () => {
+test("pasting a comma-separated list becomes one chip per item, without going past the cap", () => {
   let current: string[] = [];
   withTheme(
     <TagsInput
@@ -322,7 +326,7 @@ test("colar uma lista separada por virgula vira uma ficha para cada item, sem pa
   expect(field.value).toBe("");
 });
 
-test("colar texto sem separador segue o caminho comum do campo", () => {
+test("pasting text without a separator follows the field's usual path", () => {
   withTheme(<TagsInput aria-label="Marcadores" />);
   const field = screen.getByLabelText("Marcadores");
 
@@ -330,7 +334,7 @@ test("colar texto sem separador segue o caminho comum do campo", () => {
   expect(event).toBe(true);
 });
 
-test("com name, o formulario nativo recebe as fichas, e nao o rascunho", () => {
+test("with name, the native form receives the chips, not the draft", () => {
   const { container } = withTheme(
     <form>
       <TagsInput aria-label="Marcadores" name="marcadores" defaultValue={["nf-e", "urgente"]} />

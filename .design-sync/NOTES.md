@@ -1,152 +1,157 @@
-# Notas do sync com o claude.ai/design
+# Notes from the sync with claude.ai/design
 
-Projeto: `RivoCode` (`ee82ac5d-bfc0-4f2f-959a-5e371dddee8b`).
+Project: `RivoCode` (`ee82ac5d-bfc0-4f2f-959a-5e371dddee8b`).
 
-## O que custou tempo na primeira vez
+## What cost time the first time
 
-- **`package.json` precisa de `types` no topo.** O conversor le
-  `pkg.types`, nao o bloco `exports`. Sem ele encontra zero componentes e
-  reporta `[ZERO_MATCH] tokens-only DS`, que parece um problema de outra
-  natureza. Ja corrigido no pacote, e util para outras ferramentas tambem.
+- **`package.json` needs `types` at the top level.** The converter reads
+  `pkg.types`, not the `exports` block. Without it it finds zero components and
+  reports `[ZERO_MATCH] tokens-only DS`, which looks like a problem of a
+  different nature. Already fixed in the package, and useful for other tools
+  too.
 
-- **A pasta de codigo precisa se chamar `components`.** O conversor tira o
-  grupo do nome do diretorio, e so ignora nomes genericos
-  (`components`, `component`, `src`, `lib`, `ui`, `packages`, `react`). Com
-  `src/primitives` os 14 componentes com preview autorado ficavam todos num
-  grupo "primitives" e a categoria do documento era ignorada. Renomeado.
+- **The code folder needs to be called `components`.** The converter takes the
+  group from the directory name, and only ignores generic names
+  (`components`, `component`, `src`, `lib`, `ui`, `packages`, `react`). With
+  `src/primitives` the 14 components with an authored preview all ended up in a
+  "primitives" group and the document's category was ignored. Renamed.
 
-- **`provider` no `cfg` tem que ser `scope: 'local'`.** No modo global o
-  RivoProvider veste os tokens mas nao pinta fundo, entao o cartao fica branco
-  com texto quase branco por cima e as variantes de contorno e fantasma somem.
+- **`provider` in `cfg` has to be `scope: 'local'`.** In global mode
+  RivoProvider dresses the tokens but does not paint the background, so the
+  card stays white with almost-white text on top and the outline and ghost
+  variants disappear.
 
-- **Os previews precisam de folha propria.** O Tailwind da biblioteca varre
-  so `src/`, entao uma classe usada apenas num preview (`h-12`, `max-w-lg`)
-  nao existe e o cartao renderiza incompleto **sem nenhum aviso**. Por isso
-  existe `.design-sync/sync.css`, que varre tambem `previews/`, e o
-  `cfg.cssEntry` aponta para o resultado dela. A CSS de producao continua
-  enxuta. Recompilar antes de cada sync:
+- **The previews need their own stylesheet.** The library's Tailwind scans only
+  `src/`, so a class used only in a preview (`h-12`, `max-w-lg`) does not exist
+  and the card renders incomplete **with no warning at all**. That is why
+  `.design-sync/sync.css` exists, which also scans `previews/`, and
+  `cfg.cssEntry` points to its output. The production CSS stays lean.
+  Recompile before each sync:
 
   ```sh
   bunx @tailwindcss/cli -i .design-sync/sync.css -o .design-sync/.cache/styles.css
   bun run scripts/copy-fonts.ts .design-sync/.cache/styles.css
   ```
 
-- **Playwright**: a versao mais recente (1.62) pede o chromium 1234, que ja
-  estava no cache da maquina. Nada para baixar.
+- **Playwright**: the latest version (1.62) asks for chromium 1234, which was
+  already in the machine's cache. Nothing to download.
 
-## Avisos conhecidos, ja triados
+## Known warnings, already triaged
 
-Nenhum. A ultima verificacao saiu com zero avisos e `bad: 0`.
+None. The last verification came out with zero warnings and `bad: 0`.
 
-Cinco componentes tem `cardMode` fixado porque flutuam e nao cabem na grade:
-`Checkbox` (column), `Dialog`, `Menu`, `Select`, `Tooltip` e `ToastViewport`
-(single). Isso e apresentacao, nao defeito.
+Five components have `cardMode` pinned because they float and do not fit the
+grid: `Checkbox` (column), `Dialog`, `Menu`, `Select`, `Tooltip` and
+`ToastViewport` (single). That is presentation, not a defect.
 
-## Segunda rodada, 24/08/2026
+## Second round, 24/08/2026
 
-O catalogo foi de 15 para 41 componentes e o sync ficou 26 atras. Foram
-autorados 26 previews e 35 documentos novos, e o `docsMap` passou de 52 para 87
-entradas.
+The catalog went from 15 to 41 components and the sync fell 26 behind. 26
+previews and 35 new documents were authored, and `docsMap` went from 52 to 87
+entries.
 
-Uma porta de erro silencioso foi fechada: os previews nao eram checados por
-tipo, entao um `variant` inexistente ou uma prop renomeada so aparecia como
-cartao incompleto no sync. Agora `bun run check:previews` compila a pasta
-contra o **fonte**, por `paths` no `.design-sync/tsconfig.json`, sem depender de
-build nem de `bun link`. Entrou no `bun run check`.
+A door for silent errors was closed: the previews were not type-checked, so a
+nonexistent `variant` or a renamed prop only showed up as an incomplete card in
+the sync. Now `bun run check:previews` compiles the folder against the
+**source**, through `paths` in `.design-sync/tsconfig.json`, without depending
+on a build or on `bun link`. It went into `bun run check`.
 
-A `sync.css` passou a varrer tambem `src/form`.
+`sync.css` started scanning `src/form` too.
 
-**O upload ainda nao foi feito** nessa rodada: dependia da skill
-`/design-sync`, que so foi instalada depois.
+**The upload was not done yet** in that round: it depended on the
+`/design-sync` skill, which was only installed later.
 
-## Riscos para o proximo sync
+## Risks for the next sync
 
-- **Os compostos continuam no cartao de piso** (`CardHeader`, `TableCell`,
-  `MenuItem`, `ComboboxList` e afins). Eles importam e funcionam, so nao tem
-  preview proprio. Autorar e opcional e incremental.
+- **The composites are still on the fallback card** (`CardHeader`,
+  `TableCell`, `MenuItem`, `ComboboxList` and the like). They import and work,
+  they just have no preview of their own. Authoring them is optional and
+  incremental.
 
-- **Os previews de peca flutuante usam `defaultOpen` e uma altura minima**
-  (`min-h-72`), senao o cartao sai vazio. Vale para `AlertDialog`, `Sheet`,
-  `Popover` e `Combobox`.
+- **The floating piece previews use `defaultOpen` and a minimum height**
+  (`min-h-72`), or the card comes out empty. That holds for `AlertDialog`,
+  `Sheet`, `Popover` and `Combobox`.
 
-- **O `Sidebar` tem altura fixa no preview** e nao `min-h-dvh`, senao o cartao
-  cresce ate o tamanho da janela de captura.
+- **`Sidebar` has a fixed height in the preview** and not `min-h-dvh`, or the
+  card grows to the size of the capture window.
 
-- **A folha `.design-sync/.cache/styles.css` e gerada e gitignorada.** Se ela
-  nao for recompilada antes do build, o sync usa a versao velha e classes novas
-  de preview somem sem avisar. Este e o risco mais silencioso deste setup.
+- **The `.design-sync/.cache/styles.css` stylesheet is generated and
+  gitignored.** If it is not recompiled before the build, the sync uses the old
+  version and new preview classes vanish without warning. This is the most
+  silent risk of this setup.
 
-- **O `_ds_manifest.json` e o `_adherence.oxlintrc.json` no projeto sao do
-  app**, nao nossos. Nao apagar.
+- **The `_ds_manifest.json` and `_adherence.oxlintrc.json` in the project are
+  the app's**, not ours. Do not delete.
 
-- **A landing tinha `Header` e `Logo` sincronizados antes**, de quando o design
-  system eram os componentes do site. Foram apagados neste sync. Se alguem
-  sentir falta, o lugar deles e outro projeto, nao este.
+- **The landing had `Header` and `Logo` synced before**, from when the design
+  system was the site's components. They were deleted in this sync. If anyone
+  misses them, their place is another project, not this one.
 
-## Terceira rodada, 24/08/2026, com a skill instalada
+## Third round, 24/08/2026, with the skill installed
 
-O catalogo chegou a 55 componentes mais os subcaminhos `/form` e `/chart`. O
-sync rodou de verdade desta vez: 160 componentes descobertos, `ok: true`,
-ancora ok. **O upload ainda nao foi feito**, parou na etapa de dar nota nas 57
-folhas de revisao. Ver `docs/ESTADO.md`, secao "Sync em andamento", para o
-passo a passo de retomada.
+The catalog reached 55 components plus the `/form` and `/chart` subpaths. The
+sync really ran this time: 160 components discovered, `ok: true`, anchor ok.
+**The upload was not done yet**, it stopped at the step of grading the 57
+review sheets. See `docs/ESTADO.md`, section "Sync in progress", for the
+step by step to resume.
 
-### O que custou tempo desta vez
+### What cost time this time
 
-- **Componente de subcaminho nao e descoberto.** O conversor lista componentes
-  pelo `.d.ts` da **entrada principal**. `extraEntries` coloca `/form` e
-  `/chart` no `window.RivoCodeUI` (o agent consegue importar), mas eles nao
-  ganham contrato, doc nem cartao. O log diz `stale preview: <Nome>, component
-  no longer exported`, que parece erro de preview e e outra coisa. A correcao e
-  `componentSrcMap`, que **adiciona** alem de fixar caminho:
+- **A subpath component is not discovered.** The converter lists components
+  through the **main entry's** `.d.ts`. `extraEntries` puts `/form` and
+  `/chart` on `window.RivoCodeUI` (the agent can import them), but they get no
+  contract, doc or card. The log says `stale preview: <Name>, component
+  no longer exported`, which looks like a preview error and is something else.
+  The fix is `componentSrcMap`, which **adds** besides pinning the path:
   `{"ChartContainer": "src/chart/chart.tsx"}`.
 
-- **`ChartContainer` sozinho e uma moldura vazia.** As marcas e os eixos vivem
-  na Recharts, e o bundle so exporta o que a nossa entrada exporta. Sem
-  reexportar `LineChart`, `Line`, `XAxis` e companhia por `@rivocode/ui/chart`,
-  o agent de design recebe o contentor e nao tem o que por dentro. Corrigido
-  no proprio pacote, com lista curada.
+- **`ChartContainer` alone is an empty frame.** The marks and axes live in
+  Recharts, and the bundle only exports what our entry exports. Without
+  re-exporting `LineChart`, `Line`, `XAxis` and company through
+  `@rivocode/ui/chart`, the design agent receives the container and has nothing
+  to put inside. Fixed in the package itself, with a curated list.
 
-- **Classe utilitaria que nenhum componente usa nao existe na folha.** O
-  `conventions.md` ia citar `bg-chart-1`; o Tailwind so gera o que encontra ao
-  varrer, entao essa classe nao esta na CSS compilada e o agent escreveria algo
-  que nao resolve, em silencio. Trocado por `var(--rc-chart-1)`, que sempre
-  resolve. **Toda classe citada no conventions foi conferida contra
-  `ds-bundle/*.css`**, 36 classes e 2 tokens, todas presentes.
+- **A utility class no component uses does not exist in the stylesheet.**
+  `conventions.md` was going to cite `bg-chart-1`; Tailwind only generates what
+  it finds when scanning, so that class is not in the compiled CSS and the agent
+  would write something that does not resolve, silently. Swapped for
+  `var(--rc-chart-1)`, which always resolves. **Every class cited in the
+  conventions was checked against `ds-bundle/*.css`**, 36 classes and 2 tokens,
+  all present.
 
-- **Componente que devolve `null` sem props falha o render check.**
-  `ChartTooltipContent` e `ChartLegendContent` so desenham com `payload`. O
-  cartao de piso os renderiza sem nada e o root sai vazio. A saida boa e autorar
-  preview com `payload` de mentira, e nao mandar para `overrides.skip`.
+- **A component that returns `null` without props fails the render check.**
+  `ChartTooltipContent` and `ChartLegendContent` only draw with `payload`. The
+  fallback card renders them with nothing and the root comes out empty. The
+  good way out is to author a preview with a fake `payload`, and not to send
+  them to `overrides.skip`.
 
-- **A ancora foi salva sem os `sourceHashes` por arquivo.** Consequencia: a
-  particao de upload trata tudo como faltando e sobe o conjunto inteiro, que e
-  exatamente o padrao recomendado (`writes` sempre completo). O que se perde e a
-  derivacao automatica de `deletePaths`, **confira a lista remota com
-  `list_files` antes do `finalize_plan`** e ponha no plano o que o build nao
-  produz mais. Nesta rodada o diff acusou `deletePaths: 0` e nenhum componente
-  removido.
+- **The anchor was saved without the per-file `sourceHashes`.** Consequence:
+  the upload partition treats everything as missing and uploads the whole set,
+  which is exactly the recommended pattern (`writes` always complete). What is
+  lost is the automatic derivation of `deletePaths`, **check the remote list
+  with `list_files` before `finalize_plan`** and put in the plan what the build
+  no longer produces. In this round the diff reported `deletePaths: 0` and no
+  component removed.
 
-- **O tsconfig dos previews precisa mapear cada subcaminho.** Faltava
-  `@rivocode/ui/chart`, entao o `check:previews` resolvia pelo `dist` velho e
-  acusava export inexistente que existia no fonte. Um mapeamento por subcaminho
-  novo.
+- **The previews' tsconfig needs to map each subpath.** `@rivocode/ui/chart`
+  was missing, so `check:previews` resolved through the old `dist` and flagged a
+  nonexistent export that existed in the source. One mapping per new subpath.
 
-### Riscos para o proximo sync
+### Risks for the next sync
 
-- **O `--force-prefers-reduced-motion` da vitrine nao vale aqui.** O render
-  check do sync usa o playwright dele, sem esse sinal, entao grafico com
-  animacao ligada pode ser fotografado antes do primeiro quadro. Os previews de
-  grafico passam `isAnimationActive={false}` de proposito, nao tire.
+- **The showcase's `--force-prefers-reduced-motion` does not apply here.** The
+  sync's render check uses its own playwright, without that flag, so a chart
+  with animation on may be photographed before the first frame. The chart
+  previews pass `isAnimationActive={false}` on purpose, do not remove it.
 
-- **A paleta de grafico tem guarda propria** (3:1 contra a superficie, em
-  `check:contrast`). Tema de cliente novo precisa definir `--rc-chart-1` a
-  `--rc-chart-8`, senao o grafico sai sem cor de serie.
+- **The chart palette has its own guard** (3:1 against the surface, in
+  `check:contrast`). A new client theme needs to define `--rc-chart-1` to
+  `--rc-chart-8`, or the chart comes out without series colors.
 
-- **Playwright nao estava mais no cache** desta maquina e foi reinstalado
-  (chromium 1234, em `~/Library/Caches/ms-playwright`, nao em `~/.cache`).
+- **Playwright was no longer in the cache** of this machine and was reinstalled
+  (chromium 1234, in `~/Library/Caches/ms-playwright`, not in `~/.cache`).
 
-- **O `docsMap` tem 92 entradas e cresce a cada componente.** Ele so deveria
-  guardar excecoes; hoje ele enumera. Vale trocar por `docsDir` apontando para
-  `.design-sync/docs/` e deixar a descoberta ligar sozinha, guardando no mapa so
-  o que nao casar.
+- **`docsMap` has 92 entries and grows with every component.** It should only
+  keep exceptions; today it enumerates. It is worth swapping for `docsDir`
+  pointing to `.design-sync/docs/` and letting discovery wire itself, keeping in
+  the map only what does not match.

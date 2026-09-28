@@ -47,33 +47,33 @@ import {
 } from "./drag";
 
 export type KanbanColumn<Item> = {
-  /** A identidade da coluna. Volta em `from` e `to` do `onMove`. */
+  /** The column's identity. Comes back in `from` and `to` of `onMove`. */
   id: string;
-  /** O nome da coluna, no cabecalho e nos anuncios: "Em análise". */
+  /** The column's name, in the header and in the announcements: "Em análise". */
   title: string;
-  /** Os cartoes, na ordem de agora. */
+  /** The cards, in their current order. */
   items: readonly Item[];
   /**
-   * O limite de trabalho em andamento. Acima dele a contagem fica em atencao e
-   * diz "acima do limite" em texto; o cartao continua podendo entrar, porque o
-   * limite avisa e nao tranca.
+   * The work-in-progress limit. Above it the count turns to warning and
+   * says "acima do limite" in text; the card can still come in, because the
+   * limit warns and does not lock.
    */
   limit?: number;
 };
 
 export type KanbanMove = {
-  /** A chave do cartao, a mesma que `getKey` devolveu. */
+  /** The card's key, the same one `getKey` returned. */
   itemId: UniqueIdentifier;
-  /** O `id` da coluna de onde o cartao saiu. */
+  /** The `id` of the column the card left from. */
   from: string;
-  /** O `id` da coluna onde ele parou. Igual a `from` quando so mudou de posicao. */
+  /** The `id` of the column where it stopped. Equal to `from` when only its position changed. */
   to: string;
-  /** A posicao final dentro de `to`, contando do zero. */
+  /** The final position inside `to`, counting from zero. */
   index: number;
 };
 
 export type KanbanCardState = {
-  /** O cartao esta sendo arrastado agora. Vale tambem para a copia que segue o ponteiro. */
+  /** The card is being dragged right now. Also applies to the copy that follows the pointer. */
   isDragging: boolean;
 };
 
@@ -92,25 +92,28 @@ export type KanbanLabels = {
 
 export type KanbanProps<Item> = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /**
-   * As colunas, com os cartoes de cada uma. A peca e controlada: durante o
-   * arrasto ela mostra onde o cartao vai cair, e ao soltar pede a mudanca por
-   * `onMove` e volta a desenhar o que chegar aqui.
+   * The columns, with each one's cards. The piece is controlled: during the
+   * drag it shows where the card will land, and on drop it asks for the change through
+   * `onMove` and goes back to drawing whatever arrives here.
    */
   columns: readonly KanbanColumn<Item>[];
-  /** A identidade de cada cartao, unica no quadro inteiro, e nao so na coluna. */
+  /** The identity of each card, unique across the whole board, not just in the column. */
   getKey: (item: Item) => UniqueIdentifier;
-  /** O conteudo do cartao. A moldura, a alca e o foco sao da peca. */
+  /** The card's content. The frame, the handle and the focus are the piece's. */
   renderCard: (item: Item, state: KanbanCardState) => ReactNode;
   /**
-   * Chamado ao soltar o cartao num lugar diferente de onde ele saiu, de outra
-   * coluna ou da mesma. Soltar no mesmo lugar ou cancelar com Esc nao chama.
+   * Called on dropping the card in a place different from where it left, in another
+   * column or the same one. Dropping in the same place or canceling with Esc does not call it.
    */
   onMove: (move: KanbanMove) => void;
-  /** O nome do cartao nos anuncios: "Nota 1043". Sem ele, sai a chave. */
+  /** The card's name in the announcements: "Nota 1043". Without it, the key is used. */
   getLabel?: (item: Item) => string;
-  /** Trava o arrasto no quadro inteiro. As colunas continuam rolando e os cartoes, focaveis. */
+  /** Locks dragging on the whole board. The columns keep scrolling and the cards stay focusable. */
   disabled?: boolean;
-  /** Os textos da contagem, da coluna vazia, do limite e dos anuncios, para outra lingua. */
+  /**
+   * The texts of the count, the empty column, the limit and the announcements, for another
+   * language.
+   */
   labels?: Partial<KanbanLabels>;
   classNames?: Slots<"column" | "header" | "title" | "count" | "list" | "card" | "empty">;
 };

@@ -35,15 +35,15 @@ function list(props: Partial<Parameters<typeof DataList<(typeof ROWS)[number]>>[
 }
 
 describe("DataList", () => {
-  test("dados na tela, um nó por linha", () => {
+  test("data on screen, one node per row", () => {
     const screen = render(list());
     expect(textOf(screen)).toContain("Clínica São Lucas");
     expect(textOf(screen)).toContain("Transportes Cabo Branco");
-    // Sem onRowPress, linha não é botão: papel só onde há ação.
+    // Without onRowPress, a row is not a button: a role only where there is an action.
     expect(byRole(screen, "button").length).toBe(0);
   });
 
-  test("com onRowPress cada linha vira botão e entrega a linha", () => {
+  test("with onRowPress each row becomes a button and delivers the row", () => {
     const onRowPress = mock(() => {});
     const screen = render(list({ onRowPress }));
     const rows = byRole(screen, "button");
@@ -52,7 +52,7 @@ describe("DataList", () => {
     expect(onRowPress).toHaveBeenCalledWith(ROWS[1]);
   });
 
-  test("carregando mostra esqueleto, e data undefined também é carregando", () => {
+  test("loading shows a skeleton, and undefined data is loading too", () => {
     for (const props of [{ isLoading: true }, { data: undefined }]) {
       const screen = render(list(props as never));
       expect(textOf(screen)).not.toContain("Clínica São Lucas");
@@ -60,7 +60,7 @@ describe("DataList", () => {
     }
   });
 
-  test("erro vence carregando, explica e oferece tentar de novo", () => {
+  test("error wins over loading, explains and offers to retry", () => {
     const onRetry = mock(() => {});
     const screen = render(list({ isError: true, isLoading: true, onRetry }));
     expect(textOf(screen)).toContain("Não foi possível carregar a lista.");
@@ -68,32 +68,32 @@ describe("DataList", () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
-  test("filter estreita a lista sem caixa e sem acento, como no DataTable", () => {
+  test("filter narrows the list ignoring case and accents, as in DataTable", () => {
     const screen = render(list({ filter: "clinica" }));
     expect(textOf(screen)).toContain("Clínica São Lucas");
     expect(textOf(screen)).not.toContain("Transportes Cabo Branco");
   });
 
-  test("filtro que zerou não é consulta vazia: o EmptyState fica reservado", () => {
+  test("a filter that emptied the list is not an empty query: EmptyState stays reserved", () => {
     const empty = { title: "Nenhuma nota por aqui", description: "Emita a primeira." };
     const screen = render(list({ filter: "zzz", empty }));
     expect(textOf(screen)).toContain("Nenhum resultado para a busca.");
     expect(textOf(screen)).not.toContain("Nenhuma nota por aqui");
 
-    // Banco vazio de verdade continua sendo EmptyState, mesmo com busca escrita.
+    // A truly empty database is still EmptyState, even with a search typed.
     const nothing = render(list({ data: [], filter: "zzz", empty }));
     expect(textOf(nothing)).toContain("Nenhuma nota por aqui");
   });
 
-  test("sem filterValue a busca vê o campo todo da linha, com filterValue só o escolhido", () => {
-    // O id é campo da linha: "1" acha a linha 1 quando ninguém diz o contrário.
+  test("without filterValue the search sees the whole row, with filterValue only the chosen field", () => {
+    // The id is a row field: "1" finds row 1 when nobody says otherwise.
     expect(textOf(render(list({ filter: "1" })))).toContain("Clínica São Lucas");
 
     const named = render(list({ filter: "1", filterValue: (row) => row.name }));
     expect(textOf(named)).toContain("Nenhum resultado para a busca.");
   });
 
-  test("selectable põe uma caixa por linha e devolve as chaves do keyExtractor", () => {
+  test("selectable puts one checkbox per row and returns the keyExtractor keys", () => {
     const onValueChange = mock(() => {});
     const screen = render(list({ selectable: true, value: [], onValueChange }));
     const boxes = byRole(screen, "checkbox");
@@ -102,7 +102,7 @@ describe("DataList", () => {
     expect(onValueChange).toHaveBeenCalledWith(["2"]);
   });
 
-  test("value manda no que está marcado, e desmarcar tira só aquela chave", () => {
+  test("value rules what is checked, and unchecking removes only that key", () => {
     const onValueChange = mock(() => {});
     const screen = render(list({ selectable: true, value: ["1", "2"], onValueChange }));
     expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(true);
@@ -110,7 +110,7 @@ describe("DataList", () => {
     expect(onValueChange).toHaveBeenCalledWith(["2"]);
   });
 
-  test("value e onValueChange falam como o DataTable web", () => {
+  test("value and onValueChange speak like the web DataTable", () => {
     const onValueChange = mock((_keys: string[]) => {});
     const screen = render(list({ selectable: true, value: ["1"], onValueChange }));
     const boxes = byRole(screen, "checkbox");
@@ -121,21 +121,21 @@ describe("DataList", () => {
     expect(byRole(screen, "checkbox")[1].props.accessibilityState.checked).toBe(false);
   });
 
-  test("sem value a lista guarda a própria seleção", () => {
+  test("without value the list keeps its own selection", () => {
     const screen = render(list({ selectable: true }));
     expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(false);
     act(() => byRole(screen, "checkbox")[0].props.onPress());
     expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(true);
   });
 
-  test("a caixa alcança os 44pt do dedo, que ela sozinha não tem", () => {
+  test("the checkbox reaches the finger's 44pt, which it does not have on its own", () => {
     const screen = render(list({ selectable: true }));
     const slop = byRole(screen, "checkbox")[0].props.hitSlop;
     expect(slop.left + 20 + slop.right).toBeGreaterThanOrEqual(44);
     expect(slop.top + 20 + slop.bottom).toBeGreaterThanOrEqual(44);
   });
 
-  test("a chave sai do índice original: filtrar não renumera a seleção", () => {
+  test("the key comes from the original index: filtering does not renumber the selection", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       list({
@@ -147,18 +147,19 @@ describe("DataList", () => {
       }),
     );
     act(() => byRole(screen, "checkbox")[0].props.onPress());
-    // Ela é a segunda linha do conjunto, e continua sendo com o filtro ligado.
+    // It is the second row of the set, and stays so with the filter on.
     expect(onValueChange).toHaveBeenCalledWith(["1"]);
   });
 
-  test("lista vazia sem busca escrita não fala em busca", () => {
-    // Sem `empty` e sem filtro, a lista some em silêncio, como sempre fez -
-    // dizer "nenhum resultado para a busca" inventaria uma busca que não houve.
+  test("an empty list with no search typed does not talk about searching", () => {
+    // Without `empty` and without a filter, the list disappears silently, as it
+    // always did - saying "no results for the search" would invent a search
+    // that never happened.
     const screen = render(list({ data: [] }));
     expect(textOf(screen)).not.toContain("Nenhum resultado para a busca.");
   });
 
-  test("vazio só vale depois que a consulta voltou, e diz o porquê", () => {
+  test("empty only counts after the query came back, and says why", () => {
     const empty = {
       title: "Nenhuma nota por aqui",
       description: "Quando você emitir a primeira, ela aparece nesta lista.",
@@ -166,14 +167,14 @@ describe("DataList", () => {
     const screen = render(list({ data: [], empty }));
     expect(textOf(screen)).toContain("Nenhuma nota por aqui");
 
-    // A mesma lista vazia AINDA carregando não é vazia.
+    // The same empty list STILL loading is not empty.
     const loading = render(list({ data: undefined, empty } as never));
     expect(textOf(loading)).not.toContain("Nenhuma nota por aqui");
   });
 });
 
 describe("EmptyState", () => {
-  test("título, porquê e ação no lugar", () => {
+  test("title, reason and action in place", () => {
     const screen = render(
       <EmptyState
         title="Nada aqui"
@@ -187,7 +188,7 @@ describe("EmptyState", () => {
   });
 });
 
-describe("EmptyState com desenho", () => {
+describe("EmptyState with a drawing", () => {
   const hidden = (screen: ReturnType<typeof render>) =>
     screen.root.findAll(
       (node) =>
@@ -196,7 +197,7 @@ describe("EmptyState com desenho", () => {
         node.props.importantForAccessibility === "no-hide-descendants",
     );
 
-  test("o icone por funcao recebe o fg-subtle do tema e os 32 do web", () => {
+  test("the icon as a function receives the theme's fg-subtle and the web's 32", () => {
     const received: { color: string; size: number }[] = [];
     const screen = render(
       <EmptyState
@@ -220,7 +221,7 @@ describe("EmptyState com desenho", () => {
     expect(textOf(screen)).toContain("lupa");
   });
 
-  test("o icone em no tambem sai do leitor de tela", () => {
+  test("the icon as a node is also hidden from the screen reader", () => {
     const screen = render(
       <EmptyState
         icon={<Text>lupa</Text>}
@@ -233,12 +234,12 @@ describe("EmptyState com desenho", () => {
     expect(textOf(screen)).toContain("lupa");
   });
 
-  test("sem desenho, nao sobra involucro escondido", () => {
+  test("without a drawing, no hidden wrapper is left over", () => {
     const screen = render(<EmptyState title="Nada encontrado" description="Tente outro filtro." />);
     expect(hidden(screen)).toHaveLength(0);
   });
 
-  test("a ilustracao toma o lugar do icone", () => {
+  test("the illustration takes the icon's place", () => {
     const screen = render(
       <EmptyState
         icon={<Text>lupa</Text>}
@@ -252,7 +253,7 @@ describe("EmptyState com desenho", () => {
     expect(textOf(screen)).not.toContain("lupa");
   });
 
-  test("o empty do DataList leva o icone ate o EmptyState", () => {
+  test("the DataList's empty carries the icon to the EmptyState", () => {
     const screen = render(
       list({
         data: [],
@@ -265,7 +266,7 @@ describe("EmptyState com desenho", () => {
 });
 
 describe("Stat", () => {
-  test("subir é verde por padrão e vermelho com invert", () => {
+  test("going up is green by default and red with invert", () => {
     const up = render(<Stat label="Faturado" value="R$ 246,7K" delta={20} />);
     expect(byClass(up, /text-success-text/).length).toBe(1);
 
@@ -275,13 +276,13 @@ describe("Stat", () => {
 });
 
 describe("Avatar", () => {
-  test("as iniciais entram por fallback, o mesmo nome do web", () => {
+  test("the initials come in through fallback, the same name as the web", () => {
     const screen = render(<Avatar fallback="EB" />);
     expect(textOf(screen)).toContain("EB");
     expect(byType(screen, "Image")).toHaveLength(0);
   });
 
-  test("a foto remota entra por src, e as iniciais ficam embaixo dela", () => {
+  test("the remote photo comes in through src, and the initials stay under it", () => {
     const screen = render(<Avatar fallback="EB" src="https://exemplo.com/eu.jpg" alt="Emanuel" />);
     const [photo] = byType(screen, "Image");
 
@@ -292,14 +293,14 @@ describe("Avatar", () => {
     expect(textOf(screen)).toContain("EB");
   });
 
-  test("sem alt a foto some do leitor de tela, porque o nome ja esta do lado", () => {
+  test("without alt the photo is hidden from the screen reader, because the name is already beside it", () => {
     const screen = render(<Avatar fallback="EB" src="https://exemplo.com/eu.jpg" />);
     const [photo] = byType(screen, "Image");
 
     expect(photo!.props.accessible).toBe(false);
   });
 
-  test("foto que falha volta para as iniciais, e trocar o src tenta de novo", () => {
+  test("a failing photo falls back to the initials, and changing src tries again", () => {
     const screen = render(<Avatar fallback="EB" src="https://exemplo.com/quebrada.jpg" />);
 
     act(() => byType(screen, "Image")[0]!.props.onError());
@@ -312,7 +313,7 @@ describe("Avatar", () => {
     expect(byType(screen, "Image")).toHaveLength(1);
   });
 
-  test("a moldura recorta a foto na pilula", () => {
+  test("the frame clips the photo into the pill", () => {
     const screen = render(<Avatar fallback="EB" src="https://exemplo.com/eu.jpg" />);
     const [frame] = byClass(screen, /rounded-pill/);
 
@@ -322,28 +323,28 @@ describe("Avatar", () => {
 });
 
 describe("Progress", () => {
-  test("anuncia papel e valor, e não passa de 100", () => {
+  test("announces role and value, and does not go past 100", () => {
     const screen = render(<Progress value={140} label="Meta do mês" />);
     const [bar] = byRole(screen, "progressbar");
     expect(bar.props.accessibilityValue).toEqual({ min: 0, max: 100, now: 100 });
     expect(bar.props.accessibilityLabel).toBe("Meta do mês");
   });
 
-  test("sem showValue a barra ainda e um elemento so, para o leitor nao pula-la", () => {
+  test("without showValue the bar is still a single element, so the screen reader does not skip it", () => {
     const screen = render(<Progress value={40} label="Envio" />);
     expect(byRole(screen, "progressbar")[0]!.props.accessible).toBe(true);
   });
 });
 
 describe("Meter", () => {
-  test("não é progressbar: medida que sobe e desce não pode anunciar carregando", () => {
+  test("it is not a progressbar: a measurement that goes up and down cannot announce loading", () => {
     const screen = render(<Meter value={82} label="Espaço usado" />);
     expect(byRole(screen, "progressbar").length).toBe(0);
     const [meter] = byRole(screen, "text");
     expect(meter.props.accessibilityLabel).toBe("Espaço usado");
   });
 
-  test("escala própria: 8 de 15 pinta 53% de barra e anuncia o valor cru", () => {
+  test("its own scale: 8 of 15 paints 53% of the bar and announces the raw value", () => {
     const screen = render(<Meter value={8} max={15} label="Armazenamento" />);
     const [bar] = byClass(screen, /\bbg-accent\b/);
     expect(bar.props.style.width).toBe("53%");
@@ -352,18 +353,18 @@ describe("Meter", () => {
     expect(meter.props.accessibilityValue).toEqual({ min: 0, max: 15, now: 8, text: "53%" });
   });
 
-  test("fora da escala não estoura a barra nos dois sentidos", () => {
+  test("out of scale does not overflow the bar in either direction", () => {
     const over = render(<Meter value={40} max={15} label="Armazenamento" />);
     expect(byClass(over, /\bbg-accent\b/)[0].props.style.width).toBe("100%");
-    // now acima de max é RangeInfo fora da especificação: o leitor de tela
-    // recebe a escala, o texto na tela é que conta o estouro.
+    // now above max is a RangeInfo outside the specification: the screen reader
+    // gets the scale, and the text on screen is what tells the overflow.
     expect(byRole(over, "text")[0].props.accessibilityValue.now).toBe(15);
 
     const under = render(<Meter value={-4} max={15} label="Armazenamento" />);
     expect(byClass(under, /\bbg-accent\b/)[0].props.style.width).toBe("0%");
   });
 
-  test("valueLabel escreve a medida na tela e é o que o leitor de tela diz", () => {
+  test("valueLabel writes the measurement on screen and is what the screen reader says", () => {
     const screen = render(
       <Meter value={8} max={15} label="Armazenamento" valueLabel="8 GB de 15 GB" />,
     );
@@ -372,7 +373,7 @@ describe("Meter", () => {
     expect(byRole(screen, "text")[0].props.accessibilityValue.text).toBe("8 GB de 15 GB");
   });
 
-  test("showValue escreve a porcentagem, e sem ele a barra vai sozinha", () => {
+  test("showValue writes the percentage, and without it the bar goes alone", () => {
     const shown = render(<Meter value={8} max={15} label="Armazenamento" showValue />);
     expect(textOf(shown)).toContain("53%");
 
@@ -382,7 +383,7 @@ describe("Meter", () => {
 });
 
 describe("Indicator", () => {
-  test("a contagem fica por cima do filho, e o leitor ouve a frase e nao o numero", () => {
+  test("the count sits on top of the child, and the screen reader hears the sentence and not the number", () => {
     const screen = render(
       <Indicator count={3} label="3 notificações">
         <Button onPress={() => {}}>Avisos</Button>
@@ -396,12 +397,12 @@ describe("Indicator", () => {
     expect(pastilha.props.accessibilityRole).toBe("text");
     expect(pastilha.props.className).toContain("absolute");
 
-    // O filho continua sendo botao: a marca nao embrulha o que ela conta,
-    // senao o alvo de dentro sumia para o leitor de tela.
+    // The child is still a button: the mark does not wrap what it counts, or
+    // the inner target would vanish for the screen reader.
     expect(byRole(screen, "button").length).toBe(1);
   });
 
-  test("zero nao desenha nada, e acima do teto sai o teto com mais", () => {
+  test("zero draws nothing, and above the ceiling it shows the ceiling with a plus", () => {
     const zero = render(
       <Indicator count={0} label="Nenhum aviso">
         <Text>Sino</Text>
@@ -424,7 +425,7 @@ describe("Indicator", () => {
     expect(textOf(proprio)).toContain("9+");
   });
 
-  test("filho largo é acusado em __DEV__: a pastilha cobre conteúdo, e nada reserva espaço", () => {
+  test("a wide child is flagged in __DEV__: the badge covers content, and nothing reserves space", () => {
     const warn = spyOn(console, "warn").mockImplementation(() => {});
     try {
       const screen = render(
@@ -447,12 +448,12 @@ describe("Indicator", () => {
     }
   });
 
-  test("alvo pequeno não é acusado: o sino, o item da barra e o avatar cabem nos 48px", () => {
+  test("a small target is not flagged: the bell, the bar item and the avatar fit in 48px", () => {
     expect(indicatorWidthComplaint(48)).toBeUndefined();
     expect(indicatorWidthComplaint(49)).toContain("49px");
   });
 
-  test("o ponto marca sem contar, e mesmo assim se anuncia", () => {
+  test("the dot marks without counting, and still announces itself", () => {
     const screen = render(
       <Indicator dot label="Há mensagens novas">
         <Text>Sino</Text>
@@ -469,7 +470,7 @@ describe("RelativeTime", () => {
   const antes = (ms: number) => new Date(AGORA.getTime() - ms);
   const texto = (element: Parameters<typeof render>[0]) => textOf(render(element)).trim();
 
-  test("a unidade e o plural, para tras e para frente", () => {
+  test("the unit and the plural, backward and forward", () => {
     expect(texto(<RelativeTime value={antes(30_000)} now={AGORA} />)).toBe("agora");
     expect(texto(<RelativeTime value={antes(60_000)} now={AGORA} />)).toBe("há 1 minuto");
     expect(texto(<RelativeTime value={antes(120_000)} now={AGORA} />)).toBe("há 2 minutos");
@@ -480,7 +481,7 @@ describe("RelativeTime", () => {
     const depois = new Date(AGORA.getTime() + 3 * 86_400_000);
     expect(texto(<RelativeTime value={depois} now={AGORA} />)).toBe("em 3 dias");
 
-    // Aceita o que vier: Date, ISO ou milissegundos.
+    // Accepts whatever comes: Date, ISO or milliseconds.
     expect(texto(<RelativeTime value={antes(120_000).toISOString()} now={AGORA} />)).toBe(
       "há 2 minutos",
     );
@@ -489,25 +490,25 @@ describe("RelativeTime", () => {
     );
   });
 
-  test("arredonda com sinal, como o web: 90 minutos atras sao ha 1 hora, e a frente em 2", () => {
+  test("rounds with sign, like the web: 90 minutes ago is 1 hour ago, and ahead it is in 2", () => {
     expect(texto(<RelativeTime value={antes(90 * 60_000)} now={AGORA} />)).toBe("há 1 hora");
     const depois = new Date(AGORA.getTime() + 90 * 60_000);
     expect(texto(<RelativeTime value={depois} now={AGORA} />)).toBe("em 2 horas");
   });
 
-  test("data invalida vira travessao, sem numero inventado e sem relogio", () => {
+  test("an invalid date becomes a dash, with no invented number and no clock", () => {
     expect(texto(<RelativeTime value="não é data" now={AGORA} />)).toBe("—");
     expect(describeRelative(new Date(Number.NaN), AGORA)).toEqual({ text: "—", step: null });
   });
 
-  test("cutoff troca o relativo pela data, no formato do formatDate", () => {
+  test("cutoff swaps the relative text for the date, in formatDate's format", () => {
     const velho = new Date("2026-01-05T09:00:00");
     expect(texto(<RelativeTime value={velho} cutoff="month" now={AGORA} />)).toBe("05/01/2026");
-    // Sem cutoff, continua contando.
+    // Without cutoff, it keeps counting.
     expect(texto(<RelativeTime value={velho} now={AGORA} />)).toBe("há 8 meses");
   });
 
-  test("o passo acompanha a distancia, e a data ja passada nao tem passo", () => {
+  test("the step follows the distance, and a date already past has no step", () => {
     expect(describeRelative(antes(90_000), AGORA).step).toBe(REFRESH.minute);
     expect(describeRelative(antes(5 * 3_600_000), AGORA).step).toBe(REFRESH.hour);
     expect(describeRelative(antes(3 * 86_400_000), AGORA).step).toBe(REFRESH.day);
@@ -515,25 +516,25 @@ describe("RelativeTime", () => {
     expect(REFRESH.minute).toBeLessThan(REFRESH.hour);
     expect(REFRESH.hour).toBeLessThan(REFRESH.day);
 
-    // Data absoluta de instante passado nunca mais muda: relogio nenhum.
+    // An absolute date for a past instant never changes again: no clock.
     const antigo = antes(400 * 86_400_000);
     expect(describeRelative(antigo, AGORA, "month").step).toBeNull();
 
-    // No futuro a mesma data volta a ser relativa quando chegar perto, entao
-    // ali o relogio continua.
+    // In the future the same date becomes relative again as it gets close, so
+    // there the clock keeps running.
     const futuro = new Date(AGORA.getTime() + 400 * 86_400_000);
     expect(describeRelative(futuro, AGORA, "month").step).toBe(REFRESH.year);
   });
 
-  test("sem now o texto se refaz ao voltar do fundo; com now ele fica parado", () => {
+  test("without now the text refreshes on returning from the background; with now it stays still", () => {
     setSystemTime(new Date("2026-08-26T12:00:00"));
 
     const vivo = render(<RelativeTime value={new Date("2026-08-26T11:58:00")} />);
     const parado = render(<RelativeTime value={new Date("2026-08-26T11:58:00")} now={AGORA} />);
     expect(textOf(vivo).trim()).toBe("há 2 minutos");
 
-    // O aparelho dormiu uma hora: o timer do JS nao correu enquanto isso, e e
-    // a volta que refaz o texto.
+    // The device slept for an hour: the JS timer did not run meanwhile, and it
+    // is the return that refreshes the text.
     setSystemTime(new Date("2026-08-26T13:00:00"));
     act(() => AppState.setState("background"));
     act(() => AppState.setState("active"));

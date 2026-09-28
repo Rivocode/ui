@@ -51,8 +51,8 @@ function mount(element: Parameters<typeof render>[0]) {
   };
 }
 
-describe("Field com validate", () => {
-  test("no modo onBlur nada valida antes da primeira saida do campo", () => {
+describe("Field with validate", () => {
+  test("in onBlur mode nothing validates before the field is first left", () => {
     const field = mount(<Controlled validate={email} validationMode="onBlur" />);
     field.type("ana");
     expect(field.errorShown()).toBe(false);
@@ -61,7 +61,7 @@ describe("Field com validate", () => {
     expect(field.input().props.className.split(" ")).toContain("border-danger");
   });
 
-  test("o validate recebe o valor controlado na saida, e o valor que serve apaga o erro", () => {
+  test("validate receives the controlled value on leaving, and a valid value clears the error", () => {
     const seen: unknown[] = [];
     const field = mount(
       <Controlled
@@ -81,7 +81,7 @@ describe("Field com validate", () => {
     expect(field.errorShown()).toBe(false);
   });
 
-  test("fora do onChange, digitar apaga o erro ate a proxima validacao, como no web", () => {
+  test("outside onChange, typing clears the error until the next validation, as on the web", () => {
     const field = mount(<Controlled validate={email} validationMode="onBlur" />);
     field.type("ana");
     field.blur();
@@ -90,7 +90,7 @@ describe("Field com validate", () => {
     expect(field.errorShown()).toBe(false);
   });
 
-  test("o padrao e onSubmit: a saida nao valida, a tecla de envio valida", () => {
+  test("the default is onSubmit: leaving does not validate, the submit key does", () => {
     const field = mount(<Controlled validate={email} />);
     field.type("ana");
     field.blur();
@@ -99,7 +99,7 @@ describe("Field com validate", () => {
     expect(textOf(field.screen)).toContain(MESSAGE);
   });
 
-  test("no modo onChange cada tecla valida", () => {
+  test("in onChange mode every keystroke validates", () => {
     const field = mount(<Controlled validate={email} validationMode="onChange" />);
     field.type("a");
     expect(field.errorShown()).toBe(true);
@@ -107,7 +107,7 @@ describe("Field com validate", () => {
     expect(field.errorShown()).toBe(false);
   });
 
-  test("o error explicito vence o validate", () => {
+  test("an explicit error wins over validate", () => {
     const field = mount(
       <Controlled validate={email} validationMode="onBlur" error="E-mail já cadastrado." />,
     );
@@ -117,7 +117,7 @@ describe("Field com validate", () => {
     expect(textOf(field.screen)).not.toContain(MESSAGE);
   });
 
-  test("o erro e anunciado, fica numa regiao viva e vira a dica do controle", () => {
+  test("the error is announced, sits in a live region and becomes the control's hint", () => {
     const field = mount(<Controlled validate={email} validationMode="onBlur" />);
     field.type("ana");
     field.blur();
@@ -127,7 +127,7 @@ describe("Field com validate", () => {
     expect(field.input().props.accessibilityHint).toBe(MESSAGE);
   });
 
-  test("a dica escrita no controle nao e trocada pelo erro", () => {
+  test("a hint written on the control is not replaced by the error", () => {
     const screen = render(
       <Field label="E-mail" error={MESSAGE}>
         <Input accessibilityHint="Usado para a nota" />
@@ -136,7 +136,7 @@ describe("Field com validate", () => {
     expect(byType(screen, "TextInput")[0]!.props.accessibilityHint).toBe("Usado para a nota");
   });
 
-  test("uma lista de mensagens aparece inteira", () => {
+  test("a list of messages appears in full", () => {
     const field = mount(
       <Controlled validationMode="onBlur" validate={() => ["Curto demais.", "Falta o @."]} />,
     );
@@ -145,7 +145,7 @@ describe("Field com validate", () => {
     expect(textOf(field.screen)).toContain("Falta o @.");
   });
 
-  test("so a resposta da ultima chamada assincrona vale", async () => {
+  test("only the response of the last async call counts", async () => {
     const pending: ((verdict: string | null) => void)[] = [];
     const field = mount(
       <Controlled
@@ -163,7 +163,7 @@ describe("Field com validate", () => {
     expect(textOf(field.screen)).toContain("Nova.");
   });
 
-  test("o campo sem value controlado tambem entrega o que foi digitado", () => {
+  test("a field without a controlled value also delivers what was typed", () => {
     const seen: unknown[] = [];
     const field = mount(
       <Field label="Nome" validationMode="onBlur" validate={(value) => void seen.push(value)}>
@@ -175,7 +175,7 @@ describe("Field com validate", () => {
     expect(seen).toEqual(["Ana"]);
   });
 
-  test("sem value controlado, o modo onChange valida a cada tecla", () => {
+  test("without a controlled value, onChange mode validates on every keystroke", () => {
     const field = mount(
       <Field label="E-mail" validationMode="onChange" validate={email}>
         <Input />
@@ -185,7 +185,7 @@ describe("Field com validate", () => {
     expect(textOf(field.screen)).toContain(MESSAGE);
   });
 
-  test("na saida vale o value que o dono reescreveu, e nao a tecla crua", () => {
+  test("on leaving, the value the owner rewrote counts, not the raw keystroke", () => {
     const seen: unknown[] = [];
     function Trimmed() {
       const [value, setValue] = useState("");
@@ -201,7 +201,7 @@ describe("Field com validate", () => {
     expect(seen).toEqual(["Ana"]);
   });
 
-  test("o Textarea e o MaskedInput tambem falam com o Field", () => {
+  test("Textarea and MaskedInput also talk to the Field", () => {
     const seen: unknown[] = [];
     const collect = (value: unknown) => {
       seen.push(value);
@@ -231,7 +231,7 @@ describe("Field com validate", () => {
     expect(textOf(masked.screen)).toContain("Erro.");
   });
 
-  test("o PasswordInput tambem fala com o Field: recebe o texto, acende a moldura e ganha a dica", () => {
+  test("PasswordInput also talks to the Field: it receives the text, lights up the frame and gets the hint", () => {
     const seen: unknown[] = [];
     function Password() {
       const [value, setValue] = useState("");
@@ -256,7 +256,7 @@ describe("Field com validate", () => {
     expect(byClass(field.screen, /border-danger/)).toHaveLength(1);
   });
 
-  test("o CurrencyInput e o PostalCodeField acendem a borda com o erro do Field", () => {
+  test("CurrencyInput and PostalCodeField light up the border with the Field's error", () => {
     const noop = () => {};
     const money = render(
       <Field label="Valor" error="Informe o valor.">
@@ -276,8 +276,8 @@ describe("Field com validate", () => {
   });
 });
 
-describe("controle fora de um Field", () => {
-  test("fica como era: sem dica inventada e sem borda de erro", () => {
+describe("a control outside a Field", () => {
+  test("stays as it was: no invented hint and no error border", () => {
     const noop = () => {};
     const screen = render(
       <>
@@ -294,7 +294,7 @@ describe("controle fora de um Field", () => {
     expect(byClass(screen, /border-border-strong/).length).toBeGreaterThanOrEqual(4);
   });
 
-  test("o invalid explicito do controle vence o erro do Field, nos dois sentidos", () => {
+  test("the control's explicit invalid wins over the Field's error, in both directions", () => {
     const screen = render(
       <>
         <Field label="Com erro" error="Errado.">
@@ -321,7 +321,7 @@ function press(screen: ReturnType<typeof render>, text: string) {
       (node.props.accessibilityLabel === text ||
         node.findAll((child) => child.props.children === text).length > 0),
   )[0];
-  if (!target) throw new Error(`nada para tocar com "${text}"`);
+  if (!target) throw new Error(`nothing to tap with "${text}"`);
   act(() => target.props.onPress());
 }
 
@@ -389,8 +389,8 @@ function sheetOf(screen: ReturnType<typeof render>) {
   };
 }
 
-describe("Autocomplete dentro de um Field", () => {
-  test("no onBlur, fechar a folha pela sugestao e a saida: valida o valor escolhido, uma vez", () => {
+describe("Autocomplete inside a Field", () => {
+  test("in onBlur, closing the sheet through a suggestion is leaving: it validates the chosen value, once", () => {
     const check = counting((value) => (value === "Cabedelo" ? "Fora da área." : null));
     const screen = render(<City validate={check.validate} validationMode="onBlur" />);
     const sheet = sheetOf(screen);
@@ -403,7 +403,7 @@ describe("Autocomplete dentro de um Field", () => {
     expect(textOf(screen)).toContain("Fora da área.");
   });
 
-  test("no onBlur, o fundo e o Concluir tambem sao saida, e o fechar repetido nao valida de novo", () => {
+  test("in onBlur, the backdrop and Concluir are also leaving, and a repeated close does not validate again", () => {
     const check = counting(() => REQUIRED);
     const screen = render(<City validate={check.validate} validationMode="onBlur" />);
     const sheet = sheetOf(screen);
@@ -416,7 +416,7 @@ describe("Autocomplete dentro de um Field", () => {
     expect(check.seen).toEqual(["", "", "Patos"]);
   });
 
-  test("no onSubmit, o fundo nao valida; o Concluir e a tecla de envio validam", () => {
+  test("in onSubmit, the backdrop does not validate; Concluir and the submit key do", () => {
     const check = counting(() => REQUIRED);
     const screen = render(<City validate={check.validate} />);
     const sheet = sheetOf(screen);
@@ -432,7 +432,7 @@ describe("Autocomplete dentro de um Field", () => {
     expect(check.seen).toEqual(["Sousa", "Sousa"]);
   });
 
-  test("o campo fechado acende a borda e leva o erro como dica", () => {
+  test("the closed field lights up the border and carries the error as a hint", () => {
     const screen = render(<City validate={() => REQUIRED} validationMode="onBlur" />);
     const sheet = sheetOf(screen);
     expect(sheet.classes()).toContain("border-border-strong");
@@ -444,7 +444,7 @@ describe("Autocomplete dentro de um Field", () => {
     expect(sheet.trigger().props.accessibilityHint).toBe(REQUIRED);
   });
 
-  test("o campo de texto da folha nao vira um segundo controle do Field", () => {
+  test("the sheet's text field does not become a second Field control", () => {
     const check = counting(() => null);
     const screen = render(<City validate={check.validate} validationMode="onChange" />);
     const sheet = sheetOf(screen);
@@ -456,7 +456,7 @@ describe("Autocomplete dentro de um Field", () => {
     expect(check.seen).toEqual(["J", "Jo"]);
   });
 
-  test("o invalid explicito vence o erro do Field", () => {
+  test("an explicit invalid wins over the Field's error", () => {
     const screen = render(
       <City validate={() => REQUIRED} validationMode="onBlur" invalid={false} />,
     );
@@ -467,7 +467,7 @@ describe("Autocomplete dentro de um Field", () => {
     expect(sheet.classes()).not.toContain("border-danger");
   });
 
-  test("fora de um Field fica como era", () => {
+  test("outside a Field it stays as it was", () => {
     function Loose() {
       const [value, setValue] = useState("");
       return <Autocomplete items={CITIES} label="Cidade" value={value} onValueChange={setValue} />;
@@ -549,9 +549,9 @@ function Wrapped({
   );
 }
 
-describe("seletor de folha dentro de um Field", () => {
+describe("a sheet picker inside a Field", () => {
   for (const [name, control, option] of SINGLE) {
-    test(`${name}: escolher fecha a folha e e a saida do onBlur, e o gatilho acende com a dica`, () => {
+    test(`${name}: choosing closes the sheet and is the onBlur leave, and the trigger lights up with the hint`, () => {
       const check = counting(() => REQUIRED);
       const screen = render(
         <Wrapped control={control} validate={check.validate} validationMode="onBlur" />,
@@ -566,7 +566,7 @@ describe("seletor de folha dentro de um Field", () => {
       expect(trigger().props.accessibilityHint).toBe(REQUIRED);
     });
 
-    test(`${name}: o fundo fecha sem validar no onSubmit, e valida uma vez no onBlur`, () => {
+    test(`${name}: the backdrop closes without validating in onSubmit, and validates once in onBlur`, () => {
       const lazy = counting(() => REQUIRED);
       const screen = render(<Wrapped control={control} validate={lazy.validate} />);
       act(() => byLabel(screen, "Cliente")[0]!.props.onPress());
@@ -586,7 +586,7 @@ describe("seletor de folha dentro de um Field", () => {
       expect(eager.seen).toHaveLength(1);
     });
 
-    test(`${name}: fora de um Field fica como era`, () => {
+    test(`${name}: outside a Field it stays as it was`, () => {
       const screen = render(<Wrapped control={control} outside />);
       const trigger = () => byLabel(screen, "Cliente")[0]!;
       act(() => trigger().props.onPress());
@@ -596,7 +596,7 @@ describe("seletor de folha dentro de um Field", () => {
     });
   }
 
-  test("o Concluir do Select e do Combobox de escolha multipla e o envio", () => {
+  test("the Concluir of the multiple-choice Select and Combobox is the submit", () => {
     for (const Picker of [Select, Combobox]) {
       const check = counting(() => REQUIRED);
       function Many() {

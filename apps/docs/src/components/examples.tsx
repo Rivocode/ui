@@ -3,17 +3,17 @@ import { ExampleStage } from '@/components/example-stage'
 import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/example-source'
 
 /* ---------------------------------------------------------------------------
- * Os exemplos
+ * The examples
  *
- * Os mesmos arquivos que o sync do claude.ai/design fotografa, aqui rodando de
- * verdade. Retrato de componente envelhece em silencio: a prop muda, a imagem
- * fica. Exemplo que roda quebra na hora, e quem le ve a verdade.
+ * The same files the claude.ai/design sync photographs, running for real here.
+ * A component snapshot ages silently: the prop changes, the image stays. An
+ * example that runs breaks on the spot, and the reader sees the truth.
  *
- * Eles suspendem a pagina em vez de aparecerem depois dela: uma caixa de 8rem
- * que vira um exemplo de 30rem empurra a doc inteira para baixo, e era o outro
- * lado do CLS que a pagina de peca marcava. Quem cuida da falha e a fronteira
- * em `components/boundary.tsx` - chunk que nao chega e deploy novo por baixo
- * de aba velha, e nao erro de quem le.
+ * They suspend the page instead of appearing after it: an 8rem box that turns
+ * into a 30rem example pushes the whole doc down, and that was the other half
+ * of the CLS the piece page scored. Failure is handled by the boundary in
+ * `components/boundary.tsx` - a chunk that does not arrive and a new deploy
+ * under an old tab, not the reader's mistake.
  * ------------------------------------------------------------------------- */
 
 export function Examples({
@@ -24,13 +24,13 @@ export function Examples({
   loadSource?: () => Promise<string>
 }) {
   const module = use(load())
-  // A fonte vem do mesmo arquivo do exemplo, por outro caminho: ela e texto que
-  // o leitor le, e ele e modulo que o React monta.
+  // The source comes from the same file as the example, by another path: it is
+  // text the reader reads, and the example is a module React mounts.
   const source = loadSource ? use(loadSource()) : null
 
-  // As chaves do modulo saem em ordem alfabetica, entao o exemplo principal
-  // cairia onde o nome dele por acaso ordenasse. A ordem do proprio arquivo e a
-  // ordem de leitura pretendida: o caso simples primeiro, os cantos depois.
+  // The module keys come out in alphabetical order, so the main example would
+  // land wherever its name happened to sort. The file's own order is the
+  // intended reading order: the simple case first, the corners after.
   const stories = useMemo(() => {
     const written = source ? storyNamesOf(source) : []
     const rank = (name: string) => {

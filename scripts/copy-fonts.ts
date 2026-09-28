@@ -19,14 +19,14 @@ export async function availableFonts() {
 if (import.meta.main) {
   const cssPath = process.argv[2];
   if (!cssPath) {
-    console.error("uso: bun run scripts/copy-fonts.ts <caminho-da-css>");
+    console.error("usage: bun run scripts/copy-fonts.ts <css-path>");
     process.exit(1);
   }
 
   const wanted = wantedFonts(await Bun.file(cssPath).text());
 
   if (wanted.size === 0) {
-    console.log("nenhuma fonte referenciada, nada a copiar.");
+    console.log("no font referenced, nothing to copy.");
     process.exit(0);
   }
 
@@ -46,9 +46,9 @@ if (import.meta.main) {
   }
 
   if (missing.length > 0) {
-    console.error(`fontes referenciadas que nao existem em node_modules: ${missing.join(", ")}`);
+    console.error(`referenced fonts that do not exist in node_modules: ${missing.join(", ")}`);
     process.exit(1);
   }
 
-  console.log(`${copied} arquivo(s) de fonte copiado(s) para ${target}`);
+  console.log(`${copied} font file(s) copied to ${target}`);
 }

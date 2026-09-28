@@ -8,21 +8,24 @@ import { useRivo } from "./provider";
 import { Text, TextInput } from "./text";
 
 export type TagsInputProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
-  /** As fichas de agora. A peça é controlada: quem guarda a lista é o app. */
+  /** The current tags. The component is controlled: the app keeps the list. */
   value: string[];
   onValueChange: (value: string[]) => void;
-  /** O que fecha uma ficha além do Enter. Vírgula por padrão. */
+  /** What closes a tag besides Enter. Comma by default. */
   separators?: string[];
-  /** Teto de fichas. Alcançado, o campo para de aceitar. */
+  /** Tag cap. Once reached, the field stops accepting. */
   max?: number;
-  /** O que o leitor de tela ouve nos botoes da peca, como no web e no FilterChip. `remove` recebe a ficha. */
+  /**
+   * What the screen reader hears on the component's buttons, as on the web and
+   * in FilterChip. `remove` receives the tag.
+   */
   labels?: { remove?: (tag: string) => string };
   invalid?: boolean;
-  /** Veste a caixa toda, o mesmo no de `classNames.field`. */
+  /** Styles the whole box, the same node as `classNames.field`. */
   className?: string;
   /**
-   * Classe por parte: `field` (a caixa), `tag` (cada ficha), `remove` (o xis
-   * da ficha) e `input` (o campo de digitar).
+   * Class per part: `field` (the box), `tag` (each tag), `remove` (the tag's X)
+   * and `input` (the typing field).
    */
   classNames?: Slots<"field" | "tag" | "remove" | "input">;
 };

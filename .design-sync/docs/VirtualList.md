@@ -1,20 +1,20 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # VirtualList
 
-Lista longa que desenha só o que cabe na moldura.
+A long list that draws only what fits in the frame.
 
-O virtualizador já estava pago: o `DataTable` usa a mesma engrenagem desde que
-o painel de log entrou. O que faltava era a lista que não é tabela (o feed, o
-histórico de eventos, o seletor de dois mil clientes), e que até aqui ou
-montava dez mil `<li>` no DOM ou empurrava a pessoa para a paginação no
-servidor.
+The virtualizer was already paid for: `DataTable` has used the same machinery
+since the log panel came in. What was missing was the list that is not a table
+(the feed, the event history, the picker of two thousand clients), which until
+now either mounted ten thousand `<li>`s in the DOM or pushed the person toward
+server-side pagination.
 
 ```tsx
 <VirtualList
-  items={events}            // 4 mil itens
+  items={events}            // 4 thousand items
   itemKey={(event) => event.id}
   maxHeight={360}
   label="Log de envio de notas"
@@ -29,86 +29,91 @@ servidor.
 />
 ```
 
-`renderItem` desenha um item; a peça cuida de quantos existem, de quais estão
-na tela e de quanto espaço os ausentes ocupam.
+`renderItem` draws one item; the piece takes care of how many exist, which ones
+are on the screen and how much space the absent ones take up.
 
-## A partir de quantos itens
+## From how many items
 
-**Abaixo de duzentos, não use.** Uma lista curta virtualizada é complexidade
-paga sem retorno: entram uma altura obrigatória, um palpite de altura por item
-e um contêiner que rola por dentro, e o que se ganha são alguns milissegundos
-que ninguém sente. Duzentas linhas comuns montam em menos de um quadro.
+**Below two hundred, do not use it.** A short virtualized list is complexity
+paid for with no return: in come a required height, a height guess per item and
+a container that scrolls inside, and what you gain is a few milliseconds nobody
+feels. Two hundred ordinary rows mount in less than a frame.
 
-Entre duzentos e uns dois mil, é escolha: se cada item for pesado (imagem,
-gráfico, um menu por linha), virtualizar já paga; se for texto, não.
+Between two hundred and about two thousand, it is a choice: if each item is
+heavy (an image, a chart, a menu per row), virtualizing already pays; if it is
+text, it does not.
 
-**Acima de dois mil, use.** É onde a montagem inicial passa a travar o clique
-que abriu a tela, e é o ponto em que a `ScrollArea` com tudo no DOM começa a
-custar memória de verdade no celular.
+**Above two thousand, use it.** That is where the initial mount starts freezing
+the click that opened the screen, and it is the point at which a `ScrollArea`
+with everything in the DOM starts costing real memory on the phone.
 
-## A altura do item, que é a decisão da peça
+## The item height, which is the piece's decision
 
-Virtualizar é prometer, antes de desenhar, quanto espaço o que não foi
-desenhado vai ocupar. Toda a peça sai daí.
+Virtualizing means promising, before drawing, how much space what was not drawn
+will take. The whole piece comes from that.
 
-- **`itemHeight`** (padrão 44, o mesmo do `rowHeight` do `DataTable`) é o
-  palpite. É ele que dá comprimento à barra de rolagem antes de o item existir.
-  Aceita número ou função por índice, para a lista que alterna item simples e
-  item duplo.
-- **`measure`** (ligado de saída) faz cada item desenhado devolver a altura
-  real, e a rolagem se corrigir. É o que segura texto que quebra em duas linhas
-  a 390px: com o palpite sozinho, o item de duas linhas invade o de baixo e a
-  barra promete um fim que não chega.
+- **`itemHeight`** (default 44, the same as `DataTable`'s `rowHeight`) is the
+  guess. It is what gives the scrollbar its length before the item exists. It
+  accepts a number or a function by index, for a list that alternates single
+  and double items.
+- **`measure`** (on out of the box) makes each drawn item report its real
+  height, and the scroll correct itself. It is what holds text that wraps to
+  two lines at 390px: with the guess alone, the two-line item overlaps the one
+  below and the scrollbar promises an end that never comes.
 
-Com `measure` ligado, `itemHeight` só precisa estar perto: quem ainda não foi
-desenhado continua valendo o palpite, e o que já passou pela tela vale a medida.
-Por isso a barra de rolagem de uma lista de alturas variadas se ajusta enquanto
-se rola, e isso é honesto: a alternativa seria medir quatro mil itens na
-montagem, que é exatamente o custo que a peça existe para não pagar.
+With `measure` on, `itemHeight` only needs to be close: whoever has not been
+drawn yet still counts at the guess, and whatever has passed through the screen
+counts at its measurement. That is why the scrollbar of a list with varied
+heights adjusts while scrolling, and that is honest: the alternative would be
+measuring four thousand items on mount, which is exactly the cost the piece
+exists to avoid.
 
-**Desligue `measure` quando a altura for cravada por CSS.** Aí `itemHeight` é a
-lei, a peça aplica essa altura em cada item, e você economiza um observador de
-tamanho por item visível. É o caso do log de largura fixa com uma linha por
-evento.
+**Turn `measure` off when the height is fixed by CSS.** Then `itemHeight` is the
+law, the piece applies that height to each item, and you save one resize
+observer per visible item. It is the case of a fixed-width log with one line
+per event.
 
-`itemKey` não é só chave de React: é por ela que a altura medida segue o item
-quando a lista reordena ou filtra. Índice serve e quebra na primeira reordenação:
-o item que era o terceiro herda a altura de quem estava ali.
+`itemKey` is not just a React key: it is how the measured height follows the
+item when the list reorders or filters. The index works and breaks on the first
+reorder: the item that was third inherits the height of whoever was there.
 
-## Rolagem dentro da própria moldura
+## Scrolling inside its own frame
 
-`maxHeight` é obrigatória, e é a diferença para a irmã do `DataTable`, onde ela
-é opcional: sem altura não há o que caber, e uma lista virtualizada sem moldura
-desenha um item só. A moldura é a mesma da tabela (borda, canto e superfície
-iguais), ela rola por dentro em vez de empurrar a página, e é decisão escrita
-da casa desde a tabela.
+`maxHeight` is required, and that is the difference from its `DataTable`
+sibling, where it is optional: without a height there is nothing to fit into,
+and a virtualized list without a frame draws a single item. The frame is the
+same as the table's (same border, corner and surface), it scrolls inside instead
+of pushing the page, and it has been a written house decision since the table.
 
-`gap` põe respiro entre um item e o próximo sem que ele conte como altura de
-item. Margem dentro do `renderItem` não serve: a medida de um item é a caixa
-dele, e margem fica de fora. O resultado é uma lista que encolhe um pouco a
-cada item.
+`gap` puts spacing between one item and the next without it counting as item
+height. A margin inside `renderItem` does not work: an item's measurement is
+its box, and the margin stays outside. The result is a list that shrinks a
+little with each item.
 
-## Contagem para o leitor de tela
+## The count for the screen reader
 
-Uma lista virtualizada mente por construção: com vinte itens no DOM e quatro
-mil na mão, o leitor de tela anuncia "item 3 de 20". O `DataTable` resolveu isso
-com `aria-rowcount` na tabela e `aria-rowindex` em cada linha; aqui vale o par
-equivalente de lista: **`aria-setsize` com o total e `aria-posinset` com a
-posição real** em cada item. Quem ouve ouve "3 de 4000", que é o que existe.
+A virtualized list lies by construction: with twenty items in the DOM and four
+thousand in hand, the screen reader announces "item 3 of 20". `DataTable` solved
+this with `aria-rowcount` on the table and `aria-rowindex` on each row; here
+the equivalent list pair applies: **`aria-setsize` with the total and
+`aria-posinset` with the real position** on each item. Whoever listens hears "3
+of 4000", which is what exists.
 
-A peça sai como `role="list"` com `role="listitem"` dentro, e `label` é o nome
-dessa lista. Sem ele, ela é anunciada como uma lista sem nome no meio da tela.
-E numa tela que tem três, isso não distingue nenhuma.
+The piece comes out as `role="list"` with `role="listitem"` inside, and `label`
+is that list's name. Without it, it is announced as an unnamed list in the
+middle of the screen. And on a screen that has three, that tells none of them
+apart.
 
-Carregando não há lista nenhuma: o esqueleto sai marcado com `aria-hidden` e a
-região não se anuncia como lista de quatro itens que não existem.
+While loading there is no list at all: the skeleton comes out marked with
+`aria-hidden` and the region does not announce itself as a list of four items
+that do not exist.
 
-## Ir até um item que não está na tela
+## Going to an item that is not on the screen
 
-Item que não foi desenhado não tem elemento, então `scrollIntoView` não alcança.
-`ref` recebe um `VirtualListHandle`, que tem `scrollToIndex(index, { align })`:
-`start`, `center`, `end` ou `auto`. É como se vai ao fim de um log ou se pula
-para o resultado de uma busca.
+An item that was not drawn has no element, so `scrollIntoView` cannot reach it.
+`ref` receives a `VirtualListHandle`, which has
+`scrollToIndex(index, { align })`: `start`, `center`, `end` or `auto`. It is how
+you go to the end of a log or jump to a search result.
 
 ```tsx
 const list = useRef<VirtualListHandle>(null)
@@ -119,63 +124,66 @@ const list = useRef<VirtualListHandle>(null)
 <VirtualList ref={list} items={events} /* … */ />
 ```
 
-## Os quatro estados
+## The four states
 
-Os mesmos do `DataTable`, na mesma ordem e com os mesmos nomes de prop: erro
-vence carregando, e vazio só vale depois que a consulta voltou. `isLoading` e
-`items === undefined` são a mesma coisa; `skeletonItems` diz quantos itens
-falsos aparecem, e cada um ocupa a altura de `itemHeight`, para a moldura não
-pular quando os dados chegam. `errorTitle`, `errorMessage`, `onRetry` e
-`labels.retry` são o conjunto do erro, e `empty` é o estado vazio com descrição
-obrigatória. `labels.retry` (padrão "Tentar de novo") nomeia o botão da nova
-tentativa, e tem a mesma chave e o mesmo padrão nas peças de consulta:
-traduzir o título sem poder traduzir o botão é pior do que não traduzir nada.
+The same as `DataTable`'s, in the same order and with the same prop names: error
+beats loading, and empty only counts after the query has returned. `isLoading`
+and `items === undefined` are the same thing; `skeletonItems` says how many fake
+items appear, and each one takes up the `itemHeight` height, so the frame does
+not jump when the data arrives. `errorTitle`, `errorMessage`, `onRetry` and
+`labels.retry` are the error set, and `empty` is the empty state with a required
+description. `labels.retry` (default "Tentar de novo") names the retry button,
+and has the same key and the same default across the query pieces: translating
+the title without being able to translate the button is worse than translating
+nothing.
 
-**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
-leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
-está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
-tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
-(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
-"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
-volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
-estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
+**The wait announces itself out loud.** `aria-busy` on a node without a role
+is read by no screen reader at all: it describes the state of a region, and
+only reaches whoever is already inside it. Whoever was waiting heard silence,
+and the arrival of the data, which swaps the whole screen, said nothing either.
+The four siblings publish the same live region (`role="status"
+aria-live="polite"`, marked with `data-rc-status`), which says "Carregando…"
+while the query has not returned and "Conteúdo carregado" when it returns. It
+exists before the text changes and is the same node from the first state to the
+last: a region that is born with the text already inside fires no announcement
+at all.
 
-## Partes
+## Parts
 
-`classNames` veste cada parte sem ninguém alcançar o nó interno por `[&>div>div]`:
+`classNames` dresses each part without anyone reaching the inner node through
+`[&>div>div]`:
 
-- **`list`**: a faixa de altura total que rola por dentro da moldura.
-- **`item`**: a caixa posicionada de cada item, onde entra o que `renderItem`
-  devolve.
+- **`list`**: the full-height strip that scrolls inside the frame.
+- **`item`**: each item's positioned box, where whatever `renderItem` returns
+  goes.
 
-`className` continua sendo a moldura, e é onde se tira a borda quando a lista é
-de cartões soltos.
+`className` is still the frame, and it is where you remove the border when the
+list is made of loose cards.
 
-## O item interativo vem do `renderItem`
+## The interactive item comes from `renderItem`
 
-Não há `onItemClick`. Uma `<div>` que responde ao clique não responde ao Enter,
-e uma lista de mil dessas é mil alvos que o teclado não alcança. Quem precisa de
-item clicável devolve o alvo de verdade: `<Item interactive render={<a />}>` ou
-`<Item interactive render={<button />}>`, que já trazem foco visível e cor de
-passagem.
+There is no `onItemClick`. A `<div>` that responds to a click does not respond
+to Enter, and a list of a thousand of those is a thousand targets the keyboard
+cannot reach. Whoever needs a clickable item returns the real target:
+`<Item interactive render={<a />}>` or `<Item interactive render={<button />}>`,
+which already bring visible focus and hover color.
 
-## Quando não usar
+## When not to use
 
-**Se o dado é tabular, use `DataTable`.** Ela já virtualiza (`maxHeight` mais
-`virtual`), e leva junto o que uma lista não tem: coluna com cabeçalho,
-ordenação, filtro que ignora acento, seleção e linha de totais alinhada com as
-colunas. Uma listagem de notas fiscais montada com `VirtualList` é uma tabela
-reconstruída à mão, e a primeira coisa que se perde é o alinhamento entre
-colunas.
+**If the data is tabular, use `DataTable`.** It already virtualizes
+(`maxHeight` plus `virtual`), and brings along what a list does not have: a
+column with a header, sorting, an accent-insensitive filter, selection and a
+totals row aligned with the columns. An invoice listing built with
+`VirtualList` is a table rebuilt by hand, and the first thing lost is the
+alignment between columns.
 
-**Se a lista é curta, use `ScrollArea`.** Ela é a moldura de rolagem sem
-virtualização nenhuma: nada de altura de item, nada de palpite, nada de
-`aria-setsize`. Para as trinta notas de um painel lateral, é a peça certa, e a
-`VirtualList` ali só acrescenta uma prop obrigatória a mais e uma altura para
-você adivinhar.
+**If the list is short, use `ScrollArea`.** It is the scrolling frame with no
+virtualization at all: no item height, no guess, no `aria-setsize`. For the
+thirty invoices of a side panel, it is the right piece, and `VirtualList` there
+only adds one more required prop and a height for you to guess.
 
-## No React Native
+## In React Native
 
-Não porta, e não é fila: **a plataforma já resolve**. A `FlatList` do React Native virtualiza de fábrica, e o `DataList` daqui já a usa por baixo. Uma peça nossa por cima seria embrulho de embrulho, e cobraria manutenção para reimplementar o que o sistema entrega, com pior desempenho, porque a `FlatList` roda parte do trabalho fora da ponte de JavaScript.
+Does not port, and it is not queued: **the platform already solves it**. React Native's `FlatList` virtualizes out of the box, and the `DataList` here already uses it underneath. A piece of ours on top would be a wrapper of a wrapper, and would demand maintenance to reimplement what the system delivers, with worse performance, because `FlatList` runs part of the work off the JavaScript bridge.
 
-O que o web tinha de próprio, e que a `FlatList` não dá sozinha, são os quatro finais e a contagem honesta para o leitor de tela. Os dois já estão no `DataList`: use ele para lista longa que veio de consulta, e a `FlatList` crua para lista longa que você já tem na mão.
+What the web had of its own, and that `FlatList` does not give by itself, are the four endings and the honest count for the screen reader. Both are already in `DataList`: use it for a long list that came from a query, and raw `FlatList` for a long list you already have in hand.

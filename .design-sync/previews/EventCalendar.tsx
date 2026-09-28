@@ -17,12 +17,12 @@ const WEEK: CalendarEvent[] = [
   { id: '7', title: 'Retrospectiva', start: at(20, 16), end: at(20, 17), tone: 'success' },
 ]
 
-/** Semana */
+/** Week */
 export function Week() {
   return <EventCalendar defaultView="week" defaultDate={ANCHOR} events={WEEK} label="Agenda da equipe" />
 }
 
-/** Dia */
+/** Day */
 export function Day() {
   return (
     <EventCalendar
@@ -46,7 +46,7 @@ const MONTH: CalendarEvent[] = [
   { id: '13', title: 'Fechamento do mês', start: at(31, 8), end: at(31, 18), tone: 'accent' },
 ]
 
-/** Mês */
+/** Month */
 export function Month() {
   return <EventCalendar defaultView="month" defaultDate={ANCHOR} events={MONTH} label="Mês da equipe" />
 }
@@ -66,7 +66,7 @@ const CLASH: CalendarEvent[] = [
   { id: 'e', title: 'Consulta de Eva Nunes', start: at(17, 10, 30), end: at(17, 11), tone: 'success' },
 ]
 
-/** Choque de horário */
+/** Schedule clash */
 export function Overlap() {
   return (
     <EventCalendar
@@ -87,7 +87,7 @@ const ACROSS: CalendarEvent[] = [
   { id: 'night', title: 'Plantão da virada', start: at(17, 22), end: at(18, 9), tone: 'warning' },
 ]
 
-/** Dia inteiro e a noite que atravessa */
+/** All day and the overnight event */
 export function AcrossDays() {
   return (
     <EventCalendar
@@ -101,7 +101,7 @@ export function AcrossDays() {
   )
 }
 
-/** Escolher e criar */
+/** Select and create */
 export function Interactive() {
   const [picked, setPicked] = useState<string>('Nada escolhido ainda.')
 
@@ -122,7 +122,7 @@ export function Interactive() {
   )
 }
 
-/** Tarja com desenho próprio */
+/** Event bar with custom rendering */
 export function CustomEvent() {
   return (
     <EventCalendar
@@ -142,12 +142,12 @@ export function CustomEvent() {
   )
 }
 
-/** Carregando */
+/** Loading */
 export function Loading() {
   return <EventCalendar defaultView="week" defaultDate={ANCHOR} isLoading label="Agenda da equipe" />
 }
 
-/** Erro */
+/** Error */
 export function Error() {
   return (
     <EventCalendar
@@ -162,7 +162,7 @@ export function Error() {
   )
 }
 
-/** Vazio */
+/** Empty */
 export function Empty() {
   return (
     <EventCalendar

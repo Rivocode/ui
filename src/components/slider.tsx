@@ -9,27 +9,27 @@ import type { Slots } from "../lib/slots";
 
 export type SliderProps = Omit<ComponentProps<typeof BaseSlider.Root>, "format"> & {
   /**
-   * Texto acima do controle, e o nome que o leitor de tela le no pino. Sem
-   * ele, o nome tem que vir do `thumbLabel`.
+   * Text above the control, and the name the screen reader reads on the thumb. Without
+   * it, the name has to come from `thumbLabel`.
    */
   label?: ReactNode;
-  /** Mostra o valor ao lado do rotulo. */
+  /** Shows the value beside the label. */
   showValue?: boolean;
   /**
-   * Como o numero e escrito: nome de formatador da casa ou funcao propria, o
-   * mesmo vocabulario do eixo do grafico. Numa faixa de dois valores, ele
-   * escreve cada ponta.
+   * How the number is written: the name of a house formatter or your own function, the
+   * same vocabulary as the chart axis. In a two-value range, it
+   * writes each end.
    */
   format?: Format;
-  /** As opcoes do `Intl.NumberFormat`, para quem precisa delas. */
+  /** The `Intl.NumberFormat` options, for those who need them. */
   numberFormat?: Intl.NumberFormatOptions;
   /**
-   * O que o leitor de tela chama o pino, no lugar do `label`. Numa faixa,
-   * passe um por pino: os dois precisam de nomes diferentes para o leitor
-   * saber qual e qual, e o `label` sozinho nomearia os dois igual.
+   * What the screen reader calls the thumb, in place of `label`. In a range,
+   * pass one per thumb: the two need different names for the reader to
+   * know which is which, and `label` alone would name both the same.
    */
   thumbLabel?: string | string[];
-  /** Classe por parte: `label`, `value`, `control`, `track`, `indicator`, `thumb`. */
+  /** Class per part: `label`, `value`, `control`, `track`, `indicator`, `thumb`. */
   classNames?: Slots<"label" | "value" | "control" | "track" | "indicator" | "thumb">;
 };
 

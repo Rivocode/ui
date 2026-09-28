@@ -3,15 +3,15 @@ import { appendFileSync } from "node:fs";
 export const VETO = "[no-release]";
 
 export type ReleaseTarget = {
-  /** O nome no registro, como `npm view` o pede. */
+  /** The name in the registry, as `npm view` asks for it. */
   npmName: string;
-  /** O manifesto que carrega a versao deste pacote. */
+  /** The manifest that carries this package's version. */
   manifest: string;
-  /** O CHANGELOG que precisa abrir com a secao da versao. */
+  /** The CHANGELOG that has to open with the version's section. */
   changelog: string;
-  /** O que vem antes do numero na tag, e o que separa os pacotes. */
+  /** What comes before the number in the tag, and what separates the packages. */
   prefix: string;
-  /** O arquivo de workflow que publica este pacote. */
+  /** The workflow file that publishes this package. */
   workflow: string;
 };
 
@@ -40,20 +40,19 @@ export const TARGETS: Record<string, ReleaseTarget> = {
 };
 
 export type ReleaseFacts = {
-  /** A versao que o manifesto declara agora. */
+  /** The version the manifest declares now. */
   version: string;
-  /** As tags que ja existem, aqui e no `origin`, sem prefixo removido. */
+  /** The tags that already exist, here and on `origin`, with no prefix removed. */
   tags: string[];
-  /** As versoes que o registro ja serve para este pacote. */
+  /** The versions the registry already serves for this package. */
   published: string[];
-  /** O texto inteiro do CHANGELOG do pacote. */
+  /** The whole text of the package's CHANGELOG. */
   changelog: string;
-  /** A mensagem do commit da cabeca. */
   /**
-   * A mensagem inteira do commit da cabeca. So o ASSUNTO - a primeira linha -
-   * e lido atras da marca, porque o corpo e prosa: o commit que criou esta
-   * automacao explicava a valvula, escreveu a marca no meio do texto, e foi
-   * barrado por ela.
+   * The whole message of the head commit. Only the SUBJECT - the first line -
+   * is searched for the mark, because the body is prose: the commit that
+   * created this automation explained the valve, wrote the mark in the middle
+   * of the text, and was blocked by it.
    */
   message: string;
 };
@@ -66,22 +65,22 @@ export type ReleaseVerdict =
   | "changelog-open";
 
 export type ReleaseDecision = {
-  /** A tag que nasceria, exista ela ou nao. */
+  /** The tag that would be born, whether it exists or not. */
   tag: string;
-  /** Qual das quatro guardas barrou, ou `release` quando nenhuma barrou. */
+  /** Which of the four guards blocked, or `release` when none did. */
   verdict: ReleaseVerdict;
-  /** Se a tag deve nascer e o workflow de publicacao ser chamado. */
+  /** Whether the tag should be born and the publishing workflow called. */
   release: boolean;
-  /** O que foi feito, ou por que nao foi, em uma frase. */
+  /** What was done, or why it was not, in one sentence. */
   reason: string;
 };
 
 export const HEADLINE: Record<ReleaseVerdict, string> = {
-  release: "liberado: a tag nasce e o release e chamado",
-  vetoed: `barrado por ${VETO}`,
-  "tag-exists": "nada a fazer",
-  "already-published": "barrado: a versao ja esta no npm",
-  "changelog-open": "barrado: o CHANGELOG nao esta fechado",
+  release: "cleared: the tag is born and the release is called",
+  vetoed: `blocked by ${VETO}`,
+  "tag-exists": "nothing to do",
+  "already-published": "blocked: the version is already on npm",
+  "changelog-open": "blocked: the CHANGELOG is not closed",
 };
 
 export function topSection(changelog: string): string | undefined {
@@ -101,8 +100,8 @@ export function decideRelease(target: ReleaseTarget, facts: ReleaseFacts): Relea
     return barred(
       tag,
       "vetoed",
-      `O assunto do commit da cabeca tem ${VETO}, entao a tag ${tag} nao nasce.` +
-        " Bump sem publicacao e escolha de quem comitou, e a valvula existe para isso.",
+      `The head commit's subject has ${VETO}, so the tag ${tag} is not born.` +
+        " A bump without publishing is the committer's choice, and the valve exists for that.",
     );
   }
 
@@ -110,8 +109,8 @@ export function decideRelease(target: ReleaseTarget, facts: ReleaseFacts): Relea
     return barred(
       tag,
       "tag-exists",
-      `A tag ${tag} ja existe. A versao de ${target.manifest} nao mudou desde a ultima` +
-        " publicacao, e recriar a tag republicaria o mesmo numero.",
+      `The tag ${tag} already exists. The version in ${target.manifest} has not changed since the last` +
+        " publication, and recreating the tag would republish the same number.",
     );
   }
 
@@ -119,9 +118,9 @@ export function decideRelease(target: ReleaseTarget, facts: ReleaseFacts): Relea
     return barred(
       tag,
       "already-published",
-      `O registro ja serve ${target.npmName}@${facts.version}. Publicacao no npm nao se` +
-        " desfaz e o mesmo numero nao se sobrescreve - o conserto e uma versao nova, e nao" +
-        " uma tag nova sobre a versao velha.",
+      `The registry already serves ${target.npmName}@${facts.version}. A publication on npm cannot` +
+        " be undone and the same number cannot be overwritten - the fix is a new version, not" +
+        " a new tag on top of the old version.",
     );
   }
 
@@ -131,10 +130,10 @@ export function decideRelease(target: ReleaseTarget, facts: ReleaseFacts): Relea
     return barred(
       tag,
       "changelog-open",
-      `${target.changelog} nao abre com "## ${facts.version}": ` +
-        (top === undefined ? "nao ha secao nenhuma nele." : `a secao do topo e "## ${top}".`) +
-        " Feche o CHANGELOG antes de publicar - ele sai junto com a versao, e incompleto" +
-        " ali e surpresa na tela de quem migra.",
+      `${target.changelog} does not open with "## ${facts.version}": ` +
+        (top === undefined ? "it has no section at all." : `the top section is "## ${top}".`) +
+        " Close the CHANGELOG before publishing - it ships with the version, and anything incomplete" +
+        " there is a surprise on the screen of whoever migrates.",
     );
   }
 
@@ -143,8 +142,8 @@ export function decideRelease(target: ReleaseTarget, facts: ReleaseFacts): Relea
     verdict: "release",
     release: true,
     reason:
-      `A versao ${facts.version} e inedita no registro, ${target.changelog} abre com a secao` +
-      ` dela e a tag ${tag} ainda nao existe. Criando ${tag} e chamando ${target.workflow}.`,
+      `Version ${facts.version} is new to the registry, ${target.changelog} opens with its` +
+      ` section and the tag ${tag} does not exist yet. Creating ${tag} and calling ${target.workflow}.`,
   };
 }
 
@@ -163,10 +162,10 @@ async function capture(command: string[]): Promise<Capture> {
 
 function giveUp(what: string, command: string[], run: Capture): never {
   console.error(
-    `Nao deu para medir ${what}: \`${command.join(" ")}\` saiu com ${run.code}.\n\n` +
-      "A decisao nao segue sem esta medida. Guarda que nao consegue medir e responde\n" +
-      '"pode publicar" e pior do que guarda nenhuma: ela cria a tag por falta de\n' +
-      "resposta, e publicacao no npm nao se desfaz.\n\n" +
+    `Could not measure ${what}: \`${command.join(" ")}\` exited with ${run.code}.\n\n` +
+      "The decision does not proceed without this measurement. A guard that cannot measure and answers\n" +
+      '"go ahead and publish" is worse than no guard: it creates the tag for lack of an\n' +
+      "answer, and a publication on npm cannot be undone.\n\n" +
       run.error.trim(),
   );
   process.exit(1);
@@ -180,10 +179,10 @@ async function measured(what: string, command: string[]): Promise<string> {
 }
 
 async function knownTags(): Promise<string[]> {
-  const local = (await measured("as tags locais", ["git", "tag", "--list"])).split("\n");
+  const local = (await measured("the local tags", ["git", "tag", "--list"])).split("\n");
 
   const remote = [
-    ...(await measured("as tags do origin", ["git", "ls-remote", "--tags", "origin"])).matchAll(
+    ...(await measured("the origin tags", ["git", "ls-remote", "--tags", "origin"])).matchAll(
       /refs\/tags\/(\S+?)(?:\^\{\})?$/gm,
     ),
   ].map((hit) => hit[1]!);
@@ -207,15 +206,15 @@ async function publishedVersions(npmName: string): Promise<string[]> {
     const failure = parsed as { error?: { code?: string } } | undefined;
     if (failure?.error?.code === "E404") return [];
 
-    giveUp(`as versoes de ${npmName} no registro`, command, run);
+    giveUp(`the versions of ${npmName} in the registry`, command, run);
   }
 
   if (typeof parsed === "string") return [parsed];
   if (Array.isArray(parsed)) return parsed as string[];
 
-  giveUp(`as versoes de ${npmName} no registro`, command, {
+  giveUp(`the versions of ${npmName} in the registry`, command, {
     ...run,
-    error: `A resposta nao era uma lista de versoes: ${raw.slice(0, 200)}`,
+    error: `The response was not a list of versions: ${raw.slice(0, 200)}`,
   });
 }
 
@@ -229,7 +228,7 @@ if (import.meta.main) {
 
   if (!target) {
     console.error(
-      `Pacote desconhecido: "${key}". Escolha um de ${Object.keys(TARGETS).join(", ")}.`,
+      `Unknown package: "${key}". Pick one of ${Object.keys(TARGETS).join(", ")}.`,
     );
     process.exit(1);
   }
@@ -241,7 +240,7 @@ if (import.meta.main) {
     tags: await knownTags(),
     published: await publishedVersions(target.npmName),
     changelog: await Bun.file(target.changelog).text(),
-    message: await measured("a mensagem do commit da cabeca", ["git", "log", "-1", "--pretty=%B"]),
+    message: await measured("the head commit message", ["git", "log", "-1", "--pretty=%B"]),
   });
 
   console.log(`${target.npmName} ${manifest.version} - ${HEADLINE[decision.verdict]}`);

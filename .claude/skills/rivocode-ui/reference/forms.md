@@ -1,10 +1,12 @@
-# Formulários: `@rivocode/ui/form`
+# Forms: `@rivocode/ui/form`
 
-Não vem no pacote principal. É dependência opcional, e chega pelo mesmo
-provider. Instale junto: `react-hook-form`, `zod`, `@hookform/resolvers`.
+It does not come in the main package. It is an optional dependency, and it
+arrives through the same provider. Install alongside: `react-hook-form`, `zod`,
+`@hookform/resolvers`.
 
-React Hook Form com Zod. O esquema é a fonte da verdade: valida e ainda dá o
-tipo do formulário. O controle vem por função, não por clonagem do filho.
+React Hook Form with Zod. The schema is the source of truth: it validates and
+also gives the form's type. The control comes through a function, not by
+cloning the child.
 
 ```tsx
 import { Form, FormField, useZodForm } from '@rivocode/ui/form'
@@ -32,49 +34,51 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 }
 ```
 
-CPF e CNPJ se conferem pelo dígito verificador com `isValidCpf` e
-`isValidCnpj`, do pacote principal: `z.string().refine(isValidCnpj, 'CNPJ
-inválido')`. Os dois já aceitam o CNPJ alfanumérico e o texto com máscara. Os
-outros documentos seguem o mesmo molde: `isValidCnh`, `isValidVoterId` (título
-de eleitor), `isValidPis` (PIS, PASEP, NIT e NIS), `isValidRenavam` e
-`isValidPlate` (placa antiga e Mercosul). Nenhuma consulta cadastro: elas dizem
-que o número pode existir, e não que está ativo. As sete existem com o mesmo
-nome no `@rivocode/ui-native`.
+CPF and CNPJ are checked by their check digit with `isValidCpf` and
+`isValidCnpj`, from the main package: `z.string().refine(isValidCnpj, 'CNPJ
+inválido')`. Both already accept the alphanumeric CNPJ and masked text. The
+other documents follow the same pattern: `isValidCnh`, `isValidVoterId` (voter
+ID), `isValidPis` (PIS, PASEP, NIT and NIS), `isValidRenavam` and
+`isValidPlate` (old and Mercosul plate). None of them looks up a registry: they
+say the number can exist, not that it is active. All seven exist with the same
+name in `@rivocode/ui-native`.
 
-A chave Pix se confere com `isValidPixKey`, que quer a chave como o DICT a
-guarda: CPF e CNPJ **sem** pontuação, e-mail em minúsculas, celular com `+55` e
-a chave aleatória com os hifens. Tire a máscara antes de conferir. O copia e
-cola sai de `buildPixPayload`, e o `PixCode` o desenha.
+A Pix key is checked with `isValidPixKey`, which wants the key as the DICT
+stores it: CPF and CNPJ **without** punctuation, e-mail in lowercase, mobile
+with `+55` and the random key with its hyphens. Strip the mask before checking.
+The copy-and-paste code comes from `buildPixPayload`, and `PixCode` draws it.
 
-Dinheiro é `CurrencyInput`, que entrega centavos inteiros (`number | null`)
-pelo `onValueChange` e entra no `FormField` por `{...forValue(field)}`, com o
-schema em `z.number().int()`. `min` e `max` são em centavos e só marcam o campo
-inválido: a mensagem é do schema.
+Money is `CurrencyInput`, which delivers integer cents (`number | null`)
+through `onValueChange` and goes into `FormField` through `{...forValue(field)}`,
+with the schema as `z.number().int()`. `min` and `max` are in cents and only
+mark the field invalid: the message belongs to the schema.
 
-Assinatura é `SignaturePad`, que entrega `SignatureValue | null` pelo
-`onValueChange` e entra no `FormField` por `{...forValue(field)}`. Vazio é
-`null`, então o schema é
+A signature is `SignaturePad`, which delivers `SignatureValue | null` through
+`onValueChange` and goes into `FormField` through `{...forValue(field)}`. Empty
+is `null`, so the schema is
 `z.custom<SignatureValue | null>().refine((v) => v !== null, 'Assine para continuar')`.
-O arquivo sai de `signatureToSvg` ou de `await signatureToPng(valor)`.
+The file comes from `signatureToSvg` or from `await signatureToPng(value)`.
 
-Boleto é `MaskedInput` com `mask="boleto"`, que pontua a linha de banco e troca
-sozinho para a de convênio quando o primeiro dígito é 8. `isValidBoletoLine`
-confere todos os verificadores, e `parseBoleto(linha)` devolve `bank`,
-`amount` em centavos e `dueDate`, ou `null` quando a linha não confere. O fator
-de vencimento voltou a 1000 em 22/02/2025, então passe `{ today }` quando o
-boleto for antigo: sem ele vale a data mais perto de hoje.
+A boleto is `MaskedInput` with `mask="boleto"`, which punctuates the bank line
+and switches to the utility-bill one on its own when the first digit is 8.
+`isValidBoletoLine` checks all the check digits, and `parseBoleto(line)`
+returns `bank`, `amount` in cents and `dueDate`, or `null` when the line does
+not check out. The due-date factor went back to 1000 on 22/02/2025, so pass
+`{ today }` when the boleto is old: without it the date closest to today wins.
 
-O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentro
-do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
+`FormField` does not invent an `id`: it assembles label, control, help and
+error inside the `Field`, and Base UI wires `aria-describedby` and
+`aria-invalid` on its own.
 
-Controle que não fala a língua do React Hook Form entra por um adaptador. O
-nome diz o **formato**, e não a peça, porque cada um serve a família inteira:
+A control that does not speak React Hook Form's language comes in through an
+adapter. The name says the **shape**, not the piece, because each one serves
+the whole family:
 
-| Adaptador | Serve |
+| Adapter | Serves |
 |---|---|
-| `forValue` | Tudo que tem `value` e `onValueChange`: `MaskedInput`, `Select`, `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider`, `OTPField`, `Combobox`, `TreeSelect`, e o `DateRangePicker` com o período em texto (`IsoDateRange \| null`) |
-| `forChecked` | Tudo que tem `checked` e `onCheckedChange`: `Checkbox` e `Switch` |
-| `forDate` | O `DatePicker`, cujo valor é `Date` |
+| `forValue` | Everything that has `value` and `onValueChange`: `MaskedInput`, `Select`, `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider`, `OTPField`, `Combobox`, `TreeSelect`, and `DateRangePicker` with the period as text (`IsoDateRange \| null`) |
+| `forChecked` | Everything that has `checked` and `onCheckedChange`: `Checkbox` and `Switch` |
+| `forDate` | `DatePicker`, whose value is a `Date` |
 
 ```tsx
 <FormField name="vencimento" label="Vencimento">
@@ -86,17 +90,17 @@ nome diz o **formato**, e não a peça, porque cada um serve a família inteira:
 </FormField>
 ```
 
-`forValue` devolve o valor com o tipo que o schema deu a ele, então controle
-tipado encaixa sem `as`.
+`forValue` returns the value with the type the schema gave it, so a typed
+control fits without `as`.
 
-## Texto com formatação: `@rivocode/ui/editor`
+## Formatted text: `@rivocode/ui/editor`
 
-Descrição de serviço, cláusula, observação com lista: `RichTextEditor`, no
-subcaminho próprio, com os peers opcionais do Tiptap 3 (`@tiptap/react`,
-`@tiptap/pm`, `@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extensions`).
-O valor é HTML, e o editor em branco entrega `""`, então `min(1)` recusa o
-vazio. Entra pelo `forValue`, com o `onBlur` do campo para ele contar como
-tocado, e o `defaultValues` precisa da string vazia:
+Service description, contract clause, a note with a list: `RichTextEditor`, in
+its own subpath, with Tiptap 3's optional peers (`@tiptap/react`, `@tiptap/pm`,
+`@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extensions`). The value is HTML,
+and the blank editor delivers `""`, so `min(1)` refuses the empty one. It comes
+in through `forValue`, with the field's `onBlur` so it counts as touched, and
+`defaultValues` needs the empty string:
 
 ```tsx
 import { RichTextEditor } from '@rivocode/ui/editor'
@@ -109,7 +113,7 @@ const form = useZodForm(schema, { defaultValues: { descricao: '' } })
 </FormField>
 ```
 
-`maxLength` conta texto, e não marca de HTML. Para mostrar o que foi salvo,
-`RichTextView`, do mesmo caminho: não usa `innerHTML` nem carrega o Tiptap, e
-lê o HTML ou o JSON do `onJsonChange`. Observação curta, sem negrito nem lista,
-continua sendo `Textarea`.
+`maxLength` counts text, not HTML markup. To show what was saved,
+`RichTextView`, from the same path: it does not use `innerHTML` nor load
+Tiptap, and it reads the HTML or the JSON from `onJsonChange`. A short note,
+without bold or lists, is still `Textarea`.

@@ -35,35 +35,35 @@ const TONE_ICON: Record<BannerTone, ReactNode> = {
 
 export type BannerProps = Omit<ComponentPropsWithoutRef<"div">, "title" | "children"> & {
   /**
-   * O tom decide a cor, o icone padrao e o papel para o leitor de tela:
-   * `danger` e `warning` saem `role="alert"` e interrompem; `info` e `success`
-   * saem `role="status"` e esperam a frase terminar.
+   * The tone decides the color, the default icon and the role for the screen reader:
+   * `danger` and `warning` are rendered with `role="alert"` and interrupt; `info` and `success`
+   * are rendered with `role="status"` and wait for the sentence to finish.
    */
   tone?: "info" | "success" | "warning" | "danger";
-  /** A frase curta em negrito, antes da descricao. Opcional. */
+  /** The short bold sentence, before the description. Optional. */
   title?: ReactNode;
-  /** O que aconteceu e o que a pessoa faz a respeito. E o corpo do aviso. */
+  /** What happened and what the person does about it. It is the body of the notice. */
   description: ReactNode;
   /**
-   * Troca o icone do tom. Sem ele, sai o par canonico do lucide (`Info`,
-   * `CheckCircle2`, `TriangleAlert`, `CircleX`); com `null`, nenhum icone.
-   * Sai sempre `aria-hidden`.
+   * Replaces the tone's icon. Without it, the canonical lucide pair is used (`Info`,
+   * `CheckCircle2`, `TriangleAlert`, `CircleX`); with `null`, no icon.
+   * Always rendered `aria-hidden`.
    */
   icon?: ReactNode;
   /**
-   * Os botoes da faixa, a direita do texto e embaixo dele no celular. Use
-   * `Button` `size="sm"` `variant="secondary"`: a borda dele e a medida sobre
-   * o fundo do tom.
+   * The banner's buttons, to the right of the text and below it on the phone. Use
+   * `Button` `size="sm"` `variant="secondary"`: its border is the one measured over
+   * the tone's background.
    */
   actions?: ReactNode;
   /**
-   * Liga o xis de fechar, no fim da faixa. Quem some com a faixa e quem
-   * chamou: a peca nao guarda estado.
+   * Turns on the close x, at the end of the banner. Whoever called it makes the banner
+   * go away: the piece keeps no state.
    */
   onDismiss?: () => void;
   /**
-   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, "Fechar
-   * aviso" sem ele.
+   * The piece's texts, to change the language: `dismiss` is the name of the x, "Fechar
+   * aviso" without it.
    */
   labels?: Partial<BannerLabels>;
   classNames?: Slots<"icon" | "content" | "title" | "description" | "actions" | "dismiss">;

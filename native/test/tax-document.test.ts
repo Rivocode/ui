@@ -13,14 +13,14 @@ import {
   isValidVoterId,
 } from "../src";
 
-test("o nativo confere cpf e cnpj alfanumerico pela mesma conta do web", () => {
+test("native checks cpf and alphanumeric cnpj with the same math as the web", () => {
   expect(isValidCpf("529.982.247-25")).toBe(true);
   expect(isValidCpf("529.982.247-24")).toBe(false);
   expect(isValidCnpj("12ABC34501DE35")).toBe(true);
   expect(isValidCnpj("12ABC34501DF35")).toBe(false);
 });
 
-test("o nativo confere cnh, titulo, pis, renavam e placa pela mesma conta do web", () => {
+test("native checks cnh, titulo, pis, renavam and placa with the same math as the web", () => {
   expect(isValidCnh("02650306461")).toBe(true);
   expect(isValidCnh("02650306462")).toBe(false);
   expect(isValidVoterId("0043 5687 0906")).toBe(true);
@@ -33,7 +33,7 @@ test("o nativo confere cnh, titulo, pis, renavam e placa pela mesma conta do web
   expect(isValidPlate("ABC12D3")).toBe(false);
 });
 
-test("o nativo confere e le o boleto pela mesma conta do web", () => {
+test("native checks and reads the boleto with the same math as the web", () => {
   const line = "00190000090114971860168524522114675860000102656";
   expect(isValidBoletoLine(line)).toBe(true);
   expect(isValidBoletoLine("00190000090114971860168524522114675860000102657")).toBe(false);

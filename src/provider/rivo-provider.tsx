@@ -32,9 +32,10 @@ type RivoContextValue = {
   theme: RivoResolvedTheme;
   density: RivoDensity;
   /**
-   * Onde dialogo, menu e dica renderizam. No modo escopado os tokens vivem num
-   * elemento nosso, e um portal no fim do body sairia sem tema. Este container
-   * carrega os mesmos atributos, entao o portal continua vestido.
+   * Where dialog, menu and tooltip render. In scoped mode the tokens live on an
+   * element of ours, and a portal at the end of the body would come out with no theme. This
+   * container
+   * carries the same attributes, so the portal stays dressed.
    */
   portalContainer: HTMLElement | null;
 };
@@ -45,7 +46,7 @@ export function useRivoContext(): RivoContextValue {
   const value = useContext(RivoContext);
   if (!value) {
     throw new Error(
-      "Componente do @rivocode/ui usado fora do RivoProvider. Envolva a arvore com <RivoProvider>.",
+      "[rivocode/ui] A @rivocode/ui component was used outside RivoProvider. Wrap the tree with <RivoProvider>.",
     );
   }
   return value;
@@ -54,33 +55,34 @@ export function useRivoContext(): RivoContextValue {
 export type RivoProviderProps = {
   children: ReactNode;
   /**
-   * `system` segue a preferencia do sistema operacional. O nome de um tema de
-   * cliente tambem vale: e o que o `data-rc-theme` escreve, e a camada 3 do
-   * CSS faz o resto.
+   * `system` follows the operating system's preference. A client theme's name
+   * also works: it is what `data-rc-theme` writes, and layer 3 of the
+   * CSS does the rest.
    */
   theme?: RivoThemeSetting;
   density?: RivoDensity;
   /**
-   * `global` veste a pagina inteira, para projeto novo. `local` veste apenas
-   * esta arvore, para quando o DS entra num projeto herdado do cliente e nao
-   * pode vazar para o resto.
+   * `global` dresses the whole page, for a new project. `local` dresses only
+   * this tree, for when the DS goes into a project inherited from the client and cannot
+   * leak into the rest.
    */
   scope?: "global" | "local";
   /**
-   * Sentido da escrita. Em `rtl` a Base UI espelha o que depende de lado:
-   * qual seta abre o submenu, para onde o Select alinha, de onde a folha
-   * lateral entra. Layout continua com voce, pelas classes logicas do Tailwind
+   * Writing direction. In `rtl` Base UI mirrors what depends on side:
+   * which arrow opens the submenu, where Select aligns, where the side
+   * sheet comes in from. Layout stays with you, through Tailwind's logical classes
    * (`ps-*`, `pe-*`, `text-start`).
    */
   dir?: "ltr" | "rtl";
   /**
-   * Em que canto os avisos aparecem. Padrao `bottom-right`, que e o que menos
-   * disputa espaco com cabecalho, titulo e acao principal.
+   * Which corner the notices appear in. Default `bottom-right`, which is the one that competes
+   * least
+   * for space with header, title and main action.
    */
   toastPosition?: ToastPosition;
   /**
-   * Os textos dos avisos, para trocar o idioma: `dismiss` e o nome do xis de
-   * cada aviso, "Fechar aviso" sem ele.
+   * The notices' texts, to change the language: `dismiss` is the name of each notice's
+   * x, "Fechar aviso" without it.
    */
   toastLabels?: Partial<ToastLabels>;
   className?: string;

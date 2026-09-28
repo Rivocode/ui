@@ -25,21 +25,22 @@ import {
 } from './fonts'
 
 /* ---------------------------------------------------------------------------
- * O motor do montador de tema
+ * The theme builder engine
  *
- * A pessoa escreve as oito sementes que o `rivocode-ui-native-theme` ja aceita
- * - fundo, superficie, texto, acento e os quatro estados - e o resto sai delas
- * pelas MESMAS regras daquele comando: alfa de uma semente, mistura de duas,
- * o tom que pesa mais sobre um preenchimento. As tabelas abaixo sao copia das
- * de `native/scripts/build-theme.mjs`, porque aquele modulo le o `tokens.json`
- * do disco no topo e nao roda no navegador. A copia nao envelhece calada:
- * `test/theme-builder.test.ts` roda os dois com as mesmas sementes e cobra
- * papel por papel.
+ * The person writes the eight seeds `rivocode-ui-native-theme` already accepts
+ * - background, surface, text, accent and the four states - and the rest comes
+ * out of them by the SAME rules as that command: the alpha of one seed, the
+ * mix of two, the tone that weighs more on a fill. The tables below are a copy
+ * of those in `native/scripts/build-theme.mjs`, because that module reads
+ * `tokens.json` from disk at the top and does not run in the browser. The copy
+ * does not go stale silently: `test/theme-builder.test.ts` runs both with the
+ * same seeds and checks role by role.
  *
- * A medida e a do `src/lib/contrast.ts`, a mesma conta do `check-theme` e das
- * duas guardas do repositorio, e o JSON DTCG sai da mesma `exportDtcg` do
- * `rivocode-ui tokens`. O site importa direto; o que o `check:cli` proibe e a
- * conta alcancar o `src/index.ts` do pacote, e isto aqui e o site.
+ * The measurement is `src/lib/contrast.ts`'s, the same math as `check-theme`
+ * and the repository's two guards, and the DTCG JSON comes from the same
+ * `exportDtcg` as `rivocode-ui tokens`. The site imports directly; what
+ * `check:cli` forbids is the math reaching the package's `src/index.ts`, and
+ * this is the site.
  * ------------------------------------------------------------------------- */
 
 export type Scheme = 'light' | 'dark'
@@ -56,7 +57,7 @@ export const HOUSE: Record<Scheme, Palette> = {
   dark: HOUSE_THEMES['rivocode-dark']!,
 }
 
-/** Os papeis de cor que os dois pacotes tem, na ordem do `tokens.json`. */
+/** The color roles both packages have, in `tokens.json` order. */
 export const ROLES = Object.keys(HOUSE.dark)
 
 const SAME: Record<string, string> = { 'surface-raised': 'surface', ring: 'accent-text' }
@@ -92,7 +93,7 @@ const OVER: Record<string, string[]> = {
   'info-fg': ['info'],
 }
 
-/** O texto de cada tom nasce igual ao preenchimento, e e o que mais reprova. */
+/** Each tone's text is born equal to the fill, and it is what fails most. */
 export const REUSE: Record<string, string> = {
   'accent-text': 'accent',
   'success-text': 'success',
@@ -122,14 +123,14 @@ export function withAlpha(color: string, amount: number) {
 
 export const isDarkScheme = (bg: string) => contrastRatio(bg, WHITE) > contrastRatio(bg, BLACK)
 
-/** Hexadecimal de seis digitos, ou nada: e o que a semente aceita. */
+/** Six-digit hex, or nothing: it is what a seed accepts. */
 export function normalizeHex(value: string) {
   return toHex(value.trim()) ?? null
 }
 
 export type Derived = { scheme: Scheme; colors: Palette; written: string[]; guessed: string[] }
 
-/** Porte fiel do `derive` do `rivocode-ui-native-theme`. */
+/** A faithful port of `rivocode-ui-native-theme`'s `derive`. */
 export function derive(seeds: Palette): Derived {
   const colors: Palette = {}
   const scheme: Scheme = isDarkScheme(seeds.bg!) ? 'dark' : 'light'
@@ -180,12 +181,13 @@ export function derive(seeds: Palette): Derived {
 }
 
 /* ---------------------------------------------------------------------------
- * O que o web tem a mais
+ * What the web has on top
  *
- * O mapa nativo tem so cor. A camada 3 do web tem tambem as tres familias, os
- * dois tamanhos de marca, as sombras, o brilho e os tres acabamentos. Eles
- * saem do tema da casa do mesmo esquema - nao sao identidade de cor -, menos o
- * brilho, que e feito da cor do acento e acompanha a marca.
+ * The native map has only color. The web's layer 3 also has the three
+ * families, the two brand sizes, the shadows, the glow and the three finishes.
+ * They come from the house theme of the same scheme - they are not color
+ * identity -, except the glow, which is made of the accent color and follows
+ * the brand.
  * ------------------------------------------------------------------------- */
 
 export type HouseBlocks = Record<Scheme, ColorMap>
@@ -208,7 +210,7 @@ export const RADII = {
 
 export type Radius = keyof typeof RADII
 
-/** Os papeis do web, na ordem do `THEME_ROLES`, com o valor de cada um. */
+/** The web roles, in `THEME_ROLES` order, with each one's value. */
 export function webTokens(colors: Palette, scheme: Scheme, house: HouseBlocks): ColorMap {
   const tokens: ColorMap = {}
   for (const role of THEME_ROLES) {
@@ -222,14 +224,17 @@ export function webTokens(colors: Palette, scheme: Scheme, house: HouseBlocks): 
 }
 
 /* ---------------------------------------------------------------------------
- * A medida
+ * The measurement
  * ------------------------------------------------------------------------- */
 
 export type Pair = { ok: boolean; text: string; ratio: number | null; min: number | null }
 
-/** Uma linha do `checkThemeCss`, sem o prefixo de situacao. */
+/**
+ * A `checkThemeCss` line, without the status prefix. Both spellings of the
+ * prefix are accepted, so the builder survives the report being translated.
+ */
 export function pairOf(finding: Finding): Pair {
-  const text = finding.line.trim().replace(/^(ok|FALHA|FALTA)\s+/, '')
+  const text = finding.line.trim().replace(/^(ok|FALHA|FALTA|FAIL|MISSING)\s+/, '')
   const ratio = /(\d+\.\d+):1/.exec(text)
   const min = /\(min ([\d.]+)/.exec(text)
   return {
@@ -242,21 +247,21 @@ export function pairOf(finding: Finding): Pair {
 
 export function measureWeb(selector: string, tokens: ColorMap): Pair[] {
   return checkThemeCss(selector, resolveTokens(tokens, tokens))
-    .filter((finding) => !finding.line.startsWith('\n') && !finding.line.trim().startsWith('nota'))
+    .filter((finding) => !finding.line.startsWith('\n') && !/^(nota|note)\b/.test(finding.line.trim()))
     .map(pairOf)
 }
 
-/** As falhas do mapa nativo, por esquema: e o que o comando do nativo recusaria. */
+/** The native map's failures, per scheme: what the native command would refuse. */
 export function measureNative(map: Record<Scheme, Palette>): Record<Scheme, string[]> {
   const failures: Record<Scheme, string[]> = { light: [], dark: [] }
   let scheme: Scheme = 'light'
-  for (const finding of checkThemeMap('montador', map, ROLES)) {
+  for (const finding of checkThemeMap('builder', map, ROLES)) {
     const header = /\/\s*(light|dark)\s*$/.exec(finding.line)
     if (header) {
       scheme = header[1] as Scheme
       continue
     }
-    if (!finding.ok) failures[scheme].push(finding.line.trim().replace(/^(FALHA|FALTA)\s+/, ''))
+    if (!finding.ok) failures[scheme].push(finding.line.trim().replace(/^(FALHA|FALTA|FAIL|MISSING)\s+/, ''))
   }
   return failures
 }
@@ -264,22 +269,22 @@ export function measureNative(map: Record<Scheme, Palette>): Record<Scheme, stri
 const names = (role: string) => new RegExp(`(^|\\s)(--rc-)?${role.replace(/-/g, '\\-')}(?![\\w-])`)
 
 /* ---------------------------------------------------------------------------
- * O ajuste do texto de cada tom
+ * Adjusting each tone's text
  *
- * O texto do acento e dos estados nasce igual ao preenchimento. Num fundo
- * claro, o lima que preenche o botao nao se le como link, e o comando do
- * nativo recusa a paleta e sugere a cor que passaria. O montador faz a mesma
- * conta - puxar o tom para o branco ou para o preto em passos de 2%, ate o
- * primeiro que passa nas DUAS medidas - e escreve o resultado como semente,
- * para o comando equivalente aceitar a paleta exportada. Todo ajuste aparece
- * na tela; nenhum e silencioso.
+ * The text of the accent and of the states is born equal to the fill. On a
+ * light background, the lime that fills the button does not read as a link,
+ * and the native command refuses the palette and suggests the color that
+ * would pass. The builder does the same math - pulling the tone toward white
+ * or black in 2% steps, up to the first one that passes BOTH measurements -
+ * and writes the result as a seed, so the equivalent command accepts the
+ * exported palette. Every adjustment shows on screen; none is silent.
  * ------------------------------------------------------------------------- */
 
 export type Fix = { role: string; from: string; to: string }
 
 function failsFor(role: string, colors: Palette, scheme: Scheme, house: HouseBlocks, other: Palette) {
   const tokens = webTokens(colors, scheme, house)
-  const web = measureWeb('medida', tokens).some((pair) => !pair.ok && names(role).test(pair.text))
+  const web = measureWeb('measure', tokens).some((pair) => !pair.ok && names(role).test(pair.text))
   if (web) return true
   const map = scheme === 'light' ? { light: colors, dark: other } : { light: other, dark: colors }
   return measureNative(map)[scheme].some((line) => names(role).test(line))
@@ -339,7 +344,7 @@ export function build(
 }
 
 /* ---------------------------------------------------------------------------
- * Os arquivos que saem
+ * The files that come out
  * ------------------------------------------------------------------------- */
 
 export const selectorOf = (name: string, scheme: Scheme) => `[data-rc-theme="${name}-${scheme}"]`
@@ -358,10 +363,10 @@ export function webBlocks(name: string, tokens: Record<Scheme, ColorMap>, radius
 
 function fontHeader(fonts: FontState) {
   if (allHouse(fonts)) {
-    return '\n   Fontes:                    as da casa, com  @import "@rivocode/ui/fonts.css";  no CSS de entrada'
+    return '\n   Fonts:                     the house ones, with  @import "@rivocode/ui/fonts.css";  in the entry CSS'
   }
   const install = fontInstallCommand(fonts)
-  return install ? `\n   Fontes:                    ${install}` : ''
+  return install ? `\n   Fonts:                     ${install}` : ''
 }
 
 function fontPreamble(fonts: FontState) {
@@ -370,11 +375,11 @@ function fontPreamble(fonts: FontState) {
   const lines = imports.map((path) => `@import "${path}";`).join('\n')
   const url = googleFontsUrl(fonts)
   const google = url
-    ? `\n\n/* Sem instalar pacote: apague os @import acima e ponha no <head> do HTML\n` +
+    ? `\n\n/* Without installing a package: delete the @import lines above and put in the HTML <head>\n` +
       `   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n` +
       `   <link rel="stylesheet" href="${url}">` +
       (FONT_ROLES.some((role) => fonts[role] === 'house')
-        ? `\n   O papel que ficou com a fonte da casa continua pelo pacote. */`
+        ? `\n   The role that kept the house font still comes from the package. */`
         : ' */')
     : ''
   return `${lines}${google}\n\n`
@@ -390,22 +395,22 @@ export function emitWebCss(
   const warning =
     failures.length === 0
       ? ''
-      : `\n\n   ATENÇÃO: ${failures.length} ${failures.length === 1 ? 'par reprovou' : 'pares reprovaram'} na medida de contraste da WCAG:\n` +
+      : `\n\n   WARNING: ${failures.length} ${failures.length === 1 ? 'pair failed' : 'pairs failed'} the WCAG contrast measurement:\n` +
         failures.map((line) => `     ${line}`).join('\n') +
-        '\n   O check-theme sai com código 1 enquanto eles estiverem aqui.'
+        '\n   check-theme exits with code 1 while they are here.'
 
   return (
-    `/* tema-${name}.css, gerado pelo montador de tema de ds.rivocode.com.br.\n` +
-    `   Importe depois do preset:  @import "@rivocode/ui/preset";  @import "./tema-${name}.css";\n` +
-    `   Vista a árvore:            <RivoProvider theme="${name}-dark">  ou  "${name}-light"\n` +
-    `   Confira:                   npx rivocode-ui check-theme src/tema-${name}.css` +
+    `/* tema-${name}.css, generated by the theme builder at ds.rivocode.com.br.\n` +
+    `   Import after the preset:   @import "@rivocode/ui/preset";  @import "./tema-${name}.css";\n` +
+    `   Dress the tree:            <RivoProvider theme="${name}-dark">  or  "${name}-light"\n` +
+    `   Check it:                  npx rivocode-ui check-theme src/tema-${name}.css` +
     `${fontHeader(fonts)}${warning} */\n\n` +
     fontPreamble(fonts) +
     `${webBlocks(name, tokens, radius)}\n`
   )
 }
 
-/** Porte fiel do `emitCss` do `rivocode-ui-native-theme`: o `@theme` do app. */
+/** A faithful port of `rivocode-ui-native-theme`'s `emitCss`: the app's `@theme`. */
 export function emitNativeCss(colors: Record<Scheme, Palette>, source: string) {
   const lines = ROLES.map((role) => {
     const light = colors.light[role]
@@ -415,16 +420,16 @@ export function emitNativeCss(colors: Record<Scheme, Palette>, source: string) {
   })
 
   return (
-    `/* Gerado de ${source} por rivocode-ui-native-theme. Nao editar: rode o comando de novo. */\n\n` +
-    `/* Importe DEPOIS de "@rivocode/ui-native/theme.css", no global.css do app:\n` +
+    `/* Generated from ${source} by rivocode-ui-native-theme. Do not edit: run the command again. */\n\n` +
+    `/* Import AFTER "@rivocode/ui-native/theme.css", in the app's global.css:\n` +
     `     @import "@rivocode/ui-native/theme.css";\n` +
     `     @import "./${source.replace(/\.[^.]+$/, '')}.theme.css";\n` +
-    `   e rode "npx rivocode-ui-native-css" para o generated.css sair com a marca. */\n\n` +
+    `   and run "npx rivocode-ui-native-css" so generated.css comes out with the brand. */\n\n` +
     `@theme {\n${lines.join('\n')}\n}\n`
   )
 }
 
-/** A paleta que o `rivocode-ui-native-theme` le: so o que foi escrito, por esquema. */
+/** The palette `rivocode-ui-native-theme` reads: only what was written, per scheme. */
 export function emitPalette(seeds: Record<Scheme, Palette>) {
   return `${JSON.stringify({ light: seeds.light, dark: seeds.dark }, undefined, 2)}\n`
 }
@@ -446,13 +451,17 @@ export function commandsOf(name: string) {
 }
 
 /* ---------------------------------------------------------------------------
- * O estado na URL
+ * The state in the URL
  *
- * So o que difere da casa entra no endereco, em `papel.hex` separado por `_`:
- * sao caracteres que a URL nao escapa, entao o link colado num chat continua
- * legivel. Semente que nao le como cor e descartada, e nao quebra a pagina.
- * A fonte vai pelo id do fontsource (`corpo=inter`) ou por `sistema`; id fora
- * da lista, ou de categoria que nao serve ao papel, volta a fonte da casa.
+ * Only what differs from the house goes into the address, as `role.hex`
+ * separated by `_`: characters the URL does not escape, so a link pasted in a
+ * chat stays readable. A seed that does not read as a color is dropped, and
+ * does not break the page. The font goes by its fontsource id (`corpo=inter`)
+ * or by `sistema`; an id outside the list, or of a category that does not
+ * suit the role, falls back to the house font.
+ *
+ * The parameter names and values stay in Portuguese: they are public
+ * addresses, and links already shared must keep opening the same theme.
  * ------------------------------------------------------------------------- */
 
 export type BuilderState = {

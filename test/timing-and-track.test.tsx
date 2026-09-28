@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { RelativeTime } from "../src/components/relative-time";
 import { Timeline, TimelineItem } from "../src/components/timeline";
 
-test("data invalida sai como travessao, sem dateTime, sem title e sem derrubar a arvore", () => {
+test("an invalid date renders as a dash, without dateTime, without title and without crashing the tree", () => {
   const { container } = render(<RelativeTime value="ontem a tarde" />);
 
   const time = container.querySelector("time")!;
@@ -13,12 +13,12 @@ test("data invalida sai como travessao, sem dateTime, sem title e sem derrubar a
   expect(time.hasAttribute("title")).toBe(false);
 });
 
-test("NaN tambem sai como travessao, com o agora fixado", () => {
+test("NaN also renders as a dash, with now pinned", () => {
   const { container } = render(<RelativeTime value={Number.NaN} now={new Date(2026, 0, 1)} />);
   expect(container.querySelector("time")!.textContent).toBe("—");
 });
 
-test("o pendente e o tom sao ditos em texto, e nao so pintados", () => {
+test("pending and tone are said in text, and not only painted", () => {
   render(
     <Timeline>
       <TimelineItem title="Boleto emitido" tone="success" />
@@ -37,7 +37,7 @@ test("o pendente e o tom sao ditos em texto, e nao so pintados", () => {
   expect(hint.className.split(" ")).toContain("sr-only");
 });
 
-test("o fio da trilha se prende pelo lado logico, e acompanha o marcador no rtl", () => {
+test("the track line attaches by the logical side, and follows the marker in rtl", () => {
   const { container } = render(
     <Timeline>
       <TimelineItem title="Um" />

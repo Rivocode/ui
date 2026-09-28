@@ -11,10 +11,10 @@ function baseLayer(css: string): string {
     if (css[index] === "}") depth -= 1;
     if (depth === 0) return css.slice(start, index + 1);
   }
-  throw new Error("camada base sem fechamento");
+  throw new Error("base layer is never closed");
 }
 
-test("a barra de rolagem veste o tema, com o papel da borda e nunca cor literal", () => {
+test("the scrollbar wears the theme, with the border role and never a literal color", () => {
   const layer = baseLayer(preset);
 
   expect(layer).toContain("scrollbar-width: thin");
@@ -23,7 +23,7 @@ test("a barra de rolagem veste o tema, com o papel da borda e nunca cor literal"
   expect(layer).not.toMatch(/#[0-9a-f]{3,8}\b|rgb\(|hsl\(/i);
 });
 
-test("a regra mora na camada base, para a classe da peca e a de quem usa vencerem", () => {
+test("the rule lives in the base layer, so the component class and the consumer class win", () => {
   const outside = preset.replace(baseLayer(preset), "");
 
   expect(outside).not.toContain("scrollbar-color");

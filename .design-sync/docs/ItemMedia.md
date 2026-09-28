@@ -1,11 +1,11 @@
 ---
-category: Estrutura
+category: Structure
 ---
 
 # ItemMedia
 
-O canto de imagem, ícone ou avatar.
+The image, icon or avatar slot.
 
-Não encolhe. É o que garante que o avatar continue redondo quando o título do
-lado é longo: sem isso o flex espreme a imagem antes do texto, e a lista fica
-com um círculo achatado por linha.
+It does not shrink. That is what keeps the avatar round when the title next to
+it is long: without it, flex squeezes the image before the text, and the list
+ends up with a flattened circle on every row.

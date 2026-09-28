@@ -45,7 +45,7 @@ const manifest = (dir: string) => [
 const rulesOf = (source: string, path = "tela.tsx") =>
   auditSource(path, source).findings.map((item) => item.rule);
 
-test("a tela boa das fixtures tira 100, nos dois pacotes, e sem achado nenhum", () => {
+test("the good fixture screen scores 100, in both packages, with no finding at all", () => {
   const files = read(`${FIXTURES}/boa`);
   expect(files.length).toBeGreaterThan(1);
 
@@ -53,11 +53,11 @@ test("a tela boa das fixtures tira 100, nos dois pacotes, e sem achado nenhum", 
 
   expect(report.findings).toEqual([]);
   expect(report.score).toBe(100);
-  expect(report.verdict).toBe("Segue a casa");
+  expect(report.verdict).toBe("Follows the house");
   expect(report.files.map((file) => file.platform).sort()).toEqual(["native", "web"]);
 });
 
-test("a tela ruim das fixtures cai para zero, e toda regra mecanica morde em alguma delas", () => {
+test("the bad fixture screen drops to zero, and every mechanical rule bites on one of them", () => {
   const files = read(`${FIXTURES}/ruim`);
   expect(files.length).toBeGreaterThan(1);
 
@@ -68,10 +68,10 @@ test("a tela ruim das fixtures cai para zero, e toda regra mecanica morde em alg
   expect(mechanical.length).toBeGreaterThan(20);
   for (const rule of mechanical) expect([rule.id, fired.has(rule.id)]).toEqual([rule.id, true]);
   expect(report.score).toBe(0);
-  expect(report.verdict).toBe("Fora do contrato");
+  expect(report.verdict).toBe("Outside the contract");
 });
 
-test("os blocos de pagina do site tiram 100, com os manifestos do app e da raiz", () => {
+test("the site page blocks score 100, with the app and root manifests", () => {
   const files = read("apps/docs/src/blocks");
   expect(files.length).toBeGreaterThan(4);
 
@@ -89,7 +89,7 @@ test("os blocos de pagina do site tiram 100, com os manifestos do app e da raiz"
   expect(report.score).toBe(100);
 });
 
-test("mesma entrada, mesma nota: a ordem dos arquivos e a repeticao nao mudam o relatorio", () => {
+test("same input, same score: file order and repetition do not change the report", () => {
   const files = [...read(`${FIXTURES}/ruim`), ...read(`${FIXTURES}/boa`)];
   expect(files.length).toBeGreaterThan(3);
 
@@ -100,7 +100,7 @@ test("mesma entrada, mesma nota: a ordem dos arquivos e a repeticao nao mudam o 
   expect(renderMarkdown(again)).toBe(renderMarkdown(first));
 });
 
-test("a conta: peso por severidade, teto de tres por regra, media dos arquivos e desconto de projeto", () => {
+test("the math: weight by severity, cap of three per rule, average over files and project deduction", () => {
   const finding = (rule: string, line: number): Finding => ({
     rule,
     file: "a.tsx",
@@ -132,7 +132,7 @@ test("a conta: peso por severidade, teto de tres por regra, media dos arquivos e
   });
   expect(twoFiles.files.map((file) => file.score)).toEqual([85, 100]);
   expect(twoFiles.score).toBe(93);
-  expect(twoFiles.verdict).toBe("Ajustes pontuais");
+  expect(twoFiles.verdict).toBe("Spot fixes");
 
   const withPeer = audit({
     files: [
@@ -155,7 +155,7 @@ test("a conta: peso por severidade, teto de tres por regra, media dos arquivos e
   expect(withPeer.score).toBe(95);
 });
 
-test("o julgamento do agente entra pela mesma conta, e o que nao cabe e recusado com o motivo", () => {
+test("the agent judgment goes through the same math, and what does not fit is rejected with the reason", () => {
   const files = read(`${FIXTURES}/boa`);
   expect(files.length).toBeGreaterThan(1);
   const judgment = JSON.parse(readFileSync(`${FIXTURES}/julgamento.json`, "utf8")) as {
@@ -175,12 +175,12 @@ test("o julgamento do agente entra pela mesma conta, e o que nao cabe e recusado
   expect(report.files.map((file) => file.score).sort()).toEqual([100, 97]);
   expect(report.score).toBe(89);
   expect(report.notes).toContain(
-    "Achado recusado: `fora.tsx` não está entre os arquivos auditados.",
+    "Finding refused: `fora.tsx` is not among the audited files.",
   );
-  expect(report.notes).toContain("Descarte recusado, sem motivo: `cor-literal` em nada.tsx:1.");
+  expect(report.notes).toContain("Discard refused, no reason: `cor-literal` in nada.tsx:1.");
 });
 
-test("o comentario de supressao tira o achado da conta so com motivo, e so na linha dele ou na de baixo", () => {
+test("the suppression comment removes the finding from the math only with a reason, and only on its line or the one below", () => {
   const waived = auditSource(
     "a.tsx",
     [
@@ -304,7 +304,7 @@ const CASES: [rule: string, bad: string, good: string][] = [
 const IMPORTS =
   'import { Button, CurrencyInput, DataTable, Dialog, Field, FieldLabel, IconButton, Input, MaskedInput, Slider, Stat, Steps, Switch, currencyShort } from "@rivocode/ui";\n';
 
-test("cada regra morde a tela errada e solta a tela consertada", () => {
+test("each rule bites the wrong screen and releases the fixed screen", () => {
   expect(CASES.length).toBeGreaterThan(20);
 
   for (const [rule, bad, good] of CASES) {
@@ -314,7 +314,7 @@ test("cada regra morde a tela errada e solta a tela consertada", () => {
   }
 });
 
-test("as regras de codigo e de importacao mordem e soltam", () => {
+test("the code and import rules bite and release", () => {
   const pairs: [rule: string, bad: string, good: string][] = [
     [
       "useform-direto",
@@ -390,7 +390,7 @@ test("as regras de codigo e de importacao mordem e soltam", () => {
   ).toEqual([]);
 });
 
-test("no nativo, a primitiva do react-native, o Field sem label e o IconButton sem nome mordem", () => {
+test("in native, the react-native primitive, the Field without label and the IconButton without name bite", () => {
   const head =
     'import { Modal, Switch, View } from "react-native";\nimport { Field, IconButton, Input } from "@rivocode/ui-native";\n';
   const bad = `${head}export const S = () => <View><Modal /><Switch /><Field><Input /></Field><IconButton><Share /></IconButton></View>;`;
@@ -409,7 +409,7 @@ test("no nativo, a primitiva do react-native, o Field sem label e o IconButton s
   expect(rulesOf(good, "s.tsx")).toEqual([]);
 });
 
-test("o leitor de JSX nao se perde em generico, comparacao, expressao regular e texto com apostrofo", () => {
+test("the JSX reader does not get lost in generics, comparisons, regular expressions and text with apostrophes", () => {
   const source = [
     "const pick = <T,>(value: T) => value;",
     "const small = count < limit && limit > 2;",
@@ -433,7 +433,7 @@ test("o leitor de JSX nao se perde em generico, comparacao, expressao regular e 
   ]);
 });
 
-test("as entradas que a auditoria conhece sao as que os pacotes exportam", () => {
+test("the entries the audit knows are the ones the packages export", () => {
   const valueExports = (file: string) => {
     const code = readFileSync(file, "utf8");
     const names = new Set<string>();
@@ -494,7 +494,7 @@ test("as entradas que a auditoria conhece sao as que os pacotes exportam", () =>
   }
 });
 
-test("os peers que a auditoria cobra sao os que os manifestos declaram", () => {
+test("the peers the audit requires are the ones the manifests declare", () => {
   const web = JSON.parse(readFileSync("package.json", "utf8")) as {
     peerDependencies: Record<string, string>;
     peerDependenciesMeta: Record<string, { optional: boolean }>;
@@ -522,13 +522,13 @@ test("os peers que a auditoria cobra sao os que os manifestos declaram", () => {
   }
 });
 
-test("o dicionario de acento da auditoria e o mesmo da casa", () => {
+test("the audit accent dictionary is the same as the house one", () => {
   const entries = Object.entries(ACCENTS);
   expect(entries.length).toBeGreaterThan(100);
   for (const [plain, accented] of entries) expect([plain, WORDS[plain]]).toEqual([plain, accented]);
 });
 
-test("toda regra esta na skill, e a skill nao cita regra que nao existe", () => {
+test("every rule is in the skill, and the skill cites no rule that does not exist", () => {
   const skill = readFileSync(`${SKILL_DIR}/SKILL.md`, "utf8");
   expect(skill).toStartWith("---\nname: rivocode-ui-audit\ndescription: ");
 
@@ -537,7 +537,7 @@ test("toda regra esta na skill, e a skill nao cita regra que nao existe", () => 
   expect([...cited].sort()).toEqual(RULES.map((rule) => rule.id).sort());
 });
 
-test("o site entrega a skill de auditoria e o script, iguais ao disco, e o para-agents ensina a usar", () => {
+test("the site ships the audit skill and the script, identical to disk, and para-agents teaches how to use them", () => {
   const files = agentFiles();
   for (const file of ["SKILL.md", "scripts/audit.mts"]) {
     expect(files.get(`skill-auditoria/${file}`)).toBe(readFileSync(`${SKILL_DIR}/${file}`, "utf8"));
@@ -550,7 +550,7 @@ test("o site entrega a skill de auditoria e o script, iguais ao disco, e o para-
   expect(files.get("llms.txt")).toContain("(/skill-auditoria/SKILL.md)");
 });
 
-test("o script roda sozinho, imprime a nota e corta a CI abaixo do minimo", async () => {
+test("the script runs on its own, prints the score and fails CI below the minimum", async () => {
   const run = async (...args: string[]) => {
     const child = Bun.spawn(["bun", SCRIPT, ...args], { stdout: "pipe", stderr: "pipe" });
     const [out, code] = await Promise.all([new Response(child.stdout).text(), child.exited]);
@@ -565,7 +565,7 @@ test("o script roda sozinho, imprime a nota e corta a CI abaixo do minimo", asyn
     "90",
   );
   expect(good.code).toBe(0);
-  expect(good.out).toContain("**Nota: 100/100.** Segue a casa.");
+  expect(good.out).toContain("**Score: 100/100.** Follows the house.");
 
   const bad = await run(
     `${FIXTURES}/ruim`,
@@ -586,11 +586,11 @@ test("o script roda sozinho, imprime a nota e corta a CI abaixo do minimo", asyn
     `${FIXTURES}/julgamento.json`,
   );
   expect(judged.code).toBe(0);
-  expect(judged.out).toContain("**Nota: 89/100.** Ajustes pontuais.");
-  expect(judged.out).toContain("**provider-ausente** (crítico, julgamento)");
+  expect(judged.out).toContain("**Score: 89/100.** Spot fixes.");
+  expect(judged.out).toContain("**provider-ausente** (critical, judgment)");
 });
 
-test("o leitor de JSX atravessa a tag com tipo generico, e a tela com generico perde a mesma nota", () => {
+test("the JSX reader crosses a tag with a generic type, and the screen with generics loses the same score", () => {
   const body = (table: string) =>
     [
       'import { Card, DataTable, IconButton } from "@rivocode/ui";',
@@ -630,7 +630,7 @@ test("o leitor de JSX atravessa a tag com tipo generico, e a tela com generico p
   ]);
 });
 
-test("o achado de importacao sai na linha do import, e a supressao nessa linha vale", () => {
+test("the import finding lands on the import line, and suppression on that line works", () => {
   const found = auditSource(
     "a.tsx",
     [
@@ -663,7 +663,7 @@ test("o achado de importacao sai na linha do import, e a supressao nessa linha v
 const HEAD =
   'import { Button, Card, CodeBlock, Field, FieldLabel, Input, InputGroup, InputPrefix, MaskedInput, Text, cn, currency } from "@rivocode/ui";\nimport { Form, FormField, useZodForm } from "@rivocode/ui/form";\n';
 
-test("o que a casa escreve certo nao vira achado", () => {
+test("what the house writes correctly does not become a finding", () => {
   const clean: [rule: string, source: string][] = [
     [
       "documento-sem-validador",
@@ -743,7 +743,7 @@ test("o que a casa escreve certo nao vira achado", () => {
   }
 });
 
-test("o que escapava agora morde: nome vazio, link sem href, cor arbitraria por nome e o toque cru do nativo", () => {
+test("what used to escape now bites: empty name, link without href, arbitrary named color and native raw touch", () => {
   const web =
     'import { Button, IconButton } from "@rivocode/ui";\nimport { X } from "lucide-react";\n';
   const native =
@@ -791,7 +791,7 @@ test("o que escapava agora morde: nome vazio, link sem href, cor arbitraria por 
   }
 });
 
-test("no nativo, Checkbox e Switch sem texto ao lado se nomeiam pelo label", () => {
+test("in native, Checkbox and Switch without text beside them are named by label", () => {
   const native =
     'import { View } from "react-native";\nimport { Checkbox, Switch, Text } from "@rivocode/ui-native";\n';
   const screen = (jsx: string) => `${native}export const A = () => ${jsx};\n`;
@@ -824,7 +824,7 @@ test("no nativo, Checkbox e Switch sem texto ao lado se nomeiam pelo label", () 
   expect(rulesOf(`${web}export const A = () => <Checkbox />;\n`)).not.toContain("nome-acessivel");
 });
 
-test("os peers obrigatorios de cada pacote sao cobrados de quem importa qualquer entrada dele", () => {
+test("each package's required peers are demanded of whoever imports any of its entries", () => {
   type Manifest = {
     peerDependencies: Record<string, string>;
     peerDependenciesMeta: Record<string, { optional: boolean }>;
@@ -858,7 +858,7 @@ test("os peers obrigatorios de cada pacote sao cobrados de quem importa qualquer
   expect(missing.some((message) => message.includes("`react-hook-form`"))).toBe(false);
 });
 
-test("achado e descarte de julgamento aceitam a mesma forma, e a forma errada vira aviso", () => {
+test("judgment findings and dismissals accept the same shape, and the wrong shape becomes a notice", () => {
   const report = audit({
     files: [{ path: "a.tsx", source: 'export const A = () => <div className="bg-white" />' }],
     findings: [
@@ -871,9 +871,9 @@ test("achado e descarte de julgamento aceitam a mesma forma, e a forma errada vi
     ],
   });
   expect(report.findings.map((item) => item.rule)).toEqual(["cor-literal"]);
-  expect(report.notes.filter((note) => note.startsWith("Achado recusado")).length).toBe(2);
-  expect(report.notes.filter((note) => note.startsWith("Descarte recusado")).length).toBe(2);
-  expect(report.notes).toContain("Descarte recusado, sem motivo: `cor-literal` em a.tsx:1.");
+  expect(report.notes.filter((note) => note.startsWith("Finding refused")).length).toBe(2);
+  expect(report.notes.filter((note) => note.startsWith("Discard refused")).length).toBe(2);
+  expect(report.notes).toContain("Discard refused, no reason: `cor-literal` in a.tsx:1.");
 });
 
 const SCRIPT_ABSOLUTE = `${process.cwd()}/${SCRIPT}`;
@@ -892,7 +892,7 @@ async function runScript(args: string[], cwd?: string) {
   return { out, err, code };
 }
 
-test("o --julgamento com forma errada responde com aviso ou com erro legivel, e nunca com pilha", async () => {
+test("--julgamento with the wrong shape answers with a notice or a readable error, and never with a stack trace", async () => {
   const dir = mkdtempSync(join(tmpdir(), "auditoria-"));
   const target = `${process.cwd()}/${FIXTURES}/boa`;
   const manifestArgs = ["--manifesto", `${target}/package.json`];
@@ -909,7 +909,7 @@ test("o --julgamento com forma errada responde com aviso ou com erro legivel, e 
   ]);
   expect(noReason.err).toBe("");
   expect(noReason.code).toBe(0);
-  expect(noReason.out).toContain("Descarte recusado, sem motivo");
+  expect(noReason.out).toContain("Discard refused, no reason");
 
   const shapes: unknown[] = [[], "texto", { findings: {} }, { dismissals: [1] }];
   for (const shape of shapes) {
@@ -925,7 +925,7 @@ test("o --julgamento com forma errada responde com aviso ou com erro legivel, e 
   }
 });
 
-test("com mais de um alvo, os package.json de cada um entram na conta", async () => {
+test("with more than one target, each one's package.json enters the math", async () => {
   const dir = mkdtempSync(join(tmpdir(), "auditoria-"));
   mkdirSync(join(dir, ".git"));
   const apps: [name: string, deps: Record<string, string>, source: string][] = [
@@ -953,7 +953,7 @@ test("com mais de um alvo, os package.json de cada um entram na conta", async ()
   expect(report.score).toBe(100);
 });
 
-test("o script tem extensao .mts, e o node o roda num projeto commonjs", async () => {
+test("the script has the .mts extension, and node runs it in a commonjs project", async () => {
   expect(SCRIPT.endsWith(".mts")).toBe(true);
 
   const dir = mkdtempSync(join(tmpdir(), "auditoria-cjs-"));

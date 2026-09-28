@@ -1,96 +1,100 @@
 ---
-category: Gráfico
+category: Charts
 ---
 
 # ChartRadial
 
-O arco de uma medida só: meta batida, uso de cota, taxa de conversão.
+The arc of a single measure: target hit, quota usage, conversion rate.
 
 ```tsx
 <ChartRadial value={82} centerLabel="da meta do mês" />
 ```
 
-O arco para no fim quando o valor passa do `max`, mas o texto diz o valor
-real: 140 de 100 sai "140%", e não "100%". Valor que não é número (`NaN`,
-infinito) ou `max` zero ou negativo sai "—", como no `ChartGauge`.
+The arc stops at the end when the value goes past `max`, but the text says the
+real value: 140 of 100 renders "140%", not "100%". A value that is not a number
+(`NaN`, infinity) or a zero or negative `max` renders "—", as in `ChartGauge`.
 
-## Contra o Meter
+## Versus Meter
 
-Escolha pelo espaço, não pelo gosto. A barra do `Meter` cabe numa linha de
-formulário e lê mais rápido. O arco pede um cartão inteiro, e ganha quando o
-número **é o assunto** do cartão, não um detalhe dentro dele.
+Choose by space, not by taste. The `Meter` bar fits in a form row and reads
+faster. The arc asks for a whole card, and wins when the number **is the
+subject** of the card, not a detail inside it.
 
-## Não é Progress
+## It is not Progress
 
-O progresso anda para o fim e termina; esta medida sobe e desce enquanto o mês
-corre. Por isso ela sai como `role="img"` com rótulo, e não como barra de
-carregamento, trocar um pelo outro faz o leitor de tela anunciar "carregando"
-para algo que não carrega.
+Progress moves toward the end and finishes; this measure goes up and down as
+the month runs. That is why it renders as `role="img"` with a label, and not as
+a loading bar: swapping one for the other makes the screen reader announce
+"loading" for something that does not load.
 
-## Movimento
+## Motion
 
-Na primeira vez que aparece, o arco varre do início até o valor; quando o
-`value` muda, anda do valor velho ao novo. Nos dois casos, com a duração e a
-curva dos tokens (`--rc-duration-slow`, `--rc-ease`), pela mesma decisão do
-`ChartContainer`. Com "reduzir movimento", o arco nasce no lugar e salta.
+The first time it appears, the arc sweeps from the start to the value; when
+`value` changes, it moves from the old value to the new one. In both cases,
+with the tokens' duration and curve (`--rc-duration-slow`, `--rc-ease`), by the
+same decision as `ChartContainer`. With "reduce motion", the arc is born in
+place and jumps.
 
-No `segmented`, os tracinhos acesos acendem em sequência, do primeiro ao último,
-dentro do mesmo `--rc-duration-slow`. Cada um acende inteiro: ele é contagem, e
-não traço contínuo, e tracinho meio aceso não diz nada.
+In `segmented`, the lit ticks light up in sequence, from first to last, within
+the same `--rc-duration-slow`. Each one lights up whole: it is a count, not a
+continuous stroke, and a half-lit tick says nothing.
 
-## O eixo escondido
+## The hidden axis
 
-`sweep` é quanto do círculo o arco ocupa. Em `270`, que é o padrão, ele deixa a
-base aberta, e é ali que o rótulo de baixo respira. Em `360` fecha.
+`sweep` is how much of the circle the arc takes. At `270`, the default, it
+leaves the base open, and that is where the bottom label breathes. At `360` it
+closes.
 
-Por dentro há um `PolarAngleAxis` com `domain={[0, max]}` que não desenha nada.
-Ele existe porque a Recharts normaliza pelo maior valor da série, e com um único
-ponto isso significa que **qualquer valor daria a volta inteira**.
+Inside there is a `PolarAngleAxis` with `domain={[0, max]}` that draws nothing.
+It exists because Recharts normalizes by the series' largest value, and with a
+single point that means **any value would go all the way around**.
 
-## O miolo é pequeno, e ele não cresce com o cartão
+## The center is small, and it does not grow with the card
 
-O arco é um quadrado limitado pelo menor lado, e a peça tem `11rem` (176px) de
-altura fixa. Num cartão de 176px ou mais o vão de dentro trava em **cerca de
-125px de largura**: alargar o cartão alarga o gráfico, e não o buraco.
+The arc is a square bounded by the smaller side, and the component has a fixed
+height of `11rem` (176px). In a card of 176px or more the inner gap locks at
+**about 125px wide**: widening the card widens the chart, not the hole.
 
-O que cabe ali, medido nesse vão: **umas dez letras** no número grande
-(`1,5rem`) e **umas dezoito** na linha de baixo (`0,75rem`) — `da meta do mês`
-tem catorze e sobra espaço; `R$ 246,7K de R$ 300K` tem vinte e não cabe.
-Passando do limite nada corta nem vira reticências, porque o teto que o CSS
-impõe é uma fração da **largura do cartão**, e não o buraco: num cartão largo
-a frase atravessa o anel de ponta a ponta, e num estreito ela quebra em duas
-linhas e aperta contra a base aberta. Os dois saem feios, e nenhum dos dois acusa.
+What fits there, measured in that gap: **about ten characters** in the big
+number (`1,5rem`) and **about eighteen** in the bottom line (`0,75rem`) —
+`da meta do mês` has fourteen and there is room to spare; `R$ 246,7K de R$
+300K` has twenty and does not fit. Past the limit nothing gets cut or turns
+into an ellipsis, because the ceiling the CSS imposes is a fraction of the
+**card's width**, not the hole: in a wide card the phrase crosses the ring from
+end to end, and in a narrow one it breaks into two lines and presses against
+the open base. Both come out ugly, and neither one complains.
 
-A hierarquia que funciona é a porcentagem como número grande e o denominador
-como a linha de baixo, que é justamente o que a porcentagem não carrega:
+The hierarchy that works is the percentage as the big number and the
+denominator as the bottom line, which is exactly what the percentage does not
+carry:
 
 ```tsx
 <ChartRadial value={246_700} max={300_000} centerLabel="de R$ 300K" />
 ```
 
-Quando a frase é maior que isso, ela sai do miolo. O arco não tem legenda de
-fora para receber texto — a rosca tem, e é uma das razões para escolhê-la —,
-então o lugar é o cartão em volta: o título, ou uma linha de apoio acima do
-gráfico. Para quem ouve, a frase inteira vai em `label`: sem ele o nome
-acessível é só a porcentagem, e "82 por cento" sozinho não diz por cento de
-quê.
+When the phrase is longer than that, it leaves the center. The arc has no
+outside legend to take text — the donut has one, and it is one of the reasons
+to choose it —, so the place is the card around it: the title, or a supporting
+line above the chart. For whoever listens, the whole phrase goes in `label`:
+without it the accessible name is only the percentage, and "82 por cento" alone
+does not say percent of what.
 
-## A legenda da rosca
+## The donut's legend
 
-`ChartDonut` tem lista embaixo com nome e valor de cada fatia, ligada por
-padrão. O arco não tem: ele mostra uma medida só, e a legenda de um item é o
-próprio rótulo.
+`ChartDonut` has a list below with each slice's name and value, on by default.
+The arc does not: it shows a single measure, and the legend of one item is the
+label itself.
 
-Com `variant="segmented"` o arco vira tracinhos, que é a variação mais pedida
-de medidor em painel. Os traços apagados continuam na tela de propósito: sem a
-escala inteira visível, um traço aceso não significa nada.
+With `variant="segmented"` the arc becomes ticks, which is the most requested
+gauge variation on dashboards. The unlit ticks stay on screen on purpose:
+without the whole scale visible, a lit tick means nothing.
 
-## No React Native
+## In React Native
 
-Traduz quase inteiro, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos muda: **ela nunca teve dica**. O valor mora no meio do arco, em texto, desde o web. O que o dedo faria aqui, o olho já fez. `value`, `max`, `sweep`, `variant` e `segments` atravessam iguais, o arco em tracinhos incluído.
+Translates almost whole, in `@rivocode/ui-native/chart`, and it is the chart piece that changes least: **it never had a tooltip**. The value lives in the middle of the arc, as text, since the web. What the finger would do here, the eye has already done. `value`, `max`, `sweep`, `variant` and `segments` cross over unchanged, the dashed arc included.
 
-Duas mudanças de tipo, as mesmas da rosca: `centerValue` e `centerLabel` são `string`, e `color` é papel de token (`chart-3`, `success`) e não cor de CSS.
+Two type changes, the same as the donut: `centerValue` and `centerLabel` are `string`, and `color` is a token role (`chart-3`, `success`), not a CSS color.
 
-O papel de acessibilidade é `image`, como o `role="img"` do web, e os dois vizinhos explicam por quê: o `Meter` nativo já tinha recusado `progressbar`, que faz o leitor de tela anunciar indicador de progresso para uma medida que sobe e desce, e `adjustable`, que prometeria que o gesto muda o valor. O nome carrega o número, então ouvir a peça é ouvir a medida. Sem `label`, ele é montado do que está escrito no meio (o valor **e** a linha de baixo), e não só a porcentagem como no web: "82 por cento" sozinho não diz por cento de quê.
+The accessibility role is `image`, like the web's `role="img"`, and the two neighbors explain why: the native `Meter` had already refused `progressbar`, which makes the screen reader announce a progress indicator for a measure that goes up and down, and `adjustable`, which would promise that the gesture changes the value. The name carries the number, so hearing the piece is hearing the measure. Without `label`, it is built from what is written in the middle (the value **and** the line below), not just the percentage as on the web: "82 por cento" alone does not say percent of what.
 
-O arco liso anda até o valor novo como no web, e nasce no lugar; o `segmented` acende os tracinhos de uma vez, também como no web.
+The smooth arc moves to the new value as on the web, and is born in place; `segmented` lights the dashes all at once, also as on the web.

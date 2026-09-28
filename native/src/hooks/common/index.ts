@@ -1,4 +1,4 @@
-/* Gerado de src/hooks/common/index.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/hooks/common/index.ts by bun run gen:shared. Do not edit. */
 
 export { useCounter, type CounterHandlers, type UseCounterOptions } from "./counter";
 export { useDebouncedValue } from "./debounced-value";

@@ -1,35 +1,35 @@
 /**
- * Codigo puro que atravessa os dois pacotes, e a guarda de quem copia em vez
- * de atravessar.
+ * Pure code that crosses between the two packages, and the guard against
+ * whoever copies instead of crossing.
  *
- * O TimeField foi publicado com cinco funcoes de valor identicas caractere a
- * caractere nos dois pacotes. O custo disso nao e o byte repetido: e que uma
- * copia pode ganhar conserto que a outra nao ganha, e nada acusa. O
- * `check:parity` nao pega, porque ele compara PECAS, e as duas pecas estao
- * la - ele diria "traduz" enquanto os dois `stepTime` divergiam. Foi assim que
- * o `DataList` nativo serviu texto sem acento por versoes, com a versao web
- * acentuada do lado.
+ * The TimeField was published with five value functions identical character
+ * for character in both packages. The cost is not the repeated byte: it is that
+ * one copy can get a fix the other does not, and nothing flags it.
+ * `check:parity` does not catch it, because it compares PIECES, and both pieces
+ * are there - it would say "translates" while the two `stepTime` diverged. That
+ * is how the native `DataList` served unaccented text for versions, with the
+ * accented web version right beside it.
  *
- * Ao medir pela primeira vez, em 27/08/2026, eram VINTE declaracoes identicas,
- * e nao cinco. Quinze ninguem tinha nomeado, e uma atravessa pecas diferentes:
- * o `flatten` do `DataTable` e o mesmo do `DataList`, entao quem for consertar
- * a busca sem acento de uma nao tem por que abrir a outra. O numero nao era
- * conhecido porque nada o contava.
+ * When first measured, on 27/08/2026, there were TWENTY identical
+ * declarations, not five. Fifteen nobody had named, and one crosses different
+ * pieces: the `flatten` of `DataTable` is the same as `DataList`'s, so whoever
+ * fixes the accent-insensitive search of one has no reason to open the other.
+ * The number was not known because nothing counted it.
  *
- * Por que espelho e nao pacote: os dois publicam de formas diferentes. O
- * `@rivocode/ui` publica `dist`, e o `tsdown` empacota o que o grafo alcanca.
- * O `@rivocode/ui-native` publica FONTE, e so sai no tarball o que esta
- * fisicamente dentro de `native/` - um import que suba acima da pasta resolve
- * aqui e some la. Entao o nativo recebe copia gerada, versionada, com
- * cabecalho, exatamente como `native/tokens.ts` e `native/theme.css` ja
- * recebem os tokens. O desenho inteiro esta em
+ * Why a mirror and not a package: the two publish in different ways.
+ * `@rivocode/ui` publishes `dist`, and `tsdown` bundles what the graph reaches.
+ * `@rivocode/ui-native` publishes SOURCE, and only what is physically inside
+ * `native/` goes into the tarball - an import that climbs above the folder
+ * resolves here and vanishes there. So the native side gets a generated,
+ * versioned copy with a header, exactly as `native/tokens.ts` and
+ * `native/theme.css` already get the tokens. The whole design is in
  * `docs/2026-08-27-codigo-puro-compartilhado-design.md`.
  *
- * A armadilha que a primeira versao do detector pegou: procurar o corpo pela
- * primeira `{` depois do nome casa a DESESTRUTURACAO do parametro, e nao o
- * corpo. Com isso `FileUploadItem` e `FormField` apareceram como copia sendo
- * so assinatura parecida. Ler por declaracao de primeiro nivel nao tem esse
- * furo, e ainda pega `const` de seta e constante solta.
+ * The trap the first version of the detector fell into: looking for the body
+ * at the first `{` after the name matches the parameter DESTRUCTURING, not the
+ * body. Because of that `FileUploadItem` and `FormField` showed up as copies
+ * while only having a similar signature. Reading by top-level declaration does
+ * not have that hole, and it also catches arrow `const` and loose constants.
  */
 import { Glob } from "bun";
 import { scanAtLeast } from "./scan";
@@ -40,22 +40,22 @@ const SOURCE = "src/shared";
 const MIRROR = "native/src/shared";
 
 /**
- * O segundo espelho: hook que so depende do React.
+ * The second mirror: hooks that depend only on React.
  *
- * Os hooks utilitarios que fazem sentido nos dois lados - `useDisclosure`,
- * `useDebouncedCallback`, `useListState` e o resto de `src/hooks/common/` -
- * nao cabem em `src/shared/`, porque importam `react`. Deixa-los copiados a
- * mao seria encher o `COPIA_DECLARADA` com onze linhas de uma vez, e cada uma
- * e exatamente o risco que esta guarda existe para cortar: o conserto de um
- * `useThrottledCallback` que chega num pacote e nao no outro. Entao eles
- * atravessam do mesmo jeito que o `src/shared/`, com a pureza trocada por uma
- * lista fechada de imports: `react`, um arquivo da propria pasta, e
- * `../../shared/<arquivo>` - que resolve no espelho de `src/shared/` dos dois
- * lados, porque as duas arvores tem a mesma forma.
+ * The utility hooks that make sense on both sides - `useDisclosure`,
+ * `useDebouncedCallback`, `useListState` and the rest of `src/hooks/common/` -
+ * do not fit in `src/shared/`, because they import `react`. Leaving them
+ * hand-copied would fill `DECLARED_COPIES` with eleven lines at once, and each
+ * one is exactly the risk this guard exists to cut: the fix to a
+ * `useThrottledCallback` that reaches one package and not the other. So they
+ * cross the same way as `src/shared/`, with purity swapped for a closed list
+ * of imports: `react`, a file in the same folder, and `../../shared/<file>` -
+ * which resolves to the `src/shared/` mirror on both sides, because the two
+ * trees have the same shape.
  *
- * O calculo continua em `src/shared/`, e o hook e so a amarracao ao React. O
- * global de plataforma continua proibido: hook que precisa de `window` e do
- * web, e mora em `src/hooks/`, fora do espelho.
+ * The computation stays in `src/shared/`, and the hook is just the binding to
+ * React. Platform globals are still forbidden: a hook that needs `window` is
+ * web-only, and lives in `src/hooks/`, outside the mirror.
  */
 const HOOKS_SOURCE = "src/hooks/common";
 const HOOKS_MIRROR = "native/src/hooks/common";
@@ -72,53 +72,54 @@ const PAIRS: Pair[] = [
 ];
 
 const banner = (source: string, file: string) =>
-  `/* Gerado de ${source}/${file} por bun run gen:shared. Nao editar. */\n\n`;
+  `/* Generated from ${source}/${file} by bun run gen:shared. Do not edit. */\n\n`;
 
 /**
- * Globais que compilam nos dois lados e falham num.
+ * Globals that compile on both sides and fail on one.
  *
- * `Intl` nao esta aqui de proposito: ele existe nos dois, e proibi-lo custaria
- * mais do que paga. O registro de que a tabela de locale do Hermes depende de
- * como o app foi montado esta no documento de desenho.
+ * `Intl` is not here on purpose: it exists on both, and forbidding it would
+ * cost more than it pays. The note that Hermes' locale table depends on how
+ * the app was built is in the design document.
  */
 const PLATFORM =
   /\b(document|window|navigator|localStorage|sessionStorage|HTMLElement|Element|Node|process)\b/;
 
 /**
- * Copia que fica, e o motivo de cada uma.
+ * Copies that stay, and the reason for each.
  *
- * A lista SO ENCOLHE, como o `OUT` do `check:scripts` e o `DEBT` do
- * `check:comments`: entrada que nao acusa mais e erro, e a guarda manda
- * apagar a linha. O criterio para atravessar tem duas metades: puro (nenhum
- * import) E ja duplicado. A segunda metade existe porque no nativo o arquivo
- * viaja no tarball e o metro o compila dentro do app de quem instala - encher
- * o espelho por simetria e mandar byte morto para aparelho de terceiro.
+ * The list ONLY SHRINKS, like the `OUT` of `check:scripts` and the `DEBT` of
+ * `check:comments`: an entry that no longer flags anything is an error, and
+ * the guard says to delete the line. The criterion for crossing has two
+ * halves: pure (no imports) AND already duplicated. The second half exists
+ * because on native the file travels in the tarball and metro compiles it
+ * inside the installer's app - filling the mirror for symmetry sends dead
+ * bytes to a third party's device.
  */
-const COPIA_DECLARADA: Record<string, string> = {
+const DECLARED_COPIES: Record<string, string> = {
   useZodForm:
-    "importa react-hook-form, zod e @hookform/resolvers - tres peers OPCIONAIS, atras do subcaminho `./form` nos dois pacotes. `src/shared/` e nucleo, e o `check:chart` existe para que o nucleo monte sem o peer instalado.",
+    "imports react-hook-form, zod and @hookform/resolvers - three OPTIONAL peers, behind the `./form` subpath in both packages. `src/shared/` is core, and `check:chart` exists so the core builds without the peer installed.",
   nameFromConfig:
-    "mora atras do peer opcional do grafico nos dois lados, e o tipo `ChartConfig` e de la. Mesmo motivo do useZodForm.",
+    "lives behind the chart's optional peer on both sides, and the `ChartConfig` type comes from there. Same reason as useZodForm.",
   leavesOf:
-    "corpo igual por acaso: os dois `TreeNode` sao tipos diferentes (`label` e `ReactNode` no web e `string` no nativo, e o nativo nao tem `search`). Para atravessar teria que virar generica sobre `{ id, children }`, o que muda a assinatura exportada dos dois pacotes.",
-  TONE: "mapa de classe, e nao calculo. O `check:groups` ja olha classe nos dois lados.",
-  SIZE: "mapa de classe, e nao calculo, como o TONE. No `src/shared/` ele sairia do `@source` do Tailwind nos tres CSS que compilam o web.",
-  WEIGHT: "mapa de classe, e nao calculo, pelo mesmo motivo do SIZE.",
-  RivoContext: "identico por inevitabilidade da API do React, e o tipo dele e de cada pacote.",
+    "same body by chance: the two `TreeNode` are different types (`label` is `ReactNode` on web and `string` on native, and native has no `search`). To cross it would have to become generic over `{ id, children }`, which changes the exported signature of both packages.",
+  TONE: "a class map, not a computation. `check:groups` already looks at classes on both sides.",
+  SIZE: "a class map, not a computation, like TONE. In `src/shared/` it would fall out of Tailwind's `@source` in the three CSS files that compile the web.",
+  WEIGHT: "a class map, not a computation, for the same reason as SIZE.",
+  RivoContext: "identical because the React API makes it unavoidable, and its type belongs to each package.",
   normalizeColor:
-    "puro e copia de verdade: fila do ColorPicker, junto com fromWheel, nameOf, valueOf e HEX.",
-  fromWheel: "puro e copia de verdade: fila do ColorPicker.",
-  nameOf: "puro e copia de verdade: fila do ColorPicker.",
-  valueOf: "puro e copia de verdade: fila do ColorPicker.",
-  HEX: "puro e copia de verdade: fila do ColorPicker.",
-  counted: "puro e copia de verdade: fila da FilterBar, junto com applied.",
-  applied: "puro e copia de verdade: fila da FilterBar.",
-  blankOf: "puro e copia de verdade: fila do QueryBoundary.",
+    "pure and a real copy: ColorPicker queue, together with fromWheel, nameOf, valueOf and HEX.",
+  fromWheel: "pure and a real copy: ColorPicker queue.",
+  nameOf: "pure and a real copy: ColorPicker queue.",
+  valueOf: "pure and a real copy: ColorPicker queue.",
+  HEX: "pure and a real copy: ColorPicker queue.",
+  counted: "pure and a real copy: FilterBar queue, together with applied.",
+  applied: "pure and a real copy: FilterBar queue.",
+  blankOf: "pure and a real copy: QueryBoundary queue.",
   flatten:
-    "puro e copia de verdade, e a que mais mostra o problema: atravessa PECAS diferentes, o `DataTable` do web e o `DataList` do nativo.",
+    "pure and a real copy, and the one that shows the problem best: it crosses DIFFERENT pieces, the web `DataTable` and the native `DataList`.",
 };
 
-/** O espelho pode nao existir ainda, e varrer pasta que nao ha e erro. */
+/** The mirror may not exist yet, and scanning a folder that is not there is an error. */
 async function* mirrored(mirror: string) {
   if (!existsSync(mirror)) return;
   for (const file of await scanAtLeast("**/*", 1, { cwd: mirror })) yield file;
@@ -138,7 +139,7 @@ sources.sort((one, other) =>
 );
 
 /* -------------------------------------------------------------------------
- * Regra 1: pureza
+ * Rule 1: purity
  * ---------------------------------------------------------------------- */
 
 const impure: string[] = [];
@@ -148,7 +149,7 @@ const hookImpure: string[] = [];
 for (const { pair, file, code } of sources) {
   if (!file.endsWith(".ts") || file.endsWith(".d.ts")) {
     impure.push(
-      `  ${pair.source}/${file}  nao e .ts: JSX e superficie, e as duas superficies diferem.`,
+      `  ${pair.source}/${file}  is not .ts: JSX is surface, and the two surfaces differ.`,
     );
     continue;
   }
@@ -161,7 +162,7 @@ for (const { pair, file, code } of sources) {
       if (pair.imports.test(specifier)) continue;
       const line = code.slice(0, found.index).split("\n").length;
       hookImpure.push(
-        `  ${pair.source}/${file}:${line}  importa "${specifier}", que nao atravessa para o nativo.`,
+        `  ${pair.source}/${file}:${line}  imports "${specifier}", which does not cross to native.`,
       );
     }
   }
@@ -170,41 +171,41 @@ for (const { pair, file, code } of sources) {
     const at = `  ${pair.source}/${file}:${index + 1}`;
 
     if (/\bimport\s*\(/.test(line) || /\brequire\s*\(/.test(line)) {
-      impure.push(`${at}  importa em tempo de execucao, e o espelho nao acompanha.`);
+      impure.push(`${at}  imports at runtime, and the mirror does not follow.`);
     } else if (!pair.imports && /^\s*import\s/.test(line)) {
-      impure.push(`${at}  importa alguma coisa. Codigo puro compila com zero imports.`);
+      impure.push(`${at}  imports something. Pure code compiles with zero imports.`);
     }
 
     const platform = PLATFORM.exec(line.replace(/\/\/.*$/, ""));
     if (platform) {
-      impure.push(`${at}  usa \`${platform[1]}\`, que existe num lado so.`);
+      impure.push(`${at}  usa \`${platform[1]}\`, which exists on one side only.`);
     }
   });
 }
 
 if (impure.length > 0) {
   problems.push(
-    `${impure.length} quebra(s) de pureza no que atravessa para native/:\n` +
+    `${impure.length} purity break(s) in what crosses to native/:\n` +
       impure.join("\n") +
-      `\n\n    O criterio e binario de proposito: puro e o que compila sem\n` +
-      `    nenhum import. "Nao toca o DOM" e descricao, e descricao se\n` +
-      `    discute na revisao. Se a funcao precisa de um import, ela\n` +
-      `    pertence a peca, e nao a ${SOURCE}/.`,
+      `\n\n    The criterion is binary on purpose: pure is what compiles with\n` +
+      `    no imports at all. "Does not touch the DOM" is a description, and\n` +
+      `    descriptions get argued in review. If the function needs an import,\n` +
+      `    it belongs to the piece, not to ${SOURCE}/.`,
   );
 }
 
 if (hookImpure.length > 0) {
   problems.push(
-    `${hookImpure.length} import(s) fora da lista em ${HOOKS_SOURCE}/:\n` +
+    `${hookImpure.length} import(s) outside the list in ${HOOKS_SOURCE}/:\n` +
       hookImpure.join("\n") +
-      `\n\n    Hook do espelho so importa \`react\`, arquivo da propria pasta e\n` +
-      `    \`../../shared/<arquivo>\`. Qualquer outra coisa nao existe dentro de\n` +
-      `    native/ do mesmo jeito, e o hook pertence a src/hooks/, fora do espelho.`,
+      `\n\n    A mirrored hook only imports \`react\`, a file in its own folder and\n` +
+      `    \`../../shared/<file>\`. Anything else does not exist inside native/\n` +
+      `    the same way, and the hook belongs in src/hooks/, outside the mirror.`,
   );
 }
 
 /* -------------------------------------------------------------------------
- * Regra 2: espelho em dia
+ * Rule 2: mirror up to date
  * ---------------------------------------------------------------------- */
 
 const wanted = new Map(
@@ -221,19 +222,19 @@ for (const [path, content] of wanted) {
     .text()
     .catch(() => undefined);
 
-  if (committed === undefined) stale.push(`  ${path}  nao existe.`);
-  else if (committed !== content) stale.push(`  ${path}  divergiu da fonte.`);
+  if (committed === undefined) stale.push(`  ${path}  does not exist.`);
+  else if (committed !== content) stale.push(`  ${path}  diverged from the source.`);
 }
 
 for (const { mirror } of PAIRS) {
   for await (const file of mirrored(mirror)) {
     const path = `${mirror}/${file}`;
-    if (!wanted.has(path)) stale.push(`  ${path}  sobrou: nao ha fonte para ele.`);
+    if (!wanted.has(path)) stale.push(`  ${path}  left over: there is no source for it.`);
   }
 }
 
 /* -------------------------------------------------------------------------
- * Regra 3: copia nova
+ * Rule 3: new copy
  * ---------------------------------------------------------------------- */
 
 const STARTS = /^(?:export\s+)?(?:default\s+)?(?:async\s+)?(?:function|const|let|var|class)\s/;
@@ -247,12 +248,12 @@ function withoutComments(code: string) {
 }
 
 /**
- * Quebra o arquivo em declaracoes de primeiro nivel.
+ * Splits the file into top-level declarations.
  *
- * Uma declaracao comeca numa linha que abre na coluna zero com profundidade
- * de parenteses e chaves zerada, e termina onde a proxima comeca. E o recorte
- * que pega ao mesmo tempo `function f() {}`, `const f = () => {}` e
- * `const HEX = /.../` sem precisar entender nenhum dos tres.
+ * A declaration starts on a line that opens at column zero with parenthesis
+ * and brace depth at zero, and ends where the next one starts. It is the cut
+ * that catches `function f() {}`, `const f = () => {}` and `const HEX = /.../`
+ * at once without having to understand any of the three.
  */
 function declarations(code: string) {
   const lines = withoutComments(code).split("\n");
@@ -331,46 +332,46 @@ for (const [key, here] of web) {
   });
 }
 
-const undeclared = copies.filter(({ name }) => !(name in COPIA_DECLARADA));
+const undeclared = copies.filter(({ name }) => !(name in DECLARED_COPIES));
 const named = new Set(copies.map(({ name }) => name));
-const rotten = Object.keys(COPIA_DECLARADA).filter((name) => !named.has(name));
+const rotten = Object.keys(DECLARED_COPIES).filter((name) => !named.has(name));
 
 if (undeclared.length > 0) {
   problems.push(
-    `${undeclared.length} declaracao(oes) copiada(s) entre os dois pacotes:\n` +
+    `${undeclared.length} declaration(s) copied between the two packages:\n` +
       undeclared
         .map(({ name, here, there }) => `    ${name}\n      ${here}\n      ${there}`)
         .join("\n") +
-      `\n\n    Se a declaracao e pura - zero imports -, ela atravessa: mova\n` +
-      `    para ${SOURCE}/, re-exporte do lugar antigo para nao mexer na API\n` +
-      `    publica, e rode \`bun run gen:shared\`.\n\n` +
-      `    Se ela nao pode atravessar, ganha linha no \`COPIA_DECLARADA\`\n` +
-      `    desta guarda com o motivo. O motivo e para quem for decidir se\n` +
-      `    ainda vale ficar copiada.`,
+      `\n\n    If the declaration is pure - zero imports -, it crosses: move it\n` +
+      `    to ${SOURCE}/, re-export it from the old place so the public API\n` +
+      `    does not change, and run \`bun run gen:shared\`.\n\n` +
+      `    If it cannot cross, it gets a line in this guard's\n` +
+      `    \`DECLARED_COPIES\` with the reason. The reason is for whoever\n` +
+      `    decides whether it is still worth keeping copied.`,
   );
 }
 
 if (rotten.length > 0) {
   problems.push(
-    `${rotten.length} linha(s) do \`COPIA_DECLARADA\` que nao descrevem mais nada:\n` +
-      rotten.map((name) => `    "${name}" - nao ha mais copia com esse nome.`).join("\n") +
-      `\n\n    Apague de scripts/shared-code.ts. Lista de excecao que\n` +
-      `    nao encolhe vira o lugar onde o codigo morto mora.`,
+    `${rotten.length} line(s) of \`DECLARED_COPIES\` that no longer describe anything:\n` +
+      rotten.map((name) => `    "${name}" - there is no copy with that name anymore.`).join("\n") +
+      `\n\n    Delete it from scripts/shared-code.ts. An exception list that\n` +
+      `    does not shrink becomes the place where dead code lives.`,
   );
 }
 
 /* -------------------------------------------------------------------------
- * Escrever, ou conferir
+ * Write, or check
  * ---------------------------------------------------------------------- */
 
 if (process.argv.includes("--check")) {
   if (stale.length > 0) {
     problems.unshift(
-      `${stale.length} arquivo(s) do espelho fora de dia:\n` +
+      `${stale.length} mirror file(s) out of date:\n` +
         stale.join("\n") +
-        `\n\n    Rode: bun run gen:shared\n` +
-        `    O espelho e versionado porque o pacote nativo publica FONTE, e so\n` +
-        `    sai no tarball o que esta dentro de native/.`,
+        `\n\n    Run: bun run gen:shared\n` +
+        `    The mirror is versioned because the native package publishes SOURCE,\n` +
+        `    and only what is inside native/ goes into the tarball.`,
     );
   }
 
@@ -380,9 +381,9 @@ if (process.argv.includes("--check")) {
   }
 
   console.log(
-    `${wanted.size} arquivo(s) espelhado(s) de ${PAIRS.map(({ source }) => `${source}/`).join(" e ")}` +
-      ` em native/, sem global de plataforma e sem import fora da lista.` +
-      ` Copia declarada: ${Object.keys(COPIA_DECLARADA).length}.`,
+    `${wanted.size} file(s) mirrored from ${PAIRS.map(({ source }) => `${source}/`).join(" and ")}` +
+      ` into native/, with no platform global and no import outside the list.` +
+      ` Declared copies: ${Object.keys(DECLARED_COPIES).length}.`,
   );
   process.exit(0);
 }
@@ -401,5 +402,5 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `${wanted.size} arquivo(s) escrito(s) em native/ a partir de ${PAIRS.length} fonte(s).`,
+  `${wanted.size} file(s) written into native/ from ${PAIRS.length} source(s).`,
 );

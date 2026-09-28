@@ -1,11 +1,12 @@
 ---
-category: Formulário
+category: Forms
 ---
 
 # SelectValue
 
-O texto do gatilho: o que está escolhido agora.
+The trigger's text: what is chosen right now.
 
-**Passe `items` com `{ label, value }` no `Select`** para ele mostrar o rótulo.
-Sem isso ele mostra o valor cru, porque só a lista sabe traduzir um pelo outro.
-É contrato da Base UI, e a armadilha mais fácil de cair neste componente.
+**Pass `items` with `{ label, value }` to `Select`** for it to show the label.
+Without it, it shows the raw value, because only the list knows how to
+translate one into the other. It is a Base UI contract, and the easiest trap to
+fall into in this component.

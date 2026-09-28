@@ -1,45 +1,47 @@
 name: release-native
 
-# Publica o @rivocode/ui-native quando uma tag `native-v*` sobe.
+# Publishes @rivocode/ui-native when a `native-v*` tag goes up.
 #
-# Workflow proprio, e nao um passo do outro, porque os dois pacotes andam em
-# velocidades diferentes: o web esta em 0.5 e o nativo em 0.2, e amarrar as
-# duas versoes obrigaria a publicar um sem ter o que dizer sobre ele.
+# Its own workflow, and not a step of the other one, because the two packages
+# move at different speeds: web is at 0.5 and native at 0.2, and tying the two
+# versions together would force publishing one with nothing to say about it.
 #
-# O prefixo da tag e o que separa os dois gatilhos: `v0.5.0` e do web, e
-# `native-v0.2.0` e daqui. Sem o prefixo, uma tag publicaria o pacote errado -
-# ou pior, publicaria o certo com o numero do outro.
+# The tag prefix is what separates the two triggers: `v0.5.0` is web's, and
+# `native-v0.2.0` is this one's. Without the prefix, a tag would publish the
+# wrong package - or worse, publish the right one with the other's number.
 on:
   push:
     tags: ["native-v*"]
-  # Permite repetir uma publicacao que falhou no meio, sem criar outra tag - e,
-  # com `ensaio`, atravessar o caminho inteiro sem gastar versao nenhuma.
+  # Allows repeating a publication that failed halfway, without creating
+  # another tag - and, with `dry_run`, going through the whole path without
+  # spending any version.
   workflow_dispatch:
     inputs:
       tag:
-        # Deixou de ser obrigatoria por causa do ensaio: um ensaio quer rodar o
-        # que esta na main agora, e nao o que uma tag congelou. Para publicar de
-        # verdade ela continua exigida - a conferencia esta no passo "Conferir a
-        # tag e a versao", e nao aqui, porque o formulario nao sabe condicionar
-        # um campo ao outro.
-        description: "Tag ja existente para publicar, como native-v0.2.0. Vazio so em ensaio."
+        # It stopped being required because of the dry run: a dry run wants to
+        # run what is on main now, not what a tag froze. To publish for real it
+        # is still required - the check is in the step "Check the tag and the
+        # version", and not here, because the form cannot make one field
+        # conditional on another.
+        description: "Existing tag to publish, such as native-v0.2.0. Empty only in a dry run."
         required: false
-      ensaio:
-        # O primeiro lancamento por CI e um voo cego, e sempre foi.
+      dry_run:
+        # The first release through CI is a blind flight, and always was.
         #
-        # Este workflow tem quatro execucoes e quatro falhas, todas no ultimo
-        # passo: a 0.2.0 ja estava publicada a mao, e cada tentativa gastava
-        # install, tipos, tokens, paridade, suite e empacotamento para morrer no
-        # `npm publish`. O caminho completo nunca chegou ao fim. E nao havia como
-        # exercita-lo: a unica maneira de descobrir se ele funciona era criar uma
-        # tag de versao nova - queimar um numero para fazer um teste.
+        # This workflow has four runs and four failures, all on the last step:
+        # 0.2.0 had already been published by hand, and each attempt spent
+        # install, types, tokens, parity, suite and packaging only to die on
+        # `npm publish`. The full path never reached the end. And there was no
+        # way to exercise it: the only way to find out whether it works was to
+        # create a new version tag - burning a number to run a test.
         #
-        # O ensaio quebra esse laco. Tudo roda igual, na mesma ordem, com os
-        # mesmos segredos e o mesmo `--dry-run` que a estreia faz. So o
-        # `npm publish` real fica de fora, e as duas guardas que existem para
-        # proteger um numero de versao - a tag e o "ja publicada" - passam a
-        # relatar em vez de parar, porque em ensaio nao ha numero a proteger.
-        description: "Ensaio: roda o caminho inteiro e NAO publica"
+        # The dry run breaks that loop. Everything runs the same, in the same
+        # order, with the same secrets and the same `--dry-run` the first
+        # release does. Only the real `npm publish` is left out, and the two
+        # guards that exist to protect a version number - the tag and the
+        # "already published" - report instead of stopping, because in a dry
+        # run there is no number to protect.
+        description: "Dry run: runs the whole path and does NOT publish"
         type: boolean
         default: false
 
@@ -48,20 +50,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # `id-token` e `--provenance` andam JUNTOS: um sem o outro nao publica
-      # assinado, e a falta so aparece no ultimo comando de uma publicacao que
-      # nao se desfaz.
+      # `id-token` and `--provenance` go TOGETHER: one without the other does
+      # not publish signed, and the gap only shows on the last command of a
+      # publication that cannot be undone.
       #
-      # Os dois estiveram desligados enquanto o repositorio era privado, porque
-      # o registro recusa procedencia de fonte privada com 422 e a mensagem
+      # Both were off while the repository was private, because the registry
+      # refuses provenance from a private source with 422 and the message
       # "Only public source repositories are supported when publishing with
-      # provenance". A checagem do CLI nao pega isso: ela olha a visibilidade do
-      # PACOTE, e e pulada quando se passa `--access public`. Quem decide e o
-      # servidor, depois de todo o trabalho feito.
+      # provenance". The CLI's check does not catch it: it looks at the
+      # PACKAGE's visibility, and is skipped when `--access public` is passed.
+      # The server decides, after all the work is done.
       #
-      # O repositorio e publico desde 27/08/2026. Se voltar a ser privado, a
-      # linha que sai e o `--provenance` do passo de publicar, e esta daqui vai
-      # junto.
+      # The repository has been public since 27/08/2026. If it goes private
+      # again, the line that goes is the `--provenance` in the publish step,
+      # and this one goes with it.
       id-token: write
 
     steps:
@@ -73,177 +75,179 @@ jobs:
         with:
           bun-version: latest
 
-      # O Node entra so para o `npm publish`, que autentica pela publicacao
-      # confiavel e nao por .npmrc: sem `registry-url`, nenhum token e escrito.
+      # Node is here only for `npm publish`, which authenticates through
+      # trusted publishing and not through .npmrc: without `registry-url`, no
+      # token is written.
       - uses: actions/setup-node@v7
         with:
           node-version: 24
 
       - run: bun install --frozen-lockfile
 
-      # react e react-native sao peers, e o unico lugar do repositorio onde
-      # estao instalados e o app de exemplo - que nao e workspace. Sem esta
-      # instalacao o `check:native:types` nao teria tipos para conferir, e
-      # passaria por engano.
+      # react and react-native are peers, and the only place in the repository
+      # where they are installed is the example app - which is not a workspace.
+      # Without this install `check:native:types` would have no types to check,
+      # and would pass by mistake.
       - run: bun install --frozen-lockfile
         working-directory: examples/native
 
-      # Publicacao confiavel (OIDC): o npm confia neste workflow, deste
-      # repositorio, e nao existe token guardado. Ela exige npm 11.5.1 ou mais
-      # novo, e o npm que vem com o Node pode ser mais velho. Sem ele, o
-      # `npm publish` cai no token que nao existe mais e morre com ENEEDAUTH
-      # depois de o check e o build ja terem gastado a corrida.
-      - name: Conferir o npm da publicacao confiavel
+      # Trusted publishing (OIDC): npm trusts this workflow, from this
+      # repository, and no token is stored. It requires npm 11.5.1 or newer,
+      # and the npm that ships with Node may be older. Without it, `npm publish`
+      # falls back to the token that no longer exists and dies with ENEEDAUTH
+      # after check and build have already spent the run.
+      - name: Check the npm for trusted publishing
         run: |
           npm install -g npm@latest
-          versao=$(npm --version)
-          echo "npm $versao"
-          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$versao"; then
-            echo "::error::A publicacao confiavel exige npm 11.5.1 ou mais novo, e este e o $versao."
+          version=$(npm --version)
+          echo "npm $version"
+          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$version"; then
+            echo "::error::Trusted publishing requires npm 11.5.1 or newer, and this one is $version."
             exit 1
           fi
 
-      # A tag e a versao do native/package.json precisam contar a mesma
-      # historia. Sem esta conferencia, `git tag native-v0.3.0` sobre um
-      # package.json em 0.2.0 republica silenciosamente a versao velha.
+      # The tag and the native/package.json version have to tell the same
+      # story. Without this check, `git tag native-v0.3.0` over a package.json
+      # at 0.2.0 silently republishes the old version.
       #
-      # Em ensaio a conferencia continua acontecendo, mas nao para a corrida:
-      # o ensaio costuma rodar direto da main, onde `ref_name` e "main" e nao
-      # ha tag nenhuma para bater. Parar ai seria fazer o ensaio morrer no
-      # segundo passo - exatamente o que ele existe para evitar.
-      - name: Conferir o token da procedencia
-        # O `--dry-run` do npm NAO exercita procedencia: ha um `if (!dryRun)`
-        # antes da geracao da assinatura, entao o ensaio fica verde sem provar
-        # nada. A permissao faltando so apareceria no ultimo comando de uma
-        # publicacao que nao se desfaz - e foi assim que a 0.8.0 saiu sem
-        # assinatura, com o workflow inteiro verde.
+      # In a dry run the check still happens, but does not stop the run: the
+      # dry run usually runs straight from main, where `ref_name` is "main" and
+      # there is no tag to match. Stopping there would make the dry run die on
+      # the second step - exactly what it exists to avoid.
+      - name: Check the provenance token
+        # npm's `--dry-run` does NOT exercise provenance: there is an
+        # `if (!dryRun)` before the signature is generated, so the dry run goes
+        # green without proving anything. A missing permission would only show
+        # on the last command of a publication that cannot be undone - and that
+        # is how 0.8.0 went out unsigned, with the whole workflow green.
         #
-        # Esta variavel so existe quando `id-token: write` foi concedido ao job.
-        # Custa zero rede, e e a unica parte da procedencia que o ensaio pega.
+        # This variable only exists when `id-token: write` was granted to the
+        # job. It costs no network, and it is the only part of provenance the
+        # dry run catches.
         run: |
           if [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
-            echo "::error::Sem token OIDC: o job precisa de `id-token: write` em permissions."
+            echo "::error::No OIDC token: the job needs `id-token: write` in permissions."
             exit 1
           fi
-          echo "Token OIDC presente: a publicacao sai assinada."
+          echo "OIDC token present: the publication goes out signed."
 
-      - name: Conferir a tag e a versao
+      - name: Check the tag and the version
         env:
-          ENSAIO: ${{ inputs.ensaio }}
+          DRY_RUN: ${{ inputs.dry_run }}
           TAG: ${{ github.event.inputs.tag }}
         run: |
           pkg="native-v$(node -p "require('./native/package.json').version")"
 
-          if [ "$ENSAIO" = "true" ]; then
+          if [ "$DRY_RUN" = "true" ]; then
             if [ -z "$TAG" ]; then
-              echo "Ensaio a partir de ${{ github.ref_name }}, sobre $pkg."
+              echo "Dry run from ${{ github.ref_name }}, over $pkg."
             elif [ "$TAG" != "$pkg" ]; then
-              echo "Aviso: a tag $TAG nao bate com o native/package.json ($pkg)."
-              echo "Numa publicacao de verdade isto pararia aqui."
+              echo "Warning: tag $TAG does not match native/package.json ($pkg)."
+              echo "In a real publication this would stop here."
             else
-              echo "Ensaio sobre $pkg."
+              echo "Dry run over $pkg."
             fi
             exit 0
           fi
 
-          # Fora do ensaio a tag e obrigatoria, e o formulario nao consegue
-          # exigi-la so quando `ensaio` esta desmarcado. Sem esta linha, um
-          # disparo distraido publicaria o que estivesse na main.
+          # Outside a dry run the tag is required, and the form cannot demand
+          # it only when `dry_run` is unchecked. Without this line, a careless
+          # trigger would publish whatever was on main.
           if [ -z "$TAG" ] && [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Publicacao de verdade exige a tag no formulario."
-            echo "Para so exercitar o caminho, marque a caixa \"Ensaio\"."
+            echo "A real publication requires the tag in the form."
+            echo "To just exercise the path, check the \"Dry run\" box."
             exit 1
           fi
 
           tag="${TAG:-${{ github.ref_name }}}"
           if [ "$tag" != "$pkg" ]; then
-            echo "A tag $tag nao bate com a versao do native/package.json ($pkg)."
+            echo "Tag $tag does not match the native/package.json version ($pkg)."
             exit 1
           fi
-          echo "Publicando $pkg"
+          echo "Publishing $pkg"
 
-      # A versao pode ja estar no registro, e o npm so conta isso no fim.
+      # The version may already be in the registry, and npm only says so at the end.
       #
-      # Foi assim que este workflow terminou as quatro primeiras execucoes: a
-      # 0.2.0 tinha sido publicada a mao, e cada tentativa gastava install,
-      # tipos, tokens, paridade, suite e empacotamento para morrer no ultimo
-      # passo com `403 ... You cannot publish over the previously published
-      # versions: 0.2.0` - uma mensagem que fala de permissao e nao diz o que
-      # fazer. O caminho automatico nunca foi exercitado ate o fim porque a
-      # unica coisa que faltava era um numero novo.
+      # That is how this workflow ended its first four runs: 0.2.0 had been
+      # published by hand, and each attempt spent install, types, tokens,
+      # parity, suite and packaging only to die on the last step with
+      # `403 ... You cannot publish over the previously published versions:
+      # 0.2.0` - a message that talks about permission and does not say what to
+      # do. The automatic path was never exercised to the end because the only
+      # thing missing was a new number.
       #
-      # A versao do pacote nativo mora em `native/package.json`, e nao na raiz:
-      # os dois pacotes andam em velocidades diferentes, e e por isso que existe
-      # este workflow separado.
-      - name: Conferir se a versao ja esta publicada
+      # The native package's version lives in `native/package.json`, not at the
+      # root: the two packages move at different speeds, and that is why this
+      # separate workflow exists.
+      - name: Check whether the version is already published
         env:
-          ENSAIO: ${{ inputs.ensaio }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          versao=$(node -p "require('./native/package.json').version")
+          version=$(node -p "require('./native/package.json').version")
 
-          # `npm view` responde 404 tanto para versao inexistente quanto para
-          # pacote inexistente, e os dois casos querem dizer a mesma coisa
-          # aqui: pode publicar. Por isso o erro vira string vazia em vez de
-          # parar o passo - a primeira publicacao de um pacote novo tem que
-          # atravessar esta guarda.
-          publicada=$(npm view "@rivocode/ui-native@$versao" version 2>/dev/null || true)
+          # `npm view` answers 404 both for a missing version and for a missing
+          # package, and both cases mean the same thing here: go ahead and
+          # publish. That is why the error becomes an empty string instead of
+          # stopping the step - the first publication of a new package has to
+          # get through this guard.
+          published=$(npm view "@rivocode/ui-native@$version" version 2>/dev/null || true)
 
-          # Em ensaio, esta guarda vira o contrario de si mesma.
+          # In a dry run, this guard becomes the opposite of itself.
           #
-          # Ela existe para nao gastar a corrida inteira quando o numero ja foi
-          # usado. O ensaio quer justamente gastar a corrida inteira, e a versao
-          # que ele tem a mao e quase sempre uma ja publicada - foi assim que as
-          # quatro primeiras execucoes morreram. Parar aqui devolveria o
-          # problema: para exercitar o caminho seria preciso um numero novo, que
-          # e a versao que o ensaio existe para nao queimar.
-          if [ -n "$publicada" ] && [ "$ENSAIO" = "true" ]; then
-            echo "A versao $versao ja esta no registro."
-            echo "Num lancamento de verdade isto pararia aqui; em ensaio, segue."
+          # It exists so as not to spend the whole run when the number was
+          # already used. The dry run wants exactly to spend the whole run, and
+          # the version it has at hand is almost always one already published -
+          # that is how the first four runs died. Stopping here would bring the
+          # problem back: exercising the path would need a new number, which is
+          # the version the dry run exists not to burn.
+          if [ -n "$published" ] && [ "$DRY_RUN" = "true" ]; then
+            echo "Version $version is already in the registry."
+            echo "In a real release this would stop here; in a dry run, it goes on."
             exit 0
           fi
 
-          if [ -n "$publicada" ]; then
-            echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
+          if [ -n "$published" ]; then
+            echo "The tag was created for version $version, which is already published on npm."
             echo
-            echo "O registro nao aceita republicar o mesmo numero - nem com outro"
-            echo "conteudo, nem depois de um unpublish. Publicar de novo exige"
-            echo "uma versao nova."
+            echo "The registry does not accept republishing the same number - not with"
+            echo "different content, not after an unpublish. Publishing again requires"
+            echo "a new version."
             echo
-            echo "O que fazer:"
-            echo "  1. suba a versao em native/package.json e registre a mudanca"
-            echo "     em native/CHANGELOG.md;"
-            echo "  2. apague a tag que sobrou, aqui e no remoto:"
-            echo "     git tag -d native-v$versao && git push origin :native-v$versao"
-            echo "  3. crie a tag da versao nova, que e quem dispara este workflow."
+            echo "What to do:"
+            echo "  1. bump the version in native/package.json and record the change"
+            echo "     in native/CHANGELOG.md;"
+            echo "  2. delete the leftover tag, here and on the remote:"
+            echo "     git tag -d native-v$version && git push origin :native-v$version"
+            echo "  3. create the tag for the new version, which is what triggers this workflow."
             echo
-            echo "No registro hoje: latest $(npm view @rivocode/ui-native version 2>/dev/null || echo '?')."
+            echo "In the registry today: latest $(npm view @rivocode/ui-native version 2>/dev/null || echo '?')."
             exit 1
           fi
 
-          echo "A versao $versao ainda nao existe no registro."
+          echo "Version $version does not exist in the registry yet."
 
-      # Este pacote publica FONTE - `exports` aponta para ./src/index.ts, e o
-      # Metro compila no app de quem usa. Erro de tipo daqui nao fica aqui: ele
-      # aparece dentro do node_modules de quem consome, e o skipLibCheck de la
-      # nao ajuda, porque so cobre .d.ts. Por isso a passagem de tipos e
-      # condicao de publicacao, e nao cortesia.
+      # This package publishes SOURCE - `exports` points to ./src/index.ts, and
+      # Metro compiles it in the consumer's app. A type error here does not stay
+      # here: it shows up inside the consumer's node_modules, and their
+      # skipLibCheck does not help, because it only covers .d.ts. That is why
+      # the type pass is a condition for publishing, not a courtesy.
       - run: bun run check:native:types
 
-      # Os tokens do nativo sao DERIVADOS do CSS do web. Publicar com eles
-      # fora de sincronia entrega uma cor que nenhum tema declara.
+      # The native tokens are DERIVED from the web CSS. Publishing with them out
+      # of sync delivers a color no theme declares.
       - run: bun run check:native
 
-      # A tabela de paridade e lida por quem planeja tela de celular. Publicar
-      # com ela desatualizada e mandar usar substituto para peca que ja portou.
+      # The parity table is read by whoever plans a phone screen. Publishing it
+      # out of date tells people to use a substitute for a piece already ported.
       - run: bun run check:parity
 
       - run: bun test native/
 
-      # O tarball precisa levar o CLI: `bin` sem o arquivo publicado passa como
-      # aviso, e nao como erro, entao a versao sobe quebrada e so descobrimos
-      # quando alguem roda o comando. Ja aconteceu aqui uma vez, no outro
-      # pacote.
-      - name: Conferir o que vai no pacote
+      # The tarball has to carry the CLI: a `bin` without the published file
+      # passes as a warning, not an error, so the version goes up broken and we
+      # only find out when someone runs the command. It has happened here once,
+      # in the other package.
+      - name: Check what goes into the package
         working-directory: native
         run: |
           npm pack --dry-run --json > /tmp/pack.json
@@ -256,105 +260,107 @@ jobs:
             for (const target of Object.values(pkg.bin ?? {})) {
               const path = target.replace(/^\.\//, '');
               if (!files.includes(path)) {
-                console.error('Falta no tarball o bin ' + path);
+                console.error('Missing bin from the tarball: ' + path);
                 process.exit(1);
               }
             }
 
-            // O pacote e a fonte: se o ponto de entrada nao viajar, o app de
-            // quem instalar quebra no primeiro import, e nao no build.
+            // The package is the source: if the entry point does not travel,
+            // the installer's app breaks on the first import, not on the build.
             for (const entry of Object.values(pkg.exports)) {
               const path = String(entry).replace(/^\.\//, '');
               if (!files.includes(path)) {
-                console.error('Falta no tarball a entrada ' + path);
+                console.error('Missing entry from the tarball: ' + path);
                 process.exit(1);
               }
             }
 
-            console.log('entradas e bin ok:', files.length, 'arquivos');
+            console.log('entries and bin ok:', files.length, 'files');
           "
 
-      # O ensaio, antes da estreia.
+      # The rehearsal, before the real thing.
       #
-      # O passo acima confere a LISTA de arquivos; este exercita o caminho da
-      # publicacao inteiro - o mesmo empacotamento, as mesmas regras de
-      # `files` e `exports`, o mesmo `--access public` - e para antes do
-      # unico passo que nao da para desfazer. Os dois nao sao o mesmo passo:
-      # um le o tarball, o outro monta a publicacao.
+      # The step above checks the LIST of files; this one exercises the whole
+      # publishing path - the same packaging, the same `files` and `exports`
+      # rules, the same `--access public` - and stops before the only step that
+      # cannot be undone. They are not the same step: one reads the tarball,
+      # the other assembles the publication.
       #
-      # Vale mesmo quando a publicacao vai acontecer logo em seguida: uma
-      # quebra de empacotamento aparece aqui, com o publish real ainda por
-      # fazer, e nao com metade da versao ja no registro.
+      # It is worth it even when the publication happens right after: a
+      # packaging break shows up here, with the real publish still to be done,
+      # and not with half the version already in the registry.
       #
-      # O `--dry-run` NAO e offline, e essa foi a descoberta que quase custou o
-      # ensaio inteiro. Ele monta o tarball e vai ate o registro perguntar se a
-      # publicacao seria aceita - e a primeira coisa que o registro responde e
-      # que aquele numero ja existe:
+      # `--dry-run` is NOT offline, and that was the discovery that almost cost
+      # the whole dry run. It builds the tarball and goes to the registry to ask
+      # whether the publication would be accepted - and the first thing the
+      # registry answers is that the number already exists:
       #
       #   npm error You cannot publish over the previously published versions: 0.2.0.
       #
-      # Ou seja, o proprio ensaio morreria no penultimo passo, na mesma pedra
-      # que derrubou as quatro execucoes anteriores, e pelo mesmo motivo: a
-      # unica coisa que falta e um numero novo.
+      # That is, the dry run itself would die on the second-to-last step, on the
+      # same rock that brought down the four previous runs, and for the same
+      # reason: the only thing missing is a new number.
       #
-      # Por isso, em ensaio, esta e a UNICA mensagem tolerada. Chegar ate ela
-      # prova o que o ensaio veio provar - o empacotamento fechou, o
-      # `--access public` foi entendido, o registro atendeu e leu o manifesto -
-      # e o que sobra e a recusa que so um numero novo resolve. Qualquer outra
-      # falha continua derrubando a corrida, que e o ponto de ter um ensaio.
+      # That is why, in a dry run, this is the ONLY tolerated message. Reaching
+      # it proves what the dry run came to prove - packaging closed,
+      # `--access public` was understood, the registry answered and read the
+      # manifest - and what is left is the refusal only a new number solves.
+      # Any other failure still brings the run down, which is the point of
+      # having a dry run.
       #
-      # Numa publicacao de verdade a versao e inedita, o comando passa limpo, e
-      # nada disto entra em campo.
-      - name: Ensaiar a publicacao
+      # In a real publication the version is new, the command passes clean, and
+      # none of this comes into play.
+      - name: Rehearse the publication
         working-directory: native
         env:
-          ENSAIO: ${{ inputs.ensaio }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set +e
-          saida=$(npm publish --access public --provenance --dry-run 2>&1)
-          codigo=$?
-          echo "$saida"
+          output=$(npm publish --access public --provenance --dry-run 2>&1)
+          code=$?
+          echo "$output"
 
-          if [ $codigo -eq 0 ]; then
+          if [ $code -eq 0 ]; then
             exit 0
           fi
 
-          if [ "$ENSAIO" = "true" ] &&
-             echo "$saida" | grep -q "cannot publish over the previously published versions"; then
+          if [ "$DRY_RUN" = "true" ] &&
+             echo "$output" | grep -q "cannot publish over the previously published versions"; then
             echo
-            echo "O registro so recusou o NUMERO: tudo antes disso passou."
-            echo "Num lancamento de verdade a versao seria inedita e o comando fecharia limpo."
+            echo "The registry only refused the NUMBER: everything before it passed."
+            echo "In a real release the version would be new and the command would close clean."
             exit 0
           fi
 
-          exit $codigo
+          exit $code
 
-      # A unica linha que o ensaio nao atravessa. Tudo acima ja rodou igual.
-      - name: Publicar
-        if: ${{ inputs.ensaio != true }}
+      # The only line the dry run does not go through. Everything above already
+      # ran the same.
+      - name: Publish
+        if: ${{ inputs.dry_run != true }}
         working-directory: native
         run: npm publish --access public --provenance
 
-      # Um ensaio que termina em verde parece uma publicacao que terminou em
-      # verde: mesmo cheque, mesma cor, mesma duracao. Quem abrir a lista de
-      # execucoes amanha precisa conseguir separar os dois sem entrar passo a
-      # passo - e, principalmente, nao pode sair daqui achando que a versao
-      # subiu. Por isso o recado vai tambem para o resumo da execucao, que e a
-      # primeira coisa que a pagina mostra.
-      - name: Dizer que foi ensaio
-        if: ${{ inputs.ensaio == true }}
+      # A dry run that ends green looks like a publication that ended green:
+      # same check mark, same color, same duration. Whoever opens the run list
+      # tomorrow needs to tell the two apart without going step by step - and,
+      # above all, must not leave thinking the version went up. That is why the
+      # note also goes to the run summary, which is the first thing the page
+      # shows.
+      - name: Say it was a dry run
+        if: ${{ inputs.dry_run == true }}
         run: |
-          versao=$(node -p "require('./native/package.json').version")
+          version=$(node -p "require('./native/package.json').version")
           {
-            echo "## Ensaio - NADA foi publicado"
+            echo "## Dry run - NOTHING was published"
             echo
-            echo "O caminho inteiro rodou sobre a versao \`$versao\`: install,"
-            echo "tipos, tokens, paridade, suite, empacotamento e"
-            echo "\`npm publish --dry-run\`. O unico passo pulado foi o"
-            echo "\`npm publish\` real."
+            echo "The whole path ran over version \`$version\`: install,"
+            echo "types, tokens, parity, suite, packaging and"
+            echo "\`npm publish --dry-run\`. The only step skipped was the"
+            echo "real \`npm publish\`."
             echo
-            echo "No registro continua: latest \`$(npm view @rivocode/ui-native version 2>/dev/null || echo '?')\`."
+            echo "Still in the registry: latest \`$(npm view @rivocode/ui-native version 2>/dev/null || echo '?')\`."
             echo
-            echo "Para publicar de verdade, crie a tag \`native-v<versao>\` -"
-            echo "e o gatilho de tag faz o resto."
+            echo "To publish for real, create the tag \`native-v<version>\` -"
+            echo "and the tag trigger does the rest."
           } | tee -a "$GITHUB_STEP_SUMMARY"

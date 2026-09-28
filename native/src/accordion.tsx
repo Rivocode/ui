@@ -62,12 +62,12 @@ export type AccordionItemProps = {
   title: string;
   children: ReactNode;
   /**
-   * O nome do item dentro do `value` da raiz. Com ele, quem decide o aberto e
-   * o `Accordion`, e `defaultOpen` deixa de valer: use o `defaultValue` da
-   * raiz. Sem ele, o item abre sozinho, como sempre abriu.
+   * The item's name within the root's `value`. With it, the `Accordion` decides
+   * what is open, and `defaultOpen` no longer applies: use the root's
+   * `defaultValue`. Without it, the item opens on its own, as it always did.
    */
   value?: string;
-  /** O aberto na montagem, para item sem `value`. */
+  /** Open on mount, for an item without `value`. */
   defaultOpen?: boolean;
   className?: string;
 };
@@ -89,8 +89,8 @@ export function AccordionItem({
 
   useSilentMisuse(
     managed && defaultOpen,
-    `AccordionItem "${title}": com \`value\`, quem abre o item é o Accordion, e \`defaultOpen\` não vale. ` +
-      "Passe o valor no `defaultValue` da raiz.",
+    `AccordionItem "${title}": with \`value\`, the Accordion opens the item, and \`defaultOpen\` does not apply. ` +
+      "Pass the value in the root's `defaultValue`.",
   );
 
   return (
@@ -117,17 +117,17 @@ export type AccordionProps = {
   children: ReactNode;
   className?: string;
   /**
-   * Os itens abertos, pelo `value` de cada `AccordionItem`. Com ela a raiz e
-   * controlada: abrir por link, lembrar o estado entre telas.
+   * The open items, by the `value` of each `AccordionItem`. With it the root is
+   * controlled: open from a link, remember the state across screens.
    */
   value?: string[];
-  /** Os abertos na montagem, para quem nao controla. */
+  /** The items open on mount, for uncontrolled use. */
   defaultValue?: string[];
-  /** Recebe a lista inteira de abertos a cada toque num item com `value`. */
+  /** Receives the whole list of open items on every tap on an item with `value`. */
   onValueChange?: (value: string[]) => void;
   /**
-   * Deixa varios abertos ao mesmo tempo. Sem ela, abrir um fecha o outro, como
-   * no web. Vale so entre itens com `value`.
+   * Lets several items stay open at once. Without it, opening one closes the
+   * other, as on the web. Applies only among items with `value`.
    */
   multiple?: boolean;
 };
@@ -161,14 +161,14 @@ export function Accordion({
 }
 
 export type CollapsibleProps = {
-  /** O rotulo do gatilho: "Ver os detalhes do calculo". */
+  /** The trigger label: "Ver os detalhes do calculo". */
   label: string;
   children: ReactNode;
-  /** Deixa o aberto por conta de quem usa. Sem ela, a peca se controla. */
+  /** Leaves the open state to the consumer. Without it, the component controls itself. */
   open?: boolean;
-  /** O aberto na montagem, para quem nao controla. */
+  /** Open on mount, for uncontrolled use. */
   defaultOpen?: boolean;
-  /** Avisa todo toque no gatilho, controlado ou nao. */
+  /** Reports every tap on the trigger, controlled or not. */
   onOpenChange?: (open: boolean) => void;
   className?: string;
 };

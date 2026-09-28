@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Field, FieldDescription, FieldLabel, TagsInput } from '@rivocode/ui'
 
-/** Marcadores da nota */
+/** Invoice tags */
 export function InvoiceTags() {
   const [tags, setTags] = useState(['nf-e', 'urgente'])
 

@@ -1,4 +1,4 @@
-/* Gerado de src/hooks/common/disclosure.ts por bun run gen:shared. Nao editar. */
+/* Generated from src/hooks/common/disclosure.ts by bun run gen:shared. Do not edit. */
 
 "use client";
 
@@ -7,9 +7,9 @@ import { useMemo, useRef, useState } from "react";
 import { useLatest } from "./latest";
 
 export type UseDisclosureOptions = {
-  /** Chamado so na passagem de fechado para aberto, e nao a cada `open()`. */
+  /** Called only on the transition from closed to open, and not on every `open()`. */
   onOpen?: () => void;
-  /** Chamado so na passagem de aberto para fechado, e nao a cada `close()`. */
+  /** Called only on the transition from open to closed, and not on every `close()`. */
   onClose?: () => void;
 };
 

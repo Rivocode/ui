@@ -47,8 +47,8 @@ function textInputBlocks(code: string): string[] {
   return blocks;
 }
 
-describe("o alinhamento do texto atravessa os dois alvos", () => {
-  test("o NumberField centraliza o numero por style, e nao por prop", () => {
+describe("text alignment crosses both targets", () => {
+  test("NumberField centers the number through style, not through a prop", () => {
     const screen = render(<NumberField value={2} onValueChange={() => {}} label="Parcelas" />);
     const field = byType(screen, "TextInput")[0]!;
 
@@ -57,7 +57,7 @@ describe("o alinhamento do texto atravessa os dois alvos", () => {
     expect(String(field.props.className ?? "").split(" ")).not.toContain("text-center");
   });
 
-  test("o TimeField centraliza a hora pelo mesmo caminho", () => {
+  test("TimeField centers the time the same way", () => {
     const screen = render(<TimeField value="08:30" onValueChange={() => {}} label="Entrada" />);
     const field = byType(screen, "TextInput")[0]!;
 
@@ -65,13 +65,13 @@ describe("o alinhamento do texto atravessa os dois alvos", () => {
     expect(field.props.textAlign).toBeUndefined();
   });
 
-  test("nenhuma peca alinha texto por prop nem por classe dentro de um TextInput", () => {
+  test("no piece aligns text through a prop or a class inside a TextInput", () => {
     const files = sourceFiles();
 
     expect(
       files.length,
-      "a varredura de native/src achou " +
-        `${files.length} arquivo(s): lista vazia deixa a guarda abaixo verde sem ter lido nada`,
+      "the scan of native/src found " +
+        `${files.length} file(s): an empty list leaves the guard below green without having read anything`,
     ).toBeGreaterThan(60);
 
     const guilty: string[] = [];
@@ -86,7 +86,7 @@ describe("o alinhamento do texto atravessa os dois alvos", () => {
         for (const className of block.matchAll(/className=(?:"([^"]*)"|\{`([^`]*)`\})/g)) {
           const worn = (className[1] ?? className[2] ?? "").split(/\s+/);
           for (const token of worn) {
-            if (ALIGNMENT.has(token)) guilty.push(`${short}: classe ${token}`);
+            if (ALIGNMENT.has(token)) guilty.push(`${short}: class ${token}`);
           }
         }
       }
@@ -94,15 +94,15 @@ describe("o alinhamento do texto atravessa os dois alvos", () => {
 
     expect(
       guilty,
-      "Centralizar o texto de um TextInput nao tem caminho por prop nem por classe, e os dois " +
-        "modos falham em alvos diferentes do mesmo pacote. O react-native-web 0.21 nao " +
-        "encaminha `textAlign` - o `pickProps` do TextInput dele so deixa passar a lista de " +
-        "`forwardedProps`, e a prop sai do DOM sem aviso. No React Native de verdade a classe " +
-        "morre antes: o babel do nativewind troca `react-native` por " +
-        "`react-native-css/components`, e o TextInput de la declara " +
-        "`nativeStyleMapping: { textAlign: true }`, que apaga o `textAlign` do style e estoura " +
-        "com `path.split is not a function`. Sobra `style={{ textAlign }}`, que o React Native " +
-        "le como TextStyle e o react-native-web imprime como `text-align`.",
+      "Centering the text of a TextInput has no path through a prop nor a class, and both " +
+        "ways fail on different targets of the same package. react-native-web 0.21 does not " +
+        "forward `textAlign` - its TextInput's `pickProps` only lets through the " +
+        "`forwardedProps` list, and the prop leaves the DOM without warning. On real React " +
+        "Native the class dies earlier: nativewind's babel swaps `react-native` for " +
+        "`react-native-css/components`, and the TextInput there declares " +
+        "`nativeStyleMapping: { textAlign: true }`, which deletes `textAlign` from the style and " +
+        "blows up with `path.split is not a function`. What is left is `style={{ textAlign }}`, " +
+        "which React Native reads as a TextStyle and react-native-web prints as `text-align`.",
     ).toEqual([]);
   });
 });

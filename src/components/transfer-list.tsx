@@ -39,19 +39,19 @@ import { SearchInput } from "./search-input";
 export type { TransferListItem } from "../shared/transfer";
 
 export type TransferListLabels = {
-  /** O titulo da lista de onde se escolhe. Padrao: "Disponíveis". */
+  /** The title of the list you choose from. Default: "Disponíveis". */
   available?: string;
-  /** O titulo da lista do que foi escolhido. Padrao: "Escolhidos". */
+  /** The title of the list of what was chosen. Default: "Escolhidos". */
   chosen?: string;
-  /** O que aparece na lista sem item nenhum. Padrao: "Nenhum item". */
+  /** What appears in a list with no item at all. Default: "Nenhum item". */
   empty?: string;
-  /** O que aparece quando a busca nao acha nada. Padrao: "Nada encontrado". */
+  /** What appears when the search finds nothing. Default: "Nada encontrado". */
   noResults?: string;
-  /** O texto de espera dentro da busca. Padrao: "Buscar". */
+  /** The placeholder text inside the search. Default: "Buscar". */
   search?: string;
-  /** A contagem do cabecalho: "10 itens", ou "3 de 10 selecionados" com marcados. */
+  /** The header count: "10 itens", or "3 de 10 selecionados" with checked items. */
   count?: (selected: number, total: number) => string;
-  /** O que se ouve depois de mover: "3 itens movidos para Escolhidos". */
+  /** What is heard after moving: "3 itens movidos para Escolhidos". */
   moved?: (count: number, to: string) => string;
 };
 
@@ -59,24 +59,24 @@ export type TransferListProps = Omit<
   ComponentPropsWithoutRef<"div">,
   "children" | "defaultValue" | "onChange"
 > & {
-  /** Todos os itens, dos dois lados. A ordem daqui e a da lista de disponiveis. */
+  /** All the items, on both sides. The order here is that of the available list. */
   items: TransferListItem[];
   /**
-   * Os `value` dos escolhidos, na ordem em que aparecem na lista da direita.
-   * Quem move acrescenta no fim, na ordem de `items`.
+   * The `value`s of the chosen items, in the order they appear in the list on the right.
+   * Whoever moves appends at the end, in the order of `items`.
    */
   value: string[];
-  /** Recebe o `value` novo a cada movimento. A peca nao guarda o escolhido. */
+  /** Receives the new `value` on every move. The piece does not keep the chosen ones. */
   onValueChange: (value: string[]) => void;
-  /** Liga a busca no topo de cada lista, sem acento importar. Padrao: ligada. */
+  /** Turns on the search at the top of each list, with accents not mattering. Default: on. */
   searchable?: boolean;
-  /** Desliga as duas listas, as buscas e os botoes de mover. */
+  /** Disables both lists, the searches and the move buttons. */
   disabled?: boolean;
-  /** Os textos da peca, para trocar o nome das listas ou o anuncio. */
+  /** The piece's texts, to change the lists' names or the announcement. */
   labels?: TransferListLabels;
   /**
-   * Classe por parte: `panel` (cada lista com a moldura), `header`, `search`,
-   * `list` (a caixa que rola), `option`, `actions` (a coluna dos botoes) e
+   * Class per part: `panel` (each list with its frame), `header`, `search`,
+   * `list` (the scrolling box), `option`, `actions` (the button column) and
    * `empty`.
    */
   classNames?: Slots<"panel" | "header" | "search" | "list" | "option" | "actions" | "empty">;
