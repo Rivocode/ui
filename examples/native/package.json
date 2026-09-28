@@ -31,7 +31,7 @@
     "build:css:watch": "node scripts/css.mjs --watch"
   },
   "dependencies": {
-    "expo": "~57.0.24",
+    "expo": "~57.0.25",
     "expo-clipboard": "~57.0.2",
     "expo-document-picker": "~57.0.2",
     "expo-status-bar": "~57.0.1",
