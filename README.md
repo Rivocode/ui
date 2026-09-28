@@ -318,7 +318,7 @@ embutidas em vez de ficarem por sua conta:
 - `Pagination` troca os números pelas setas, `Breadcrumb` guarda as duas últimas
   migalhas, `Steps` vira uma linha de texto com barra de progresso.
 
-O `useTelaEstreita()` está exportado, para as decisões que o seu layout também
+O `useMobile()` está exportado, para as decisões que o seu layout também
 precisa tomar em JS.
 
 ## Formulários
@@ -332,7 +332,7 @@ npm install react-hook-form zod @hookform/resolvers
 
 ```tsx
 import { Input, DatePicker, Button } from "@rivocode/ui";
-import { Form, FormField, useZodForm, paraDatePicker } from "@rivocode/ui/form";
+import { Form, FormField, useZodForm, forDate } from "@rivocode/ui/form";
 import { z } from "zod";
 
 const schema = z.object({
@@ -350,7 +350,7 @@ export function EmitirNota() {
       </FormField>
 
       <FormField name="vencimento" label="Vencimento">
-        {(campo) => <DatePicker {...paraDatePicker(campo)} />}
+        {(campo) => <DatePicker {...forDate(campo)} />}
       </FormField>
 
       <Button type="submit">Emitir</Button>
@@ -365,8 +365,8 @@ O `FormField` não inventa `id` nenhum: quem liga o rótulo ao controle é o
 
 O controle vem por função, e não por clonagem do filho, porque cada um recebe
 valor de um jeito. Para `Input` e `Textarea`, espalhar o campo basta. Para os
-outros, os adaptadores fazem a ponte: `paraDatePicker`, `paraSelect` e
-`paraCheckbox`.
+outros, os adaptadores fazem a ponte: `forDate`, `forValue` e
+`forChecked`.
 
 O `useZodForm` separa o tipo de entrada do de saída. Sem isso um
 `z.coerce.number()` mente sobre o tipo do campo.

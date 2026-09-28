@@ -1,4 +1,4 @@
-import { afterEach, beforeAll, expect, test } from "bun:test";
+import { afterAll, afterEach, beforeAll, expect, test } from "bun:test";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
@@ -25,10 +25,15 @@ const EASE = /--rc-ease:\s*cubic-bezier\(([^)]+)\)/
   .split(",")
   .map((point) => Number(point.trim()));
 
+const motionStyle = document.createElement("style");
+
 beforeAll(() => {
-  const style = document.createElement("style");
-  style.textContent = root.replace(":root", ":root, [data-rc-chart]") + "}";
-  document.head.append(style);
+  motionStyle.textContent = root.replace(":root", ":root, [data-rc-chart]") + "}";
+  document.head.append(motionStyle);
+});
+
+afterAll(() => {
+  motionStyle.remove();
 });
 
 const realMatchMedia = window.matchMedia;
