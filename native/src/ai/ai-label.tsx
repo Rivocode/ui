@@ -16,23 +16,22 @@ const SIZE = {
 } as const;
 
 export type AILabelProps = {
-  /** The badge text. Without it, "IA". */
+  /** O texto do selo. Sem ele, "IA". */
   text?: string;
   /**
-   * What the screen reader hears instead of the badge, which on its own would
-   * be spelled out. Without it, "Conteúdo gerado por IA". With `explanation`,
-   * it becomes the button's name.
+   * O que o leitor de tela ouve no lugar do selo, que sozinho seria soletrado.
+   * Sem ele, "Conteúdo gerado por IA". Com `explanation`, vira o nome do botao.
    */
   label?: string;
   tone?: keyof typeof TONE;
   size?: keyof typeof SIZE;
   /**
-   * The explanation: who generated it, from what data, what to check. With it
-   * the badge becomes a button and opens a `Sheet`, because a panel anchored to
-   * the touch sits under the finger.
+   * A explicacao: quem gerou, com que dados, o que conferir. Com ela o selo
+   * vira botao e abre uma `Sheet`, porque painel ancorado no toque fica
+   * embaixo do dedo.
    */
   explanation?: string;
-  /** The title of the explanation sheet. Without it, "Gerado por IA". */
+  /** O titulo da folha da explicacao. Sem ele, "Gerado por IA". */
   title?: string;
   className?: string;
 };

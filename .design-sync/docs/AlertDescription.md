@@ -4,7 +4,7 @@ category: Feedback
 
 # AlertDescription
 
-The detail below the title: what to do about it.
+O detalhe abaixo do título: o que fazer a respeito.
 
-Uses supporting text, one step below the title. An alert that only repeats the
-title in other words does not need it.
+Usa texto de apoio, um degrau abaixo do título. Aviso que só repete o título
+com outras palavras não precisa dela.

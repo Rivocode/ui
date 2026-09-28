@@ -1,15 +1,15 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Separator
 
-A line that separates, with `role="separator"`.
+Linha que separa, com `role="separator"`.
 
-Use it when it divides subject matter, and does not just decorate: the screen
-reader needs to know that a block ends there. For a purely decorative stroke, a
-border on the element itself comes out cheaper.
+Use quando ela divide assunto, e não só enfeita: o leitor de tela precisa saber
+que ali termina um bloco. Para risco puramente decorativo, uma borda no próprio
+elemento sai mais barata.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Separator` - only the horizontal line. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Separator` - só a linha horizontal. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

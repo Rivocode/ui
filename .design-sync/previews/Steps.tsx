@@ -6,7 +6,7 @@ const PASSOS: Step[] = [
   { id: 'revisao', title: 'Revisão', description: 'Conferir e emitir' },
 ]
 
-/** In the middle */
+/** No meio */
 export function InTheMiddle() {
   return (
     <div className="w-[32rem]">

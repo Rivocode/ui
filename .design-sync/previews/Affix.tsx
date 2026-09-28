@@ -7,7 +7,7 @@ const PARAGRAPHS = Array.from(
     'do mês seguinte, com as retenções previstas no contrato e o código de serviço da prefeitura.',
 )
 
-/** An action that follows the reading */
+/** Ação que acompanha a leitura */
 export function FollowsReading() {
   return (
     <div className="relative">
@@ -29,7 +29,7 @@ export function FollowsReading() {
   )
 }
 
-/** Strip stuck to the top */
+/** Faixa grudada em cima */
 export function TopStrip() {
   return (
     <div className="relative">

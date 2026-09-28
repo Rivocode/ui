@@ -1,13 +1,13 @@
 ---
-category: Typography
+category: Tipografia
 ---
 
 # RichTextView
 
-Displays what `RichTextEditor` saved, with the same typography as the editor:
-headings at the `Heading` size, code in the `Code` style, links in the `Link`
-style. It lives in `@rivocode/ui/editor`, and **does not use Tiptap**: a page
-that only reads loads no editor at all.
+Exibe o que o `RichTextEditor` salvou, com a mesma tipografia do editor:
+título no tamanho do `Heading`, código no desenho do `Code`, link no do
+`Link`. Vive em `@rivocode/ui/editor`, e **não usa o Tiptap**: a página que só
+lê não carrega editor nenhum.
 
 ```tsx
 import { RichTextView } from '@rivocode/ui/editor'
@@ -15,73 +15,71 @@ import { RichTextView } from '@rivocode/ui/editor'
 <RichTextView value={nota.descricao} empty="Sem descrição." />
 ```
 
-## Why it is safe to display
+## Por que é seguro exibir
 
-The piece does not use `innerHTML`. It reads the HTML with a reader of its own,
-keeps only the blocks and marks the editor writes (paragraph, `h2`, `h3`,
-lists, quote, code block, rule, line break, bold, italic, underline,
-strikethrough, code and link) and builds each one as a React element. The rest
-has no way in:
+A peça não usa `innerHTML`. Ela lê o HTML com um leitor próprio, fica só com
+os blocos e as marcas que o editor escreve (parágrafo, `h2`, `h3`, listas,
+citação, bloco de código, linha, quebra, negrito, itálico, sublinhado,
+tachado, código e link) e monta cada um como elemento React. O resto não tem
+por onde entrar:
 
-- `script`, `style`, `iframe`, `img`, `svg` and form controls disappear along
-  with their content.
-- No attribute gets through: not `style`, not `class`, not `onclick`.
-- A link only comes out with `http`, `https`, `mailto`, `tel` or a relative
-  address, and always with `rel="noopener noreferrer nofollow"`. `javascript:`
-  loses the address and only the text remains.
-- An unknown tag (`span`, `div`, `font`) steps aside and leaves the text.
+- `script`, `style`, `iframe`, `img`, `svg` e controle de formulário somem com
+  o conteúdo.
+- Atributo nenhum atravessa: nem `style`, nem `class`, nem `onclick`.
+- Link só sai com `http`, `https`, `mailto`, `tel` ou endereço relativo, e
+  sempre com `rel="noopener noreferrer nofollow"`. `javascript:` perde o
+  endereço e fica só o texto.
+- Tag desconhecida (`span`, `div`, `font`) sai do caminho e deixa o texto.
 
-That is why there is no sanitizer to install. The care that remains yours is
-the one for any HTML coming from the browser: if it is displayed through
-**another** path (email, PDF, `dangerouslySetInnerHTML`), sanitize it on the
-server. The `RichTextEditor` page says how.
+Por isso não há sanitizador a instalar. O cuidado que continua sendo seu é o
+de qualquer HTML vindo do navegador: se ele for exibido por **outro** caminho
+(e-mail, PDF, `dangerouslySetInnerHTML`), sanitize no servidor. A página do
+`RichTextEditor` diz como.
 
-## HTML or JSON
+## HTML ou JSON
 
-`value` accepts the HTML from `onValueChange` or the JSON from `onJsonChange`,
-and both draw the same thing.
+`value` aceita o HTML do `onValueChange` ou o JSON do `onJsonChange`, e os
+dois desenham a mesma coisa.
 
 ```tsx
 <RichTextView value={nota.descricaoJson} />
 ```
 
-The piece runs on the server: the reader does not depend on the DOM, so a
-server-rendered page already comes out with the formatted text on the first
-paint.
+A peça roda no servidor: o leitor não depende de DOM, então a página
+renderizada no servidor já sai com o texto formatado no primeiro desenho.
 
-## Empty
+## Vazio
 
-`null`, an empty string and the `<p></p>` of a blank editor draw nothing. With
-`empty`, the piece draws the sentence in its place, and marks the root with
+`null`, string vazia e o `<p></p>` de um editor em branco não desenham nada.
+Com `empty`, a peça desenha a frase no lugar, e marca a raiz com
 `data-empty`:
 
 ```tsx
 <RichTextView value={nota.descricao} empty={<Text tone="muted">Sem descrição.</Text>} />
 ```
 
-## Width
+## Largura
 
-The text takes the width it receives. For running reading, limit it with a
-class: `className="max-w-prose"`.
+O texto ocupa a largura que recebe. Para leitura corrida, limite pela classe:
+`className="max-w-prose"`.
 
-A code block does not wrap lines: whatever goes past the width scrolls
-sideways inside the block itself. When it scrolls, the block becomes a Tab stop
-named "Bloco de código", so keyboard users can reach the end of the line with
-the arrows.
+Bloco de código não quebra linha: o que passa da largura rola de lado dentro
+do próprio bloco. Quando rola, o bloco vira parada de Tab com o nome "Bloco de
+código", para quem usa teclado alcançar o fim da linha com as setas.
 
-## When not to use
+## Quando não usar
 
-- **Unformatted text** is `Text`. A note saved from a `Textarea` has no marks
-  to draw, and passing plain text here would turn line breaks into spaces.
-- **Editing** is `RichTextEditor`, which already shows the formatted content
-  while it loads.
-- **Code, a log or an API response** is `CodeBlock`, which numbers lines and
-  copies.
+- **Texto sem formatação** é `Text`. Uma observação salva de um `Textarea` não
+  tem marca nenhuma para desenhar, e passar texto puro aqui transformaria
+  quebra de linha em espaço.
+- **Editar** é `RichTextEditor`, que já mostra o conteúdo formatado enquanto
+  carrega.
+- **Código, log ou retorno de API** é `CodeBlock`, que numera linha e copia.
 
-## In React Native
+## No React Native
 
-Translates, in the main index `@rivocode/ui-native`, with the same `value` and `empty`. It reads the HTML from `onValueChange` and the JSON from `onJsonChange` of `RichTextEditor` through the **same reader as the web**, which is pure code shared between the two packages: there is no `WebView`, no peer, and nothing in the content executes.
+Traduz, no índice principal `@rivocode/ui-native`, com os mesmos `value` e `empty`. Lê o HTML do `onValueChange` e o JSON do `onJsonChange` do `RichTextEditor` pelo **mesmo leitor do web**, que é código puro compartilhado entre os dois pacotes: não há `WebView`, não há peer, e nada do conteúdo executa.
 
-Each block becomes a `View` and each mark becomes a nested `Text`: the heading is `Heading` (and announces itself as a header), a numbered list starts from the saved `start`, a quote comes out in the muted tone with a left border, a code block in a selectable mono font, and a link is `Link`, which opens through `Linking` and only with `http`, `https`, `mailto`, `tel` or a relative address.
+Cada bloco vira `View` e cada marca vira `Text` aninhado: o título é o `Heading` (e se anuncia como cabeçalho), a lista numerada começa do `start` salvo, a citação sai no tom apagado com a borda à esquerda, o bloco de código em fonte mono e selecionável, e o link é o `Link`, que abre pelo `Linking` e só com `http`, `https`, `mailto`, `tel` ou endereço relativo.
 
-**It does not live in a subpath.** On the web it comes from `@rivocode/ui/editor` because it shares the path with the editor; on the phone there is no editor, so there is no peer to separate, and the piece lives alongside `Text`.
+**Não mora num subcaminho.** No web ele sai de `@rivocode/ui/editor` porque divide o caminho com o editor; no celular não há editor, então não há peer a separar, e a peça vive junto do `Text`.

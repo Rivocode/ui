@@ -1,37 +1,37 @@
 # @rivocode/ui
 
-RivoCode's design system. Accessible components on Base UI, authored styling in
-Tailwind v4, and white-label tokens: no component knows what the brand color
-is, it asks the theme.
+O design system da RivoCode. Componentes acessíveis sobre a Base UI, estilo
+autoral em Tailwind v4, e tokens white-label: nenhum componente sabe qual é a
+cor da marca, ele pergunta ao tema.
 
-That is what lets the same library dress RivoCode in one project and client X
-in another, without editing any component.
+Isso é o que permite a mesma biblioteca vestir a RivoCode num projeto e o
+cliente X em outro, sem editar componente nenhum.
 
-## Installation
+## Instalação
 
 ```bash
-npm install @rivocode/ui lucide-react   # or pnpm add, yarn add, bun add
+npm install @rivocode/ui lucide-react   # ou pnpm add, yarn add, bun add
 ```
 
-Public on npm, under the MIT license. No token or `.npmrc` needed.
+Público no npm, sob licença MIT. Não precisa de token nem de `.npmrc`.
 
-`lucide-react` goes on the same line because the components import icons
-straight from it. npm resolves that peer by itself; pnpm and yarn do not, and
-without it `Sidebar`, `Pagination` and `DatePicker` break at runtime.
+O `lucide-react` vai na mesma linha porque os componentes importam ícone direto
+dele. O npm resolve esse par sozinho; o pnpm e o yarn não, e sem ele a
+`Sidebar`, a `Pagination` e o `DatePicker` quebram em tempo de execução.
 
-Tailwind comes in as a dev dependency:
+O Tailwind entra como dependência de desenvolvimento:
 
 ```bash
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
-React 19, React DOM 19 and Tailwind 4 are peer dependencies, that is, the
-consuming project controls the version.
+React 19, React DOM 19 e Tailwind 4 são dependências de par, ou seja, quem manda
+na versão é o projeto consumidor.
 
-## Wire Tailwind into the build
+## Ligar o Tailwind no build
 
-Installing the plugin is not enough, it has to be in the list. Without it the
-build passes with no error and generates a CSS without a single library class:
+Instalar o plugin não basta, ele precisa entrar na lista. Sem isso o build passa
+sem erro e gera um CSS sem uma única classe da biblioteca:
 
 ```ts
 // vite.config.ts
@@ -44,9 +44,9 @@ export default defineConfig({
 })
 ```
 
-## The two CSS lines
+## As duas linhas de CSS
 
-In the project's CSS file:
+No arquivo de CSS do projeto:
 
 ```css
 @import "tailwindcss";
@@ -55,16 +55,16 @@ In the project's CSS file:
 @source '../node_modules/@rivocode/ui/dist';
 ```
 
-The `@source` line is not optional and it is the one that breaks most. Without
-it, the project's Tailwind does not scan the library's components, does not
-generate the classes they use, and everything shows up **with no style at
-all**, silently. Adjust the relative path to the folder of your CSS file.
+A linha `@source` não é opcional e é a que mais quebra. Sem ela, o Tailwind do
+projeto não varre os componentes da biblioteca, não gera as classes que eles
+usam, e tudo aparece **sem estilo nenhum**, silenciosamente. Ajuste o caminho
+relativo conforme a pasta do seu arquivo de CSS.
 
-The `preset` brings the tokens, the two themes and the brand fonts. If the
-project already has its own typography, import only the token files and write
-your theme, as described in "Client theme".
+O `preset` traz os tokens, os dois temas e as fontes da marca. Se o projeto já
+tem tipografia própria, importe apenas os arquivos de token e escreva o seu
+tema, como descrito em "Tema de cliente".
 
-## The Provider
+## O Provider
 
 ```tsx
 import { RivoProvider, Button } from "@rivocode/ui";
@@ -78,254 +78,253 @@ export function App() {
 }
 ```
 
-| Prop      | Values                                      | What it is for                                                   |
-| --------- | ------------------------------------------- | ---------------------------------------------------------------- |
-| `theme`   | `rivocode-dark`, `rivocode-light`, `system` | `system` follows the operating system's preference               |
-| `density` | `comfortable`, `compact`                    | `compact` shrinks the height of every control, for operations screens |
-| `scope`   | `global`, `local`                           | `global` dresses the whole page. `local` dresses only this tree  |
-| `dir`     | `ltr`, `rtl`                                | in `rtl` Base UI mirrors whatever depends on side                |
+| Prop      | Valores                                     | Para que serve                                                     |
+| --------- | ------------------------------------------- | ------------------------------------------------------------------ |
+| `theme`   | `rivocode-dark`, `rivocode-light`, `system` | `system` segue a preferência do sistema operacional                |
+| `density` | `comfortable`, `compact`                    | `compact` encolhe a altura de todo controle, para tela de operação |
+| `scope`   | `global`, `local`                           | `global` veste a página inteira. `local` veste só esta árvore      |
+| `dir`     | `ltr`, `rtl`                                | em `rtl` a Base UI espelha o que depende de lado                   |
 
-Use `scope="local"` when the design system comes into an existing project and
-cannot leak style to the rest of the page. In that mode the Provider also
-creates its own container for dialog, menu and tooltip, which render outside
-the tree and would come out without a theme if left loose at the end of the
-document.
+Use `scope="local"` quando o design system entra num projeto que já existe e não
+pode vazar estilo para o resto da página. Nesse modo o Provider também cria um
+container próprio para diálogo, menu e dica, que renderizam fora da árvore e
+sairiam sem tema se ficassem soltos no fim do documento.
 
-## Vocabulary for your layout
+## Vocabulário para o seu layout
 
-The preset exposes the tokens as Tailwind utilities, so the layout you write
-speaks the same language as the components:
+O preset expõe os tokens como utilitários do Tailwind, então o layout que você
+escreve fala a mesma língua dos componentes:
 
-| Family          | Utilities                                                                                |
-| --------------- | ---------------------------------------------------------------------------------------- |
-| Surfaces        | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay`                                 |
-| Text            | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled`                         |
-| Accent          | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle`                    |
-| Lines and focus | `border-border`, `border-border-strong`, `ring-ring`                                     |
-| States          | `bg-success`, `text-success-text`, `bg-danger-subtle`, and the same for `warning` and `info` |
-| Shape           | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill`                   |
-| Typography      | `text-xs` to `text-3xl`, `font-sans`, `font-display`, `font-mono`                        |
+| Família       | Utilitários                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| Superfícies   | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay`                                 |
+| Texto         | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled`                         |
+| Acento        | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle`                    |
+| Linhas e foco | `border-border`, `border-border-strong`, `ring-ring`                                     |
+| Estados       | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
+| Forma         | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill`                   |
+| Tipografia    | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono`                         |
 
-**Fill and text are different tokens on purpose.** `bg-danger` is the red that
-fills a button and takes `text-danger-fg` on top. `text-danger-text` is the red
-that reads on the page background. No color serves both well: the one with
-contrast as text cannot hold white text on top, and vice versa. The same goes
-for the accent.
+**Preenchimento e texto são tokens diferentes de propósito.** `bg-danger` é o
+vermelho que preenche um botão e recebe `text-danger-fg` por cima.
+`text-danger-text` é o vermelho que se lê sobre o fundo da página. Nenhuma cor
+serve bem para as duas coisas: a que tem contraste como texto não aguenta texto
+branco por cima, e vice-versa. Vale o mesmo para o acento.
 
-## The catalog
+## O catálogo
 
-134 pieces. **The table below is not the index**: it cites each piece in one
-line and says the difference between the ones that look alike, which is the
-part usually missing. The full index, with each one's page and always up to
-date, is at <https://ds.rivocode.com.br/llms.txt>.
+134 peças. **A tabela abaixo não é o índice**: ela cita cada peça numa linha e
+diz a diferença entre as que se parecem, que é a parte que costuma faltar. O
+índice completo, com a página de cada uma e sempre em dia, fica em
+<https://ds.rivocode.com.br/llms.txt>.
 
-### Typography
+### Tipografia
 
-| Piece     | What it is for                                                                    |
+| Peça      | Para que serve                                                                    |
 | --------- | --------------------------------------------------------------------------------- |
-| `Heading` | heading from `h1` to `h6`, with the size separate from the level                  |
-| `Text`    | paragraph or passage in the theme's text tones; without `size` and `tone`, it inherits from the sentence |
-| `Link`    | underlined anchor, `external` with a notice to whoever listens, and the router through `render` |
-| `Highlight` | paints the searched term inside the text, accents not mattering: "sao" finds "São" |
-| `Code`, `Kbd` | code inside the sentence, and a shortcut's key drawn as a key |
-| `RelativeTime` | "há 2 minutos", "em 3 dias", with the full date on hover |
+| `Heading` | título de `h1` a `h6`, com o tamanho separado do nível                            |
+| `Text`    | parágrafo ou trecho nos tons de texto do tema; sem `size` e `tone`, herda da frase |
+| `Link`    | âncora sublinhada, `external` com aviso a quem ouve, e o router pelo `render`     |
+| `Highlight` | pinta o termo buscado dentro do texto, sem acento importar: "sao" acha "São"    |
+| `Code`, `Kbd` | código dentro da frase, e a tecla de um atalho desenhada como tecla |
+| `RelativeTime` | "há 2 minutos", "em 3 dias", com a data inteira ao pousar |
 
-### Action
+### Ação
 
-| Piece                   | What it is for                                                       |
+| Peça                    | Para que serve                                                       |
 | ----------------------- | -------------------------------------------------------------------- |
-| `Button`                | five variants, four sizes, pill shape                                |
-| `IconButton`            | icon-only button: the required `label` becomes the name, optional tooltip |
-| `Toggle`, `ToggleGroup` | a button that stays pressed: alignment, display mode, filter         |
-| `Toolbar`               | gathers the controls into a single tab stop, with arrows between them |
-| `ActionBar`             | bulk actions on the selection: says how many, clears, sticks to the foot of the area |
-| `ScrollToTop`           | "Voltar ao topo" that appears after scrolling down and returns focus to `main` |
-| `ButtonGroup`           | sibling buttons side by side, like "emitir" with the variants menu attached; not a part of `Button` |
-| `Clipboard`             | copy a piece of data to take elsewhere, with the "copied" spoken to whoever listens |
+| `Button`                | cinco variantes, quatro tamanhos, forma em pílula                    |
+| `IconButton`            | botão só com ícone: `label` obrigatório vira o nome, dica opcional   |
+| `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro       |
+| `Toolbar`               | junta os controles numa parada de tabulação só, com setas entre eles |
+| `ActionBar`             | ações em lote sobre a seleção: diz quantos, limpa, gruda no pé da área |
+| `ScrollToTop`           | "Voltar ao topo" que aparece depois de descer e devolve o foco ao `main` |
+| `ButtonGroup`           | botões irmãos encostados, como "emitir" com o menu de variantes colado; não é parte do `Button` |
+| `Clipboard`             | copiar um dado para levar a outro lugar, com o "copiado" dito a quem ouve |
 
-### Field
+### Campo
 
-| Piece                           | What it is for                                                             |
+| Peça                            | Para que serve                                                             |
 | ------------------------------- | -------------------------------------------------------------------------- |
-| `Field`, `Input`                | field with label, help and error wired for accessibility                   |
-| `Textarea`                      | several lines; height in number of rows, and `Input`'s `size`              |
-| `PasswordInput`                 | password with the eye that reveals; the pair every project rebuilds        |
-| `SearchInput`                   | search with the magnifier in place, without a hand-built `position: absolute` |
-| `NumberField`                   | a number with plus and minus, when step and limit are known and the exact value matters |
-| `Slider`                        | a value in a range when the exact number does not matter; if it does, it is `NumberField` |
-| `OTPField`                      | verification code, one slot per digit; pasting the whole code spreads the digits |
-| `MaskedInput`                   | CPF, CNPJ, CEP, phone, date, time, plate, card, boleto, hand-written pattern |
-| `CurrencyInput`                 | money in integer cents, typed from the right, with sign and limit          |
-| `SignaturePad`                  | signature with finger, pen or mouse, or the typed name; exports SVG and PNG |
-| `PostalCodeField`               | CEP that looks up the address through the `lookup` you write, and fills in the rest |
-| `InputGroup`                    | attaches `R$`, `.com.br` or a button to the field, without a double border |
-| `Fieldset`                      | groups the fields that answer the same question: address, payment         |
-| `Checkbox`                      | a standalone check box                                                     |
-| `CheckboxGroup`                 | boxes that split a value into a list, with the "all" one in the mixed state |
-| `Radio`, `RadioGroup`           | single choice when the options fit on screen                               |
-| `Questionnaire`                 | one question at a time, with progress, skip, letter shortcut and submit: onboarding, survey, the agent asking for clarification |
-| `Switch`                        | turns on and off **right away**; Checkbox only counts when the form is submitted |
-| `Select`                        | single choice in a short, fixed list                                       |
-| `Combobox`                      | choice in a long list or one coming from the server, with search and chips |
-| `Autocomplete`                  | `Combobox`'s panel, but accepts what the person wrote outside the list     |
-| `TagsInput`                     | tags the person writes, instead of choosing: labels, emails                |
-| `TreeSelect`, `Tree`            | choice inside a tree; keeps the leaf, never the parent                     |
-| `TransferList`                  | two lists, available and chosen, with search, multi-select and moving both ways |
-| `DatePicker`, `DateRangePicker` | date and period: type or pick, with an optional Apply footer               |
-| `TimeField`, `TimePicker`       | 24-hour time: typed, or typed with the picking panel                       |
-| `Calendar`                      | the raw month, for whoever wants the calendar on their own screen          |
-| `Rating`                        | star rating, with half stars and the read-only average spoken as "4,5 de 5" |
-| `FileUpload`                    | the attach area: click, drag and validation; sending over the network is yours |
-| `ColorPicker`                   | choosing a color, by swatch or by code, in a theme builder                 |
-| `Editable`                      | in-place editing: the text becomes a field on click and comes back on confirm |
-| `EventCalendar`                 | the agenda: what happens, when and for how long. `Calendar` picks a date; this one shows appointments in time |
-| `Gantt`                         | the project schedule: tasks on a scale, dependencies as arrows, collapsible groups and editing by drag and keyboard |
+| `Field`, `Input`                | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
+| `Textarea`                      | várias linhas; altura em número de linhas, e o `size` do `Input`           |
+| `PasswordInput`                 | senha com o olho que revela; o par que todo projeto reconstrói             |
+| `SearchInput`                   | busca com a lupa no lugar, sem `position: absolute` montado à mão          |
+| `NumberField`                   | número com mais e menos, quando passo e limite são conhecidos e o valor exato importa |
+| `Slider`                        | valor numa faixa quando o número exato não importa; se importa, é `NumberField` |
+| `OTPField`                      | código de verificação, uma casa por dígito; colar o código inteiro espalha os dígitos |
+| `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, boleto, molde à mão   |
+| `CurrencyInput`                 | dinheiro em centavos inteiros, digitado da direita, com sinal e limite     |
+| `SignaturePad`                  | assinatura com dedo, caneta ou mouse, ou o nome digitado; exporta SVG e PNG |
+| `PostalCodeField`               | CEP que busca o endereço pela `lookup` que você escreve, e preenche o resto |
+| `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
+| `Fieldset`                      | agrupa os campos que respondem à mesma pergunta: endereço, pagamento       |
+| `Checkbox`                      | caixa de marcar solta                                                      |
+| `CheckboxGroup`                 | caixas que dividem um valor em lista, com a de "todos" no estado misto      |
+| `Radio`, `RadioGroup`           | escolha única quando as opções cabem na tela                               |
+| `Questionnaire`                 | uma pergunta por vez, com progresso, pular, atalho de letra e envio: onboarding, pesquisa, o agente pedindo esclarecimento |
+| `Switch`                        | liga e desliga **na hora**; o Checkbox só vale ao enviar o formulário      |
+| `Select`                        | escolha única em lista curta e fixa                                        |
+| `Combobox`                      | escolha em lista longa ou vinda do servidor, com busca e fichas            |
+| `Autocomplete`                  | o painel do `Combobox`, mas aceita o que a pessoa escreveu fora da lista   |
+| `TagsInput`                     | marcadores que a pessoa escreve, em vez de escolher: etiquetas, emails     |
+| `TreeSelect`, `Tree`            | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
+| `TransferList`                  | duas listas, disponíveis e escolhidos, com busca, marcar vários e mover nos dois sentidos |
+| `DatePicker`, `DateRangePicker` | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
+| `TimeField`, `TimePicker`       | hora em 24 horas: digitada, ou digitada com o painel de escolher           |
+| `Calendar`                      | o mês cru, para quem quer o calendário na própria tela                     |
+| `Rating`                        | nota em estrelas, com meia estrela e a média só leitura dita "4,5 de 5"   |
+| `FileUpload`                    | a área de anexar: clique, arraste e validação; o envio pela rede é seu     |
+| `ColorPicker`                   | escolha de uma cor, por amostra ou por código, num construtor de tema      |
+| `Editable`                      | edição no lugar: o texto vira campo ao clicar e volta ao confirmar         |
+| `EventCalendar`                 | a agenda: o que acontece, quando e por quanto tempo. O `Calendar` escolhe uma data; este mostra compromisso no tempo |
+| `Gantt`                         | o cronograma de projeto: tarefas em escala, dependência em seta, grupos que recolhem e edição por arrasto e teclado |
 
-### Floating
+### Flutuante
 
-| Piece         | What it is for                                                         |
+| Peça          | Para que serve                                                         |
 | ------------- | ---------------------------------------------------------------------- |
-| `Dialog`      | modal window; docks at the bottom on a phone                           |
-| `AlertDialog` | irreversible confirmation: does not close with Esc nor with a click outside |
-| `Popconfirm`  | confirmation attached to the button that triggered it, without darkening the screen |
-| `Sheet`       | a sheet that slides from the edge, with a drag gesture; it is the phone's menu |
-| `Popover`     | anchored panel with free content                                       |
-| `Tooltip`     | a hint, for a button that has only an icon                             |
-| `PreviewCard` | a link's summary on hover: who the customer is, what the invoice is    |
-| `Menu`        | actions menu, with groups and a destructive item                       |
-| `ContextMenu` | the same content as `Menu`, opened by right click                      |
-| `Toast`       | a notice that goes away, via `useToast()`; `ToastViewport` already comes in the Provider |
-| `ImageViewer` | full-screen photo from the thumbnails, with zoom and arrows            |
-| `Tour`        | guided tour: dims the rest, cuts out the target and explains in a bubble |
+| `Dialog`      | janela modal; no celular encosta embaixo                               |
+| `AlertDialog` | confirmação sem volta: não fecha com Esc nem com clique fora           |
+| `Popconfirm`  | confirmação colada no botão que a disparou, sem escurecer a tela       |
+| `Sheet`       | folha que desliza da borda, com gesto de arrastar; é o menu do celular |
+| `Popover`     | painel ancorado de conteúdo livre                                      |
+| `Tooltip`     | dica, para botão que só tem ícone                                      |
+| `PreviewCard` | o resumo de um link ao pousar sobre ele: quem é o cliente, o que é a nota |
+| `Menu`        | menu de ações, com grupos e item destrutivo                            |
+| `ContextMenu` | o mesmo conteúdo do `Menu`, aberto pelo botão direito                  |
+| `Toast`       | aviso que passa, via `useToast()`; o `ToastViewport` já vem no Provider |
+| `ImageViewer` | foto em tela cheia a partir das miniaturas, com zoom e setas           |
+| `Tour`        | passeio guiado: escurece o resto, recorta o alvo e explica num balão   |
 
-### Navigation
+### Navegação
 
-| Piece        | What it is for                                                           |
+| Peça         | Para que serve                                                           |
 | ------------ | ------------------------------------------------------------------------ |
-| `AppShell`   | the app skeleton: fixed header, `Sidebar`, `main`, skip link             |
-| `Sidebar`    | sidebar that shrinks down to the icon column and becomes a sheet on a phone |
-| `Tabs`       | tabs with a sliding underline; they scroll sideways when they do not fit |
-| `Breadcrumb` | the path, which folds the middle into an ellipsis when it gets long      |
-| `Pagination` | pages, with ellipsis; on a phone it becomes "3 de 12" with the arrows    |
-| `Steps`      | the ruler of a staged form, with `useWizard()`                           |
-| `Menubar`    | the File, Edit, View bar: several `Menu` side by side, coordinated       |
-| `NavigationMenu` | a site's top navigation: lists places to go, and `Menu` lists actions |
-| `Command`    | the command palette: a field, a list and the keyboard                    |
-| `PageHeader` | the top of each route: breadcrumb, title, description and actions, always in the same order |
-| `TableOfContents` | the "Nesta página" index: reads the headings and marks the section being read on scroll |
+| `AppShell`   | o esqueleto do app: cabeçalho fixo, `Sidebar`, `main`, link de pular     |
+| `Sidebar`    | barra lateral que encolhe até a coluna de ícones e vira folha no celular |
+| `Tabs`       | abas com risco deslizante; rolam de lado quando não cabem                |
+| `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo              |
+| `Pagination` | páginas, com reticência; no celular vira "3 de 12" com as setas          |
+| `Steps`      | a régua de um formulário em etapas, com `useWizard()`                    |
+| `Menubar`    | a barra Arquivo, Editar, Exibir: vários `Menu` lado a lado, coordenados   |
+| `NavigationMenu` | a navegação de topo de site: lista lugares para onde ir, e o `Menu` lista ações |
+| `Command`    | a paleta de comandos: um campo, uma lista e o teclado                    |
+| `PageHeader` | o topo de cada rota: trilha, título, descrição e ações, sempre na mesma ordem |
+| `TableOfContents` | o índice "Nesta página": lê os títulos e marca a seção lida ao rolar |
 
-### Data
+### Dado
 
-| Piece       | What it is for                                                   |
+| Peça        | Para que serve                                                   |
 | ----------- | ---------------------------------------------------------------- |
-| `Table`     | semantic table, with row selection                               |
-| `DataTable` | table with the three query states: loading, error and empty      |
-| `FilterBar`, `FilterChip` | the row of applied filters around the listing, with clear and count |
-| `VirtualList` | a long list that draws only what fits in the frame             |
-| `DescriptionList` | label and value pairs in a `<dl>`: the row's details sheet  |
-| `Stat`      | the dashboard number: label, value, change and trend             |
-| `Tracker`   | the strip of little squares per period: availability, issuances  |
-| `Item`      | the list row: icon, text and action                              |
-| `Badge`     | status badge, six tones                                          |
-| `Indicator` | the count on top of something else: the bell, the tab, the avatar |
-| `Avatar`    | a person's photo, with the initial behind it                     |
-| `Timeline`  | what has already happened, in order, with who and when           |
-| `QRCode`    | the text another's camera reads, in dark-on-light SVG in any theme |
-| `PixCode`   | the Pix charge: QR, amount, recipient and the copy-and-paste that checks the CRC |
+| `Table`     | tabela semântica, com seleção de linha                           |
+| `DataTable` | tabela com os três estados de consulta: carregando, erro e vazio |
+| `FilterBar`, `FilterChip` | a fileira de filtros aplicados em volta da listagem, com limpar e contagem |
+| `VirtualList` | lista longa que desenha só o que cabe na moldura                 |
+| `DescriptionList` | pares de rótulo e valor em `<dl>`: a folha de detalhes da linha |
+| `Stat`      | o número de painel: rótulo, valor, variação e tendência          |
+| `Tracker`   | a faixa de quadradinhos por período: disponibilidade, emissões   |
+| `Item`      | a linha de lista: ícone, texto e ação                            |
+| `Badge`     | selo de estado, seis tons                                        |
+| `Indicator` | a contagem por cima de outra coisa: o sino, a aba, o avatar      |
+| `Avatar`    | foto de pessoa, com a inicial por trás                           |
+| `Timeline`  | o que já aconteceu, em ordem, com quem e quando                  |
+| `QRCode`    | o texto que a câmera do outro lê, em SVG escuro sobre claro em qualquer tema |
+| `PixCode`   | a cobrança Pix: QR, valor, recebedor e o copia e cola que confere o CRC |
 
-### Status
+### Estado
 
-| Piece        | What it is for                                              |
+| Peça         | Para que serve                                              |
 | ------------ | ----------------------------------------------------------- |
-| `Alert`      | a notice that stays, with the right screen reader role per tone |
-| `Banner`     | page notice, in a strip at the top: maintenance, invoice, test |
-| `CookieConsent` | LGPD cookie notice: refusing with the same weight as accepting, and the choice comes back for you to store |
-| `Skeleton`   | placeholder while the data has not arrived                  |
-| `Spinner`    | a wait with no expected end                                 |
-| `Progress`   | a wait with a known end, which **moves to the end and finishes** |
-| `Meter`      | capacity in use, which **goes up and down**: quota, limit   |
-| `EmptyState` | empty state, with required description and way out          |
-| `NotificationCenter` | the little bell with the spoken count and the list: read, mark, filter, load more |
+| `Alert`      | aviso que fica, com o papel de leitor de tela certo por tom |
+| `Banner`     | aviso de página, em faixa no topo: manutenção, fatura, teste |
+| `CookieConsent` | aviso de cookies da LGPD: recusar com o mesmo peso de aceitar, e a escolha volta para você gravar |
+| `Skeleton`   | marca de lugar enquanto o dado não chegou                   |
+| `Spinner`    | espera sem fim previsto                                     |
+| `Progress`   | espera com fim conhecido, que **anda para o fim e termina** |
+| `Meter`      | capacidade em uso, que **sobe e desce**: cota, limite       |
+| `EmptyState` | estado vazio, com descrição e saída obrigatórias            |
+| `NotificationCenter` | o sininho com a contagem dita e a lista: ler, marcar, filtrar, carregar mais |
 
-### AI
+### IA
 
-In `@rivocode/ui/ai`, with no dependency to install and no AI SDK: the message
-comes in by prop, and what the person does comes out by event.
+Em `@rivocode/ui/ai`, sem dependência nenhuma a instalar e sem SDK de IA: a
+mensagem entra por prop, e o que a pessoa faz sai por evento.
 
-| Piece          | What it is for                                                                    |
+| Peça           | Para que serve                                                                    |
 | -------------- | --------------------------------------------------------------------------------- |
-| `PromptInput`  | the conversation field: Enter sends, Shift+Enter breaks the line; `Textarea` goes in the form |
-| `Message`      | one turn, aligned by `role`, with copy, retry and the "arriving" state            |
-| `Conversation` | the list that sticks to the end while the text arrives; `Timeline` looks back     |
-| `ToolCall`     | the tool call, with status, input, output and approve or reject                  |
-| `AILabel`      | the "IA" badge for generated content, with an explanation; record status is `Badge` |
+| `PromptInput`  | o campo da conversa: Enter envia, Shift+Enter quebra; o `Textarea` vai no formulário |
+| `Message`      | um turno, alinhado por `role`, com copiar, tentar de novo e o "chegando"          |
+| `Conversation` | a lista que gruda no fim enquanto o texto chega; a `Timeline` olha para trás      |
+| `ToolCall`     | a chamada de ferramenta, com estado, entrada, saída e aprovar ou recusar          |
+| `AILabel`      | o selo "IA" do conteúdo gerado, com explicação; estado de registro é `Badge`      |
 
-### Drag and drop
+### Arrastar e soltar
 
-In `@rivocode/ui/dnd`, behind `@dnd-kit/core` and `@dnd-kit/sortable`, which
-only whoever imports this path installs. Both are controlled, and both move by
-keyboard with announcements in Portuguese.
+Em `@rivocode/ui/dnd`, atrás do `@dnd-kit/core` e do `@dnd-kit/sortable`, que só
+quem importa este caminho instala. As duas são controladas, e as duas andam
+pelo teclado com anúncio em português.
 
 ```sh
 npm install @dnd-kit/core @dnd-kit/sortable
 ```
 
-| Piece          | What it is for                                                                              |
+| Peça           | Para que serve                                                                              |
 | -------------- | ------------------------------------------------------------------------------------------- |
-| `SortableList` | the order only the person knows, dragged by the handle; ordering by a criterion is `sortable` in `DataTable` |
-| `Kanban`       | cards that move between status columns, with a count and a limit that warns and does not lock |
+| `SortableList` | a ordem que só a pessoa sabe, arrastada pela alça; ordem por critério é `sortable` no `DataTable` |
+| `Kanban`       | cartões que andam entre colunas de situação, com contagem e limite que avisa e não tranca   |
 
-### Structure
+### Estrutura
 
-`Card`, `Separator`, `RivoProvider`, plus:
+`Card`, `Separator`, `RivoProvider`, mais:
 
-| Piece         | What it is for                                                         |
+| Peça          | Para que serve                                                         |
 | ------------- | ---------------------------------------------------------------------- |
-| `Accordion`   | sections that close each other                                         |
-| `Collapsible` | a single block, without a frame and without coordination between siblings |
-| `Spoiler`     | the start of a long text with "Ler mais", only when it overflows the height |
-| `ScrollArea`  | its own scrollbar, for when the system's gets in the way of the design |
-| `Stack`       | stacks in one direction, with the scale's gap that follows the density |
-| `Grid`        | fixed columns or as many as fit by `minItemWidth`, without a media query |
-| `Container`   | centered max width, with side breathing room, in five steps            |
-| `Carousel`    | sideways slides by scroll-snap; `Tabs` if compared, `Grid` if it all fits |
-| `ResizablePanelGroup` | areas with a draggable divider: N panels, nested, that collapse and remember the layout |
-| `Splitter`    | the short form of the previous one for two areas, list and detail      |
-| `AspectRatio` | holds the box's proportion before the content arrives                  |
-| `Affix`       | sticks to the window with the house stacking, and reserves the `scroll-padding` so focus does not stop behind it |
+| `Accordion`   | seções que se fecham entre si                                          |
+| `Collapsible` | um bloco só, sem moldura e sem coordenação entre irmãos                |
+| `Spoiler`     | o começo do texto longo com "Ler mais", só quando estoura a altura     |
+| `ScrollArea`  | barra de rolagem própria, para quando a do sistema atrapalha o desenho |
+| `Stack`       | empilha numa direção, com o vão da escala que acompanha a densidade    |
+| `Grid`        | colunas fixas ou quantas couberem por `minItemWidth`, sem media query  |
+| `Container`   | largura máxima centralizada, com respiro lateral, em cinco passos      |
+| `Carousel`    | slides de lado por scroll-snap; `Tabs` se compara, `Grid` se cabe tudo |
+| `ResizablePanelGroup` | áreas com divisória que se arrasta: N painéis, aninhados, que recolhem e lembram o layout |
+| `Splitter`    | a forma curta do anterior para duas áreas, lista e detalhe       |
+| `AspectRatio` | segura a proporção da caixa antes do conteúdo chegar             |
+| `Affix`       | gruda na janela com o empilhamento da casa, e reserva o `scroll-padding` para o foco não parar atrás |
 
-Three things the library solves for you and that usually take work:
+Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
 
-- **Portal with theme.** Dialog, menu, select and tooltip render outside the
-  tree. The Provider creates a container that carries the theme, so they never
-  appear unstyled, not even in scoped mode.
-- **Toast wiring.** Provider, portal and viewport already live in the
-  Provider. You call `useToast().add({...})` and that is it.
-- **Stable identity of `useToast()`.** Base UI's manager returns a new object
-  on every render, and a `useEffect` that depends on it goes into an infinite
-  loop. Here it is stable.
+- **Portal com tema.** Diálogo, menu, seleção e dica renderizam fora da árvore.
+  O Provider cria um container que carrega o tema, então eles nunca aparecem sem
+  estilo, nem no modo escopado.
+- **Fiação de aviso.** Provedor, portal e área de exibição já vivem no Provider.
+  Você chama `useToast().add({...})` e pronto.
+- **Identidade estável do `useToast()`.** O gerenciador da Base UI devolve objeto
+  novo a cada renderização, e um `useEffect` que dependa dele entra em laço
+  infinito. Aqui ele é estável.
 
-## What the library decides on its own on a phone
+## O que a biblioteca decide sozinha no celular
 
-Every component is designed at 390px before desktop, and some decisions are
-built in instead of being left to you:
+Todo componente é pensado em 390px antes do desktop, e algumas decisões estão
+embutidas em vez de ficarem por sua conta:
 
-- A floating panel does not touch the screen edge.
-- `Dialog` and `AlertDialog` dock at the bottom and take the full width.
-- `Calendar` shows a single month, even when you ask for two.
-- `DatePicker` swaps the anchored panel for a bottom sheet.
-- `Sidebar` becomes a sheet from the left.
-- A calendar day has a 44px target, against 36 on desktop.
-- `Pagination` swaps the numbers for the arrows, `Breadcrumb` keeps the last
-  two crumbs, `Steps` becomes a line of text with a progress bar.
+- Painel flutuante não encosta na borda da tela.
+- `Dialog` e `AlertDialog` encostam embaixo e ocupam a largura toda.
+- `Calendar` mostra um mês só, mesmo quando você pede dois.
+- `DatePicker` troca o painel ancorado por folha de baixo.
+- `Sidebar` vira folha da esquerda.
+- Dia do calendário tem 44px de alvo, contra 36 no desktop.
+- `Pagination` troca os números pelas setas, `Breadcrumb` guarda as duas últimas
+  migalhas, `Steps` vira uma linha de texto com barra de progresso.
 
-`useMobile()` is exported, for the decisions your layout also needs to
-make in JS.
+O `useTelaEstreita()` está exportado, para as decisões que o seu layout também
+precisa tomar em JS.
 
-## Forms
+## Formulários
 
-Zod and React Hook Form live in the `@rivocode/ui/form` subpath, with
-**optional** peer dependencies: whoever does not use forms loads none of it.
+Zod e React Hook Form vivem no subcaminho `@rivocode/ui/form`, com dependências
+de par **opcionais**: quem não usa formulário não carrega nada disso.
 
 ```sh
 npm install react-hook-form zod @hookform/resolvers
@@ -333,7 +332,7 @@ npm install react-hook-form zod @hookform/resolvers
 
 ```tsx
 import { Input, DatePicker, Button } from "@rivocode/ui";
-import { Form, FormField, useZodForm, forDate } from "@rivocode/ui/form";
+import { Form, FormField, useZodForm, paraDatePicker } from "@rivocode/ui/form";
 import { z } from "zod";
 
 const schema = z.object({
@@ -351,7 +350,7 @@ export function EmitirNota() {
       </FormField>
 
       <FormField name="vencimento" label="Vencimento">
-        {(campo) => <DatePicker {...forDate(campo)} />}
+        {(campo) => <DatePicker {...paraDatePicker(campo)} />}
       </FormField>
 
       <Button type="submit">Emitir</Button>
@@ -360,22 +359,22 @@ export function EmitirNota() {
 }
 ```
 
-`FormField` does not invent any `id`: what wires the label to the control is
-Base UI's `Field`, through context. That is why every control in the catalog
-goes through its `Field.Control`, `DatePicker` included.
+O `FormField` não inventa `id` nenhum: quem liga o rótulo ao controle é o
+`Field` da Base UI, pelo contexto. Por isso todo controle do catálogo passa pelo
+`Field.Control` dela, o `DatePicker` inclusive.
 
-The control comes through a function, and not by cloning the child, because
-each one receives its value in a different way. For `Input` and `Textarea`,
-spreading the field is enough. For the others, the adapters make the bridge:
-`forDate`, `forValue` and `forChecked`.
+O controle vem por função, e não por clonagem do filho, porque cada um recebe
+valor de um jeito. Para `Input` e `Textarea`, espalhar o campo basta. Para os
+outros, os adaptadores fazem a ponte: `paraDatePicker`, `paraSelect` e
+`paraCheckbox`.
 
-`useZodForm` separates the input type from the output type. Without that a
-`z.coerce.number()` lies about the field's type.
+O `useZodForm` separa o tipo de entrada do de saída. Sem isso um
+`z.coerce.number()` mente sobre o tipo do campo.
 
-## Mask
+## Máscara
 
-The pattern uses `9` for a digit, `A` for a letter and `*` for both. The rest is
-literal, and the mask inserts it by itself.
+O molde usa `9` para dígito, `A` para letra e `*` para os dois. O resto é
+literal, e a máscara põe sozinha.
 
 ```tsx
 import { CurrencyInput, MaskedInput } from "@rivocode/ui";
@@ -385,22 +384,21 @@ import { CurrencyInput, MaskedInput } from "@rivocode/ui";
 <CurrencyInput value={centavos} onValueChange={setCentavos} />
 ```
 
-**Store the raw value**, not the punctuated one: punctuation changes over time
-and the data stops matching. Money is `CurrencyInput`, which delivers integer
-cents, so the server receives an integer instead of a floating point; it also
-reads a pasted value like `R$ 1.234,56`.
+**Guarde o valor cru**, não o pontuado: a pontuação muda com o tempo e o dado
+deixa de bater. O dinheiro é o `CurrencyInput`, que entrega centavos inteiros,
+para o servidor receber inteiro em vez de ponto flutuante; ele lê também o
+valor colado como `R$ 1.234,56`.
 
-Ready patterns: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
-`cartao`, `boleto` and `moeda`. The phone switches pattern between landline and
-mobile by itself, and the boleto switches from the bank line to the
-utility-bill one when it starts with 8. `isValidBoletoLine` and `parseBoleto`
-check the line and read from it the bank, the amount and the due date.
+Moldes prontos: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
+`cartao`, `boleto` e `moeda`. O telefone troca de molde entre o fixo e o celular
+sozinho, e o boleto troca da linha de banco para a de convênio quando começa
+com 8. `isValidBoletoLine` e `parseBoleto` conferem a linha e leem dela o banco,
+o valor e o vencimento.
 
-## Listing with query states
+## Listagem com estados de consulta
 
-`DataTable` does not know React Query, and that is on purpose: three booleans
-come in, and it works the same with a hand-written `fetch`, with SWR or with a
-server component.
+O `DataTable` não conhece React Query, e isso é de propósito: entram três
+booleanos, e funciona igual com `fetch` na mão, com SWR ou com server component.
 
 ```tsx
 <DataTable
@@ -418,14 +416,14 @@ server component.
 />
 ```
 
-Error beats loading, and empty only counts after the query has come back.
-Without that order, a new search over an error flashes "no results" before
-showing the problem.
+Erro vence carregando, e vazio só vale depois que a consulta voltou. Sem essa
+ordem, uma nova busca sobre um erro pisca "nenhum resultado" antes de mostrar o
+problema.
 
-## Formatted text
+## Texto com formatação
 
-The editor lives in the `@rivocode/ui/editor` subpath, on Tiptap 3, with
-optional peer dependencies: whoever does not write formatted text does not load
+O editor vive no subcaminho `@rivocode/ui/editor`, sobre o Tiptap 3, com
+dependências de par opcionais: quem não escreve texto formatado não carrega o
 ProseMirror.
 
 ```sh
@@ -444,24 +442,22 @@ import { RichTextEditor, RichTextView } from "@rivocode/ui/editor";
 <RichTextView value={nota.descricao} empty="Sem descrição." />
 ```
 
-The value is HTML, and the blank editor delivers an empty string.
-`RichTextView` displays what was saved without `innerHTML` and without loading
-Tiptap.
+O valor é HTML, e o editor em branco entrega string vazia. O `RichTextView`
+exibe o que foi salvo sem `innerHTML` e sem carregar o Tiptap.
 
-## Charts
+## Gráficos
 
-Recharts lives in the `@rivocode/ui/chart` subpath, with an optional peer
-dependency: whoever does not make charts does not load its 200 kB.
+Recharts vive no subcaminho `@rivocode/ui/chart`, com dependência de par
+opcional: quem não faz gráfico não carrega os 200 kB dela.
 
 ```sh
 npm install recharts
 ```
 
-The Recharts pieces the library dresses come out of the same import: without
-that you would have the frame and nothing to put inside, and you would have to
-get the Recharts version right by hand. Its `Tooltip` and `Legend` are left out
-on purpose: ours already wrap both, and the name would collide with the
-catalog's `Tooltip`.
+As peças da Recharts que a biblioteca veste saem pelo mesmo import: sem isso
+você teria a moldura e nada para pôr dentro, e teria que acertar a versão da
+Recharts na mão. `Tooltip` e `Legend` dela ficam de fora de propósito: os nossos
+já embrulham os dois, e o nome colidiria com o `Tooltip` do catálogo.
 
 ```tsx
 import {
@@ -500,47 +496,46 @@ export function NotasPorMes({ dados }) {
 }
 ```
 
-Three things `ChartContainer` solves:
+Três coisas que o `ChartContainer` resolve:
 
-- **The series color becomes a variable named after the series.** `emitidas`
-  in `config` publishes `var(--color-emitidas)`, so the line, the bar and the
-  tooltip speak the same way, and changing the color is touching one place.
-  Without a declared color, the next one of the palette comes in, in `config`
-  order. Recharts does not read Tailwind classes: the bridge has to be through a
-  CSS variable.
-- **Axis, grid and cursor come from the theme.** Recharts paints those three
-  with its own color, and in the dark theme they disappear.
-- **The tooltip is replaced entirely.** Recharts' comes out with a white
-  background written as inline style, and no class fixes inline style.
+- **A cor da série vira variável com o nome da série.** `emitidas` no `config`
+  publica `var(--color-emitidas)`, então a linha, a barra e a dica falam do
+  mesmo jeito, e trocar a cor é mexer num lugar só. Sem cor declarada, entra a
+  próxima da paleta na ordem do `config`. A Recharts não lê classe do Tailwind:
+  a ponte tem que ser por variável de CSS.
+- **Eixo, grade e rastro vêm do tema.** A Recharts pinta esses três com cor
+  própria, e no tema escuro eles somem.
+- **A dica é substituída inteira.** A da Recharts sai com fundo branco escrito
+  em estilo embutido, e não há classe que corrija estilo embutido.
 
-The palette is eight colors per theme (`--rc-chart-1` to `--rc-chart-8`), and
-they go through the contrast guard with their own minimum: **3:1 against the
-surface**, which is the graphical object rule. A series color carries no text,
-and demanding 4.5:1 of it would leave the whole palette too dark to tell apart.
+A paleta são oito cores por tema (`--rc-chart-1` a `--rc-chart-8`), e elas
+passam pela guarda de contraste com um mínimo próprio: **3:1 contra a
+superfície**, que é a regra de objeto gráfico. Cor de série não carrega texto, e
+exigir 4,5:1 dela deixaria a paleta inteira escura demais para distinguir.
 
-`useChartMotion()` ties the animation to the system preference. The rest of the
-catalog solves this through tokens, but Recharts interpolates in JS and no token
-reaches it: without it, the only motion left on a screen with "reduce motion"
-on is precisely the biggest one.
+O `useChartMotion()` liga a animação à preferência do sistema. O resto do
+catálogo resolve isso por token, mas a Recharts interpola em JS e nenhum token a
+alcança: sem ele, o único movimento que sobra numa tela com "reduzir
+movimento" ligado é justamente o maior deles.
 
-The height is yours, by class: a chart without a defined height disappears,
-because the container measures the parent.
+A altura fica com você, por classe: gráfico sem altura definida some, porque o
+contêiner mede o pai.
 
-Besides the frame, the subpath brings seven ready charts. The last four are
-drawn in-house, without Recharts, and do not go into `ChartContainer`: loading,
-error and empty come from the `QueryBoundary` around them.
+Além da moldura, o subcaminho traz sete gráficos prontos. Os quatro últimos são
+desenho próprio, sem Recharts, e não entram no `ChartContainer`: carregando,
+erro e vazio vêm do `QueryBoundary` em volta.
 
-| Piece          | What it is for                                                                              |
+| Peça           | Para que serve                                                                              |
 | -------------- | ------------------------------------------------------------------------------------------- |
-| `Sparkline`    | the tiny axis-less line that fits inside a `Stat`: says whether it goes up or down, not how much   |
-| `ChartDonut`   | parts of a whole, up to six, with the total in the hole and the list of slices below              |
-| `ChartRadial`  | one measure against the goal: how much is left to get there, and going up is always better                 |
-| `ChartGauge`   | a measure judged by named bands (on track, attention, critical), and going up can be worse |
-| `ChartHeatmap` | the pattern in a row-by-column grid, like issuances by day and hour; an empty cell is not zero |
-| `ChartFunnel`  | stages where each one is part of the previous, with the conversion rate written between them        |
-| `ChartTreemap` | proportional area above six categories, where the donut stops informing                    |
+| `Sparkline`    | a linha miúda sem eixo que cabe dentro de um `Stat`: diz se sobe ou desce, e não quanto   |
+| `ChartDonut`   | partes de um todo, até seis, com o total no buraco e a lista de fatias embaixo              |
+| `ChartRadial`  | uma medida contra a meta: quanto falta para chegar, e subir é sempre melhor                 |
+| `ChartGauge`   | uma medida que é julgada por faixas com nome (em dia, atenção, crítico), e subir pode ser pior |
+| `ChartHeatmap` | o padrão numa grade de linha por coluna, como emissões por dia e hora; célula vazia não é zero |
+| `ChartFunnel`  | etapas em que cada uma é parte da anterior, com a taxa de conversão escrita entre elas        |
+| `ChartTreemap` | área proporcional acima de seis categorias, onde a rosca para de informar                    |
 
-## Application screen
+## Tela de aplicação
 
 ```tsx
 <SidebarProvider defaultOpen>
@@ -568,93 +563,89 @@ error and empty come from the `QueryBoundary` around them.
 </SidebarProvider>
 ```
 
-Closed means different things at each width: on desktop, shrunk down to the
-icon column, with each item's name becoming a tooltip; on a phone, off screen,
-and the sidebar becomes the sheet from the left. The shortcut is Ctrl+B, or
-Cmd+B on Mac.
+Fechada quer dizer coisas diferentes em cada largura: na mesa, encolhida até a
+coluna de ícones, com o nome de cada item virando dica; no celular, fora da
+tela, e a barra vira a folha da esquerda. O atalho é Ctrl+B, ou Cmd+B no Mac.
 
-## Client theme
+## Tema de cliente
 
-Copy `src/tokens/themes/rivocode-light.css`, change the values, and run the
-guard:
+Copie `src/tokens/themes/rivocode-light.css`, troque os valores, e rode a
+guarda:
 
 ```sh
 bun run check:contrast
 ```
 
-It measures every pair that carries text and fails if any falls below 4.5 to
-1, or 7 to 1 on the main text. It exists to turn "I think it is readable" into a
-number.
+Ela mede todos os pares que carregam texto e falha se algum ficar abaixo de
+4,5 para 1, ou de 7 para 1 no texto principal. Ela existe para transformar
+"acho que está legível" em número.
 
-### `rivocode-ui check-theme`, in your project
+### `rivocode-ui check-theme`, no seu projeto
 
-The guard above runs **in here**. The theme you write runs **over there**, and
-no guard in this folder reaches it. For your side of the boundary there is a
-command, and it travels in the package:
+A guarda acima roda **aqui dentro**. O tema que você escreve roda **aí**, e
+nenhuma guarda desta pasta o alcança. Para o seu lado da fronteira existe um
+comando, e ele viaja no pacote:
 
 ```sh
 npx rivocode-ui check-theme src/tema-acme.css
-npx rivocode-ui check-theme src/temas/*.css --json   # the same thing, for CI
-npx rivocode-ui check-theme acme.theme.ts            # the React Native map
+npx rivocode-ui check-theme src/temas/*.css --json   # a mesma coisa, para o CI
+npx rivocode-ui check-theme acme.theme.ts            # o mapa do React Native
 ```
 
-It reads the files you pass, gathers the declarations by theme selector, and
-demands the 55 required roles. It exits with code 1 if any is missing, so one
-line in your pipeline holds the break before the deploy.
+Ele lê os arquivos que você passar, junta as declarações por seletor de tema, e
+cobra os 55 papéis obrigatórios. Sai com código 1 se faltar algum, então uma
+linha no seu pipeline segura a quebra antes do deploy.
 
-**And then it measures contrast, with the same math and the same pair table as
-the guard above.** That is why it shows up twice in this section: the math
-lives in a package module, and not in `scripts/`, so your theme is measured by
-the code that measures ours - 76 pairs per theme, with the alpha composited
-over the background it is drawn on before measuring. While that math stayed
-outside the package, whoever wanted to measure their own theme wrote 220 lines
-in the app: the role names, the pairs, the minimums and the alpha compositing.
-The copy went stale silently, with a `compose` that did not see two of the
-three alpha syntaxes and returned `NaN`.
+**E então mede o contraste, com a mesma conta e a mesma tabela de pares da
+guarda acima.** É por isso que ela existe nesta seção duas vezes: a matemática
+mora em um módulo do pacote, e não em `scripts/`, então o seu tema é medido pelo
+código que mede o nosso — 76 pares por tema, com o alfa composto sobre o fundo
+em que ele é desenhado antes de medir. Enquanto essa conta ficou fora do pacote,
+quem quis medir o próprio tema escreveu 220 linhas no app: os nomes de papel, os
+pares, os mínimos e a composição de alfa. A cópia envelheceu calada, com um
+`compose` que não enxergava duas das três sintaxes de alfa e devolvia `NaN`.
 
-The order of the two questions is not a detail: a missing role first, because
-measuring the contrast of a role that does not exist falls back to the
-inherited value and returns a pretty number by accident. If a role is missing,
-the command stops there and does not measure.
+A ordem das duas perguntas não é detalhe: papel faltando primeiro, porque medir
+o contraste de um papel que não existe cai no valor herdado e devolve um número
+bonito por acidente. Se falta papel, o comando para ali e não mede.
 
-**The extension says which theme shape you wrote.** `.css` is the web's layer 3.
-`.ts`, `.mjs` and `.js` is the map with `light` and `dark` that
-`@rivocode/ui-native`'s `RivoProvider` receives - the file that
-`bun run gen:native --tema` writes. They are two formats of the same theme, and
-a single command for both: two CLIs would diverge at the first fix only one of
-them got. Whoever prefers to measure by code imports `checkThemeMap` from
-`@rivocode/ui-native/contrast`.
+**A extensão diz qual forma de tema você escreveu.** `.css` é a camada 3 do web.
+`.ts`, `.mjs` e `.js` é o mapa com `light` e `dark` que o `RivoProvider` do
+`@rivocode/ui-native` recebe — o arquivo que `bun run gen:native --tema`
+escreve. São dois formatos do mesmo tema, e um comando só para os dois: dois
+CLIs divergiriam na primeira correção que só um deles recebesse. Quem prefere
+medir por código importa `checkThemeMap` de `@rivocode/ui-native/contrast`.
 
-**The message says what happens on the screen, and not just which token is
-missing.** A missing `--rc-font-sans` is not a compile error: `tsc` passes,
-Vite passes, and the whole page renders in the browser's font. That is how the
-0.7.0 change, which moved `--rc-font-*` from the global layer into the theme
-selector, arrived silently for whoever had a theme written for 0.6.x. The
-command splits the missing ones into two lists, silent break and visible break,
-and warns when the missing role **was born in a new version** - which is the
-moment it can be fixed, at upgrade, and not months later.
+**A mensagem diz o que acontece na tela, e não só qual token falta.** Faltar
+`--rc-font-sans` não é erro de compilação: o `tsc` passa, o Vite passa, e a
+página inteira renderiza na fonte do navegador. Foi assim que a mudança da
+0.7.0, que levou `--rc-font-*` da camada global para dentro do seletor de tema,
+chegou calada em quem tinha tema escrito para a 0.6.x. O comando separa as
+faltas em duas listas, quebra calada e quebra visível, e avisa quando o papel
+que falta **nasceu numa versão nova** - que é o momento em que dá para
+consertar, no upgrade, e não meses depois.
 
-The three finishing roles (`--rc-accent-image`, `--rc-accent-shadow` and
-`--rc-overlay-filter`) are the only optional ones and do not count. Neither do
-the shape tokens: they have a `:root` value underneath.
+Os três papéis de acabamento (`--rc-accent-image`, `--rc-accent-shadow` e
+`--rc-overlay-filter`) são os únicos opcionais e não entram na conta. Os tokens
+de forma também não: eles têm valor de `:root` por baixo.
 
-## Development
+## Desenvolvimento
 
 ```sh
 bun install
-bun run check   # lint, types, color guard, contrast guard, tests
-bun run shot    # generates the showcase in demo/dist/, desktop and phone
-bun run serve   # opens the showcase at http://127.0.0.1:4173
+bun run check   # lint, tipos, guarda de cor, guarda de contraste, testes
+bun run shot    # gera a vitrine em demo/dist/, de mesa e de celular
+bun run serve   # abre a vitrine em http://127.0.0.1:4173
 ```
 
-### `bun link` duplicates React
+### `bun link` duplica o React
 
-When developing with `bun link`, the consuming project pulls React from inside
-this folder instead of its own, and the page breaks with
-`Cannot read properties of null (reading 'useState')`. It is not a package
-defect: the published package does not carry React inside. It is the link.
+Ao desenvolver com `bun link`, o projeto consumidor puxa o React de dentro
+desta pasta em vez do dele, e a página quebra com
+`Cannot read properties of null (reading 'useState')`. Não é defeito do pacote:
+o pacote publicado não carrega React dentro. É o link.
 
-In the consuming project's `vite.config.ts`:
+No `vite.config.ts` do projeto consumidor:
 
 ```ts
 export default defineConfig({
@@ -663,33 +654,33 @@ export default defineConfig({
 });
 ```
 
-## Versions
+## Versões
 
-From 1.0 on, strict semver: breaks only in a major version; what is going away
-spends at least one minor version marked `@deprecated` in the type, with the
-new path, and only leaves in the following major version; a new prop and a new
-piece are a minor version; a fix is a patch version.
+Da 1.0 em diante, semver à risca: quebra só em versão maior; o que vai sair
+passa pelo menos uma versão menor marcado com `@deprecated` no tipo, com o
+caminho novo, e só sai na versão maior seguinte; prop nova e peça nova são
+versão menor; correção é versão de correção.
 
-## Notes
+## Notas
 
-- Base UI is the `@base-ui/react` package. The old name,
-  `@base-ui-components/react`, stopped at a release candidate and should not be
-  used.
-- Publishing only happens when a person bumps the version number and closes the
-  CHANGELOG: the tag is born by itself after the whole gate passes on that
-  commit, and a merge of half-done work publishes nothing.
-- The phone portrait comes from inside an iframe, in `demo/celular.html`, and
-  not from the window size: Chrome on macOS does not open a window below 500px,
-  and asking for 390 returned a photo cropped at 390 **with a 500 layout**.
+- A Base UI é o pacote `@base-ui/react`. O nome antigo,
+  `@base-ui-components/react`, parou num candidato a lançamento e não deve ser
+  usado.
+- A publicação só acontece quando uma pessoa sobe o número da versão e fecha o
+  CHANGELOG: a tag nasce sozinha depois que o gate inteiro passa sobre aquele
+  commit, e merge de trabalho pela metade não publica nada.
+- O retrato de celular sai de dentro de um iframe, em `demo/celular.html`, e não
+  do tamanho da janela: o Chrome no macOS não abre janela abaixo de 500px, e
+  pedir 390 devolvia uma foto cortada em 390 **com layout de 500**.
 
-## Documentation
+## Documentação
 
 <https://ds.rivocode.com.br>
 
-Each piece also has a raw markdown address, for whoever reads with an agent
-instead of the eye: `https://ds.rivocode.com.br/componentes/<kebab-name>.md`.
-The index is at `/llms.txt`, and there is a ready skill at `/skill`.
+Cada peça tem também o endereço cru em markdown, para quem lê com agent em vez
+de olho: `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`. O índice
+fica em `/llms.txt`, e há uma skill pronta em `/skill`.
 
-## License
+## Licença
 
-MIT. See [LICENSE](LICENSE).
+MIT. Veja [LICENSE](LICENSE).

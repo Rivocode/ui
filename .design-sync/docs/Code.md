@@ -1,22 +1,22 @@
 ---
-category: Data
+category: Dados
 ---
 
 # Code
 
-Code inside a sentence: a file name, a terminal command, a JSON key, a prop
-name.
+Código dentro de uma frase: nome de arquivo, comando de terminal, chave de um
+JSON, nome de prop.
 
-It is not `Kbd`. The key shadow promises "press this", and promising wrongly
-costs more than promising nothing. `Kbd` is for the combination the person is
-going to type, and this is for the text they are going to read or copy.
+Não é `Kbd`. A sombra de tecla promete "aperte isto", e prometer errado custa
+mais do que não prometer nada. O `Kbd` é para a combinação que a pessoa vai
+digitar, e este é para o texto que ela vai ler ou copiar.
 
-## When not to use
+## Quando não usar
 
-For a block (an API response, a log line, a config snippet), use `CodeBlock`,
-which scrolls on its own. `Code` inside a paragraph with a long line stretches
-the whole page.
+Para bloco (retorno de API, linha de log, trecho de configuração), use
+`CodeBlock`, que rola sozinho. `Code` dentro de um parágrafo com uma linha
+longa estica a página inteira.
 
-## In React Native
+## No React Native
 
-Translates, and it goes inside a `Text`: `Abra o <Code>app.json</Code>` wraps along with the sentence around it. **The horizontal scroll the queue promised was never on this side:** a scroll bar inside a paragraph is a trap for the finger scrolling the screen, and whoever needs it is `CodeBlock` (an API response, a log line), which is another piece and has not ported yet. The argument is the reverse of this one: there, breaking a JSON in the middle changes what is written, and here breaking a long path in the middle is right, because the alternative is stretching the whole screen. The font size is not written: the nested `Text` inherits the one from the outer text, which is what the web's `0.9em` said. And `selectable` comes on, because the long press is the native gesture for copying. On Android the one selecting is the outer `Text`, and there it is the one that needs to carry the prop.
+Traduz, e ele vai dentro de um `Text`: `Abra o <Code>app.json</Code>` quebra linha junto com a frase que o cerca. **A rolagem horizontal que a fila prometia nunca foi deste lado:** barra de rolagem dentro de um parágrafo é armadilha para o dedo que rola a tela, e quem precisa dela é o `CodeBlock` (retorno de API, linha de log), que é outra peça e ainda não portou. O argumento é o inverso do daqui: lá quebrar um JSON no meio muda o que está escrito, e aqui quebrar um caminho longo no meio é o certo, porque a alternativa é esticar a tela inteira. O corpo da letra não é escrito: o `Text` aninhado herda o do texto de fora, que é o que o `0.9em` do web dizia. E `selectable` vem ligado, porque o toque longo é o gesto nativo para copiar. No Android quem seleciona é o `Text` de fora, e ali é ele que precisa carregar a prop.

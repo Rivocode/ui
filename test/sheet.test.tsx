@@ -29,13 +29,13 @@ function Example({ side }: { side?: SheetSide }) {
   );
 }
 
-test("the sheet opens with title and description", () => {
+test("a folha abre com titulo e descricao", () => {
   render(<Example />);
   expect(screen.getByText("Navegacao")).toBeDefined();
   expect(screen.getByText("Escolha para onde ir.")).toBeDefined();
 });
 
-test("the sheet opens inside the container that carries the theme", () => {
+test("a folha abre dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <Sheet defaultOpen>
@@ -50,27 +50,27 @@ test("the sheet opens inside the container that carries the theme", () => {
   expect(container!.textContent).toContain("Navegacao");
 });
 
-test("the close button closes", () => {
+test("o botao de fechar fecha", () => {
   render(<Example />);
   fireEvent.click(screen.getByText("Fechar"));
   expect(screen.queryByText("Navegacao")).toBeNull();
 });
 
-test("the grab handle is left out of screen reading", () => {
+test("a barrinha de pegar nao entra na leitura de tela", () => {
   const { container } = render(<Example />);
   const bar = container.ownerDocument.querySelector('[aria-hidden="true"].rounded-pill');
   expect(bar).not.toBeNull();
 });
 
-test("the chosen side drives the close gesture", () => {
+test("o lado escolhido manda no gesto de fechar", () => {
   render(<Example side="left" />);
   const panel = screen.getByText("Navegacao").closest("[data-open]")!;
-  // Base UI marks the panel with the gesture direction; the left side closes to the
-  // left, and not downward.
+  // A Base UI marca o painel com a direcao do gesto; a esquerda fecha pela
+  // esquerda, e nao para baixo.
   expect(panel.outerHTML).toContain("translateX");
 });
 
-test("the sheet body inherits the panel height", () => {
+test("o miolo da folha herda a altura do painel", () => {
   render(<Example side="left" />);
   const panel = screen.getByText("Navegacao").closest("[data-open]")!;
   const body = screen.getByText("Navegacao").parentElement!;
@@ -78,7 +78,7 @@ test("the sheet body inherits the panel height", () => {
   expect(body.className.split(" ")).toContain("h-full");
 });
 
-test("the sheet layer stops at the visible area, and not under the browser bar", () => {
+test("a camada da folha para na area visivel, e nao embaixo da barra do navegador", () => {
   render(<Example />);
   const panel = screen.getByText("Navegacao").closest("[data-open]")!;
   const layer = panel.parentElement!.className.split(" ");

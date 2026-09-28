@@ -5,23 +5,15 @@ import { useSilentMisuse } from "./silent-misuse";
 
 export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText" | "onValueChange"> & {
   /**
-   * The pattern, in the same syntax as the web: a ready-made name (`cpf`,
-   * `cnpj`, `cep`, `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`,
-   * `moeda`) or a hand-written pattern, with `9` for a digit, `A` for a letter
-   * and `*` for either.
+   * O molde, na mesma sintaxe do web: um nome pronto (`cpf`, `cnpj`, `cep`,
+   * `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`, `moeda`) ou um
+   * molde escrito na mao, com `9` para digito, `A` para letra e `*` para os
+   * dois.
    */
   mask: Mask;
-  /**
-   * The CLEAN value, without punctuation and with letters in uppercase - the
-   * mask belongs to the field, the data does not carry it. In `moeda`, the
-   * digits of the on-screen text, like the web raw value: `0,05` yields `005`,
-   * and `12,00` yields `1200`.
-   */
+  /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. Em `moeda`, os digitos do texto na tela, como o cru do web: `0,05` entrega `005`, e `12,00` entrega `1200`. */
   value: string;
-  /**
-   * Called on every keystroke with the clean value and, in the second argument,
-   * the masked text that the web passes first.
-   */
+  /** Chamado a cada tecla com o valor limpo e, no segundo argumento, o texto com mascara que o web entrega primeiro. */
   onValueChange: (clean: string, masked: string) => void;
 };
 
@@ -38,7 +30,7 @@ const readTyped = (mask: Mask, text: string) => {
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
   useSilentMisuse(
     mask.includes("#"),
-    `[rivocode/ui-native] MaskedInput with "#" in the pattern ("${mask}"): since 1.0 the pattern follows the web syntax, and "#" became fixed punctuation. Replace each "#" with "9" (digit).`,
+    `[rivocode/ui-native] MaskedInput com "#" no molde ("${mask}"): desde a 1.0 o molde segue a sintaxe do web, e o "#" virou pontuacao fixa. Troque cada "#" por "9" (digito).`,
   );
   const alphanumeric = !isNumericMask(mask);
 

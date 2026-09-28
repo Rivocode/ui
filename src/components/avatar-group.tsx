@@ -10,13 +10,13 @@ import { cn } from "../lib/cn";
 import { Avatar, type AvatarProps } from "./avatar";
 
 export type AvatarGroupProps = ComponentProps<"div"> & {
-  /** How many appear before the "+n". With no cap, the row grows without end. */
+  /** Quantos aparecem antes do "+n". Sem teto, a fila cresce sem fim. */
   max?: number;
-  /** The size applies to the whole row, including the "+n". */
+  /** O tamanho vale para a fila inteira, inclusive para o "+n". */
   size?: AvatarProps["size"];
   /**
-   * The piece's texts, to change the language: `more` is what the screen reader
-   * hears on the "+n", and receives how many were left out. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `more` e o que o leitor de tela
+   * ouve no "+n", e recebe quantos ficaram de fora. Passe so os que mudam.
    */
   labels?: Partial<AvatarGroupLabels>;
 };

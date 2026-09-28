@@ -1,6 +1,6 @@
 import { Switch } from '@rivocode/ui'
 
-/** States */
+/** Estados */
 export function States() {
   return (
     <div className="flex flex-col gap-4">
@@ -20,7 +20,7 @@ export function States() {
   )
 }
 
-/** With label */
+/** Com rótulo */
 export function WithText() {
   return (
     <div className="space-y-4">

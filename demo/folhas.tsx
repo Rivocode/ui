@@ -71,9 +71,9 @@ function BottomSheet({ defaultOpen }: { defaultOpen: boolean }) {
 }
 
 const LEGEND: Record<string, string> = {
-  left: "side sheet open",
-  bottom: "bottom sheet open",
-  "": "both sheets closed",
+  left: "folha lateral aberta",
+  bottom: "folha de baixo aberta",
+  "": "as duas folhas fechadas",
 };
 
 const LABEL = "mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase";
@@ -97,22 +97,22 @@ function Frames() {
     <div className="flex flex-col">
       <iframe
         src="./folhas.html#escuro"
-        title="Sheets closed in the dark theme"
+        title="Folhas fechadas no tema escuro"
         className="h-[200px] w-full border-0"
       />
       <iframe
         src="./folhas.html#escuro-lateral"
-        title="Side sheet open in the dark theme"
+        title="Folha lateral aberta no tema escuro"
         className="h-[520px] w-full border-0"
       />
       <iframe
         src="./folhas.html#claro"
-        title="Sheets closed in the light theme"
+        title="Folhas fechadas no tema claro"
         className="h-[200px] w-full border-0"
       />
       <iframe
         src="./folhas.html#claro-de-baixo"
-        title="Bottom sheet open in the light theme"
+        title="Folha de baixo aberta no tema claro"
         className="h-[520px] w-full border-0"
       />
     </div>

@@ -33,22 +33,22 @@ function fadeOf(node: HTMLElement) {
 }
 
 export type SpoilerProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
-  /** The long content: running text, a list, whatever fits in a block. */
+  /** O conteudo longo: texto corrido, lista, o que couber num bloco. */
   children: ReactNode;
   /**
-   * The collapsed height, in pixels. Below it the button does not even appear; above it,
-   * the content is cut here, with the last two lines fading out in a gradient.
+   * A altura do recolhido, em pixels. Abaixo dela o botao nem aparece; acima,
+   * o conteudo corta aqui, com as duas ultimas linhas sumindo em degrade.
    */
   maxHeight?: number;
-  /** Open, for whoever controls it. Goes together with `onOpenChange`. */
+  /** Aberto, para quem controla. Anda junto com `onOpenChange`. */
   open?: boolean;
-  /** Open on the first paint, uncontrolled. */
+  /** Aberto na primeira pintura, sem controlar. */
   defaultOpen?: boolean;
-  /** Receives the new state on each "Ler mais" and "Ler menos". */
+  /** Recebe o estado novo a cada "Ler mais" e "Ler menos". */
   onOpenChange?: (open: boolean) => void;
-  /** The button's texts. Default: "Ler mais" and "Ler menos". */
+  /** Os textos do botao. Padrao: "Ler mais" e "Ler menos". */
   labels?: { more?: string; less?: string };
-  /** Class per part: `content` (the box that clips) and `trigger` (the button). */
+  /** Classe por parte: `content` (a caixa que corta) e `trigger` (o botao). */
   classNames?: Slots<"content" | "trigger">;
 };
 

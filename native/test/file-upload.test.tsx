@@ -7,11 +7,11 @@ import { RivoProvider } from "../src";
 import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 
 /*
- * expo-document-picker comes in as a double for the same reason as
- * `chart-svg.test.tsx` and `clipboard.test.tsx`: an OPTIONAL peer and a native
- * module, installed only in `examples/native`. The double is also the only way
- * to stage what the device decides - giving up, returning a file without a
- * size, returning two when only one was asked for.
+ * O expo-document-picker entra como duble pela mesma razao do
+ * `chart-svg.test.tsx` e do `clipboard.test.tsx`: peer OPCIONAL e modulo
+ * nativo, instalado so em `examples/native`. O duble tambem e o unico jeito de
+ * encenar o que o aparelho decide - desistir, devolver um arquivo sem tamanho,
+ * devolver dois quando so se pediu um.
  */
 type Options = { type?: string | string[]; multiple?: boolean; copyToCacheDirectory?: boolean };
 type Asset = { uri: string; name: string; size?: number; mimeType?: string; lastModified: number };
@@ -22,7 +22,7 @@ let answer: { canceled: true; assets: null } | { canceled: false; assets: Asset[
   assets: null,
 };
 
-/** When on, the double refuses to open - what Android does on the second tap. */
+/** Ligado, o duble recusa abrir - o que o Android faz no segundo toque. */
 let refuses = false;
 
 mock.module("expo-document-picker", () => ({
@@ -57,25 +57,25 @@ async function choose(screen: Parameters<typeof byRole>[0]) {
 }
 
 describe("FileUpload", () => {
-  test("there is no drop area: what opens the picker is a control-height button", () => {
+  test("nao ha area de soltar: o que abre o seletor e um botao de altura de controle", () => {
     const screen = render(<FileUpload label="Escolher o XML" />);
     const [button] = byRole(screen, "button");
 
     expect(button!.props.className).toContain("h-12");
-    // No dashes: on the phone there is no dropping, and a dashed border is,
-    // letter by letter, the idiom for "drop here".
+    // Nada de tracejado: no celular nao existe soltar, e a borda tracejada e,
+    // letra por letra, o idioma de "solte aqui".
     expect(button!.props.className).not.toContain("dashed");
   });
 
-  test("the hint goes into the spoken name, so the refusal is not the first news", () => {
+  test("o hint entra no nome falado, para a recusa nao ser a primeira noticia", () => {
     const screen = render(<FileUpload label="Escolher o XML" hint="XML ou PDF, até 5 MB" />);
 
     expect(byLabel(screen, "Escolher o XML. XML ou PDF, até 5 MB")).toHaveLength(1);
-    // And the text below is hidden from the screen reader, or it reads it twice.
+    // E o texto de baixo sai do leitor de tela, senao ele o le duas vezes.
     expect(textOf(screen)).toContain("XML ou PDF, até 5 MB");
   });
 
-  test("only the MIME goes to the system picker; the extension would match nothing", async () => {
+  test("so o MIME vai para o seletor do sistema; a extensao ficaria sem casar nada", async () => {
     const onSelect = mock(() => {});
     answers([asset()]);
     const screen = render(
@@ -88,14 +88,14 @@ describe("FileUpload", () => {
     expect(asked?.copyToCacheDirectory).toBe(true);
   });
 
-  test("without accept the picker opens unrestricted", async () => {
+  test("sem accept o seletor abre sem restricao", async () => {
     answers([asset()]);
     const screen = render(<FileUpload label="Anexar" />);
     await choose(screen);
     expect(asked?.type).toBeUndefined();
   });
 
-  test("giving up is not an ending: no callback fires", async () => {
+  test("desistir nao e um final: nenhum callback dispara", async () => {
     const onSelect = mock(() => {});
     const onReject = mock(() => {});
     answer = { canceled: true, assets: null };
@@ -107,7 +107,7 @@ describe("FileUpload", () => {
     expect(onReject).toHaveBeenCalledTimes(0);
   });
 
-  test("the wrong type becomes a refusal with the reason ready for a notice", async () => {
+  test("o tipo errado vira recusa com o motivo pronto para um aviso", async () => {
     const onSelect = mock(() => {});
     const onReject = mock(() => {});
     answers([asset({ name: "foto.png", mimeType: "image/png" })]);
@@ -131,7 +131,7 @@ describe("FileUpload", () => {
     ]);
   });
 
-  test("the type wildcard counts, and the extension matches by name", async () => {
+  test("o curinga de tipo vale, e a extensao casa pelo nome", async () => {
     const onSelect = mock(() => {});
     answers([asset({ name: "foto.png", mimeType: "image/png" })]);
     await choose(render(<FileUpload label="Anexar" accept="image/*" onSelect={onSelect} />));
@@ -143,7 +143,7 @@ describe("FileUpload", () => {
     expect(byExtension).toHaveBeenCalledTimes(1);
   });
 
-  test("larger than maxSize is refused, and the reason comes out formatted without Intl", async () => {
+  test("maior que maxSize e recusado, e o motivo sai formatado sem Intl", async () => {
     const onReject = mock(() => {});
     answers([asset({ size: 6_000_000 })]);
 
@@ -154,7 +154,7 @@ describe("FileUpload", () => {
     expect(onReject.mock.calls[0]![0][0].reason).toBe("maior que 5 MB");
   });
 
-  test("a size the device did not report passes: what was not measured is not refused", async () => {
+  test("tamanho que o aparelho nao informou passa: nao se recusa o que nao se mediu", async () => {
     const onSelect = mock(() => {});
     answers([asset({ size: undefined })]);
 
@@ -163,7 +163,7 @@ describe("FileUpload", () => {
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
 
-  test("without multiple only the first gets in, even if the picker returns two", async () => {
+  test("sem multiple so o primeiro entra, mesmo se o seletor devolver dois", async () => {
     const onSelect = mock(() => {});
     answers([asset(), asset({ name: "outra.xml" })]);
 
@@ -173,7 +173,7 @@ describe("FileUpload", () => {
     expect(asked?.multiple).toBeUndefined();
   });
 
-  test("disabled does not open the picker", async () => {
+  test("desabilitado nao abre o seletor", async () => {
     asked = undefined;
     answers([asset()]);
     const onSelect = mock(() => {});
@@ -187,7 +187,7 @@ describe("FileUpload", () => {
 });
 
 describe("FileUploadItem", () => {
-  test("each file's bar starts at the value and moves to the new one in the slow duration", () => {
+  test("a barra de cada arquivo nasce no valor e anda ate o novo no tempo slow", () => {
     const item = (progress: number) => (
       <FileUploadItem name="nota.xml" size={1024} progress={progress} onRemove={() => {}} />
     );
@@ -212,7 +212,7 @@ describe("FileUploadItem", () => {
     });
   });
 
-  test("the size comes out formatted by the piece, with the pt-BR comma", () => {
+  test("o tamanho sai formatado pela peca, com a virgula do pt-BR", () => {
     const screen = render(
       <FileUploadList>
         <FileUploadItem name="nota.xml" size={48_200} onRemove={() => {}} />
@@ -222,7 +222,7 @@ describe("FileUploadItem", () => {
     expect(textOf(screen)).toContain("47,1 KB");
   });
 
-  test("progress becomes an announced bar, with the file name along", () => {
+  test("o progresso vira barra anunciada, com o nome do arquivo junto", () => {
     const screen = render(
       <FileUploadItem name="nota.xml" size={1024} progress={40} onRemove={() => {}} />,
     );
@@ -232,7 +232,7 @@ describe("FileUploadItem", () => {
     expect(bar!.props.accessibilityValue).toEqual({ min: 0, max: 100, now: 40 });
   });
 
-  test("the error wins over progress and offers a retry", () => {
+  test("o erro vence o progresso e oferece nova tentativa", () => {
     const onRetry = mock(() => {});
     const screen = render(
       <FileUploadItem
@@ -245,7 +245,7 @@ describe("FileUploadItem", () => {
       />,
     );
 
-    // A bar moving under a failure says two contradictory things.
+    // Barra andando embaixo de uma falha diz duas coisas contrarias.
     expect(byRole(screen, "progressbar")).toHaveLength(0);
     expect(textOf(screen)).toContain("A rede caiu");
 
@@ -253,7 +253,7 @@ describe("FileUploadItem", () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
-  test("remove has its own name and a target beyond the drawing", () => {
+  test("remover tem nome proprio e alvo alem do desenho", () => {
     const onRemove = mock(() => {});
     const screen = render(<FileUploadItem name="nota.xml" size={1024} onRemove={onRemove} />);
 
@@ -264,7 +264,7 @@ describe("FileUploadItem", () => {
     expect(onRemove).toHaveBeenCalledTimes(1);
   });
 
-  test("a long name is cut by numberOfLines, not by a class", () => {
+  test("o nome longo corta por numberOfLines, e nao por classe", () => {
     const screen = render(
       <FileUploadItem
         name="nota-fiscal-eletronica-serie-1-numero-48131-do-cliente.xml"
@@ -280,14 +280,14 @@ describe("FileUploadItem", () => {
   });
 });
 
-describe("FileUpload, when the picker refuses to open", () => {
-  test("counts as having chosen nothing, and no promise dies unhandled", async () => {
+describe("FileUpload, quando o seletor recusa abrir", () => {
+  test("vale como nao ter escolhido nada, e nenhuma promessa morre solta", async () => {
     const onSelect = mock(() => {});
     const onReject = mock(() => {});
     refuses = true;
 
-    // Without the piece's catch the rejection would die unhandled: the
-    // Pressable's `onPress` awaits nobody's return.
+    // Sem o catch da peca a rejeicao morreria solta: o `onPress` do Pressable
+    // nao espera o retorno de ninguem.
     const screen = render(<FileUpload label="Anexar" onSelect={onSelect} onReject={onReject} />);
     await choose(screen);
 

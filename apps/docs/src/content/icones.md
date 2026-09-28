@@ -1,27 +1,26 @@
-The set is [lucide](https://lucide.dev), installed as `lucide-react` and
-declared as a required peer dependency: same stroke, same grid, and the numeric
-`size` makes a class unnecessary. Never an emoji in place of an icon, and never
-a second set mixed in: two different strokes on the same screen look like two
-brands.
+O conjunto é o [lucide](https://lucide.dev), instalado como `lucide-react` e
+declarado como dependência de par obrigatória: mesmo traço, mesma grade, e o
+`size` numérico dispensa classe. Nunca emoji no lugar de ícone, e nunca um
+segundo conjunto misturado: dois traços diferentes na mesma tela parecem duas
+marcas.
 
-## Size by context
+## Tamanho por contexto
 
-| Where | Size |
+| Onde | Tamanho |
 |---|---|
-| Inside a control (`Button`, `Tab`, menu item) | `size={16}` |
-| Next to `sm`/`xs` text (cell, meta, eyebrow) | `size={14}` |
-| Tiny in a tight line (`Stat` hint, delta) | `size={13}` |
+| Dentro de controle (`Button`, `Tab`, item de menu) | `size={16}` |
+| Junto de texto `sm`/`xs` (célula, meta, eyebrow) | `size={14}` |
+| Miúdo em linha apertada (hint do `Stat`, delta) | `size={13}` |
 
-The touch target is still at least 24px: a smaller icon grows the button and
-gives the space back with a negative margin, as the `Stat` hint does.
+O alvo de toque continua sendo 24px no mínimo: ícone menor cresce o botão e
+devolve o espaço com margem negativa, como o hint do `Stat` faz.
 
-## Accessible name
+## Nome acessível
 
-A decorative icon (one that goes along with text that already says it all)
-takes `aria-hidden="true"`. An icon that is a button's only content requires a
-name **on the button**, never on the icon. `IconButton` enforces this through
-its type: `label` is required and becomes the name, and the icon comes out
-`aria-hidden` on its own.
+Ícone decorativo (que acompanha um texto que já diz tudo) leva
+`aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
+nome **no botão**, nunca no ícone. O `IconButton` cobra isso pelo tipo: o
+`label` é obrigatório e vira o nome, e o ícone sai `aria-hidden` sozinho.
 
 ```tsx
 <IconButton variant="secondary" label="Mais filtros">
@@ -29,39 +28,39 @@ its type: `label` is required and becomes the name, and the icon comes out
 </IconButton>
 ```
 
-## The vocabulary
+## O vocabulário
 
-One concept, one icon. Lucide has a synonym for almost everything (`Trash` and
-`Trash2`, `Gear` and `Settings`), and each synonym that gets in is a screen
-that looks like another product. This is the canonical table; a new concept
-goes in here before it goes into the code.
+Um conceito, um ícone. O lucide tem sinônimo para quase tudo (`Trash` e
+`Trash2`, `Gear` e `Settings`), e cada sinônimo que entra é uma tela que parece
+de outro produto. Esta é a tabela canônica; conceito novo entra aqui antes de
+entrar no código.
 
-| Concept | Icon |
+| Conceito | Ícone |
 |---|---|
-| add / create | `Plus` |
-| delete | `Trash2` |
-| edit | `Pencil` |
-| search | `Search` |
-| download / export | `Download` |
-| upload a file | `Upload` |
-| copy | `Copy` |
-| confirmed / done | `Check` |
-| close / clear | `X` |
-| more actions | `MoreHorizontal` |
-| fine-grained filters | `SlidersHorizontal` |
-| reload | `RefreshCw` |
-| view / preview | `Eye` |
-| link that leaves the product | `ExternalLink` |
-| sign out | `LogOut` |
-| opens a level (item, breadcrumb) | `ChevronRight` |
-| expands downward (select, accordion) | `ChevronDown` |
-| previous page / back | `ChevronLeft` |
-| sortable, unsorted | `ChevronsUpDown` |
-| change up / down | `ArrowUpRight` / `ArrowDownRight` |
-| document / invoice | `FileText` |
-| people / customers | `Users` |
-| system settings | `Settings` |
-| date | `CalendarDays` |
-| dashboard | `LayoutDashboard` |
-| short explanation | `Info` |
-| agent / AI | `Bot` |
+| adicionar / criar | `Plus` |
+| excluir | `Trash2` |
+| editar | `Pencil` |
+| buscar | `Search` |
+| baixar / exportar | `Download` |
+| enviar arquivo | `Upload` |
+| copiar | `Copy` |
+| confirmado / feito | `Check` |
+| fechar / limpar | `X` |
+| mais ações | `MoreHorizontal` |
+| filtros finos | `SlidersHorizontal` |
+| recarregar | `RefreshCw` |
+| ver / prévia | `Eye` |
+| link que sai do produto | `ExternalLink` |
+| sair da conta | `LogOut` |
+| abre um nível (item, breadcrumb) | `ChevronRight` |
+| expande para baixo (select, accordion) | `ChevronDown` |
+| página anterior / voltar | `ChevronLeft` |
+| ordenável sem ordem | `ChevronsUpDown` |
+| variação para cima / para baixo | `ArrowUpRight` / `ArrowDownRight` |
+| documento / nota | `FileText` |
+| pessoas / clientes | `Users` |
+| ajustes do sistema | `Settings` |
+| data | `CalendarDays` |
+| painel | `LayoutDashboard` |
+| explicação curta | `Info` |
+| agente / IA | `Bot` |

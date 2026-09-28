@@ -27,11 +27,11 @@ import { useTokenMotion, withMotion, type ChartMotion } from "./use-chart-motion
 export type ChartConfig = Record<
   string,
   {
-    /** The series' readable name. Goes to the tooltip and the legend. */
+    /** O nome legivel da serie. Vai para a dica e para a legenda. */
     label: string;
     /**
-     * The series' color. Without it, the next one in the palette is used, in the order in which the
-     * series appears in `config`.
+     * A cor da serie. Sem ela, entra a proxima da paleta, na ordem em que a
+     * serie aparece no `config`.
      */
     color?: string;
   }
@@ -39,56 +39,56 @@ export type ChartConfig = Record<
 
 export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   config: ChartConfig;
-  /** A single Recharts chart: `LineChart`, `BarChart`, `AreaChart`. */
+  /** Um unico grafico da Recharts: `LineChart`, `BarChart`, `AreaChart`. */
   children: ReactElement;
 
   isLoading?: boolean;
   isError?: boolean;
-  /** Without this, the error offers no retry. */
+  /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
   /**
-   * The title of the error notice. Without it, "Nao foi possivel carregar o grafico".
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar o grafico".
    *
-   * The same name and the same role as `errorTitle` on `DataTable`: a dashboard with
-   * four charts has to say which one failed, and a product that does not speak
-   * Portuguese has to say it in another language.
+   * O mesmo nome e o mesmo papel do `errorTitle` do `DataTable`: um painel com
+   * quatro graficos precisa dizer qual deles falhou, e um produto que nao fala
+   * portugues precisa dizer isso em outra lingua.
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
-   * What appears when the query comes back with no point at all. The same shape as
-   * `DataTable`, `action` included - it is the way out that `EmptyState`
-   * considers strongly recommended, and it was only missing here. Without it, the empty list
-   * shows the short notice from `labels.noData`, and not axes over nothing.
+   * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
+   * `DataTable`, `action` inclusive - ela e a saida que o `EmptyState`
+   * considera fortemente recomendada, e faltava so aqui. Sem ele, a lista vazia
+   * mostra o aviso curto de `labels.noData`, e nao eixos sobre o nada.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
   /**
-   * The points, so the frame knows how to count zero.
+   * Os pontos, para a moldura saber contar zero.
    *
-   * Almost always unnecessary: without it, the count comes from the `data` of the
-   * Recharts chart passed as a child. Pass your own when the points do not
-   * live in the direct child - `<ScatterChart>` with the `data` on `<Scatter>`, for
-   * example - or when the drawn series is not the one that decides emptiness.
+   * Quase sempre dispensavel: sem ela, a contagem sai do `data` do proprio
+   * grafico da Recharts que vem como filho. Passe a sua quando os pontos nao
+   * moram no filho direto - `<ScatterChart>` com o `data` no `<Scatter>`, por
+   * exemplo - ou quando a serie desenhada nao for a que decide o vazio.
    */
   data?: readonly unknown[];
 
   /**
-   * What the screen reader hears in place of the drawing.
+   * O que o leitor de tela ouve no lugar do desenho.
    *
-   * Without it, the name comes from the series labels in `config` - which is already a
-   * sentence, and not the pile of ticks the SVG would give on its own. Write your own
-   * when the chart answers a question ("Faturamento por mes, em reais"):
-   * the series says what was measured, not what the screen asks.
+   * Sem ela, o nome sai dos rotulos das series do `config` - que ja e uma
+   * frase, e nao o amontoado de ticks que o SVG daria sozinho. Escreva a sua
+   * quando o grafico responde a uma pergunta ("Faturamento por mes, em reais"):
+   * a serie diz o que foi medido, e nao o que a tela pergunta.
    */
   label?: string;
   /**
-   * The piece's texts, to change the language: `retry` is the button that runs
-   * `onRetry`, "Tentar de novo" without it - the same key in every piece that
-   * handles the four endings.
-   * `loading` and `loaded` are what the screen reader hears when the query
-   * goes out and when it comes back. `name` builds the chart's name without `label`, from
-   * the series labels in `config`. `noData` is the notice for when the
-   * list comes back empty and there is no `empty`, "Sem dados no periodo" without it.
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta. `name` monta o nome do grafico sem `label`, a
+   * partir dos rotulos das series do `config`. `noData` e o aviso de quando a
+   * lista volta vazia e nao ha `empty`, "Sem dados no periodo" sem ele.
    */
   labels?: Partial<ChartContainerLabels>;
 };
@@ -174,12 +174,12 @@ export function seriesColors(
 
 export function unknownSeriesComplaint(key: string, known: readonly string[]): string {
   return (
-    `[rivocode/ui] <ChartContainer>: the mark with \`dataKey\` "${key}" got no color, and ` +
-    `\`config\` does not know that series - Recharts paints the mark black, and there is no ` +
-    "error at all. The series of this chart are: " +
-    `${known.join(", ")}. Fix the key, or declare the series in \`config\` - the frame ` +
-    "paints by itself every ink role the mark leaves empty, role by role: the bar's `fill`, " +
-    "the line's `stroke`, both on the area."
+    `[rivocode/ui] <ChartContainer>: a marca com \`dataKey\` "${key}" ficou sem cor, e o ` +
+    `\`config\` não conhece essa série - a Recharts pinta a marca de preto, e não há erro ` +
+    "nenhum. As séries deste gráfico são: " +
+    `${known.join(", ")}. Corrija a chave, ou declare a série no \`config\` - a moldura ` +
+    "pinta sozinha todo papel de tinta que a marca deixa vago, papel a papel: o `fill` da " +
+    "barra, o `stroke` da linha, os dois da área."
   );
 }
 
@@ -330,10 +330,10 @@ function useMissingDataWarning(missing: boolean) {
     if (!missing || process.env.NODE_ENV === "production") return;
 
     console.warn(
-      "[rivocode/ui] <ChartContainer empty={...}> with no points to count: neither was the " +
-        "`data` prop passed, nor does the child chart carry a `data`. The empty state will never " +
-        "appear, and the chart draws axes over nothing. Pass `data={points}` to " +
-        "ChartContainer - the same array you already hand to the chart.",
+      "[rivocode/ui] <ChartContainer empty={...}> sem pontos para contar: nem a prop " +
+        "`data` foi passada, nem o grafico filho carrega um `data`. O estado vazio nunca " +
+        "vai aparecer, e o grafico desenha eixos sobre o nada. Passe `data={pontos}` no " +
+        "ChartContainer - e o mesmo array que voce ja entrega ao grafico.",
     );
   }, [missing]);
 }
@@ -342,10 +342,10 @@ export function flatBoxComplaint(width: number, height: number): string | undefi
   if (!(width > 0 && height === 0)) return undefined;
 
   return (
-    "[rivocode/ui] <ChartContainer>: the frame measured a width and no height, and Recharts " +
-    "drew in a 0px rectangle - the card stays empty, with no error at all. The height comes " +
-    'from whoever uses the frame: give it a height class (className="h-64"), or give height ' +
-    "to the parent that holds it."
+    "[rivocode/ui] <ChartContainer>: a moldura mediu largura e nenhuma altura, e a Recharts " +
+    "desenhou num retangulo de 0px - o cartao fica vazio, sem erro nenhum. A altura vem de " +
+    'quem usa a moldura: de a ela uma classe de altura (className="h-64"), ou altura ao pai ' +
+    "que a segura."
   );
 }
 

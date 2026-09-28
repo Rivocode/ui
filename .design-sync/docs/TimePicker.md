@@ -1,15 +1,15 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # TimePicker
 
-`TimeField` with the time-choosing panel.
+O `TimeField` com o painel de escolher a hora.
 
-Same value, same format, same keyboard: everything the `TimeField` page says
-about `"14:30"`, about `25:99`, about `step`, `min` and `max` still holds here.
-What this piece adds is the clock in the corner of the field, and what it
-opens.
+Mesmo valor, mesmo formato, mesmo teclado: tudo que a página do `TimeField` diz
+sobre `"14:30"`, sobre `25:99`, sobre `step`, `min` e `max` continua valendo
+aqui. O que esta peça acrescenta é o relógio no canto do campo, e o que ele
+abre.
 
 ```tsx
 const [entrega, setEntrega] = useState('09:00')
@@ -17,98 +17,97 @@ const [entrega, setEntrega] = useState('09:00')
 <TimePicker value={entrega} onValueChange={setEntrega} min="08:00" max="18:00" step={30} />
 ```
 
-## Two columns, not one list
+## Duas colunas, e não uma lista
 
-The panel has a column of hours and one of minutes, not a single list of times.
-A single list only seems simpler until `step={5}`, when it becomes 288 rows to
-scroll; in two columns it is 24 and 12, and the hour is always the first
-decision.
+O painel tem uma coluna de horas e uma de minutos, e não uma lista única de
+horários. Uma lista só parece mais simples até `step={5}`, quando ela vira 288
+linhas para rolar; em duas colunas são 24 e 12, e a hora é sempre a primeira
+decisão.
 
-The minutes come from `60 / step`, so the step is most readable when it divides
-60: 1, 5, 15 and 30 are the ones the piece was designed to serve.
+Os minutos vêm de `60 / step`, então o passo é mais legível quando divide 60:
+1, 5, 15 e 30 são os que a peça foi desenhada para servir.
 
-The text above each column is its name: the column takes it through
-`aria-labelledby`, and the text is `aria-hidden` so it is not read loose right
-before the box is announced with the same word. Before, there were two: a
-`<span>Hora</span>` and an `aria-label="Hora"`, said one after the other, in
-both columns. Changing `labels.hours` or `labels.minutes` changes both at once,
-because now it is a single text.
+O texto acima de cada coluna é o nome dela: a coluna o toma por
+`aria-labelledby`, e o texto fica `aria-hidden` para não ser lido solto logo
+antes de a caixa ser anunciada com a mesma palavra. Antes eram duas: um
+`<span>Hora</span>` e um `aria-label="Hora"`, ditos em seguida, nas duas
+colunas. Trocar `labels.hours` ou `labels.minutes` troca os dois de uma vez,
+porque agora é um texto só.
 
-**The hour does not close the panel; the minute does.** The minute is the last
-decision, and closing before it would force reopening the panel halfway through
-the choices. Choosing another hour keeps the minute that was already chosen:
-whoever changes 14:30 to 16 wants 16:30, not 16:00, even when the minute was
-typed off the grid, because `14:07` was someone's choice. If the new hour
-throws the time outside the window, it rests against the window's limit instead
-of leaving it.
+**A hora não fecha o painel; o minuto fecha.** O minuto é a última decisão, e
+fechar antes dela obrigaria a reabrir o painel na metade das escolhas. Escolher
+outra hora preserva o minuto que já estava escolhido: quem troca 14:30 por 16
+quer 16:30, e não 16:00, inclusive quando o minuto foi digitado fora da grade,
+porque `14:07` foi escolha de alguém. Se a hora nova jogar o horário para fora
+da janela, ele encosta no limite dela em vez de sair.
 
-The keyboard arrow moves through the column and takes the selection along,
-without closing anything; Enter and the click close when they are on the
-minute. On opening, the column already scrolls to the chosen hour.
+A seta do teclado anda a coluna e leva a seleção junto, sem fechar nada; Enter
+e o clique fecham quando estão no minuto. Ao abrir, a coluna já rola até a hora
+escolhida.
 
-## The window trims the panel
+## A janela recorta o painel
 
-`min` and `max` remove from the panel what is outside: with `min="08:00"` and
-`max="10:00"` the hours column goes from 08 to 10, and at 10 only the minute
-`00` remains. Trimming is better than offering and complaining later: the
-delivery window is a store rule, not the person's mistake.
+`min` e `max` tiram do painel o que está fora: com `min="08:00"` e `max="10:00"`
+a coluna de horas vai de 08 a 10, e às 10 sobra só o minuto `00`. Recortar é
+melhor do que oferecer e reclamar depois: a janela de entrega é uma regra da
+loja, e não um erro da pessoa.
 
-The window **trims the grid, it does not shift it**: with `min="08:10"` and
-`step={15}`, the first time offered is `08:15`. The grid always starts from
-midnight, so that `08:15` means the same thing across the whole screen. Whoever
-needs `08:10` types it in the field, which accepts it.
+A janela **recorta a grade, não a desloca**: com `min="08:10"` e `step={15}`, o
+primeiro horário oferecido é `08:15`. A grade sai sempre da meia-noite, para
+que `08:15` signifique a mesma coisa em toda a tela. Quem precisa de `08:10`
+digita no campo, que aceita.
 
-## On the phone, the panel is a sheet
+## No celular, o painel é folha
 
-At 390px the panel does not fit anchored to the field, so it rises from the
-bottom as a `Sheet`, through the same `CalendarPanel` that `DatePicker` uses.
-The two columns split the full width, and each option has the height of a house
-control: a finger target, not a mouse one. From the `sm` width up the panel is
-a `Popover` anchored to the field again, aligned to the right.
+A 390px o painel não cabe ancorado no campo, então ele sobe de baixo como
+`Sheet`, pelo mesmo `CalendarPanel` que o `DatePicker` usa. As duas colunas
+dividem a largura inteira, e cada opção tem a altura de um controle da casa:
+alvo de dedo, e não de mouse. Da largura `sm` para cima o painel volta a ser
+`Popover` ancorado no campo, alinhado pela direita.
 
-## Parts
+## Partes
 
-`className` dresses the frame that joins field and clock, because it is the one
-that has the width. The rest comes in by part:
+O `className` veste a moldura que junta campo e relógio, porque é ela que tem a
+largura. O resto entra por parte:
 
-| Part | What it is |
+| Parte | O que é |
 |---|---|
-| `field` | the typing field |
-| `trigger` | the clock button, inside the field |
-| `panel` | the floating panel, or the sheet on the phone |
-| `column` | each of the two scrollable columns |
-| `option` | each hour and each minute |
+| `field` | o campo de digitar |
+| `trigger` | o botão do relógio, dentro do campo |
+| `panel` | o painel flutuante, ou a folha no celular |
+| `column` | cada uma das duas colunas roláveis |
+| `option` | cada hora e cada minuto |
 
 ```tsx
 <TimePicker className="w-56" classNames={{ column: 'max-h-40', option: 'font-mono' }} />
 ```
 
-The texts the screen reader hears come in through `labels`, and each one has its
-own default. Changing one does not erase the others:
+Os textos que o leitor de tela ouve entram por `labels`, e cada um tem o próprio
+padrão. Trocar um não apaga os outros:
 
 ```tsx
 <TimePicker labels={{ open: 'Escolher o horário da coleta', title: 'Horário da coleta' }} />
 ```
 
-## When not to use
+## Quando não usar
 
-If the screen is an operations one (time clock, timesheet entry, an import
-checked row by row), use `TimeField`. Whoever types all day does not open a
-panel, and the clock in the corner only takes up the field's width.
+Se a tela é de operação (ponto eletrônico, apontamento de horas, importação
+conferida linha a linha), use `TimeField`. Quem digita o dia inteiro não abre
+painel, e o relógio no canto só ocupa a largura do campo.
 
-If the times are few and fixed ("manhã, tarde, noite", or the four windows the
-carrier serves), use `Select`: there the options have names, and a name says
-more than `08:00 - 12:00` written in two columns.
+Se os horários são poucos e fixos ("manhã, tarde, noite", ou as quatro janelas
+que a transportadora atende), use `Select`: ali as opções têm nome, e nome diz
+mais do que `08:00 - 12:00` escrito em duas colunas.
 
-For a date, `DatePicker`; for a date range, `DateRangePicker`. This piece knows
-no day at all, on purpose.
+Para data, `DatePicker`; para intervalo de datas, `DateRangePicker`. Esta peça
+não conhece dia nenhum, de propósito.
 
-## In React Native
+## No React Native
 
-Translates as a trigger plus a **bottom sheet**, which is the house decision for panels on the phone. Two scrollable columns for the same reason as the web, which weighs more here: `step={5}` in a single list is 288 rows to scroll with the thumb. Each option is 48pt, above the required 44pt, and the column scrolls to the chosen time each time it opens.
+Traduz como gatilho mais **folha de baixo**, que é a decisão da casa para painel no celular. Duas colunas roláveis pela mesma razão do web, que pesa mais aqui: `step={5}` numa lista única são 288 linhas para rolar com o polegar. Cada opção tem 48pt, acima dos 44pt exigidos, e a coluna rola até a hora escolhida a cada abertura.
 
-**The structural difference, and it is not aesthetic:** on the web the clock lives INSIDE the field; here it does not. A `TextInput` inside a `Pressable` swallows the parent's touch, and the trigger needs to be a single target for the screen reader. Every native picker in the house (`DatePicker`, `DateRangePicker`, `Select`, `Combobox`, `TreeSelect`) is already trigger plus sheet, and the split comes out cleaner than on the web: `TimeField` is typing, `TimePicker` is tapping.
+**A diferença de estrutura, e ela não é estética:** no web o relógio mora DENTRO do campo; aqui não. Um `TextInput` dentro de um `Pressable` engole o toque do pai, e o gatilho precisa ser um alvo único para o leitor de tela. Todo picker nativo da casa (`DatePicker`, `DateRangePicker`, `Select`, `Combobox`, `TreeSelect`) já é gatilho mais folha, e a divisão sai mais limpa do que no web: `TimeField` é digitação, `TimePicker` é toque.
 
-The hour does not close the sheet and keeps the minute; the minute closes it. `labels` loses `open` and `title`, because here the required `label` already names the trigger AND titles the sheet, the same arrangement as `DateRangePicker`.
+A hora não fecha a folha e preserva o minuto; o minuto fecha. O `labels` perde `open` e `title`, porque aqui o `label` obrigatório já nomeia o gatilho E titula a folha, o mesmo arranjo do `DateRangePicker`.
 
-The parts are styled through the same `classNames` as the web: `trigger`, `panel` (the sheet), `column` and `option`. `field` does not exist here: the clock does not live inside a field, and the trigger is already `trigger`.
+As partes vestem pelo mesmo `classNames` do web: `trigger`, `panel` (a folha), `column` e `option`. `field` não existe aqui: o relógio não mora dentro de um campo, e o gatilho já é o `trigger`.

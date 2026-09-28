@@ -12,19 +12,19 @@ const MARCA = [
   { value: "#6aa9ff", label: "Azul" },
 ];
 
-/** The hexadecimal field, which is the only TextInput in the tree. */
+/** O campo hexadecimal, que e o unico TextInput da arvore. */
 function hexField(screen: ReactTestRenderer) {
   return byLabel(screen, "Código hexadecimal da cor")[0]!;
 }
 
 describe("normalizeColor", () => {
-  test("accepts what gets pasted from anywhere and always returns the same shape", () => {
+  test("aceita o que se cola de qualquer lugar e devolve sempre a mesma forma", () => {
     expect(normalizeColor("#0f8")).toBe("#00ff88");
     expect(normalizeColor("BFDD3A")).toBe("#bfdd3a");
     expect(normalizeColor("  #D4F34A  ")).toBe("#d4f34a");
   });
 
-  test("what is not a color yet returns null, and eight digits are left out", () => {
+  test("o que ainda nao e cor devolve null, e oito digitos ficam de fora", () => {
     expect(normalizeColor("#d4f")).toBe("#dd44ff");
     expect(normalizeColor("#d4f3")).toBeNull();
     expect(normalizeColor("d4f34aff")).toBeNull();
@@ -33,7 +33,7 @@ describe("normalizeColor", () => {
 });
 
 describe("ColorPicker", () => {
-  test("the swatches are a radio group, not a handful of buttons", () => {
+  test("as amostras sao um grupo de radio, e nao um punhado de botoes", () => {
     const screen = render(
       <ColorPicker
         label="Cor da marca"
@@ -47,7 +47,7 @@ describe("ColorPicker", () => {
     expect(byRole(screen, "radio")).toHaveLength(4);
   });
 
-  test("the name carries the value, and without a name the swatch still announces itself", () => {
+  test("o nome carrega o valor, e sem nome a amostra ainda se anuncia", () => {
     const named = render(<ColorPicker value="" onValueChange={() => {}} swatches={[MARCA[0]!]} />);
     expect(byLabel(named, "Lima, #d4f34a")).toHaveLength(1);
 
@@ -55,12 +55,12 @@ describe("ColorPicker", () => {
     expect(byLabel(bare, "Cor #d4f34a")).toHaveLength(1);
   });
 
-  test("the chosen one is spoken, not just painted", () => {
+  test("o escolhido e dito, e nao so pintado", () => {
     const screen = render(
       <ColorPicker value="#3DDC97" onValueChange={() => {}} swatches={MARCA} />,
     );
 
-    // The value arrives in uppercase and still matches: the comparison is normalized.
+    // O valor chega em maiuscula e ainda casa: a comparacao e normalizada.
     expect(byLabel(screen, "Teal, #3ddc97")[0]!.props.accessibilityState).toEqual({
       checked: true,
       disabled: undefined,
@@ -68,7 +68,7 @@ describe("ColorPicker", () => {
     expect(byLabel(screen, "Lima, #d4f34a")[0]!.props.accessibilityState.checked).toBe(false);
   });
 
-  test("with no chosen color, no swatch is chosen", () => {
+  test("sem cor escolhida, nenhuma amostra esta escolhida", () => {
     const screen = render(<ColorPicker value="" onValueChange={() => {}} swatches={MARCA} />);
     const marked = byRole(screen, "radio").filter(
       (node) => node.props.accessibilityState.checked === true,
@@ -76,7 +76,7 @@ describe("ColorPicker", () => {
     expect(marked).toHaveLength(0);
   });
 
-  test("tapping a swatch returns the normalized hexadecimal", () => {
+  test("tocar uma amostra devolve o hexadecimal normalizado", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <ColorPicker value="" onValueChange={onValueChange} swatches={["#D4F34A", "#AbC"]} />,
@@ -88,7 +88,7 @@ describe("ColorPicker", () => {
     expect(onValueChange).toHaveBeenLastCalledWith("#aabbcc");
   });
 
-  test("the target measures 44 and the colored drawing measures 32, inside it", () => {
+  test("o alvo mede 44 e o desenho colorido mede 32, por dentro dele", () => {
     const screen = render(<ColorPicker value="" onValueChange={() => {}} swatches={["#d4f34a"]} />);
 
     const [target] = byRole(screen, "radio");
@@ -103,12 +103,12 @@ describe("ColorPicker", () => {
     expect(chip!.props.className).toContain("size-8");
   });
 
-  test("the chosen mark is on the outside, and its place always exists", () => {
+  test("a marca do escolhido e por fora, e o lugar dela existe sempre", () => {
     const screen = render(
       <ColorPicker value="#d4f34a" onValueChange={() => {}} swatches={MARCA} />,
     );
 
-    // A 2px border on all of them: lighting it only on selection would shift the drawing.
+    // Borda de 2px em todas: acende-la so ao escolher moveria o desenho.
     for (const swatch of byRole(screen, "radio")) {
       expect(swatch.props.className).toContain("border-2");
     }
@@ -118,7 +118,7 @@ describe("ColorPicker", () => {
     expect(byLabel(screen, "Teal, #3ddc97")[0]!.props.className).toContain("border-transparent");
   });
 
-  test("the swatches split into rows of `columns`, because there is no grid in RN", () => {
+  test("as amostras se dividem em linhas de `columns`, porque nao ha grade no RN", () => {
     const screen = render(
       <ColorPicker
         value=""
@@ -134,18 +134,18 @@ describe("ColorPicker", () => {
         typeof node.props?.className === "string" &&
         node.props.className.startsWith("flex-row gap-2"),
     );
-    // Five swatches in two columns: three rows, the last with only one.
+    // Cinco amostras em duas colunas: tres linhas, a ultima com uma so.
     expect(rows).toHaveLength(3);
     expect(rows[2]!.props.children).toHaveLength(1);
   });
 
-  test("the default range is computed, not a hand-written brand palette", () => {
+  test("o leque padrao e calculado, e nao uma paleta de marca escrita a mao", () => {
     const screen = render(<ColorPicker value="" onValueChange={() => {}} />);
-    // Ten hues in three lightnesses, the same as the web.
+    // Dez matizes em tres claridades, os mesmos do web.
     expect(byRole(screen, "radio")).toHaveLength(30);
   });
 
-  test("the field accepts what the person pastes and returns six lowercase digits", () => {
+  test("o campo aceita o que a pessoa cola e devolve seis digitos minusculos", () => {
     const onValueChange = mock(() => {});
     const screen = render(<ColorPicker value="" onValueChange={onValueChange} swatches={MARCA} />);
 
@@ -153,7 +153,7 @@ describe("ColorPicker", () => {
     expect(onValueChange).toHaveBeenCalledWith("#00ff88");
   });
 
-  test("text that is not a color yet keeps the draft and notifies nobody", () => {
+  test("texto que ainda nao e cor guarda o rascunho e nao avisa ninguem", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <ColorPicker value="#d4f34a" onValueChange={onValueChange} swatches={MARCA} />,
@@ -163,15 +163,15 @@ describe("ColorPicker", () => {
     expect(onValueChange).toHaveBeenCalledTimes(0);
     expect(hexField(screen).props.value).toBe("#d4f3");
 
-    // On leaving without finishing, the field goes back to the last good value.
+    // Ao sair sem terminar, o campo volta ao ultimo valor bom.
     act(() => hexField(screen).props.onBlur());
     expect(hexField(screen).props.value).toBe("#d4f34a");
     expect(onValueChange).toHaveBeenCalledTimes(0);
   });
 
-  test("a color changed from outside drags the draft along", () => {
-    // The state adjustment during render, without an effect that renders twice:
-    // another swatch chosen, or another client loaded.
+  test("a cor que muda por fora arrasta o rascunho junto", () => {
+    // O ajuste de estado durante o render, sem um efeito que renderize duas
+    // vezes: outra amostra escolhida, ou outro cliente carregado.
     const screen = render(<ColorPicker value="#d4f34a" onValueChange={() => {}} />);
     expect(hexField(screen).props.value).toBe("#d4f34a");
 
@@ -185,29 +185,29 @@ describe("ColorPicker", () => {
     expect(hexField(screen).props.value).toBe("#3ddc97");
   });
 
-  test("the keyboard is alphanumeric, with no capitalization or autocorrect, and fits one color", () => {
+  test("o teclado e o alfanumerico, sem maiuscula nem corretor, e cabe uma cor", () => {
     const screen = render(<ColorPicker value="" onValueChange={() => {}} />);
     const field = hexField(screen);
 
-    // A number keyboard has no `a` to `f` nor a hash sign.
+    // Teclado de numeros nao tem `a` a `f` nem cerquilha.
     expect(field.props.keyboardType).toBe("default");
     expect(field.props.autoCapitalize).toBe("none");
     expect(field.props.autoCorrect).toBe(false);
     expect(field.props.maxLength).toBe(7);
   });
 
-  test("hideInput removes the field, and with it the only text that says the color", () => {
+  test("hideInput tira o campo, e com ele o unico texto que diz a cor", () => {
     const screen = render(
       <ColorPicker value="#d4f34a" onValueChange={() => {}} swatches={MARCA} hideInput />,
     );
     expect(byLabel(screen, "Código hexadecimal da cor")).toHaveLength(0);
-    // The swatch state still says which one it is, which is the channel left.
+    // O estado da amostra continua dizendo qual e, que e o canal que sobra.
     expect(byRole(screen, "radio").some((node) => node.props.accessibilityState.checked)).toBe(
       true,
     );
   });
 
-  test("disabled neither picks nor types", () => {
+  test("desabilitado nao escolhe nem digita", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <ColorPicker value="" onValueChange={onValueChange} swatches={MARCA} disabled />,

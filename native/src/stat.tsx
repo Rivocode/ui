@@ -9,20 +9,19 @@ import { Text } from "./text";
 
 export type StatProps = {
   label: string;
-  /** Already formatted, as on the web: abbreviated money, raw count. */
+  /** Ja formatado, como no web: dinheiro abreviado, contagem crua. */
   value: string;
   delta?: number;
   deltaLabel?: string;
-  /** Rising is bad here: overdue items, cost, default rate. */
+  /** Subir e ruim aqui: vencidas, custo, inadimplencia. */
   invert?: boolean;
-  /** The trend slot, when there is a native chart to put there. */
+  /** O slot de tendencia, quando houver um grafico nativo para por. */
   chart?: ReactNode;
   /**
-   * How the change is written: the name of a house formatter (`percent`,
-   * `currencyShort`, `integer`...) or your own function, the same vocabulary as
-   * the web. Without it, `percent`, which rounds to an integer. What reaches
-   * the formatter is the absolute value of `delta`: the sign is carried by the
-   * arrow.
+   * Como a variacao e escrita: nome de formatador da casa (`percent`,
+   * `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do
+   * web. Sem ele, `percent`, que arredonda para inteiro. O que chega ao
+   * formatador e o modulo do `delta`: quem carrega o sinal e a seta.
    */
   deltaFormat?: Format;
   className?: string;

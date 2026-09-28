@@ -3,20 +3,20 @@ import conventions from '../../../../.design-sync/conventions.md?raw'
 import { Markdown } from '@/components/markdown'
 
 /**
- * The library's usage contract.
+ * O contrato de uso da biblioteca.
  *
- * The same file that ships inside the design bundle and that the agent reads
- * before writing any screen. A second text on the same subject would go stale
- * at the first token change.
+ * O mesmo arquivo que sai dentro do bundle de design e que o agente le antes de
+ * escrever qualquer tela. Um segundo texto sobre o mesmo assunto envelheceria
+ * na primeira troca de token.
  */
 export function FoundationPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-8">
-        <h1 className="font-display text-4xl text-fg">How to build</h1>
+        <h1 className="font-display text-4xl text-fg">Como construir</h1>
         <p className="mt-3 text-fg-muted">
-          The library contract: the Provider, the class vocabulary and the rules that apply to
-          every piece.
+          O contrato da biblioteca: o Provider, o vocabulário de classes e as regras que valem para
+          toda peça.
         </p>
 
         <a

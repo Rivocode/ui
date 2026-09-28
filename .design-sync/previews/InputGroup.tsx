@@ -1,6 +1,6 @@
 import { Input, InputAction, InputGroup, InputPrefix, InputSuffix, MaskedInput } from '@rivocode/ui'
 
-/** Addons */
+/** Encostos */
 export function Edges() {
   return (
     <div className="flex w-80 flex-col gap-3">

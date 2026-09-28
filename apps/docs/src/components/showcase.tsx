@@ -37,22 +37,19 @@ import {
 import { useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * The showcase
+ * A vitrine
  *
- * A list of sixty names tells the reader the library is big. It does not say
- * whether it is any good. This is a screen of the kind the library was made
- * for, running for real, with the theme and density switches beside it: the
- * project's whole argument is that those two switches change everything and
- * no component knows they exist.
- *
- * The screen content inside the provider stays in Portuguese on purpose: it is
- * the Brazilian app the library is built for.
+ * Uma lista de sessenta nomes diz a quem le que a biblioteca e grande. Nao diz
+ * se ela presta. Isto aqui e uma tela do tipo para o qual a biblioteca foi
+ * feita, rodando de verdade, com as chaves de tema e de densidade ao lado: o
+ * argumento inteiro do projeto e que essas duas chaves mudam tudo e nenhum
+ * componente sabe que elas existem.
  * ------------------------------------------------------------------------- */
 
 type ShowcaseInvoice = {
   id: string
   customer: string
-  /* Raw number: currencyShort abbreviates, never a hand. */
+  /* Numero cru: quem abrevia e o currencyShort, nunca o dedo. */
   amount: number
   status: 'Paga' | 'Aberta' | 'Vencida'
 }
@@ -69,8 +66,8 @@ const TONE = {
   Vencida: 'danger',
 } as const
 
-/* Sorting and selecting above the fold: the showcase table shows what
- * DataTable does on its own, not a static <table> pretending. */
+/* Ordenar e selecionar na primeira dobra: a tabela da vitrine mostra o que o
+ * DataTable faz sozinho, nao um <table> parado fingindo. */
 const SHOWCASE_COLUMNS: Column<ShowcaseInvoice>[] = [
   {
     key: 'id',
@@ -109,8 +106,8 @@ const MONTHS = [
 const CHART: ChartConfig = { total: { label: 'Faturado' } }
 
 const THEMES = [
-  { value: 'rivocode-dark', label: 'Dark' },
-  { value: 'rivocode-light', label: 'Light' },
+  { value: 'rivocode-dark', label: 'Escuro' },
+  { value: 'rivocode-light', label: 'Claro' },
 ] as const
 
 type Theme = (typeof THEMES)[number]['value']
@@ -176,29 +173,29 @@ function BillingChart() {
 export function Showcase() {
   const [theme, setTheme] = useState<Theme>('rivocode-dark')
   const [compact, setCompact] = useState(false)
-  // One row already checked, so the selection column introduces itself.
+  // Uma linha ja marcada, para a coluna de selecao se apresentar sozinha.
   const [selected, setSelected] = useState<string[]>(['4813'])
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-surface/80 backdrop-blur-sm">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
         <div className="flex items-center gap-2 text-sm text-fg-subtle">
-          <span className="font-mono text-xs tracking-wide uppercase">Live</span>
+          <span className="font-mono text-xs tracking-wide uppercase">Ao vivo</span>
           <span className="hidden sm:inline">
-            the same pieces, both themes, both densities
+            as mesmas peças, os dois temas, as duas densidades
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Switcher options={THEMES} value={theme} onChange={setTheme} label="Theme" />
+          <Switcher options={THEMES} value={theme} onChange={setTheme} label="Tema" />
           <Switcher
             options={[
-              { value: 'comfortable', label: 'Comfortable' },
-              { value: 'compact', label: 'Compact' },
+              { value: 'comfortable', label: 'Confortável' },
+              { value: 'compact', label: 'Compacta' },
             ]}
             value={compact ? 'compact' : 'comfortable'}
             onChange={(next) => setCompact(next === 'compact')}
-            label="Density"
+            label="Densidade"
           />
         </div>
       </header>
@@ -211,9 +208,9 @@ export function Showcase() {
         <div className="bg-bg p-4 sm:p-6">
           <Tabs defaultValue="listing">
             <TabList>
-              <Tab value="listing">Listing</Tab>
-              <Tab value="form">Form</Tab>
-              <Tab value="chart">Chart</Tab>
+              <Tab value="listing">Listagem</Tab>
+              <Tab value="form">Formulário</Tab>
+              <Tab value="chart">Gráfico</Tab>
             </TabList>
 
             <TabPanel value="listing">
@@ -243,7 +240,7 @@ export function Showcase() {
                 <Field>
                   <FieldLabel>CNPJ</FieldLabel>
                   <MaskedInput mask="cnpj" defaultValue="12345678000190" />
-                  <FieldDescription>The mask belongs to the field, the value goes out clean.</FieldDescription>
+                  <FieldDescription>A máscara é do campo, o valor vai limpo.</FieldDescription>
                 </Field>
 
                 <Field>
@@ -283,7 +280,7 @@ export function Showcase() {
               <BillingChart />
 
               <p className="mt-2 text-sm text-fg-subtle">
-                The axis abbreviates on its own: R$ 246K, not 246000.
+                O eixo abrevia sozinho: R$ 246K, e não 246000.
               </p>
             </TabPanel>
           </Tabs>

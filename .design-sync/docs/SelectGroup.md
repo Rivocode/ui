@@ -1,18 +1,18 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # SelectGroup
 
-A family inside the list, with `SelectGroupLabel` as its header.
+Uma família dentro da lista, com o `SelectGroupLabel` de cabeçalho.
 
-Transaction types split into incoming and outgoing, states by region, a chart
-of accounts by group: a long list that has real families reads in parts, and
-not top to bottom.
+Natureza de operação separada em entrada e saída, UF por região, plano de contas
+por grupo: a lista longa que tem famílias de verdade lê-se por partes, e não de
+cima a baixo.
 
-The design is `ComboboxGroup`'s, and not `MenuGroup`'s with `label`: both are
-form pieces that list options, and whoever swaps one for the other on finding
-out the list grew should not have to rewrite the tree.
+O desenho é o do `ComboboxGroup`, e não o do `MenuGroup` com `label`: as duas são
+peças de formulário e listam opções, e quem troca uma pela outra ao descobrir que
+a lista cresceu não deveria ter que reescrever a árvore.
 
 ```tsx
 <SelectContent>
@@ -31,20 +31,20 @@ out the list grew should not have to rewrite the tree.
 </SelectContent>
 ```
 
-The root's `items` is still the **whole, flat** list: it is through it that
-the trigger translates the stored value into the label the person read. The
-group arranges the open list, not what the trigger shows.
+O `items` da raiz continua sendo a lista **inteira e plana**: é por ele que o
+gatilho traduz o valor guardado no rótulo que a pessoa leu. O grupo arruma a
+lista aberta, e não o que o gatilho mostra.
 
-`SelectGroupLabel` lives inside the group because it is the group that points
-`aria-labelledby` at it. A heading written alongside names nothing, and no type
-complains.
+O `SelectGroupLabel` vive dentro do grupo porque é o grupo que aponta o
+`aria-labelledby` para ele. Título escrito ao lado não nomeia nada, e nenhum
+tipo reclama.
 
-## When not to use
+## Quando não usar
 
-When grouping is an attempt to tame a list that got too big, the remedy is a
-different one: `Combobox`, which brings search. Scrolling through a hundred and
-twenty cities arranged by region is still scrolling through a hundred and
-twenty cities, and the header only adds height to the way.
+Quando agrupar é a tentativa de domar uma lista que ficou grande demais, o
+remédio é outro: `Combobox`, que traz a busca. Rolar cento e vinte cidades
+arrumadas por região continua sendo rolar cento e vinte cidades, e o cabeçalho só
+acrescenta altura ao caminho.
 
-A two-item group does not pay for the header it charges. Without real families,
-the flat list says the same thing in fewer lines.
+Grupo de dois itens não paga o cabeçalho que cobra. Sem famílias de verdade, a
+lista plana diz a mesma coisa em menos linhas.

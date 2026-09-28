@@ -53,14 +53,14 @@ export const buttonVariants = cva(
 
 export type ButtonProps = ComponentPropsWithoutRef<"button"> &
   VariantProps<typeof buttonVariants> & {
-    /** Disables and announces busy while an action is in progress. */
+    /** Desabilita e anuncia ocupado enquanto uma acao esta em andamento. */
     loading?: boolean;
     /**
-     * Swaps the rendered element while keeping the look. Use it for a link:
-     * `<Button render={<a href="..." />}>`. Without this, every link that looks like a
-     * button becomes a copied class string, which is the problem this
-     * component exists to solve. With `disabled` or `loading`, the link
-     * loses its `href`, gains `aria-disabled` and stops navigating and calling
+     * Troca o elemento renderizado mantendo a aparencia. Use para link:
+     * `<Button render={<a href="..." />}>`. Sem isto, todo link que parece
+     * botao vira uma string de classe copiada, que e o problema que este
+     * componente existe para resolver. Com `disabled` ou `loading`, o link
+     * perde o `href`, ganha `aria-disabled` e deixa de navegar e de chamar o
      * `onClick`.
      */
     render?: ReactElement;

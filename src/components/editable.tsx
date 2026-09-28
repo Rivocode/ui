@@ -10,18 +10,18 @@ export type EditableProps = Omit<
   ComponentProps<"div">,
   "onChange" | "children" | "value" | "defaultValue"
 > & {
-  /** The current text, when the consumer keeps the value. */
+  /** O texto de agora, quando quem usa guarda o valor. */
   value?: string;
-  /** The text of the first render, when the piece keeps its own value. */
+  /** O texto do primeiro desenho, quando a peca guarda o proprio valor. */
   defaultValue?: string;
-  /** Notified on Enter and on leaving the field, and never on Escape. */
+  /** Avisado no Enter e ao sair do campo, e nunca no Escape. */
   onValueChange?: (value: string) => void;
-  /** What the screen reader calls the field while it is open. */
+  /** O que o leitor de tela chama o campo enquanto ele esta aberto. */
   label: string;
-  /** What appears when the value is empty. */
+  /** O que aparece quando o valor esta vazio. */
   placeholder?: string;
   disabled?: boolean;
-  /** Class per part: `preview`, `input`. */
+  /** Classe por parte: `preview`, `input`. */
   classNames?: Slots<"preview" | "input">;
 };
 

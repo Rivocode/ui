@@ -1,4 +1,4 @@
-/* Generated from src/shared/list.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/list.ts por bun run gen:compartilhado. Nao editar. */
 
 export function appendItems<T>(list: readonly T[], items: readonly T[]): T[] {
   return [...list, ...items];

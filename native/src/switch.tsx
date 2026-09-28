@@ -7,19 +7,19 @@ import { Text } from "./text";
 
 type SwitchName =
   | {
-      /** The visible label, on the same line as the switch; tapping it also toggles. */
+      /** O rotulo visivel, na mesma linha do interruptor; tocar nele tambem troca. */
       children: ReactNode;
       /**
-       * The spoken name, required when there are no `children`. With text
-       * beside it, replaces the name the screen reader reads.
+       * O nome falado, obrigatorio quando nao ha `children`. Com texto ao
+       * lado, troca o nome que o leitor de tela le.
        */
       label?: string;
     }
   | {
       children?: undefined;
       /**
-       * The spoken name of a switch with no text beside it. Required here:
-       * without it the screen reader announces only "switch, off".
+       * O nome falado do interruptor sem texto ao lado. Obrigatorio aqui: sem
+       * ele o leitor de tela anuncia so "interruptor, desligado".
        */
       label: string;
     };
@@ -28,11 +28,11 @@ export type SwitchProps = SwitchName & {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   disabled?: boolean;
-  /** Styles the ROW (label + switch); without a label there is nothing to style. */
+  /** Veste a LINHA (rotulo + interruptor); sem rotulo nao ha o que vestir. */
   className?: string;
   /**
-   * Class per part: `label`, the text beside it. The thumb is drawn by the
-   * platform `Switch` and takes no class; its color comes from the theme.
+   * Classe por parte: `label`, o texto ao lado. O polegar e desenhado pelo
+   * `Switch` da plataforma e nao recebe classe; a cor dele sai do tema.
    */
   classNames?: Slots<"label">;
 };

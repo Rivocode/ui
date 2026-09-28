@@ -1,12 +1,11 @@
 ---
-category: Actions
+category: Ações
 ---
 
 # IconButton
 
-A button that only has an icon. It is the recommended path for the table-row
-action, closing a panel, downloading, editing: everything that fits in a
-square.
+Botão que só tem ícone. É o caminho recomendado para a ação de linha de tabela,
+o fechar de painel, o baixar, o editar: tudo o que cabe num quadrado.
 
 ```tsx
 <IconButton variant="ghost" label="Excluir nota">
@@ -14,30 +13,30 @@ square.
 </IconButton>
 ```
 
-**`label` is required, and the type does not let you forget it.** It becomes
-the button's accessible name, and it is the only door to that: `aria-label`
-and `aria-labelledby` are removed from the type, so the name does not have two
-paths that diverge. Say the action, not the drawing: "Excluir nota", not
-"Lixeira". A button without a name is announced as "button", and nothing more.
+**O `label` é obrigatório, e o tipo não deixa esquecer.** Ele vira o nome
+acessível do botão, e é a única porta para isso: `aria-label` e
+`aria-labelledby` saem do tipo, para o nome não ter dois caminhos que divergem.
+Diga a ação, e não o desenho: "Excluir nota", e não "Lixeira". Botão sem nome é
+anunciado como "botão", e mais nada.
 
-The icon renders `aria-hidden`, because the `label` is what names it, and its
-size comes from the piece: 16px at `sm` and `md`, 20px at `lg`. There is no
-need to pass `size` to the lucide icon.
+O ícone sai `aria-hidden`, porque quem nomeia é o `label`, e o tamanho dele vem
+da peça: 16px no `sm` e no `md`, 20px no `lg`. Não precisa passar `size` para o
+ícone do lucide.
 
-## Variants and sizes
+## Variantes e tamanhos
 
-The same five variants as `Button` (`primary`, `secondary`, `outline`,
-`ghost`, `danger`) and the same `shape="pill"`, read from the same classes:
-`IconButton` is a `Button` inside, not a copy of it. What changes is the size.
-`sm`, `md` and `lg` are squares whose side is the token's control height
-(`--rc-control-sm`, `-md`, `-lg`), so the icon button shrinks along with the
-field next to it in compact mode and is never taller than it.
+As mesmas cinco variantes do `Button` (`primary`, `secondary`, `outline`,
+`ghost`, `danger`) e a mesma `shape="pill"`, lidas das mesmas classes: o
+`IconButton` é um `Button` por dentro, e não uma cópia dele. O que muda é o
+tamanho. `sm`, `md` e `lg` são quadrados cujo lado é a altura de controle do
+token (`--rc-control-sm`, `-md`, `-lg`), então o botão de ícone encolhe junto
+com o campo ao lado no modo compacto e nunca fica mais alto que ele.
 
-## With a tooltip
+## Com dica
 
-`tooltip` shows the `label` in a tooltip on pointer hover or keyboard focus.
-Turn it on when the icon is not universal. A pencil reads on its own, and a
-generic sheet of paper does not say whether it opens the PDF or the XML.
+`tooltip` mostra o `label` numa dica ao pousar o ponteiro ou focar pelo teclado.
+Ligue quando o ícone não for universal. Um lápis se lê sozinho, e uma folha
+genérica não diz se abre o PDF ou o XML.
 
 ```tsx
 <IconButton variant="ghost" label="Ver o XML da nota" tooltip>
@@ -45,47 +44,45 @@ generic sheet of paper does not say whether it opens the PDF or the XML.
 </IconButton>
 ```
 
-The tooltip **does not go into the name**: it repeats the `label`, and tying
-it through `aria-describedby` would make the screen reader say the same
-sentence twice. It is for sighted users who do not know the icon yet.
-`tooltipSide` picks the side.
+A dica **não entra no nome**: ela repete o `label`, e amarrá-la por
+`aria-describedby` faria o leitor de tela dizer a mesma frase duas vezes. Ela é
+para quem enxerga e ainda não conhece o ícone. `tooltipSide` escolhe o lado.
 
-## Loading and disabled
+## Carregando e desabilitado
 
-`loading` swaps the icon for the spinner in the same square, blocks the click
-and announces `aria-busy`, and the name stays the same: the person listening
-knows what they are waiting for. `disabled` is the one from `Button`, with the
-disabled background, color and outline.
+`loading` troca o ícone pela espera no mesmo quadrado, trava o clique e anuncia
+`aria-busy`, e o nome continua o mesmo: a pessoa que ouve sabe o que está
+esperando. `disabled` é o do `Button`, com o fundo, a cor e o contorno de desabilitado.
 
-## As a link
+## Como link
 
-`render={<a href="..." />}` swaps the element, as in `Button`, and the `label`
-keeps naming the link.
+`render={<a href="..." />}` troca o elemento, como no `Button`, e o `label`
+continua nomeando o link.
 
-## When not to use
+## Quando não usar
 
-If there is room for the word, use `Button` with text: a written label is
-clearer than any icon with a tooltip, and it is the only one of the two that
-works on touch. A screen's main action is almost never just an icon.
+Se há espaço para a palavra, use `Button` com texto: o rótulo escrito é mais
+claro do que qualquer ícone com dica, e é o único dos dois que funciona no
+toque. Ação principal de tela quase nunca é só ícone.
 
-A button that stays pressed (bold, alignment, display mode) is `Toggle`:
-`IconButton` fires an action and holds no state, and `Toggle` says
+Botão que fica apertado (negrito, alinhamento, modo de exibição) é `Toggle`: o
+`IconButton` dispara uma ação e não guarda estado, e o `Toggle` diz
 `aria-pressed`.
 
-`Button` does not draw an icon square: its `size` is only `sm`, `md`, `lg` and
-`xl`, all with a written label. An icon-only button is always this piece,
-because it requires the name, has the three sizes and handles waiting without
-widening the square.
+O `Button` não desenha quadrado de ícone: `size` nele é só `sm`, `md`, `lg` e
+`xl`, todos com rótulo escrito. Botão só com ícone é sempre esta peça, porque
+ela exige o nome, tem os três tamanhos e resolve a espera sem alargar o
+quadrado.
 
-## In React Native
+## No React Native
 
-Translates, with the name required the same way and under the same name: `label`, and the type rejects the button without it. `accessibilityLabel` does not come in: there is only one name, `label`, and it is what becomes the `Pressable`'s `accessibilityLabel`.
+Traduz, com o nome obrigatório do mesmo jeito e com o mesmo nome: `label`, e o tipo recusa o botão sem ele. O `accessibilityLabel` não entra: o nome é um só, o `label`, e é ele que vira o `accessibilityLabel` do `Pressable`.
 
-**The touch target is never below 44pt.** `md` is the 44 square and `lg` the 48; `sm` draws 32 and gets a `hitSlop` of 6 on all four sides, which gives back the 44 without growing the drawing. The variants are those of the native `Button` (`primary`, `secondary`, `ghost`, `outline`, `danger`), read from the same classes: only `shape` does not cross over, for the same reason as there.
+**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, `ghost`, `outline`, `danger`), lidas das mesmas classes: só `shape` não atravessa, pelo mesmo motivo de lá.
 
-**There is no `tooltip`.** The tooltip appears on resting the pointer, and on touch there is no resting. If the icon does not read on its own, the button needs text: use `Button`.
+**Não há `tooltip`.** A dica aparece ao pousar o ponteiro, e no toque não existe pousar. Se o ícone não se lê sozinho, o botão pede texto: use `Button`.
 
-The icon comes in as a child, and the form that paints in the variant's color is the function, because color does not flow down from the `View` to the SVG:
+O ícone entra como filho, e a forma que pinta na cor da variante é a função, porque a cor não desce da `View` para o SVG:
 
 ```tsx
 <IconButton label="Excluir nota" variant="ghost" onPress={excluir}>

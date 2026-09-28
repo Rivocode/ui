@@ -12,7 +12,7 @@ const QUEUE: Note[] = [
   { id: 5, number: '1045', client: 'Ótica Visão Clara', amount: 920, due: '05/10' },
 ]
 
-/** The issuing queue */
+/** A fila de emissão */
 export function IssueQueue() {
   const [notes, setNotes] = useState(QUEUE)
 
@@ -49,7 +49,7 @@ export function IssueQueue() {
 
 const STAGES = ['Conferir cadastro', 'Calcular impostos', 'Emitir nota', 'Enviar ao cliente']
 
-/** Horizontal, with the whole line as the handle */
+/** Horizontal, com a linha inteira como alça */
 export function Stages() {
   const [stages, setStages] = useState(STAGES)
 
@@ -85,7 +85,7 @@ export function Stages() {
   )
 }
 
-/** Disabled while saving */
+/** Desabilitada enquanto salva */
 export function Saving() {
   return (
     <div className="w-full max-w-lg">

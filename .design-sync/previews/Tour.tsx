@@ -21,7 +21,7 @@ const STEPS: TourStep[] = [
   },
 ];
 
-/** First access */
+/** Primeiro acesso */
 export function FirstVisit() {
   const [open, setOpen] = useState(false);
 
@@ -53,7 +53,7 @@ export function FirstVisit() {
   );
 }
 
-/** Clickable target */
+/** Alvo clicavel */
 export function ClickableTarget() {
   const [open, setOpen] = useState(false);
   const [saved, setSaved] = useState(0);

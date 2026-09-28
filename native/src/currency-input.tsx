@@ -15,29 +15,23 @@ export type CurrencyInputProps = Omit<
   InputProps,
   "value" | "onChangeText" | "onValueChange" | "keyboardType" | "className"
 > & {
-  /** The value in whole cents: `123456` is R$ 1.234,56. An empty field is `null`. */
+  /** O valor em centavos inteiros: `123456` e R$ 1.234,56. Campo vazio e `null`. */
   value: number | null;
-  /** Called on every keystroke with the cents, or `null` when the field empties. */
+  /** Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia. */
   onValueChange: (cents: number | null) => void;
-  /**
-   * The smallest accepted value, in cents. Below it the field marks itself
-   * invalid, and nothing is corrected on its own.
-   */
+  /** O menor valor aceito, em centavos. Abaixo dele o campo se marca invalido, e nada e corrigido sozinho. */
   min?: number;
-  /**
-   * The largest accepted value, in cents. Above it the field marks itself
-   * invalid, and nothing is corrected on its own.
-   */
+  /** O maior valor aceito, em centavos. Acima dele o campo se marca invalido, e nada e corrigido sozinho. */
   max?: number;
   /**
-   * Accepts a negative value, with `-` anywhere in the field; a second `-`
-   * removes the sign. When on, the keyboard becomes the numbers-and-punctuation
-   * one, which is the one with the sign on iPhone.
+   * Aceita valor negativo, com o `-` em qualquer ponto do campo; um segundo `-`
+   * tira o sinal. Ligado, o teclado passa a ser o de numeros e pontuacao, que e
+   * o que tem o sinal no iPhone.
    */
   allowNegative?: boolean;
-  /** Styles the root, which wraps the field and the "R$". */
+  /** Veste a raiz, que embrulha o campo e o "R$". */
   className?: string;
-  /** Class per part: `input` (the field) and `prefix` (the "R$" text). */
+  /** Classe por parte: `input` (o campo) e `prefix` (o texto do "R$"). */
   classNames?: Slots<"input" | "prefix">;
 };
 

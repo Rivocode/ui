@@ -10,60 +10,60 @@ import { linkTo, type Route } from '@/routes'
 import { version } from '../../../../package.json'
 
 /*
- * The showcase arrives after the rest of the cover.
+ * A vitrine chega depois do resto da capa.
  *
- * It mounts a whole screen - DataTable, Select, tabs and a chart -, and
- * Recharts alone is over 250 KB. While it was a static import, that weight sat
- * between whoever opens the site and the page title, which is what decides
- * whether the person stays. Its spot stays reserved so the scroll does not
- * jump when it arrives.
+ * Ela monta uma tela inteira - DataTable, Select, abas e um grafico -, e o
+ * Recharts sozinho passa de 250 KB. Enquanto ela era import estatico, esse peso
+ * ficava entre quem abre o site e o titulo da pagina, que e o que decide se a
+ * pessoa fica. O lugar dela fica reservado para a rolagem nao pular quando ela
+ * chega.
  */
 const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ default: mod.Showcase })))
 
 /* ---------------------------------------------------------------------------
- * The cover
+ * A capa
  *
- * Whoever arrives here is deciding whether to adopt the library, and decides
- * by looking, not reading. That is why the running screen comes before the
- * prose, each of the three ideas that make the library different gets a
- * figure, and the catalog sits at the end, not at the start.
+ * Quem chega aqui esta decidindo se adota a biblioteca, e decide olhando, e nao
+ * lendo. Por isso a tela que roda vem antes da prosa, cada uma das tres ideias
+ * que fazem a biblioteca diferente ganha figura, e o catalogo fica no fim, e
+ * nao no comeco.
  * ------------------------------------------------------------------------- */
 
 /*
- * The only number on this page written by hand.
+ * O único número desta página escrito à mão.
  *
- * The other three in the showcase come from the catalog while the site is
- * built. This one cannot: the count only exists after the suite runs, and
- * charging the whole suite to the Vercel build (minutes, on every push) to
- * print a digit costs too much for what it buys.
+ * Os outros três da vitrine saem do catálogo enquanto o site é construído. Este
+ * não pode: a contagem só existe depois de a suíte rodar, e cobrar a suíte
+ * inteira do build da Vercel (minutos, a cada push) para imprimir um dígito é
+ * caro demais pelo que se ganha.
  *
- * So it stays versioned here, and what keeps it honest is `bun run
- * check:tests`, which recomputes in seconds and fails saying which number to
- * rewrite. Without that guard the digit goes stale silently, as it did twice:
- * stuck at 292, and later at 348 while the suite reached 552.
+ * Então ele fica versionado aqui, e quem o mantém honesto é `bun run
+ * check:testes`, que recalcula em segundos e falha dizendo qual número
+ * regravar. Sem essa guarda o dígito envelhece calado, como envelheceu duas
+ * vezes: parado em 292, e depois em 348 enquanto a suíte chegava a 552.
  *
- * It counts the whole root suite (`test/` and `native/test/`), which is what
- * the label next to it promises.
+ * Conta a suíte da raiz inteira (`test/` e `native/test/`), que é o que o
+ * rótulo ao lado promete.
  */
-const TESTS = 3369
+const TESTS = 3367
 
 const INSTALL = 'npm install @rivocode/ui'
 
 const SKILL_CMD = 'npx rivocode-ui skill'
 
-const SKILL_PEEK = `| Situation                   | Right piece   |
+const SKILL_PEEK = `| Situação                    | Peça certa    |
 | --------------------------- | ------------- |
-| Notice that stays on screen | Alert         |
-| Destructive confirmation    | AlertDialog   |
-| A few fixed options         | Select        |
-| Long list, or from server   | Combobox      |
-| Turns on now, no confirm    | Switch        |
+| Aviso que fica na tela      | Alert         |
+| Confirmação destrutiva      | AlertDialog   |
+| Poucas opções fixas         | Select        |
+| Lista longa, ou do servidor | Combobox      |
+| Liga agora, sem confirmar   | Switch        |
 
-## What never to do
+## O que nunca fazer
 
-- Literal color in className or style. Always a token.
-- Numeric z-index. Always z-[var(--rc-z-*)].
-- Hard-coded height on a control.`
+- Cor literal em className ou style. Sempre token.
+- z-index numérico. Sempre z-[var(--rc-z-*)].
+- Altura cravada em controle.`
 
 const BOOTSTRAP = `import '@rivocode/ui/styles.css'
 import { RivoProvider } from '@rivocode/ui'
@@ -78,20 +78,20 @@ export function App() {
 
 const AGENT_FILE = `# DataTable
 
-A listing with the four end states of
-a query: loading, succeeded, failed,
-came back empty.
+Listagem com os quatro finais de uma
+consulta: carregando, deu certo, deu
+errado, veio vazia.
 
-## Import
+## Importação
 
 import { DataTable } from '@rivocode/ui'
 
 ## Props
 
-| Prop      | Type     | Required |
-| --------- | -------- | -------- |
-| data      | Row[]    | yes      |
-| columns   | Column[] | yes      |
+| Prop      | Tipo     | Obrigatória |
+| --------- | -------- | ----------- |
+| data      | Row[]  | sim         |
+| columns   | Column[] | sim         |
 | isLoading | boolean  |, |`
 
 function CopyLine({ text }: { text: string }) {
@@ -114,7 +114,7 @@ function CopyLine({ text }: { text: string }) {
       <span className="text-fg-subtle transition-colors group-hover:text-fg">
         {copied ? <Check size={15} /> : <Copy size={15} />}
       </span>
-      <span className="sr-only">{copied ? 'Copied' : 'Copy'}</span>
+      <span className="sr-only">{copied ? 'Copiado' : 'Copiar'}</span>
     </button>
   )
 }
@@ -145,17 +145,17 @@ function Argument({
 }) {
   return (
     <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-      {/* `min-w-0` on both columns: a grid item does not shrink below its own
-          `min-content`, and the figure carries a code `<pre>`. Without this
-          the `overflow-x-auto` inside it never kicks in, the column grows,
-          and the whole page gets sideways scroll on mobile. */}
+      {/* `min-w-0` nas duas colunas: item de grid nao encolhe abaixo do
+          proprio `min-content`, e a figura carrega um `<pre>` de codigo. Sem
+          isto o `overflow-x-auto` de dentro dele nunca entra em acao, a coluna
+          cresce, e a pagina inteira ganha rolagem lateral no celular. */}
       <div className={`min-w-0 ${reverse ? 'lg:order-2' : ''}`}>
         <p className="flex items-center gap-2 font-mono text-xs tracking-widest text-accent-text uppercase">
           {icon}
           {eyebrow}
         </p>
-        {/* `h2`: each block is a section of the cover, and it came right after
-            the `h1`, skipping a level for whoever navigates by heading. */}
+        {/* `h2`: cada bloco e uma secao da capa, e vinha logo depois do `h1`,
+            pulando um nivel para quem navega por titulo. */}
         <h2 className="mt-3 font-display text-2xl text-fg sm:text-3xl">{title}</h2>
         <div className="mt-4 space-y-3 text-fg-muted">{children}</div>
       </div>
@@ -167,9 +167,9 @@ function Argument({
 
 function TokenLayers() {
   const layers = [
-    { code: '--rc-p-lime-400', hint: 'the raw color, with no opinion' },
-    { code: '--color-accent', hint: 'the role it plays' },
-    { code: '[data-rc-theme]', hint: 'who decides, per client' },
+    { code: '--rc-p-lime-400', hint: 'a cor crua, sem opinião' },
+    { code: '--color-accent', hint: 'o papel que ela cumpre' },
+    { code: '[data-rc-theme]', hint: 'quem decide, por cliente' },
   ]
 
   return (
@@ -208,14 +208,14 @@ function CodeCard({ label, children }: { label: string; children: string }) {
 }
 
 /**
- * The same choice in both worlds, side by side.
+ * A mesma escolha nos dois mundos, lado a lado.
  *
- * The figure exists to say, at a glance, what the prose promises and what it
- * does not. `Select` is the most honest example the catalog has: the data
- * props are the same on both - `items`, `value`, `onValueChange` -, and the
- * whole composition disappears, because on mobile the list opens in a bottom
- * sheet and there is no trigger to dress. Whoever reads only the left column
- * imagines the screen carries over; and it does not.
+ * A figura existe para dizer, num golpe de vista, o que a prosa promete e o
+ * que ela nao promete. O `Select` e o exemplo mais honesto que o catalogo tem:
+ * as props de dado sao as mesmas nos dois - `items`, `value`, `onValueChange`
+ * -, e a composicao inteira desaparece, porque no celular a lista abre numa
+ * folha de baixo e nao ha gatilho para vestir. Quem le so a coluna da esquerda
+ * imagina que a tela atravessa; e ela nao atravessa.
  */
 function BothWorlds() {
   const worlds = [
@@ -255,10 +255,10 @@ function BothWorlds() {
           <div className="border-b border-border px-4 py-2.5">
             <code className="font-mono text-xs text-fg-subtle">{world.pkg}</code>
           </div>
-          {/* `overflow-x-auto` with `min-w-0` on the column: without both the
-              widest block stretches the grid and the whole cover gets
-              sideways scroll on mobile, which is the very defect this section
-              would be saying we know how to avoid. */}
+          {/* `overflow-x-auto` com `min-w-0` na coluna: sem os dois o bloco
+              mais largo estica o grid e a capa inteira ganha rolagem lateral
+              no celular, que e o defeito que esta secao estaria justamente
+              dizendo que sabemos evitar. */}
           <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-fg-muted">
             <code>{world.code}</code>
           </pre>
@@ -269,10 +269,9 @@ function BothWorlds() {
 }
 
 /**
- * Both densities at once, with the height coming from the token. Hard-coding a
- * value here breaks nothing: the figure stays pretty and starts lying, because
- * both boxes become equal and the section is saying precisely that they
- * change.
+ * As duas densidades ao mesmo tempo, com a altura vinda do token. Cravar um
+ * valor aqui nao quebra nada: a figura continua bonita e passa a mentir, porque
+ * as duas caixas ficam iguais e a secao esta justamente dizendo que mudam.
  */
 function DensityFigure() {
   return (
@@ -311,8 +310,8 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
     <div className="relative">
       <CodeRiver />
 
-      {/* The glow behind the title. The river alone is texture; this is what
-          gives the top of the page a center of gravity. */}
+      {/* O brilho atras do titulo. O rio sozinho e textura; e isto que da ao
+          topo da pagina um centro de gravidade. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-[38rem] opacity-70"
@@ -326,32 +325,32 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <Logo className="h-7 w-auto text-accent" />
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Badge tone="accent">v{version} on npm</Badge>
+          <Badge tone="accent">v{version} no npm</Badge>
           <span className="font-mono text-xs text-fg-subtle">
             Base UI · Tailwind 4 · React 19 · React Native
           </span>
         </div>
 
         <h1 className="animate-rise mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
-          The <span className="text-accent-text">RivoCode</span> design system, documented from the
-          inside.
+          O design system da <span className="text-accent-text">RivoCode</span>, documentado por
+          dentro.
         </h1>
 
         <p className="animate-rise mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted [animation-delay:80ms]">
-          {ENTRIES.length} pieces on top of Base UI, with tokens in three layers, two themes and two
-          densities. No component knows the brand color: it asks for a role, and the theme
-          answers.
+          {ENTRIES.length} peças sobre a Base UI, com tokens em três camadas, dois temas e duas
+          densidades. Nenhum componente conhece a cor da marca: ele pede um papel, e o tema
+          responde.
         </p>
 
         <div className="animate-rise mt-8 flex flex-wrap items-center gap-3 [animation-delay:160ms]">
-          {/* The page's only glow: the CTA is what the lantern exists to
-              light up. A second glow would already be a fairground. */}
+          {/* O único glow da página: o CTA é o que a lanterna existe para
+              iluminar. Um segundo brilho já seria feira. */}
           <Button size="lg" shape="pill" className="shadow-glow" {...toInstall} render={<a />}>
-            Get started
+            Começar a usar
             <ArrowRight size={16} />
           </Button>
           <Button size="lg" shape="pill" variant="outline" {...toDemo} render={<a />}>
-            See a finished system
+            Ver um sistema pronto
           </Button>
         </div>
 
@@ -360,10 +359,10 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         </div>
 
         <div className="animate-fade mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 [animation-delay:320ms]">
-          <Stat value={String(ENTRIES.length)} label="pieces in the catalog" />
-          <Stat value={String(WITH_EXAMPLE)} label="with a running example" />
-          <Stat value={String(TESTS)} label="passing tests, web and native" />
-          <Stat value={String(GUIDES.length)} label="usage guides" />
+          <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
+          <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
+          <Stat value={String(TESTS)} label="testes verdes, web e nativo" />
+          <Stat value={String(GUIDES.length)} label="guias de uso" />
         </div>
       </section>
 
@@ -377,83 +376,82 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <Argument
           icon={<Palette size={14} />}
           eyebrow="Tokens"
-          title="Switching clients is switching one layer"
+          title="Trocar de cliente é trocar uma camada"
           figure={<TokenLayers />}
         >
           <p>
-            The palette holds the raw color. The role says what it is for. The theme decides which
-            color answers each role.
+            A paleta guarda a cor crua. O papel diz para que ela serve. O tema decide qual cor
+            responde a cada papel.
           </p>
           <p>
-            No component crosses these layers:{' '}
-            <code className="font-mono text-accent-text">bun run check</code> fails if anyone
-            writes a literal color, and forty contrast pairs are measured on every commit.
+            Componente nenhum atravessa essas camadas: o{' '}
+            <code className="font-mono text-accent-text">bun run check</code> falha se alguém
+            escrever uma cor literal, e quarenta pares de contraste são medidos a cada commit.
           </p>
         </Argument>
 
         <Argument
           icon={<Ruler size={14} />}
-          eyebrow="Density"
-          title="The same screen at two heights, without two catalogs"
+          eyebrow="Densidade"
+          title="A mesma tela em duas alturas, sem dois catálogos"
           reverse
           figure={<DensityFigure />}
         >
           <p>
-            An operations screen fits more rows in the same height. A sign-up form filled in once a
-            month does not.
+            Numa tela de operação cabe mais linha na mesma altura. Num cadastro que se preenche uma
+            vez por mês, não.
           </p>
           <p>
-            It is one attribute on the Provider, and the height of every control follows. There is no
-            second catalog of compact pieces to keep up to date.
+            É um atributo no Provider, e a altura de todo controle acompanha. Não existe um segundo
+            catálogo de peças compactas para manter em dia.
           </p>
         </Argument>
 
         <Argument
           icon={<Smartphone size={14} />}
           eyebrow="React Native"
-          title="The same piece on mobile, without a second catalog"
+          title="A mesma peça no celular, sem um segundo catálogo"
           figure={<BothWorlds />}
         >
           <p>
-            <code className="font-mono text-accent-text">@rivocode/ui-native</code> brings{' '}
-            {NATIVE_PIECES} of the {ENTRIES.length} pieces to React Native, with the same tokens,
-            the same two themes and the same class vocabulary: NativeWind reads the classes you
-            already write here.
+            O <code className="font-mono text-accent-text">@rivocode/ui-native</code> traz{' '}
+            {NATIVE_PIECES} das {ENTRIES.length} peças para o React Native, com os mesmos tokens,
+            os mesmos dois temas e o mesmo vocabulário de classes: o NativeWind lê as classes que
+            você já escreve aqui.
           </p>
           <p>
-            What carries over is the vocabulary, the token and the choice of piece.{' '}
-            <strong className="font-medium text-fg">The JSX gets rewritten</strong>: on touch
-            everything is controlled, the list comes through{' '}
-            <code className="font-mono text-accent-text">items</code> instead of composition, and
-            the pieces that do not port do not port by decision: sidebar, table and pointer tooltip
-            are desktop idioms, and mobile has its own.
+            O que atravessa é o vocabulário, o token e a escolha da peça.{' '}
+            <strong className="font-medium text-fg">O JSX se reescreve</strong>: no toque tudo é
+            controlado, a lista vem por <code className="font-mono text-accent-text">items</code> em
+            vez de composição, e as peças que não portam não portam por decisão: barra lateral,
+            tabela e dica de ponteiro são idioma de mesa, e o celular tem o dele.
           </p>
           <p>
             <a
               {...linkTo({ kind: 'guide', slug: 'react-native' }, navigate)}
               className="text-accent-text underline decoration-border underline-offset-4 transition-colors hover:decoration-accent"
             >
-              The React Native guide
+              O guia do React Native
             </a>{' '}
-            has the table piece by piece: what translates, what is in the queue and what will never port.
+            traz a tabela peça a peça: o que traduz, o que está na fila e o que nunca vai portar.
           </p>
         </Argument>
 
         <Argument
           icon={<Bot size={14} />}
           eyebrow="Agents"
-          title="The same documentation, in raw markdown"
+          title="A mesma documentação, em markdown cru"
           figure={<CodeCard label="/componentes/data-table.md">{AGENT_FILE}</CodeCard>}
         >
           <p>
-            Much of the code that uses this library today is written with an agent alongside. A site
-            that only serves HTML forces the agent to guess the API from the name, and it guesses
-            with confidence.
+            Boa parte do código que usa esta biblioteca hoje é escrita com um agent ao lado. Um site
+            que só serve HTML obriga o agent a adivinhar a API pelo nome, e ele adivinha com
+            confiança.
           </p>
           <p>
-            Every page has a raw address in{' '}
-            <code className="font-mono text-accent-text">.md</code>, with the import, examples and
-            props table. The index lives at{' '}
+            Toda página tem o endereço cru em{' '}
+            <code className="font-mono text-accent-text">.md</code>, com importação, exemplos e
+            tabela de props. O índice fica em{' '}
             <a href="/llms.txt" className="text-accent-text underline underline-offset-2">
               /llms.txt
             </a>
@@ -464,7 +462,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <Argument
           icon={<Sparkles size={14} />}
           eyebrow="Skill"
-          title="One command, and the agent learns the library"
+          title="Um comando, e o agente aprende a biblioteca"
           figure={
             <div className="space-y-3">
               <CopyLine text={SKILL_CMD} />
@@ -473,23 +471,23 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           }
         >
           <p>
-            Pasting the contract into the prompt works once. In the second conversation it is not
-            there, and the agent goes back to guessing the API from the name.
+            Colar o contrato no prompt funciona uma vez. Na segunda conversa ele não está lá, e o
+            agent volta a adivinhar a API pelo nome.
           </p>
           <p>
-            The skill stays installed, and brings along the table for choosing between similar
-            pieces: <code className="font-mono text-accent-text">Alert</code> versus{' '}
+            A skill fica instalada, e leva junto a tabela de escolha entre as peças parecidas:{' '}
+            <code className="font-mono text-accent-text">Alert</code> contra{' '}
             <code className="font-mono text-accent-text">Toast</code>,{' '}
-            <code className="font-mono text-accent-text">Select</code> versus{' '}
-            <code className="font-mono text-accent-text">Combobox</code>, with the why of each
-            row.
+            <code className="font-mono text-accent-text">Select</code> contra{' '}
+            <code className="font-mono text-accent-text">Combobox</code>, com o porquê de cada
+            linha.
           </p>
         </Argument>
 
         <Argument
           icon={<Layers size={14} />}
           eyebrow="Base UI"
-          title="The behavior is not ours, and that is the advantage"
+          title="O comportamento não é nosso, e essa é a vantagem"
           reverse
           figure={
             <div className="overflow-hidden rounded-lg border border-border bg-surface/70 backdrop-blur-sm">
@@ -500,20 +498,20 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           }
         >
           <p>
-            Focus, keyboard, portals, screen readers and the edge cases come from Base UI, which
-            works on that full time.
+            Foco, teclado, portal, leitor de tela e os casos de borda vêm da Base UI, que trata
+            disso em tempo integral.
           </p>
           <p>
-            What the library adds is the design, and the decision of when each piece fits. Two
-            lines of CSS and a Provider, and the screen begins.
+            O que a biblioteca acrescenta é o desenho, e a decisão de quando cada peça serve. Duas
+            linhas de CSS e um Provider, e a tela começa.
           </p>
         </Argument>
       </section>
 
       <section className="relative mx-auto max-w-6xl px-6 pb-28">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 className="font-display text-2xl text-fg">The catalog</h2>
-          <p className="text-fg-muted">By family, in the order someone builds a screen.</p>
+          <h2 className="font-display text-2xl text-fg">O catálogo</h2>
+          <p className="text-fg-muted">Por família, na ordem de quem monta uma tela.</p>
         </div>
 
         <div className="mt-8 space-y-8">
@@ -542,18 +540,18 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
 
       <section className="relative mx-auto max-w-6xl px-6 pb-28">
         <div className="rounded-xl border border-border bg-surface/70 p-8 text-center backdrop-blur-sm sm:p-12">
-          <h2 className="font-display text-3xl text-fg">Start with installation</h2>
+          <h2 className="font-display text-3xl text-fg">Comece pela instalação</h2>
           <p className="mx-auto mt-3 max-w-xl text-fg-muted">
-            One command, the two lines of CSS and the Provider. After that it is writing screens.
+            Um comando, as duas linhas de CSS e o Provider. Depois disso é escrever tela.
           </p>
 
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Button size="lg" shape="pill" {...toInstall} render={<a />}>
-              Installation
+              Instalação
               <ArrowRight size={16} />
             </Button>
             <Button size="lg" shape="pill" variant="outline" {...toDemo} render={<a />}>
-              Demo
+              Demonstração
             </Button>
           </div>
         </div>

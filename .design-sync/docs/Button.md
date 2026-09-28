@@ -1,49 +1,47 @@
 ---
-category: Actions
+category: Ações
 ---
 
 # Button
 
-An action. Renders as a native `<button>`, and becomes an `<a>` with `render={<a href="..." />}`.
+Ação. Sai como `<button>` nativo, e vira `<a>` com `render={<a href="..." />}`.
 
-**When to use each variant.** `primary` for the main action of the screen, only
-one per area. `secondary` for the alternative. `outline` for a secondary call
-to action on a marketing page. `ghost` for a discreet action in a table or
-header. `danger` for what deletes, and only for that.
+**Quando usar cada variante.** `primary` para a ação principal da tela, uma só por
+área. `secondary` para a alternativa. `outline` para chamada secundária de página
+de marketing. `ghost` para ação discreta em tabela ou cabeçalho. `danger`
+para o que apaga, e só para isso.
 
-**Size.** `sm`, `md` and `lg` read their height from the density token, so they
-shrink on their own in compact mode. `xl` is for marketing: bigger, with its
-own measurement, and it does not shrink in compact mode. It is only a size,
-like the other three: the weight stays the house medium. For the bold of a
-call to action, add `className="font-rc-bold"`.
+**Tamanho.** `sm`, `md` e `lg` leem a altura do token de densidade, então encolhem
+sozinhos no modo compacto. `xl` é de marketing: maior, com medida própria, que
+não encolhe no compacto. Ele é só tamanho, como os outros três: o peso continua
+o médio da casa. Para o negrito de uma chamada, some `className="font-rc-bold"`.
 
-**An icon-only button is `IconButton`.** It requires `label`, which becomes
-the accessible name, has the three square sizes read from the control token,
-swaps the icon for the spinner in `loading` without widening, and shows the
-`label` as a tooltip with `tooltip`. `Button` has no icon size: the square only
-exists in `IconButton`, and that is the one that demands the name.
+**Botão só com ícone é `IconButton`.** Ele exige `label`, que vira o nome
+acessível, tem os três tamanhos quadrados lidos do token de controle, troca o
+ícone pela espera em `loading` sem alargar e mostra o `label` como dica com
+`tooltip`. O `Button` não tem tamanho de ícone: o quadrado só existe no
+`IconButton`, e é ele que cobra o nome.
 
-**Shape.** The product default is the 8px corner. `shape="pill"` is a marketing
-signature, not a form one.
+**Forma.** O padrão do produto e o canto de 8px. `shape="pill"` e assinatura de
+marketing, não de formulário.
 
-`loading` disables and announces busy.
+`loading` desabilita e anuncia ocupado.
 
-**Disabled.** `disabled` paints the background with `surface-raised`, the label
-with `fg-disabled` and the outline with `border-disabled`, in every variant
-that has an outline or a fill: `primary`, `secondary`, `outline` and `danger`.
-Without the outline, a disabled button on a white surface became a loose
-label, because in the light theme `surface-raised` and `surface` are the same
-white. The inactive outline is weaker than the live one (`check:contrast`
-requires the live one to weigh 1.4 times more), so it does not look clickable.
-`primary` and `danger` are born with a transparent 1px border, so the size
-does not jump when disabled. `ghost` stays without an outline: live, it never
-had one.
+**Desabilitado.** `disabled` pinta o fundo de `surface-raised`, o rótulo de
+`fg-disabled` e o contorno de `border-disabled`, em toda variante que tem
+contorno ou preenchimento: `primary`, `secondary`, `outline` e `danger`.
+Sem o contorno, o botão desabilitado sobre superfície branca virava rótulo
+solto, porque no tema claro `surface-raised` e `surface` são o mesmo branco. O
+contorno de inativo é mais fraco que o vivo (o `check:contrast` cobra que o
+vivo pese 1,4 vez mais), então ele não parece clicável. `primary` e
+`danger` já nascem com borda transparente de 1px, para o tamanho não
+pular ao desabilitar. `ghost` continua sem contorno: vivo, ele nunca teve.
 
-**Disabled link.** With `render={<a href="..." />}` and `disabled` or
-`loading`, the link loses its `href`, gets `aria-disabled="true"`, stops
-receiving the pointer and does not call `onClick`: `<a>` has no native
-`disabled`, and without this it would keep navigating.
+**Link desabilitado.** Com `render={<a href="..." />}` e `disabled` ou
+`loading`, o link perde o `href`, ganha `aria-disabled="true"`, para de receber
+o ponteiro e não chama o `onClick`: `<a>` não tem `disabled` nativo, e sem isso
+ele continuaria navegando.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Button` - controlled contract; `hitSlop` on `sm`, because a 32px target cannot be tapped without help. It sinks slightly on press, and does not sink when the system asks to reduce motion. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Button` - contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. Afunda de leve no toque, e não afunda quando o sistema pede para reduzir movimento. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

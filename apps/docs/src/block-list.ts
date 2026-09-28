@@ -1,12 +1,12 @@
 import { slugify } from './slug'
 
 /* ---------------------------------------------------------------------------
- * The page blocks, once.
+ * Os blocos de pagina, uma vez.
  *
- * The site (pages/blocks.tsx), the raw markdown (agent-docs.ts) and the guard
- * (test/page-blocks.test.tsx) read from here. Each block's code lives in
- * `blocks/<file>.tsx` and is the same file that runs in the preview and that
- * the person copies: there is no second copy to go stale.
+ * O site (pages/blocks.tsx), o markdown cru (agent-docs.ts) e a guarda
+ * (test/blocos-de-pagina.test.tsx) leem daqui. O codigo de cada bloco mora em
+ * `blocks/<file>.tsx` e e o mesmo arquivo que roda no preview e que a pessoa
+ * copia: nao ha segunda copia para envelhecer.
  * ------------------------------------------------------------------------- */
 
 export type BlockEntry = {
@@ -15,7 +15,7 @@ export type BlockEntry = {
   title: string
   summary: string
   pieces: string[]
-  /** Error page: it has no listing, so the markdown does not demand the four end states. */
+  /** Pagina de erro: nao tem listagem, entao o markdown nao cobra os quatro finais. */
   errorPage?: boolean
 }
 
@@ -25,88 +25,88 @@ export const BLOCK_LIST: BlockEntry[] = [
     file: 'login',
     title: 'Login',
     summary:
-      'Email and password validated with zod, the eye that reveals the password, and the credential error in an Alert that stays on screen.',
+      'E-mail e senha validados com zod, o olho que revela a senha, e o erro de credencial num Alert que fica na tela.',
     pieces: ['Card', 'Form', 'PasswordInput', 'Checkbox', 'Alert', 'Link', 'Heading'],
   },
   {
     slug: 'painel',
     file: 'dashboard',
-    title: 'Dashboard',
+    title: 'Painel',
     summary:
-      'Four indicators with a trend, the area chart of the last months and the latest invoices in a table.',
+      'Quatro indicadores com tendência, o gráfico de área dos últimos meses e as últimas notas numa tabela.',
     pieces: ['PageHeader', 'Stat', 'Sparkline', 'ChartContainer', 'DataTable'],
   },
   {
     slug: 'listagem',
     file: 'listing',
-    title: 'Listing with filters',
+    title: 'Listagem com filtros',
     summary:
-      'Search, a status filter, chips for what is applied, row selection with the actions bar, and pagination.',
+      'Busca, filtro por situação, as fichas do que está aplicado, seleção de linhas com a barra de ações e paginação.',
     pieces: ['PageHeader', 'SearchInput', 'Select', 'FilterBar', 'DataTable', 'Badge'],
   },
   {
     slug: 'cadastro',
     file: 'signup',
-    title: 'Customer sign-up',
+    title: 'Cadastro de cliente',
     summary:
-      'A two-section form with zod: CNPJ and CPF by check digit, phone and CEP with a mask, state in a Select.',
+      'Formulário de duas seções com zod: CNPJ e CPF pelo dígito verificador, telefone e CEP com máscara, estado num Select.',
     pieces: ['PageHeader', 'Form', 'FormField', 'MaskedInput', 'Select', 'Card'],
   },
   {
     slug: 'configuracoes',
     file: 'settings',
-    title: 'Settings',
+    title: 'Configurações',
     summary:
-      'Profile, company, notifications and security in tabs, with the open sessions and account deletion confirmed in an AlertDialog.',
+      'Perfil, empresa, avisos e segurança em abas, com os acessos abertos e a exclusão de conta confirmada num AlertDialog.',
     pieces: ['PageHeader', 'Tabs', 'Switch', 'Item', 'PasswordInput', 'AlertDialog'],
   },
   {
     slug: 'vazio-e-erro',
     file: 'empty-and-error',
-    title: 'Empty, error and loading',
+    title: 'Vazio, erro e carregando',
     summary:
-      'The four end states of a listing on the same screen: first time, filter with no result, error with retry, and loading.',
+      'Os quatro finais de uma listagem na mesma tela: primeira vez, filtro sem resultado, erro com nova tentativa e carregando.',
     pieces: ['EmptyState', 'DataTable', 'ToggleGroup', 'PageHeader'],
   },
   {
     slug: 'pagina-nao-encontrada',
     file: 'not-found',
-    title: 'Page not found (404)',
+    title: 'Página não encontrada (404)',
     summary:
-      'The address that no longer exists: search across the whole system, the way back and the most visited places.',
+      'O endereço que não existe mais: a busca no sistema inteiro, o caminho de volta e os lugares mais procurados.',
     pieces: ['Heading', 'Text', 'SearchInput', 'Button', 'Link'],
     errorPage: true,
   },
   {
     slug: 'erro-inesperado',
     file: 'server-error',
-    title: 'Unexpected error (500)',
+    title: 'Erro inesperado (500)',
     summary:
-      'The failure that was the server\'s: try again with the button in its loading state, and the incident code to copy and send to support.',
+      'A falha que foi do servidor: tentar de novo com o botão em carga, e o código do atendimento para copiar e mandar ao suporte.',
     pieces: ['Heading', 'Text', 'Button', 'Card', 'DescriptionList', 'Clipboard', 'Link'],
     errorPage: true,
   },
   {
     slug: 'manutencao-programada',
     file: 'maintenance',
-    title: 'Scheduled maintenance',
+    title: 'Manutenção programada',
     summary:
-      'The system down at a scheduled time: when it comes back, in Brasília time, what stops, what keeps working and the link to the status page.',
+      'O sistema fora do ar por hora marcada: quando volta, no horário de Brasília, o que para, o que continua e o link da página de status.',
     pieces: ['Badge', 'Heading', 'Text', 'Card', 'DescriptionList', 'Button', 'Link'],
     errorPage: true,
   },
   {
     slug: 'sem-permissao',
     file: 'forbidden',
-    title: 'No permission (403)',
+    title: 'Sem permissão (403)',
     summary:
-      'The area the account cannot reach: who grants access, the access request with the on-screen confirmation, and the way out to sign in with another account.',
+      'A área que a conta não alcança: quem libera, o pedido de acesso com a confirmação na tela, e a saída para entrar com outra conta.',
     pieces: ['Heading', 'Text', 'Card', 'DescriptionList', 'Badge', 'Alert', 'Button', 'Link'],
     errorPage: true,
   },
 ]
 
-/** Where a block may import from. Any other source breaks whoever copies it. */
+/** De onde o bloco pode importar. Qualquer outra origem quebra quem copia. */
 export const BLOCK_IMPORTS = [
   '@rivocode/ui',
   '@rivocode/ui/form',
@@ -116,33 +116,33 @@ export const BLOCK_IMPORTS = [
   'react',
 ]
 
-/** The modules a block file imports, in the order they appear. */
+/** Os modulos que um arquivo de bloco importa, na ordem em que aparecem. */
 export function importsOf(source: string) {
   return [...source.matchAll(/^\s*import\s[^'"]*?['"]([^'"]+)['"]/gm)].map((hit) => hit[1]!)
 }
 
-/** The markdown an agent reads, with the whole file to copy. */
+/** O markdown que um agent le, com o arquivo inteiro para copiar. */
 export function blockMarkdown(block: BlockEntry, source: string, site: string) {
   const pieces = block.pieces
     .map((piece) => `[${piece}](${site}/componentes/${slugify(piece)}.md)`)
     .join(', ')
 
-  return `# Block: ${block.title}
+  return `# Bloco: ${block.title}
 
 ${block.summary}
 
-A whole screen, built only with @rivocode/ui pieces and the skill's rules. ${
+Uma tela inteira, montada só com peças do @rivocode/ui e as regras da skill. ${
     block.errorPage
-      ? `Copy the file and swap the addresses and the sample data for your application's. The page says what happened, whose failure it was and what to do now, and never shows a stack trace or an endpoint name: the code it offers to copy is the incident code, which support looks up in the log.`
-      : `Copy the file, swap the sample data for your query's and keep the four end states: data, loading, error and empty.`
-  } It imports only from \`@rivocode/ui\`,
-\`@rivocode/ui/form\`, \`@rivocode/ui/chart\`, \`zod\`, \`lucide-react\` and \`react\`.
+      ? `Copie o arquivo e troque os endereços e os dados de exemplo pelos da sua aplicação. A página diz o que aconteceu, de quem foi a falha e o que fazer agora, e nunca mostra stack nem nome de endpoint: o código que ela oferece para copiar é o do atendimento, que o suporte procura no log.`
+      : `Copie o arquivo, troque os dados de exemplo pelos da sua consulta e mantenha os quatro finais: dados, carregando, erro e vazio.`
+  } Ele importa só de \`@rivocode/ui\`,
+\`@rivocode/ui/form\`, \`@rivocode/ui/chart\`, \`zod\`, \`lucide-react\` e \`react\`.
 
-Pieces: ${pieces}.
+Peças: ${pieces}.
 
-Live, on desktop and on mobile: ${site}/blocos#${block.slug}
+Ao vivo, no desktop e no celular: ${site}/blocos#${block.slug}
 
-## Code
+## Código
 
 \`\`\`tsx
 ${source.trimEnd()}

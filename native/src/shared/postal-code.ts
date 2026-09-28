@@ -1,4 +1,4 @@
-/* Generated from src/shared/postal-code.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/postal-code.ts por bun run gen:compartilhado. Nao editar. */
 
 export type PostalAddress = {
   street: string;

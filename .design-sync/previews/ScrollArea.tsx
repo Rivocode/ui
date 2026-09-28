@@ -1,6 +1,6 @@
 import { ScrollArea } from '@rivocode/ui'
 
-/** Long list */
+/** Lista longa */
 export function LongList() {
   return (
     <ScrollArea className="h-40 w-80 rounded-md border border-border p-3">

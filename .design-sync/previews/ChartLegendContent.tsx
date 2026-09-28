@@ -6,7 +6,7 @@ const SITUACOES: ChartConfig = {
   vencidas: { label: 'Vencidas', color: 'var(--rc-danger)' },
 }
 
-/** Three series */
+/** Três séries */
 export function ThreeSeries() {
   return (
     <ChartLegendContent

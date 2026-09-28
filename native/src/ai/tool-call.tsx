@@ -35,37 +35,37 @@ function Block({ title, children }: { title: string; children: string }) {
 }
 
 export type ToolCallProps = {
-  /** The tool name, as the model called it: `buscar_notas`. Rendered in a mono font. */
+  /** O nome da ferramenta, como o modelo a chamou: `buscar_notas`. Sai em fonte mono. */
   name: string;
-  /** The human-readable sentence, below the name: "Consultando as notas em aberto". */
+  /** A frase para gente, embaixo do nome: "Consultando as notas em aberto". */
   title?: string;
   /**
-   * Where the call stands. Each state shows a mark AND text, because color is
-   * never the only signal; `running` spins.
+   * Em que pe a chamada esta. Cada estado sai com marca E texto, porque cor
+   * nunca e o unico sinal; `running` gira.
    */
   status: ToolCallStatus;
-  /** The call arguments. An object is shown as indented JSON; text is shown as it came. */
+  /** Os argumentos da chamada. Objeto sai como JSON indentado; texto sai como veio. */
   input?: unknown;
-  /** What the tool returned, with the same rule as `input`. */
+  /** O que a ferramenta devolveu, com a mesma regra do `input`. */
   output?: unknown;
-  /** The error sentence, when `status` is `error`. */
+  /** A frase do erro, quando `status` e `error`. */
   error?: string;
-  /** Called by the approve button, which appears only in `approval`, outside the panel. */
+  /** Chamado pelo botao de aprovar, que so aparece em `approval`, fora do painel. */
   onApprove?: () => void;
-  /** Called by the reject button, which appears only in `approval`. */
+  /** Chamado pelo botao de recusar, que so aparece em `approval`. */
   onReject?: () => void;
-  /** The texts of the states and buttons, for another language or another tone. */
+  /** Os textos dos estados e dos botoes, para outra lingua ou outro tom. */
   labels?: Partial<Record<ToolCallStatus | "approve" | "reject" | "input" | "output", string>>;
-  /** Starts open. Without it, it opens on its own only in `approval` and `error`. */
+  /** Comeca aberto. Sem ele, abre sozinho so em `approval` e em `error`. */
   defaultOpen?: boolean;
-  /** Open, controlled. */
+  /** Aberto, controlado. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: string;
   /**
-   * Class per part: `trigger` (the header that opens it), `name`, `status` (the
-   * spinner and the badge), `panel` (the input and output), `error` and
-   * `actions` (the approve and reject buttons).
+   * Classe por parte: `trigger` (o cabecalho que abre), `name`, `status` (o
+   * giro e o selo), `panel` (a entrada e a saida), `error` e `actions` (os
+   * botoes de aprovar e recusar).
    */
   classNames?: Slots<"trigger" | "name" | "status" | "panel" | "error" | "actions">;
 };

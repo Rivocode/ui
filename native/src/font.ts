@@ -11,21 +11,21 @@ export type RivoFontRole = "sans" | "display" | "mono";
 
 export type RivoFonts = {
   /**
-   * The running-text family: label, paragraph, list item. Without it, the
-   * device answers with the system font. The name must be the same one the app
-   * registered the font with in `expo-font`, not the file name.
+   * A familia do texto corrido: rotulo, paragrafo, item de lista. Sem ela, o
+   * aparelho responde com a fonte do sistema. O nome tem que ser o mesmo com
+   * que o app registrou a fonte no `expo-font`, e nao o do arquivo.
    */
   sans?: string;
   /**
-   * The heading family - Card, Dialog, Sheet, PageHeader, Stat, Steps and
-   * Fieldset. Without it, headings fall back to `sans`, as on the web, where
-   * the `--rc-font-display` stack ends in the running-text one.
+   * A familia dos titulos - Card, Dialog, Sheet, PageHeader, Stat, Steps e
+   * Fieldset. Sem ela, os titulos caem na `sans`, como no web, onde a pilha
+   * de `--rc-font-display` termina na de texto corrido.
    */
   display?: string;
   /**
-   * The fixed-width family: Code, the Timeline stamp, Calendar initials, the
-   * ColorPicker hexadecimal field. Without it, Menlo on iOS and monospace on
-   * Android, which the device already has.
+   * A familia de largura fixa: Code, carimbo da Timeline, iniciais do
+   * Calendar, campo hexadecimal do ColorPicker. Sem ela, vale Menlo no iOS e
+   * monospace no Android, que o aparelho ja tem.
    */
   mono?: string;
 };
@@ -73,30 +73,30 @@ function complaintFor(role: RivoFontRole, family: string): string | undefined {
   const name = family.trim();
   const lower = name.toLowerCase();
 
-  if (name === "") return `\`${role}\` arrived empty`;
+  if (name === "") return `\`${role}\` chegou vazia`;
 
   if (family.includes(",")) {
     return (
-      `\`${role}: ${JSON.stringify(family)}\` is a CSS font stack. React Native does not read a ` +
-      "fallback list: the comma and everything after it become part of the name, and no device has " +
-      "a font like that"
+      `\`${role}: ${JSON.stringify(family)}\` é uma pilha de CSS. O React Native não lê lista ` +
+      "de reserva: a vírgula e tudo que vem depois viram parte do nome, e aparelho nenhum tem " +
+      "uma fonte assim"
     );
   }
 
   if (/["']/.test(family)) {
-    return `\`${role}: ${JSON.stringify(family)}\` carries the CSS quotes inside the name`;
+    return `\`${role}: ${JSON.stringify(family)}\` traz as aspas do CSS dentro do nome`;
   }
 
   if (family.includes("var(")) {
-    return `\`${role}: ${JSON.stringify(family)}\` is a CSS variable, which does not exist here`;
+    return `\`${role}: ${JSON.stringify(family)}\` é uma variável de CSS, que aqui não existe`;
   }
 
   if (GENERIC.has(lower)) {
-    return `\`${role}: ${JSON.stringify(family)}\` is a generic CSS family, not an installed font`;
+    return `\`${role}: ${JSON.stringify(family)}\` é família genérica de CSS, e não fonte instalada`;
   }
 
   if (lower === "monospace" && Platform.OS !== "android") {
-    return `\`${role}: ${JSON.stringify(family)}\` only exists on Android; on iOS the built-in one is Menlo`;
+    return `\`${role}: ${JSON.stringify(family)}\` só existe no Android; no iOS a de casa é Menlo`;
   }
 
   return undefined;
@@ -122,7 +122,7 @@ export function fontComplaints(
     }
 
     if (isFontLoaded && !isFontLoaded(family)) {
-      complaints.push(`\`${role}: ${JSON.stringify(family)}\` is not loaded on this device`);
+      complaints.push(`\`${role}: ${JSON.stringify(family)}\` não está carregada neste aparelho`);
     }
   }
 
@@ -133,8 +133,8 @@ export function fontWarning(complaints: string[]): string {
   return (
     "[rivocode/ui-native] <RivoProvider fonts={...}>: " +
     complaints.join("; ") +
-    ". A font name the device does not have fails silently: the text comes out in the system font and " +
-    "nothing complains. Declare here the same name the app registered the family with in `expo-font`."
+    ". Nome de fonte que o aparelho não tem falha calado: o texto sai na fonte do sistema e " +
+    "nada acusa. Declare aqui o mesmo nome com que o app registrou a família no `expo-font`."
   );
 }
 
@@ -155,11 +155,11 @@ export function familyClassesIn(className: string | undefined): string[] {
 export function familyClassWarning(classes: string[]): string {
   return (
     `[rivocode/ui-native] className="${classes.join(" ")}": ` +
-    "a font family does not come from a class in the native package. The CSS here emits no rule for " +
-    "any of them, so the class is silently ignored and the text comes out in the system font with " +
-    "nothing complaining. On the phone only the app knows what `expo-font` loaded: declare the family " +
-    "once in `<RivoProvider fonts={{ sans, display, mono }}>` and ask for the role through the prop `font` of " +
-    "`Text`, `TextInput` and the text components."
+    "família de fonte não vem por classe no pacote nativo. O CSS daqui não emite regra para " +
+    "nenhuma delas, então a classe é ignorada em silêncio e o texto sai na fonte do sistema sem " +
+    "nada acusar. No celular só o app sabe o que o `expo-font` carregou: declare a família uma " +
+    "vez em `<RivoProvider fonts={{ sans, display, mono }}>` e peça o papel pela prop `font` do " +
+    "`Text`, do `TextInput` e das peças de texto."
   );
 }
 

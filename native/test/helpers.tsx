@@ -2,9 +2,9 @@ import { act, create, type ReactTestInstance, type ReactTestRenderer } from "rea
 import type { ReactElement } from "react";
 
 import { RivoProvider, type RivoProviderProps } from "../src";
-import { declaredColor, variableDeclarations } from "./compiled-css";
+import { declaredColor, variableDeclarations } from "./css-compilado";
 
-/** Mounts inside the provider, the way every app mounts. */
+/** Monta dentro do provider, como todo app monta. */
 const mounted: ReactTestRenderer[] = ((
   globalThis as { __rivoMounted?: ReactTestRenderer[] }
 ).__rivoMounted ??= []);
@@ -21,7 +21,7 @@ export function render(
   return renderer;
 }
 
-/** All the text in the tree, to assert "this is on screen" without hunting nodes. */
+/** O texto todo da arvore, para afirmar "isto esta na tela" sem caçar nos. */
 export function textOf(renderer: ReactTestRenderer): string {
   const chunks: string[] = [];
   const walk = (node: unknown) => {
@@ -38,12 +38,12 @@ export function textOf(renderer: ReactTestRenderer): string {
     }
   };
   walk(renderer.toJSON());
-  // JSX splits {month} de {year} into three children; a single space between them.
+  // JSX fragmenta {mes} de {ano} em tres filhos; um espaco so entre eles.
   return chunks.join(" ").replace(/\s+/g, " ");
 }
 
-/* Only the host elements: findAll visits the component AND the host it
-   rendered, with the same props, and everything would be counted twice. */
+/* So os host elements: o findAll visita o componente E o host que ele
+   rendeu, com as mesmas props, e tudo sairia contado em dobro. */
 const hosts = (
   renderer: ReactTestRenderer,
   predicate: (node: ReactTestInstance) => boolean,
@@ -58,7 +58,7 @@ export function byLabel(renderer: ReactTestRenderer, label: string): ReactTestIn
   return hosts(renderer, (node) => node.props?.accessibilityLabel === label);
 }
 
-/** By the host element's name, for what has neither role nor label. */
+/** Pelo nome do elemento host, para o que nao tem papel nem rotulo. */
 export function byType(renderer: ReactTestRenderer, type: string): ReactTestInstance[] {
   return hosts(renderer, (node) => node.type === type);
 }
@@ -68,8 +68,8 @@ export function byClass(renderer: ReactTestRenderer, pattern: RegExp): ReactTest
 }
 
 /**
- * What "mounting this breaks" means in React 19: the error comes out of act as
- * an AggregateError, not from create itself. Here it becomes a message again.
+ * O que "montar isto quebra" quer dizer no React 19: o erro sai do act como
+ * AggregateError, nao da propria create. Aqui ele volta a ser uma mensagem.
  */
 export function renderError(element: ReactElement): string {
   try {

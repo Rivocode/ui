@@ -11,8 +11,8 @@ export type TabVariant = "underline" | "segmented";
 
 export type TabListProps = ComponentProps<typeof BaseTabs.List> & {
   /**
-   * `underline` splits a page into sections; `segmented` switches the way of viewing
-   * the same thing, like screen width or preview and code.
+   * `underline` divide uma pagina em secoes; `segmented` troca a forma de ver
+   * a mesma coisa, como largura de tela ou preview e codigo.
    */
   variant?: TabVariant;
 };

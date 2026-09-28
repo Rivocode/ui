@@ -15,6 +15,11 @@ const markerVariants = cva(
         warning: "bg-warning",
         danger: "bg-danger",
       },
+      /**
+       * O que ainda nao aconteceu fica vazado. Preencher o marcador de um
+       * evento futuro faz a linha prometer que ele ja ocorreu, que e
+       * exatamente o erro que uma trilha de auditoria nao pode cometer.
+       */
       pending: { true: "bg-bg ring-inset ring-2 ring-border-strong", false: "" },
     },
     defaultVariants: { tone: "neutral", pending: false },
@@ -23,19 +28,15 @@ const markerVariants = cva(
 
 export type TimelineItemProps = Omit<ComponentProps<"li">, "title"> &
   VariantProps<typeof markerVariants> & {
-    /** What happened. */
+    /** O que aconteceu. */
     title: ReactNode;
-    /** When it happened. Usually a `RelativeTime` or a short date. */
+    /** Quando aconteceu. Costuma ser um `RelativeTime` ou uma data curta. */
     at?: ReactNode;
-    /** Who did it. In an audit trail, it is half the information. */
+    /** Quem fez. Numa trilha de auditoria, e metade da informacao. */
     by?: ReactNode;
-    /** Class per part: `marker`, `title`, `meta`, `content`. */
+    /** Classe por parte: `marker`, `title`, `meta`, `content`. */
     classNames?: Slots<"marker" | "title" | "meta" | "content">;
-    /**
-     * What the screen reader hears before the title, because the marker states `pending` and `tone`
-     * only through color: `pending` is one word per `tone` (`neutral` says nothing by default).
-     * Pass only the ones that change; empty text silences it.
-     */
+    /** O que o leitor de tela ouve antes do titulo, porque o marcador diz `pending` e `tone` so pela cor: `pending` e uma palavra por `tone` (o `neutral` nao diz nada por padrao). Passe so as que mudam; texto vazio cala. */
     labels?: Partial<TimelineItemLabels>;
   };
 

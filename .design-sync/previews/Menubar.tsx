@@ -7,17 +7,16 @@ import {
   MenubarTrigger,
 } from '@rivocode/ui'
 
-/** Main */
+/** Principal */
 export function Primary() {
   return (
     <Menubar aria-label="Principal">
       <Menu>
-        {/* The bar's trigger is the `MenubarTrigger`, not a `MenuTrigger` with
-            hand-written classes: the five classes repeated here were its skin
-            copied over, and the copy came without the focus ring - the bar
-            published in the documentation was the only component in the
-            catalog that lost sight of focus. Whoever reads the example copies
-            the example. */}
+        {/* O gatilho da barra e o `MenubarTrigger`, e nao um `MenuTrigger` com
+            classe na mao: as cinco classes repetidas aqui eram a pele dele
+            copiada, e a copia vinha sem o anel de foco - a barra publicada na
+            documentacao era a unica peca do catalogo que perdia o foco de
+            vista. Quem le o exemplo copia o exemplo. */}
         <MenubarTrigger>Arquivo</MenubarTrigger>
         <MenuContent>
           <MenuItem>Nova nota</MenuItem>

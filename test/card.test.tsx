@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "../src/components/card";
 
-test("the card uses the theme surface and border", () => {
+test("o cartao usa a superficie e a borda do tema", () => {
   render(<Card data-testid="cartao">conteudo</Card>);
   const classes = screen.getByTestId("cartao").className;
   expect(classes.split(" ")).toContain("bg-surface");
@@ -18,7 +18,7 @@ test("the card uses the theme surface and border", () => {
   expect(classes).toContain("rounded-lg");
 });
 
-test("the raised elevation swaps the surface and gains a shadow", () => {
+test("a elevacao levantada troca a superficie e ganha sombra", () => {
   render(
     <Card data-testid="cartao" elevation="raised">
       conteudo
@@ -29,7 +29,7 @@ test("the raised elevation swaps the surface and gains a shadow", () => {
   expect(classes).toContain("shadow-2");
 });
 
-test("the title renders as a real heading, not as a styled div", () => {
+test("o titulo sai como cabecalho de verdade, nao como div estilizada", () => {
   render(
     <Card>
       <CardHeader>
@@ -44,7 +44,7 @@ test("the title renders as a real heading, not as a styled div", () => {
   expect(screen.getByText("Agosto de 2026").className).toContain("text-fg-muted");
 });
 
-test("the class passed by the consumer overrides the component's", () => {
+test("a classe passada por quem usa sobrescreve a do componente", () => {
   render(<Card data-testid="cartao" className="rounded-xl" />);
   const classes = screen.getByTestId("cartao").className;
   expect(classes).toContain("rounded-xl");

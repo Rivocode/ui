@@ -1,6 +1,6 @@
 import { Card, Skeleton } from '@rivocode/ui'
 
-/** Table rows */
+/** Linhas de tabela */
 export function TableRows() {
   return (
     <Card className="max-w-lg">
@@ -18,7 +18,7 @@ export function TableRows() {
   )
 }
 
-/** Card */
+/** Cartão */
 export function AsCard() {
   return (
     <Card className="max-w-sm">

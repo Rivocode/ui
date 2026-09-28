@@ -1,6 +1,6 @@
 import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator } from '@rivocode/ui'
 
-/** Formatting */
+/** Formatação */
 export function Formatting() {
   return (
     <Toolbar aria-label="Formatação">

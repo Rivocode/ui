@@ -20,60 +20,60 @@ import { useTokenMotion } from "./use-chart-motion";
 
 export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
   data: Slice[];
-  /** Where each slice's number comes from. */
+  /** De onde sai o numero de cada fatia. */
   valueKey: keyof Slice & string;
-  /** Where each slice's name comes from. It is what `config` looks up. */
+  /** De onde sai o nome de cada fatia. E ele que o `config` procura. */
   nameKey: keyof Slice & string;
   config?: ChartConfig;
   /**
-   * The big number in the middle. Always stays visible: the slice tooltip opens outside the
-   * hole and inside the drawing's frame, beside the donut when it fits and, when
-   * it does not, at the top or bottom of the frame, over the ring.
+   * O numero grande no meio. Fica sempre a vista: a dica da fatia abre fora do
+   * buraco e dentro do quadro do desenho, ao lado da rosca quando cabe e, quando
+   * nao cabe, no topo ou no rodape do quadro, sobre o anel.
    *
-   * Without it, the center stays empty.
+   * Sem ele, o miolo fica vazio.
    */
   centerValue?: ReactNode;
-  /** The small line below the number. Stays visible along with it. */
+  /** A linha pequena embaixo do numero. Fica a vista junto com ele. */
   centerLabel?: ReactNode;
   /**
-   * Ring thickness, as a fraction of the radius. `1` closes it into a pie. A thinner
-   * ring leaves a bigger hole, and that is where the total has to fit.
+   * Espessura do anel, em fracao do raio. `1` fecha e vira pizza. Anel mais
+   * fino deixa buraco maior, e e ali que o total precisa caber.
    */
   thickness?: number;
   /**
-   * The list of slices below, with name and value. On by default: a donut
-   * without it is a pretty drawing that does not say which slice is which, and the tooltip only
-   * answers people with a pointer.
+   * A lista de fatias embaixo, com nome e valor. Ligada por padrao: uma rosca
+   * sem ela e um desenho bonito que nao diz qual fatia e qual, e a dica so
+   * responde para quem tem ponteiro.
    */
   legend?: boolean;
-  /** How to write the value, in the legend and the tooltip. */
+  /** Como escrever o valor, na legenda e na dica. */
   /**
-   * How the number is written: the name of a house formatter (`currencyShort`,
-   * `percent`, `integer`...) or your own function. The same vocabulary as the axis and
-   * the Meter - before this only the function was accepted, and the name was a type error.
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria. O mesmo vocabulario do eixo e
+   * do Meter - antes daqui so a funcao entrava, e o nome dava erro de tipo.
    */
   format?: Format;
   className?: string;
   /**
-   * What the screen reader hears in place of the drawing.
+   * O que o leitor de tela ouve no lugar do desenho.
    *
-   * With the legend on - which is the default - it is not needed: each slice is already
-   * there below in text, with name and value, and naming the ring again would
-   * have the same list read twice. Without a legend, the name comes from the slice
-   * names; write your own when the donut answers a question ("Faturamento
+   * Com a legenda ligada - que e o padrao - ela nao e necessaria: cada fatia ja
+   * esta ali embaixo em texto, com nome e valor, e nomear o anel de novo faria
+   * a mesma lista ser lida duas vezes. Sem legenda, o nome sai dos nomes das
+   * fatias; escreva o seu quando a rosca responder a uma pergunta ("Faturamento
    * por natureza").
    */
   label?: string;
   /**
-   * The piece's texts, to change the language: `name` builds the drawing's name
-   * without `label` and without a legend, from the slice names. Pass only the ones that
-   * change.
+   * Os textos da peca, para trocar o idioma: `name` monta o nome do desenho
+   * sem `label` e sem legenda, a partir dos nomes das fatias. Passe so os que
+   * mudam.
    */
   labels?: Partial<ChartDonutLabels>;
   /**
-   * What appears in place of the donut when the list comes empty or sums to zero. The
-   * same shape as `ChartContainer` and `DataTable`. Without it, the empty donut
-   * is the background ring with the center.
+   * O que aparece no lugar da rosca quando a lista vem vazia ou soma zero. O
+   * mesmo formato do `ChartContainer` e do `DataTable`. Sem ele, a rosca vazia
+   * e o anel de fundo com o miolo.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };

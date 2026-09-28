@@ -14,62 +14,57 @@ import { resolveFormat, type Format } from "../shared/format";
 const HOLE = 0.52;
 
 export type ChartGaugeBand = {
-  /** Where the band ends, in the same unit as `value`. It starts where the previous one stopped. */
+  /** Onde a faixa termina, na mesma unidade do `value`. Ela começa onde a anterior parou. */
   until: number;
-  /** The band color, and the arc's color when the value falls in it. */
+  /** A cor da faixa, e do arco quando o valor cai nela. */
   tone: "success" | "warning" | "danger";
-  /** The band's full name: it goes below the number and to the screen reader. */
+  /** O nome da faixa por extenso: vai para baixo do número e para o leitor de tela. */
   label: string;
 };
 
 export type ChartGaugeProps = {
   /**
-   * From 0 to `max`. Outside that, the written number and the name state the
-   * real value ("140 de 100"), and only the arc, the needle and the band stop
-   * at the end. `NaN` or infinity becomes "—", with no band.
+   * De 0 a `max`. Fora disso o número escrito e o nome dizem o valor real
+   * ("140 de 100"), e só o arco, o ponteiro e a faixa param na ponta. `NaN` ou
+   * infinito vira "—", sem faixa.
    */
   value: number;
   max?: number;
   /**
-   * The bands, in order, each one up to its `until`. Without bands, the gauge
-   * is a neutral accent arc, as on the web.
+   * As faixas, em ordem, cada uma até o seu `until`. Sem faixas, o medidor é
+   * um arco neutro de acento, como no web.
    */
   bands?: readonly ChartGaugeBand[];
   /**
-   * The big number in the middle. Without it, `value` written by `format`. It
-   * goes into the name in place of the value, and the font shrinks to fit the
-   * arc's hole.
+   * O número grande no meio. Sem ele, o `value` escrito pelo `format`. Ele
+   * entra no nome no lugar do valor, e a fonte encolhe para caber no furo do arco.
    */
   centerValue?: string;
-  /** The small line below the number. Without it, the name of the band the value fell in. */
+  /** A linha pequena embaixo do número. Sem ela, o nome da faixa em que o valor caiu. */
   centerLabel?: string;
   /**
-   * How the number is written: the name of a house formatter (`currencyShort`,
-   * `percent`, `integer`...) or your own function, the same vocabulary as the
-   * web.
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
    */
   format?: Format;
-  /**
-   * How many degrees the arc covers, with the opening at the bottom. From 0 to
-   * 360; 360 closes the ring.
-   */
+  /** Quantos graus o arco cobre, com a abertura embaixo. De 0 a 360; 360 fecha o anel. */
   sweep?: number;
   /**
-   * What the screen reader hears. Without it, the value, the maximum, the band
-   * and the band scale, in one sentence.
+   * O que o leitor de tela ouve. Sem ela, o valor, o máximo, a faixa e a
+   * régua das faixas, na mesma frase.
    */
   label?: string;
   /**
-   * The component's texts, to change the language: `value` joins the written
-   * value to the maximum in the name, and `band` describes each band in the
-   * scale that comes with it. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao
+   * maximo no nome, e `band` descreve cada faixa na regua que vem junto. Passe
+   * so os que mudam.
    */
   labels?: Partial<ChartGaugeLabels>;
   className?: string;
   /**
-   * Class per part: `value` (the big number in the middle) and `label` (the
-   * line below it). The arc is drawn in the `Svg`, and `react-native-svg` takes
-   * no class: its color comes from the band.
+   * Classe por parte: `value` (o numero grande no meio) e `label` (a linha
+   * embaixo dele). O arco e desenhado no `Svg`, e o `react-native-svg` nao
+   * recebe classe: a cor dele sai da faixa.
    */
   classNames?: Slots<"value" | "label">;
 };

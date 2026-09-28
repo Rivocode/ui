@@ -1,7 +1,7 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # PopoverDescription
 
-The panel's text, wired to it through `aria-describedby`.
+O texto do painel, ligado a ele por `aria-describedby`.

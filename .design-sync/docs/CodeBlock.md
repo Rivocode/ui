@@ -1,27 +1,25 @@
 ---
-category: Data
+category: Dados
 ---
 
 # CodeBlock
 
-Code as a block: an API response, a log line, a config snippet.
+Código em bloco: retorno de API, linha de log, trecho de configuração.
 
-The scrolling is its own on purpose. JSON does not wrap, and without scrolling
-in the block itself the long line pushes the page width, and the horizontal
-overflow only shows up on the user's phone, never on the monitor of whoever
-wrote it.
+A rolagem é própria de propósito. JSON não quebra linha, e sem rolagem no
+próprio bloco a linha longa empurra a largura da página, e o vazamento
+horizontal só aparece no celular de quem usa, nunca no monitor de quem
+escreveu.
 
-Its own scrolling only helps if the keyboard scrolls too. That is why the
-block enters the Tab order, as a named region, and the arrow keys move it
-sideways: whoever does not use a mouse reaches the end of the long line. The
-name is the `title` when it is text, "Bloco de código" without it, and `label`
-replaces both.
+Rolagem própria só serve se o teclado também rola. Por isso o bloco entra na
+ordem do Tab, como uma região com nome, e as setas o percorrem de lado: quem
+não usa mouse chega ao fim da linha longa. O nome é o `title` quando ele é
+texto, "Bloco de código" sem ele, e `label` troca os dois.
 
-No syntax highlighting: highlighting keywords requires a grammar per language,
-and that is weight every screen pays for what few use. Whoever needs it brings
-their own and passes the result as children.
+Sem realce de sintaxe: destacar palavra-chave exige uma gramática por
+linguagem, e isso é peso que toda tela paga pelo que poucas usam. Quem precisa
+traz o seu e passa o resultado como filho.
 
-`lineNumbers` numbers the lines on the left, for whoever is going to cite a
-line; the number stays out of the selection, otherwise copying the block brings
-the numbers glued to the code. `copyable` puts the `Clipboard` in the corner,
-with the block's own content.
+`lineNumbers` numera à esquerda, para quem vai citar uma linha; o número fica
+fora da seleção, senão copiar o bloco traz os números colados no código.
+`copyable` põe o `Clipboard` no canto, com o próprio conteúdo do bloco.

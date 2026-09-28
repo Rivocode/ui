@@ -9,16 +9,16 @@ import { useReducedMotion } from "../motion";
 import { STICK_DISTANCE } from "../shared/ai";
 
 export type ConversationProps<Item> = {
-  /** The messages, in arrival order: the newest last, as on the web. */
+  /** As mensagens, em ordem de chegada: a mais nova por ultimo, como no web. */
   items: Item[];
-  /** Draws one message. Usually returns a `Message`. */
+  /** Desenha uma mensagem. Costuma devolver um `Message`. */
   renderItem: (item: Item, index: number) => ReactNode;
   keyExtractor: (item: Item, index: number) => string;
-  /** The list's name for the screen reader. Without it, "Conversa". */
+  /** O nome da lista para o leitor de tela. Sem ele, "Conversa". */
   label?: string;
   /**
-   * What appears when `items` is empty. The `suggestions` become buttons, and a
-   * tap hands the text to `onSuggestion`.
+   * O que aparece quando `items` esta vazio. As `suggestions` viram botoes, e o
+   * toque entrega o texto ao `onSuggestion`.
    */
   empty?: {
     title: string;
@@ -26,25 +26,24 @@ export type ConversationProps<Item> = {
     icon?: EmptyStateProps["icon"];
     suggestions?: string[];
   };
-  /** Called with the text of the tapped suggestion. Without it, the suggestions do not appear. */
+  /** Chamado com o texto da sugestao tocada. Sem ele, as sugestoes nao aparecem. */
   onSuggestion?: (suggestion: string) => void;
   /**
-   * What VoiceOver says when a message arrives at the end of the list. Without
-   * it, the plain text of what `renderItem` returns, and nothing while there is
-   * `streaming`. `null` waits: the same message is announced when the sentence
-   * arrives.
+   * O que o VoiceOver diz quando uma mensagem chega ao fim da lista. Sem ele, o
+   * texto solto do que `renderItem` devolve, e nada enquanto houver `streaming`.
+   * `null` espera: a mesma mensagem e anunciada quando a frase chegar.
    */
   announcement?: (item: Item, index: number) => string | null | undefined;
   className?: string;
   /**
-   * The component's texts, to change the language: `scroll` is the button that
-   * goes back to the end of the conversation, "Ir para o fim" without it.
+   * Os textos da peca, para trocar o idioma: `scroll` e o botao que volta ao
+   * fim da conversa, "Ir para o fim" sem ele.
    */
   labels?: Partial<ConversationLabels>;
   /**
-   * Class per part: `viewport` (the scrolling list), `content` (its content,
-   * via `contentContainerClassName`), `empty`, `suggestions` (the row of
-   * suggestions) and `scrollButton` (the go-to-end button).
+   * Classe por parte: `viewport` (a lista que rola), `content` (o conteudo
+   * dela, pelo `contentContainerClassName`), `empty`, `suggestions` (a fileira
+   * das sugestoes) e `scrollButton` (o botao de ir para o fim).
    */
   classNames?: Slots<"viewport" | "content" | "empty" | "suggestions" | "scrollButton">;
 };

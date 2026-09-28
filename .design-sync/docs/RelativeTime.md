@@ -1,42 +1,39 @@
 ---
-category: Data
+category: Dados
 ---
 
 # RelativeTime
 
 "há 2 minutos", "em 3 dias".
 
-No outside library delivers this, because it is not a code problem. It is a
-language and product decision: where to cut between "agora" and "há 1 minuto",
-when to stop counting and show the date, how the plural is written. Leaving it
-to the screen means each screen deciding differently, and logs, queues and
-notifications are exactly where the same instant appears on three screens at
-once.
+Nenhuma biblioteca de fora entrega isto, porque não é problema de código. É
+decisão de idioma e de produto: onde cortar entre "agora" e "há 1 minuto",
+quando parar de contar e mostrar a data, como o plural se escreve. Deixar isso
+para a tela significa cada tela decidir diferente, e log, fila e notificação
+são justamente onde o mesmo instante aparece em três telas ao mesmo tempo.
 
-It comes out in a real `<time>`, with the exact instant in `datetime` and the
-spelled-out date in `title`: the relative text is a summary, and a summary
-loses information that is sometimes the information that matters.
+Sai num `<time>` de verdade, com o instante exato no `datetime` e a data por
+extenso no `title`: o relativo é resumo, e resumo perde informação que às vezes
+é a que importa.
 
-The text redraws itself at a pace that follows the unit: every thirty seconds
-while it counts minutes, every hour once it counts days. A second-by-second
-clock for each row of a thousand-row table is the easiest way to kill
-scrolling. Passing `now`, the text stops updating: whoever pinned "now" does
-not want a clock.
+O texto se refaz sozinho num passo que acompanha a unidade: de trinta em
+trinta segundos enquanto conta minuto, de hora em hora quando já conta dia. Um
+relógio de segundo em segundo para cada linha de uma tabela de mil linhas é o
+jeito mais fácil de derrubar a rolagem. Passando `now`, o texto para de se
+atualizar: quem fixou o agora não quer relógio.
 
-`cutoff` decides when the relative text stops helping. "há 412 dias" says
-nothing; the date does.
+`cutoff` decide quando o relativo deixa de ajudar. "há 412 dias" não diz nada;
+a data diz.
 
-An invalid date (`new Date("ontem")`, `NaN`) comes out as "—", with no
-`datetime`, no `title` and no clock. The table row with the broken date stays
-standing, and does not bring down the whole screen with the `RangeError` from
-`toISOString`.
+Data inválida (`new Date("ontem")`, `NaN`) sai como "—", sem `datetime`, sem
+`title` e sem relógio. A linha da tabela com a data quebrada continua de pé, e
+não derruba a tela inteira com o `RangeError` do `toISOString`.
 
-## When not to use
+## Quando não usar
 
-When the exact date is the data: due date, accounting period, issue date.
-There the relative text hides the information the person came for; use
-`formatDate`.
+Quando a data exata é o dado: vencimento, competência, data de emissão. Ali o
+relativo esconde a informação que a pessoa foi buscar; use `formatDate`.
 
-## In React Native
+## No React Native
 
-Translates clock and all: receiving ready-made text would have been cheaper to write and would have handed the problem back to the screen, which is where it came from. The step follows the unit, as on the web: thirty seconds while counting minutes, one hour once counting days, and never one second. Hours advance every five minutes, not every one: the difference between "há 1 hora" and "há 2 horas" is not worth one timer per minute times the mounted rows. Two things are native-only. The text redoes itself when returning from the background, because while the app sleeps the JS timer does not run and the screen would reopen saying "há 2 minutos" three hours later. And the text is always numeric: `Intl.RelativeTimeFormat` does not exist in Hermes, the plural is written by hand, and where the web says "ontem" native says "há 1 dia". `cutoff` and `now` are the same, and the date it shows comes in the format of `formatDate`. What does not cross over is the exact instant: on the web it lives in the `title` of the `<time>`, and on touch there is no `title` and nowhere to rest the pointer. When the exact date matters, it needs to be written on the screen.
+Traduz com relógio e tudo: receber o texto pronto teria sido mais barato de escrever e teria devolvido o problema para a tela, que é de onde ele veio. O passo acompanha a unidade, como no web: trinta segundos enquanto conta minuto, uma hora quando já conta dia, e nunca um segundo. A hora anda de cinco em cinco minutos, e não de um em um: a diferença entre "há 1 hora" e "há 2 horas" não vale um timer por minuto vezes as linhas montadas. Duas coisas são só daqui. O texto se refaz ao voltar do fundo, porque enquanto o app dorme o timer do JS não corre e a tela reabriria dizendo "há 2 minutos" três horas depois. E o texto é sempre numérico: o `Intl.RelativeTimeFormat` não existe no Hermes, o plural vai escrito à mão, e onde o web diz "ontem" o nativo diz "há 1 dia". O `cutoff` e o `now` são os mesmos, e a data que ele mostra sai no formato do `formatDate`. O que não atravessa é o instante exato: no web ele mora no `title` do `<time>`, e no toque não há `title` nem onde pousar o ponteiro. Quando a data exata importa, ela precisa estar escrita na tela.

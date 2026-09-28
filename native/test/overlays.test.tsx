@@ -5,7 +5,7 @@ import { AlertDialog, Button, Dialog, Sheet, useToast } from "../src";
 import { act, byClass, byLabel, byRole, byType, render, renderError, textOf } from "./helpers";
 
 describe("Dialog", () => {
-  test("closed mounts nothing; open shows title and body", () => {
+  test("fechado não monta nada; aberto mostra título e corpo", () => {
     const closed = render(
       <Dialog open={false} onOpenChange={() => {}} title="Nota 4813">
         <Text>Detalhe</Text>
@@ -23,7 +23,7 @@ describe("Dialog", () => {
     expect(textOf(open)).toContain("Detalhe");
   });
 
-  test("a tap outside closes", () => {
+  test("o toque fora fecha", () => {
     const onOpenChange = mock(() => {});
     const screen = render(<Dialog open onOpenChange={onOpenChange} title="x" />);
     const [overlay] = byLabel(screen, "Fechar");
@@ -31,20 +31,20 @@ describe("Dialog", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  test("the backdrop is a sibling of the panel, with a role, and does not wrap it", () => {
+  test("a tarja e irma do painel, com papel, e nao o embrulha", () => {
     const screen = render(
       <Dialog open onOpenChange={() => {}} title="Nota 4813">
         <Text>Detalhe</Text>
       </Dialog>,
     );
     const [overlay] = byLabel(screen, "Fechar");
-    // While the whole dialog lived inside it, VoiceOver's first stop was a
-    // giant button called "Fechar" that swallowed the content.
+    // Enquanto o dialogo inteiro morava dentro dela, a primeira parada do
+    // VoiceOver era um botao gigante chamado "Fechar" que engolia o conteudo.
     expect(overlay.props.children).toBeUndefined();
     expect(overlay.props.accessibilityRole).toBe("button");
   });
 
-  test("the screen reader does not leak to the screen behind, and the title is a header", () => {
+  test("o leitor de tela nao vaza para a tela de tras, e o titulo e cabecalho", () => {
     const screen = render(<Dialog open onOpenChange={() => {}} title="Nota 4813" />);
     const modal = byType(screen, "View").filter((node) => node.props.accessibilityViewIsModal);
     expect(modal).toHaveLength(1);
@@ -68,12 +68,12 @@ describe("AlertDialog", () => {
     labels: { confirm: "Cancelar nota" },
   };
 
-  test("a tap outside does NOT close: the overlay is not even tappable", () => {
+  test("o toque fora NÃO fecha: o overlay nem é tocável", () => {
     const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onConfirm={() => {}} />);
     expect(byLabel(screen, "Fechar").length).toBe(0);
   });
 
-  test("it also traps the screen reader and announces the title as a header", () => {
+  test("também prende o leitor de tela e anuncia o título como cabeçalho", () => {
     const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onConfirm={() => {}} />);
     expect(
       byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal),
@@ -81,7 +81,7 @@ describe("AlertDialog", () => {
     expect(byRole(screen, "header")[0].props.children).toBe("Cancelar a nota?");
   });
 
-  test("confirm acts and closes, in the web order; cancel only closes", () => {
+  test("confirmar age e fecha, na ordem do web; cancelar só fecha", () => {
     const calls: string[] = [];
     const screen = render(
       <AlertDialog
@@ -106,7 +106,7 @@ describe("AlertDialog", () => {
 });
 
 describe("Sheet", () => {
-  test("open shows the content, and the backdrop closes on tap", () => {
+  test("aberta mostra o conteúdo, e o fundo fecha no toque", () => {
     const onOpenChange = mock(() => {});
     const screen = render(
       <Sheet open onOpenChange={onOpenChange} title="Nota 4813" description="Paga">
@@ -118,7 +118,7 @@ describe("Sheet", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  test("the backdrop is also a sibling of the panel, and the title is a header", () => {
+  test("a tarja tambem e irma do painel, e o titulo e cabecalho", () => {
     const screen = render(
       <Sheet open onOpenChange={() => {}} title="Nota 4813">
         <Text>Corpo da folha</Text>
@@ -144,17 +144,17 @@ describe("useToast", () => {
     );
   }
 
-  test("outside the provider, the error explains what was missing", () => {
-    // The helper mounts with a provider; here the hook runs bare on purpose.
+  test("fora do provider, o erro explica o que faltou", () => {
+    // O helper monta com provider; aqui o hook roda pelado de propósito.
     expect(renderError(<Emitter />)).toContain("RivoProvider");
   });
 
-  test("add puts the notice on screen right away", () => {
+  test("add põe o aviso na tela na hora", () => {
     const screen = render(<Emitter />);
     expect(textOf(screen)).not.toContain("Nota emitida");
     act(() => byRole(screen, "button")[0].props.onPress());
     expect(textOf(screen)).toContain("Nota emitida");
     expect(textOf(screen)).toContain("Foi por e-mail.");
-    // The 4s exit is a real setTimeout; measuring it here would be testing the clock.
+    // A saída em 4s é um setTimeout real; medi-la aqui seria testar o relógio.
   });
 });

@@ -61,11 +61,11 @@ export function UnnamedInput({ name: _name, ...props }: ComponentProps<"input">)
 
 export function missingFieldRootComplaint(part: string): string {
   return (
-    `[rivocode/ui] <${part}> outside <Field>: Base UI brings down the whole tree when a ` +
-    "field part does not find the <Field> around it, and the page goes blank with no error on " +
-    `screen. Wrap the block with <Field name="something">, or swap <${part}> for a plain ` +
-    "element where there is no field at all. Here the drawing went on in a plain element, " +
-    "without the link to the control that the screen reader expects."
+    `[rivocode/ui] <${part}> fora de <Field>: a Base UI derruba a árvore inteira quando uma ` +
+    "parte do campo não encontra o <Field> em volta, e a página fica em branco sem erro na " +
+    `tela. Envolva o bloco com <Field name="algo">, ou troque <${part}> por um elemento ` +
+    "comum onde não houver campo nenhum. Aqui o desenho seguiu num elemento simples, sem " +
+    "a ligação com o controle que o leitor de tela espera."
   );
 }
 
@@ -128,11 +128,11 @@ export function Input({ className, size, ...props }: InputProps) {
 }
 
 export type TextareaProps = Omit<ComponentProps<typeof BaseField.Control>, "size"> & {
-  /** How many lines the field shows before scrolling. */
+  /** Quantas linhas o campo mostra antes de rolar. */
   rows?: number;
   /**
-   * The same vocabulary as Input: changes the side padding, the text size and the
-   * minimum height, which is that of two fields of the same size.
+   * O mesmo vocabulario do Input: muda o recuo lateral, o corpo do texto e a
+   * altura minima, que e a de dois campos do mesmo tamanho.
    */
   size?: ControlSize;
 };

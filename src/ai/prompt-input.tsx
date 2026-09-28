@@ -30,51 +30,51 @@ export type PromptInputProps = Omit<
   ComponentPropsWithoutRef<"form">,
   "onSubmit" | "onChange" | "defaultValue"
 > & {
-  /** The field's text, controlled. Without it, the piece keeps the text and clears it on submit. */
+  /** O texto do campo, controlado. Sem ele, a peca guarda o texto e o limpa ao enviar. */
   value?: string;
-  /** The initial text, when the piece keeps its own state. */
+  /** O texto inicial, quando a peca guarda o proprio estado. */
   defaultValue?: string;
-  /** Called on every keystroke, with the whole text. */
+  /** Chamado a cada tecla, com o texto inteiro. */
   onValueChange?: (value: string) => void;
   /**
-   * Called with the text on Enter or the send button. Does not fire with
-   * the field empty (whitespace only counts as empty), disabled or in `streaming`.
-   * In controlled mode, whoever called it clears the field.
+   * Chamado com o texto ao apertar Enter ou o botao de enviar. Nao dispara com
+   * o campo vazio (so espaco conta como vazio), desabilitado ou em `streaming`.
+   * No modo controlado, quem limpa o campo e quem chamou.
    */
   onSubmit?: (value: string) => void;
   /**
-   * The answer is arriving: the send button becomes the stop button, and Enter stops
-   * sending. The field keeps accepting text, for the next question.
+   * A resposta esta chegando: o botao de enviar vira o de parar, e Enter deixa
+   * de enviar. O campo continua aceitando texto, para a proxima pergunta.
    */
   streaming?: boolean;
-  /** Called by the stop button, which only exists in `streaming`. */
+  /** Chamado pelo botao de parar, que so existe em `streaming`. */
   onStop?: () => void;
-  /** Locks the field and sending. Announced to the screen reader by the field itself. */
+  /** Trava o campo e o envio. Anunciado ao leitor de tela pelo proprio campo. */
   disabled?: boolean;
   placeholder?: string;
-  /** The field's name for the screen reader. Without it, "Mensagem". */
+  /** O nome do campo para o leitor de tela. Sem ele, "Mensagem". */
   label?: string;
-  /** How many lines the field grows before scrolling inside. Without it, 8. */
+  /** Quantas linhas o campo cresce antes de rolar por dentro. Sem ele, 8. */
   maxRows?: number;
-  /** The character cap. The field refuses whatever goes past it. */
+  /** O teto de caracteres. O campo recusa o que passa dele. */
   maxLength?: number;
   /**
-   * Shows the character count in the footer, like `120/4000` when there is
-   * `maxLength`. Turns to the danger tone when it hits the cap.
+   * Mostra a contagem de caracteres no rodape, como `120/4000` quando ha
+   * `maxLength`. Fica no tom de perigo ao bater no teto.
    */
   showCount?: boolean;
   /**
-   * The attachments already chosen, above the field: chips, thumbnails. The piece does not
-   * pick any file, it only reserves the space.
+   * Os anexos ja escolhidos, acima do campo: fichas, miniaturas. A peca nao
+   * escolhe arquivo nenhum, so reserva o lugar.
    */
   attachments?: ReactNode;
-  /** The footer buttons, on the left: attach, choose model, dictate. */
+  /** Os botoes do rodape, a esquerda: anexar, escolher modelo, ditar. */
   actions?: ReactNode;
   /**
-   * The piece's texts, to change the language: `submit` and `stop` are the names of the
-   * send and stop buttons, `hint` the keyboard hint tied to the field,
-   * `count` what is heard from the counter and `limit` the warning on hitting the cap.
-   * Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `submit` e `stop` sao os nomes do
+   * botao de enviar e do de parar, `hint` a dica do teclado ligada ao campo,
+   * `count` o que se ouve do contador e `limit` o aviso ao bater no teto.
+   * Passe so os que mudam.
    */
   labels?: Partial<PromptInputLabels>;
   classNames?: Slots<"attachments" | "textarea" | "footer" | "count" | "submit">;

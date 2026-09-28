@@ -34,27 +34,26 @@ function list(props: { items?: string[] } = {}) {
   );
 }
 
-test("with a full list, the empty notice takes no space in the panel", () => {
+test("com lista cheia, o aviso de vazio nao ocupa lugar no painel", () => {
   list();
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
-  // Empty stays mounted for the screen reader, but its content (and the space
-  // it takes) only appears in the empty list.
+  // O Empty fica montado para o leitor de tela, mas o recheio (e o espaco
+  // que ele ocupa) so aparece na lista vazia.
   expect(screen.queryByText(/Nenhum cliente com esse nome/)).toBeNull();
 });
 
-test("with nothing in the list, the notice appears", () => {
+test("sem nada na lista, o aviso aparece", () => {
   list({ items: [] });
-  // Base UI appends a word joiner to the end of the notice, so the screen
-  // reader announces it again; that is why the lookup is by substring, and not
-  // by exact text.
+  // A Base UI cola um juntador de palavras no fim do aviso, para o leitor de
+  // tela reanunciar; por isso a busca e por trecho, e nao por texto exato.
   expect(screen.getByText(/Nenhum cliente com esse nome/)).toBeDefined();
 });
 
-test("multiple selection builds the chips without leaving the library", () => {
-  // ComboboxChips and ComboboxChip already existed and could not be assembled:
-  // the piece that maps the chosen value to the chips was missing. Without it,
-  // the only way was to import straight from Base UI, which is what the skill
-  // says never to do.
+test("a escolha multipla monta as fichas sem sair da biblioteca", () => {
+  // ComboboxChips e ComboboxChip ja existiam e nao tinham como ser montados:
+  // faltava a peca que mapeia o valor escolhido para as fichas. Sem ela, o
+  // unico caminho era importar direto da Base UI, que e o que a skill manda
+  // nunca fazer.
   render(
     <RivoProvider scope="local">
       <Combobox items={CUSTOMERS} multiple defaultValue={CUSTOMERS}>
@@ -76,8 +75,8 @@ test("multiple selection builds the chips without leaving the library", () => {
 
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
   expect(screen.getByText("Transportes Cabo Branco")).toBeDefined();
-  // Each chip brings its own remove button, ready in the component - and with
-  // its name inside, otherwise the row announces itself "Remover, Remover".
+  // Cada ficha traz o proprio botao de remover, ja pronto no componente - e
+  // com o nome dela dentro, senao a fila se anuncia "Remover, Remover".
   expect(screen.getByRole("button", { name: "Remover Clinica Sao Lucas" })).toBeDefined();
   expect(screen.getByRole("button", { name: "Remover Transportes Cabo Branco" })).toBeDefined();
 });

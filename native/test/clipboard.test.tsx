@@ -3,16 +3,16 @@ import { describe, expect, mock, test } from "bun:test";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 /*
- * expo-clipboard is not installed where the suite runs, and will not be: it is
- * an OPTIONAL peer and an Expo native module, so the only place in the
- * repository that has it is `examples/native`, which is not a workspace - and
- * where `check:native:types` goes to fetch the types. Here it comes in as a
- * double, and the double is useful in itself: `setStringAsync` returning
- * `false` is the case no device reproduces on demand.
+ * O expo-clipboard nao esta instalado onde a suite roda, e nao vai estar: ele
+ * e peer OPCIONAL e modulo nativo do Expo, entao o unico lugar do repositorio
+ * que o tem e `examples/native`, que nao e workspace - e onde o
+ * `check:native:types` vai buscar os tipos. Aqui ele entra como duble, e o
+ * duble e util por si: `setStringAsync` devolvendo `false` e o caso que
+ * nenhum aparelho reproduz sob demanda.
  *
- * `mock.module` MUST run before the piece is evaluated, and `import` is
- * hoisted to the top of the file: that is why the piece comes in through
- * `await import` right below. It is the same trap as `chart-svg.test.tsx`.
+ * O `mock.module` PRECISA correr antes de a peca ser avaliada, e `import` e
+ * icado para o topo do arquivo: por isso a peca entra por `await import` logo
+ * abaixo. E a mesma armadilha de `chart-svg.test.tsx`.
  */
 let written: string[] = [];
 let accepts = true;
@@ -33,7 +33,7 @@ function reset() {
   accepts = true;
 }
 
-/** The tap, with the await the asynchronous copy asks for. */
+/** O toque, com o await que a copia assincrona pede. */
 async function press(node: { props: { onPress: () => unknown } }) {
   await act(async () => {
     await node.props.onPress();
@@ -41,7 +41,7 @@ async function press(node: { props: { onPress: () => unknown } }) {
 }
 
 describe("Clipboard", () => {
-  test("copies the value and confirms on both channels: the button and the notice", async () => {
+  test("copia o valor e confirma nos dois canais: o botao e o aviso", async () => {
     reset();
     const screen = render(<Clipboard value={CHAVE} />);
 
@@ -49,30 +49,29 @@ describe("Clipboard", () => {
     await press(button!);
 
     expect(written).toEqual([CHAVE]);
-    // The button: the spoken name becomes the confirmation.
+    // O botao: o nome falado passa a ser a confirmacao.
     expect(byLabel(screen, "Copiado")).toHaveLength(1);
     expect(byLabel(screen, "Copiar")).toHaveLength(0);
-    // The notice: it is what speaks on its own, because changing the
-    // accessibilityLabel of an already focused Pressable is re-announced by no
-    // screen reader.
+    // O aviso: e ele que fala sozinho, porque trocar o accessibilityLabel de
+    // um Pressable ja focado nao e reanunciado por leitor de tela nenhum.
     expect(textOf(screen)).toContain("Copiado");
   });
 
-  test("a clipboard that refuses confirms nothing", async () => {
+  test("a area de transferencia que recusa nao confirma nada", async () => {
     reset();
     accepts = false;
     const screen = render(<Clipboard value={CHAVE} />);
 
     await press(byLabel(screen, "Copiar")[0]!);
 
-    // Lying that it copied is worse than not confirming: the person pastes
-    // what they had before and only finds out at the destination.
+    // Mentir que copiou e pior do que nao confirmar: a pessoa cola o que
+    // tinha antes e so descobre no destino.
     expect(byLabel(screen, "Copiar")).toHaveLength(1);
     expect(byLabel(screen, "Copiado")).toHaveLength(0);
     expect(textOf(screen)).not.toContain("Copiado");
   });
 
-  test("onCopy only fires when it really copied", async () => {
+  test("o onCopy so dispara quando copiou de verdade", async () => {
     reset();
     const onCopy = mock(() => {});
 
@@ -87,7 +86,7 @@ describe("Clipboard", () => {
     expect(onCopy).toHaveBeenCalledWith(CHAVE);
   });
 
-  test("the confirmation reverts on its own, or the button stays stuck in a state that is over", async () => {
+  test("a confirmacao volta sozinha, senao o botao fica preso num estado que passou", async () => {
     reset();
     const screen = render(<Clipboard value={CHAVE} timeout={5} />);
 
@@ -100,7 +99,7 @@ describe("Clipboard", () => {
     expect(byLabel(screen, "Copiar")).toHaveLength(1);
   });
 
-  test("toast off leaves only the button's confirmation", async () => {
+  test("toast desligado deixa so a confirmacao do botao", async () => {
     reset();
     const screen = render(<Clipboard value={CHAVE} toast={false} />);
 
@@ -110,7 +109,7 @@ describe("Clipboard", () => {
     expect(textOf(screen)).not.toContain("Copiado");
   });
 
-  test("the two names change one without the other, and the visible text follows the spoken one", async () => {
+  test("os dois nomes trocam um sem o outro, e o texto visivel segue o falado", async () => {
     reset();
     const screen = render(
       <Clipboard value={CHAVE} labels={{ copy: "Copiar a chave" }}>
@@ -121,12 +120,12 @@ describe("Clipboard", () => {
     expect(textOf(screen)).toContain("Copiar a chave");
     await press(byLabel(screen, "Copiar a chave")[0]!);
 
-    // Changing only the verb does not force rewriting the confirmation too.
+    // Trocar so o verbo nao obriga a reescrever a confirmacao junto.
     expect(byLabel(screen, "Copiado")).toHaveLength(1);
     expect(textOf(screen)).toContain("Copiado");
   });
 
-  test("children is the button text until it copies, and copied comes in afterwards", async () => {
+  test("o children e o texto do botao enquanto nao copiou, e o copied entra depois", async () => {
     reset();
     const screen = render(<Clipboard value={CHAVE}>Copiar a chave de acesso</Clipboard>);
 
@@ -139,7 +138,7 @@ describe("Clipboard", () => {
     expect(textOf(screen)).not.toContain("Copiar a chave de acesso");
   });
 
-  test("icon-only, the target is square and full, without relying on hitSlop", () => {
+  test("so de icone o alvo e quadrado e cheio, sem depender de hitSlop", () => {
     reset();
     const icon = render(<Clipboard value={CHAVE} />);
     expect(byLabel(icon, "Copiar")[0]!.props.className).toContain("h-11 w-11");
@@ -148,7 +147,7 @@ describe("Clipboard", () => {
     expect(byLabel(withText, "Copiar")[0]!.props.className).toContain("h-11 px-4");
   });
 
-  test("disabled does not copy and says it is disabled", async () => {
+  test("desabilitado nao copia e diz que esta desabilitado", async () => {
     reset();
     const screen = render(<Clipboard value={CHAVE} disabled />);
     const [button] = byRole(screen, "button");
@@ -157,7 +156,7 @@ describe("Clipboard", () => {
     expect(button!.props.disabled).toBe(true);
   });
 
-  test("the consumer's class wins over the piece's", () => {
+  test("a classe de quem usa vence a da peca", () => {
     reset();
     const screen = render(<Clipboard value={CHAVE} className="h-14" />);
     const className = byLabel(screen, "Copiar")[0]!.props.className as string;
@@ -205,8 +204,8 @@ const VARIANTS = [
   },
 ] as const;
 
-describe("Clipboard in the Button variants", () => {
-  test("without variant the look stays secondary", () => {
+describe("Clipboard nas variantes do Button", () => {
+  test("sem variant o desenho continua o secundario", () => {
     reset();
     const screen = render(<Clipboard value={CHAVE} />);
     const tokens = (byLabel(screen, "Copiar")[0]!.props.className as string).split(" ");
@@ -217,7 +216,7 @@ describe("Clipboard in the Button variants", () => {
   });
 
   for (const { variant, fill, label, copy, check } of VARIANTS) {
-    test(`${variant}: the background, the label and both icons are those of Button ${variant}`, async () => {
+    test(`${variant}: o fundo, o rotulo e os dois icones sao os do Button ${variant}`, async () => {
       reset();
       const screen = render(
         <Clipboard value={CHAVE} variant={variant} toast={false}>

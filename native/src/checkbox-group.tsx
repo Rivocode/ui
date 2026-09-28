@@ -7,17 +7,20 @@ export type CheckboxGroupItem = { label: string; value: string };
 
 export type CheckboxGroupProps = {
   items: CheckboxGroupItem[];
-  /** The checked values. Empty is a normal state, not an error. */
+  /** Os valores marcados. Vazio e um estado normal, nao um erro. */
   value: string[];
   onValueChange: (value: string[]) => void;
   /**
-   * The group's name for the screen reader. Without it, the group has no name
-   * at all. The web asks for the same thing via `aria-label`, and for the same
-   * reason as `RadioGroup`: the list of boxes answers a question, and without
-   * the group name each box presents itself without saying which. Naming it
-   * also turns on the list role: React Native has no `group` role, and a `View`
-   * with no role carries no name. It draws nothing - the visible text belongs
-   * to `Field`, as in `Select` and `Combobox`.
+   * O nome do conjunto para o leitor de tela. Sem ele, o conjunto nao tem nome
+   * nenhum.
+   *
+   * O web pede a mesma coisa por `aria-label`, e pelo mesmo motivo do
+   * `RadioGroup`: a lista de caixas responde uma pergunta, e sem o nome do
+   * conjunto cada caixa se apresenta sem dizer qual.
+   *
+   * Nomear liga junto o papel de lista: no React Native nao existe papel de
+   * `group`, e uma `View` sem papel nenhum nao carrega nome. Nao desenha nada
+   * - o texto visivel e do `Field`, como no `Select` e no `Combobox`.
    */
   label?: string;
   disabled?: boolean;

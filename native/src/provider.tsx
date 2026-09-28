@@ -18,13 +18,16 @@ import { ToastProvider } from "./toast";
 export type RivoNativeColors = Record<RivoNativeColorRole, string>;
 
 type RivoContextValue = {
-  /** The resolved scheme: with `theme="system"`, this is what the device asked for. */
+  /**
+   * O esquema resolvido: com `theme="system"`, aqui chega o que o aparelho
+   * pediu.
+   */
   theme: RivoNativeTheme;
   /**
-   * The roles read from the COMPILED CSS, one per `bg-` class, of the theme
-   * currently painting. A component that paints outside the class - the Switch
-   * track, the ChartDonut slice - reads from here: it is the same color the
-   * class applies, so what the app overrides in CSS reaches both sides at once.
+   * Os papeis lidos do CSS COMPILADO, um por classe `bg-`, do tema que pinta
+   * agora. Peca que pinta por fora da classe - o trilho do Switch, a fatia do
+   * ChartDonut - le daqui: e a mesma cor que a classe aplica, entao o que o
+   * app sobrescreve no CSS chega aos dois lados de uma vez.
    */
   colors: RivoNativeColors;
 };
@@ -36,25 +39,25 @@ const PAINT = { className: "style" } as const;
 const Swatch = (props: { style?: unknown }) => createElement("RivoSwatch", props);
 
 const schemeWarning = (asked: "light" | "dark") =>
-  "[rivocode/ui-native] <RivoProvider>: this runtime has no `Appearance.setColorScheme` - which is the case " +
-  "for react-native-web -, so the `" +
+  "[rivocode/ui-native] <RivoProvider>: este runtime não tem `Appearance.setColorScheme` - é o caso " +
+  "do react-native-web -, então o esquema `" +
   asked +
-  "` scheme you asked for was NOT applied, and without this warning nothing would say so. Color painted by class comes from " +
-  "`light-dark()`, which resolves by the element's `color-scheme` and never by this call: declare " +
+  "` que você pediu NÃO foi imposto, e sem este aviso nada diria. A cor pintada por classe sai de " +
+  "`light-dark()`, que resolve pelo `color-scheme` do elemento e nunca por esta chamada: declare " +
   "`color-scheme: " +
   asked +
-  "` on the document root for the screen to match the requested theme, or use " +
-  '<RivoProvider theme="system"> together with `color-scheme: light dark`, which follows the browser on both ' +
-  "sides. The color the component reads from context comes from that same document and is re-read whenever the " +
-  "`color-scheme` or the root class changes - including when your app declares it inside an " +
-  "effect, after this mount -, so both sides come out in the same scheme instead of half the screen " +
-  "in each.";
+  "` na raiz do documento para a tela casar com o tema pedido, ou use " +
+  '<RivoProvider theme="system"> junto de `color-scheme: light dark`, que segue o navegador dos ' +
+  "dois lados. A cor que a peça lê do contexto sai desse mesmo documento e é relida sempre que o " +
+  "`color-scheme` ou a classe da raiz mudam - inclusive quando o seu app declara isso dentro de um " +
+  "efeito, depois desta montagem -, então os dois lados saem no mesmo esquema em vez de meia tela " +
+  "em cada um.";
 
 const RivoContext = createContext<RivoContextValue | null>(null);
 
 export function useRivo() {
   const value = useContext(RivoContext);
-  if (!value) throw new Error("useRivo needs a RivoProvider above it.");
+  if (!value) throw new Error("useRivo precisa de um RivoProvider acima.");
   return value;
 }
 
@@ -193,21 +196,21 @@ function watchScheme(reread: () => void): () => void {
 export type RivoProviderProps = {
   children: ReactNode;
   /**
-   * `rivocode-dark` is the default, as on the web; `system` follows the device.
-   * Layer 3 here is overriding the `--color-*` roles in the app's CSS before
-   * compiling.
+   * `rivocode-dark` e o padrao, como no web; `system` segue o aparelho. A
+   * camada 3 aqui e sobrescrever os papeis `--color-*` no CSS do app antes de
+   * compilar.
    */
   theme?: RivoNativeTheme | "system";
   /**
-   * The families the APP has already loaded with `expo-font`, one per role. The
-   * library never loads a font: it only passes the name along, and a role left
-   * out uses the system font.
+   * As familias que o APP ja carregou com o `expo-font`, uma por papel. A
+   * biblioteca nunca carrega fonte: ela so passa o nome adiante, e o papel que
+   * ficar de fora sai na fonte do sistema.
    */
   fonts?: RivoFonts;
   /**
-   * The `isLoaded` from `expo-font`, so the provider can check in `__DEV__`
-   * whether each name in `fonts` actually reached the device. Without it a name
-   * error only shows up as text in the wrong font, with no warning at all.
+   * O `isLoaded` do `expo-font`, para o provider conferir em `__DEV__` se cada
+   * nome de `fonts` chegou mesmo ao aparelho. Sem ele o erro de nome so
+   * aparece como texto na fonte errada, sem aviso nenhum.
    */
   isFontLoaded?: (family: string) => boolean;
 };

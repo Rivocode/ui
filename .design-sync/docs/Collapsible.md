@@ -1,14 +1,13 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Collapsible
 
-Hides and shows a block.
+Esconde e mostra um bloco.
 
-It is the `Accordion` of a single item, without the frame and without the
-coordination between siblings. When there are several sections that close one
-another, Accordion says more.
+E o `Accordion` de um item só, sem a moldura e sem a coordenacao entre irmaos.
+Quando ha várias secoes que se fecham entre si, o Accordion diz mais.
 
 ```tsx
 <Collapsible>
@@ -17,9 +16,9 @@ another, Accordion says more.
 </Collapsible>
 ```
 
-The panel animates its height on its own, and stops animating when the system
-asks for less motion.
+O painel anima altura sozinho, e para de animar quando o sistema pede menos
+movimento.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Collapsible` - `label` in place of `CollapsibleTrigger` and `CollapsiblePanel`; `open`/`onOpenChange` or `defaultOpen`, as on the web; the same motion as the `Accordion`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Collapsible` - `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; `open`/`onOpenChange` ou `defaultOpen`, como no web; o mesmo movimento do `Accordion`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

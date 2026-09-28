@@ -1,22 +1,22 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # Breadcrumb
 
-The path to where the person is.
+O caminho até onde a pessoa esta.
 
-It shrinks on its own: past `max`, the middle becomes an ellipsis, and the
-first crumb and the last `max - 1` remain (never fewer than the last one). The
-ellipsis only shows up when it hides at least one crumb. On a phone the last
-two crumbs remain, because a long path scrolls off the screen and nobody reads
-the beginning.
+Encolhe sozinho: passando de `max`, o meio vira reticencia, e ficam a primeira
+migalha e as `max - 1` últimas (nunca menos que a última). A reticência só
+aparece quando esconde ao menos uma migalha. No celular
+sobram as duas ultimas migalhas, porque caminho comprido rola para fora da tela e
+ninguém le o começo.
 
-The ceiling is called `max`, the same name that `Indicator`, `AvatarGroup` and
-`TagsInput` use for the same idea.
+O teto se chama `max`, o mesmo nome que `Indicator`, `AvatarGroup` e `TagsInput`
+usam para a mesma ideia.
 
-The path comes in through `items`, a list of `Crumb` (`{ label, href }`, with
-the `href` left out on the last one, which is where the person already is):
+O caminho entra por `items`, uma lista de `Crumb` (`{ label, href }`, com o
+`href` de fora na última, que é onde a pessoa já está):
 
 ```tsx
 const trilha: Crumb[] = [
@@ -25,8 +25,8 @@ const trilha: Crumb[] = [
 ]
 ```
 
-The last one is not a link and carries `aria-current="page"`.
+A última não é link e leva `aria-current="page"`.
 
-## In React Native
+## No React Native
 
-Does not port. The path to where the person is, on the phone, is the router's back button plus the screen's title. Drawing a trail on top of that duplicates the navigation and eats the width the title needs.
+Não porta. O caminho até onde a pessoa está é, no celular, o botão de voltar do router mais o título da tela. Desenhar uma trilha por cima disso duplica a navegação e come a largura que o título precisa.

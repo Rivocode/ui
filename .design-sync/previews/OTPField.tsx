@@ -1,13 +1,13 @@
 import { Field, FieldDescription, FieldLabel, OTPField } from '@rivocode/ui'
 
 /*
- * The surrounding `Field` is not decoration in the example: the first field of
- * the code is the one that receives the whole paste, and it is from it that
- * Base UI takes the group's label. Without the `FieldLabel`, that digit has no
- * name for screen reader users. The example shows the usage that works.
+ * O `Field` em volta não é enfeite do exemplo: o primeiro campo do código é o
+ * que recebe a colagem inteira, e é dele que a Base UI tira o rótulo do
+ * conjunto. Sem o `FieldLabel`, aquele dígito fica sem nome para quem usa
+ * leitor de tela. O exemplo mostra o uso que funciona.
  */
 
-/** Filled */
+/** Preenchido */
 export function Filled() {
   return (
     <Field className="w-fit max-w-full">
@@ -17,7 +17,7 @@ export function Filled() {
   )
 }
 
-/** Empty */
+/** Vazio */
 export function Empty() {
   return (
     <Field className="w-fit max-w-full">

@@ -16,30 +16,27 @@ import { Text } from "./text";
 const GAP = 16;
 
 export type ActionBarProps = {
-  /** How many items are selected. Above zero the bar comes in; at zero it leaves. */
+  /** Quantos itens estao selecionados. Acima de zero a barra entra; em zero ela sai. */
   count: number;
-  /** The batch actions, after the count. Use `Button` `size="sm"`. */
+  /** As acoes do lote, depois da contagem. Use `Button` `size="sm"`. */
   children?: ReactNode;
-  /** Turns on "Limpar seleção". The caller is the one who clears the selection. */
+  /** Liga o "Limpar seleção". Quem zera a selecao e quem chamou. */
   onClear?: () => void;
   /**
-   * The height of the bottom safe area, in points:
-   * `useSafeAreaInsets().bottom`. The bar sits 16 points above it.
+   * A altura da area segura de baixo, em pontos: `useSafeAreaInsets().bottom`.
+   * A barra fica 16 pontos acima dela.
    */
   bottomInset?: number;
-  /** The same texts as the web: `selected` receives the count and returns the sentence. */
+  /** Os mesmos textos do web: `selected` recebe a contagem e devolve a frase. */
   labels?: {
     selected?: (count: number) => string;
     clear?: string;
     region?: string;
     cleared?: string;
   };
-  /** Styles the bar panel, the same element as `classNames.bar`. */
+  /** Veste o painel da barra, o mesmo elemento que `classNames.bar`. */
   className?: string;
-  /**
-   * Class per part: `bar` (the panel), `count` (the count sentence) and `clear`
-   * (the clear button).
-   */
+  /** Classe por parte: `bar` (o painel), `count` (a frase da contagem) e `clear` (o botao de limpar). */
   classNames?: Slots<"bar" | "count" | "clear">;
 };
 

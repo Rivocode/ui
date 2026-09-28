@@ -1,9 +1,9 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # CardDescription
 
-The supporting line below the title, in muted, smaller text.
+A linha de apoio abaixo do título, em texto suave e menor.
 
-For what helps decide whether the card is worth reading, not for its content.
+Para o que ajuda a decidir se vale ler o cartão, não para o conteúdo dele.

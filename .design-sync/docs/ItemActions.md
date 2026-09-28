@@ -1,11 +1,11 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # ItemActions
 
-The action slot, on the right and never shrinking.
+O canto de ação, à direita e sem encolher.
 
-An icon button, a status `Badge` or the trigger of a `Menu`. Two actions are
-already a lot for a list row: the third one onward lives inside the menu,
-otherwise every row turns into a toolbar.
+Botão de ícone, `Badge` de estado ou o gatilho de um `Menu`. Duas ações já é
+muito para uma linha de lista: a terceira em diante vive dentro do menu, senão
+cada linha vira uma barra de ferramentas.

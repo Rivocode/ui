@@ -27,40 +27,40 @@ import { Text } from "./text";
 export type { TransferListItem } from "./shared/transfer";
 
 export type TransferListLabels = {
-  /** The title of the list you choose from. Default: "Disponíveis". */
+  /** O titulo da lista de onde se escolhe. Padrao: "Disponíveis". */
   available?: string;
-  /** The title of the list of what was chosen. Default: "Escolhidos". */
+  /** O titulo da lista do que foi escolhido. Padrao: "Escolhidos". */
   chosen?: string;
-  /** What appears in a list with no items. Default: "Nenhum item". */
+  /** O que aparece na lista sem item nenhum. Padrao: "Nenhum item". */
   empty?: string;
-  /** What appears when the search finds nothing. Default: "Nada encontrado". */
+  /** O que aparece quando a busca nao acha nada. Padrao: "Nada encontrado". */
   noResults?: string;
-  /** The placeholder text inside the search. Default: "Buscar". */
+  /** O texto de espera dentro da busca. Padrao: "Buscar". */
   search?: string;
-  /** The header count, the same sentence as the web. */
+  /** A contagem do cabecalho, a mesma frase do web. */
   count?: (selected: number, total: number) => string;
-  /** What the screen reader announces after moving. */
+  /** O que o leitor de tela anuncia depois de mover. */
   moved?: (count: number, to: string) => string;
 };
 
 export type TransferListProps = {
-  /** All the items, on both sides. The order here is the order of the available list. */
+  /** Todos os itens, dos dois lados. A ordem daqui e a da lista de disponiveis. */
   items: TransferListItem[];
-  /** The `value`s of the chosen items, in the order they appear in the second list. */
+  /** Os `value` dos escolhidos, na ordem em que aparecem na segunda lista. */
   value: string[];
-  /** Receives the new `value` on every move. */
+  /** Recebe o `value` novo a cada movimento. */
   onValueChange: (value: string[]) => void;
-  /** Turns on the search at the top of each list, accent-insensitive. Default: on. */
+  /** Liga a busca no topo de cada lista, sem acento importar. Padrao: ligada. */
   searchable?: boolean;
-  /** Turns off both lists, the searches and the move buttons. */
+  /** Desliga as duas listas, as buscas e os botoes de mover. */
   disabled?: boolean;
-  /** The component's texts, the same as the web. */
+  /** Os textos da peca, os mesmos do web. */
   labels?: TransferListLabels;
   className?: string;
   /**
-   * Class per part: `panel` (each list with its frame), `header`, `search`,
-   * `list` (the scrolling box), `option`, `actions` (the row of move buttons,
-   * below each list) and `empty`.
+   * Classe por parte: `panel` (cada lista com a moldura), `header`, `search`,
+   * `list` (a caixa que rola), `option`, `actions` (a fileira dos botoes de
+   * mover, embaixo de cada lista) e `empty`.
    */
   classNames?: Slots<"panel" | "header" | "search" | "list" | "option" | "actions" | "empty">;
 };

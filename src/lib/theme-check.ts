@@ -18,29 +18,29 @@ export type ThemeReport = {
 
 export const OPTIONAL: Record<string, string> = {
   "--rc-accent-image":
-    "finish: the accent as a gradient. Absent, the primary button stays flat, which is how the two house themes are born.",
+    "acabamento: o acento em gradiente. Ausente, o botão primário fica chapado, que é como os dois temas da casa nascem.",
   "--rc-accent-shadow":
-    "finish: the accent glow. Absent, the primary does not light up by itself, and no piece asks it to.",
+    "acabamento: o brilho do acento. Ausente, o primário não acende sozinho, e nenhuma peça pede que ele acenda.",
   "--rc-overlay-filter":
-    "finish: the frosted glass behind the dialog, the sheet and the palette. Absent, the scrim is just color, which is the default.",
+    "acabamento: o vidro fosco atrás do diálogo, da folha e da paleta. Ausente, a tarja é só cor, que é o padrão.",
 };
 
 export const ARRIVED: Record<string, { version: string; note: string }> = {
   "--rc-font-sans": {
     version: "0.7.0",
-    note: "the three families left `src/tokens/scales.css`, which is a global layer, and moved inside the theme selector. A theme written for 0.6.x compiles, builds and renders with no family at all.",
+    note: "as três famílias saíram de `src/tokens/scales.css`, que é camada global, e passaram para dentro do seletor de tema. Um tema escrito para a 0.6.x compila, constrói e renderiza sem família nenhuma.",
   },
   "--rc-font-display": {
     version: "0.7.0",
-    note: "left the global layer together with `--rc-font-sans` and `--rc-font-mono`. A theme written before it declares none of the three.",
+    note: "saiu da camada global junto com `--rc-font-sans` e `--rc-font-mono`. Tema escrito antes dela não declara nenhuma das três.",
   },
   "--rc-font-mono": {
     version: "0.7.0",
-    note: "left the global layer together with `--rc-font-sans` and `--rc-font-display`. A theme written before it declares none of the three.",
+    note: "saiu da camada global junto com `--rc-font-sans` e `--rc-font-display`. Tema escrito antes dela não declara nenhuma das três.",
   },
   "--rc-border-disabled": {
     version: "0.7.0",
-    note: "was born so the locked control has a visual cue where `--rc-surface` and `--rc-surface-raised` are the same color. A theme written before it does not have it.",
+    note: "nasceu para o controle travado ter sinal visual onde `--rc-surface` e `--rc-surface-raised` são a mesma cor. Tema escrito antes dela não tem.",
   },
 };
 
@@ -49,197 +49,197 @@ const EFFECTS: Array<{ role: RegExp; silent: boolean; effect: string }> = [
     role: /^--rc-bg$/,
     silent: false,
     effect:
-      "The page loses its own background and the browser white shows through, with the theme's light text on top of it.",
+      "A página fica sem fundo próprio e aparece o branco do navegador, com o texto claro do tema por cima dele.",
   },
   {
     role: /^--rc-surface$/,
     silent: false,
     effect:
-      "Card, panel and field lose their body: they merge into the page background, and the screen becomes a single block.",
+      "Cartão, painel e campo perdem o corpo: encostam no fundo da página, e a tela vira um bloco só.",
   },
   {
     role: /^--rc-surface-raised$/,
     silent: false,
     effect:
-      "Menu, tooltip and table header stop standing out from the rest: the floating layer takes the color of whatever is under it.",
+      "Menu, dica e cabeçalho de tabela param de saltar do resto: o flutuante fica da cor de quem está embaixo dele.",
   },
   {
     role: /^--rc-overlay$/,
     silent: false,
     effect:
-      "Dialog, sheet and palette open without a scrim: the page behind stays sharp, and nothing shows that it is locked.",
+      "Diálogo, folha e paleta abrem sem tarja: a página atrás continua nítida, e nada mostra que ela está travada.",
   },
   {
     role: /^--rc-fg$/,
     silent: false,
     effect:
-      "The main text loses the theme color and inherits the one above it; in a dark theme it comes out black on black.",
+      "O texto principal perde a cor do tema e herda a de quem está por cima; num tema escuro ele sai preto sobre preto.",
   },
   {
     role: /^--rc-fg-muted$/,
     silent: true,
     effect:
-      "Supporting text comes out in the main text color, and the page hierarchy disappears without anything looking broken.",
+      "O texto de apoio sai com a cor do texto principal, e a hierarquia da página desaparece sem nada parecer quebrado.",
   },
   {
     role: /^--rc-fg-subtle$/,
     silent: true,
     effect:
-      "Label, caption and column header rise to the main text color and start competing with it.",
+      "Rótulo, legenda e cabeçalho de coluna sobem para a cor do texto principal e passam a competir com ele.",
   },
   {
     role: /^--rc-fg-disabled$/,
     silent: true,
     effect:
-      "The text of a disabled control looks the same as that of a control that still responds, and the person clicks what does not respond.",
+      "O texto do controle desativado sai igual ao do controle que ainda responde, e a pessoa clica no que não responde.",
   },
   {
     role: /^--rc-accent$/,
     silent: false,
     effect:
-      "The primary button comes out without a fill: the main action of the screen becomes a transparent rectangle.",
+      "O botão primário sai sem preenchimento: a ação principal da tela vira um retângulo transparente.",
   },
   {
     role: /^--rc-accent-hover$/,
     silent: true,
     effect:
-      "The primary stops reacting to the pointer. A screenshot shows nothing, and only live does the screen feel dead.",
+      "O primário para de reagir ao ponteiro. Um retrato da tela não mostra nada, e só ao vivo ela fica morta.",
   },
   {
     role: /^--rc-accent-active$/,
     silent: true,
     effect:
-      "The moment of the click is gone: the button does not change when pressed, and the person clicks twice for not knowing whether it took.",
+      "Some o instante do clique: o botão não muda ao ser pressionado, e a pessoa clica duas vezes por não saber se pegou.",
   },
   {
     role: /^--rc-accent-fg$/,
     silent: false,
     effect:
-      "What is read on the accent inherits the page text color and vanishes into the brand color.",
+      "O que se lê sobre o acento herda a cor do texto da página e some dentro da cor da marca.",
   },
   {
     role: /^--rc-accent-text$/,
     silent: true,
     effect:
-      "Link and active item come out in the plain text color: what is selected can no longer be seen, and the navigation looks frozen.",
+      "Link e item ativo saem com a cor do texto comum: o que está selecionado deixa de se ver, e a navegação parece congelada.",
   },
   {
     role: /^--rc-accent-subtle$/,
     silent: true,
     effect:
-      "The menu item under the pointer and the checked item lose their background, and the menu stops showing where the person is.",
+      "Item de menu sob o ponteiro e item marcado ficam sem fundo, e o menu deixa de mostrar onde a pessoa está.",
   },
   {
     role: /^--rc-selected$/,
     silent: true,
     effect:
-      "The selected table row looks like the others: the selection still happens, it just cannot be seen.",
+      "A linha escolhida da tabela fica igual às outras: a seleção continua acontecendo, e só não se vê.",
   },
   {
     role: /^--rc-skeleton$/,
     silent: true,
     effect:
-      "Loading has no placeholder and the body of the `Avatar` disappears: the screen looks empty instead of busy.",
+      "O carregamento fica sem marca de lugar e o corpo do `Avatar` some: a tela parece vazia em vez de ocupada.",
   },
   {
     role: /^--rc-border$/,
     silent: false,
     effect:
-      "Every plain line falls back to `currentColor` and takes the text color: the screen gains heavy grids nobody drew.",
+      "Toda linha comum cai em `currentColor` e sai da cor do texto: a tela ganha grades fortes que ninguém desenhou.",
   },
   {
     role: /^--rc-border-strong$/,
     silent: false,
     effect:
-      "The border that identifies fields and controls falls back to the text color, and the 3:1 boundary WCAG 1.4.11 asks for is no longer the one that was measured.",
+      "A borda que identifica campo e controle cai na cor do texto, e a fronteira de 3:1 que a WCAG 1.4.11 pede deixa de ser a que foi medida.",
   },
   {
     role: /^--rc-border-disabled$/,
     silent: false,
     effect:
-      "The locked control gets its border in the text color, stronger than that of the live control: the disabled one starts to look like the only clickable one.",
+      "O controle travado fica com a borda na cor do texto, mais forte que a do controle vivo: o desativado passa a parecer o único clicável.",
   },
   {
     role: /^--rc-line-hover$/,
     silent: true,
-    effect: "The border stops responding to the pointer, and the field stops saying it accepts focus.",
+    effect: "A borda para de responder ao ponteiro, e o campo deixa de dizer que aceita foco.",
   },
   {
     role: /^--rc-ring$/,
     silent: true,
     effect:
-      "The keyboard focus ring comes out in the text color and vanishes against it. No screenshot catches this: whoever navigates with Tab loses track, and the screen becomes inaccessible in silence.",
+      "O anel de foco do teclado sai na cor do texto e some contra ele. Retrato nenhum pega isso: quem navega de Tab perde o rastro, e a tela fica inacessível em silêncio.",
   },
   {
     role: /^--rc-(success|warning|danger|info)$/,
     silent: false,
     effect:
-      "The fill of this tone disappears: the tone's `Badge`, `Alert` and `Progress` come out colorless, and success and danger become the same nothing.",
+      "O preenchimento desse tom desaparece: `Badge`, `Alert` e `Progress` do tom saem sem cor, e sucesso e perigo viram o mesmo nada.",
   },
   {
     role: /^--rc-(success|warning|danger|info)-fg$/,
     silent: false,
     effect:
-      "The text read on this tone's fill inherits the page color and vanishes into it.",
+      "O texto que se lê sobre o preenchimento desse tom herda a cor da página e some dentro dela.",
   },
   {
     role: /^--rc-(success|warning|danger|info)-text$/,
     silent: true,
     effect:
-      "This tone's message comes out in the plain text color: a form error stops looking like an error.",
+      "A mensagem desse tom sai com a cor do texto comum: um erro de formulário deixa de parecer erro.",
   },
   {
     role: /^--rc-(success|warning|danger|info)-subtle$/,
     silent: true,
     effect:
-      "This tone's `Alert` comes out without its faint background, and the strip that separates the notice from the rest of the page disappears.",
+      "O `Alert` desse tom sai sem fundo tênue, e a faixa que separa o aviso do resto da página desaparece.",
   },
   {
     role: /^--rc-font-sans$/,
     silent: true,
     effect:
-      "The whole page falls back to the browser font. There is no `:root` value underneath to catch the fall, and that is on purpose: `tsc` compiles, Vite builds, and the only thing wrong is the screen.",
+      "A página inteira cai na fonte do navegador. Não há valor de `:root` por baixo para segurar a queda, e isso é de propósito: o `tsc` compila, o Vite constrói, e a única coisa errada é a tela.",
   },
   {
     role: /^--rc-font-display$/,
     silent: true,
     effect:
-      "Every heading loses the brand family and goes back to the browser's. Since the body text may be right, the screen only looks a little odd, and nobody files a ticket for it.",
+      "Todo título perde a família da marca e volta para a do navegador. Como o corpo do texto pode estar certo, a tela parece só um pouco esquisita, e ninguém abre chamado por isso.",
   },
   {
     role: /^--rc-font-mono$/,
     silent: true,
     effect:
-      "`Kbd`, code block and number column come out in the text font, and the digits stop lining up in the table.",
+      "`Kbd`, bloco de código e coluna de número saem na fonte do texto, e os dígitos deixam de alinhar na tabela.",
   },
   {
     role: /^--rc-text-(display|hero)$/,
     silent: true,
     effect:
-      "The brand heading loses its `clamp()` size and inherits the paragraph's: the page hero becomes a bold paragraph.",
+      "O título de marca perde o tamanho em `clamp()` e herda o do parágrafo: o herói da página vira um parágrafo em negrito.",
   },
   {
     role: /^--rc-shadow-[1-3]$/,
     silent: true,
     effect:
-      "The floating layer loses its shadow and the 1px hairline that comes with it: menu, panel and dialog touch the page with nothing separating them.",
+      "O flutuante perde a sombra e o fio de 1px que vem junto dela: menu, painel e diálogo encostam na página sem nada os separar.",
   },
   {
     role: /^--rc-glow-accent$/,
     silent: true,
     effect:
-      "The `shadow-glow` class stops lighting up. No piece turns it on by itself, so the gap only shows where your screen asked for the glow.",
+      "A classe `shadow-glow` deixa de acender. Nenhuma peça a liga sozinha, então a falta aparece só onde a sua tela pediu o brilho.",
   },
   {
     role: /^--rc-chart-[1-8]$/,
     silent: false,
     effect:
-      "The chart draws this series without color. The eight are used in order, so missing a high-numbered one only shows in a chart with many series.",
+      "O gráfico desenha essa série sem cor. As oito são usadas em ordem, então faltar uma de número alto só aparece no gráfico que tem muitas séries.",
   },
   {
     role: /^--rc-chart-grid$/,
     silent: true,
-    effect: "The chart background grid disappears, and the value has no ruler to be read against.",
+    effect: "A grade de fundo do gráfico some, e o valor fica sem régua para ser lido.",
   },
 ];
 
@@ -359,7 +359,7 @@ export function reportOf(
       return {
         role,
         silent: what?.silent ?? true,
-        effect: what?.effect ?? "Theme role with no written consequence in this version of the command.",
+        effect: what?.effect ?? "Papel de tema sem consequência escrita nesta versão do comando.",
         ...(arrived ? { version: arrived.version, note: arrived.note } : {}),
         ...(meant ? { meant } : {}),
       };

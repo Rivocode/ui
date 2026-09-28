@@ -1,7 +1,7 @@
 import { DataTable, SearchInput, type Column } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Default */
+/** Padrão */
 export function Default() {
   return (
     <div className="w-full max-w-sm">
@@ -10,7 +10,7 @@ export function Default() {
   )
 }
 
-/** With shortcut */
+/** Com atalho */
 export function WithShortcut() {
   return (
     <div className="w-full max-w-sm">
@@ -32,12 +32,12 @@ const COLUNAS: Column<Nota>[] = [
   { key: 'customer', header: 'Cliente' },
 ]
 
-/** Feeding a table */
+/** Alimentando uma tabela */
 export function WithTable() {
   const [filter, setFilter] = useState('')
   return (
     <div className="flex w-full flex-col gap-3">
-      {/* The field belongs to the app; the table only receives the text, with accents not getting in the way. */}
+      {/* O campo é do app; a tabela só recebe o texto, sem acento atrapalhar. */}
       <SearchInput
         placeholder="Buscar por cliente ou número…"
         aria-label="Buscar nota"

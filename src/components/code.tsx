@@ -20,15 +20,15 @@ export function Code({ className, ...props }: CodeProps) {
 
 export type CodeBlockProps = Omit<ComponentProps<"pre">, "children" | "title"> & {
   children: string;
-  /** Numbers the lines on the left, for whoever will quote one of them. */
+  /** Numera as linhas a esquerda, para quem vai citar uma delas. */
   lineNumbers?: boolean;
-  /** Puts the copy button in the corner, with the block's own content. */
+  /** Poe o botao de copiar no canto, com o proprio conteudo do bloco. */
   copyable?: boolean;
-  /** File name or source, at the top of the block. */
+  /** Nome do arquivo ou da origem, no topo do bloco. */
   title?: ReactNode;
   /**
-   * The name of the region the screen reader announces on reaching the block by Tab.
-   * Without it, the `title` when it is text, and "Bloco de código" otherwise.
+   * O nome da regiao que o leitor de tela anuncia ao chegar no bloco pelo Tab.
+   * Sem ele, o `title` quando e texto, e "Bloco de código" no resto.
    */
   label?: string;
 };

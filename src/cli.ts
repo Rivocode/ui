@@ -30,39 +30,39 @@ const HOUSE_CSS = resolve(HERE, "preset.css");
 const HELP = `
 @rivocode/ui
 
-  rivocode-ui skill                    installs the skill in this project, in .claude/skills
-  rivocode-ui skill --global           installs it for all your projects, in ~/.claude
+  rivocode-ui skill                    instala a skill neste projeto, em .claude/skills
+  rivocode-ui skill --global           instala para todos os seus projetos, em ~/.claude
 
-  rivocode-ui check-theme <css...>     checks the roles and measures the contrast of your theme
-  rivocode-ui check-theme <map.ts>     the same, on the map React Native wears
-  rivocode-ui check-theme <...> --json the same check, in JSON, for your CI
+  rivocode-ui check-theme <css...>     confere os papéis e mede o contraste do seu tema
+  rivocode-ui check-theme <mapa.ts>    o mesmo, no mapa que o React Native veste
+  rivocode-ui check-theme <...> --json a mesma conferência, em JSON, para o seu CI
 
-  rivocode-ui tokens --out <dir>       writes the house tokens as DTCG 2025.10 JSON
-  rivocode-ui tokens <css...> --out <dir>
-                                       the same, with your theme in place of the house ones
+  rivocode-ui tokens --out <pasta>     escreve os tokens da casa em JSON DTCG 2025.10
+  rivocode-ui tokens <css...> --out <pasta>
+                                       o mesmo, com o seu tema no lugar dos da casa
 
-The skill teaches the library to an agent: the contract, the choice between
-similar pieces, and the addresses of the raw documentation.
+A skill ensina a biblioteca a um agente: o contrato, a escolha entre as peças
+parecidas, e os endereços da documentação crua.
 
-check-theme asks two questions, in this order. First, whether the theme declares
-every role the library expects - a missing one is not a compile error: the
-build passes, and the screen is what finds out. Then, whether the pairs that carry
-text, control boundaries and graphical objects reach the WCAG minimum, with alpha
-composited over the background it is drawn on. It is the same math and the same
-table of pairs the design system holds itself to.
+O check-theme faz duas perguntas, nessa ordem. Primeiro se o tema declara todos
+os papéis que a biblioteca espera — a falta de um não é erro de compilação: o
+build passa, e quem descobre é a tela. Depois, se os pares que carregam texto,
+fronteira de controle e objeto gráfico chegam ao mínimo da WCAG, com o alfa
+composto sobre o fundo em que ele é desenhado. É a mesma conta e a mesma tabela
+de pares que o design system cobra de si mesmo.
 
-The extension says which of the two theme forms you wrote: \`.css\` is web
-layer 3, and the command merges the declarations by selector; \`.ts\`, \`.mjs\` or
-\`.js\` is the map with \`light\` and \`dark\` that the @rivocode/ui-native
-RivoProvider receives, and the command imports the module. They are two formats
-of the same theme, and a single command for both - two CLIs would diverge at the
-first fix only one of them received.
+A extensão diz qual das duas formas de tema você escreveu: \`.css\` é a camada 3
+do web, e o comando junta as declarações por seletor; \`.ts\`, \`.mjs\` ou \`.js\`
+é o mapa com \`light\` e \`dark\` que o RivoProvider do @rivocode/ui-native
+recebe, e o comando importa o módulo. São dois formatos do mesmo tema, e um
+comando só para os dois — dois CLIs divergiriam na primeira correção que só um
+deles recebesse.
 
-tokens translates the three layers into the W3C Design Tokens Community Group
-format, which Tokens Studio and Figma's variable import read directly: one file
-for the palette, one for the scale, one per density, one per theme, and a
-resolver that says how to combine them. The role keeps pointing to the palette by
-alias, as in the CSS.
+O tokens traduz as três camadas para o formato do W3C Design Tokens Community
+Group, que o Tokens Studio e a importação de variáveis do Figma leem direto: um
+arquivo para a paleta, um para a escala, um por densidade, um por tema, e um
+resolver que diz como juntá-los. O papel continua apontando para a paleta por
+alias, como no CSS.
 `;
 
 function version() {
@@ -77,7 +77,7 @@ function install(global: boolean) {
   const root = global ? process.env.HOME : process.cwd();
 
   if (!root) {
-    console.error("Could not find your home directory. Run without --global.");
+    console.error("Não consegui descobrir a sua pasta pessoal. Rode sem --global.");
     process.exit(1);
   }
 
@@ -87,7 +87,7 @@ function install(global: boolean) {
     mkdirSync(target, { recursive: true });
     cpSync(SKILL_SOURCE, target, { recursive: true });
   } catch (error) {
-    console.error(`Could not write to ${target}.`);
+    console.error(`Não consegui escrever em ${target}.`);
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   }
@@ -98,10 +98,10 @@ function install(global: boolean) {
     cpSync(AGENT, join(agentsDir, "rivocode-ui.md"));
   }
 
-  const where = global ? "for all your projects" : "in this project";
-  console.log(`Skill installed ${where}, in ${target}`);
-  console.log(`Agent installed in ${join(root, ".claude", "agents", "rivocode-ui.md")}`);
-  console.log("The agent loads by itself when you ask for a screen.");
+  const where = global ? "para todos os seus projetos" : "neste projeto";
+  console.log(`Skill instalada ${where}, em ${target}`);
+  console.log(`Agent instalado em ${join(root, ".claude", "agents", "rivocode-ui.md")}`);
+  console.log("O agente carrega sozinho quando você pedir uma tela.");
 }
 
 function wrap(text: string, indent: string) {
@@ -132,18 +132,18 @@ function human(reports: ThemeReport[]) {
     lines.push(`${theme.selector}   (${theme.files.join(", ")})`);
 
     if (theme.missing.length === 0) {
-      lines.push(`  ${theme.declared} of ${theme.required} roles. Complete theme.`);
+      lines.push(`  ${theme.declared} dos ${theme.required} papéis. Tema completo.`);
       continue;
     }
 
     const holes = theme.missing.length;
     lines.push(
-      `  ${theme.declared} of ${theme.required} roles. ${holes} missing.`,
+      `  ${theme.declared} dos ${theme.required} papéis. ${holes === 1 ? "Falta 1" : `Faltam ${holes}`}.`,
     );
 
     for (const [silent, title] of [
-      [true, "SILENT BREAKAGE, which is why nobody reports it:"],
-      [false, "VISIBLE BREAKAGE, on the screen that uses the role:"],
+      [true, "QUEBRA CALADA, e é por isso que ninguém reporta:"],
+      [false, "QUEBRA VISÍVEL, na tela que usa o papel:"],
     ] as const) {
       const group = theme.missing.filter((role) => role.silent === silent);
       if (group.length === 0) continue;
@@ -156,12 +156,12 @@ function human(reports: ThemeReport[]) {
         lines.push(`    ${role.role}`);
         lines.push(...wrap(role.effect, "      "));
         if (role.note) {
-          lines.push(...wrap(`New role in ${role.version}: ${role.note}`, "      "));
+          lines.push(...wrap(`Papel novo na ${role.version}: ${role.note}`, "      "));
         }
         if (role.meant) {
           lines.push(
             ...wrap(
-              `You declared ${role.meant}, too similar to be anything else: it is this role with a typo.`,
+              `Você declarou ${role.meant}, parecido demais para ser outra coisa: é este papel com um dedo errado.`,
               "      ",
             ),
           );
@@ -178,18 +178,18 @@ function human(reports: ThemeReport[]) {
   if (short.length === 0) {
     const required = [...new Set(reports.map((theme) => theme.required))]
       .sort((one, other) => one - other)
-      .join(" and ");
+      .join(" e ");
     lines.push(
-      `${count(reports.length, "complete theme", "complete themes")}, against the ` +
-        `${required} roles of @rivocode/ui ${version()}.`,
+      `${count(reports.length, "tema completo", "temas completos")}, contra os ` +
+        `${required} papéis do @rivocode/ui ${version()}.`,
     );
   } else {
     lines.push(
-      `${count(holes, "missing role", "missing roles")} in ${short.length} of ` +
-        `${count(reports.length, "theme", "themes")}, in @rivocode/ui ${version()}.`,
+      `${count(holes, "papel faltando", "papéis faltando")} em ${short.length} de ` +
+        `${count(reports.length, "tema", "temas")}, no @rivocode/ui ${version()}.`,
     );
     lines.push(
-      "None of them is a compile error: tsc passes, the build passes, and the screen comes out wrong.",
+      "Nenhum deles é erro de compilação: o tsc passa, o build passa, e a tela sai errada.",
     );
   }
 
@@ -200,7 +200,7 @@ const CSS = ".css";
 const MODULE = new Set([".ts", ".mts", ".cts", ".js", ".mjs", ".cjs"]);
 
 function contrastHuman(findings: Finding[]) {
-  const lines = ["", "Contrast, now that all the roles are there:"];
+  const lines = ["", "Contraste, agora que os papéis estão todos lá:"];
   for (const finding of findings) lines.push(finding.line);
 
   const bad = findings.filter((finding) => !finding.ok);
@@ -208,29 +208,29 @@ function contrastHuman(findings: Finding[]) {
 
   if (bad.length === 0) {
     lines.push(
-      "Every pair above the minimum: 4.5:1 for text and 7:1 for body text (WCAG 1.4.3), " +
-        "3:1 for control boundaries and graphical objects (1.4.11).",
+      "Todo par acima do mínimo: 4,5:1 para texto e 7:1 para o corpo (WCAG 1.4.3), " +
+        "3:1 para fronteira de controle e objeto gráfico (1.4.11).",
     );
     return lines.join("\n");
   }
 
   lines.push(
-    `${count(bad.length, "pair below the minimum", "pairs below the minimum")}, ` +
-      `in @rivocode/ui ${version()}.`,
+    `${count(bad.length, "par abaixo do mínimo", "pares abaixo do mínimo")}, ` +
+      `no @rivocode/ui ${version()}.`,
   );
   lines.push(
-    "Alpha was composited over the background it is drawn on before measuring: that is " +
-      "what the eye sees, and measuring the raw color answers the wrong question.",
+    "O alfa foi composto sobre o fundo em que ele é desenhado antes de medir: é " +
+      "o que o olho vê, e medir a cor crua responde a pergunta errada.",
   );
 
-  if (bad.some((finding) => finding.line.includes("did not resolve"))) {
+  if (bad.some((finding) => finding.line.includes("não resolveu"))) {
     lines.push(
-      "The values that did not resolve were not measured. The math reads hexadecimal of " +
-        "3, 4, 6 and 8 digits, rgb(), rgba(), hsl(), hsla(), hwb(), lab(), lch(), " +
-        "oklab(), oklch() and color() in the CSS predefined spaces, and converts " +
-        "everything to sRGB before measuring - the Tailwind 4 palette goes in directly. " +
-        "Left out are color-mix(), which is math and not a color, and CSS color names " +
-        "like rebeccapurple. Those come out unmeasured, and what is not measured is not promised.",
+      "Os valores que não resolveram não foram medidos. A conta lê hexadecimal de " +
+        "3, 4, 6 e 8 dígitos, rgb(), rgba(), hsl(), hsla(), hwb(), lab(), lch(), " +
+        "oklab(), oklch() e color() nos espaços predefinidos do CSS, e converte " +
+        "tudo para sRGB antes de medir — a paleta do Tailwind 4 entra direto. " +
+        "Ficam de fora color-mix(), que é conta e não cor, e nome de cor da CSS " +
+        "como rebeccapurple. Esses saem sem medida, e o que não se mede não se promete.",
     );
   }
 
@@ -244,7 +244,7 @@ function cssSources(files: string[]) {
     try {
       sources.push({ file, css: readFileSync(file, "utf8") });
     } catch {
-      console.error(`Could not read ${file}.`);
+      console.error(`Não consegui ler ${file}.`);
       process.exit(1);
     }
   }
@@ -261,11 +261,11 @@ async function themeMaps(files: string[]) {
     try {
       loaded = (await import(pathToFileURL(resolve(file)).href)) as Record<string, unknown>;
     } catch (error) {
-      console.error(`Could not load ${file}.`);
+      console.error(`Não consegui carregar ${file}.`);
       console.error(error instanceof Error ? error.message : error);
       console.error(
-        "Reading a map written in TypeScript needs Node 22.18 or newer. " +
-          "On an older Node, point to a .mjs that exports the same object.",
+        "Para ler um mapa escrito em TypeScript o Node precisa ser 22.18 ou mais novo. " +
+          "Num Node anterior, aponte para um .mjs que exporte o mesmo objeto.",
       );
       process.exit(1);
     }
@@ -276,11 +276,11 @@ async function themeMaps(files: string[]) {
     );
 
     if (found.length === 0) {
-      console.error(`No theme map in ${file}.`);
+      console.error(`Nenhum mapa de tema em ${file}.`);
       console.error(
-        "A map is an exported object with `light` and `dark`, each with the color " +
-          "roles. It is what `bun run gen:native --theme` writes, and what the " +
-          "@rivocode/ui-native RivoProvider receives.",
+        "Um mapa é um objeto exportado com `light` e `dark`, cada um com os papéis " +
+          "de cor. É o que `bun run gen:native --tema` escreve, e é o que o " +
+          "RivoProvider do @rivocode/ui-native recebe.",
       );
       process.exit(1);
     }
@@ -297,14 +297,14 @@ async function checkTheme(args: string[]) {
   const unknown = args.filter((argument) => argument.startsWith("-") && argument !== "--json");
 
   if (unknown.length > 0) {
-    console.error(`Unknown option ${unknown.join(", ")}. check-theme only accepts --json.`);
+    console.error(`Não conheço ${unknown.join(", ")}. O check-theme aceita só --json.`);
     process.exit(1);
   }
 
   if (files.length === 0) {
-    console.error("Tell me which theme to read: rivocode-ui check-theme theme-acme.css");
+    console.error("Diga qual tema eu leio: rivocode-ui check-theme tema-acme.css");
     console.error(
-      "Pass ALL the files that make up the theme at once: the command merges the declarations by selector, and what it did not read counts as missing.",
+      "Passe TODOS os arquivos que formam o tema de uma vez: o comando junta as declarações por seletor, e o que ele não leu conta como faltando.",
     );
     process.exit(1);
   }
@@ -312,9 +312,9 @@ async function checkTheme(args: string[]) {
   const strange = files.filter((file) => extname(file) !== CSS && !MODULE.has(extname(file)));
 
   if (strange.length > 0) {
-    console.error(`Cannot read ${strange.join(", ")}.`);
+    console.error(`Não sei ler ${strange.join(", ")}.`);
     console.error(
-      "The extension says which theme form it is: .css for web layer 3, or .ts, .mjs and .js for the React Native map with `light` and `dark`.",
+      "A extensão diz qual forma de tema é: .css para a camada 3 do web, ou .ts, .mjs e .js para o mapa com `light` e `dark` do React Native.",
     );
     process.exit(1);
   }
@@ -334,15 +334,18 @@ async function checkTheme(args: string[]) {
   }
 
   if (reports.length === 0) {
-    console.error(`No theme block in ${files.join(", ")}.`);
+    console.error(`Nenhum bloco de tema em ${files.join(", ")}.`);
     console.error(
-      'A block becomes a theme when it declares at least one `--rc-` role, like `[data-rc-theme="acme"] { --rc-bg: ... }`. Without that I would go green without having looked at anything, which is the failure this command exists to prevent.',
+      'Um bloco vira tema quando declara pelo menos um papel `--rc-`, como `[data-rc-theme="acme"] { --rc-bg: ... }`. Sem isso eu ficaria verde sem ter olhado nada, que é a falha que este comando existe para evitar.',
     );
     process.exit(1);
   }
 
   const broken = reports.some((theme) => theme.missing.length > 0);
 
+  // A ordem e a decisao: papel faltando primeiro, porque medir o contraste de
+  // um papel que nao existe nao diz nada - a conta cairia no valor herdado, e o
+  // numero sairia bonito por acidente.
   if (broken) {
     if (json) {
       console.log(JSON.stringify({ version: version(), ok: false, themes: reports }, undefined, 2));
@@ -365,7 +368,7 @@ async function checkTheme(args: string[]) {
     if (!Object.values(CSS_CODE).some((role) => role in block.tokens)) continue;
     const worn = { ...house, ...resolveTokens(block.tokens, { ...house, ...lookup }) };
     findings.push(
-      ...checkCodePair(`${block.selector}, machine-read code`, worn[CSS_CODE.ink], worn[CSS_CODE.paper]),
+      ...checkCodePair(`${block.selector}, código lido por máquina`, worn[CSS_CODE.ink], worn[CSS_CODE.paper]),
     );
   }
 
@@ -400,13 +403,13 @@ function tokens(args: string[]) {
     if (argument === "--out" || argument === "--format") {
       const value = args[at + 1];
       if (!value || value.startsWith("-")) {
-        console.error(`Missing value for ${argument}.`);
+        console.error(`Falta o valor de ${argument}.`);
         process.exit(1);
       }
       options.set(argument, value);
       at++;
     } else if (argument.startsWith("-")) {
-      console.error(`Unknown option ${argument}. tokens accepts --out and --format.`);
+      console.error(`Não conheço ${argument}. O tokens aceita --out e --format.`);
       process.exit(1);
     } else {
       files.push(argument);
@@ -415,28 +418,28 @@ function tokens(args: string[]) {
 
   const format = options.get("--format") ?? "dtcg";
   if (format !== "dtcg") {
-    console.error(`Cannot write the format "${format}". For now it is only dtcg.`);
+    console.error(`Não sei escrever o formato "${format}". Por enquanto é só dtcg.`);
     process.exit(1);
   }
 
   const out = options.get("--out");
   if (!out) {
-    console.error("Tell me where to write: rivocode-ui tokens --out tokens");
+    console.error("Diga onde eu escrevo: rivocode-ui tokens --out tokens");
     process.exit(1);
   }
 
   const strange = files.filter((file) => extname(file) !== CSS);
   if (strange.length > 0) {
-    console.error(`Cannot read ${strange.join(", ")}. tokens reads the theme in .css, web layer 3.`);
+    console.error(`Não sei ler ${strange.join(", ")}. O tokens lê o tema em .css, a camada 3 do web.`);
     process.exit(1);
   }
 
   const result = exportDtcg(readCssTree(HOUSE_CSS), cssSources(files) as CssSource[]);
 
   if (result.themes.length === 0) {
-    console.error(`No [data-rc-theme="..."] in ${files.join(", ")}.`);
+    console.error(`Nenhum [data-rc-theme="..."] em ${files.join(", ")}.`);
     console.error(
-      "It is the selector that declares layer 3. Without it I would write the house palette and scale and claim I exported your theme.",
+      "É o seletor que declara a camada 3. Sem ele eu escreveria a paleta e a escala da casa e diria que exportei o seu tema.",
     );
     process.exit(1);
   }
@@ -447,18 +450,18 @@ function tokens(args: string[]) {
       writeFileSync(join(out, name), `${JSON.stringify(content, undefined, 2)}\n`);
     }
   } catch (error) {
-    console.error(`Could not write to ${out}.`);
+    console.error(`Não consegui escrever em ${out}.`);
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   }
 
   console.log(
-    `${count(result.count, "token", "tokens")} in ${count(Object.keys(result.files).length, "file", "files")}, in ${out}: ` +
+    `${count(result.count, "token", "tokens")} em ${count(Object.keys(result.files).length, "arquivo", "arquivos")}, em ${out}: ` +
       `${result.themes.join(", ")}.`,
   );
 
   if (result.skipped.length > 0) {
-    console.log("\nLeft out, because the format has no way to express them:");
+    console.log("\nFicaram de fora, porque o formato não tem como dizer:");
     const grouped = new Map<string, { scopes: string[]; reason: string }>();
     for (const item of result.skipped) {
       const key = `${item.variable}: ${item.value}`;
@@ -484,7 +487,7 @@ if (command === "skill") {
 } else if (command === "--help" || command === "-h" || command === undefined) {
   console.log(HELP.trim());
 } else {
-  console.error(`Unknown command "${command}".`);
+  console.error(`Não conheço "${command}".`);
   console.log(HELP.trim());
   process.exit(1);
 }

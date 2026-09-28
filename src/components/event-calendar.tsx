@@ -55,13 +55,13 @@ export type CalendarEventTone = "neutral" | "accent" | "success" | "warning" | "
 
 export type CalendarEvent = {
   id: string;
-  /** What the person reads on the chip and what the screen reader announces first. */
+  /** O que a pessoa le na tarja e o que o leitor de tela anuncia primeiro. */
   title: string;
   start: Date;
   end: Date;
-  /** Sends the event to the top band, with no time. */
+  /** Manda o compromisso para a faixa de cima, sem hora. */
   allDay?: boolean;
-  /** The house's closed vocabulary, the same as Badge and Timeline. */
+  /** O vocabulario fechado da casa, o mesmo do Badge e da Timeline. */
   tone?: CalendarEventTone;
 };
 
@@ -69,9 +69,9 @@ export type EventCalendarRange = { start: Date; end: Date };
 
 export type CalendarEventInfo = {
   view: EventCalendarView;
-  /** `block` in the time grid, `bar` in the month and the band, `row` in the agenda. */
+  /** `block` na grade de tempo, `bar` no mes e na faixa, `row` na agenda. */
   shape: "block" | "bar" | "row";
-  /** The drawn start, already clipped at midnight of the day it appears on. */
+  /** O comeco desenhado, ja cortado na meia-noite do dia em que ele aparece. */
   start: Date;
   end: Date;
   continuesBefore: boolean;
@@ -451,105 +451,102 @@ export type EventCalendarProps = Omit<
   ComponentProps<"div">,
   "children" | "onSelect" | "defaultValue"
 > & {
-  /** The view shown, when the consumer controls the state. */
+  /** A vista mostrada, quando quem usa controla o estado. */
   view?: EventCalendarView;
-  /** The initial view, when the component controls its own state. */
+  /** A vista inicial, quando o componente controla o proprio estado. */
   defaultView?: EventCalendarView;
   onViewChange?: (view: EventCalendarView) => void;
   /**
-   * Which views appear in the switcher. Below 640px the week leaves the list,
-   * and a requested view that is not there resolves to the agenda, without warning.
+   * Quais vistas aparecem no seletor. Abaixo de 640px a semana sai da lista,
+   * e uma vista pedida que nao esta la resolve para a agenda, sem aviso.
    */
   views?: EventCalendarView[];
 
-  /** The anchor date of the visible period, when the consumer controls the state. */
+  /** A data ancora do periodo visivel, quando quem usa controla o estado. */
   date?: Date;
-  /** The initial anchor date. Without it, today. */
+  /** A data ancora inicial. Sem ela, hoje. */
   defaultDate?: Date;
   onDateChange?: (date: Date) => void;
   /**
-   * Signals that the visible period changed, for the app to fetch. The end is exclusive:
-   * it is midnight of the day after the last day shown.
+   * Avisa que o periodo visivel mudou, para o app buscar. O fim e exclusivo:
+   * e a meia-noite do dia seguinte ao ultimo dia mostrado.
    */
   onRangeChange?: (range: EventCalendarRange) => void;
 
-  /** The events already expanded: the piece does not expand recurrence. */
+  /** Os compromissos ja expandidos: a peca nao expande recorrencia. */
   events?: CalendarEvent[];
   isLoading?: boolean;
   isError?: boolean;
-  /** Without this, the error offers no retry. */
+  /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
-  /** The title of the error notice. Without it, "Nao foi possivel carregar". */
+  /** O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar". */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
-   * What appears when the query comes back with nothing in the period. In the agenda it
-   * takes the place of the list; in the grids it sits on top, because the grid
-   * is also where you click to create.
+   * O que aparece quando a consulta volta sem nada no periodo. Na agenda ele
+   * ocupa o lugar da lista; nas grades ele fica por cima, porque a grade
+   * tambem e onde se clica para criar.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 
   onEventSelect?: (event: CalendarEvent) => void;
   /**
-   * Click on an empty spot of the grid: returns the half hour containing the clicked point, in
-   * wall-clock time, including on the daylight saving day. Does not fire in the agenda,
-   * which has no time geometry to click on, nor on a click inside the
-   * "+N mais" panel.
+   * Clique no vazio da grade: devolve a meia hora que contem o ponto clicado, em
+   * hora de parede, inclusive no dia do horario de verao. Nao dispara na agenda,
+   * que nao tem geometria de tempo onde clicar, nem no clique de dentro do
+   * painel do "+N mais".
    */
   onSlotSelect?: (range: EventCalendarRange) => void;
   /**
-   * Replaces only the inside of the chip; the box, the focus and the label stay the piece's.
+   * Troca so o miolo da tarja; a caixa, o foco e o rotulo continuam da peca.
    *
-   * It runs DURING render, and so it has to be pure: building JSX is fine,
-   * calling `setState` on any component is not. Doing that yields the warning
-   * "Cannot update a component while rendering a different component", which
-   * points at the inner piece and not at the line that caused it - and that is why it is
-   * hard to find. If you need to react to an event, use `onEventSelect`.
+   * Ela corre DURANTE o render, e por isso tem que ser pura: montar JSX pode,
+   * chamar `setState` de qualquer componente nao. Fazer isso rende o aviso
+   * "Cannot update a component while rendering a different component", que
+   * aponta para a peca de dentro e nao para a linha que causou - e por isso e
+   * dificil de achar. Se voce precisa reagir a um evento, use `onEventSelect`.
    */
   renderEvent?: (event: CalendarEvent, info: CalendarEventInfo) => ReactNode;
 
-  /** 0 Sunday, 1 Monday. */
+  /** 0 domingo, 1 segunda. */
   weekStartsOn?: WeekStart;
-  /** The first hour drawn in the time grid. */
+  /** A primeira hora desenhada na grade de tempo. */
   dayStart?: number;
-  /** The last hour drawn. Whatever falls outside rests against the edge of the gutter. */
+  /** A ultima hora desenhada. O que cai fora encosta na beirada da calha. */
   dayEnd?: number;
-  /** How many pixels an hour is worth. It is the scale that turns duration into height. */
+  /** Quantos pixels vale uma hora. E a escala que faz duracao virar altura. */
   hourHeight?: number;
-  /** How many columns a time clash can open before becoming "+N". */
+  /** Quantas colunas um choque de horario pode abrir antes de virar "+N". */
   maxColumns?: number;
-  /** How many lanes fit in the all-day bar and in the month cell. */
+  /** Quantas faixas cabem na barra de dia inteiro e na celula do mes. */
   maxLanes?: number;
-  /**
-   * Max height of the scrolling area. A number becomes pixels. The month does not scroll
-   * internally.
-   */
+  /** Altura maxima da area que rola. Numero vira pixel. O mes nao rola por dentro. */
   maxHeight?: number | string;
 
-  /** The calendar's name for the screen reader. */
+  /** O nome do calendario para o leitor de tela. */
   label?: string;
   /**
-   * The language of the dates, the hours and the day and month names, as a BCP 47 tag:
-   * `"en-US"`, `"es"`. The piece's fixed words do not come from here, but from
+   * O idioma das datas, das horas e dos nomes de dia e de mes, como tag BCP 47:
+   * `"en-US"`, `"es"`. As palavras fixas da peca nao vem daqui, e sim de
    * `labels`.
    */
   locale?: string;
   /**
-   * The piece's texts, to change the language: `retry` is the button that runs
-   * `onRetry`, "Tentar de novo" without it - the same key in every piece that
-   * handles the four endings. `loading` and `loaded` are what the screen reader
-   * hears when the query goes out and when it comes back. `agenda`, `day`, `week` and
-   * `month` name the views, and `day` also the gutter of the all-day band;
-   * `views` is the name of their switcher. `previous`, `next`, `today` and
-   * `pickDate` are the toolbar; `weekPeriod` writes the week's title and receives the
-   * `locale`. `allDay`, `time`, `continuesBefore`, `continuesAfter` and
-   * `position` build what the screen reader hears on each event,
-   * `events` the count of each day, and `more` and `moreIn` the "+2 mais" for when it
-   * does not fit. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais. `loading` e `loaded` sao o que o leitor de tela
+   * ouve quando a consulta sai e quando ela volta. `agenda`, `day`, `week` e
+   * `month` nomeiam as vistas, e `day` tambem a calha da faixa de dia inteiro;
+   * `views` e o nome do seletor delas. `previous`, `next`, `today` e
+   * `pickDate` sao a barra; `weekPeriod` escreve o titulo da semana e recebe o
+   * `locale`. `allDay`, `time`, `continuesBefore`, `continuesAfter` e
+   * `position` montam o que o leitor de tela ouve em cada compromisso,
+   * `events` a contagem de cada dia, e `more` e `moreIn` o "+2 mais" de quando
+   * nao cabe. Passe so os que mudam.
    */
   labels?: Partial<EventCalendarLabels>;
   /**
-   * Class per part: `toolbar`, `body`, `header`, `gutter`, `column`,
+   * Classe por parte: `toolbar`, `body`, `header`, `gutter`, `column`,
    * `event`, `band`, `cell`, `section`.
    */
   classNames?: Slots<

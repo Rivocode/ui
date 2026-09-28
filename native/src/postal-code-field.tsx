@@ -23,33 +23,27 @@ export type PostalCodeFieldProps = Omit<
   InputProps,
   "value" | "onChangeText" | "onValueChange" | "keyboardType" | "maxLength" | "className"
 > & {
-  /** The digits, without punctuation: the mask belongs to the field, the data does not carry it. */
+  /** Os digitos, sem a pontuacao: a mascara e do campo, o dado nao a carrega. */
   value: string;
-  /**
-   * Called on every keystroke with the digits and, in the second argument, the
-   * punctuated CEP that the web passes first.
-   */
+  /** Chamado a cada tecla com os digitos e, no segundo argumento, o CEP pontuado que o web entrega primeiro. */
   onValueChange: (digits: string, masked: string) => void;
   /**
-   * The address lookup, written by the consumer: receives the 8 digits and the
-   * `signal`, and returns the address or `null` when the CEP does not exist.
-   * Rejecting means a network failure.
+   * A busca do endereco, escrita por quem usa: recebe os 8 digitos e o
+   * `signal`, e devolve o endereco ou `null` quando o CEP nao existe. Rejeitar
+   * e falha de rede.
    */
   lookup: PostalCodeLookup;
-  /**
-   * Called when the lookup finds the address. This is where the rest of the
-   * form gets filled in.
-   */
+  /** Chamado quando a busca acha o endereco. E aqui que o resto do formulario se preenche. */
   onAddress?: (address: PostalAddress, postalCode: string) => void;
-  /** Called on every change of lookup state. */
+  /** Chamado a cada troca de estado da busca. */
   onStatusChange?: (status: PostalCodeStatus) => void;
-  /** The same texts as the web: `searching`, `found`, `notFound`, `failed` and `retry`. */
+  /** Os mesmos textos do web: `searching`, `found`, `notFound`, `failed` e `retry`. */
   labels?: Partial<typeof POSTAL_CODE_MESSAGES>;
-  /** Styles the root, which wraps the field and the notice. */
+  /** Veste a raiz, que embrulha o campo e o aviso. */
   className?: string;
   /**
-   * Class per part: `input`, `suffix` (the spinner, only while searching),
-   * `message` and `retry` (the retry button).
+   * Classe por parte: `input`, `suffix` (o giro, so enquanto busca), `message`
+   * e `retry` (o botao de tentar de novo).
    */
   classNames?: Slots<"input" | "suffix" | "message" | "retry">;
 };

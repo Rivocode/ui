@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@rivocode/ui'
 
-/** Confirmation */
+/** Confirmação */
 export function Confirmation() {
   return (
     <div className="min-h-72">
@@ -21,7 +21,7 @@ export function Confirmation() {
   )
 }
 
-/** Closed */
+/** Fechado */
 export function ClosedState() {
   return (
     <Dialog>

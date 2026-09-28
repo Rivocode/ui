@@ -1,27 +1,25 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # Pagination
 
-Navigation between the pages of a listing.
+Navegação entre páginas de uma listagem.
 
-The list of numbers shrinks on its own, so it takes the same width with ten or
-with ten thousand pages. On a phone the numbers disappear and only the arrows
-remain, with "3 de 12": a 32px target misses its neighbor, and one almost
-always wants the next one.
+A lista de números encolhe sozinha, então ela ocupa a mesma largura com dez ou
+com dez mil páginas. No celular os números somem e ficam só as setas com "3 de
+12": alvo de 32px erra o vizinho, e quase sempre se quer a proxima.
 
-`onPageChange` receives the new page, counting from 1; whoever called it is
-the one who changes `page`. The texts live in `labels`: `navigation` is the
-name of the region, `previous` and `next` those of the arrows, `page` that of
-each number and `position` the "3 de 12" of the narrow screen. In a
-`DataTable` with `pageSize`, they arrive through `labels.pagination`.
+`onPageChange` recebe a página nova, contando de 1; quem troca o `page` é quem
+chamou. Os textos moram em `labels`: `navigation` é o nome da região, `previous`
+e `next` os das setas, `page` o de cada número e `position` o "3 de 12" da tela
+estreita. No `DataTable` com `pageSize`, eles chegam por `labels.pagination`.
 
-At the edges the piece does not lie: `pageCount` below 1 counts as one page, a
-`page` out of range shows clamped to it (9 of 5 renders "5 de 5", with 5
-selected and the back arrow going to 4), and with a single page both arrows
-are locked.
+Nas bordas a peça não mente: `pageCount` abaixo de 1 conta como uma página, o
+`page` fora da faixa aparece preso a ela (9 de 5 sai "5 de 5", com o 5 marcado
+e a seta de voltar indo para o 4), e com uma página só as duas setas ficam
+travadas.
 
-## In React Native
+## No React Native
 
-Does not port, by decision - a phone list scrolls; choosing the page number is a desktop gesture. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.
+Não porta, por decisão - lista de celular rola; escolher o número da página é gesto de mesa. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

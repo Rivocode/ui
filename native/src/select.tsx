@@ -18,30 +18,30 @@ import { Text } from "./text";
 export type SelectItem = { label: string; value: string };
 
 export type SelectItemGroup = {
-  /** The family header in the sheet, announced as a header: "Paraiba". */
+  /** O cabecalho da familia na folha, anunciado como cabecalho: "Paraiba". */
   label: string;
   items: SelectItem[];
 };
 
 type SelectBaseProps = {
   /**
-   * A flat list of `{ label, value }`, or `{ label, items }` groups - the same
-   * shape the web `items` accepts. With groups, the sheet becomes sections with
-   * headers.
+   * Lista rasa de `{ label, value }`, ou grupos `{ label, items }` - a mesma
+   * forma que o `items` do web aceita. Com grupos, a folha vira secoes com
+   * cabecalho.
    */
   items: SelectItem[] | SelectItemGroup[];
-  /** What the trigger shows with no choice: "Selecione o período". */
+  /** O que o gatilho mostra sem escolha: "Selecione o período". */
   placeholder?: string;
   label: string;
   disabled?: boolean;
-  /** Forces the error border of the trigger, or clears it with `false`, over the `Field` error. */
+  /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
-  /** Styles the trigger; the options sheet belongs to the platform. */
+  /** Veste o gatilho; a folha de opcoes e da plataforma. */
   className?: string;
   /**
-   * The component's texts, to change the language: `selected` is the trigger
-   * summary with more than one choice, and `done` the button that closes the
-   * sheet in `multiple`. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho
+   * com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`.
+   * Passe so os que mudam.
    */
   labels?: Partial<SelectLabels>;
 };

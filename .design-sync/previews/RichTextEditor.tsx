@@ -9,7 +9,7 @@ const SERVICE =
   'e conferência das notas de entrada.</p><ul><li><p>12 horas de análise</p></li>' +
   '<li><p>Relatório entregue em <a href="https://rivocode.com.br">rivocode.com.br</a></p></li></ul>'
 
-/** Service description */
+/** Descrição do serviço */
 export function ServiceDescription() {
   const [html, setHtml] = useState(SERVICE)
 
@@ -35,7 +35,7 @@ const schema = z.object({
   descricao: z.string().min(1, 'Descreva o serviço.'),
 })
 
-/** In a form, with error */
+/** No formulário, com erro */
 export function InForm() {
   const form = useZodForm(schema, { defaultValues: { descricao: '' } })
 
@@ -59,7 +59,7 @@ export function InForm() {
   )
 }
 
-/** Read-only and disabled */
+/** Só leitura e desabilitado */
 export function ReadOnlyAndDisabled() {
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">

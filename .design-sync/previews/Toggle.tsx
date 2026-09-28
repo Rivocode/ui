@@ -1,6 +1,6 @@
 import { Toggle, ToggleGroup } from '@rivocode/ui'
 
-/** Display mode */
+/** Modo de exibição */
 export function ViewMode() {
   return (
     <ToggleGroup defaultValue={['lista']}>

@@ -4,24 +4,24 @@ import { fireEvent, render, screen } from "@testing-library/react";
 
 import { Button } from "../src/components/button";
 
-test("renders the label", () => {
+test("renderiza o rotulo", () => {
   render(<Button>Falar no WhatsApp</Button>);
   expect(screen.getByRole("button", { name: "Falar no WhatsApp" })).toBeDefined();
 });
 
-test("the default variant is primary", () => {
+test("a variante padrao e a primaria", () => {
   render(<Button>Enviar</Button>);
   expect(screen.getByRole("button").className.split(" ")).toContain("bg-accent");
 });
 
-test("the destructive variant uses the danger token, never a literal red", () => {
+test("a variante destrutiva usa o token de perigo, nunca um vermelho literal", () => {
   render(<Button variant="danger">Excluir</Button>);
   const classes = screen.getByRole("button").className;
   expect(classes.split(" ")).toContain("bg-danger");
   expect(classes).not.toMatch(/#[0-9a-f]{3,6}/i);
 });
 
-test("the pill shape changes the radius, and the product default is not a pill", () => {
+test("a forma pilula troca o raio, e o padrao do produto nao e pilula", () => {
   const { rerender } = render(<Button>Padrao</Button>);
   expect(screen.getByRole("button").className).toContain("rounded-md");
 
@@ -29,18 +29,18 @@ test("the pill shape changes the radius, and the product default is not a pill",
   expect(screen.getByRole("button").className).toContain("rounded-pill");
 });
 
-test("the size comes from the density token, not from a hardcoded height", () => {
+test("o tamanho vem do token de densidade, nao de uma altura cravada", () => {
   render(<Button size="lg">Grande</Button>);
   expect(screen.getByRole("button").className).toContain("--rc-control-lg");
 });
 
-test("forwards the ref to the native element", () => {
+test("encaminha a ref para o elemento nativo", () => {
   const ref = createRef<HTMLButtonElement>();
   render(<Button ref={ref}>Ok</Button>);
   expect(ref.current?.tagName).toBe("BUTTON");
 });
 
-test("disabled does not fire click", () => {
+test("desabilitado nao dispara clique", () => {
   let cliques = 0;
   render(
     <Button
@@ -56,44 +56,44 @@ test("disabled does not fire click", () => {
   expect(cliques).toBe(0);
 });
 
-test("loading disables, announces busy and hides the spinner from the screen reader", () => {
+test("carregando desabilita, anuncia ocupado e esconde o giro do leitor de tela", () => {
   render(<Button loading>Salvando</Button>);
-  const element = screen.getByRole("button");
-  expect(element.getAttribute("aria-busy")).toBe("true");
-  expect((element as HTMLButtonElement).disabled).toBe(true);
-  expect(element.querySelector('[aria-hidden="true"]')).not.toBeNull();
+  const botao = screen.getByRole("button");
+  expect(botao.getAttribute("aria-busy")).toBe("true");
+  expect((botao as HTMLButtonElement).disabled).toBe(true);
+  expect(botao.querySelector('[aria-hidden="true"]')).not.toBeNull();
 });
 
-test("while loading, the button keeps its variant instead of turning gray", () => {
-  // "Excluindo..." is the moment the person most needs to see the action is
-  // destructive, and that was exactly when the color vanished: the loading
-  // disabled triggered the disabled gray, and a destructive in progress looked
-  // identical to a switched-off secondary.
+test("carregando, o botao mantem a variante em vez de virar cinza", () => {
+  // "Excluindo..." e o momento em que a pessoa mais precisa ver que a acao e
+  // destrutiva, e era justo ai que a cor sumia: o disabled do loading disparava
+  // o cinza de desabilitado, e um destrutivo em andamento saia identico a um
+  // secundario desligado.
   render(
     <Button variant="danger" loading>
       Excluindo
     </Button>,
   );
-  const element = screen.getByRole("button");
+  const botao = screen.getByRole("button");
 
-  expect(element.getAttribute("data-loading")).toBe("true");
-  expect(element.className).toContain("not-data-loading:disabled:bg-surface-raised");
-  expect(element.className.split(" ")).toContain("bg-danger");
+  expect(botao.getAttribute("data-loading")).toBe("true");
+  expect(botao.className).toContain("not-data-loading:disabled:bg-surface-raised");
+  expect(botao.className.split(" ")).toContain("bg-danger");
 });
 
-test("truly disabled stays neutral, and does not look like loading", () => {
+test("desabilitado de verdade continua neutro, e nao se parece com carregando", () => {
   render(
     <Button variant="danger" disabled>
       Excluir
     </Button>,
   );
-  const element = screen.getByRole("button");
+  const botao = screen.getByRole("button");
 
-  expect(element.getAttribute("data-loading")).toBeNull();
-  expect(element.getAttribute("aria-busy")).toBeNull();
+  expect(botao.getAttribute("data-loading")).toBeNull();
+  expect(botao.getAttribute("aria-busy")).toBeNull();
 });
 
-test("the button does not draw an icon square: that role belongs only to IconButton", () => {
+test("o botao nao desenha quadrado de icone: esse papel e so do IconButton", () => {
   render(
     // @ts-expect-error
     <Button size="icon" aria-label="Mais acoes">
@@ -105,7 +105,7 @@ test("the button does not draw an icon square: that role belongs only to IconBut
   expect(tokens).not.toContain("p-0");
 });
 
-test("the button can become a link, because half the buttons on a site are links", () => {
+test("o botao sabe virar link, porque metade dos botoes de um site e link", () => {
   render(
     <Button render={<a href="https://wa.me/55" />} shape="pill">
       Falar no WhatsApp
@@ -117,7 +117,7 @@ test("the button can become a link, because half the buttons on a site are links
   expect(link.className).toContain("rounded-pill");
 });
 
-test("xl is only size: its own measure, outside the density token, and the weight of the other three", () => {
+test("o xl e so tamanho: medida propria, fora do token de densidade, e o peso dos outros tres", () => {
   render(<Button size="xl">Quero um diagnostico</Button>);
   const tokens = screen.getByRole("button").className.split(" ");
   expect(tokens).toContain("px-6.5");
@@ -127,7 +127,7 @@ test("xl is only size: its own measure, outside the density token, and the weigh
   expect(tokens.some((token) => token.includes("--rc-control-"))).toBe(false);
 });
 
-test("the outline variant does not fill, and thickens the border", () => {
+test("a variante de contorno nao preenche, e engrossa a borda", () => {
   render(<Button variant="outline">Quero um diagnostico</Button>);
   const classes = screen.getByRole("button").className;
   expect(classes).toContain("border-2");

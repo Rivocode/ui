@@ -1,25 +1,25 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # Combobox
 
-A choice from a long list, with search.
+Escolha em lista longa, com busca.
 
-Use it when the list is too big to fit in the chooser's head, or when it comes
-from the server.
+Use quando a lista é grande demais para caber na cabeça de quem escolhe, ou
+quando ela vem do servidor.
 
-Composes with `ComboboxInput`, `ComboboxContent`, `ComboboxList` and
-`ComboboxItem`. A list with real families gets `ComboboxGroup`,
-`ComboboxGroupLabel` and `ComboboxSeparator` between one family and the next.
+Compõe com `ComboboxInput`, `ComboboxContent`, `ComboboxList` e
+`ComboboxItem`. Lista com famílias de verdade ganha `ComboboxGroup`,
+`ComboboxGroupLabel` e `ComboboxSeparator` entre uma família e outra.
 
-With `multiple`, the selection becomes chips inside the field itself:
-`ComboboxChips` around it, `ComboboxValue` to know what is selected and one
-`ComboboxChip` per selection.
+Com `multiple`, a escolha vira fichas dentro do próprio campo: `ComboboxChips`
+em volta, `ComboboxValue` para saber o que está escolhido e um `ComboboxChip`
+por escolha.
 
-`size` lives on the root, with the `Input` vocabulary: `sm`, `md` (default) and
-`lg`, with the same height, the same padding and the same text size. The
-`ComboboxInput` inside takes the size on its own.
+`size` mora na raiz, com o vocabulário do `Input`: `sm`, `md` (padrão) e `lg`,
+com a mesma altura, o mesmo recuo e o mesmo corpo de texto. O `ComboboxInput`
+de dentro veste o tamanho sozinho.
 
 ```tsx
 <Combobox items={CLIENTES} size="sm">
@@ -27,22 +27,21 @@ With `multiple`, the selection becomes chips inside the field itself:
 </Combobox>
 ```
 
-## When not to use
+## Quando não usar
 
-With five fixed options, use `Select`: it costs less, asks for no typing and
-has no "nothing found" state to handle. Search on a list the person can see
-in full only adds a keyboard in the way.
+Com cinco opções fixas, use `Select`: ele custa menos, não pede digitação e não
+tem estado de "nada encontrado" para tratar. Busca numa lista que a pessoa
+enxerga inteira só acrescenta um teclado no caminho.
 
-When what the person types **also counts** (a city that is not on the list, a
-search term), use `Autocomplete`. Here the list rules: the final value has to
-be one of the options, and text that matches none of them is lost when the
-field loses focus.
+Quando o que a pessoa digita **também vale** (uma cidade que não está na lista,
+um termo de busca), use `Autocomplete`. Aqui a lista manda: o valor final tem
+que ser uma das opções, e texto que não casa com nenhuma se perde ao sair do
+campo.
 
-And do not use it to navigate. A search field that leads to another screen is
-`Command`, the palette. The combobox returns a value to a form, and whoever
-chooses in it expects the choice to stay written there, not the page to
-change.
+E não use para navegar. Campo com busca que leva a outra tela é `Command`, a
+paleta. O combobox devolve um valor a um formulário, e quem escolhe nele espera
+que a escolha fique escrita ali, não que a página troque.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Combobox` - the list opens in a sheet with accent-insensitive search, and the sheet rises with the keyboard; `items` on the root, flat or in `{ label, items }` groups, not a `ComboboxItem` per child. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Combobox` - a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, rasa ou em grupos `{ label, items }`, não `ComboboxItem` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

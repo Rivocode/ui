@@ -23,40 +23,40 @@ export type { QuestionnaireAnswers, QuestionnaireItemStatus, QuestionnaireLabels
 export type QuestionnaireChoice = { label: string; value: string; description?: string };
 
 export type QuestionnaireQuestion = {
-  /** The answer's key in `value` and the value of `item`. */
+  /** A chave da resposta em `value` e o valor de `item`. */
   name: string;
   title: string;
   description?: string;
-  /** `single` is a single choice, `multiple` is several, `text` is a free answer. */
+  /** `single` e escolha unica, `multiple` e varias, `text` e resposta livre. */
   type: "single" | "multiple" | "text";
-  /** The options for `single` and `multiple`. */
+  /** As opcoes de `single` e `multiple`. */
   choices?: QuestionnaireChoice[];
-  /** Turns on the "Outra resposta" field below the options. */
+  /** Liga o campo "Outra resposta" embaixo das opcoes. */
   other?: boolean;
   placeholder?: string;
-  /** Without an answer it does not advance, and "Pular" disappears. */
+  /** Sem resposta nao avanca, e o "Pular" some. */
   required?: boolean;
-  /** Appears without being answered, and stays out of validation and answers. */
+  /** Aparece sem responder, e fica fora da validacao e das respostas. */
   disabled?: boolean;
 };
 
 export type QuestionnaireProps = {
-  /** The questions, in the order they appear. */
+  /** As perguntas, na ordem em que aparecem. */
   items: QuestionnaireQuestion[];
-  /** The open question, by `name`. */
+  /** A pergunta aberta, pelo `name`. */
   item: string;
   onItemChange: (item: string) => void;
-  /** The answers: text in `single` and `text`, a list in `multiple`. */
+  /** As respostas: texto em `single` e `text`, lista em `multiple`. */
   value: QuestionnaireAnswers;
   onValueChange: (value: QuestionnaireAnswers) => void;
   /**
-   * Called when the last question validates and all the previous ones too, with
-   * clean answers: a skipped, disabled or empty question is left out.
+   * Chamado quando a ultima pergunta valida e todas as anteriores tambem, com
+   * as respostas limpas: pergunta pulada, desabilitada ou vazia fica ausente.
    */
   onSubmit: (answers: QuestionnaireAnswers) => void;
-  /** Called when a question changes between `unanswered`, `answered` and `skipped`. */
+  /** Chamado quando uma pergunta muda entre `unanswered`, `answered` e `skipped`. */
   onStatusChange?: (item: string, status: QuestionnaireItemStatus) => void;
-  /** The same texts as the web, and the same names. */
+  /** Os mesmos textos do web, e os mesmos nomes. */
   labels?: Partial<QuestionnaireLabels>;
   className?: string;
 };

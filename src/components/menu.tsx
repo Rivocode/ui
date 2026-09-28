@@ -98,9 +98,9 @@ export const floatingGroupLabel =
   "px-2.5 py-1.5 text-xs font-rc-medium tracking-[0.04em] text-fg-subtle uppercase";
 
 export type MenuGroupProps = ComponentProps<typeof BaseMenu.Group> & {
-  /** The group's title. Without it the group only groups. */
+  /** Titulo do grupo. Sem ele o grupo apenas agrupa. */
   label?: string;
-  /** Class per part: `label`, the group's title. */
+  /** Classe por parte: `label`, o titulo do grupo. */
   classNames?: Slots<"label">;
 };
 
@@ -124,7 +124,7 @@ const markColumn = cn(
 
 export type MenuCheckboxItemProps = ComponentProps<typeof BaseMenu.CheckboxItem> &
   VariantProps<typeof menuItemVariants> & {
-    /** Class per part: `indicator`, the column that holds the mark. */
+    /** Classe por parte: `indicator`, a coluna que guarda a marca. */
     classNames?: Slots<"indicator">;
   };
 
@@ -151,9 +151,9 @@ export function MenuCheckboxItem({
 }
 
 export type MenuRadioGroupProps = ComponentProps<typeof BaseMenu.RadioGroup> & {
-  /** The group's title: "Ordenar por". Without it the group only groups. */
+  /** Titulo do grupo: "Ordenar por". Sem ele o grupo apenas agrupa. */
   label?: string;
-  /** Class per part: `label`, the group's title. */
+  /** Classe por parte: `label`, o titulo do grupo. */
   classNames?: Slots<"label">;
 };
 
@@ -178,7 +178,7 @@ export function MenuRadioGroup({
 
 export type MenuRadioItemProps = ComponentProps<typeof BaseMenu.RadioItem> &
   VariantProps<typeof menuItemVariants> & {
-    /** Class per part: `indicator`, the column that holds the dot. */
+    /** Classe por parte: `indicator`, a coluna que guarda o ponto. */
     classNames?: Slots<"indicator">;
   };
 
@@ -210,7 +210,7 @@ export function MenuRadioItem({
 export const MenuSubmenu = BaseMenu.SubmenuRoot;
 
 export type MenuSubmenuTriggerProps = ComponentProps<typeof BaseMenu.SubmenuTrigger> & {
-  /** Class per part: `indicator`, the arrow that points to the branch. */
+  /** Classe por parte: `indicator`, a seta que aponta para o ramo. */
   classNames?: Slots<"indicator">;
 };
 

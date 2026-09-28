@@ -1,17 +1,17 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # OTPField
 
-A verification code, one slot per digit.
+Código de verificacao, uma casa por digito.
 
-**Pasting the whole code works**: Base UI spreads the digits across the slots
-instead of dumping everything into the first one. That is almost always how the
-code arrives, from the SMS or the e-mail.
+**Colar o código inteiro funciona**: a Base UI espalha os digitos pelas casas em
+vez de jogar tudo na primeira. E quase sempre assim que o código chega, vindo do
+SMS ou do e-mail.
 
-The numeric keyboard and SMS autofill come ready, in a hidden input that holds
-the whole code. The visible slots only display.
+O teclado de números e o preenchimento pelo SMS já vem prontos, num input
+escondido que guarda o código inteiro. As casas visíveis só mostram.
 
 ```tsx
 <Field className="w-fit max-w-full">
@@ -20,12 +20,11 @@ the whole code. The visible slots only display.
 </Field>
 ```
 
-The `FieldLabel` around it names the first digit, which is the one that
-receives the pasted code: Base UI reserves its label for the field's label,
-and the other slots announce themselves by position ("Dígito 2 de 6"). On a
-narrow screen the slots shrink down to 32 pixels each, instead of pushing the
-page sideways.
+O `FieldLabel` em volta dá nome ao primeiro dígito, que é o que recebe o código
+colado: a Base UI reserva o rótulo dele para o rótulo do campo, e as outras
+casas se anunciam pela posição ("Dígito 2 de 6"). Na tela estreita as casas
+encolhem até 32 pixels cada, em vez de empurrar a página para o lado.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `OTPField` - visible boxes, one hidden field: keyboard, SMS autofill and screen reader see just one; the digit grows in; `label` names the field. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `OTPField` - caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

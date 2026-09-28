@@ -10,30 +10,29 @@ const ICON_SIZE = 32;
 
 export type EmptyStateProps = {
   /**
-   * Symbol of the empty state. Optional, and hidden from the screen reader, as
-   * on the web: the title and description already say what it draws. In React
-   * Native color does not flow down from the `View` to the SVG, so the form
-   * that paints itself is the function: it receives the `fg-subtle` of the
-   * theme currently painting and the web's 32 - `icon={({ color, size }) =>
-   * <Search color={color} size={size} />}`. A node is accepted too, and then
-   * color and size are up to whoever draws.
+   * Simbolo do vazio. Opcional, e escondido do leitor de tela, como no web: o
+   * titulo e a descricao ja dizem o que ele desenha.
+   *
+   * No React Native a cor nao desce da `View` para o SVG, entao a forma que
+   * pinta sozinha e a funcao: ela recebe o `fg-subtle` do tema que pinta agora
+   * e os 32 do web - `icon={({ color, size }) => <Search color={color} size={size} />}`.
+   * No aceito tambem, e ai a cor e o tamanho sao de quem desenha.
    */
   icon?: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
   /**
-   * A drawing larger than the icon, for the first-time empty state: the home
-   * screen with nothing yet, the onboarding step. A filter with no results and
-   * a list that emptied call for `icon`, not this. Nothing is forced: the size
-   * is up to whoever draws. Hidden from the screen reader, like `icon`. Paint
-   * with the roles from `useRivo().colors`, never with a literal color, or the
-   * drawing will not follow the client's theme. When present, it takes the
-   * place of `icon`.
+   * Desenho maior que o icone, para o vazio de primeira vez: a tela inicial
+   * sem nada ainda, o passo de onboarding. Filtro sem resultado e lista que
+   * esvaziou pedem `icon`, e nao isto.
+   *
+   * Nada e forcado: o tamanho e de quem desenha. Escondido do leitor de tela,
+   * como o `icon`. Pinte com os papeis de `useRivo().colors`, nunca com cor
+   * literal, senao o desenho nao acompanha o tema do cliente. Quando vem, toma
+   * o lugar do `icon`.
    */
   illustration?: ReactNode;
   title: string;
-  /**
-   * Required for the same reason as on the web: "nenhum resultado" without the
-   * why shifts the work to the person, and they almost never figure it out.
-   */
+  /** Obrigatoria pelo mesmo motivo do web: "nenhum resultado" sem o porque
+   * transfere o trabalho para a pessoa, e ela quase nunca descobre. */
   description: string;
   action?: ReactNode;
   className?: string;

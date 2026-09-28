@@ -1,13 +1,13 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # ResizablePanel
 
-One of the areas of a `ResizablePanelGroup`.
+Uma das áreas de um `ResizablePanelGroup`.
 
-The sizes are percentages of the group: `defaultSize` is where it starts,
-`minSize` and `maxSize` are the limits the divider respects. `collapsible`
-lets the area collapse down to `collapsedSize`, and collapsed at 0 it leaves
-the `Tab` order. The `ref` gives `collapse()`, `expand()`, `resize(size)`,
-`getSize()` and `isCollapsed()`.
+As medidas são porcentagem do grupo: `defaultSize` é onde ela começa,
+`minSize` e `maxSize` são os limites que a divisória respeita. `collapsible`
+deixa a área recolher até o `collapsedSize`, e recolhida em 0 ela sai do `Tab`.
+O `ref` dá `collapse()`, `expand()`, `resize(size)`, `getSize()` e
+`isCollapsed()`.

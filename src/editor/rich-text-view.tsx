@@ -22,22 +22,22 @@ import { RICH_TEXT_CONTENT } from "./content";
 
 export type RichTextViewProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /**
-   * The saved content: the HTML that `RichTextEditor`'s `onValueChange`
-   * handed over, or the JSON from `onJsonChange`. Neither of them becomes `innerHTML`:
-   * the piece reads only the blocks and marks the editor writes and builds each one as a
-   * React element, so `script`, an `on*` attribute and `style` have no way
-   * in, and a link only comes out with `http`, `https`, `mailto`, `tel` or a relative
-   * address.
+   * O conteudo salvo: o HTML que o `onValueChange` do `RichTextEditor`
+   * entregou, ou o JSON do `onJsonChange`. Nenhum dos dois vira `innerHTML`:
+   * a peca le so os blocos e marcas que o editor escreve e monta cada um como
+   * elemento React, entao `script`, atributo `on*` e `style` nao tem por onde
+   * entrar, e link so sai com `http`, `https`, `mailto`, `tel` ou endereco
+   * relativo.
    */
   value: string | RichTextJson | null | undefined;
   /**
-   * What appears when the content has no text: `null`, an empty string or the
-   * `<p></p>` of a blank editor. Without it, the piece draws nothing.
+   * O que aparece quando o conteudo nao tem texto: `null`, string vazia ou o
+   * `<p></p>` de um editor em branco. Sem ele, a peca nao desenha nada.
    */
   empty?: ReactNode;
   /**
-   * The piece's texts, to change the language: `code` is the name the screen
-   * reader hears on a code block that scrolls sideways. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `code` e o nome que o leitor de
+   * tela ouve no bloco de codigo que rola de lado. Passe so os que mudam.
    */
   labels?: Partial<RichTextViewLabels>;
   ref?: Ref<HTMLDivElement>;

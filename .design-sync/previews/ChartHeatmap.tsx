@@ -23,7 +23,7 @@ const EMISSIONS = DAYS.flatMap((day) =>
   })),
 ).filter((cell) => !(cell.day === 'Sáb' && Number.parseInt(cell.hour) > 13))
 
-/** Invoices issued by day and hour */
+/** Emissões por dia e hora */
 export function EmissionsByHour() {
   return (
     <Card className="w-[36rem]">
@@ -57,7 +57,7 @@ const TICKETS = [
   { team: 'Cadastro', week: 'S3', open: 2 },
 ]
 
-/** Zero and empty are not the same thing */
+/** Zero e vazio não são a mesma coisa */
 export function ZeroIsNotEmpty() {
   return (
     <div className="w-80">
@@ -74,7 +74,7 @@ export function ZeroIsNotEmpty() {
   )
 }
 
-/** With no invoices issued at all */
+/** Sem nenhuma emissão */
 export function EmptyHeatmap() {
   return (
     <div className="w-full max-w-lg">

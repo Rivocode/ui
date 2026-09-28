@@ -1,22 +1,21 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # AlertDialogContent
 
-The confirmation panel, with the backdrop and the portal inside.
+O painel da confirmação, com a tarja e o portal por dentro.
 
-**It does not close with Esc or with a click outside**, and that is the only
-difference that matters compared to `DialogContent`. Focus starts on the cancel
-button: whoever opened it by mistake gets out by pressing Enter, and getting
-out is what they should be able to do without reading.
+**Não fecha com Esc nem com clique fora**, e é a única diferença que importa em
+relação ao `DialogContent`. O foco começa no botão que cancela: quem abriu por
+engano sai apertando Enter, e sair é o que ele deve conseguir fazer sem ler.
 
-On a phone the buttons stack and take the full width, with the confirming one
-at the top of the stack and the cancel one close to the thumb.
+No celular os botões empilham e ocupam a largura toda, com o que confirma no
+alto da pilha e o que cancela rente ao polegar.
 
-The backdrop is a sibling of the panel inside the portal, so neither
-`className` nor a descendant variant reaches it. To dress the backdrop, use
-`classNames` with the `backdrop` part:
+A tarja é irmã do painel dentro do portal, então nem `className` nem variante de
+descendente alcançam ela. Para vestir a tarja, use `classNames` com a parte
+`backdrop`:
 
 ```tsx
 <AlertDialogContent classNames={{ backdrop: "backdrop-blur-md" }}>

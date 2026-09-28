@@ -1,19 +1,19 @@
 import { Calendar } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Single date */
+/** Data única */
 export function SingleDate() {
   const [date, setDate] = useState<string | null>('2026-03-03')
   return <Calendar value={date} onValueChange={setDate} />
 }
 
-/** With limits */
+/** Com limites */
 export function WithBounds() {
   const [date, setDate] = useState<string | null>('2026-03-12')
   return <Calendar value={date} onValueChange={setDate} min="2026-03-05" max="2026-03-20" />
 }
 
-/** Range */
+/** Intervalo */
 export function DateRange() {
   return (
     <Calendar
@@ -24,7 +24,7 @@ export function DateRange() {
   )
 }
 
-/** Without its own state */
+/** Sem estado próprio */
 export function Uncontrolled() {
   return <Calendar defaultValue="2026-03-03" />
 }

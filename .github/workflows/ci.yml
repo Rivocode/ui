@@ -15,30 +15,27 @@ jobs:
           bun-version: latest
       - run: bun install --frozen-lockfile
 
-      # The same `check` that runs on the machine and that publishing requires.
-      # Before this, lint, colors, contrast and tests ran as loose steps, and
-      # types, previews and the two documentation guards were missing: main
-      # could stay green with a broken type, and the error only showed up at
-      # publish time.
+      # O mesmo `check` que roda na maquina e o mesmo que a publicacao exige.
+      # Antes daqui saiam lint, cores, contraste e testes soltos, e faltavam
+      # tipos, previews e as duas guardas de documentacao: main podia ficar
+      # verde com um tipo quebrado, e o erro so aparecia na hora de publicar.
       - run: bun run check
 
-      # The build is not part of `check`, and it is where what only breaks on
-      # packaging shows up: a missing entry, CSS that does not compile, a skill
-      # that was not copied.
+      # O build nao entra no `check`, e e onde aparece o que so quebra ao
+      # empacotar: entrada faltando, CSS que nao compila, skill nao copiada.
       - run: bun run build
 
-      # The built MCP server, run with `node` over stdio the way an installer's
-      # client runs it. The in-memory test in `check` does not see a bin
-      # without a shebang nor a `content.json` that was never written.
-      - run: bun run smoke:mcp
+      # O servidor MCP construido, rodado com `node` pelo stdio como o cliente
+      # de quem instala roda. O teste em memoria do `check` nao ve bin sem
+      # shebang nem `content.json` que nao foi escrito.
+      - run: bun run fumaca:mcp
 
-  # The native package publishes SOURCE, so a type error in it lands in the
-  # consumer's build - and the consumer's skipLibCheck does not help, because it
-  # only covers .d.ts. The check lives in its own job because react and
-  # react-native are peers: the only place they are installed is the example
-  # app, which is not a workspace. That is why it cannot go into
-  # `bun run check`, which has to run on a clean clone - and why it has to run
-  # here, or it runs nowhere.
+  # O pacote nativo publica FONTE, entao erro de tipo dele cai no build de quem
+  # consome - e o skipLibCheck de la nao ajuda, porque so cobre .d.ts. A
+  # conferencia mora num job proprio porque react e react-native sao peers: o
+  # unico lugar onde estao instalados e o app de exemplo, que nao e workspace.
+  # Por isso ela nao pode entrar no `bun run check`, que precisa rodar num
+  # clone limpo - e por isso precisa rodar aqui, senao nao roda em lugar nenhum.
   nativo:
     runs-on: ubuntu-latest
     steps:
@@ -53,8 +50,8 @@ jobs:
 
       - run: bun run check:native:types
 
-      # The native props table is a committed artifact, and this is the only
-      # job that can GENERATE it: `--check` compares the JSON with what the
-      # compiler says now. Without it, the gate's `check:signature` would check
-      # the signature against an old snapshot of the native package.
-      - run: bun run check:props:native
+      # A tabela de props do nativo e artefato comitado, e este e o unico job
+      # que consegue GERAR: o `--check` compara o JSON com o que o compilador
+      # diz agora. Sem ele o `check:assinatura` do gate conferiria a assinatura
+      # contra uma foto antiga do pacote nativo.
+      - run: bun run check:props:nativo

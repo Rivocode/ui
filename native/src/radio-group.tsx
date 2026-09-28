@@ -11,15 +11,18 @@ export type RadioGroupProps = {
   value: string | null;
   onValueChange: (value: string) => void;
   /**
-   * The group's name for the screen reader. Without it, the group has no name
-   * at all. The web asks for the same thing via `aria-label` or
-   * `aria-labelledby`, and its page says that without it the group exists for
-   * the finger and not for the screen reader. Here there was no way to say it:
-   * a `radiogroup` with no name announces only the word "group", and each
-   * option presents itself without saying which question it answers. It draws
-   * nothing - the visible text belongs to `Field`, as in `Select` and
-   * `Combobox`. Inside a `FormField`, repeat there the same text as its
-   * `label`.
+   * O nome do grupo para o leitor de tela. Sem ele, o grupo nao tem nome
+   * nenhum.
+   *
+   * O web pede a mesma coisa por `aria-label` ou `aria-labelledby`, e a pagina
+   * dele diz que sem isso o grupo existe para o dedo e nao para o leitor de
+   * tela. Aqui nao havia como dizer: um `radiogroup` sem nome anuncia so a
+   * palavra "grupo", e cada opcao se apresenta sem dizer de que pergunta ela e
+   * resposta.
+   *
+   * Nao desenha nada - o texto visivel e do `Field`, como no `Select` e no
+   * `Combobox`. Dentro de um `FormField`, repita ali o mesmo texto do `label`
+   * dele.
    */
   label?: string;
   disabled?: boolean;

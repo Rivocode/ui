@@ -93,13 +93,13 @@ const QuestionnaireItemContext = createContext<ItemContext | null>(null);
 
 function useRoot(part: string) {
   const context = use(QuestionnaireRootContext);
-  if (!context) throw new Error(`${part} must be inside <Questionnaire>.`);
+  if (!context) throw new Error(`${part} precisa estar dentro de <Questionnaire>.`);
   return context;
 }
 
 function useItem(part: string) {
   const context = use(QuestionnaireItemContext);
-  if (!context) throw new Error(`${part} must be inside <QuestionnaireItem>.`);
+  if (!context) throw new Error(`${part} precisa estar dentro de <QuestionnaireItem>.`);
   return context;
 }
 
@@ -171,26 +171,26 @@ function focusFirstControl(element: HTMLFieldSetElement) {
 }
 
 export type QuestionnaireProps = Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> & {
-  /** The open question, by the item's `name`. Controlled; move with `onItemChange`. */
+  /** A pergunta aberta, pelo `name` do item. Controlado; ande com `onItemChange`. */
   item?: string;
-  /** The question open at the start, uncontrolled. Without it, the first one opens. */
+  /** A pergunta aberta no comeco, sem controlar. Sem ela, abre a primeira. */
   defaultItem?: string;
-  /** Called on every question change, with the new one's `name`. */
+  /** Chamado a cada troca de pergunta, com o `name` da nova. */
   onItemChange?: (item: string) => void;
   /**
-   * The shortcut for each option: `letters` marks the first with A, `numbers` with 1.
-   * Applies with focus inside the questionnaire and stops while typing in a field.
-   * `false` turns it off.
+   * O atalho de cada opcao: `letters` marca a primeira com A, `numbers` com 1.
+   * Vale com o foco dentro do questionario e para enquanto se digita num campo.
+   * `false` desliga.
    */
   shortcuts?: QuestionnaireShortcuts | false;
   /**
-   * Called when the last question validates and all the previous ones too.
-   * `answers` has one key per answered item: text for single choice and for the
-   * free field, a list for `multiple`. The same goes out in the `FormData`, and a skipped item
-   * is absent from both.
+   * Chamado quando a ultima pergunta valida e todas as anteriores tambem.
+   * `answers` tem uma chave por item respondido: texto na escolha unica e no
+   * campo livre, lista no `multiple`. O mesmo sai no `FormData`, e item pulado
+   * fica ausente dos dois.
    */
   onSubmit?: (answers: QuestionnaireAnswers, data: FormData) => void;
-  /** The piece's texts: buttons, progress and errors, for another language or another tone. */
+  /** Os textos da peca: botoes, progresso e erros, para outra lingua ou outro tom. */
   labels?: Partial<QuestionnaireLabels>;
   ref?: Ref<HTMLFormElement>;
 };
@@ -501,20 +501,15 @@ export type QuestionnaireItemProps = Omit<
   ComponentPropsWithoutRef<"fieldset">,
   "name" | "disabled"
 > & {
-  /**
-   * The answer's key: becomes the controls' `name`, the key in `answers` and the value of `item`.
-   */
+  /** A chave da resposta: vira o `name` dos controles, a chave de `answers` e o valor de `item`. */
   name: string;
-  /**
-   * Without an answer it does not advance, and "Pular" disappears. Without it, the question can be
-   * skipped.
-   */
+  /** Sem resposta nao avanca, e o "Pular" some. Sem ele, a pergunta aceita pular. */
   required?: boolean;
-  /** Multiple answers: the options become checkboxes, and the answer becomes a list. */
+  /** Varias respostas: as opcoes viram caixas de marcar, e a resposta vira lista. */
   multiple?: boolean;
-  /** The question appears, but does not answer: it stays out of validation and of the answers. */
+  /** A pergunta aparece, mas nao responde: fica fora da validacao e das respostas. */
   disabled?: boolean;
-  /** Called when the question changes between `unanswered`, `answered` and `skipped`. */
+  /** Chamado quando a pergunta muda entre `unanswered`, `answered` e `skipped`. */
   onStatusChange?: (status: QuestionnaireItemStatus) => void;
 };
 
@@ -708,13 +703,13 @@ export type QuestionnaireChoiceProps = Omit<
   ComponentPropsWithoutRef<"input">,
   "type" | "name" | "value" | "children"
 > & {
-  /** The value that goes to `answers` and to the `FormData` when the option is checked. */
+  /** O valor que vai para `answers` e para o `FormData` quando a opcao esta marcada. */
   value: string;
-  /** The option's text. Clicking it checks it. */
+  /** O texto da opcao. Clicar nele marca. */
   children: ReactNode;
-  /** The supporting line below the text. */
+  /** A linha de apoio embaixo do texto. */
   description?: ReactNode;
-  /** Class per part: `control` (the whole row), `key`, `label`, `description`, `indicator`. */
+  /** Classe por parte: `control` (a linha inteira), `key`, `label`, `description`, `indicator`. */
   classNames?: Slots<"control" | "key" | "label" | "description" | "indicator">;
 };
 

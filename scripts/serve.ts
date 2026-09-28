@@ -1,30 +1,30 @@
 /**
- * Static server for the showcase.
+ * Servidor estatico da vitrine.
  *
- * It has to be HTTP and not file://, because Chrome blocks JavaScript modules
- * loaded from a local file, and the page comes out blank without saying why.
+ * Precisa ser HTTP e nao file://, porque o Chrome bloqueia modulo JavaScript
+ * carregado de arquivo local, e a pagina sai em branco sem dizer o motivo.
  */
 import { file } from "bun";
 import { join, normalize } from "node:path";
 
-const ROOT = "demo";
+const RAIZ = "demo";
 
-export function serveDemo(port = 0) {
+export function servir(porta = 0) {
   return Bun.serve({
-    port,
+    port: porta,
     async fetch(req) {
       const url = new URL(req.url);
       const path = url.pathname === "/" ? "/index.html" : url.pathname;
-      // normalize strips any ../ before touching the disk.
-      const target = join(ROOT, normalize(path).replace(/^(\.\.[/\\])+/, ""));
-      const f = file(target);
-      return (await f.exists()) ? new Response(f) : new Response("not found", { status: 404 });
+      // normalize corta qualquer ../ antes de tocar no disco.
+      const alvo = join(RAIZ, normalize(path).replace(/^(\.\.[/\\])+/, ""));
+      const f = file(alvo);
+      return (await f.exists()) ? new Response(f) : new Response("nao encontrado", { status: 404 });
     },
   });
 }
 
 if (import.meta.main) {
-  const server = serveDemo(4173);
-  console.log(`showcase at http://127.0.0.1:${server.port}/`);
-  console.log(`dialog at http://127.0.0.1:${server.port}/dialog.html`);
+  const servidor = servir(4173);
+  console.log(`vitrine em http://127.0.0.1:${servidor.port}/`);
+  console.log(`dialogo em http://127.0.0.1:${servidor.port}/dialog.html`);
 }

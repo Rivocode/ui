@@ -59,29 +59,23 @@ export type GanttTone = "neutral" | "accent" | "success" | "warning" | "danger" 
 
 export type GanttTask = {
   id: string;
-  /** The row's name: the title cell and what the screen reader announces first. */
+  /** O nome da linha: a celula de titulo e o que o leitor de tela anuncia primeiro. */
   title: string;
   start: Date;
   /**
-   * The instant the task ends, exclusive: the task from October 12 to 18
-   * ends on 10/19 at 00:00. Equal to `start`, the task becomes a milestone.
+   * O instante em que a tarefa acaba, exclusivo: a tarefa de 12 a 18 de outubro
+   * termina em 19/10 a 00:00. Igual ao `start`, a tarefa vira marco.
    */
   end: Date;
-  /**
-   * How much is already done, from 0 to 100. Paints the filled part of the bar and goes into the
-   * label.
-   */
+  /** Quanto ja foi feito, de 0 a 100. Pinta a parte cheia da barra e entra no rotulo. */
   progress?: number;
-  /** The `id`s of the tasks that must finish before this one starts. Each one becomes an arrow. */
+  /** Os `id` das tarefas que precisam acabar antes desta comecar. Cada um vira uma seta. */
   dependsOn?: string[];
-  /** The group's name. Tasks with the same group sit under a row that collapses. */
+  /** O nome do grupo. Tarefas com o mesmo grupo ficam sob uma linha que recolhe. */
   group?: string;
-  /**
-   * Who does it. Appears in the `assignee` column, which only comes in on its own when some task
-   * has one.
-   */
+  /** Quem faz. Aparece na coluna `assignee`, que so entra sozinha quando alguma tarefa tem. */
   assignee?: string;
-  /** The house's closed vocabulary, the same as EventCalendar and Badge. */
+  /** O vocabulario fechado da casa, o mesmo do EventCalendar e do Badge. */
   tone?: GanttTone;
 };
 
@@ -100,7 +94,7 @@ export type GanttColumn<Task extends GanttTask = GanttTask> =
 export type GanttTaskChange = {
   start: Date;
   end: Date;
-  /** `move` preserves the duration; `resize` changes one of the ends. */
+  /** `move` preserva a duracao; `resize` muda uma das pontas. */
   kind: "move" | "resize";
 };
 
@@ -108,88 +102,88 @@ export type GanttProps<Task extends GanttTask = GanttTask> = Omit<
   ComponentProps<"div">,
   "children" | "onChange" | "defaultValue"
 > & {
-  /** The tasks, in row order. `undefined` is the same as loading. */
+  /** As tarefas, na ordem das linhas. `undefined` e o mesmo que carregando. */
   tasks: Task[] | undefined;
-  /** The grid's name for the screen reader. Without it, "Cronograma". */
+  /** O nome da grade para o leitor de tela. Sem ele, "Cronograma". */
   label?: string;
 
-  /** The scale shown, when the consumer controls the state. */
+  /** A escala mostrada, quando quem usa controla o estado. */
   scale?: GanttScale;
-  /** The initial scale. A day is 40px, a week 18px per day, a month 5px per day. */
+  /** A escala inicial. Dia vale 40px, semana 18px por dia, mes 5px por dia. */
   defaultScale?: GanttScale;
   onScaleChange?: (scale: GanttScale) => void;
-  /** Which scales the switcher offers. With only one, the switcher disappears. */
+  /** Quais escalas o seletor oferece. Com uma so, o seletor some. */
   scales?: GanttScale[];
 
   /**
-   * The table's columns, in order. Accepts the four house columns by name and your own
-   * columns with `cell`. The title always comes in, and on the phone it is the only one that stays.
+   * As colunas da tabela, na ordem. Aceita as quatro da casa pelo nome e colunas
+   * proprias com `cell`. O titulo sempre entra, e no celular e o unico que fica.
    */
   columns?: GanttColumn<Task>[];
 
   /**
-   * Turns on editing. Dragging the bar, dragging an edge and the keyboard arrows
-   * call this with the new dates, and the piece changes nothing by itself: the bar only
-   * moves when `tasks` comes back changed.
+   * Liga a edicao. Arrastar a barra, arrastar uma borda e as setas do teclado
+   * chamam isto com as datas novas, e a peca nao muda nada sozinha: a barra so
+   * anda quando o `tasks` voltar mudado.
    */
   onTaskChange?: (task: Task, change: GanttTaskChange) => void;
-  /** Click on the title and `Enter` on the row. */
+  /** Clique no titulo e `Enter` na linha. */
   onTaskSelect?: (task: Task) => void;
 
-  /** The collapsed groups, when the consumer controls the state. */
+  /** Os grupos recolhidos, quando quem usa controla o estado. */
   collapsedGroups?: string[];
   defaultCollapsedGroups?: string[];
   onCollapsedGroupsChange?: (groups: string[]) => void;
 
-  /** The day the today line marks. Without it, the device clock. */
+  /** O dia que a linha de hoje marca. Sem ele, o relogio do aparelho. */
   today?: Date;
-  /** The drawn period. Without it, the tasks with one unit of slack on each side. */
+  /** O periodo desenhado. Sem ele, as tarefas com folga de uma unidade de cada lado. */
   range?: GanttRange;
-  /** Max height of the scrolling frame. A number becomes pixels. */
+  /** Altura maxima da moldura que rola. Numero vira pixel. */
   maxHeight?: number | string;
   /**
-   * Height of each row, in pixels. Without it, that of the density's medium control:
-   * 40 in comfortable, 32 in compact, and 44 on the phone in any density.
+   * Altura de cada linha, em pixel. Sem ela, a do controle medio da densidade:
+   * 40 no confortavel, 32 no compacto, e 44 no celular em qualquer densidade.
    */
   rowHeight?: number;
-  /** Initial width of the left table, in pixels. The divider changes it afterwards. */
+  /** Largura inicial da tabela da esquerda, em pixel. A divisoria muda depois. */
   defaultTableWidth?: number;
 
   isLoading?: boolean;
   isError?: boolean;
-  /** Without this, the error offers no retry. */
+  /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
-  /** The title of the error notice. Without it, "Nao foi possivel carregar". */
+  /** O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar". */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
-  /** What appears when the query comes back with no task. */
+  /** O que aparece quando a consulta volta sem tarefa. */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 
   /**
-   * The piece's texts, to change the language: `retry` is the button that runs
-   * `onRetry`, "Tentar de novo" without it - the same key in every piece that
-   * handles the four endings.
-   * `loading` and `loaded` are what the screen reader hears when the query
-   * goes out and when it comes back. `today` is the button that scrolls to today; `day`,
-   * `week` and `month` name the scales, and `scales` their switcher; `resize`
-   * is the name of the table's divider; `hint` is the keyboard hint, which receives the
-   * scale. `period` states the drawn period; `range` receives the first and the
-   * last day of a task and the `locale`, and returns the whole sentence - without it,
-   * "12 a 18 de outubro" in Portuguese and `Intl`'s `formatRange` in other
-   * languages ("October 12 – 18"). `tasks` counts the tasks in a group, and `milestone`,
-   * `progress` and `dependsOn` build what the screen reader hears on each
-   * task. The month and day names come from `locale`. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta. `today` e o botao que rola ate hoje; `day`,
+   * `week` e `month` nomeiam as escalas, e `scales` o seletor delas; `resize`
+   * e o nome da divisoria da tabela; `hint` e a dica do teclado, que recebe a
+   * escala. `period` diz o periodo desenhado; `range` recebe o primeiro e o
+   * ultimo dia de uma tarefa e o `locale`, e devolve a frase inteira - sem ele,
+   * "12 a 18 de outubro" em portugues e o `formatRange` do `Intl` nos outros
+   * idiomas ("October 12 – 18"). `tasks` conta as tarefas de um grupo, e `milestone`,
+   * `progress` e `dependsOn` montam o que o leitor de tela ouve em cada
+   * tarefa. Os nomes de mes e de dia vem do `locale`. Passe so os que mudam.
    */
   labels?: Partial<GanttLabels>;
   /**
-   * The language of the month and day names, in the header and in what the screen reader
-   * hears, as a BCP 47 tag: `"en-US"`, `"es"`. The fixed words come from
+   * O idioma dos nomes de mes e de dia, no cabecalho e no que o leitor de tela
+   * ouve, como tag BCP 47: `"en-US"`, `"es"`. As palavras fixas vem de
    * `labels`.
    */
   locale?: string;
   /**
-   * Class per part: `toolbar`, `frame`, `header`, `row`, `cell`, `timeline`,
-   * `bar`, `milestone` and `handle`.
+   * Classe por parte: `toolbar`, `frame`, `header`, `row`, `cell`, `timeline`,
+   * `bar`, `milestone` e `handle`.
    */
   classNames?: Slots<
     "toolbar" | "frame" | "header" | "row" | "cell" | "timeline" | "bar" | "milestone" | "handle"

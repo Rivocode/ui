@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react'
 import { Button, IconButton, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
 
-/** On an icon button */
+/** Em botão de ícone */
 export function OnAnIconButton() {
   return (
     <div className="flex min-h-32 items-end justify-center">
@@ -19,7 +19,7 @@ export function OnAnIconButton() {
   )
 }
 
-/** Closed */
+/** Fechada */
 export function Closed() {
   return (
     <Tooltip>

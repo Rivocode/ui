@@ -1,4 +1,4 @@
-/* Generated from src/shared/signature.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/signature.ts por bun run gen:compartilhado. Nao editar. */
 
 export type SignaturePoint = {
   x: number;

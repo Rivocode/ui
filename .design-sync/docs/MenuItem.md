@@ -1,11 +1,11 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # MenuItem
 
-A menu action.
+Uma ação do menu.
 
-`tone="danger"` paints what destroys. Use it only on what cannot be undone; if
-everything is red, nothing is. A disabled item stays in the list, because
-making the option disappear hides that it exists.
+`tone="danger"` pinta o que destrói. Use só no que não tem volta, se tudo é
+vermelho, nada é. Item desativado continua na lista, porque sumir com a opção
+esconde que ela existe.

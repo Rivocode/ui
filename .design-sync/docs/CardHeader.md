@@ -1,10 +1,10 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # CardHeader
 
-The top of the card: title, description and whatever else identifies the content.
+O topo do cartão: título, descrição e o que mais identifique o conteúdo.
 
-It stacks in a column with smaller spacing below, so the `CardContent` carries
-on the reading without a gap in the middle.
+Empilha em coluna com respiro menor embaixo, para o `CardContent` continuar a
+leitura sem um vão no meio.

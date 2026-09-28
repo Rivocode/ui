@@ -5,15 +5,15 @@ import type { Slots } from "../lib/slots";
 import { splitHighlight } from "../shared/highlight";
 
 export type HighlightProps = Omit<ComponentPropsWithoutRef<"span">, "children"> & {
-  /** The whole text, as a string. The highlight is computed over it. */
+  /** O texto inteiro, como string. O destaque e calculado sobre ele. */
   children: string;
   /**
-   * The searched term, or a list of them. Case and accents do not matter: "sao"
-   * finds "São". Empty highlights nothing, and two terms that touch become
-   * a single stretch.
+   * O termo buscado, ou uma lista deles. Caixa e acento nao importam: "sao"
+   * acha "São". Vazio nao destaca nada, e dois termos que se encostam viram
+   * um trecho so.
    */
   query: string | readonly string[];
-  /** Class per part: `mark`, each stretch found. */
+  /** Classe por parte: `mark`, cada trecho achado. */
   classNames?: Slots<"mark">;
 };
 

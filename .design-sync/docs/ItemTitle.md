@@ -1,7 +1,7 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # ItemTitle
 
-The first line of the core, truncated with an ellipsis when it does not fit.
+A primeira linha do miolo, cortada com reticências quando não cabe.

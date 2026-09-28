@@ -1,21 +1,20 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # Tooltip
 
-A short hint, for a button that only has an icon.
+Dica curta, para botão que só tem ícone.
 
-It composes with `TooltipTrigger` and `TooltipContent`.
+Compõe com `TooltipTrigger` e `TooltipContent`.
 
-Do not keep essential information here: a tooltip does not appear on touch and
-is not read in every context. The button's `aria-label` is still required.
+Não guarde informação essencial aqui: dica não aparece no toque e não é lida em
+todo contexto. O `aria-label` do botão continua obrigatório.
 
-For the most common case, a tooltip that repeats the name of an icon-only
-button, use `IconButton` with `tooltip`: it builds the tooltip from the `label`
-and does not tie it through `aria-describedby`, so the screen reader does not
-hear the same sentence twice.
+Para o caso mais comum, a dica que repete o nome de um botão só com ícone, use
+`IconButton` com `tooltip`: ele monta a dica com o `label` e não a amarra por
+`aria-describedby`, então o leitor de tela não ouve a mesma frase duas vezes.
 
-## In React Native
+## No React Native
 
-Does not port, and there is no substitute: the tooltip appears on resting the pointer, and on touch there is no resting. What on the web was an icon with a tooltip becomes, on the phone, an icon with a label written next to it, or an `accessibilityLabel`, which solves it for the screen reader and does not solve it for whoever can see.
+Não porta, e não há substituto: a dica aparece ao pousar o ponteiro, e no toque não existe pousar. O que no web era um ícone com dica vira, no celular, um ícone com rótulo escrito ao lado, ou um `accessibilityLabel`, que resolve para o leitor de tela e não resolve para quem enxerga.

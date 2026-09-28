@@ -26,7 +26,7 @@ async function lookupViaCep(cep: string, signal: AbortSignal): Promise<PostalAdd
 
 const EMPTY: PostalAddress = { street: '', district: '', city: '', state: '' }
 
-/** With ViaCEP */
+/** Com ViaCEP */
 export function WithViaCep() {
   const [address, setAddress] = useState<PostalAddress>(EMPTY)
 
@@ -87,7 +87,7 @@ async function lookupOffline(cep: string, signal: AbortSignal) {
   return KNOWN[cep] ?? null
 }
 
-/** The four endings */
+/** Os quatro finais */
 export function States() {
   return (
     <div className="flex w-72 flex-col gap-4">

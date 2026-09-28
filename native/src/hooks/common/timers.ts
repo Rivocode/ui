@@ -1,4 +1,4 @@
-/* Generated from src/hooks/common/timers.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/hooks/common/timers.ts por bun run gen:compartilhado. Nao editar. */
 
 "use client";
 

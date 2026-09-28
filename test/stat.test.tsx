@@ -13,36 +13,36 @@ function stat(props: Partial<React.ComponentProps<typeof Stat>> = {}) {
   );
 }
 
-test("shows the label and the value", () => {
+test("mostra o rotulo e o valor", () => {
   stat();
   expect(screen.getByText("Faturado em agosto")).toBeDefined();
   expect(screen.getByText("R$ 246,7K")).toBeDefined();
 });
 
-test("a positive delta goes up green, with the period beside it", () => {
+test("delta positivo sobe verde, com o periodo junto", () => {
   const { container } = stat({ delta: 20, deltaLabel: "sobre julho" });
   expect(screen.getByText(/20% sobre julho/)).toBeDefined();
   expect(container.querySelector(".text-success-text")).not.toBeNull();
 });
 
-test("a negative delta goes down red", () => {
+test("delta negativo desce vermelho", () => {
   const { container } = stat({ delta: -8 });
   expect(screen.getByText(/8%/)).toBeDefined();
   expect(container.querySelector(".text-danger-text")).not.toBeNull();
 });
 
-test("invert flips the judgment: going up is bad for overdue invoices", () => {
+test("invert vira o julgamento: subir e ruim em nota vencida", () => {
   const { container } = stat({ delta: 50, invert: true });
   expect(container.querySelector(".text-danger-text")).not.toBeNull();
   expect(container.querySelector(".text-success-text")).toBeNull();
 });
 
-test("the direction is spoken, not only painted", () => {
+test("a direcao e falada, nao so pintada", () => {
   stat({ delta: -8 });
   expect(screen.getByText(/queda de/)).toBeDefined();
 });
 
-test("a zero delta is neutral: no arrow, no judgment color and no alta de", () => {
+test("delta zero sai neutro: sem seta, sem cor de julgamento e sem alta de", () => {
   const { container } = stat({ delta: 0, deltaLabel: "sobre julho" });
   const line = screen.getByText(/0% sobre julho/);
 
@@ -53,7 +53,7 @@ test("a zero delta is neutral: no arrow, no judgment color and no alta de", () =
   expect(container.textContent).not.toContain("queda de");
 });
 
-test("a zero delta as a pill is neutral too, and stays neutral with invert", () => {
+test("delta zero em pastilha tambem sai neutro, e com invert continua neutro", () => {
   stat({ delta: 0, deltaVariant: "pill", invert: true });
   const pill = screen.getByText(/0%/);
 
@@ -61,7 +61,7 @@ test("a zero delta as a pill is neutral too, and stays neutral with invert", () 
   expect(pill.className.split(" ")).not.toContain("text-danger-text");
 });
 
-test("a delta that rounds to zero on screen is neutral too, with both signs", () => {
+test("delta que arredonda para zero na tela tambem sai neutro, nos dois sinais", () => {
   for (const delta of [0.0001, -0.0001]) {
     const view = stat({ delta, deltaLabel: "sobre julho" });
     const line = screen.getByText(/0% sobre julho/);
@@ -74,66 +74,65 @@ test("a delta that rounds to zero on screen is neutral too, with both signs", ()
   }
 });
 
-test("without delta there is no change line", () => {
+test("sem delta nao ha linha de variacao", () => {
   const { container } = stat();
   expect(container.querySelector(".text-success-text")).toBeNull();
   expect(container.querySelector(".text-danger-text")).toBeNull();
 });
 
-test("hint becomes a button with an accessible name", () => {
+test("hint vira botao com nome acessivel", () => {
   stat({ hint: "Só o que já caiu na conta." });
   expect(screen.getByRole("button", { name: /sobre faturado em agosto/i })).toBeDefined();
 });
 
-test("the chart slot renders whatever comes", () => {
+test("o slot de grafico renderiza o que vier", () => {
   stat({ chart: <svg data-testid="spark" /> });
   expect(screen.getByTestId("spark")).toBeDefined();
 });
 
 /*
- * The `%` was hardcoded in the JSX, and Stat was the only numeric component in
- * the house outside the formatting vocabulary Progress, Meter and Slider already
- * speak. A delta in reais or in basis points came out with a percent sign that
- * was not true.
+ * O `%` era cravado no JSX, e o Stat era a unica peca de numero da casa fora
+ * do vocabulario de formatacao que Progress, Meter e Slider ja falam. Um delta
+ * em real ou em ponto-base saia com um por-cento que nao era verdade.
  */
 
-test("without deltaFormat, the change still comes out as a percentage", () => {
+test("sem deltaFormat, a variacao continua saindo em porcentagem", () => {
   stat({ delta: 20, deltaLabel: "sobre julho" });
   expect(screen.getByText(/20% sobre julho/)).toBeDefined();
 });
 
-test("a delta in reais comes out in reais, and not with a lying percent sign", () => {
+test("o delta em reais sai em reais, e nao com um por-cento que mente", () => {
   stat({ delta: 12_400, deltaFormat: "currencyShort" });
 
   expect(screen.getByText(/R\$ 12,4K/)).toBeDefined();
   expect(screen.queryByText(/%/)).toBeNull();
 });
 
-test("the house formatter name works here as it does on the meter", () => {
+test("o nome do formatador da casa vale aqui como vale no medidor", () => {
   stat({ delta: 1240, deltaFormat: "integer" });
   expect(screen.getByText(/1\.240/)).toBeDefined();
 });
 
-test("a custom function covers what no house formatter writes", () => {
+test("a funcao propria vale para o que nenhum formatador da casa escreve", () => {
   stat({ delta: 35, deltaFormat: (value: number) => `${value} pontos-base` });
   expect(screen.getByText(/35 pontos-base/)).toBeDefined();
 });
 
-test("the formatter receives the absolute value: the arrow and the speech carry the sign", () => {
+test("o formatador recebe o modulo: quem carrega o sinal e a seta e a fala", () => {
   stat({ delta: -8, deltaFormat: (value: number) => `${value}` });
 
   expect(screen.getByText(/queda de/)).toBeDefined();
   expect(screen.queryByText(/-8/)).toBeNull();
 });
 
-test("the decimal place fits, by passing percent with digits", () => {
+test("a casa decimal cabe, passando o percent com digito", () => {
   stat({ delta: 12.5, deltaFormat: (value: number) => percent(value, 1) });
   expect(screen.getByText(/12,5%/)).toBeDefined();
 });
 
-test("the delta formatter is the same as the rest of the house", () => {
-  // It is not a second Intl hidden in Stat: it is the `currencyShort` that the axis,
-  // the table and the legend already use.
+test("o formatador do delta e o mesmo do resto da casa", () => {
+  // Nao e um segundo Intl escondido no Stat: e o `currencyShort` que o eixo,
+  // a tabela e a legenda ja usam.
   stat({ delta: 12_400, deltaFormat: "currencyShort" });
   const written = currencyShort(12_400)
     .replace("$", "\\$")

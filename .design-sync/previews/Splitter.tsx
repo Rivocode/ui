@@ -2,7 +2,7 @@ import { Card, CardContent, Splitter } from '@rivocode/ui'
 
 const NOTAS = ['4813 · Clínica São Lucas', '4814 · Transportes Cabo Branco', '4815 · Padaria Aurora']
 
-/** List and detail */
+/** Lista e detalhe */
 export function ListAndDetail() {
   return (
     <div className="h-64 w-[36rem]">

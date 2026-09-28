@@ -43,7 +43,7 @@ const GROUPS: CommandGroup[] = [
   },
 ]
 
-/** Command palette */
+/** Paleta de comandos */
 export function Palette() {
   const [open, setOpen] = useState(false)
 

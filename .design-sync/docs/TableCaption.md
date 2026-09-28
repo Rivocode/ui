@@ -1,13 +1,13 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # TableCaption
 
-The table's caption, in a real `<caption>`. It is the name the screen reader
-announces before entering the rows.
+A legenda da tabela, num `<caption>` de verdade. É o nome que o leitor de tela
+anuncia antes de entrar nas linhas.
 
-It goes **inside** `Table`, and as the first child:
+Ela vai **dentro** do `Table`, e como primeiro filho:
 
 ```tsx
 <Table>
@@ -18,42 +18,39 @@ It goes **inside** `Table`, and as the first child:
 </Table>
 ```
 
-The instinct is to write that title in a `<p>` or an `<h3>` right above the
-table. It breaks nothing, and it costs the whole name: the announcement becomes
-"table, 5 columns, 12 rows" and nothing else, because neighboring text names no
-element at all. On a screen with two tables (the invoices and the payments),
-whoever navigates by the list of tables hears both with the same name, which is
-no name.
+O instinto é escrever esse título numa `<p>` ou num `<h3>` logo acima da
+tabela. Não quebra nada, e custa o nome inteiro: o anúncio vira "tabela, 5
+colunas, 12 linhas" e mais nada, porque texto vizinho não nomeia elemento
+nenhum. Numa tela com duas tabelas (a das notas e a dos pagamentos), quem
+navega por lista de tabelas ouve as duas com o mesmo nome, que é nome nenhum.
 
-And there is no middle ground: `<caption>` has no legal parent other than
-`<table>`. Loose next to `Table`, where the title seems to fit better, React
-brings the screen down:
+E não há meio-termo: `<caption>` não tem outro pai legal além de `<table>`.
+Solto ao lado do `Table`, onde o título parece caber melhor, o React derruba a
+tela:
 
 ```
 In HTML, <caption> cannot be a child of <div>. This will cause a hydration error.
 ```
 
-Either it is a child of the `<table>`, or it is not a caption.
+Ou é filho da `<table>`, ou não é legenda.
 
-When the table already has a title on the page, the caption is still worth it
-as a name, just without taking up a single pixel:
+Quando a tabela já tem um título na página, a legenda continua valendo a pena
+como nome, só que sem ocupar pixel nenhum:
 
 ```tsx
 <TableCaption className="sr-only">Notas emitidas em junho de 2025</TableCaption>
 ```
 
-That is what `DataTable` does with its `caption`.
+É o que o `DataTable` faz com o `caption` dele.
 
-The caption comes out on top. To send it below the table, `caption-bottom` in
-the class. The piece's `caption-top` steps aside on its own.
+A legenda sai em cima. Para mandá-la para baixo da tabela, `caption-bottom` na
+classe. O `caption-top` da peça sai do caminho sozinho.
 
-## When not to use
+## Quando não usar
 
-In a listing that comes from a query, do not build the `<caption>` by hand:
-`DataTable` receives the caption through the `caption` prop, and already writes
-it inside the right `<table>` (including in the fixed-height variant, where the
-table is a different one).
+Numa listagem que vem de uma consulta, não monte o `<caption>` à mão: o
+`DataTable` recebe a legenda pela prop `caption`, e já a escreve dentro da
+`<table>` certa (inclusive na variante com altura, onde a tabela é outra).
 
-For the visible title that heads the whole section, with an action beside it,
-it is `PageHeader`, not the caption: `TableCaption` names the table, not the
-screen.
+Para o título visível que encabeça a seção inteira, com ação do lado, é o
+`PageHeader`, e não a legenda: `TableCaption` nomeia a tabela, não a tela.

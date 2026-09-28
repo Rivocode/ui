@@ -1,30 +1,30 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # MenuRadioItem
 
-A single-choice option in the menu: "by issue date", "by amount".
+Uma opção de escolha única no menu: "por data de emissão", "por valor".
 
-Always inside a `MenuRadioGroup`, which is what holds the value. `value` is
-required: it is what the group compares to know which row is chosen.
+Sempre dentro de um `MenuRadioGroup`, que é quem guarda o valor. O `value` é
+obrigatório: é ele que o grupo compara para saber qual linha está escolhida.
 
-The dot in place of the checkmark is not decoration: it says that choosing
-this one unchooses the one above.
+O ponto no lugar da marca de certo não é decoração: ele diz que escolher esta
+desescolhe a de cima.
 
-As in Base UI, choosing does **not** close the menu. When the choice settles
-the matter, and sorting usually does, pass `closeOnClick`.
+Como na Base UI, escolher **não** fecha o menu. Quando a escolha encerra o
+assunto, e ordenar costuma encerrar, passe `closeOnClick`.
 
-## Parts
+## Partes
 
-`classNames` reaches the `indicator`, the column that holds the dot (the same
-width as `MenuCheckboxItem`, so both align their text when they show up in the
-same panel).
+`classNames` alcança o `indicator`, a coluna que guarda o ponto (a mesma
+largura do `MenuCheckboxItem`, para os dois alinharem o texto quando aparecem no
+mesmo painel).
 
-## When not to use
+## Quando não usar
 
-To toggle each option on and off on its own, use `MenuCheckboxItem`.
+Para ligar e desligar cada opção por conta, use `MenuCheckboxItem`.
 
-For an action that happens and is done (downloading the PDF, cancelling the
-invoice), use `MenuItem`: `aria-checked` on an item that holds no state at all
-tells the screen reader there is a checked choice where there is none.
+Para uma ação que acontece e acaba (baixar o PDF, cancelar a nota), use
+`MenuItem`: `aria-checked` num item que não guarda estado nenhum diz ao leitor de
+tela que há uma escolha marcada onde não há.

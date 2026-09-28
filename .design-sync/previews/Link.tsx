@@ -5,7 +5,7 @@ function RouterLink({ to, ...props }: ComponentProps<'a'> & { to: string }) {
   return <a {...props} href={to} />
 }
 
-/** In a sentence */
+/** Na frase */
 export function InText() {
   return (
     <Text size="base" tone="muted" className="max-w-96">
@@ -15,7 +15,7 @@ export function InText() {
   )
 }
 
-/** Leaving the site */
+/** Para fora do site */
 export function External() {
   return (
     <Text size="base" tone="muted">
@@ -28,7 +28,7 @@ export function External() {
   )
 }
 
-/** Tones and underline on hover */
+/** Tons e sublinhado ao passar */
 export function Tones() {
   return (
     <nav aria-label="Rodapé" className="flex gap-4 text-sm">
@@ -45,7 +45,7 @@ export function Tones() {
   )
 }
 
-/** With the router's link */
+/** Com o link do router */
 export function WithRouter() {
   return (
     <Link render={<RouterLink to="/clientes" />}>Ver todos os clientes</Link>

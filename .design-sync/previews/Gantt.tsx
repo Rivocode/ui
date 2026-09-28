@@ -80,7 +80,7 @@ function apply(tasks: GanttTask[], task: GanttTask, change: GanttTaskChange) {
   return tasks.map((item) => (item.id === task.id ? { ...item, start: change.start, end: change.end } : item))
 }
 
-/** Editable timeline */
+/** Cronograma com edição */
 export function Editable() {
   const [tasks, setTasks] = useState(PROJECT)
 
@@ -95,12 +95,12 @@ export function Editable() {
   )
 }
 
-/** Read-only, by week */
+/** Só leitura, por semana */
 export function ReadOnly() {
   return <Gantt label="Implantação do ERP" tasks={PROJECT} today={TODAY} defaultScale="week" />
 }
 
-/** By month, with the chosen columns */
+/** Por mês, com as colunas escolhidas */
 export function Monthly() {
   return (
     <Gantt
@@ -122,7 +122,7 @@ const ORDERS: GanttTask[] = Array.from({ length: 300 }, (_, index) => ({
   group: `Equipe ${Math.floor(index / 30) + 1}`,
 }))
 
-/** Three hundred tasks, with collapsed groups */
+/** Trezentas tarefas, com grupos recolhidos */
 export function Many() {
   return (
     <Gantt
@@ -136,12 +136,12 @@ export function Many() {
   )
 }
 
-/** Loading */
+/** Carregando */
 export function Loading() {
   return <Gantt label="Implantação do ERP" tasks={undefined} />
 }
 
-/** Error */
+/** Erro */
 export function Error() {
   return (
     <Gantt
@@ -154,7 +154,7 @@ export function Error() {
   )
 }
 
-/** Empty */
+/** Vazio */
 export function Empty() {
   return (
     <Gantt

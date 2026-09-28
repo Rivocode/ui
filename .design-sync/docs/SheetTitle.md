@@ -1,11 +1,11 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # SheetTitle
 
-The sheet's title, and its name for the screen reader.
+O título da folha, e o nome dela para o leitor de tela.
 
-A sheet without a title is a panel that opens without saying what it is:
-screen reader users only hear "dialog". When the design has no room for a
-visible title, `aria-label` on `SheetContent` plays the part.
+Folha sem título é um painel que se abre sem dizer o que é: quem usa leitor de
+tela ouve só "diálogo". Quando o desenho não comporta título visível, o
+`aria-label` no `SheetContent` faz o papel.

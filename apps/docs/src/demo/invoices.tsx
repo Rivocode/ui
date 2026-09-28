@@ -40,7 +40,7 @@ const FILTERS: Array<{ value: Status | 'all'; label: string }> = [
   { value: 'paid', label: 'Pagas' },
 ]
 
-/** "14/09/2026" sorts wrong as text; in ISO the date becomes comparable. */
+/** "14/09/2026" ordena errado como texto; em ISO a data vira comparável. */
 const isoDate = (br: string) => br.split('/').reverse().join('-')
 
 export function Invoices() {
@@ -50,7 +50,7 @@ export function Invoices() {
   const [period, setPeriod] = useState('30')
   const [open, setOpen] = useState<Invoice | null>(null)
 
-  // Only the domain slice stays here: search, order and page belong to the table.
+  // Só o recorte de domínio fica aqui: busca, ordem e página são da tabela.
   const found = useMemo(
     () => INVOICES.filter((invoice) => status === 'all' || invoice.status === status),
     [status],
@@ -198,8 +198,8 @@ export function Invoices() {
         </ToggleGroup>
       </div>
 
-      {/* Search, order, page and count belong to the table itself: the
-          "1–8 de 48" footer already counts what the filter left. */}
+      {/* Busca, ordem, página e contagem são da própria tabela: o rodapé
+          "1–8 de 48" já conta o que o filtro deixou. */}
       <DataTable
         data={found}
         columns={columns}

@@ -15,17 +15,16 @@ import { Text, type TextTone } from "./text";
 
 export type RichTextViewProps = {
   /**
-   * The content saved by the web `RichTextEditor`: the HTML from
-   * `onValueChange` or the JSON from `onJsonChange`. Both are read by the same
-   * reader as the web, with no `WebView` and no peer: each block becomes a
-   * `View` and each mark becomes a `Text`, so nothing in the content executes,
-   * and a link only opens with `http`, `https`, `mailto`, `tel` or a relative
-   * address.
+   * O conteudo salvo pelo `RichTextEditor` do web: o HTML do `onValueChange`
+   * ou o JSON do `onJsonChange`. Os dois sao lidos pelo mesmo leitor do web,
+   * sem `WebView` e sem peer: cada bloco vira `View` e cada marca vira `Text`,
+   * entao nada do conteudo executa, e link so abre com `http`, `https`,
+   * `mailto`, `tel` ou endereco relativo.
    */
   value: string | RichTextJson | null | undefined;
   /**
-   * What appears when the content has no text: `null`, an empty string or the
-   * `<p></p>` of a blank editor. Without it, the component draws nothing.
+   * O que aparece quando o conteudo nao tem texto: `null`, string vazia ou o
+   * `<p></p>` de um editor em branco. Sem ele, a peca nao desenha nada.
    */
   empty?: ReactNode;
   className?: string;

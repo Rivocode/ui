@@ -1,4 +1,4 @@
-/* Generated from src/hooks/common/scheduled-callback.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/hooks/common/scheduled-callback.ts por bun run gen:compartilhado. Nao editar. */
 
 "use client";
 

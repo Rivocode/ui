@@ -1,19 +1,18 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # MenuSubmenu
 
-A branch of the menu, which opens beside it.
+Um ramo do menu, que abre ao lado.
 
-It paints no element: it is only state. Inside it go the `MenuSubmenuTrigger`,
-which is the item that opens the branch, and a `MenuContent`, which is the same
-panel as the menu above.
+Não pinta elemento nenhum: é só estado. Dentro dele vão o `MenuSubmenuTrigger`,
+que é o item que abre o ramo, e um `MenuContent`, que é o mesmo painel do menu
+de cima.
 
-The side does not need to be asked for. Base UI opens the branch at
-`inline-end` when the parent is a menu, and flips to the other side on its own
-when it does not fit. Passing `side` here is for whoever has a reason, not an
-obligation.
+O lado não precisa ser pedido. A Base UI abre o ramo em `inline-end` quando o
+pai é um menu, e vira para o outro lado sozinha quando não cabe. Passar `side`
+aqui é para quem tem motivo, não obrigação.
 
 ```tsx
 <MenuContent>
@@ -28,19 +27,18 @@ obligation.
 </MenuContent>
 ```
 
-`MenuSubmenuTrigger` brings the arrow that says there is more ahead, and
-`classNames` reaches it by the name `indicator`. The item stays highlighted
-while the branch is open: without that the highlight goes away as soon as the
-pointer enters the child panel, and nothing else ties one to the other.
+O `MenuSubmenuTrigger` traz a seta que avisa que há mais adiante, e `classNames`
+alcança ela pelo nome `indicator`. O item fica aceso enquanto o ramo está
+aberto: sem isso o realce sai assim que o ponteiro entra no painel filho, e nada
+mais liga um ao outro.
 
-## When not to use
+## Quando não usar
 
-One level solves almost everything. Two is already a tree, and a tree under
-the mouse is like walking diagonally without losing the line: whoever slips
-closes the whole branch and starts over. Beyond that, a `Dialog` or a screen of
-its own costs the user less.
+Um nível resolve quase tudo. Dois já é uma árvore, e árvore com o mouse em cima
+é como andar na diagonal sem perder a linha: quem escorrega fecha o ramo inteiro
+e recomeça. Passando disso, `Dialog` ou uma tela própria custam menos a quem usa.
 
-For the menu that opens on right-click over an area, the trigger is different:
-`ContextMenu`. And for the site's main navigation, with wide panels and links,
-it is `NavigationMenu`: the submenu here is a list of actions, not a map of
-sections.
+Para o menu que abre no botão direito sobre uma área, o gatilho é outro:
+`ContextMenu`. E para a navegação principal do site, com painéis largos e links,
+é `NavigationMenu`: o submenu daqui é uma lista de ações, e não um mapa de
+seções.

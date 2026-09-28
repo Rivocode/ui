@@ -1,56 +1,53 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # Tree
 
-The tree on its own, with no field or panel. It serves a folder browser and a
-full-screen choice.
+A arvore sozinha, sem campo nem painel. Serve para navegador de pastas e para
+escolha em tela cheia.
 
-A parent with some of its children checked is in the mixed state. Checking the
-parent checks only the enabled children, and unchecking does not touch the
-disabled ones either. The search keeps the path to whatever matched, otherwise
-the result shows up loose and nobody knows where it came from, and it ignores
-accents and case: `sao` finds São Paulo.
+Pai com parte das filhas marcadas fica no estado misto. Marcar o pai marca só
+as filhas habilitadas, e desmarcar também não mexe nas desabilitadas. A busca
+guarda o caminho até quem casou, senão o resultado aparece solto e ninguém sabe
+de onde veio, e ignora acento e caixa: `sao` acha São Paulo.
 
-The keyboard arrows move through the rows on the screen, not through the whole
-tree: navigation follows what the eye sees. `Home` and `End` go to the first
-and the last row, and `Tab` returns to the last row that had focus. A disabled
-row cannot be chosen, neither by click nor by Enter or Space.
+As setas do teclado andam pelas linhas que estão na tela, e não pela árvore
+inteira: a navegação segue o que o olho vê. `Home` e `End` levam à primeira e
+à última linha, e o `Tab` volta para a última linha que teve foco. Linha
+desabilitada não se escolhe, nem pelo clique nem pelo Enter ou pelo espaço.
 
-## The choice
+## A escolha
 
-`value` and `onValueChange`, the same pair as `TreeSelect` (which is this piece
-inside a panel) and the same vocabulary as the rest of the catalog. Both are
-optional: with neither, the tree keeps its own choice, and `defaultValue` says
-what it starts with.
+`value` e `onValueChange`, o mesmo par do `TreeSelect` (que é esta peça dentro
+de um painel) e o mesmo vocabulário do resto do catálogo. Os dois são
+opcionais: sem nenhum deles a árvore guarda a própria escolha, e `defaultValue`
+diz com que ela começa.
 
-They used to be required, and under another name: swapping the panel for the
-inline tree rewrote the whole binding, and a tree that only wanted to open and
-close still paid a `useState` to exist.
+Eram obrigatórios, e com outro nome: trocar o painel pela árvore inline
+reescrevia o binding inteiro, e uma árvore que só queria abrir e fechar ainda
+pagava um `useState` para existir.
 
-## Writing direction
+## Sentido da escrita
 
-In `dir="rtl"` the whole tree flips. Each level's indent grows from the edge
-where reading begins, the branch arrow points to the side it opens, and `→` and
-`←` swap roles: `←` opens the branch and enters it, `→` closes it and goes up to
-the parent. It is what the WAI-ARIA treeview pattern asks for, and the reason
-is the drawing: the key that opens is the one that points to where the
-indentation grows.
+Em `dir="rtl"` a árvore inteira vira. O recuo de cada nível cresce a partir da
+borda onde a leitura começa, a seta do galho aponta para o lado que ele abre, e
+`→` e `←` trocam de papel: `←` abre o galho e entra nele, `→` fecha e sobe para
+o pai. É o que o padrão WAI-ARIA de treeview pede, e a razão é o desenho: a
+tecla que abre é a que aponta para onde a indentação cresce.
 
-The direction comes from `RivoProvider`, not from a `dir` written by hand on an
-element above the piece. And the indent is `padding-inline-start`, not
-`padding-left`: with the physical property the three levels stopped at the same
-point in `rtl`, the hierarchy vanished from the screen and a flat list was left.
-Swapping only the key would have fixed the keyboard for a drawing that was still
-wrong.
+A direção vem do `RivoProvider`, e não de um `dir` escrito à mão num elemento
+acima da peça. E o recuo é `padding-inline-start`, e não `padding-left`: com a
+propriedade física os três níveis paravam no mesmo ponto em `rtl`, a hierarquia
+sumia da tela e sobrava uma lista plana. Trocar só a tecla teria consertado o
+teclado para um desenho que continuava errado.
 
-## In React Native
+## No React Native
 
-Translates, and the rule survives whole: **the leaf is what counts**. Checking a branch checks all the leaves under it, and what comes out in `onValueChange` is always a list of leaves.
+Traduz, e a regra sobrevive inteira: **quem vale é a folha**. Marcar um galho marca todas as folhas debaixo dele, e o que sai em `onValueChange` é sempre uma lista de folhas.
 
-**The drawing is what does not port.** On the web the open levels appear at the same time, one indent per level; at 390px the third level starts past the middle of the screen and the node's name fits in four letters. The piece becomes illegible precisely where it is most useful. Here it is **one level at a time**: tapping a branch pushes the inner level, and the header shows the path ("Financeiro › Contas a pagar", truncated from the front, because the part that matters is the last one) and goes back one level.
+**O desenho é que não porta.** No web os níveis abertos aparecem ao mesmo tempo, um recuo por nível; a 390px o terceiro nível começa depois do meio da tela e o nome do nó cabe em quatro letras. A peça fica ilegível justamente onde ela é mais útil. Aqui é **um nível por vez**: tocar num galho empurra o nível de dentro, e o cabeçalho mostra o caminho ("Financeiro › Contas a pagar", cortado pela frente, porque o pedaço que importa é o último) e volta um nível.
 
-Two consequences of stacking. **A branch has two targets**: tapping the name enters, and the box beside it checks the whole branch: with a single target there was no way to check "Financeiro" without visiting the seven leaves inside. And **the branch box uses the mixed state**, as on the web: with some of the leaves checked, it draws the dash and announces `mixed`, and tapping it checks the whole branch. The exact count does not appear on screen, as on the web; it goes in the branch's spoken name ("Financeiro, 7 itens, 2 escolhidos"), because that is how you enter it.
+Duas consequências do empilhamento. **O galho tem dois alvos**: tocar no nome entra, e a caixa ao lado marca o galho inteiro: com um alvo só não havia como marcar "Financeiro" sem visitar as sete folhas de dentro. E **a caixa do galho usa o estado misto**, como no web: com parte das folhas marcadas, ela desenha o traço e anuncia `mixed`, e tocá-la marca o galho inteiro. A conta exata não aparece na tela, como no web; ela vai no nome falado do galho ("Financeiro, 7 itens, 2 escolhidos"), porque é por ele que se entra.
 
-Out, by decision: `filter` (searching inside a tree flattens the levels, and a flattened list with search is already `Combobox`), `open`/`onOpenChange` (there is no open and closed, there is the level where the finger is) and the node's `label`, which here is `string`. It is built into the spoken label and the path, and there is no way to read the text back from a `ReactNode`.
+Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada com busca já é o `Combobox`), `open`/`onOpenChange` (não há aberto e fechado, há o nível onde o dedo está) e o `label` do nó, que aqui é `string`. Ele é montado dentro do rótulo falado e do caminho, e de um `ReactNode` não há como ler o texto de volta.

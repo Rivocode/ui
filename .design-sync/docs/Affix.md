@@ -1,12 +1,12 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Affix
 
-An element that sticks to the window and stays still while the page scrolls
-underneath: the main action of a long form, the draft-saved notice, the help
-button in the corner. The component draws nothing, it only positions.
+Um elemento que gruda na janela e fica parado enquanto a página rola por
+baixo: a ação principal de um formulário longo, o aviso de rascunho salvo, o
+botão de ajuda no canto. A peça não desenha nada, só posiciona.
 
 ```tsx
 <Affix position={{ bottom: 24, right: 24 }}>
@@ -14,45 +14,41 @@ button in the corner. The component draws nothing, it only positions.
 </Affix>
 ```
 
-## Position
+## Posição
 
-`position` gives the distance from each side of the window. A number is
-pixels, and a string is any CSS measurement, tokens included:
-`{ bottom: 'var(--rc-pad-panel)' }`. A side without a value stays loose.
-Without `position`, the component sticks to the bottom right, one panel
-spacing away from the edges.
+`position` diz a distância de cada lado da janela. Número é pixel, e texto é
+qualquer medida do CSS, inclusive token: `{ bottom: 'var(--rc-pad-panel)' }`.
+Lado sem valor fica solto. Sem `position`, a peça gruda embaixo à direita, a
+um respiro de painel das bordas.
 
-## On top of what
+## Por cima do quê
 
-Stacking comes from `--rc-z-*`, never from a number. `layer` picks the layer:
-`sticky` (the default) sits with the fixed header and below menu, sheet,
-dialog, toast and tooltip, which is where something that sticks to the page
-wants to live. `dropdown` and `overlay` rise to the menus' layer and the dialog
-backdrop's layer, for the rare case where the component needs to sit above an
-open menu.
+O empilhamento sai de `--rc-z-*`, e nunca de número. `layer` escolhe a camada:
+`sticky` (o padrão) fica junto do cabeçalho fixo e abaixo de menu, folha,
+diálogo, aviso e dica, que é onde algo que gruda na página quer morar.
+`dropdown` e `overlay` sobem até a camada dos menus e a do fundo de diálogo,
+para o caso raro em que a peça precisa ficar por cima de um menu aberto.
 
-The component renders in the `RivoProvider` portal container, outside the
-tree. That frees it from an ancestor with `transform`, `filter` or `overflow`,
-which would trap `position: fixed` inside it, and the container carries the
-theme, so what goes inside stays dressed. `withinPortal={false}` leaves it
-where it was written.
+A peça sai no container de portal do `RivoProvider`, fora da árvore. Isso a
+livra de ancestral com `transform`, `filter` ou `overflow`, que prenderiam o
+`position: fixed` dentro dele, e o container carrega o tema, então o que vai
+dentro continua vestido. `withinPortal={false}` a deixa onde foi escrita.
 
-## Focus does not stop behind it
+## O foco não para atrás dela
 
-A fixed element can cover what the keyboard focused: the person presses Tab,
-focus goes down to the last field on the screen, and the field is under the
-stuck button. That is what WCAG criterion 2.4.11 forbids.
+Um elemento fixo pode cobrir o que o teclado focou: a pessoa aperta Tab, o
+foco desce para o último campo da tela, e o campo está debaixo do botão
+grudado. É o que o critério 2.4.11 da WCAG proíbe.
 
-The remedy is the page's `scroll-padding`, and the component writes it on its
-own: having measured its height and its distance from the edge, it reserves
-that space in the `html` element's `scroll-padding-bottom` (or in
-`scroll-padding-top`, when it sticks to the top), plus an 8-pixel margin. With
-that the browser, when scrolling to the focus, stops before the covered strip.
-Several components on the same side count by the largest, and the value the
-page already had comes back when the last one unmounts.
+O remédio é o `scroll-padding` da página, e a peça o escreve sozinha: medida a
+altura dela e a distância da borda, ela reserva esse espaço no
+`scroll-padding-bottom` do elemento `html` (ou no `scroll-padding-top`, quando gruda
+em cima), mais um respiro de 8 pixels. Com isso o navegador, ao rolar até o
+foco, para antes da faixa coberta. Várias peças no mesmo lado valem pela maior,
+e o valor que a página já tinha volta quando a última desmonta.
 
-`reserveSpace={false}` turns the reservation off, when the page already takes
-care of it in its own CSS:
+`reserveSpace={false}` desliga a reserva, quando a página já cuida disso no
+próprio CSS:
 
 ```css
 html {
@@ -60,16 +56,15 @@ html {
 }
 ```
 
-The reservation applies to focus that arrives by scrolling. A form with the
-action stuck to the bottom still needs spacing at the end of the content,
-otherwise the last field stays under the button forever: a `pb-20` on the
-container solves it.
+A reserva vale para o foco que chega por rolagem. Um formulário com a ação
+grudada embaixo ainda precisa de respiro no fim do conteúdo, senão o último
+campo fica para sempre sob o botão: um `pb-20` no contêiner resolve.
 
-## In a scrolling box
+## Numa caixa que rola
 
-`strategy="absolute"` swaps the window for the nearest positioned ancestor.
-Put `relative` on a wrapper around the scrolling box, not on the box itself,
-otherwise the component scrolls along with the content:
+`strategy="absolute"` troca a janela pelo ancestral posicionado mais próximo.
+Ponha o `relative` num embrulho em volta da caixa que rola, e não nela, senão
+a peça rola junto com o conteúdo:
 
 ```tsx
 <div className="relative">
@@ -80,23 +75,23 @@ otherwise the component scrolls along with the content:
 </div>
 ```
 
-In this mode there is no portal and no reservation: the page's
-`scroll-padding` does not reach the box.
+Nesse modo não há portal nem reserva: o `scroll-padding` da página não
+alcança a caixa.
 
-## When not to use
+## Quando não usar
 
-- **A top that sticks while the section scrolls** is `position: sticky`, or
-  the `AppShell` header. `Affix` leaves the flow and reserves no room on the
-  page; `sticky` occupies its place and only sticks inside its parent.
-- **Actions on selected items** are `ActionBar`, which appears with the
-  selection and announces how many were chosen.
-- **Back to the top** is `ScrollToTop`, which is already an `Affix` with the
-  button, the scroll threshold and focus solved.
-- **A notice that passes** is `Toast`, and one that stays at the top of the
-  page is `Banner`. `Affix` announces nothing to the screen reader.
+- **O topo que gruda enquanto a seção rola** é `position: sticky`, ou o
+  cabeçalho do `AppShell`. O `Affix` sai do fluxo e não reserva lugar na
+  página; o `sticky` ocupa o lugar dele e só gruda dentro do pai.
+- **Ações sobre itens selecionados** são `ActionBar`, que aparece com a seleção
+  e anuncia quantos foram escolhidos.
+- **Voltar ao começo** é `ScrollToTop`, que já é um `Affix` com o botão, o
+  limite de rolagem e o foco resolvidos.
+- **Um aviso que passa** é `Toast`, e um que fica no topo da página é `Banner`.
+  O `Affix` não anuncia nada ao leitor de tela.
 
-## In React Native
+## No React Native
 
-Does not port, by decision: in React Native, sticking is the out-of-the-box behavior. There is no window that scrolls; what scrolls is the `ScrollView` or the `FlatList`, and a `View` with `position: absolute` written next to it, not inside it, stays still on screen while the list runs underneath. There is no portal to open and no ancestor `transform` to escape.
+Não porta, por decisão: no React Native, grudar é o comportamento de fábrica. Não existe janela que rola; quem rola é a `ScrollView` ou a `FlatList`, e uma `View` com `position: absolute` escrita ao lado dela, e não dentro, fica parada na tela enquanto a lista corre por baixo. Não há portal a abrir nem `transform` de ancestral a escapar.
 
-For the title that sticks while the list scrolls, the list already has `stickyHeaderIndices` and `stickySectionHeadersEnabled`. And the action that follows the whole screen at the bottom is `ActionBar`, which translates and already accounts for the safe area through `bottomInset`.
+Para o título que gruda enquanto a lista rola, a lista já tem `stickyHeaderIndices` e `stickySectionHeadersEnabled`. E a ação que acompanha a tela inteira embaixo é o `ActionBar`, que traduz e já desconta a área segura por `bottomInset`.

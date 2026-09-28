@@ -1,18 +1,18 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # Popover
 
-An anchored panel of free-form content. The piece between the `Tooltip`, which
-only shows short text, and the `Dialog`, which takes over the whole screen.
+Painel ancorado de conteúdo livre. A peça entre o `Tooltip`, que só mostra texto
+curto, e o `Dialog`, que rouba a tela inteira.
 
-Composes with `PopoverTrigger`, `PopoverContent`, `PopoverTitle`,
-`PopoverDescription` and `PopoverClose`.
+Compõe com `PopoverTrigger`, `PopoverContent`, `PopoverTitle`,
+`PopoverDescription` e `PopoverClose`.
 
-`side`, `align` and `sideOffset` live on `PopoverContent`: whoever writes the
-screen thinks about them together with the content.
+`side`, `align` e `sideOffset` ficam no `PopoverContent`: quem escreve a tela
+pensa neles junto com o conteúdo.
 
-## In React Native
+## No React Native
 
-Does not port. A panel anchored to the trigger is a narrow-screen problem before it is a touch problem: it is born under the finger that opened it and has nowhere to escape. In React Native the equivalent is `Sheet`, which rises from the bottom and does not compete for space with anything.
+Não porta. O painel ancorado ao gatilho é um problem de tela estreita antes de ser um problem de toque: ele nasce debaixo do dedo que o abriu e não tem para onde fugir. No React Native o equivalente é o `Sheet`, que sobe de baixo e não disputa espaço com nada.

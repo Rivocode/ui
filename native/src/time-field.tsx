@@ -17,36 +17,24 @@ export function isOutsideWindow(value: string, min?: string, max?: string): bool
 }
 
 export type TimeFieldProps = {
-  /** The chosen time, in 24h and always `"HH:MM"`. An empty field is `""`. */
+  /** A hora escolhida, em 24h e sempre `"HH:MM"`. Campo vazio e `""`. */
   value: string;
-  /**
-   * Called only with a whole time: `"08:30"`, or `""` when the field empties.
-   * Half-typed text notifies no one.
-   */
+  /** Chamado so com hora inteira: `"08:30"`, ou `""` quando o campo esvazia. Texto pela metade nao avisa ninguem. */
   onValueChange: (value: string) => void;
-  /**
-   * The name the screen reader announces, and what the two step buttons repeat:
-   * "Horario da entrega".
-   */
+  /** O nome que o leitor de tela anuncia, e o que os dois botoes de passo repetem: "Horario da entrega". */
   label: string;
-  /**
-   * How many minutes the plus and minus buttons move, landing on the grid. Does
-   * not reject a typed time outside it.
-   */
+  /** Quantos minutos os botoes de mais e de menos andam, pousando na grade. Nao recusa hora digitada fora dela. */
   step?: number;
-  /** First time of the window, in `"HH:MM"`. Before it the field marks itself invalid. */
+  /** Primeira hora da janela, em `"HH:MM"`. Antes dela o campo se marca invalido. */
   min?: string;
-  /** Last time of the window, in `"HH:MM"`. After it the field marks itself invalid. */
+  /** Ultima hora da janela, em `"HH:MM"`. Depois dela o campo se marca invalido. */
   max?: string;
-  /** The gray pattern of the empty field. */
+  /** O molde cinza do campo vazio. */
   placeholder?: string;
-  /**
-   * Paints the field as an error by an outside decision; without it the field
-   * decides on its own.
-   */
+  /** Pinta o campo de erro por decisao de fora; sem ela o campo decide sozinho. */
   invalid?: boolean;
   disabled?: boolean;
-  /** Styles the frame that joins the two buttons and the field. */
+  /** Veste a moldura que junta os dois botoes e o campo. */
   className?: string;
 };
 

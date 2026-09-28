@@ -41,7 +41,7 @@ const OLDER: NotificationItem[] = [
   },
 ]
 
-/** Bell with the list */
+/** Sininho com a lista */
 export function Center() {
   const [items, setItems] = useState(FIRST_PAGE)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -72,7 +72,7 @@ export function Center() {
   )
 }
 
-/** Empty and loading */
+/** Vazio e carregando */
 export function States() {
   return (
     <div className="flex items-center gap-4">

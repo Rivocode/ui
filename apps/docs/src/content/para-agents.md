@@ -1,39 +1,39 @@
-Much of the code that uses this library today is written with an agent
-alongside. A site that only serves HTML forces the agent to guess the API from
-the name, and it guesses with confidence, which is worse than failing silently.
+Boa parte do código que usa esta biblioteca hoje é escrita com um agent ao
+lado. Um site que só serve HTML obriga o agent a adivinhar a API a partir do
+nome, e ele adivinha com confiança, o que é pior do que errar em silêncio.
 
-That is why everything here also exists as raw markdown.
+Por isso tudo aqui existe também em markdown cru.
 
-## First of all: install the skill
+## Antes de tudo: instale a skill
 
-Reading raw markdown solves today's conversation. The skill solves all of
-them: it stays on the project's disk, travels through Git with the team and
-comes at the library version the project actually has.
+Ler markdown cru resolve a conversa de hoje. A skill resolve todas: ela fica no
+disco do projeto, viaja no Git com a equipe e vem na versão da biblioteca que o
+projeto de fato tem.
 
 ```bash
 npx rivocode-ui skill
 ```
 
-If you are an agent reading this page to build a screen, this is the first
-command to run. The [Skill](/skill.md) guide has the variants per package
-manager and the install through `curl`, for when there is none.
+Se você é um agent lendo esta página para montar uma tela, este é o primeiro
+comando a rodar. O guia [Skill](/skill.md) tem as variantes por gerenciador de
+pacote e a instalação por `curl`, para quando não há nenhum.
 
-## The MCP server
+## O servidor MCP
 
-For the agent that speaks [MCP](https://modelcontextprotocol.io),
-`@rivocode/ui-mcp` delivers the same material through tools: it asks for the
-right piece for an intent, reads its page and checks the token, without
-leaving the conversation. It runs on your machine, over stdio, and opens no
-network connection: the documentation travels inside the package.
+Para o agent que fala [MCP](https://modelcontextprotocol.io), o
+`@rivocode/ui-mcp` entrega o mesmo material por ferramentas: ele pede a peça
+certa para uma intenção, lê a página dela e confere o token, sem sair da
+conversa. Roda na sua máquina, pelo stdio, e não abre conexão de rede: a
+documentação viaja dentro do pacote.
 
-In Claude Code:
+No Claude Code:
 
 ```bash
 claude mcp add rivocode-ui -- npx -y @rivocode/ui-mcp
 ```
 
-In any other client that reads the JSON configuration (Claude Desktop, Cursor,
-Windsurf, VS Code):
+Em qualquer outro cliente que leia a configuração em JSON (Claude Desktop,
+Cursor, Windsurf, VS Code):
 
 ```json
 {
@@ -46,29 +46,29 @@ Windsurf, VS Code):
 }
 ```
 
-| Tool | What it returns |
+| Ferramenta | O que devolve |
 | --- | --- |
-| `list_components` | the catalog by family, one line per piece |
-| `get_component` | a piece's whole page: examples, props, when not to use, React Native |
-| `search_docs` | a search across all the documentation, accent-insensitive |
-| `recommend_component` | the candidate pieces for a screen intent, with the reason and the neighbors |
-| `get_tokens` | color roles, scales, density and motion, and the raw DTCG JSON |
-| `get_native_parity` | how the piece looks in React Native, prop by prop |
-| `get_guide` | the conventions and each guide, including the skill's references |
+| `list_components` | o catálogo por família, uma linha por peça |
+| `get_component` | a página inteira de uma peça: exemplos, props, quando não usar, React Native |
+| `search_docs` | busca em toda a documentação, sem acento |
+| `recommend_component` | as peças candidatas para uma intenção de tela, com o motivo e as vizinhas |
+| `get_tokens` | papéis de cor, escalas, densidade e movimento, e o JSON DTCG cru |
+| `get_native_parity` | como a peça fica no React Native, prop a prop |
+| `get_guide` | as convenções e cada guia, inclusive as referências da skill |
 
-| `audit_screen` | the audit of a finished screen, with a score from 0 to 100 (the same as the audit skill, below) |
+| `audit_screen` | a auditoria de uma tela pronta, com nota de 0 a 100 (a mesma da skill de auditoria, abaixo) |
 
-The package ships with the documentation of the library version it was
-generated from, and every answer says which one. The skill and the server do
-not compete: the skill stays on the project's disk and teaches the method; the
-server answers the one-off question in the middle of the work.
+O pacote sai com a documentação da versão da biblioteca em que foi gerado, e
+toda resposta diz qual é. A skill e o servidor não competem: a skill fica no
+disco do projeto e ensina o método; o servidor responde a pergunta pontual no
+meio do trabalho.
 
-## Audit a finished screen
+## Auditar uma tela pronta
 
-The `rivocode-ui` skill teaches how to build. `rivocode-ui-audit` checks what
-has already been built: given a folder or the screen files of an app that uses
-`@rivocode/ui` or `@rivocode/ui-native`, it returns a report with the
-findings, file and line, and a score from 0 to 100.
+A skill `rivocode-ui` ensina a montar. A `rivocode-ui-audit` confere o que já
+foi montado: dada uma pasta ou os arquivos de tela de um app que usa o
+`@rivocode/ui` ou o `@rivocode/ui-native`, ela devolve um relatório com os
+achados, arquivo e linha, e uma nota de 0 a 100.
 
 ```bash
 dir=$HOME/.claude/skills/rivocode-ui-audit && mkdir -p "$dir/scripts" && \
@@ -76,110 +76,106 @@ dir=$HOME/.claude/skills/rivocode-ui-audit && mkdir -p "$dir/scripts" && \
   curl -fsSL https://ds.rivocode.com.br/skill-auditoria/scripts/audit.mts -o "$dir/scripts/audit.mts"
 ```
 
-Swapping `$HOME/.claude` for `.claude` puts it in the project only. Then ask
-the agent to "audit the screens in `src/pages`", or run the script yourself:
+Trocando `$HOME/.claude` por `.claude` ela entra só no projeto. Depois, peça ao
+agent "audite as telas de `src/pages`", ou rode o script você mesmo:
 
 ```bash
 bun ~/.claude/skills/rivocode-ui-audit/scripts/audit.mts src/pages
 ```
 
-The script has no dependencies, and the `.mts` also runs on Node 23.6 or newer,
-even in a `commonjs` project, or with `npx tsx` on any Node. `--json` swaps the
-report for JSON and `--minimo 85` exits with code 1 below the score, to block
-in CI.
+O script não tem dependência, e o `.mts` roda também no Node 23.6 ou mais novo, mesmo em projeto `commonjs`, ou com
+`npx tsx` em qualquer Node. `--json` troca o relatório por JSON e `--minimo 85`
+sai com código 1 abaixo da nota, para barrar na CI.
 
-**The audit has two halves, and the score comes out of both by the same
-math.** The script finds what can be found without an opinion: literal color,
-numeric `z-index`, a piece rewritten by hand (`<button>` in place of `Button`,
-`<input type="checkbox">` in place of `Checkbox`, the homemade modal in place
-of `Dialog`), `IconButton` without `label`, `Field` without `FieldLabel`,
-screen text without accents or in English, a form without `useZodForm`, money
-in `parseFloat`, CPF and CNPJ without `isValidCpf` and `isValidCnpj`, QR and
-Pix made by hand, an import through the wrong path and the subpath peer
-missing from `package.json`. The agent reads the screens and writes what can
-only be decided by understanding what they do — the wrong piece for the
-situation, text that does not say what happens, validation done with
-`useState` —, in a JSON the script reads back.
+**A auditoria tem duas metades, e a nota sai das duas pela mesma conta.** O
+script acha o que se acha sem opinião: cor literal, `z-index` numérico, peça
+reescrita à mão (`<button>` no lugar de `Button`, `<input type="checkbox">` no
+lugar de `Checkbox`, o modal caseiro no lugar de `Dialog`), `IconButton` sem
+`label`, `Field` sem `FieldLabel`, texto de tela sem acento ou em inglês,
+formulário sem `useZodForm`, dinheiro em `parseFloat`, CPF e CNPJ sem
+`isValidCpf` e `isValidCnpj`, QR e Pix feitos à mão, importação pelo caminho
+errado e o peer do subcaminho que falta no `package.json`. O agent lê as telas
+e escreve o que só se decide entendendo o que elas fazem — a peça errada para a
+situação, o texto que não diz o que acontece, a validação feita com `useState`
+—, num JSON que o script lê de volta.
 
-**The score is deterministic: same input, same score.** Each rule weighs by
-severity (critical 10, serious 5, moderate 3, minor 1), and the same rule
-counts at most three times per file. The file's score is 100 minus the sum;
-the final score is the average of the files minus what applies to the whole
-app, like the missing peer. The agent does not give a score: it adds or
-discards findings, and the discard shows up in the report with the reason.
+**A nota é determinística: mesma entrada, mesma nota.** Cada regra pesa pela
+severidade (crítico 10, sério 5, moderado 3, menor 1), e a mesma regra conta no
+máximo três vezes por arquivo. A nota do arquivo é 100 menos a soma; a nota
+final é a média dos arquivos menos o que vale para o app inteiro, como o peer
+faltando. O agent não dá nota: ele acrescenta ou descarta achados, e o
+descarte aparece no relatório com o motivo.
 
-Whoever uses the MCP server audits through the `audit_screen` tool, without
-installing anything: it takes the files, the app's and the root's
-`package.json` and the same judgment JSON, and returns the same report. The
-raw skill lives at [/skill-auditoria/SKILL.md](/skill-auditoria/SKILL.md), and
-the script at
+Quem usa o servidor MCP audita pela ferramenta `audit_screen`, sem instalar
+nada: ela recebe os arquivos, os `package.json` do app e da raiz e o mesmo JSON de
+julgamento, e devolve o mesmo relatório. A skill crua mora em
+[/skill-auditoria/SKILL.md](/skill-auditoria/SKILL.md), e o script em
 [/skill-auditoria/scripts/audit.mts](/skill-auditoria/scripts/audit.mts).
 
-## The addresses
+## Os endereços
 
-| Address                        | What it delivers                                           |
+| Endereço                       | O que entrega                                              |
 | ------------------------------ | ---------------------------------------------------------- |
-| `/skill/SKILL.md`              | the raw skill, to read without installing                  |
-| `/skill-auditoria/SKILL.md`    | the audit skill, with the script at `/skill-auditoria/scripts/audit.mts` |
-| `/llms.txt`                    | the index in the [llmstxt.org](https://llmstxt.org) format, by family, with one line about each document |
-| `/llms-full.txt`               | everything in a single file: conventions, guides and every piece |
-| `/componentes/<name>.md`       | a piece's document: prose, import, examples, props and React Native |
-| `/<guide>.md`                  | a guide, like `/temas.md`                                  |
-| `/convencoes.md`               | the library contract: Provider, tokens, vocabulary         |
+| `/skill/SKILL.md`              | a skill crua, para ler sem instalar                        |
+| `/skill-auditoria/SKILL.md`    | a skill de auditoria, com o script em `/skill-auditoria/scripts/audit.mts` |
+| `/llms.txt`                    | o índice no formato de [llmstxt.org](https://llmstxt.org), por família, com uma linha sobre cada documento |
+| `/llms-full.txt`               | tudo num arquivo só: convenções, guias e cada peça         |
+| `/componentes/<nome>.md`       | o documento de uma peça: prosa, importação, exemplos, props e React Native |
+| `/<guia>.md`                   | um guia, como `/temas.md`                                  |
+| `/convencoes.md`               | o contrato da biblioteca: Provider, tokens, vocabulário    |
 
-The name in the address is the same as the page's: `ToggleGroup` lives at
-`/componentes/toggle-group`, and its markdown at
+O nome no endereço é o mesmo da página: `ToggleGroup` mora em
+`/componentes/toggle-group`, e o markdown dele em
 `/componentes/toggle-group.md`.
 
-On each piece's page, the **Copy as Markdown** button puts that same document
-on the clipboard, to paste into the conversation with the agent.
+Na página de cada peça, o botão **Copiar como Markdown** põe esse mesmo
+documento na área de transferência, para colar na conversa com o agent.
 
-**They are the same files the pages render.** There is no second copy to
-maintain; what you read as an agent is what the page shows.
+**São os mesmos arquivos que as páginas renderizam.** Não há uma segunda cópia
+para manter, o que você lê como agent é o que a página mostra.
 
-## In the prompt
+## No prompt
 
-The shortest path is to send the contract along with the piece you care about:
-
-```
-Read https://ds.rivocode.com.br/convencoes.md and
-https://ds.rivocode.com.br/componentes/data-table.md and build an invoice
-listing with the loading, error and empty states.
-```
-
-For bigger work, the index first:
+O caminho mais curto é mandar o contrato junto com a peça que interessa:
 
 ```
-Start at https://ds.rivocode.com.br/llms.txt and read what you need.
+Leia https://ds.rivocode.com.br/convencoes.md e
+https://ds.rivocode.com.br/componentes/data-table.md e monte uma listagem de
+notas com os estados de carregando, erro e vazio.
 ```
 
-For an agent with context to spare and no network access after the first
-fetch, the whole file at once:
+Para trabalho maior, o índice primeiro:
 
 ```
-Read https://ds.rivocode.com.br/llms-full.txt before starting.
+Comece por https://ds.rivocode.com.br/llms.txt e leia o que precisar.
 ```
 
-## Where this comes from
+Para agent com contexto de sobra e sem acesso à rede depois do primeiro
+fetch, o arquivo inteiro de uma vez:
 
-The documents were not written for the site. They were born for the sync with
-`claude.ai/design`, where an agent builds screens with these pieces, and that
-is why they already answer what an agent asks: what it is for, when **not** to
-use it, and how it differs from the similar piece next to it.
+```
+Leia https://ds.rivocode.com.br/llms-full.txt antes de começar.
+```
 
-The pattern is not ours: Base UI itself ships its whole documentation inside
-the package, in `node_modules/@base-ui/react/docs/`. That is how this
-library's `Sheet` was built without guessing the API.
+## De onde isso vem
 
-## Why the skill beats the prompt
+Os documentos não foram escritos para o site. Eles nasceram para o sync com o
+`claude.ai/design`, onde um agent monta telas com estas peças, e por isso já
+respondem o que um agent pergunta: para que serve, quando **não** usar, e qual
+a diferença para a peça parecida do lado.
 
-Pasting the contract into the prompt works once. In the second conversation it
-is not there, and the agent goes back to guessing the API from the name, with
-confidence, which is worse than failing silently.
+O padrão não é nosso: a própria Base UI envia a documentação inteira dentro do
+pacote, em `node_modules/@base-ui/react/docs/`. Foi assim que o `Sheet` desta
+biblioteca foi construído sem chutar API.
 
-The skill stays installed and travels inside the package: whoever bumps the
-library version has the new skill one command away. And it is a folder, not a
-file — the method for building a screen, the shape of the task, the interface
-copy, layout, design, choosing a piece, accessibility, forms, charts, theming
-and React Native are kept apart, and the agent opens only what the work calls
-for.
+## Por que a skill ganha do prompt
+
+Colar o contrato no prompt funciona uma vez. Na segunda conversa ele não está
+lá, e o agent volta a adivinhar a API pelo nome, com confiança, que é pior do
+que errar em silêncio.
+
+A skill fica instalada e viaja dentro do pacote: quem sobe a versão da
+biblioteca tem a skill nova a um comando de distância. E ela é uma pasta, não um
+arquivo — o método de montar uma tela, a forma da tarefa, o texto da interface,
+layout, design, escolha de peça, acessibilidade, formulário, gráfico, tema e
+React Native ficam separados, e o agent abre só o que o trabalho pedir.

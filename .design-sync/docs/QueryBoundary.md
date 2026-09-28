@@ -4,14 +4,14 @@ category: Feedback
 
 # QueryBoundary
 
-The four endings of a query (loading, error, empty and data) around any
-content.
+Os quatro finais de uma consulta (carregando, erro, vazio e dados) em volta de
+qualquer conteúdo.
 
-`DataTable` and `ChartContainer` already have them built in, and the rest of
-the screen does not: every summary card, every details sheet and every
-hand-drawn list rewrites the same ladder of `if`s. This piece is that ladder,
-with the same prop names as those two: `isLoading`, `isError`, `onRetry`,
-`errorTitle`, `errorMessage` and `empty`.
+O `DataTable` e o `ChartContainer` já os têm embutidos, e o resto da tela não:
+cada cartão de resumo, cada folha de detalhes e cada lista desenhada à mão
+reescreve a mesma escada de `if`. Esta peça é essa escada, com os mesmos nomes
+de prop das duas: `isLoading`, `isError`, `onRetry`, `errorTitle`,
+`errorMessage` e `empty`.
 
 ```tsx
 <QueryBoundary
@@ -28,19 +28,18 @@ with the same prop names as those two: `isLoading`, `isError`, `onRetry`,
 </QueryBoundary>
 ```
 
-It does not know React Query, and that is on purpose: three booleans and a
-response go in, and it works the same with hand-written `fetch`, with SWR or
-with a server component.
+Não conhece React Query, e isso é de propósito: entram três booleanos e uma
+resposta, e funciona igual com `fetch` na mão, com SWR ou com server component.
 
-**The order is the same as its two siblings':** error beats loading, and empty
-only counts after the response has arrived. Without that, a new fetch over an
-error flashes "no results" before showing the problem.
+**A ordem é a mesma das duas irmãs:** erro vence carregando, e vazio só vale
+depois que a resposta chegou. Sem isso, uma nova busca sobre um erro pisca
+"nenhum resultado" antes de mostrar o problema.
 
-## The child can be a function
+## O filho pode ser função
 
-As a function, it is only called after the data has arrived, and it receives
-`data` without the `undefined`, which is exactly the `!` every screen used to
-write here. As a node, it serves whoever does not need the data to draw:
+Como função, ela só é chamada depois que o dado chegou, e recebe o `data` sem o
+`undefined`, que é exatamente o `!` que toda tela escrevia aqui. Como nó,
+serve a quem não precisa do dado para desenhar:
 
 ```tsx
 <QueryBoundary data={customer}>
@@ -48,27 +47,25 @@ write here. As a node, it serves whoever does not need the data to draw:
 </QueryBoundary>
 ```
 
-With a function child, undefined `data` is still waiting even with
-`isLoading={false}`. There is nothing to hand to the function, and it is the
-`DataTable` rule. With a node child, `isLoading` rules alone when you pass it:
-the node does not depend on the data to exist.
+Com filho em função, `data` indefinido continua sendo espera mesmo com
+`isLoading={false}`. Não há o que entregar à função, e é a regra do
+`DataTable`. Com filho em nó, `isLoading` manda sozinho quando você o passa: o
+nó não depende do dado para existir.
 
-The function does not cross a server component boundary: it is not
-serializable. From a server component, pass the child as a node.
+A função não atravessa a fronteira de um server component: ela não é
+serializável. De um server component, passe o filho como nó.
 
-**The children come out as you wrote them, unwrapped.** The piece does not put
-a `<div>` around what it returns: an invisible frame would break the `grid` or
-the `flex` of whoever is outside, and the defect would only show up in the
-browser.
+**Os filhos saem como você os escreveu, sem embrulho.** A peça não põe uma
+`<div>` em volta do que ela devolve: uma moldura invisível quebraria o `grid`
+ou o `flex` de quem está por fora, e o defeito só apareceria no navegador.
 
-## The wait
+## A espera
 
-The default is three lines of `Skeleton`, and they hold height without
-promising any shape. `skeletonRows` changes how many, the same name as in
-`DataTable`.
+O padrão são três linhas de `Skeleton`, e elas seguram altura sem prometer
+forma nenhuma. `skeletonRows` muda quantas, o mesmo nome do `DataTable`.
 
-When the shape of what is coming matters (and it almost always does), pass
-your own mold in `skeleton`:
+Quando a forma do que vem importa (e ela quase sempre importa), passe o seu
+molde em `skeleton`:
 
 ```tsx
 <QueryBoundary
@@ -82,35 +79,31 @@ your own mold in `skeleton`:
 >
 ```
 
-It is not a `Spinner` on purpose, and it is the same choice as its two
-siblings: a spin in the middle of the void reserves no height, so the page
-jumps when the content arrives. `Spinner` is still the right thing for a wait
-that has no shape: the button that submits, the action that draws nothing.
+Não é `Spinner` de propósito, e é a mesma escolha das duas irmãs: o giro no meio
+do vazio não reserva altura, então a página pula quando o conteúdo chega. O
+`Spinner` continua sendo o certo para a espera que não tem forma: o botão que
+envia, a ação que não desenha nada.
 
-The loading node comes out with `aria-busy="true"`. `Skeleton` hides from the
-screen reader on purpose, and the container is where the loading notice
-belongs.
+O nó do carregando sai com `aria-busy="true"`. O `Skeleton` se esconde do leitor
+de tela de propósito, e é no contêiner que o aviso de carregamento pertence.
 
-**The wait announces itself out loud.** `aria-busy` on a node without a role
-is read by no screen reader at all: it describes the state of a region, and
-only reaches whoever is already inside it. Whoever was waiting heard silence,
-and the arrival of the data, which swaps the whole screen, said nothing either.
-The four siblings publish the same live region (`role="status"
-aria-live="polite"`, marked with `data-rc-status`), which says "Carregando…"
-while the query has not returned and "Conteúdo carregado" when it returns. It
-exists before the text changes and is the same node from the first state to the
-last: a region that is born with the text already inside fires no announcement
-at all.
+**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
+leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
+está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
+tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
+(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
+"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
+volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
+estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
-## What it does not handle: stale data while revalidating
+## O que ela nao trata: dado velho enquanto revalida
 
-`isLoading` and `isError` describe two situations, and the most common case on
-a real screen is a third one: **there is already data on the screen and a new
-fetch is running.** If you pass `isFetching` into `isLoading`, the skeleton
-covers what the person was reading; if you pass nothing, the update happens
-with no signal at all.
+`isLoading` e `isError` descrevem duas situacoes, e o caso mais comum de tela
+real e uma terceira: **ja ha dado na tela e uma nova busca esta correndo.** Se
+voce passar `isFetching` em `isLoading`, o esqueleto cobre o que a pessoa
+estava lendo; se nao passar nada, a atualizacao acontece sem sinal nenhum.
 
-The piece does not solve this today, and the choice is yours:
+A peca nao resolve isso hoje, e a escolha e sua:
 
 ```tsx
 <QueryBoundary isLoading={query.isLoading} isError={query.isError} data={query.data}>
@@ -122,92 +115,87 @@ The piece does not solve this today, and the choice is yours:
 </QueryBoundary>
 ```
 
-TanStack Query's `isLoading` is true only on the first fetch, which is what the
-piece expects. `isFetching` is true on every fetch, including the one that
-revalidates - so it does not serve for `isLoading`, and it does serve for
-`aria-busy`.
+`isLoading` do TanStack Query e verdadeiro so na primeira busca, que e o que a
+peca espera. `isFetching` e verdadeiro em toda busca, inclusive a que revalida
+- entao ele nao serve para `isLoading`, e serve para `aria-busy`.
 
-## Who decides empty
+## Quem decide o vazio
 
-The piece decides on its own, from `data`: **a zero-length list and `null` are
-empty**, and `undefined` is "not here yet". Without `isLoading`, it is what
-turns loading on.
+A peça decide sozinha, pelo `data`: **lista de tamanho zero e `null` são
+vazio**, e `undefined` é "ainda não chegou". Sem `isLoading`, é ele quem liga o
+carregando.
 
-For a response that is not a list (`{ items: [], total: 0 }` is the usual
-paginated one), the answer comes from `isEmpty`, which beats the count when it
-is present:
+Para a resposta que não é uma lista (`{ items: [], total: 0 }` é a paginada de
+sempre), quem responde é `isEmpty`, que vence a contagem quando vem:
 
 ```tsx
 <QueryBoundary data={page} isEmpty={page.total === 0} empty={{ ... }}>
 ```
 
-If `empty` arrives with nothing able to decide, the piece warns in the console
-in development. An empty state that never shows is silent: the children draw
-over nothing, and nobody finds out until a client opens the screen without
-data.
+Se `empty` chegar sem que nada consiga decidir, a peça avisa no console em
+desenvolvimento. O estado vazio que nunca aparece é silencioso: os filhos
+desenham sobre o nada, e ninguém descobre até um cliente abrir a tela sem dados.
 
-Without `empty`, there is no empty state. The empty response falls to the
-children, and they draw their own empty. The exception is `null` with a
-function child: with no data to hand over and no empty configured, the piece
-draws nothing.
+Sem `empty`, não há estado vazio. A resposta vazia cai nos filhos, e eles
+desenham o vazio deles. A exceção é o `null` com filho em função: sem dado para
+entregar e sem vazio configurado, a peça não desenha nada.
 
-The description is required for the same reason as in `DataTable`: "no
-results" hands the person the work of finding out why, and they almost never
-do.
+A descrição é obrigatória pelo mesmo motivo do `DataTable`: "nenhum resultado"
+transfere para a pessoa o trabalho de descobrir por quê, e ela quase nunca
+descobre.
 
-## The texts the piece writes
+## Os textos que a peça escreve
 
-`errorTitle` (default "Não foi possível carregar") and `errorMessage` (default
-"Tente de novo em alguns minutos.") are the pair for the error state, with the
-same names and the same role they have in `DataTable` and `ChartContainer`: a
-screen that loads three blocks needs to say which one failed, and a product
-that does not speak Portuguese needs to say it in another language.
+`errorTitle` (padrão "Não foi possível carregar") e `errorMessage` (padrão
+"Tente de novo em alguns minutos.") são o par do estado de erro, com os mesmos
+nomes e o mesmo papel que têm no `DataTable` e no `ChartContainer`: uma tela que
+carrega três blocos precisa dizer qual deles falhou, e um produto que não fala
+português precisa dizer isso em outra língua.
 
-`labels.retry` (default "Tentar de novo") is the name of the button that runs
-`onRetry`, and exists for the same reason: without it, the translated screen
-came out with the title in English and the button in Portuguese, which is worse
-than everything in Portuguese. The key and the default are the same across the
-query pieces, and `labels.loading` and `labels.loaded` change what the screen
-reader hears when the query goes out and when it comes back.
+`labels.retry` (padrão "Tentar de novo") é o nome do botão que executa o
+`onRetry`, e existe pelo mesmo motivo: sem ele, a tela traduzida saía com o
+título em inglês e o botão em português, que é pior do que tudo em português. A
+chave e o padrão são os mesmos nas peças de consulta, e `labels.loading` e
+`labels.loaded` trocam o que o leitor de tela ouve quando a consulta sai e
+quando volta.
 
-Without `onRetry` there is no retry button. A notice with a button that leads
-nowhere is worse than a notice with no button.
+Sem `onRetry` não há botão de nova tentativa. Aviso com botão que não leva a
+lugar nenhum é pior que aviso sem botão.
 
-## Motion
+## Movimento
 
-The error `Alert` and the empty `EmptyState` enter with their own motion. The content you hand over gets no entrance from here: the frame does not wrap your children in a box, because an extra box changes the layout of whoever uses it (the child that was `flex-1`, the grid item). Whoever has a box of their own enters on their own: `DataTable` fades its body in, and the chart draws itself.
+O `Alert` do erro e o `EmptyState` do vazio entram pelo movimento deles. O conteúdo que você entrega não ganha entrada daqui: a moldura não embrulha os seus filhos numa caixa, porque uma caixa a mais muda o layout de quem usa (o filho que era `flex-1`, o item de grade). Quem tem caixa própria entra sozinho: o `DataTable` esmaece o corpo, e o gráfico se desenha.
 
-## Parts
+## Partes
 
-`classNames` dresses each ending: `loading`, `error`, `empty`. `className`
-dresses all three at once, which is where the frame that reserves the height
-lives (`className="min-h-40"`). And it does not dress the children, which are
-yours.
+`classNames` veste cada final: `loading`, `error`, `empty`. O `className` veste
+os três de uma vez, que é onde mora a moldura que reserva a altura
+(`className="min-h-40"`). E não veste os filhos, que são seus.
 
-## When not to use
+## Quando não usar
 
-**Do not wrap `DataTable` or `ChartContainer`.** Both already receive the four
-endings, with these same props, and draw the wait in the shape of what they
-show: fake table rows, fake chart bars. From outside, a frame would only have a
-generic skeleton to offer, and the two error states would stack up together
-the day the query failed.
+**Não embrulhe `DataTable` nem `ChartContainer`.** As duas já recebem os quatro
+finais, com estas mesmas props, e desenham a espera no formato do que elas
+mesmas mostram: linhas falsas de tabela, barras falsas de gráfico. Por fora,
+uma moldura só teria um esqueleto genérico para oferecer, e os dois estados de
+erro empilhados apareceriam juntos no dia em que a consulta falhasse.
 
-For the empty state alone (a screen that never loads anything, a result already
-in hand), use `EmptyState`. For an error notice that is not the end of a query,
-`Alert`. For a loose placeholder inside a block that already handles the other
-endings, `Skeleton`. This piece exists for the four together, and in order;
-just one of them does not pay for the wrapper.
+Para o estado vazio sozinho (uma tela que nunca carrega nada, um resultado que
+já está na mão), use `EmptyState`. Para o aviso de erro que não é o fim de uma
+consulta, `Alert`. Para a marca de lugar solta dentro de um bloco que já tem os
+outros finais tratados, `Skeleton`. Esta peça existe para os quatro juntos, e na
+ordem; um só deles não paga o embrulho.
 
-It also does not catch render exceptions: `QueryBoundary` shows the error the
-query reported in `isError`, not what blew up inside the children. For that,
-what exists is React's error boundary.
+Ela também não captura exceção de renderização: `QueryBoundary` mostra o erro
+que a consulta reportou em `isError`, e não o que estourou dentro dos filhos.
+Para esse, o que existe é o error boundary do React.
 
-## In React Native
+## No React Native
 
-Translates with the same prop names and the same order: **error wins over loading**, and empty only counts after the response has arrived. `children` also accepts a function here, which is what justifies the piece existing: it delivers the data already without `undefined`, and kills the `!` the screen used to write.
+Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o que justifica a peça existir: ela entrega o dado já sem `undefined`, e mata o `!` que a tela escrevia.
 
-Four type differences, all because text on native lives inside a `Text`: `errorTitle`, `errorMessage`, `empty.title` and `empty.description` are `string`. `empty.icon` crosses over, and also accepts the native `EmptyState`'s function, which delivers the color and the size. It is the same note the `ChartContainer` already carries.
+Quatro diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor e o tamanho. É a mesma nota que o `ChartContainer` já carrega.
 
-**`classNames` ports with the web's names:** `loading`, `error` and `empty`. `className` still styles the three endings, as on the web, and each part styles only its own: the frame that reserves the height applies equally to all three, but the error that asks for a border cannot carry the border to the skeleton. With no descendant selector in React Native, the part is the only way to style one ending without styling the others.
+**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único jeito de vestir um final sem vestir os outros.
 
-The generic skeleton stays in the piece, and does not come from the caller: without it, `isLoading` without `skeleton` would collapse the screen to zero height and it would jump when the data arrived. On the phone this hurts more, because there is no scroll bar or network indicator to explain the wait.
+O esqueleto genérico fica na peça, e não vem de quem chama: sem ele, `isLoading` sem `skeleton` colapsaria a tela para altura zero e ela pularia quando o dado chegasse. No celular isso dói mais, porque não há barra de rolagem nem indicador de rede para explicar a espera.

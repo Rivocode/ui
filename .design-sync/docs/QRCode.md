@@ -1,123 +1,120 @@
 ---
-category: Data
+category: Dados
 ---
 
 # QRCode
 
-A text that someone else's camera reads: the link to look up an invoice, the Pix
-of a charge, the address of a menu.
+Um texto que a câmera do outro lê: o link de consulta da nota, o Pix de uma
+cobrança, o endereço de um cardápio.
 
-The drawing is an SVG generated here, with no library: the encoder follows the
-whole of ISO/IEC 18004, with versions 1 to 40, the numeric, alphanumeric and
-byte modes (in UTF-8), Reed-Solomon error correction and the choice among the
-eight masks by the standard's penalty. The version is the smallest one the text
-fits in, so the square has as many modules as the text needs, and not one more.
+O desenho é um SVG gerado aqui, sem biblioteca: o codificador segue a ISO/IEC
+18004 inteira, com as versões 1 a 40, os modos numérico, alfanumérico e byte
+(em UTF-8), a correção Reed-Solomon e a escolha entre as oito máscaras pela
+penalidade da norma. A versão é a menor em que o texto cabe, então o quadrado
+tem tantos módulos quanto o texto pede, e nenhum a mais.
 
 ```tsx
 <QRCode value={linkDaNota} label="QR Code para consultar a nota 4813" />
 ```
 
-`label` is required. The piece is an image (`role="img"`), and the raw content
-is no use as a name: a screen reader spelling out
-`00020126580014br.gov.bcb.pix…` says nothing. The name says what the code is
-for.
+`label` é obrigatório. A peça é uma imagem (`role="img"`), e o conteúdo cru
+não serve de nome: um leitor de tela que soletra
+`00020126580014br.gov.bcb.pix…` não diz nada. O nome diz para que o código
+serve.
 
-## Colors and margin
+## Cores e margem
 
-**A machine-read code is always dark on light, in any theme.** The modules come
-out in `code-ink` (almost black) and the background in `code-paper` (white),
-and both have the same value in the light theme, in the dark one and in any
-client theme. ISO/IEC 18004 accepts the inverted reflectance, with a light
-module on a dark background, and the system camera even reads it; some readers
-and banking apps do not. For a Pix, that is a payment that does not happen, and
-nothing on the screen says so.
+**Código lido por máquina é sempre escuro sobre claro, em qualquer tema.** Os
+módulos saem em `code-ink` (quase preto) e o fundo em `code-paper` (branco), e
+os dois têm o mesmo valor no tema claro, no escuro e em qualquer tema de
+cliente. A ISO/IEC 18004 aceita o reflexo invertido, com módulo claro sobre
+fundo escuro, e a câmera do sistema até lê; uma parte dos leitores e dos apps
+de banco não lê. Para um Pix, isso é pagamento que não acontece, e nada na
+tela avisa.
 
-That is why the pair is not a theme role: it lives in the scale, outside
-`[data-rc-theme]`, and a theme neither needs to declare it nor can invert it by
-accident. The contrast guard measures the ink over the paper at 15:1 minimum
-(the house gives 19.47:1) and checks that the ink is the darker of the two.
-Do not wrap the piece in a light `RivoProvider` so the code reads: it already
-reads.
+Por isso o par não é papel de tema: ele mora na escala, fora de
+`[data-rc-theme]`, e um tema não precisa declará-lo nem consegue invertê-lo
+sem querer. A guarda de contraste mede a tinta sobre o papel a 15:1 no
+mínimo (a casa dá 19,47:1) e confere que a tinta é a mais escura dos dois.
+Não envolva a peça num `RivoProvider` claro para o código ler: ela já lê.
 
-In the dark theme the paper becomes a **white plate with rounded corners**
-inside the dark card. The plate includes the **4-module quiet zone** the
-standard requires: it is what separates the code from its surroundings, and
-without it the camera cannot find the three finder corners. That is why the
-plate has no padding of its own, and must not get `padding` from outside.
+No tema escuro o papel vira uma **placa branca de canto arredondado** dentro
+do cartão escuro. A placa inclui a **margem de silêncio de 4 módulos** que a
+norma pede: é ela que separa o código do que está em volta, e sem ela a câmera
+não acha as três quinas. Por isso a placa não tem respiro próprio, e não deve
+ganhar `padding` de fora.
 
-The same colors serve whoever draws another machine-read code, such as a
-barcode: `fill-code-ink`, `bg-code-paper` and `text-code-ink`.
+As mesmas cores servem a quem desenha outro código lido por máquina, como um
+código de barras: `fill-code-ink`, `bg-code-paper` e `text-code-ink`.
 
-## Error correction
+## Correção de erro
 
-`level` chooses how much of the symbol can be lost without losing the text:
-`L` recovers 7%, `M` 15% (the default), `Q` 25% and `H` 30%. A higher level
-needs more modules for the same text, and therefore larger squares.
+`level` escolhe quanto do símbolo pode se perder sem que o texto se perca:
+`L` recupera 7%, `M` 15% (o padrão), `Q` 25% e `H` 30%. Nível mais alto pede
+mais módulos para o mesmo texto, e por isso quadrados maiores.
 
-Use `Q` or `H` for what will be printed, crumpled or read from afar, and `M`
-for the screen.
+Use `Q` ou `H` para o que vai ser impresso, amassado ou lido de longe, e `M`
+para a tela.
 
-## Size
+## Tamanho
 
-`size` is the side in px, margin included. Each module needs at least 2px of
-screen for the camera to tell one from another: the Pix of a charge (version 8
-at level M, 57 modules with the margin) needs 160px or more. A long text with
-a small `size` draws correctly and does not read.
+`size` é o lado em px, com a margem incluída. Cada módulo precisa de ao menos
+2px de tela para a câmera separar um do outro: o Pix de uma cobrança (versão 8
+no nível M, 57 módulos com a margem) pede 160px ou mais. Um
+texto longo com `size` pequeno desenha certo e não lê.
 
-## With a logo
+## Com logo
 
-`logo` puts a mark in the center, and **only works with `level="H"`**. The
-modules under the mark are really erased (the paper shows behind it, and the
-mark inherits the ink as `currentColor`), and only level H recovers that loss
-with room to spare. With `logo` and no `level`, the piece already starts at H;
-with `logo` and another level, the mark does not show, and the console says
-why.
+`logo` põe uma marca no centro, e **só vale com `level="H"`**. Os módulos
+embaixo da marca são apagados de verdade (o papel aparece por trás dela, e a
+marca herda a tinta como `currentColor`), e só
+o nível H recupera essa perda com folga. Com `logo` e sem `level`, a peça já
+nasce em H; com `logo` e outro nível, a marca não aparece, e o console diz por
+quê.
 
 ```tsx
 <QRCode value={linkDaNota} label="QR Code para consultar a nota 4813" logo={<img src="/marca.svg" alt="" />} />
 ```
 
-Without `value`, the square holds the place with a dotted outline over the
-surface, with no modules at all, so the screen does not jump when the text
-arrives. It is not the white plate: in the dark theme an empty white square
-looks like a code that failed to draw.
+Sem `value`, o quadrado guarda o lugar com um traço pontilhado sobre a
+superfície, sem módulo nenhum, para a tela não pular quando o texto chegar. Não
+é a placa branca: no tema escuro um quadrado branco vazio parece um código que
+falhou ao desenhar.
 
-## Text that does not fit
+## Texto que não cabe
 
-Version 40 holds 2953 bytes at level L and 1273 at H. Longer text fits in no
-QR at all, and the piece **does not bring the screen down** over it: in place
-of the code it draws the same dotted square with the `labels.tooLong` notice,
-the image's name gets the notice too, and the console warns in development.
-The way out is to shorten the text, swap it for a link that leads to it, or
-lower the level.
+A versão 40 guarda 2953 bytes no nível L e 1273 no H. Texto maior não cabe em
+QR nenhum, e a peça **não derruba a tela** por isso: no lugar do código ela
+desenha o mesmo quadrado pontilhado com o aviso de `labels.tooLong`, o nome da
+imagem ganha o aviso junto, e o console avisa em desenvolvimento. A saída é
+encurtar o texto, trocar por um link que leve a ele ou baixar o nível.
 
 ```tsx
 <QRCode value={texto} label="QR Code do cardápio" labels={{ tooLong: 'Cardápio longo demais para o QR.' }} />
 ```
 
-## Parts
+## Partes
 
-`classNames` reaches `code` (the `svg`) and `logo` (the box in the center).
+`classNames` alcança `code` (o `svg`) e `logo` (a caixa do centro).
 
-## When not to use
+## Quando não usar
 
-- **For the Pix of a charge**, use `PixCode`: it brings together this code, the
-  copy-and-paste text with the copy button, the amount and the recipient, and
-  checks the CRC.
-- **For a text the person needs to read or type**, such as the access key that
-  goes into another system's field, use `Code` with a `Clipboard` next to it.
-  The QR only serves someone with a camera pointed at the screen.
-- **On the screen of whoever will use the text.** Nobody points the camera at
-  their own phone: if the person is already on the device, the link is a
-  `Link` and the code is a `Clipboard`.
+- **Para o Pix de uma cobrança**, use `PixCode`: ele junta este código, o copia
+  e cola com o botão de copiar, o valor e o recebedor, e confere o CRC.
+- **Para um texto que a pessoa precisa ler ou digitar**, como a chave de
+  acesso que vai para o campo de outro sistema, use `Code` com um `Clipboard`
+  ao lado. O QR só serve a quem tem uma câmera apontada para a tela.
+- **Na tela de quem vai usar o texto.** Ninguém aponta a câmera para o próprio
+  celular: se a pessoa já está no aparelho, o link é um `Link` e o código é um
+  `Clipboard`.
 
-## In React Native
+## No React Native
 
-Translates, on the `@rivocode/ui-native/chart` path: the code is drawn with `react-native-svg`, and the house rule is **one subpath per peer**, not one per subject. Drawing with `View` would cost hundreds of boxes per code, one per run of dark modules, and the Pix of a charge exceeds two thousand modules.
+Traduz, no caminho `@rivocode/ui-native/chart`: o código é desenhado com o `react-native-svg`, e a regra da casa é **um subcaminho por peer**, e não um por assunto. Desenhar com `View` custaria centenas de caixas por código, uma por trecho de módulos escuros, e o Pix de uma cobrança passa de dois mil módulos.
 
-**The encoder is the same on both sides, line by line**: it lives in `src/shared/` and crosses over by mirror, so version, mask and error correction do not diverge. The native test rasterizes the path the piece draws and decodes it back, like the web's.
+**O codificador é o mesmo dos dois lados, linha por linha**: ele mora em `src/shared/` e atravessa por espelho, então versão, máscara e correção de erro não divergem. O teste do nativo rasteriza o caminho que a peça desenha e o decodifica de volta, como o do web.
 
-The colors do **not** come from the theme: the modules are `tokens.code["code-ink"]` and the paper `tokens.code["code-paper"]`, dark on light in both schemes, on a plate with rounded corners. They do not go through the app's CSS or through the `RivoProvider`'s `colors`, so no client `@theme` inverts the code by accident. `level`, `size` and `logo` have the same contract as the web: with `logo` the level starts at H, and with another level the mark does not appear. Of the web's parts, only `logo` ports: `code` is the `Svg`, and `react-native-svg` does not take classes; the rest is styled through the root.
+As cores **não** saem do tema: os módulos são `tokens.code["code-ink"]` e o papel `tokens.code["code-paper"]`, escuro sobre claro nos dois esquemas, numa placa de canto arredondado. Não passam pelo CSS do app nem pelo `colors` do `RivoProvider`, então nenhum `@theme` de cliente inverte o código sem querer. `level`, `size` e `logo` têm o mesmo contrato do web: com `logo` o nível nasce H, e com outro nível a marca não aparece. Das partes do web, só `logo` porta: `code` é o `Svg`, e o `react-native-svg` não recebe classe; o resto veste pela raiz.
 
 ```tsx
 import { QRCode } from '@rivocode/ui-native/chart'

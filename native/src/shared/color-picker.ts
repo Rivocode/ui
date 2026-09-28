@@ -1,4 +1,4 @@
-/* Generated from src/shared/color-picker.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/color-picker.ts por bun run gen:compartilhado. Nao editar. */
 
 export type ColorPickerLabels = {
   swatches: string;

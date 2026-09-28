@@ -1,10 +1,10 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # ItemDescription
 
-The second line, smaller and more muted, also truncated when it does not fit.
+A segunda linha, menor e mais apagada, também cortada quando não cabe.
 
-One line, not a paragraph: a list item that grows in height misaligns the whole
-list, and the place for long text is the screen the item opens.
+Uma linha, e não um parágrafo: item de lista que cresce em altura desalinha a
+lista inteira, e o lugar do texto longo é a tela que o item abre.

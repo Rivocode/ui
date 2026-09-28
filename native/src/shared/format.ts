@@ -1,4 +1,4 @@
-/* Generated from src/shared/format.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/format.ts por bun run gen:compartilhado. Nao editar. */
 
 const LOCALE = "pt-BR";
 const NBSP = "\u00a0";

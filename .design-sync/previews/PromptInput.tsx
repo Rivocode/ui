@@ -3,7 +3,7 @@ import { PromptInput } from '@rivocode/ui/ai'
 import { Paperclip } from 'lucide-react'
 import { useState } from 'react'
 
-/** Send and stop */
+/** Enviar e parar */
 export function SendAndStop() {
   const [streaming, setStreaming] = useState(false)
 
@@ -19,7 +19,7 @@ export function SendAndStop() {
   )
 }
 
-/** With attachment and counter */
+/** Com anexo e contador */
 export function WithAttachmentAndCount() {
   return (
     <div className="w-full max-w-xl">
@@ -42,7 +42,7 @@ export function WithAttachmentAndCount() {
   )
 }
 
-/** Disabled */
+/** Desabilitado */
 export function Disabled() {
   return (
     <div className="w-full max-w-xl">

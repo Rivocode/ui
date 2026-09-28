@@ -1,34 +1,34 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # PageHeader
 
-The top that every route rewrites a little differently: breadcrumb, title,
-description and the screen's actions, in the same hierarchy on every page.
+O topo que toda rota reescreve um pouco diferente: trilha, título, descrição
+e as ações da tela, na mesma hierarquia em todas as páginas.
 
-The title renders in an `<h1>` by default. A page header is the top of the
-page, and starting the page with an `h2` leaves a gap that the screen reader
-feels. The breadcrumb comes through the `breadcrumb` slot, with the house
-`Breadcrumb`; the actions come through `actions` and sit on the right,
-wrapping to a new line on narrow screens before squeezing the title.
+O título sai num `<h1>` por padrão. Cabeçalho de página é o topo dela, e
+começar a página num `h2` deixa um buraco que o leitor de tela sente. A
+trilha entra pelo slot `breadcrumb`, com o `Breadcrumb` da casa; as ações
+entram por `actions` e ficam à direita, quebrando de linha no estreito antes
+de espremer o título.
 
-## When the header is not the top
+## Quando o cabeçalho não é o topo
 
-`titleAs` lowers the title to `h2` or `h3` without touching the design.
-Semantic level and visual size are different things, and the title stays the
-same `text-2xl` at any level.
+`titleAs` baixa o título para `h2` ou `h3` sem mexer no desenho. Nível
+semântico e tamanho visual são coisas diferentes, e o título continua o mesmo
+`text-2xl` em qualquer nível.
 
 ```tsx
 <PageHeader titleAs="h2" title="Notas fiscais" />
 ```
 
-Use it when the `PageHeader` is not the start of the page: the application
-already has the `h1` in the shell, the piece is inside a region, or it is an
-example inside another page (like the ones on this page, which render as `h2`
-precisely for that reason). Two `h1` on the same page raise no error anywhere:
-it is whoever navigates by level-1 heading who lands in the wrong place.
+Use quando o `PageHeader` não é o começo da página: a aplicação já tem o `h1`
+no shell, a peça está dentro de uma região, ou é um exemplo dentro de outra
+página (como os desta aqui, que saem em `h2` justamente por isso). Dois `h1`
+na mesma página não dão erro em lugar nenhum: quem navega por título de nível
+1 é que cai no lugar errado.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `PageHeader` - `title`, `description`, `badge` and `actions` as props; `classNames` with the web's five parts. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `PageHeader` - `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

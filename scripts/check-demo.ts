@@ -1,38 +1,38 @@
 /**
- * Showcase guard: a catalog piece nobody looked at in both themes.
+ * Guarda da vitrine: peca do catalogo que ninguem olhou nos dois temas.
  *
- * The house process ends with a step no machine did: render it in `demo/` and
- * look, in both themes and both densities. It is the only place where the
- * things tests do not see show up - indeterminate state, loading state, a
- * dashed border that vanishes in dark, a touch target that shrinks in dense.
+ * O processo da casa termina com um passo que nenhuma maquina fazia: renderize
+ * no `demo/` e olhe, nos dois temas e nas duas densidades. E o unico lugar onde
+ * aparecem as coisas que teste nao ve - estado indeterminado, estado carregando,
+ * borda tracejada que some no escuro, alvo de toque que encolhe no denso.
  *
- * On 26/08/2026 seven pieces were published to npm without anyone having
- * looked at any of them: `TimeField`, `TimePicker`, `FilterBar`,
- * `FilterChip`, `QueryBoundary`, `Popconfirm` and `VirtualList`. They passed
- * 1072 tests. The seven agents that wrote them skipped the step, each for a
- * reasonable reason, and nothing flagged it - because the step was prose in an
- * agent, and prose does not fail.
+ * Em 26/08/2026 sete pecas foram publicadas no npm sem que ninguem tivesse
+ * olhado para nenhuma delas: `TimeField`, `TimePicker`, `FilterBar`,
+ * `FilterChip`, `QueryBoundary`, `Popconfirm` e `VirtualList`. Passaram em 1072
+ * testes. Os sete agentes que as escreveram pularam o passo, cada um por um
+ * motivo razoavel, e nada acusou - porque o passo era prosa num agent, e prosa
+ * nao falha.
  *
- * When measured, the count was worse than seven: 28 of the 90 catalog pieces
- * were missing from `demo/`. The rule had always existed and the compliance
- * rate was two thirds, which is another way of saying it did not exist.
+ * Ao medir, a conta era pior que as sete: 28 das 90 pecas do catalogo estavam
+ * fora do `demo/`. A regra existia desde sempre e a taxa de cumprimento era de
+ * dois tercos, o que e outro jeito de dizer que ela nao existia.
  *
- * This guard does not ask for a pretty portrait nor demand showcase quality -
- * it cannot see the screen. It demands the DECLARATION, as `check:scripts` does
- * with an orphan script: either the piece appears in some page of
- * `demo/*.tsx`, or there is a line in `WITHOUT_SHOWCASE` saying WHY it does not.
- * Both answers are valid; silence is not.
+ * Esta guarda nao pede retrato bonito nem cobra qualidade de vitrine - ela nao
+ * consegue ver a tela. Ela cobra a DECLARACAO, como o `check:scripts` faz com
+ * script orfao: ou a peca aparece em alguma pagina de `demo/*.tsx`, ou ha uma
+ * linha em `SEM_VITRINE` dizendo POR QUE nao aparece. As duas respostas sao
+ * validas; o silencio, nao.
  *
- * `WITHOUT_SHOWCASE` **only shrinks**, like the `DEBT` of `check:comments` and
- * the parity's `FILA_DECLARADA`: a piece that started appearing in the demo is
- * an error, and the guard says to delete the line. An exception list that does
- * not shrink becomes the place where debt lives without bothering anyone.
+ * `SEM_VITRINE` **so encolhe**, como o `DEBT` do `check:comentarios` e a
+ * `FILA_DECLARADA` da paridade: peca que passou a aparecer no demo e erro, e a
+ * guarda manda apagar a linha. Lista de excecao que nao encolhe vira o lugar
+ * onde a divida mora sem incomodar ninguem.
  *
- * The search is by word boundary, and that is not a regex detail: `Card` is
- * inside `CardHeader` and `Button` is inside `ButtonGroup`. Without the
- * boundary, `ButtonGroup` - which really is not in the showcase - would pass
- * green forever because of the `Button` that appears in eight places, and the
- * guard would be lying exactly about the piece it exists to catch.
+ * A busca e por limite de palavra, e isso nao e detalhe de expressao regular:
+ * `Card` esta dentro de `CardHeader` e `Button` esta dentro de `ButtonGroup`.
+ * Sem o limite, o `ButtonGroup` - que de fato nao esta na vitrine - passaria
+ * verde para sempre por causa do `Button` que aparece em oito lugares, e a
+ * guarda estaria mentindo exatamente sobre a peca que ela existe para pegar.
  */
 import { readdirSync } from "node:fs";
 
@@ -42,14 +42,14 @@ const DOCS = ".design-sync/docs";
 const DEMO = "demo";
 
 /**
- * The same source as `check:pieces` and the parity's `catalogPieces()`.
+ * A mesma fonte do `check:pecas` e da `catalogPieces()` da paridade.
  *
- * `.design-sync/docs/` minus the parts, and the `findParent` from
- * `apps/docs/src/parts.ts` is what decides what is a part - the same one the
- * site sidebar uses. The parity carries a copy of this rule because it cannot
- * import from the app; if the two diverge, the piece count starts depending on
- * which guard you ran, which is the start of every wrong count in this
- * repository.
+ * `.design-sync/docs/` menos as partes, e o `findParent` de
+ * `apps/docs/src/parts.ts` e quem decide o que e parte - o mesmo que a barra
+ * lateral do site usa. A paridade carrega uma copia dessa regra por nao poder
+ * importar do app; se as duas divergirem, o numero de pecas passa a depender de
+ * qual guarda voce rodou, que e o comeco de toda contagem errada deste
+ * repositorio.
  */
 function catalogPieces() {
   const names = readdirSync(DOCS)
@@ -61,28 +61,26 @@ function catalogPieces() {
 }
 
 /**
- * The pieces that have no showcase today, and the reason for each.
+ * As pecas que hoje nao tem vitrine, e o motivo de cada uma.
  *
- * The reason is for whoever decides whether it is still worth leaving out, so it
- * says what PREVENTS it, and not that it is missing. Two things live in this
- * list, and telling them apart is the work: a piece another one already
- * portrays, and a piece whose state only exists during a gesture no portrait
- * keeps.
+ * O motivo e para quem for decidir se ainda vale ficar de fora, entao ele diz o
+ * que IMPEDE, e nao que esta faltando. Duas coisas moram nesta lista, e
+ * distingui-las e o trabalho: peca que outra ja retrata, e peca cujo estado so
+ * existe durante um gesto que retrato nenhum guarda.
  *
- * The third class - actual debt, which was the majority - was paid on 27/08/2026:
- * twenty-five lines left here at once, between pieces placed in pages that
- * already existed and the two new pages, `demo/painel.tsx` and `demo/paleta.tsx`.
- * If any comes back here, the reason has to say what started preventing it.
+ * A terceira classe - divida mesmo, que era a maioria - foi paga em 27/08/2026:
+ * vinte e cinco linhas sairam daqui de uma vez, entre pecas postas nas paginas
+ * que ja existiam e as duas paginas novas, `demo/painel.tsx` e `demo/paleta.tsx`.
+ * Se alguma voltar para ca, o motivo tem que dizer o que passou a impedir.
  *
- * On 25/09/2026 the two gesture ones left: `Autocomplete` went in closed in
- * `demo/dados.tsx`, with text outside the list, and `Editable` went in to
- * `demo/painel.tsx`, opened by a scripted click in the dark theme, as
- * `ContextMenu` already did. What is left is the only one with nothing to
- * portray on its own.
+ * Em 25/09/2026 sairam as duas de gesto: o `Autocomplete` entrou fechado em
+ * `demo/dados.tsx`, com texto fora da lista, e o `Editable` entrou em
+ * `demo/painel.tsx`, aberto por clique de script no tema escuro, como o
+ * `ContextMenu` ja fazia. Sobrou a unica que nao tem o que retratar sozinha.
  */
-const WITHOUT_SHOWCASE: Record<string, string> = {
+const SEM_VITRINE: Record<string, string> = {
   ToastViewport:
-    "Has no showcase of its own: RivoProvider mounts it, and no app writes it. What can be seen of it is already in demo/flutuantes.tsx, which fires the toasts that land inside it.",
+    "Nao tem vitrine propria: o RivoProvider a monta, e nenhum aplicativo a escreve. O que se ve dela ja esta em demo/flutuantes.tsx, que dispara os avisos que caem dentro dela.",
 };
 
 const pieces = catalogPieces();
@@ -93,8 +91,8 @@ const pages = readdirSync(DEMO)
 
 if (pages.length < 15 || pieces.length < 100) {
   console.error(
-    `The scan read ${pages.length} page(s) from ${DEMO}/ and ${pieces.length} piece(s) from ${DOCS}/,\n` +
-      "  and the floor is 15 and 100. A short list here leaves the guard green without having looked.",
+    `A varredura leu ${pages.length} pagina(s) de ${DEMO}/ e ${pieces.length} peca(s) de ${DOCS}/,\n` +
+      "  e o piso e 15 e 100. Lista curta aqui deixa a guarda verde sem ter olhado.",
   );
   process.exit(1);
 }
@@ -104,24 +102,24 @@ const sources = await Promise.all(
 );
 
 /**
- * A `demo/` file split into top-level declarations, and what the render reaches.
+ * Um arquivo de `demo/` partido nas declaracoes de topo, e o que o render alcanca.
  *
- * On 24/09/2026 merging the 0.18.0 work streams left in `demo/novas.tsx` the
- * functions `Transfers`, `Highlights` and `Spoilers` defined and never called:
- * the `Sample` that mounted them lost the three lines. The old guard searched
- * for the NAME in the text, and `TransferList`, `Highlight` and `Spoiler` were
- * written inside the dead functions, so it stayed green with the three pieces
- * off screen. It was the same defect as the day that gave birth to it - a piece
- * nobody looked at - coming in through the door it left open.
+ * Em 24/09/2026 a juncao das frentes da 0.18.0 deixou em `demo/novas.tsx` as
+ * funcoes `Transfers`, `Highlights` e `Spoilers` definidas e nunca chamadas: o
+ * `Sample` que as montava perdeu as tres linhas. A guarda antiga procurava o
+ * NOME no texto, e `TransferList`, `Highlight` e `Spoiler` estavam escritos
+ * dentro das funcoes mortas, entao ela ficou verde com as tres pecas fora da
+ * tela. Era o mesmo defeito do dia que a fez nascer - peca que ninguem olhou -
+ * vindo pela porta que ela deixava aberta.
  *
- * Now it only counts `<Piece` written inside code the render REACHES. The roots
- * are every top-level statement that is not a declaration
- * (`createRoot(...).render(...)`, the `if (view === ...) root.render(...)` of
- * portrait pages) and every declaration that calls `createRoot`. From there, a
- * declaration gets in when its name appears in already-reached code. It is not
- * a real parser: the cut is by line starting at column zero, which is how the
- * `demo/` files are written, and `{false && <Piece />}` would still pass. What
- * it closes is the shape that actually happened: a whole function nobody calls.
+ * Agora conta so `<Peca` escrito dentro de codigo que o render ALCANCA. Raiz e
+ * todo comando de topo que nao e declaracao (`createRoot(...).render(...)`,
+ * o `if (view === ...) root.render(...)` das paginas de retrato) e toda
+ * declaracao que chama `createRoot`. Dali, uma declaracao entra quando o nome
+ * dela aparece em codigo ja alcancado. Nao e um analisador de verdade: o recorte
+ * e por linha que comeca na coluna zero, que e como os arquivos de `demo/` sao
+ * escritos, e `{false && <Peca />}` ainda passaria. O que ele fecha e a forma
+ * que de fato aconteceu: funcao inteira que ninguem chama.
  */
 type Segment = { name: string | null; code: string };
 
@@ -130,7 +128,7 @@ const DECLARATION =
 
 function segmentsOf(source: string): Segment[] {
   const segments: Segment[] = [];
-  let current: Segment = { name: "#top", code: "" };
+  let current: Segment = { name: "#topo", code: "" };
 
   for (const line of source.split("\n")) {
     if (/^[A-Za-z_$]/.test(line) && !/^(?:else|from)\b/.test(line)) {
@@ -173,25 +171,25 @@ const reached = sources.map(([page, source]) => [page, reachableCode(source)] as
 for (const [page, code] of reached) {
   if (!/\.render\(/.test(code.live)) {
     console.error(
-      `${DEMO}/${page}: the cut found no \`.render(\` in reached code.\n` +
-        "  Without a root, every piece on the page would count as dead - or, worse, the\n" +
-        "  reading changed shape and the guard stopped measuring. Check the cut in segmentsOf.",
+      `${DEMO}/${page}: o recorte nao achou nenhum \`.render(\` em codigo alcancado.\n` +
+        "  Sem raiz, toda peca da pagina contaria como morta - ou, pior, a leitura\n" +
+        "  mudou de forma e a guarda deixou de medir. Confira o recorte em segmentsOf.",
     );
     process.exit(1);
   }
 }
 
 /**
- * Where the piece is RENDERED, by whole name: `<Card` does not match inside
- * `<CardHeader`, and the bare name in an import, a string or a function nobody
- * calls does not count.
+ * Onde a peca e RENDERIZADA, por nome inteiro: `<Card` nao casa dentro de
+ * `<CardHeader`, e o nome solto num import, numa string ou numa funcao que
+ * ninguem chama nao conta.
  */
 function pagesWith(piece: string) {
   const rendered = new RegExp(`<${piece}\\b`);
   return reached.filter(([, code]) => rendered.test(code.live)).map(([page]) => page);
 }
 
-/** Where the piece only appears in dead code, so the message says where to look. */
+/** Onde a peca so aparece em codigo morto, para a mensagem dizer onde procurar. */
 function deadPagesWith(piece: string) {
   const rendered = new RegExp(`<${piece}\\b`);
   return reached.filter(([, code]) => rendered.test(code.dead)).map(([page]) => page);
@@ -207,17 +205,17 @@ for (const piece of pieces) {
   if (found.length > 0) {
     onStage.push(piece);
 
-    if (WITHOUT_SHOWCASE[piece]) {
+    if (SEM_VITRINE[piece]) {
       problems.push(
-        `\`${piece}\` is in WITHOUT_SHOWCASE and ALREADY appears in ${found.join(", ")}.\n` +
-          "    The debt was paid: delete its line from the list. An exception that does not shrink\n" +
-          "    becomes the place where the piece without a showcase hides.",
+        `\`${piece}\` esta em SEM_VITRINE e JA aparece em ${found.join(", ")}.\n` +
+          "    A divida foi paga: apague a linha dela da lista. Excecao que nao encolhe\n" +
+          "    vira o lugar onde a peca sem vitrine se esconde.",
       );
     }
     continue;
   }
 
-  if (WITHOUT_SHOWCASE[piece]) {
+  if (SEM_VITRINE[piece]) {
     declared.push(piece);
     continue;
   }
@@ -225,37 +223,37 @@ for (const piece of pieces) {
   const dead = deadPagesWith(piece);
   problems.push(
     (dead.length > 0
-      ? `\`${piece}\` only appears in code the render does not reach, in ${dead.join(", ")}.\n` +
-        "    The function that mounts it exists and nobody calls it: wire it into the page's Sample.\n"
-      : `\`${piece}\` is not rendered in any page of ${DEMO}/*.tsx.\n`) +
-      "    Render the piece in one of the pages and look in BOTH themes and BOTH densities -\n" +
-      "    it is the only step of the process no test does for you. If it should not have a\n" +
-      "    showcase, write the reason in WITHOUT_SHOWCASE, in scripts/check-demo.ts.",
+      ? `\`${piece}\` so aparece em codigo que o render nao alcanca, em ${dead.join(", ")}.\n` +
+        "    A funcao que a monta existe e ninguem a chama: ligue-a no Sample da pagina.\n"
+      : `\`${piece}\` nao e renderizada em nenhuma pagina de ${DEMO}/*.tsx.\n`) +
+      "    Renderize a peca numa das paginas e olhe nos DOIS temas e nas DUAS densidades -\n" +
+      "    e o unico passo do processo que nenhum teste faz por voce. Se ela nao deve ter\n" +
+      "    vitrine, escreva o motivo em SEM_VITRINE, em scripts/check-demo.ts.",
   );
 }
 
-for (const piece of Object.keys(WITHOUT_SHOWCASE)) {
+for (const piece of Object.keys(SEM_VITRINE)) {
   if (!pieces.includes(piece)) {
     problems.push(
-      `\`${piece}\` is in WITHOUT_SHOWCASE and is not a catalog piece.\n` +
-        `    Either the name changed, or the page in ${DOCS} is gone. Delete or fix the line:\n` +
-        "    a dead entry makes the list look bigger than the debt.",
+      `\`${piece}\` esta em SEM_VITRINE e nao e peca do catalogo.\n` +
+        `    Ou o nome mudou, ou a pagina em ${DOCS} sumiu. Apague ou corrija a linha:\n` +
+        "    entrada morta faz a lista parecer maior do que a divida.",
     );
   }
 }
 
 if (problems.length > 0) {
-  console.error(`${problems.length} problem(s) in the showcase:\n`);
+  console.error(`${problems.length} problema(s) na vitrine:\n`);
   for (const problem of problems) console.error(`  ${problem}\n`);
   console.error(
-    "Seven pieces were published to npm without anyone having looked at\n" +
-      "any of them, and the 1072 tests stayed green the whole time. This guard is\n" +
-      "what is left of that day: either the piece is in the showcase, or the reason is written.",
+    "Sete pecas foram publicadas no npm sem que ninguem tivesse olhado para\n" +
+      "nenhuma delas, e os 1072 testes ficaram verdes o tempo todo. Esta guarda e\n" +
+      "o que sobrou desse dia: ou a peca esta na vitrine, ou o motivo esta escrito.",
   );
   process.exit(1);
 }
 
 console.log(
-  `${onStage.length} of ${pieces.length} pieces in the showcase, and ${declared.length} declared out, ` +
-    `across ${pages.length} pages of ${DEMO}/.`,
+  `${onStage.length} de ${pieces.length} pecas na vitrine, e ${declared.length} declaradas fora, ` +
+    `em ${pages.length} paginas de ${DEMO}/.`,
 );

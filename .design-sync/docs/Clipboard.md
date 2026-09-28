@@ -1,63 +1,60 @@
 ---
-category: Actions
+category: Ações
 ---
 
 # Clipboard
 
-Copying a piece of data to take it somewhere else.
+Copiar um dado para levar a outro lugar.
 
-Access key, CNPJ, trace id, Pix code, invoice number: every piece of data the
-person needs to paste into another system wants this button next to it.
+Chave de acesso, CNPJ, id de rastro, código Pix, número da nota: todo dado que
+a pessoa precisa colar em outro sistema quer este botão do lado.
 
-The confirmation is part of the component, not decoration. Copying is the
-action with no visible result: nothing changes on the screen, so without
-confirmation the person clicks again out of doubt. And whoever does not see the
-icon change never learned it happened. That is why the button's own accessible
-name changes, and the screen reader announces "Copiado" where it used to
-announce "Copiar". The confirmation reverts on its own after `timeout`,
-otherwise the button stays stuck in a state that has already passed.
+A confirmação é parte da peça, e não enfeite. Copiar é a ação sem resultado
+visível: nada muda na tela, então sem confirmação a pessoa clica de novo por
+dúvida. E quem não vê o ícone trocar não soube que aconteceu. Por isso o
+próprio nome acessível do botão muda, e o leitor de tela anuncia "Copiado" onde
+antes anunciava "Copiar". A confirmação volta sozinha depois de `timeout`,
+senão o botão fica preso num estado que já passou.
 
-When the clipboard is not available (no permission, or outside a secure
-context), nothing is confirmed. Lying that it copied is worse than not
-confirming: the person pastes what they had before and only finds out at the
-destination.
+Quando a área de transferência não está disponível (sem permissão, ou fora de
+contexto seguro), nada é confirmado. Mentir que copiou é pior do que não
+confirmar: a pessoa cola o que tinha antes e só descobre no destino.
 
-The two names come in through `labels`, and each has its own default: changing
-the verb does not force rewriting the confirmation along with it.
+Os dois nomes entram por `labels`, e cada um tem o próprio padrão: trocar o
+verbo não obriga a reescrever a confirmação junto.
 
 ```tsx
 <Clipboard value="35240612345678000199" labels={{ copy: 'Copiar a chave' }} />
 ```
 
-The `variant` is `Button`'s. The confirmation check mark renders in the success
-green on `secondary`, `ghost` and `outline`; on the two filled ones, `primary`
-and `danger`, it renders in the label color, because the green measured over
-them sits at 1.41:1 on the dark theme's `accent` and 1.08:1 on the light
-theme's `danger`, against the 3:1 an icon requires.
+O `variant` é o do `Button`. O visto da confirmação sai no verde de sucesso em
+`secondary`, `ghost` e `outline`; nos dois preenchidos, `primary` e
+`danger`, ele sai na cor do rótulo, porque o verde medido sobre eles fica
+em 1,41:1 no `accent` do tema escuro e em 1,08:1 no `danger` do claro, contra
+os 3:1 que um ícone pede.
 
-Without `children`, the button is an `IconButton`, and the accessible name is
-the one from `labels`, which changes to the copied one after copying. `size`
-picks the side of the square among `sm` (the default), `md` and `lg`; with
-text, it picks the height.
+Sem `children`, o botão é um `IconButton`, e o nome acessível é o de `labels`,
+que muda para o de confirmado depois de copiar. `size` escolhe o lado do
+quadrado entre `sm` (o padrão), `md` e `lg`; com texto, escolhe a altura.
 
-With `children`, the button's text is the `children` until it copies, and
-becomes `labels.copied` during the confirmation. The caller's `onClick` is
-called on click, before copying, and does not replace the copy.
+Com `children`, o texto do botão é o `children` enquanto não copiou, e vira
+`labels.copied` na confirmação. O `onClick` de quem usa é chamado no clique,
+antes de copiar, e não substitui a cópia.
 
-## When not to use
+## Quando não usar
 
-For a whole code block, `CodeBlock copyable` already brings this button in the
-corner, with the block's own content. Two copy buttons in the same box make the
-person choose between things they think are different.
+Para o bloco de código inteiro, `CodeBlock copyable` já traz este botão no
+canto, com o próprio conteúdo. Dois botões de copiar na mesma caixa fazem a
+pessoa escolher entre coisas que ela acha que são diferentes.
 
-## In React Native
+## No React Native
 
-Translates, on its own path `@rivocode/ui-native/clipboard`, with the same arrangement as `form` and `chart` and for the same reason: `expo-clipboard` is an **optional** peer, and on the phone it is not just bytes, it is a native module the app links and rebuilds (`npx expo install expo-clipboard`). It has a path **separate** from `FileUpload` on purpose: whoever puts a copy button next to an NF-e access key attaches no file at all, and an index shared by both would charge for both.
+Traduz, no caminho próprio `@rivocode/ui-native/clipboard`, com o mesmo arranjo do `form` e do `chart` e pela mesma razão: o `expo-clipboard` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app liga e reconstrói (`npx expo install expo-clipboard`). Ele tem caminho **separado** do `FileUpload` de propósito: quem põe um botão de copiar ao lado da chave de acesso de uma NF-e não anexa arquivo nenhum, e um índice comum aos dois cobraria os dois.
 
-**The confirmation becomes double, where on the web one was enough.** The rule does not change: copying is the action with no visible result, and without confirmation the person taps again out of doubt. What changes is how it arrives. The button still changes its icon and accessible name, as there; and the piece **also** fires a toast, because here changing the `accessibilityLabel` of a `Pressable` that is already under focus **is not re-announced** by either VoiceOver or TalkBack: whoever does not see the icon turn into a check mark would learn nothing. The toast the `RivoProvider` already mounts lives in an `accessibilityLiveRegion="polite"` (on iOS, where it does not exist, the same text goes out through the system announcement), and it is the only channel on this screen that speaks on its own. `toast={false}` turns it off, for the screen that copies several things in a row and does not want a stack of toasts.
+**A confirmação passa a ser dupla, e no web bastava uma.** A regra não muda: copiar é a ação sem resultado visível, e sem confirmação a pessoa toca de novo por dúvida. O que muda é por onde ela chega. O botão continua trocando o ícone e o nome acessível, como lá; e a peça dispara **também** um aviso, porque aqui trocar o `accessibilityLabel` de um `Pressable` que já está sob o foco **não é reanunciado** nem pelo VoiceOver nem pelo TalkBack: quem não vê o ícone virar visto não ficaria sabendo de nada. O aviso que o `RivoProvider` já monta mora num `accessibilityLiveRegion="polite"` (no iOS, onde ela não existe, o mesmo texto sai pelo anúncio do sistema), e é o único canal desta tela que fala sozinho. `toast={false}` desliga, para a tela que copia várias coisas seguidas e não quer uma pilha de avisos.
 
-**When it did not copy, nothing is confirmed**, as on the web: Expo's `setStringAsync` returns `false` when the clipboard refuses (the case of the web pass, outside a secure context), and on iOS and Android it always resolves `true`.
+**Quando não copiou, nada é confirmado**, como no web: o `setStringAsync` do Expo devolve `false` quando a área de transferência recusa (o caso do passe web, fora de contexto seguro), e no iOS e no Android ele sempre resolve `true`.
 
-Without `children` the button is only the icon, and then the target is a full 44px, without depending on `hitSlop` to get there. The icon is drawn with `View`, like the `PasswordInput`'s eye.
+Sem `children` o botão é só o ícone, e aí o alvo é 44px cheios, sem depender de `hitSlop` para chegar lá. O ícone é desenhado com `View`, como o olho do `PasswordInput`.
 
-**`variant` is the `Button`'s, and accepts the same five names as the web**: `primary`, `secondary` (the default), `ghost`, `outline` and `danger`, each with the background and the label of the native `Button` of that variant. In the two filled ones, `primary` and `danger`, the confirmation check mark comes out in the label color, not in the success green: measured, the green sits at 1.41:1 on the dark theme's `accent` and at 1.08:1 on the light theme's `danger`, against the 3:1 an icon requires.
+**O `variant` é o do `Button`, e aceita os mesmos cinco nomes do web**: `primary`, `secondary` (o padrão), `ghost`, `outline` e `danger`, cada um com o fundo e o rótulo do `Button` nativo daquela variante. Nos dois preenchidos, `primary` e `danger`, o visto da confirmação sai na cor do rótulo, e não no verde de sucesso: medido, o verde fica em 1,41:1 sobre o `accent` do tema escuro e em 1,08:1 sobre o `danger` do claro, contra os 3:1 que um ícone pede.

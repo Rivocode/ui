@@ -17,8 +17,8 @@ export const DialogClose = BaseDialog.Close;
 export type DialogContentProps = ComponentProps<typeof BaseDialog.Popup> & {
   children: ReactNode;
   /**
-   * Class per part: `backdrop`. The backdrop is a sibling of the panel inside the portal,
-   * so neither `className` nor a descendant variant reaches it.
+   * Classe por parte: `backdrop`. A tarja e irma do painel dentro do portal,
+   * entao nem `className` nem variante de descendente alcancam ela.
    */
   classNames?: Slots<"backdrop">;
 };

@@ -1,12 +1,12 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # CurrencyInput
 
-The money field in reais. The value goes in and out in **whole cents**
-(`123456` is R$ 1.234,56), typing moves from right to left as on a card
-machine, and the "R$" is drawn beside it, outside the value.
+O campo de dinheiro em reais. O valor entra e sai em **centavos inteiros**
+(`123456` é R$ 1.234,56), a digitação anda da direita para a esquerda como na
+maquininha, e o "R$" fica desenhado ao lado, fora do valor.
 
 ```tsx
 const [cents, setCents] = useState<number | null>(null)
@@ -17,65 +17,63 @@ const [cents, setCents] = useState<number | null>(null)
 </Field>
 ```
 
-Each key pushes the digits to the left: `1` shows `0,01`, `12` shows `0,12`,
-`123456` shows `1.234,56`. The punctuation comes from `Intl.NumberFormat` in
-`pt-BR`, and the phone keyboard opens on the numeric one. An empty field is
-`null`, not zero: "did not type" and "typed zero" are different answers in a
-form, and zero is typed with the `0` key.
+Cada tecla empurra os dígitos para a esquerda: `1` mostra `0,01`, `12` mostra
+`0,12`, `123456` mostra `1.234,56`. A pontuação sai do `Intl.NumberFormat` em
+`pt-BR`, e o teclado do celular abre no numérico. Campo vazio é `null`, e não
+zero: "não digitou" e "digitou zero" são respostas diferentes num formulário, e
+o zero se digita com a tecla `0`.
 
-**Store the cents.** The server receives an integer, with no floating point in
-between, and the punctuation is a screen concern. The field stops at twelve
-digits, R$ 9.999.999.999,99, which is where the integer still fits
-comfortably.
+**Guarde os centavos.** O servidor recebe inteiro, sem ponto flutuante no meio,
+e a pontuação é assunto de tela. O campo para em doze dígitos, R$
+9.999.999.999,99, que é onde o inteiro ainda cabe folgado.
 
-## Pasting
+## Colar
 
-Pasting replaces the value, and the pasted text is read the way the person
-would write it: `R$ 1.234,56`, `1234,56`, `1.234,5` and `1234.56` go in as
-R$ 1.234,56, and `150` goes in as R$ 150,00. The cents separator is the comma
-or the dot followed by one or two digits; the others are thousands. The sign
-comes from `-`, before or after the number, or from accounting parentheses:
-`(10,00)` is R$ -10,00.
+Colar substitui o valor, e o texto colado é lido como a pessoa o escreveria:
+`R$ 1.234,56`, `1234,56`, `1.234,5` e `1234.56` entram como R$ 1.234,56, e
+`150` entra como R$ 150,00. O separador de centavos é a vírgula ou o ponto que
+tiver um ou dois dígitos depois; os outros são milhar. O sinal vem pelo `-`,
+antes ou depois do número, ou pelos parênteses da contabilidade: `(10,00)` é
+R$ -10,00.
 
-The pasted text is rejected whole, and the existing value stays, when it is not
-just a value: text without a number, text mixed with the number
-(`R$ 10 - desconto 2`, `Total: R$ 10,00`) and a value with more than twelve
-digits. Nothing is silently cut to fit.
+O colado é recusado inteiro, e o valor que estava fica, quando não é só um
+valor: texto sem número, texto misturado ao número (`R$ 10 - desconto 2`,
+`Total: R$ 10,00`) e valor com mais de doze dígitos. Nada é cortado em
+silêncio para caber.
 
-When disabled, the field stays out of the form, like any disabled HTML field.
-The screen reader hears the number and, in the description, "em reais": the
-"R$" drawn beside it is visual only.
+Desabilitado, o campo fica fora do formulário, como qualquer campo
+desabilitado do HTML. O leitor de tela ouve o número e, na descrição, "em
+reais": o "R$" desenhado ao lado é só visual.
 
-## Sign
+## Sinal
 
-Without `allowNegative`, `-` does not go in, neither typed nor pasted. With it,
-a `-` anywhere in the field sets the sign, and a second `-` removes it:
+Sem `allowNegative`, o `-` não entra, nem digitado nem colado. Com ele, o `-`
+em qualquer ponto do campo põe o sinal, e um segundo `-` tira:
 
 ```tsx
 <CurrencyInput value={adjustment} onValueChange={setAdjustment} allowNegative />
 ```
 
-The iPhone numeric keyboard has no sign, so with `allowNegative` the field
-opens the text keyboard on the web, and the numbers-and-punctuation one on
-native.
+O teclado numérico do iPhone não tem o sinal, então com `allowNegative` o
+campo abre o teclado de texto no web, e o de números e pontuação no nativo.
 
-## Limits
+## Limites
 
-`min` and `max` are in cents. Outside them the field marks itself invalid, with
-the danger border and `aria-invalid`, and **nothing is corrected on its own**:
-changing the money value the person typed, without them seeing, is the worst
-mistake a field like this can make. The message stating the limit belongs to
-the form, as in `TimeField`. An empty field is not invalid because of `min`:
-required is another rule, and it also belongs to the form.
+`min` e `max` são em centavos. Fora deles o campo se marca inválido, com a
+borda de perigo e `aria-invalid`, e **nada é corrigido sozinho**: trocar o
+valor de dinheiro que a pessoa digitou, sem ela ver, é o pior erro que um campo
+destes pode cometer. A mensagem que diz o limite é do formulário, como no
+`TimeField`. Campo vazio não é inválido por causa de `min`: obrigatório é outra
+regra, e também é do formulário.
 
 ```tsx
 <CurrencyInput value={cents} onValueChange={setCents} min={1_000} max={500_000} />
 ```
 
-## In a form
+## No formulário
 
-`forValue` from `@rivocode/ui/form` wires the field to React Hook Form:
-`onValueChange` already delivers the number the schema expects.
+O `forValue` do `@rivocode/ui/form` liga o campo ao React Hook Form: o
+`onValueChange` já entrega o número que o schema espera.
 
 ```tsx
 const schema = z.object({
@@ -89,33 +87,32 @@ const form = useZodForm(schema, { defaultValues: { amount: null } })
 </FormField>
 ```
 
-`forValue` passes the `ref` through, and a submit with errors puts focus on the
-field, but it does not pass `onBlur` through; pass it by hand when the schema
-validates on leaving the field. In a native HTML form, without React Hook Form,
-`name` puts the cents in a hidden field: what reaches the server is `123456`,
-not `1.234,56`.
+O `forValue` repassa a `ref`, e o envio com erro põe o foco no campo, mas
+não repassa o `onBlur`; passe à mão quando o schema valida ao sair do campo. No formulário nativo do HTML, sem React Hook Form, o `name`
+põe os centavos num campo escondido: o que chega ao servidor é `123456`, e não
+`1.234,56`.
 
-## Parts
+## Partes
 
-`classNames` reaches each node by name: `input` and `prefix` (the "R$").
-`className` dresses the root, which wraps the two.
+`classNames` alcança cada nó pelo nome: `input` e `prefix` (o "R$").
+`className` veste a raiz, que embrulha os dois.
 
-## When not to use
+## Quando não usar
 
-- **A quantity with a step**, such as installments, items or days of term, is
-  `NumberField`: there the value moves one by one with the buttons and the
-  arrows, and what matters is the limit, not the punctuation.
-- **Money that needs a mask alongside other masks**, in the same
-  configuration-generated list of fields, is `MaskedInput` with
-  `mask="moeda"`. It delivers the punctuated text and the raw one, and the cents
-  come out through `toCents()`; it has no sign, no limit and no smart pasting.
-- **A value the screen only shows** is formatted text, not a disabled field:
-  use `currency()` in a cell or in `Stat`.
+- **Quantidade com passo**, como parcelas, itens ou dias de prazo, é
+  `NumberField`: ali o valor anda de um em um pelos botões e pelas setas, e o
+  que importa é o limite, não a pontuação.
+- **Dinheiro que precisa de molde junto de outros moldes**, na mesma lista de
+  campos gerada por configuração, é `MaskedInput` com `mask="moeda"`. Ele
+  entrega o texto pontuado e o cru, e o centavo sai por `toCents()`; não tem
+  sinal, limite nem colagem inteligente.
+- **Valor que a tela só mostra** é texto formatado, e não campo desabilitado:
+  use `currency()` numa célula ou no `Stat`.
 
-## In React Native
+## No React Native
 
-Translates, with the same math: the value in cents, typing that moves from right to left, the `-` that adds and removes the sign and the reading of pasted text live in a single file, shared by both packages. The field is controlled, like all of native: `value` and `onValueChange` are required.
+Traduz, com a mesma conta: o valor em centavos, a digitação que anda da direita para a esquerda, o `-` que põe e tira o sinal e a leitura do texto colado moram num arquivo só, compartilhado pelos dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` são obrigatórios.
 
-React Native does not report when the person pastes, so the field reads the selection from before the change to know what went in on top. With `allowNegative`, the keyboard becomes the numbers-and-punctuation one, which is the one with the sign on the iPhone. There is no `name`: a hidden form does not exist on the phone.
+O React Native não avisa quando a pessoa cola, então o campo lê a seleção de antes da troca para saber o que entrou por cima. Com `allowNegative`, o teclado passa a ser o de números e pontuação, que é o que tem o sinal no iPhone. Não há `name`: formulário escondido não existe no celular.
 
-The parts are styled through the same `classNames` as the web: `input` and `prefix`, the latter on the "R$" text.
+As partes vestem pelo mesmo `classNames` do web: `input` e `prefix`, este no texto do "R$".

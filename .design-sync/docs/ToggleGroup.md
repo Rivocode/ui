@@ -1,14 +1,14 @@
 ---
-category: Actions
+category: Ações
 ---
 
 # ToggleGroup
 
-A bar of buttons that stay pressed, for a choice that changes the view right
-away: alignment, display mode, quick filter.
+Barra de botões que ficam apertados, para escolha que muda a vista na hora:
+alinhamento, modo de exibicao, filtro rápido.
 
-With `toggleMultiple`, it becomes multiple selection.
+Com `toggleMultiple`, vira seleção múltipla.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `ToggleGroup` - `items` on the root; `multiple` for several, the same name and the same meaning as the web. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `ToggleGroup` - `items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -1,33 +1,32 @@
 ---
-category: Foundation
+category: Fundação
 ---
 
 # RivoProvider
 
-The required root. Without it nothing has style.
+Raiz obrigatória. Sem ele nada tem estilo.
 
-`theme`: `rivocode-dark` (default), `rivocode-light` or `system`.
-`density`: `comfortable` (default) or `compact`, which shrinks every control.
-`scope`: `global` dresses the whole page; `local` dresses only this tree and
-paints the background, for when the design system enters a project that already
-exists.
+`theme`: `rivocode-dark` (padrão), `rivocode-light` ou `system`.
+`density`: `comfortable` (padrão) ou `compact`, que encolhe todo controle.
+`scope`: `global` veste a página inteira; `local` veste só esta árvore e pinta o
+fundo, para quando o design system entra num projeto que já existe.
 
-It carries inside it the tooltip provider, the toast wiring and the portal
-container that takes the theme along. Do not mount any of them by hand.
+Carrega por dentro o provedor de dica, a fiação de aviso e o container de portal
+que leva o tema junto. Não monte nenhum deles à mão.
 
-## The theme types
+## Os tipos do tema
 
-`RivoTheme` is the two house themes, `rivocode-dark` and `rivocode-light`.
-`RivoThemeSetting` is what the `theme` prop accepts: the two house themes,
-`system`, or the name of a client theme. `RivoResolvedTheme` is the theme after
-`system` has already become one of the two.
+`RivoTheme` são os dois temas de casa, `rivocode-dark` e `rivocode-light`.
+`RivoThemeSetting` é o que a prop `theme` aceita: os dois de casa, `system`, ou
+o nome do tema de um cliente. `RivoResolvedTheme` é o tema depois que `system`
+já virou um dos dois.
 
-The union accepts a free name on purpose. Without it, dressing a client ended
-in a type error, and the project started out writing `as` at the system's entry
-point, which is the worst possible place to teach that casting is normal.
+A união aceita nome livre de propósito. Sem isso, vestir um cliente terminava
+num erro de tipo, e o projeto começava escrevendo `as` no ponto de entrada do
+sistema, que é o pior lugar possível para ensinar que casting é normal.
 
-`RivoDensity` is `comfortable` or `compact`. Both types show up when the choice
-comes from outside, from a saved preference or from the client's configuration:
+`RivoDensity` é `comfortable` ou `compact`. Os dois tipos aparecem quando a
+escolha vem de fora, de uma preferência salva ou da configuração do cliente:
 
 ```tsx
 const [theme, setTheme] = useState<RivoThemeSetting>('system')
@@ -36,41 +35,40 @@ const density: RivoDensity = usuario.prefereCompacto ? 'compact' : 'comfortable'
 <RivoProvider theme={theme} density={density}>
 ```
 
-## Writing direction
+## Sentido da escrita
 
-`dir="rtl"` mirrors whatever depends on a side: which arrow opens the submenu,
-where `Select` aligns, where the side sheet comes in from and where the close
-gesture goes. The provider writes `dir` on the root element and on the portal
-container, so whatever renders in a portal flips too.
+`dir="rtl"` espelha o que depende de lado: qual seta abre o submenu, para onde o
+`Select` alinha, de onde a folha lateral entra e para onde o gesto de fechar
+vai. O provider escreve o `dir` no elemento raiz e no container de portal, então
+o que renderiza em portal também vira.
 
-The layout stays with you, through Tailwind's logical classes: `ps-*` and
-`pe-*` instead of `pl-*` and `pr-*`, `text-start` instead of `text-left`. A
-mirrored component inside a page that still measures from the left looks worse
-than a whole page with nothing mirrored.
+O layout continua com você, e pelas classes lógicas do Tailwind: `ps-*` e `pe-*`
+no lugar de `pl-*` e `pr-*`, `text-start` no lugar de `text-left`. Componente
+espelhado dentro de página que ainda mede da esquerda fica pior do que página
+inteira sem espelhar nenhum.
 
-## Reading what the provider decided
+## Ler o que o provider decidiu
 
-`useRivoContext()` returns the already resolved theme, the density and the
-portal container. It serves the screen that needs to agree with the choice (the
-logo that switches between light and dark, the third-party map that receives
-the color as a prop, the portal of an outside piece that needs to be born
-dressed):
+`useRivoContext()` devolve o tema já resolvido, a densidade e o container de
+portal. Serve para a tela que precisa concordar com a escolha (o logotipo que
+troca entre claro e escuro, o mapa de terceiro que recebe a cor por prop, o
+portal de uma peça de fora que precisa nascer vestida):
 
 ```tsx
 const { theme, density, portalContainer } = useRivoContext()
 ```
 
-Outside the provider it throws, with the provider's name in the message. That
-is on purpose: silence here becomes an unstyled screen nobody can explain.
+Fora do provider ele lança erro, com o nome do provider na mensagem. É de
+propósito: o silêncio aqui vira uma tela sem estilo que ninguém sabe explicar.
 
-## In React Native
+## No React Native
 
-Translates, and gains a prop that does not exist on the web: `fonts`. In the browser the three families arrive through the tokens CSS; on the phone there is no font CSS, and loading a font file is the app's decision, not the library's. The app loads them with `expo-font` and declares the names once (`<RivoProvider fonts={{ sans: 'Manrope', display: 'Poppins', mono: 'JetBrainsMono' }}>`), and the whole catalog starts wearing them. Without the prop, everything comes out in the system font and nothing breaks. Also pass `expo-font`'s `isFontLoaded={isLoaded}`: a missing font name fails silently in React Native, and this return value is what makes the provider warn in `__DEV__`.
+Traduz, e ganha uma prop que no web não existe: `fonts`. No navegador as três famílias chegam pelo CSS de tokens; no celular não há CSS de fonte, e carregar arquivo de fonte é decisão do app, não da biblioteca. O app carrega com o `expo-font` e declara os nomes uma vez (`<RivoProvider fonts={{ sans: 'Manrope', display: 'Poppins', mono: 'JetBrainsMono' }}>`), e o catálogo inteiro passa a vesti-los. Sem a prop, tudo sai na fonte do sistema e nada quebra. Passe junto o `isFontLoaded={isLoaded}` do `expo-font`: nome de fonte ausente falha calado no React Native, e é esse retorno que faz o provider avisar em `__DEV__`.
 
-**`density` does not exist here, and it is not a parity omission.** A touch target does not shrink on a finger screen: `comfortable` is the only height, and the prop left the API.
+**`density` não existe aqui, e não é omissão de paridade.** Alvo de toque não encolhe em tela de dedo: `comfortable` é a única altura, e a prop saiu da API.
 
-**And `theme` switches the whole screen only between the two house themes.** `rivocode-dark`, `rivocode-light` and `system` switch in the same frame, because the colors were compiled as `light-dark()` and the provider only flips the `Appearance` scheme. A client theme **does not change any class's color** at runtime: the `react-native-css` compiler bakes the hex into the rule (`.bg-accent` becomes `{"backgroundColor":"#d4f34a"}`, literally), and in the 56 KB of compiled CSS not a single occurrence of `--` remains. There is no live variable to redefine after the build.
+**E `theme` troca a tela inteira apenas entre os dois temas de casa.** `rivocode-dark`, `rivocode-light` e `system` trocam no mesmo quadro, porque as cores foram compiladas como `light-dark()` e o provider só gira o esquema do `Appearance`. Tema de cliente **não troca cor de classe nenhuma** em runtime: o compilador do `react-native-css` crava o hex dentro da regra (`.bg-accent` vira `{"backgroundColor":"#d4f34a"}`, literal), e nos 56 KB de CSS compilado não sobra uma ocorrência de `--`. Não existe variável viva para redefinir depois do build.
 
-**The theme map left the provider.** It only reached whoever reads color through JS - `ChartDonut`, `ChartRadial`, the `Button`'s spinner, the `Switch`'s track -, and the result was a donut in one theme and a button in another, side by side. One half that disagrees with the other is worse than none: the provider now resolves the 45 roles by reading the compiled CSS, one `bg-` class per role, so context and class always say the same color. The re-read also happens when the app declares the scheme inside an effect, after mounting - before that the palette was read once and froze, and half the screen came out in one scheme and half in the other. With the map left without a purpose, it was removed: `theme` accepts only `rivocode-dark`, `rivocode-light` and `system`, and the `scheme` prop left with it, because it was what chose the map's scheme.
+**O mapa de tema saiu do provider.** Ele alcançava só quem lê cor por JS - `ChartDonut`, `ChartRadial`, o giro do `Button`, o trilho do `Switch` -, e saía donut de um tema e botão de outro, lado a lado. Uma metade que discorda da outra é pior do que nenhuma: o provider passou a resolver os 45 papéis lendo o CSS compilado, uma classe `bg-` por papel, então contexto e classe dizem sempre a mesma cor. A releitura acontece inclusive quando o app declara o esquema dentro de um efeito, depois da montagem - antes disso a paleta era lida uma vez e congelava, e saía meia tela num esquema e meia no outro. Com o mapa sem função, ele foi removido: `theme` aceita só `rivocode-dark`, `rivocode-light` e `system`, e a prop `scheme` saiu junto, porque era ela que escolhia o esquema do mapa.
 
-**The path that works is the app's CSS, before compiling - and now it styles the whole screen, charts included:** override the roles in an `@theme` in your `global.css`, after `@rivocode/ui-native/theme.css`, and run `npx rivocode-ui-native-css` again. It has an architectural ceiling: `light-dark()` has two slots, so it is **two themes per build**, one light and one dark. A single-client app fits easily; a showcase of five themes, like the web's, needs five bundles. The [themes guide](/temas) has the step by step.
+**O caminho que funciona é o CSS do app, antes de compilar - e agora ele veste a tela inteira, gráfico incluído:** sobrescreva os papéis num `@theme` do seu `global.css`, depois do `@rivocode/ui-native/theme.css`, e rode `npx rivocode-ui-native-css` de novo. Ele tem um teto de arquitetura: `light-dark()` tem duas vagas, então são **dois temas por build**, um claro e um escuro. Um app de um cliente cabe folgado; uma vitrine de cinco temas, como a do web, pede cinco bundles. O [guia de temas](/temas) tem o passo a passo.

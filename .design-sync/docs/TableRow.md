@@ -1,23 +1,21 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # TableRow
 
-A table row.
+Uma linha da tabela.
 
-`selected` draws an accent bar on the side, with a faint background. It is the
-bar that says "this row", and a strong background smears the reading of the
-whole row.
+`selected` desenha uma barra de acento na lateral, com fundo tênue. A barra é
+que diz "esta linha", e fundo forte mancha a leitura da linha inteira.
 
-Color alone is not state, so the first cell of the chosen row opens with a
-`<span>` only the screen reader hears: "Selecionada". It is always the first
-cell, so whoever is listening knows where the notice appears.
-`labels.selected` changes the text when the screen is in another language.
+Cor sozinha não é estado, então a primeira célula da linha escolhida abre com
+um `<span>` que só o leitor de tela ouve: "Selecionada". É sempre a primeira
+célula, para quem ouve saber onde o aviso aparece. `labels.selected` troca o
+texto quando a tela está em outro idioma.
 
-There is no `aria-selected` here. It is only valid inside `grid` or
-`treegrid`, and in a plain `<table>` the browser discards the attribute:
-measured in the accessibility tree, the row exposed zero properties. Adopting
-`role="grid"` would bring the obligation to navigate with arrows between cells,
-which the piece does not implement, and would trade one defect for a bigger
-one.
+Não há `aria-selected` aqui. Ele só é válido dentro de `grid` ou `treegrid`, e
+num `<table>` simples o navegador descarta o atributo: medido na árvore de
+acessibilidade, a linha expunha zero propriedades. Adotar `role="grid"` traria
+a obrigação de navegar por setas entre as células, que a peça não implementa,
+e trocaria um defeito por outro maior.

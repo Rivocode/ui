@@ -2,7 +2,7 @@ import { Clipboard, Code } from '@rivocode/ui'
 
 const CHAVE = '35240612345678000199550010000048131234567890'
 
-/** Copy the access key */
+/** Copiar a chave de acesso */
 export function CopyAccessKey() {
   return (
     <div className="flex w-96 items-center gap-2">
@@ -12,7 +12,7 @@ export function CopyAccessKey() {
   )
 }
 
-/** With text beside it */
+/** Com texto ao lado */
 export function WithLabel() {
   return <Clipboard value="00020126580014br.gov.bcb.pix">Copiar código Pix</Clipboard>
 }

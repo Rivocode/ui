@@ -2,7 +2,7 @@ import { describe, expect, spyOn, test } from "bun:test";
 
 import { tokens } from "../tokens";
 import { render, byClass, byType, paintedColor, variableDeclarations } from "./helpers";
-import { declaredColor } from "./compiled-css";
+import { declaredColor } from "./css-compilado";
 import { Button } from "../src/button";
 import { Switch } from "../src/switch";
 import { ChartContainer } from "../src/chart/chart";
@@ -30,24 +30,24 @@ function Probe() {
   return null;
 }
 
-describe("the color a piece reads comes from the compiled CSS", () => {
-  test("the 45 roles reach the context, and none arrives empty", () => {
+describe("a cor que a peça lê sai do CSS compilado", () => {
+  test("os 45 papéis chegam ao contexto, e nenhum chega vazio", () => {
     render(<Probe />, { theme: "rivocode-dark" });
 
     expect(Object.keys(seen).length).toBe(45);
     expect(ROLES.filter((role) => typeof seen[role] !== "string" || seen[role] === "")).toEqual([]);
   });
 
-  test("each role is the color the bg- class paints, in light and in dark", () => {
+  test("cada papel é a cor que a classe bg- pinta, no claro e no escuro", () => {
     for (const scheme of ["light", "dark"] as const) {
       render(<Probe />, { theme: scheme === "light" ? "rivocode-light" : "rivocode-dark" });
 
       const divergent = ROLES.filter((role) => seen[role] !== fromCss(role, scheme));
-      expect(divergent, `roles outside the compiled CSS in ${scheme}`).toEqual([]);
+      expect(divergent, `papéis fora do CSS compilado no ${scheme}`).toEqual([]);
     }
   });
 
-  test("the screen background follows the scheme, light #fbfbfa and dark #0b0d0f", () => {
+  test("o fundo da tela segue o esquema, claro #fbfbfa e escuro #0b0d0f", () => {
     const claro = render(<Button>Emitir</Button>, { theme: "rivocode-light" });
     const escuro = render(<Button>Emitir</Button>, { theme: "rivocode-dark" });
 
@@ -59,7 +59,7 @@ describe("the color a piece reads comes from the compiled CSS", () => {
     );
   });
 
-  test("the eight chart-* have an emitted class: without it the chart read undefined", () => {
+  test("os oito chart-* têm classe emitida: sem ela o gráfico lia undefined", () => {
     const painted = ROLES.filter((role) => role.startsWith("chart-")).map((role) =>
       fromCss(role, "dark"),
     );
@@ -69,7 +69,7 @@ describe("the color a piece reads comes from the compiled CSS", () => {
   });
 });
 
-describe("the chart and the button come from the same theme, on the same screen", () => {
+describe("o gráfico e o botão saem do mesmo tema, na mesma tela", () => {
   const paint = (scheme: "light" | "dark") => {
     let series: Record<string, string> = {};
     const screen = render(
@@ -94,7 +94,7 @@ describe("the chart and the button come from the same theme, on the same screen"
   };
 
   for (const scheme of ["light", "dark"] as const) {
-    test(`in ${scheme}: slice, track and button background are the class color`, () => {
+    test(`no ${scheme}: fatia, trilho e fundo do botão são a cor da classe`, () => {
       const { button, track, slice } = paint(scheme);
 
       expect(button).toBe(fromCss("accent", scheme));
@@ -104,8 +104,8 @@ describe("the chart and the button come from the same theme, on the same screen"
   }
 });
 
-describe("client theme: the path is the app CSS, not a prop", () => {
-  test("the Button background and the color it reads from the context are the SAME, and it is the CSS one", () => {
+describe("tema de cliente: o caminho é o CSS do app, e não uma prop", () => {
+  test("o fundo do Button e a cor que ele lê do contexto são a MESMA, e é a do CSS", () => {
     const screen = render(
       <>
         <Button>Emitir</Button>
@@ -123,20 +123,20 @@ describe("client theme: the path is the app CSS, not a prop", () => {
     expect(seen.accent).toBe(painted);
   });
 
-  test("the Button spinner comes out in the CSS contrast", () => {
+  test("o giro do Button sai no contraste do CSS", () => {
     const screen = render(<Button loading>Emitindo</Button>, { theme: "rivocode-light" });
     const spinner = byType(screen, "ActivityIndicator")[0]!;
 
     expect(spinner.props.color).toBe(fromCss("accent-fg", "light"));
   });
 
-  test("nothing is wrapped: VariableContextProvider left together with the map", () => {
+  test("nada é embrulhado: o VariableContextProvider saiu junto com o mapa", () => {
     const screen = render(<Button>Emitir</Button>, { theme: "rivocode-light" });
 
     expect(byType(screen, "VariableContextProvider").length).toBe(0);
   });
 
-  test("the cause: each --color-* is declared only once, and the react-native-css inliner bakes the value into the class", () => {
+  test("a causa: cada --color-* é declarado uma vez só, e o inliner do react-native-css crava o valor dentro da classe", () => {
     const declared = variableDeclarations();
     const roles = ROLES.map((role) => `--color-${role}`).filter((name) => declared.has(name));
     const alive = roles.filter((name) => declared.get(name) !== 1);
@@ -146,7 +146,7 @@ describe("client theme: the path is the app CSS, not a prop", () => {
     expect(alive).toEqual([]);
   });
 
-  test("mounting with the house theme emits no warning at all", () => {
+  test("montar com o tema de casa não emite aviso nenhum", () => {
     expect(warned(() => render(<Button>Emitir</Button>, { theme: "rivocode-light" }))).toEqual([]);
   });
 });

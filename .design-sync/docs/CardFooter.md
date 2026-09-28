@@ -1,10 +1,10 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # CardFooter
 
-The footer of the card, separated by a line.
+O rodapé do cartão, separado por uma linha.
 
-It is where the action lives. It lays items out in a row with spacing between
-them; to push the buttons to the right, use `justify-end` in `className`.
+É onde a ação mora. Alinha em linha com respiro entre os itens; para jogar os
+botões à direita, use `justify-end` na `className`.

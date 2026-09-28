@@ -1,6 +1,6 @@
 import { Progress } from '@rivocode/ui'
 
-/** With label */
+/** Com rótulo */
 export function WithLabel() {
   return (
     <div className="flex w-80 flex-col gap-6">

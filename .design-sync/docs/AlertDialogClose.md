@@ -1,11 +1,11 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # AlertDialogClose
 
-Closes without confirming.
+Fecha sem confirmar.
 
-Here it is mandatory in practice, not a convenience: with no Esc and no click
-outside, this is the only way out of the panel. Wrap the cancel button with it,
-and do not ship a confirmation without one.
+Aqui ele é obrigatório na prática, e não uma conveniência: sem Esc e sem clique
+fora, este é o único caminho de saída do painel. Envolva o botão de cancelar com
+ele, e não deixe uma confirmação sair sem um.

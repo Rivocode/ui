@@ -1,15 +1,14 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # MenuLinkItem
 
-The menu item that navigates, and that is why it renders as a real `<a>`.
+O item do menu que navega, e por isso sai como `<a>` de verdade.
 
-It is the "My profile" of the avatar menu. What you gain is what only the
-anchor has: the middle button opens it in another tab, the right button copies
-the address, and the browser's status bar shows where the item leads before
-the click.
+É o "Meu perfil" do menu do avatar. O que se ganha é o que só a âncora tem: o
+botão do meio abre em outra aba, o botão direito copia o endereço, e a barra do
+navegador mostra para onde o item leva antes do clique.
 
 ```tsx
 <MenuContent>
@@ -18,20 +17,19 @@ the click.
 </MenuContent>
 ```
 
-With a single-page router, pass its link component in `render`: the element is
-yours, and the piece only lends the skin and the menu behavior.
+Com roteador de uma página só, passe o componente de link dele em `render`: o
+elemento é seu, e a peça só empresta a pele e o comportamento de menu.
 
-**`closeOnClick` starts as `true` here, and in Base UI it starts as `false`.**
-The reason is client-side navigation: without a page reload nobody unmounts the
-menu, and it stayed open floating over the new screen. Whoever wants the Base
-UI behavior passes `closeOnClick={false}`.
+**`closeOnClick` nasce `true` aqui, e na Base UI nasce `false`.** O motivo é a
+navegação pelo cliente: sem recarregar a página ninguém desmonta o menu, e ele
+ficava aberto flutuando sobre a tela nova. Quem quiser o comportamento da Base UI
+passa `closeOnClick={false}`.
 
-## When not to use
+## Quando não usar
 
-For what happens on the same screen (duplicate, export, cancel), use
-`MenuItem`. An anchor that leads nowhere (`href="#"` with `onClick`) betrays
-the three affordances above, and is worse than an ordinary item.
+Para o que acontece na mesma tela (duplicar, exportar, cancelar), use
+`MenuItem`. Âncora que não leva a lugar nenhum (`href="#"` com `onClick`) engana
+as três affordances acima, e é pior do que um item comum.
 
-A whole menu of links is a navigation menu, not an action menu: there the
-piece is `NavigationMenu`, or the `Sidebar` when the destinations are the
-sections of the dashboard.
+Um menu inteiro de links é um menu de navegação, e não de ações: aí a peça é
+`NavigationMenu`, ou a `Sidebar` quando os destinos são as seções do painel.

@@ -1,46 +1,44 @@
 ---
-category: Actions
+category: Ações
 ---
 
 # ScrollToTop
 
-The floating "Voltar ao topo" button. It only exists after the person scrolls
-past a threshold, sits in the corner of the window, and takes them back to the
-start of a long page: a listing with many rows, a report, a terms page.
+O botão flutuante "Voltar ao topo". Ele só existe depois que a pessoa desce
+além de um limite, fica no canto da janela, e leva de volta ao começo de uma
+página longa: uma listagem de muitas linhas, um relatório, um termo.
 
 ```tsx
 <ScrollToTop />
 ```
 
-It is the house `IconButton`, pill-shaped and with a shadow, with the up arrow
-and the name "Voltar ao topo", pinned to the bottom right corner by an `Affix`.
+É o `IconButton` da casa, em pílula e com sombra, com a seta para cima e o nome
+"Voltar ao topo", preso ao canto de baixo à direita por um `Affix`.
 
-## When it shows
+## Quando aparece
 
-`threshold` is how many pixels the person needs to scroll down: 400 by default.
-Above that the button **does not exist**, and does not just stay invisible: it
-is not in the Tab order nor in the screen reader's list of buttons. It enters
-with the short appear animation, which turns itself off when the system asks to
-reduce motion.
+`threshold` é quantos pixels a pessoa precisa descer: 400 por padrão. Acima
+disso o botão **não existe**, e não só fica invisível: ele não entra no Tab nem
+na lista de botões do leitor de tela. Ele entra com a animação curta de
+aparecer, que desliga sozinha quando o sistema pede para reduzir movimento.
 
-## What the click does
+## O que o clique faz
 
-It scrolls to the top, smoothly, or **in a jump** when the system asks to
-reduce motion. And it **moves focus to the start of the page**: the `<main>`,
-or the `<body>` when there is no `<main>`. Without that, focus would stay on the
-button, which disappears as soon as the page reaches the top, and keyboard
-users would end up back at the end of the page on the next Tab. The target gets
-`tabindex="-1"` only while it has focus.
+Rola até o topo, suave, ou **num salto** quando o sistema pede para reduzir
+movimento. E **leva o foco para o começo da página**: o `<main>`, ou o `<body>`
+quando não há `<main>`. Sem isso o foco ficaria no botão, que some assim que a
+página chega ao topo, e quem navega por teclado voltaria ao fim da página no
+próximo Tab. O destino ganha `tabindex="-1"` só enquanto tem o foco.
 
-`focusTarget` chooses another target, such as the screen's `<h1>`.
-`onScrollToTop` is called after the climb has started.
+`focusTarget` escolhe outro destino, como o `<h1>` da tela. `onScrollToTop` é
+chamado depois que a subida começou.
 
-## In a scrolling box
+## Numa caixa que rola
 
-`target` swaps the window for a box with its own scrolling: that is where the
-distance is measured, that is what scrolls up, and that is where focus goes.
-With `strategy="absolute"`, the button sticks to the corner of the positioned
-ancestor instead of the corner of the window.
+`target` troca a janela por uma caixa com rolagem própria: é nela que a
+distância é medida, é ela que sobe, e é para ela que o foco vai. Com
+`strategy="absolute"`, o botão gruda no canto do ancestral posicionado em vez
+do canto da janela.
 
 ```tsx
 const [caixa, setCaixa] = useState<HTMLDivElement | null>(null)
@@ -51,33 +49,33 @@ const [caixa, setCaixa] = useState<HTMLDivElement | null>(null)
 </div>
 ```
 
-Pass the element, kept in state, and not the `ref`: the button needs to know
-when the box arrived to start measuring.
+Passe o elemento, guardado num estado, e não o `ref`: o botão precisa saber
+quando a caixa chegou para começar a medir.
 
-## Position and appearance
+## Posição e aparência
 
-`position`, `strategy`, `layer`, `withinPortal` and `reserveSpace` are
-`Affix`'s and pass straight through to it. `label` changes the name, `icon`
-changes the arrow, `tooltip` shows the name in a tooltip, and `size` and
-`variant` are `IconButton`'s. `className` dresses the layer that sticks and
-`classNames.button`, the button.
+`position`, `strategy`, `layer`, `withinPortal` e `reserveSpace` são os do
+`Affix` e passam direto para ele. `label` troca o nome, `icon` troca a seta,
+`tooltip` mostra o nome numa dica, e `size` e `variant` são os do
+`IconButton`. `className` veste a camada que gruda e `classNames.button`, o
+botão.
 
-The button reserves its own height in the page's `scroll-padding-bottom`, so
-keyboard focus does not stop hidden behind it. The explanation is in `Affix`.
+O botão reserva a própria altura no `scroll-padding-bottom` da página, então o
+foco do teclado não para escondido atrás dele. A explicação está no `Affix`.
 
-## When not to use
+## Quando não usar
 
-- **A short page**, one that fits in two screens, does not need it: the person
-  scrolls back, and the button only takes up the corner.
-- **Jumping to a section** is `TableOfContents`. The button only knows the top;
-  the table of contents knows the whole way.
-- **Another action that follows the scroll** (sign, save, issue) is `Affix`
-  with the `Button` inside. `ScrollToTop` is only the climb.
-- **Actions on selected rows** are `ActionBar`, which appears through
-  selection, not through scrolling.
+- **Página curta**, que cabe em duas telas, não precisa dele: a pessoa volta
+  rolando, e o botão só ocupa o canto.
+- **Pular para uma seção** é `TableOfContents`. O botão só conhece o topo; o
+  índice conhece o caminho inteiro.
+- **Outra ação que acompanha a rolagem** (assinar, salvar, emitir) é `Affix`
+  com o `Button` dentro. O `ScrollToTop` é só a subida.
+- **Ações sobre linhas selecionadas** são `ActionBar`, que aparece pela
+  seleção, e não pela rolagem.
 
-## In React Native
+## No React Native
 
-Does not port, by decision: the phone already scrolls the list up out of the box. On iOS, tapping the status bar takes the screen's `ScrollView` and `FlatList` to the top (that is `scrollsToTop`, on by default), and in Expo Router and React Navigation tapping again on the tab the person is already on does the same, with `useScrollToTop(ref)` on the list. A floating button on top of that would be a third path to the same gesture, covering the corner where the screen's main action lives.
+Não porta, por decisão: o celular já sobe a lista de fábrica. No iOS, tocar na barra de status leva ao topo a `ScrollView` e a `FlatList` da tela (é o `scrollsToTop`, ligado por padrão), e no Expo Router e no React Navigation tocar de novo na aba em que a pessoa já está faz o mesmo, com o `useScrollToTop(ref)` na lista. Um botão flutuante por cima disso seria um terceiro caminho para o mesmo gesto, cobrindo o canto onde mora a ação principal da tela.
 
-There is no focus to give back: touch navigation has no Tab that continues from the end of the page.
+Não há foco a devolver: a navegação por toque não tem um Tab que continue do fim da página.

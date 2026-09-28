@@ -2,7 +2,7 @@ import { Banner, Button } from '@rivocode/ui'
 import { Wrench } from 'lucide-react'
 import { useState } from 'react'
 
-/** Tones */
+/** Tons */
 export function Tones() {
   return (
     <div className="flex flex-col gap-3">
@@ -29,7 +29,7 @@ export function Tones() {
   )
 }
 
-/** With actions */
+/** Com ações */
 export function WithActions() {
   return (
     <Banner
@@ -50,7 +50,7 @@ export function WithActions() {
   )
 }
 
-/** Dismissible by the person */
+/** Que a pessoa dispensa */
 export function Dismissible() {
   const [open, setOpen] = useState(true)
 

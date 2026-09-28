@@ -13,20 +13,20 @@ export type TreeSelectProps = Omit<
   "value" | "defaultValue" | "onChange"
 > & {
   items: TreeNode[];
-  /** Ids of the chosen leaves. */
+  /** Ids das folhas escolhidas. */
   value?: string[];
   defaultValue?: string[];
   onValueChange?: (ids: string[]) => void;
   multiple?: boolean;
   placeholder?: string;
-  /** Shows the search field inside the panel. */
+  /** Mostra o campo de busca dentro do painel. */
   searchable?: boolean;
   size?: "sm" | "md" | "lg";
   /**
-   * The piece's texts, to change the language: `search` is the name of the search
-   * field, `searchPlaceholder` its placeholder text and `selected` the
-   * trigger's summary with more than three choices. `expand` and `collapse` go to the inner
-   * `Tree`. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `search` e o nome do campo de
+   * busca, `searchPlaceholder` o texto de espera dele e `selected` o resumo do
+   * gatilho com mais de tres escolhas. `expand` e `collapse` vao para o `Tree` de
+   * dentro. Passe so os que mudam.
    */
   labels?: Partial<TreeSelectLabels>;
 };

@@ -1,6 +1,6 @@
 import { Meter } from '@rivocode/ui'
 
-/** Capacity */
+/** Capacidade */
 export function Capacity() {
   return (
     <div className="flex w-72 flex-col gap-6">

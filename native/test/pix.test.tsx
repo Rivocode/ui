@@ -6,7 +6,7 @@ import type { PixCodeLabels } from "../src/chart";
 
 import { buildPixPayload, isValidPixKey, parsePixPayload, RivoProvider } from "../src";
 import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
-import { readQr, type Shape } from "../../test/qr-reader";
+import { readQr, type Shape } from "../../test/leitor-de-qr";
 
 mock.module("react-native-svg", () => {
   const host = (name: string) => (props: Record<string, unknown>) => createElement(name, props);
@@ -36,7 +36,7 @@ const PAYLOAD = buildPixPayload({
   txid: "NF4813",
 });
 
-test("the pure functions cross over through the mirror, with the manual's example and the DICT keys", () => {
+test("as funcoes puras atravessam pelo espelho, com o exemplo do manual e as chaves do DICT", () => {
   expect(
     buildPixPayload({ key: "123e4567-e12b-12d1-a456-426655440000", name: "Fulano de Tal", city: "BRASILIA" }),
   ).toBe(STATIC);
@@ -47,7 +47,7 @@ test("the pure functions cross over through the mirror, with the manual's exampl
 });
 
 for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
-  test(`the PixCode QR decodes without inverting into its own copy-and-paste code, in ${theme}`, () => {
+  test(`o QR do PixCode decodifica sem inverter no proprio copia e cola, no ${theme}`, () => {
     const screen = render(<PixCode payload={PAYLOAD} size={240} />, { theme });
     const [svg] = byType(screen, "Svg");
     const viewBox = Number(String(svg!.props.viewBox).split(" ")[2]);
@@ -59,14 +59,14 @@ for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
   });
 }
 
-test("amount and receiver come from the code, without Intl, and the image name says both", () => {
+test("valor e recebedor saem do codigo, sem Intl, e o nome da imagem diz os dois", () => {
   const screen = render(<PixCode payload={PAYLOAD} />);
   expect(textOf(screen)).toContain("R$ 1.284,50");
   expect(textOf(screen)).toContain("para Clinica Sao Lucas");
   expect(byLabel(screen, "QR Code Pix de R$ 1.284,50 para Clinica Sao Lucas")).toHaveLength(1);
 });
 
-test("copy comes from outside, receives the copy-and-paste code and disappears when there is nothing to copy", () => {
+test("o copiar vem de fora, recebe o copia e cola e some quando nao ha o que copiar", () => {
   const renderCopy = mock((payload: string) => <Text>copiar {payload.length}</Text>);
   const screen = render(<PixCode payload={PAYLOAD} renderCopy={renderCopy} />);
   expect(renderCopy).toHaveBeenCalledWith(PAYLOAD);
@@ -79,13 +79,13 @@ test("copy comes from outside, receives the copy-and-paste code and disappears w
   expect(renderCopy).not.toHaveBeenCalled();
 });
 
-test("a code with a wrong crc becomes a notice, not a QR", () => {
+test("codigo com crc errado vira aviso, e nao QR", () => {
   const screen = render(<PixCode payload={`${STATIC.slice(0, -4)}0000`} />);
   expect(byRole(screen, "alert")).toHaveLength(1);
   expect(byRole(screen, "image")).toHaveLength(0);
 });
 
-test("expired removes the QR and offers to generate another", () => {
+test("expirado tira o QR e oferece gerar outro", () => {
   const onRenew = mock(() => {});
   const screen = render(<PixCode payload={PAYLOAD} expired onRenew={onRenew} />);
   expect(byRole(screen, "image")).toHaveLength(0);
@@ -97,7 +97,7 @@ test("expired removes the QR and offers to generate another", () => {
   expect(onRenew).toHaveBeenCalledTimes(1);
 });
 
-test("loading holds the place and says it is busy", () => {
+test("carregando marca o lugar e diz que esta ocupado", () => {
   const screen = render(<PixCode payload="" loading />);
   const busy = screen.root.findAll(
     (node) => typeof node.type === "string" && node.props.accessibilityState?.busy === true,
@@ -112,7 +112,7 @@ const spoken = AccessibilityInfo as unknown as {
   clearAnnouncements: () => void;
 };
 
-test("a copy-and-paste code with surrounding spaces goes trimmed to the QR, the screen and copy", () => {
+test("o copia e cola com espaco em volta vai aparado para o QR, para a tela e para o copiar", () => {
   const renderCopy = mock((_payload: string) => <Text>copiar</Text>);
   const screen = render(<PixCode payload={`\n  ${PAYLOAD} \n`} size={240} renderCopy={renderCopy} />);
   const [svg] = byType(screen, "Svg");
@@ -127,7 +127,7 @@ test("a copy-and-paste code with surrounding spaces goes trimmed to the QR, the 
   expect(byType(screen, "Text").some((node) => node.props.children === PAYLOAD)).toBe(true);
 });
 
-test("every text of the piece comes from labels, including the receiver's \"para\" and the QR name", () => {
+test("todo texto da peca sai de labels, inclusive o para do recebedor e o nome do QR", () => {
   const labels: Partial<PixCodeLabels> = {
     receiver: (name) => `to ${name}`,
     code: (amount, receiver) => `Pix QR ${amount ?? ""} ${receiver ?? ""}`.trim(),
@@ -137,7 +137,7 @@ test("every text of the piece comes from labels, including the receiver's \"para
   expect(byLabel(screen, "Pix QR R$ 1.284,50 Clinica Sao Lucas")).toHaveLength(1);
 });
 
-test("expiring, loading and finishing loading are spoken to the screen reader", () => {
+test("expirar, carregar e terminar de carregar sao ditos ao leitor de tela", () => {
   spoken.clearAnnouncements();
   const screen = render(<PixCode payload="" loading />);
   expect(spoken.announced).toEqual(["Gerando o código Pix…"]);

@@ -1,18 +1,16 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # PopoverTrigger
 
-What opens the panel, and its anchor.
+O que abre o painel, e a âncora dele.
 
-The position is measured from here, so the trigger is the visible element next
-to which the panel should appear, and not a larger wrapper that would push it
-away. With `openOnHover`, it opens on mouse hover; use it sparingly, because a
-panel that opens on its own gets in the way of someone who was just passing
-by.
+A posição é medida a partir daqui, então o gatilho é o elemento visível ao lado
+do qual o painel deve aparecer, e não um invólucro maior que o empurraria para
+longe. Com `openOnHover`, abre na passagem do mouse; use com parcimônia, porque
+painel que abre sozinho atravessa o caminho de quem só estava passando.
 
-It has no skin of its own (the common use is `render={<Button />}`, and two
-sources of style would fight), but it does have the keyboard focus ring. Focus
-is not skin: when the trigger is hand-written, the ring from here is the only
-one there is.
+Ele não tem pele própria (o uso comum é `render={<Button />}`, e duas fontes de
+estilo brigariam), mas tem o anel de foco do teclado. Foco não é pele: quando o
+gatilho é escrito à mão, o anel daqui é o único que existe.

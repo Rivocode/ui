@@ -1,32 +1,31 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # Slider
 
-Choosing a value within a range: discount, deadline, tolerance.
+Escolha de valor numa faixa: desconto, prazo, tolerancia.
 
-**It only works when the exact number does not matter.** If it does,
-`NumberField` says more and asks for no aim: dragging a thumb to 37 is work,
-typing 37 is not.
+**Só vale quando o número exato não importa.** Se importa, o `NumberField` diz
+mais e não pede pontaria: arrastar um pino até 37 e trabalho, digitar 37 não.
 
 ```tsx
 <Slider defaultValue={25} max={50} label="Desconto" showValue />
 ```
 
-`label` is the name the screen reader reads on the thumb, and not just the text
-above it: a thumb with no visible label is the one that needs `thumbLabel`.
+O `label` é o nome que o leitor de tela lê no pino, e não só o texto acima
+dele: um pino sem rótulo visível é que precisa de `thumbLabel`.
 
-`format` writes the `showValue` number and what the screen reader announces:
-the name of a house formatter, or a function of yours for the unit only this
-screen has.
+`format` escreve o número do `showValue` e o que o leitor de tela anuncia: o
+nome de um formatador da casa, ou uma função sua para a unidade que só esta tela
+tem.
 
 ```tsx
 <Slider defaultValue={30} max={90} label="Prazo" showValue format={(dias) => `${dias} dias`} />
 ```
 
-With two values, it becomes a two-thumb range, and each thumb needs its own
-name, otherwise the screen reader announces two identical controls:
+Com dois valores, vira faixa de dois pinos, e cada pino precisa do próprio
+nome, senao o leitor de tela anuncia dois controles iguais:
 
 ```tsx
 <Slider
@@ -37,6 +36,6 @@ name, otherwise the screen reader announces two identical controls:
 />
 ```
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Slider` - moves by gesture and responds to screen reader actions; a single value, `label` required, and `showValue` and `format` as on the web; `classNames` with the web's six parts. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Slider` - anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web; `classNames` com as seis partes do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

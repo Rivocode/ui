@@ -32,35 +32,33 @@ const HIDDEN = {
 
 export type BannerProps = {
   /**
-   * The tone decides color and urgency: `danger` and `warning` come out as
-   * `alert` and are read right away; `info` and `success` wait, in a polite
-   * live region.
+   * O tom decide a cor e a urgencia: `danger` e `warning` saem como `alert` e
+   * sao lidos na hora; `info` e `success` esperam, em regiao viva educada.
    */
   tone?: keyof typeof TONE;
-  /** The short sentence before the description, in the tone color. Optional. */
+  /** A frase curta antes da descricao, na cor do tom. Opcional. */
   title?: string;
-  /** What happened and what the person does about it. It is the body of the notice. */
+  /** O que aconteceu e o que a pessoa faz a respeito. E o corpo do aviso. */
   description: string;
   /**
-   * The symbol on the left, hidden from the screen reader. Without it, none:
-   * the package ships no icon. The form that paints in the tone color is the
-   * function - `icon={({ color, size }) => <TriangleAlert color={color}
-   * size={size} />}`.
+   * O simbolo a esquerda, escondido do leitor de tela. Sem ele, nenhum: o
+   * pacote nao traz icone. A forma que pinta na cor do tom e a funcao -
+   * `icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`.
    */
   icon?: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
-  /** The banner buttons, below the text. Use `Button` `size="sm"` `variant="secondary"`. */
+  /** Os botoes da faixa, embaixo do texto. Use `Button` `size="sm"` `variant="secondary"`. */
   actions?: ReactNode;
-  /** Turns on the close X. The caller is the one who makes the banner go away. */
+  /** Liga o xis de fechar. Quem some com a faixa e quem chamou. */
   onDismiss?: () => void;
   className?: string;
   /**
-   * The component's texts, to change the language: `dismiss` is the name of the
-   * X, "Fechar aviso" without it.
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, "Fechar
+   * aviso" sem ele.
    */
   labels?: Partial<BannerLabels>;
   /**
-   * Class per part: `icon`, `content` (the text column), `title`,
-   * `description`, `actions` and `dismiss` (the X).
+   * Classe por parte: `icon`, `content` (a coluna do texto), `title`,
+   * `description`, `actions` e `dismiss` (o xis).
    */
   classNames?: Slots<"icon" | "content" | "title" | "description" | "actions" | "dismiss">;
 };

@@ -4,36 +4,35 @@ import { cn } from "../lib/cn";
 
 export type EmptyStateProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
   /**
-   * Symbol or illustration. Optional.
+   * Simbolo ou ilustracao. Opcional.
    *
-   * Rendered `aria-hidden`, like the one in `Alert`: the title and the description beside it
-   * already
-   * say what it draws. Applies to `<img>` and to your own SVG too, and
-   * not only to the lucide icon, which protects itself.
+   * Sai `aria-hidden`, como o do `Alert`: o titulo e a descricao ao lado ja
+   * dizem o que ele desenha. Vale para `<img>` e para SVG proprio tambem, e
+   * nao so para o icone do lucide, que se protege sozinho.
    */
   icon?: ReactNode;
   /**
-   * A drawing bigger than the icon, for the first-time empty state: the home screen
-   * with nothing yet, the onboarding step. A filter with no results and a list that
-   * emptied call for `icon`, not this.
+   * Desenho maior que o icone, para o vazio de primeira vez: a tela inicial
+   * sem nada ainda, o passo de onboarding. Filtro sem resultado e lista que
+   * esvaziou pedem `icon`, e nao isto.
    *
-   * The size is up to whoever draws it: `icon` forces 32px on every SVG, and here nothing
-   * is forced. Rendered `aria-hidden`, like `icon`, and in `text-fg-subtle`: paint it
-   * with `currentColor` or a token class (`fill-accent-subtle`), never
-   * with a literal color, or the drawing will not follow the client's theme. When
-   * it comes, it takes the place of `icon`.
+   * O tamanho e de quem desenha: o `icon` forca 32px em todo SVG, e aqui nada
+   * e forcado. Sai `aria-hidden`, como o `icon`, e em `text-fg-subtle`: pinte
+   * com `currentColor` ou com classe de token (`fill-accent-subtle`), nunca
+   * com cor literal, senao o desenho nao acompanha o tema do cliente. Quando
+   * vem, toma o lugar do `icon`.
    */
   illustration?: ReactNode;
   /**
-   * Accepts a node and not only text, like the title of `PageHeader` and of `Timeline`.
-   * It used to be `string`, and so a formatted number or a `<strong>` in the middle of the
-   * sentence - "Nenhuma nota em **marco**" - did not fit in an empty state, while fitting
-   * in the two siblings.
+   * Aceita no e nao so texto, como o titulo do `PageHeader` e o do `Timeline`.
+   * Era `string`, e por isso um numero formatado ou um `<strong>` no meio da
+   * frase - "Nenhuma nota em **marco**" - nao cabia num estado vazio, cabendo
+   * nas duas irmas.
    */
   title: ReactNode;
-  /** Why it is empty. Required: "sem dados" explains nothing. */
+  /** Por que esta vazio. Obrigatorio: "sem dados" nao explica nada. */
   description: ReactNode;
-  /** The way out. Without it the person learns about the problem and not the solution. */
+  /** A saida. Sem ela a pessoa fica sabendo do problema e nao da solucao. */
   action?: ReactNode;
 };
 

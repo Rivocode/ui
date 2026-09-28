@@ -1,18 +1,16 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # AvatarGroup
 
-The row of people in a place: who takes part, who signed, who has access.
+A fila de pessoas de um lugar: quem participa, quem assinou, quem tem acesso.
 
-Two decisions live in the component so they are not made five different ways.
+Duas decisões moram na peça para não serem tomadas cinco vezes diferentes.
 
-The overlap cuts off the initial: with two letters, the avatar on top covers
-the second letter of the one below and what is left is a smudge. The row uses a
-single letter, and does it on its own instead of asking the caller to know
-this.
+A sobreposição corta a inicial: com duas letras, o avatar de cima cobre a
+segunda letra do de baixo e o que sobra é um borrão. A fila usa uma letra só, e
+faz isso sozinha em vez de pedir que quem chama saiba disso.
 
-The overflow becomes "+n" and does not disappear. A row of three with ten more
-hidden lies about the size of the group, and the number is exactly what the
-person is looking for there.
+O excedente vira "+n" e não some. Uma fila de três com mais dez escondidos mente
+sobre o tamanho do grupo, e o número é justamente o que a pessoa procura ali.

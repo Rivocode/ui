@@ -1,15 +1,14 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # FormField
 
-A whole form row: label, control, help and error, wired to each other. Lives
-in `@rivocode/ui/form`.
+Uma linha de formulário inteira: rótulo, controle, ajuda e erro, ligados entre
+si. Vive em `@rivocode/ui/form`.
 
-The control comes through a function, and not by cloning the child, because
-each control in the catalog takes its value in a different way, and guessing
-which one fails on screen, not in the type:
+O controle vem por funcao, e não por clonagem do filho, porque cada controle do
+catalogo recebe valor de um jeito e adivinhar qual falha na tela, não no tipo:
 
 ```tsx
 <FormField name="email" label="E-mail">
@@ -17,8 +16,8 @@ which one fails on screen, not in the type:
 </FormField>
 ```
 
-For `Input` and `Textarea`, spreading the field is enough. For `Select`,
-`Checkbox` and `DatePicker`, the adapters build the bridge.
+Para `Input` e `Textarea`, espalhar o campo basta. Para `Select`, `Checkbox` e
+`DatePicker`, os adaptadores fazem a ponte.
 
-It does not make up any `id`: what wires the label to the control is Base UI's
-`Field`, through context.
+Ele não inventa `id` nenhum: quem liga o rótulo ao controle e o `Field` da Base
+UI, pelo contexto.

@@ -16,7 +16,7 @@ function fileSize(bytes: number) {
 
 export type Rejection = {
   file: File;
-  /** Ready for a toast: "maior que 5 MB", "tipo não aceito". */
+  /** Pronto para um toast: "maior que 5 MB", "tipo não aceito". */
   reason: string;
 };
 
@@ -33,29 +33,27 @@ function matchesAccept(file: File, accept: string) {
 }
 
 export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children"> & {
-  /** The area's sentence: "Arraste o XML da nota, ou clique para escolher". */
+  /** A frase da área: "Arraste o XML da nota, ou clique para escolher". */
   label: ReactNode;
-  /** The fine print: formats and limit, so the person does not find out on rejection. */
+  /** A letra miúda: formatos e limite, para a pessoa não descobrir na recusa. */
   hint?: ReactNode;
-  /** Like in the native picker: `.xml,application/pdf`, `image/*`. */
+  /** Como no seletor nativo: `.xml,application/pdf`, `image/*`. */
   accept?: string;
-  /**
-   * Without it, the first file gets in and the others become rejections, with the reason `tooMany`.
-   */
+  /** Sem ele, entra o primeiro arquivo e os outros viram recusa, com o motivo `tooMany`. */
   multiple?: boolean;
-  /** In bytes. A bigger file does not get in: it becomes a rejection with the reason. */
+  /** Em bytes. Arquivo maior não entra: vira recusa com o motivo. */
   maxSize?: number;
   disabled?: boolean;
-  /** The ones that passed validation. Uploading is the app's job, since it knows the network. */
+  /** Os que passaram na validação. Subir é trabalho do app, que conhece a rede. */
   onSelect?: (files: File[]) => void;
-  /** The ones that did not pass, each with a readable reason. */
+  /** Os que não passaram, cada um com o motivo legível. */
   onReject?: (rejections: Rejection[]) => void;
   className?: string;
   /**
-   * The rejection reasons, to change the language: `invalidType` is the one for a type outside
-   * `accept`, `tooLarge` receives the limit already written ("5 MB") and returns the
-   * one for a file that is too big, and `tooMany` is the one for the leftover file when
-   * `multiple` is off and several arrive. Pass only the ones that change.
+   * Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora
+   * do `accept`, e `tooLarge` recebe o limite ja escrito ("5 MB") e devolve o
+   * do arquivo grande demais, e `tooMany` e o do arquivo que sobra quando
+   * `multiple` esta desligado e chegam varios. Passe so os que mudam.
    */
   labels?: Partial<FileUploadLabels>;
 };
@@ -174,20 +172,20 @@ export function FileUploadList({ className, ...props }: FileUploadListProps) {
 
 export type FileUploadItemProps = {
   name: string;
-  /** In bytes. The formatting ("48,2 KB") is the piece's. */
+  /** Em bytes. A formatacao ("48,2 KB") e da peca. */
   size: number;
-  /** 0 to 100 becomes a bar. Omitted, the file is ready. */
+  /** 0 a 100 vira barra. Omitido, o arquivo esta pronto. */
   progress?: number;
-  /** Wins over progress: shows the text and offers a retry. */
+  /** Vence o progresso: mostra o texto e oferece nova tentativa. */
   error?: ReactNode;
   onRetry?: () => void;
   onRemove: () => void;
   className?: string;
   /**
-   * The row's texts, to change the language: `retry` is the retry
-   * button, and `remove` and `uploading` receive the file name and return the
-   * name of the remove button and of the progress bar. Pass only the ones
-   * that change.
+   * Os textos da linha, para trocar o idioma: `retry` e o botao de nova
+   * tentativa, e `remove` e `uploading` recebem o nome do arquivo e devolvem o
+   * nome do botao de remover e o da barra de progresso. Passe so os
+   * que mudam.
    */
   labels?: Partial<FileUploadItemLabels>;
 };

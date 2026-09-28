@@ -1,4 +1,4 @@
-/* Generated from src/shared/state.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/state.ts por bun run gen:compartilhado. Nao editar. */
 
 export function clampCount(value: number, min = -Infinity, max = Infinity): number {
   return Math.min(Math.max(value, min), max);

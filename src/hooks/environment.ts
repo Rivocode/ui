@@ -11,7 +11,7 @@ export function useReducedMotion(): boolean {
 }
 
 export type UseDocumentTitleOptions = {
-  /** Restores the previous title when the component unmounts. Off by default. */
+  /** Devolve o titulo de antes quando o componente desmonta. Desligado por padrao. */
   restoreOnUnmount?: boolean;
 };
 
@@ -47,12 +47,9 @@ export function useNetworkStatus(): { online: boolean } {
 }
 
 export type UseIdleOptions = {
-  /** The events that count as activity. */
+  /** Os eventos que contam como atividade. */
   events?: string[];
-  /**
-   * The state before the first event. `false` by default: someone who just opened the screen is not
-   * idle.
-   */
+  /** O estado antes do primeiro evento. `false` por padrao: quem acabou de abrir a tela nao esta ausente. */
   initialState?: boolean;
 };
 

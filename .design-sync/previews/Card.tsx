@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@rivocode/ui'
 
-/** Complete */
+/** Completo */
 export function Full() {
   return (
     <Card className="max-w-md">
@@ -19,7 +19,7 @@ export function Full() {
   )
 }
 
-/** Elevations */
+/** Elevações */
 export function Elevations() {
   return (
     <div className="grid gap-4 sm:grid-cols-2">

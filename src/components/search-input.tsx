@@ -8,27 +8,21 @@ import { Kbd } from "./kbd";
 
 export type SearchInputProps = Omit<ComponentProps<"input">, "size" | "type"> & {
   /**
-   * The field's height. The input's native `size` is a number and is dropped, as in
-   * `Input`: here the variant carries the meaning. It exists because a
-   * search next to a `Select size="sm"` in a filter bar came out taller
-   * than its siblings, and the whole bar ended up crooked.
+   * A altura do campo. O `size` nativo do input e numero e sai fora, como no
+   * `Input`: aqui quem carrega o significado e a variante. Existe porque uma
+   * busca ao lado de um `Select size="sm"` numa barra de filtro saia mais
+   * alta que as irmas, e a barra inteira ficava torta.
    */
   size?: "sm" | "md" | "lg";
   /**
-   * The shortcut that opens or focuses the search, shown in a `Kbd` inside the field:
-   * `"mod+k"`. Only the drawing - registering the shortcut is the job of whoever builds the
-   * screen, because it is the screen that knows what else listens to the keyboard.
+   * O atalho que abre ou foca a busca, mostrado num `Kbd` dentro do campo:
+   * `"mod+k"`. So o desenho - registrar o atalho e trabalho de quem monta a
+   * tela, porque e ela que sabe o que mais escuta teclado.
    */
   shortcut?: string;
-  /**
-   * Called on Esc. Without it, Esc clears the field through its own `onChange`, and a controlled
-   * field clears when the consumer accepts the empty text.
-   */
+  /** Chamado no Esc. Sem ele, o Esc limpa o campo pelo proprio `onChange`, e o campo controlado limpa quando quem usa aceita o texto vazio. */
   onClear?: () => void;
-  /**
-   * Receives the text on every keystroke, as in `Input` and the native SearchInput. Without
-   * `onClear`, Esc calls it with `""`. Coexists with `onChange`.
-   */
+  /** Recebe o texto a cada tecla, como no `Input` e no SearchInput nativo. Sem `onClear`, o Esc chama com `""`. Convive com o `onChange`. */
   onValueChange?: (value: string) => void;
 };
 

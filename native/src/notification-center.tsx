@@ -25,22 +25,19 @@ export type { NotificationCenterLabels, NotificationFilter, NotificationTone };
 type Glyph = ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
 
 export type NotificationItem = {
-  /** Identifies the notification in the callbacks. */
+  /** Identifica a notificacao nos callbacks. */
   id: string;
-  /** The sentence that says what happened. Bold while unread. */
+  /** A frase que diz o que aconteceu. Vai em negrito enquanto nao foi lida. */
   title: string;
-  /** The detail, below the title, in up to two lines. */
+  /** O detalhe, embaixo do titulo, em ate duas linhas. */
   description?: string;
-  /** When it happened. Rendered as `RelativeTime`: "ha 5 minutos". */
+  /** Quando aconteceu. Sai como `RelativeTime`: "ha 5 minutos". */
   time: Date | string | number;
-  /** Already read. An unread one gets the dot, the bold and "Nao lida" for the screen reader. */
+  /** Ja foi lida. A nao lida ganha o ponto, o negrito e o "Nao lida" para o leitor de tela. */
   read: boolean;
-  /**
-   * The symbol on the left, hidden from the screen reader. The function
-   * receives the tone color.
-   */
+  /** O simbolo a esquerda, escondido do leitor. A funcao recebe a cor do tom. */
   icon?: Glyph;
-  /** Paints the symbol in the status tone. Default `neutral`. */
+  /** Pinta o simbolo no tom de estado. Padrao `neutral`. */
   tone?: NotificationTone;
 };
 
@@ -58,47 +55,46 @@ const HIDDEN = {
 } as const;
 
 export type NotificationCenterProps = {
-  /** The notifications already loaded, newest to oldest. The component fetches nothing. */
+  /** As notificacoes ja carregadas, da mais nova para a mais antiga. A peca nao busca nada. */
   items: NotificationItem[];
-  /** How many unread ones exist, when the server knows more than the loaded page. */
+  /** Quantas nao lidas existem, quando o servidor sabe mais do que a pagina carregada. */
   unreadCount?: number;
-  /** The sheet is open. Controlled, as everywhere in the native package. */
+  /** A folha aberta. Controlada, como em todo o pacote nativo. */
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /**
-   * The button's bell. The package ships no icon: the form that paints in the
-   * right color is the function, `icon={({ color, size }) => <Bell
-   * color={color} size={size} />}`.
+   * O sino do botao. O pacote nao traz icone: a forma que pinta na cor certa e
+   * a funcao, `icon={({ color, size }) => <Bell color={color} size={size} />}`.
    */
   icon: Glyph;
-  /** Called on tapping a notification. Opening counts as reading, and the sheet closes. */
+  /** Chamado ao tocar numa notificacao. Abrir conta como ler, e a folha fecha. */
   onItemPress?: (item: NotificationItem) => void;
-  /** Turns on the mark-as-read button on each unread one. */
+  /** Liga o botao de marcar como lida em cada nao lida. */
   onMarkRead?: (id: string) => void;
-  /** Turns on "Marcar todas como lidas" at the top of the sheet. */
+  /** Liga o "Marcar todas como lidas" no topo da folha. */
   onMarkAllRead?: () => void;
-  /** The filter, controlled. Without it, the component keeps it on its own, starting from `all`. */
+  /** O filtro, controlado. Sem ele, a peca guarda sozinha, a partir de `all`. */
   filter?: NotificationFilter;
   onFilterChange?: (filter: NotificationFilter) => void;
-  /** There is more to load: turns on "Carregar mais" at the end of the list. */
+  /** Ha mais para carregar: liga o "Carregar mais" no fim da lista. */
   hasMore?: boolean;
   onLoadMore?: () => void;
-  /** The next page is arriving: the button spins and does not accept touch. */
+  /** A proxima pagina esta chegando: o botao gira e nao aceita toque. */
   isLoadingMore?: boolean;
-  /** The first load has not returned yet: the list becomes placeholders. */
+  /** A primeira carga ainda nao voltou: a lista vira marca de lugar. */
   isLoading?: boolean;
-  /** The cap of the number on the bell: above it "99+" is shown. */
+  /** O teto do numero no sino: acima dele sai "99+". */
   max?: number;
-  /** The "now" for relative dates, for tests and frozen screens. */
+  /** O agora das datas relativas, para teste e tela congelada. */
   now?: Date;
-  /** The component's texts, to change the language or the wording. */
+  /** Os textos da peca, para trocar o idioma ou o termo. */
   labels?: Partial<NotificationCenterLabels>;
-  /** Styles the bell button, the same element as `classNames.trigger`. */
+  /** Veste o botao do sino, o mesmo elemento que `classNames.trigger`. */
   className?: string;
   /**
-   * Class per part: `trigger` (the bell button), `panel` (the sheet content),
-   * `header` (the row with the filter and mark-all), `filters`, `list`, `item`
-   * (each row) and `empty`.
+   * Classe por parte: `trigger` (o botao do sino), `panel` (o conteudo da
+   * folha), `header` (a fileira do filtro e do marcar todas), `filters`,
+   * `list`, `item` (cada linha) e `empty`.
    */
   classNames?: Slots<"trigger" | "panel" | "header" | "filters" | "list" | "item" | "empty">;
 };

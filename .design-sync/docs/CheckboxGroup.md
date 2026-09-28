@@ -1,14 +1,14 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # CheckboxGroup
 
-A group of checkboxes that share a list value.
+Grupo de caixas de marcar que compartilham um valor em lista.
 
-It gains what loose checkboxes do not have: with `allValues`, the "all" box
-checks and unchecks the whole group and shows the mixed state on its own,
-without anyone counting children by hand.
+Ganha o que caixas soltas não tem: com `allValues`, a caixa de "todos" marca e
+desmarca o grupo inteiro e mostra o estado misto sozinha, sem ninguém contar
+filho na mao.
 
 ```tsx
 <CheckboxGroup defaultValue={['pix', 'boleto']} aria-label="Formas aceitas">
@@ -18,18 +18,16 @@ without anyone counting children by hand.
 </CheckboxGroup>
 ```
 
-The `name` is the same on all of them, because it is a single field; the
-`value` is what tells one option from another and is what goes into the
-group's list.
+O `name` é o mesmo em todas, porque é um campo só; o `value` é o que distingue
+uma opção da outra e é o que entra na lista do grupo.
 
-**The label goes in as children**, and never in a `<span>` beside it: with
-children the box renders inside a `<label>` it builds itself, and clicking the
-text checks it. A hand-written `<label>` around it works in the browser and
-undoes the component's work, and it is one of the few things the contract
-lists under "never do".
+**O rótulo vai como filho**, e nunca num `<span>` ao lado: com filho a caixa sai
+dentro de um `<label>` que ela mesma monta, e clicar no texto marca. Um `<label>`
+escrito à mão em volta funciona no navegador e desfaz o trabalho da peça, e é
+uma das poucas coisas que o contrato lista em "nunca faça".
 
-For "select all", pass `allValues` with the whole list and mark the master box
-with `parent`:
+Para o "selecionar todas", passe `allValues` com a lista inteira e marque a caixa
+mestra com `parent`:
 
 ```tsx
 <CheckboxGroup allValues={['pix', 'boleto', 'cartao']} defaultValue={['pix']}>
@@ -39,13 +37,12 @@ with `parent`:
 </CheckboxGroup>
 ```
 
-Without `parent` the top box becomes just one more option: it does not read
-the group, does not show the mixed state, and checking all three does not
-check it. It is the easiest defect to miss here, because the screen looks right
-until someone checks half the list.
+Sem o `parent` a caixa de cima vira só mais uma opção: ela não lê o grupo, não
+mostra o estado misto, e marcar as três não a marca. É o defeito mais fácil de
+não notar aqui, porque a tela parece certa até alguém marcar metade da lista.
 
-## In React Native
+## No React Native
 
-Translates with `items` on the root and `value: string[]`, instead of one `Checkbox` per child, and without the web's `allValues`/`parent`: the master box stays outside the group, and it is a `Checkbox` with `indeterminate` when part of the list is checked.
+Traduz com `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho, e sem o `allValues`/`parent` do web: a caixa mestra fica fora do grupo, e é um `Checkbox` com `indeterminate` quando parte da lista está marcada.
 
-**`label` is the web's `aria-label` under another name**, for the same reason as `RadioGroup`: the list of boxes answers a question, and without the set's name each box presents itself without saying which one. Naming also turns on the list role, because in React Native there is no `group` role and a `View` with no role at all carries no name.
+**O `label` é o `aria-label` do web com outro nome**, pelo mesmo motivo do `RadioGroup`: a lista de caixas responde uma pergunta, e sem o nome do conjunto cada caixa se apresenta sem dizer qual. Nomear liga junto o papel de lista, porque no React Native não existe papel de `group` e uma `View` sem papel nenhum não carrega nome.

@@ -69,35 +69,35 @@ function TimeColumn({
 }
 
 export type TimePickerLabels = {
-  /** Name of the hours column. */
+  /** Nome da coluna das horas. */
   hours?: string;
-  /** Name of the minutes column. */
+  /** Nome da coluna dos minutos. */
   minutes?: string;
 };
 
 export type TimePickerProps = {
-  /** The chosen time, in 24h and always `"HH:MM"`. With no choice it is `""`. */
+  /** A hora escolhida, em 24h e sempre `"HH:MM"`. Sem escolha e `""`. */
   value: string;
-  /** Called only with a whole time, the same way as in `TimeField`. */
+  /** Chamado so com hora inteira, do mesmo jeito que no `TimeField`. */
   onValueChange: (value: string) => void;
-  /** What the screen reader announces on the trigger, and the sheet title. */
+  /** O que o leitor de tela anuncia no gatilho, e o titulo da folha. */
   label: string;
-  /** What the trigger shows with no choice: "Escolha o horario". */
+  /** O que o gatilho mostra sem escolha: "Escolha o horario". */
   placeholder?: string;
-  /** The minute interval the right column steps by. Does not reject a time off the grid. */
+  /** De quantos em quantos minutos a coluna da direita anda. Nao recusa hora fora da grade. */
   step?: number;
-  /** First time of the window, in `"HH:MM"`. It trims both columns. */
+  /** Primeira hora da janela, em `"HH:MM"`. Ela recorta as duas colunas. */
   min?: string;
-  /** Last time of the window, in `"HH:MM"`. It trims both columns. */
+  /** Ultima hora da janela, em `"HH:MM"`. Ela recorta as duas colunas. */
   max?: string;
   disabled?: boolean;
-  /** The names of the two columns. Changing one does not erase the other. */
+  /** Os nomes das duas colunas. Trocar um nao apaga o outro. */
   labels?: TimePickerLabels;
-  /** Styles the trigger, the same node as `classNames.trigger`. */
+  /** Veste o gatilho, o mesmo no de `classNames.trigger`. */
   className?: string;
   /**
-   * Class per part: `trigger` (the trigger), `panel` (the sheet), `column` (the
-   * list of each column) and `option` (each hour and each minute).
+   * Classe por parte: `trigger` (o gatilho), `panel` (a folha), `column` (a
+   * lista de cada coluna) e `option` (cada hora e cada minuto).
    */
   classNames?: Slots<"trigger" | "panel" | "column" | "option">;
 };

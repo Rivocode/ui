@@ -10,39 +10,35 @@ import { Sheet } from "./sheet";
 import { Text } from "./text";
 
 export type AutocompleteItemGroup = {
-  /** The family header in the sheet, announced as a header: "Paraiba". */
+  /** O cabecalho da familia na folha, anunciado como cabecalho: "Paraiba". */
   label: string;
   items: string[];
 };
 
 export type AutocompleteProps = {
   /**
-   * The suggestions, as text: a flat list or `{ label, items }` groups. A
-   * suggestion is not a restriction - the typed text is valid even outside it.
+   * As sugestoes, em texto: lista rasa ou grupos `{ label, items }`. Sugestao
+   * nao e restricao - o texto digitado vale mesmo fora dela.
    */
   items: string[] | AutocompleteItemGroup[];
-  /** The field text, typed or coming from a tapped suggestion. */
+  /** O texto do campo, digitado ou vindo de uma sugestao tocada. */
   value: string;
-  /** Receives the text on every keystroke, and the whole suggestion when it is tapped. */
+  /** Recebe o texto a cada tecla, e a sugestao inteira quando ela e tocada. */
   onValueChange: (value: string) => void;
-  /** The field name: screen reader label and sheet title. */
+  /** O nome do campo: rotulo do leitor de tela e titulo da folha. */
   label: string;
   placeholder?: string;
-  /** What to say when no suggestion matches the text. The text is still valid. */
+  /** O que dizer quando nenhuma sugestao casa com o texto. O texto continua valendo. */
   emptyMessage?: string;
   disabled?: boolean;
-  /**
-   * Forces the error border of the closed field, or clears it with `false`,
-   * over the `Field` error.
-   */
+  /** Forca a borda de erro do campo fechado, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
-  /** Styles the closed field; the suggestions sheet belongs to the platform. */
+  /** Veste o campo fechado; a folha de sugestoes e da plataforma. */
   className?: string;
   /**
-   * The component's texts, to change the language: `hint` is the hint of the
-   * closed field, `count` what the screen reader hears with the number of
-   * suggestions and `done` the button that closes the sheet. Pass only the ones
-   * that change.
+   * Os textos da peca, para trocar o idioma: `hint` e a dica do campo fechado,
+   * `count` o que o leitor de tela ouve com a quantidade de sugestoes e `done`
+   * o botao que fecha a folha. Passe so os que mudam.
    */
   labels?: Partial<AutocompleteLabels>;
 };

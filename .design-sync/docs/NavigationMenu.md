@@ -1,18 +1,18 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # NavigationMenu
 
-A site's top navigation, with a panel per section.
+A navegação de topo de site, com painel por secao.
 
-It is not `Menu`: that one lists actions that get executed, this one lists
-places to go, and the panel can have text, images and several columns. The
-screen reader announces the two in different ways, and swapping one for the
-other makes the action menu promise navigation that does not exist.
+Não e `Menu`: aquele lista ações que se executam, este lista lugares para onde
+ir, e o painel pode ter texto, imagem e várias colunas. O leitor de tela anuncia
+os dois de formas diferentes, e trocar um pelo outro faz o menu de ações
+prometer navegação que não existe.
 
-**On an application screen, `Sidebar` usually serves better.** This one is for
-marketing pages and portals.
+**Em tela de aplicação, `Sidebar` costuma servir melhor.** Este e para página de
+marketing e portal.
 
 ```tsx
 <NavigationMenu>
@@ -28,16 +28,15 @@ marketing pages and portals.
 </NavigationMenu>
 ```
 
-The panel is a single one and lives outside the list: it is what slides from
-one section to the other instead of flickering between panels.
+O painel e único e fica fora da lista: e ele que desliza de uma secao para a
+outra em vez de piscar entre paineis.
 
-## Parts
+## As partes
 
-`NavigationMenuViewport` is the panel where the content of the open item
-appears. It lives outside the items, and not inside each one: that way the
-switch between two neighboring menus animates from one to the other instead of
-closing and opening.
+`NavigationMenuViewport` é o painel onde o conteúdo do item aberto aparece.
+Fica fora dos itens, e não dentro de cada um: assim a troca entre dois menus
+vizinhos anima de um para o outro em vez de fechar e abrir.
 
-## In React Native
+## No React Native
 
-Does not port, by decision - a desktop idiom; native navigation is the router's tab bar and drawer. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.
+Não porta, por decisão - idioma de mesa; navegação nativa é tab bar e drawer do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

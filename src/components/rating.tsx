@@ -25,46 +25,46 @@ export type RatingProps = Omit<
   ComponentPropsWithoutRef<"div">,
   "defaultValue" | "onChange" | "children"
 > & {
-  /** The chosen rating, controlled. `0` is none. Use with `onValueChange`. */
+  /** A nota escolhida, controlada. `0` e nenhuma. Use com `onValueChange`. */
   value?: number;
-  /** The rating on mount, when nobody controls it. Without it, none. */
+  /** A nota ao montar, quando ninguem controla. Sem ela, nenhuma. */
   defaultValue?: number;
   /**
-   * Called with the new rating: by click, by the arrows, by Home and End. With
-   * `clearable`, clicking the chosen rating again calls it with `0`.
+   * Chamado com a nota nova: pelo clique, pelas setas, por Home e End. Com
+   * `clearable`, clicar de novo na nota escolhida chama com `0`.
    */
   onValueChange?: (value: number) => void;
-  /** How many stars. Default 5. */
+  /** Quantas estrelas. Padrao 5. */
   max?: number;
   /**
-   * Accepts half stars: the arrows move in halves, and the screen reader hears
-   * one option per half rating. The pointer target is still the whole star; the
-   * half where reading starts (the left, or the right in rtl) is the rating `n - 0,5`.
+   * Aceita meia estrela: as setas andam de meio em meio, e o leitor de tela ouve
+   * uma opcao por meia nota. O alvo do ponteiro continua a estrela inteira; a
+   * metade de inicio da leitura (a esquerda, ou a direita em rtl) e a nota `n - 0,5`.
    */
   allowHalf?: boolean;
   /**
-   * Clicking the chosen rating again goes back to none. Off by default:
-   * on most screens a rating, once given, can only be changed.
+   * Clicar de novo na nota escolhida volta a nenhuma. Desligado por padrao:
+   * na maioria das telas a nota, uma vez dada, so se troca.
    */
   clearable?: boolean;
   /**
-   * Display only: a product's average, the rating someone else gave. Accepts
-   * any fraction (4,3 paints 30% of the fifth star) and is exposed as a single image
-   * to the screen reader, with the name "4,3 de 5".
+   * So exibe: a media de um produto, a nota que outra pessoa deu. Aceita
+   * fracao qualquer (4,3 pinta 30% da quinta estrela) e sai como uma imagem so
+   * para o leitor de tela, com o nome "4,3 de 5".
    */
   readOnly?: boolean;
-  /** Turns off picking. The stars are rendered in the disabled colors. */
+  /** Desliga a escolha. As estrelas saem nas cores de desabilitado. */
   disabled?: boolean;
-  /** The star's size. Each one's box is never below a 24px target. */
+  /** O tamanho da estrela. A caixa de cada uma nunca fica abaixo de 24px de alvo. */
   size?: "sm" | "md" | "lg";
   /**
-   * Replaces the star with another lucide icon (`<Heart />`, `<ThumbsUp />`).
-   * The filled one is rendered with `fill` in the highlight color, so the icon needs to have area.
+   * Troca a estrela por outro icone do lucide (`<Heart />`, `<ThumbsUp />`).
+   * O cheio sai com `fill` na cor de destaque, entao o icone precisa ter area.
    */
   icon?: ReactNode;
-  /** The field's name in a `<form>`: the rating goes in a hidden `input`. */
+  /** Nome do campo num `<form>`: a nota vai num `input` escondido. */
   name?: string;
-  /** The texts the screen reader hears: the group's name, each rating's and the average's. */
+  /** Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media. */
   labels?: Partial<RatingLabels>;
   classNames?: Slots<"item" | "empty" | "filled">;
 };

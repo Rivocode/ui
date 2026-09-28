@@ -1,6 +1,6 @@
 import { Accordion, AccordionItem } from '@rivocode/ui'
 
-/** Questions */
+/** Perguntas */
 export function Questions() {
   return (
     <div className="w-96">

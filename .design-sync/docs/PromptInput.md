@@ -1,12 +1,12 @@
 ---
-category: AI
+category: IA
 ---
 
 # PromptInput
 
-The field where the person writes to an assistant: it grows with the text,
-sends on Enter, breaks the line on Shift+Enter and swaps the send button for
-the stop button while the answer arrives. Lives in `@rivocode/ui/ai`.
+O campo onde a pessoa escreve para um assistente: cresce com o texto, envia no
+Enter, quebra a linha no Shift+Enter e troca o botão de enviar pelo de parar
+enquanto a resposta chega. Vive em `@rivocode/ui/ai`.
 
 ```tsx
 import { PromptInput } from '@rivocode/ui/ai'
@@ -18,39 +18,39 @@ import { PromptInput } from '@rivocode/ui/ai'
 />
 ```
 
-The piece knows no model, no SDK and no network. It delivers the text in
-`onSubmit` and receives `streaming` back; what talks to the model is your
-screen, with the SDK it already uses.
+A peça não conhece modelo, SDK nem rede. Ela entrega o texto no `onSubmit` e
+recebe de volta o `streaming`; quem fala com o modelo é a sua tela, com o SDK
+que ela já usa.
 
-## Sending, breaking the line and stopping
+## Enviar, quebrar a linha e parar
 
-- **Enter sends.** With the field empty (whitespace only counts as empty),
-  disabled or in `streaming`, it sends nothing.
-- **Shift+Enter breaks the line.** The hint is wired to the field through
-  `aria-describedby`, so a screen reader user hears both rules on entering it.
-- **Enter in the middle of a keyboard composition does not send.** Whoever
-  types with a dead-key accent or with an ideogram keyboard confirms the
-  character with Enter, and sending half the message there is the most common
-  defect of this kind of field.
-- **In `streaming`, the button becomes the stop button**, named "Parar
-  resposta", and calls `onStop`. The field keeps accepting text for the next
-  question: only sending waits.
-- **Focus is not lost when the button disables.** Whoever presses Enter on
-  "Parar resposta", or is on it when the answer finishes, sees the button go
-  back to being the send button, disabled because the field is empty. Focus
-  goes back to the field, and does not fall to the top of the page on every
-  turn. The same goes for whoever sends through the button.
+- **Enter envia.** Com o campo vazio (só espaço conta como vazio), desabilitado
+  ou em `streaming`, não envia nada.
+- **Shift+Enter quebra a linha.** A dica está ligada ao campo por
+  `aria-describedby`, então quem usa leitor de tela ouve as duas regras ao
+  entrar nele.
+- **Enter no meio de uma composição do teclado não envia.** Quem digita com
+  acento morto ou com teclado de ideogramas confirma a letra com Enter, e
+  mandar a mensagem pela metade ali é o defeito mais comum desse tipo de campo.
+- **Em `streaming`, o botão vira o de parar**, com o nome "Parar resposta", e
+  chama o `onStop`. O campo continua aceitando texto para a próxima pergunta:
+  só o envio espera.
+- **O foco não se perde quando o botão desabilita.** Quem aperta Enter no
+  "Parar resposta", ou está nele quando a resposta termina, vê o botão voltar a
+  ser o de enviar, desabilitado porque o campo está vazio. O foco volta para o
+  campo, e não cai no começo da página a cada turno. O mesmo vale para quem
+  envia pelo botão.
 
-The field grows up to `maxRows` lines (8, without the prop) and, from there
-on, scrolls inside. The height is also recomputed when the width changes and
-when the house font finishes loading: two-line text is not cut off on a phone,
-nor after the window shrinks.
+O campo cresce até `maxRows` linhas (8, sem a prop) e, dali em diante, rola por
+dentro. A altura se refaz também quando a largura muda e quando a fonte da casa
+termina de carregar: o texto de duas linhas não fica cortado no celular nem
+depois de a janela encolher.
 
-## Controlled or not
+## Controlado ou não
 
-Without `value`, the piece holds the text and clears it after sending. With
-`value` and `onValueChange`, you are the one who clears it, in `onSubmit`: that
-is what lets you put the text back in the field when sending fails.
+Sem `value`, a peça guarda o texto e o limpa depois de enviar. Com `value` e
+`onValueChange`, quem limpa é você, no `onSubmit`: é o que permite devolver o
+texto ao campo quando o envio falha.
 
 ```tsx
 const [text, setText] = useState('')
@@ -66,19 +66,19 @@ const [text, setText] = useState('')
 />
 ```
 
-## Attachments, actions and counter
+## Anexos, ações e contador
 
-`attachments` is the place above the field for what has already been
-attached: chips, thumbnails. `actions` is the left corner of the footer, to
-attach, pick the model or dictate. The piece **does not pick files**: it only
-reserves the place, and the picker is yours.
+`attachments` é o lugar acima do campo para o que já foi anexado: fichas,
+miniaturas. `actions` é o canto esquerdo do rodapé, para anexar, escolher o
+modelo ou ditar. A peça **não escolhe arquivo**: ela só reserva o lugar, e o
+seletor é seu.
 
-`showCount` shows the character count, like `120/4000` when there is
-`maxLength`. On hitting the ceiling the count goes to the danger tone, and the
-field refuses what goes beyond it. The counter is wired to the field through
-`aria-describedby`, spelled out ("120 de 4000 caracteres"), and the ceiling is
-announced in a live region ("Limite de 4000 caracteres atingido."): whoever
-cannot see the color finds out why the key stopped writing.
+`showCount` mostra a contagem de caracteres, como `120/4000` quando há
+`maxLength`. Ao bater no teto a contagem vai para o tom de perigo, e o campo
+recusa o que passa dele. O contador está ligado ao campo por
+`aria-describedby`, dito por extenso ("120 de 4000 caracteres"), e o teto é
+avisado numa região viva ("Limite de 4000 caracteres atingido."): quem não vê a
+cor fica sabendo por que a tecla parou de escrever.
 
 ```tsx
 <PromptInput
@@ -93,15 +93,14 @@ cannot see the color finds out why the key stopped writing.
 />
 ```
 
-## Names
+## Nomes
 
-The field is called "Mensagem", the button "Enviar mensagem" and the stop one
-"Parar resposta". `label`, `labels.submit` and `labels.stop` swap all three,
-for another language or for an assistant with a name of its own.
+O campo se chama "Mensagem", o botão "Enviar mensagem" e o de parar "Parar
+resposta". `label`, `labels.submit` e `labels.stop` trocam os três, para
+outra língua ou para um assistente com nome próprio.
 
-`labels` swaps what the screen reader hears beyond the names: `hint` (the
-keyboard hint), `count` (a function of the count and the ceiling) and `limit`
-(the ceiling notice).
+`labels` troca o que o leitor de tela ouve além dos nomes: `hint` (a dica do
+teclado), `count` (função da contagem e do teto) e `limit` (o aviso do teto).
 
 ```tsx
 <PromptInput
@@ -114,29 +113,30 @@ keyboard hint), `count` (a function of the count and the ceiling) and `limit`
 />
 ```
 
-## Parts
+## Partes
 
-`classNames` reaches `attachments`, `textarea`, `footer`, `count` and `submit`
-(the send button and the stop button, which take the same place).
+`classNames` alcança `attachments`, `textarea`, `footer`, `count` e `submit` (o
+botão de enviar e o de parar, que ocupam o mesmo lugar).
 
-## When not to use
+## Quando não usar
 
-- **Long form text** is `Textarea`. `Textarea` holds a note, a service
-  description, and is submitted together with the rest of the form;
-  `PromptInput` is a conversation, and each Enter is a send. A notes field that
-  sends on Enter loses the person's text at the first line break.
-- **Search** is `SearchInput`. A question to an assistant and a list filter
-  look like the same box, but search answers while you type and has no stop
-  button.
+- **Texto longo de formulário** é `Textarea`. O `Textarea` guarda uma
+  observação, uma descrição de serviço, e é enviado junto com o resto do
+  formulário; o `PromptInput` é uma conversa, e cada Enter é um envio. Um
+  campo de observação que envia no Enter perde o texto da pessoa na primeira
+  quebra de linha.
+- **Busca** é `SearchInput`. Pergunta para um assistente e filtro de lista
+  parecem a mesma caixa, mas a busca responde enquanto se digita e não tem
+  botão de parar.
 
-## In React Native
+## No React Native
 
-Translates, on its own path `@rivocode/ui-native/ai`, with the same `streaming`, `onStop`, `attachments`, `actions`, `maxLength`, `showCount`, `labels` and the same accessible names ("Mensagem", "Enviar mensagem", "Parar resposta").
+Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`, `onStop`, `attachments`, `actions`, `maxLength`, `showCount`, `labels` e os mesmos nomes acessíveis ("Mensagem", "Enviar mensagem", "Parar resposta").
 
-**The counter arrives through the field.** The hint (`labels.hint`) and the spelled-out count (`labels.count`) go in the field's `accessibilityHint`, and the visible number stays out of the accessibility tree. On hitting `maxLength`, the screen reader announces `labels.limit`, once per arrival at the ceiling. The default hint talks about the return key, which here breaks the line.
+**O contador chega pelo campo.** A dica (`labels.hint`) e a contagem por extenso (`labels.count`) vão no `accessibilityHint` do campo, e o número visível fica fora da árvore de acessibilidade. Ao bater no `maxLength`, o leitor de tela anuncia `labels.limit`, uma vez por chegada ao teto. A dica padrão fala da tecla de retorno, que aqui quebra a linha.
 
-**It is controlled.** `value` and `onValueChange` are required, like every field in the package, and clearing the field after `onSubmit` is the caller's job.
+**É controlado.** `value` e `onValueChange` são obrigatórios, como todo campo do pacote, e quem limpa o campo depois do `onSubmit` é quem chamou.
 
-**Submitting is only through the button.** On the phone keyboard, the return key of a multi-line field breaks the line, and that is what the person expects of it; there is no Shift to separate the two gestures. The field grows up to `maxRows` lines (8, without the prop, as on the web) and scrolls internally.
+**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de várias linhas quebra a linha, e é isso que a pessoa espera dela; não há Shift para separar os dois gestos. O campo cresce até `maxRows` linhas (8, sem a prop, como no web) e rola por dentro.
 
-The parts are styled through the same `classNames` as the web: `attachments`, `textarea`, `footer`, `count` and `submit`, which also styles the stop button in its place.
+As partes vestem pelo mesmo `classNames` do web: `attachments`, `textarea`, `footer`, `count` e `submit`, que veste também o botão de parar no lugar dele.

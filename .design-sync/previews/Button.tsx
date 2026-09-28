@@ -1,7 +1,7 @@
 import { MessageCircle } from 'lucide-react'
 import { Button } from '@rivocode/ui'
 
-/** Variants */
+/** Variantes */
 export function Variants() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -14,7 +14,7 @@ export function Variants() {
   )
 }
 
-/** Sizes */
+/** Tamanhos */
 export function Sizes() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -29,7 +29,7 @@ export function Sizes() {
   )
 }
 
-/** States */
+/** Estados */
 export function States() {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -39,7 +39,7 @@ export function States() {
   )
 }
 
-/** As a link */
+/** Como link */
 export function AsLink() {
   return (
     <Button render={<a href="https://rivocode.com" />} size="xl" shape="pill">

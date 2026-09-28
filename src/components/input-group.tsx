@@ -6,9 +6,9 @@ import { cn } from "../lib/cn";
 
 export type InputGroupProps = ComponentProps<"div"> & {
   /**
-   * The frame's height, which has to match that of the field inside it. Input
-   * has three sizes and the frame had one: an `sm` field inside it came out with
-   * the medium's padding.
+   * A altura da moldura, que precisa acompanhar a do campo de dentro. O Input
+   * tem tres tamanhos e a moldura tinha um: um campo `sm` dentro dela saia com
+   * o respiro do medio.
    */
   size?: "sm" | "md" | "lg";
 };

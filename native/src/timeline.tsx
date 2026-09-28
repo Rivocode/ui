@@ -15,37 +15,38 @@ const TONE: Record<TimelineTone, string> = {
 };
 
 export type TimelineEvent = {
-  /** What happened: "Nota autorizada pela Sefaz". */
+  /** O que aconteceu: "Nota autorizada pela Sefaz". */
   title: string;
   /**
-   * When it happened, already written: `formatDate(...)`, "12/03 às 14:20", "há
-   * 2 minutos". `string`, and not a `RelativeTime` as on the web, and the
-   * reason is the screen reader. Each event is a single stop, and the label of
-   * that stop is built here from this text: a live clock inside would keep
-   * re-rendering on screen while the label stayed stuck at the "há 2 minutos"
-   * from when the event mounted. An audit trail cannot state two different
-   * times.
+   * Quando aconteceu, já escrito: `formatDate(...)`, "12/03 às 14:20", "há 2
+   * minutos".
+   *
+   * `string`, e não um `RelativeTime` como no web, e a razão é o leitor de
+   * tela. Cada evento é uma parada só, e o rótulo dessa parada é montado aqui
+   * a partir deste texto: um relógio vivo lá dentro continuaria se refazendo
+   * na tela enquanto o rótulo ficaria preso no "há 2 minutos" de quando o
+   * evento montou. Trilha de auditoria não pode dizer duas horas diferentes.
    */
   at?: string;
-  /** Who did it. In an audit trail, it is half the information. */
+  /** Quem fez. Numa trilha de auditoria, é metade da informação. */
   by?: string;
-  /** The detail below the title, when the title is not enough. */
+  /** O detalhe embaixo do título, quando o título não basta. */
   description?: string;
   tone?: TimelineTone;
   /**
-   * What has not happened yet: hollow marker, dimmed text, and the screen
-   * reader saying so in so many words. Filling the marker of a future event
-   * makes the line promise it already happened, which is exactly the mistake an
-   * audit trail cannot make.
+   * O que ainda não aconteceu: marcador vazado, texto apagado, e o leitor de
+   * tela dizendo isso com todas as letras. Preencher o marcador de um evento
+   * futuro faz a linha prometer que ele já ocorreu, que é exatamente o erro
+   * que uma trilha de auditoria não pode cometer.
    */
   pending?: boolean;
-  /** What the screen reader announces. By default, the sentence built from the rest. */
+  /** O que o leitor de tela anuncia. Por padrão, a frase montada com o resto. */
   accessibilityLabel?: string;
 };
 
 export type TimelineProps = {
   items: TimelineEvent[];
-  /** What the line tells: "Histórico da nota 4471". */
+  /** O que a linha conta: "Histórico da nota 4471". */
   label?: string;
   className?: string;
 };

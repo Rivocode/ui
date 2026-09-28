@@ -1,12 +1,11 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # ComboboxValue
 
-What is selected, so the chips know what to draw.
+O que está escolhido, para as fichas saberem o que desenhar.
 
-It renders no element at all: it takes a function and returns whatever that
-function builds. It is the piece that was missing for `ComboboxChips` to be of
-any use. Without it, multiple selection with chips was only possible by
-importing straight from Base UI.
+Não renderiza elemento nenhum: recebe uma função e devolve o que ela montar. É a
+peça que faltava para o `ComboboxChips` servir para alguma coisa. Sem ela, a
+escolha múltipla com ficha só era possível importando direto da Base UI.

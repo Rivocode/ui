@@ -1,4 +1,4 @@
-/* Generated from src/shared/rich-text.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/rich-text.ts por bun run gen:compartilhado. Nao editar. */
 
 export type RichTextMark = {
   type: string;

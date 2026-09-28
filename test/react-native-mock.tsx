@@ -1,9 +1,9 @@
 /**
- * The react-native that the native component tests see. The real package does
- * not run outside metro (Flow, native modules), and the tests do not measure RN:
- * they measure OUR logic - accessibility role, state, the four DataList
- * endings. Each component becomes a host element with the same name, and
- * react-test-renderer lets the props be read straight from the tree.
+ * O react-native que os testes das pecas nativas enxergam. O pacote real nao
+ * roda fora do metro (Flow, modulos nativos), e os testes nao medem o RN:
+ * medem a NOSSA logica - papel de acessibilidade, estado, os quatro finais do
+ * DataList. Cada componente vira um host element com o mesmo nome, e o
+ * react-test-renderer deixa ler as props direto da arvore.
  */
 import { createElement, Fragment, useImperativeHandle, type ReactNode, type Ref } from "react";
 
@@ -88,34 +88,32 @@ export const SectionList = ({
     ),
   );
 
-/** As on the device: with visible={false} the Modal content does not exist. */
+/** Como no aparelho: com visible={false} o conteudo do Modal nao existe. */
 export const Modal = (props: AnyProps & { visible?: boolean }) =>
   props.visible === false ? null : createElement("Modal", props);
 
-/* The real Platform answers for the device the app runs on; here it is
-   pinned to iOS, and the pinning is the point. What is measured through
-   `Platform.select` is the mono font (native/src/font.ts): the claim is that the
-   family stopped being generic - `ui-monospace` is not installed on iOS nor on
-   Android -, and not which branch of the select answered. Pinned, the result does
-   not depend on where the suite runs; randomized or read from the process, one of
-   the two branches would go uncovered and the failure would show up only on the
-   machine of whoever has the other OS. */
+/* O Platform de verdade responde pelo aparelho onde o app roda; aqui ele e
+   fixo em iOS, e a fixacao e o ponto. O que se mede sobre o `Platform.select`
+   e a fonte mono (native/src/font.ts): a afirmacao e que a familia deixou de
+   ser generica - `ui-monospace` nao existe instalada em iOS nem em Android -,
+   e nao qual ramo do select respondeu. Fixo, o resultado nao depende de onde a
+   suite roda; sorteado ou lido do processo, um dos dois ramos ficaria sem
+   cobertura e a falha apareceria so na maquina de quem tem o outro OS. */
 export const Platform = {
   OS: "ios" as const,
   select: <T,>(spec: { ios?: T; android?: T; native?: T; default?: T }): T | undefined =>
     spec.ios ?? spec.native ?? spec.default,
 };
 
-/* The real I18nManager reads the device locale ONCE, when the module loads:
-   `isRTL` is a copy of a native constant, and `forceRTL` talks to the native
-   side without touching that boolean - the switch only takes effect after the
-   app reloads. Here it starts as `false`, which is the world the 340 tests
-   already ran in, and `forceRTL` stays the no-op it is there. Whoever wants the
-   other world writes `I18nManager.isRTL = true` BEFORE mounting and restores it
-   afterwards: it is the same gesture as on the device, where the tree is born
-   knowing which side reading starts from. Pinning to `true` would cover one side
-   and leave the other uncovered; and randomizing would make the suite depend on
-   the machine. */
+/* O I18nManager de verdade le a locale do aparelho UMA vez, na carga do
+   modulo: o `isRTL` e uma copia de uma constante nativa, e o `forceRTL` fala com
+   o lado nativo sem mexer nesse booleano - a troca so vale depois de recarregar
+   o app. Aqui ele nasce em `false`, que e o mundo onde os 340 testes ja
+   rodavam, e o `forceRTL` continua sendo o nada que ele e la. Quem quer o outro
+   mundo escreve `I18nManager.isRTL = true` ANTES de montar e devolve depois: e
+   o mesmo gesto do aparelho, onde a arvore ja nasce sabendo de que lado a
+   leitura comeca. Fixar em `true` cobriria um lado e deixaria o outro a
+   descoberto; e sortear faria a suite depender da maquina. */
 let rtl = false;
 
 export const I18nManager = {
@@ -132,7 +130,7 @@ export const I18nManager = {
   swapLeftAndRightInRTL: (_swap: boolean) => {},
 };
 
-/** The Slider only needs the handlers to exist; gestures are not tested here. */
+/** O Slider so precisa que os handlers existam; gesto nao se testa aqui. */
 const responders: unknown[] = [];
 
 export const PanResponder = {
@@ -144,8 +142,8 @@ export const PanResponder = {
 
 export const panResponders = responders;
 
-/* The real Appearance is the bridge to the system; here it is a variable, so
-   the provider test can assert which scheme was requested. */
+/* O Appearance de verdade e a ponte com o sistema; aqui e uma variavel, para
+   o teste do provider poder afirmar qual esquema foi pedido. */
 let scheme: "light" | "dark" | null = "dark";
 const listeners = new Set<(event: { colorScheme: "light" | "dark" | null }) => void>();
 
@@ -163,10 +161,10 @@ export const Appearance = {
 
 export const useColorScheme = () => scheme;
 
-/* The real AppState is the bridge to the device lifecycle; here it is a
-   variable plus an emitter, so the RelativeTime test can send the app to sleep
-   and wake it up. `setState` does NOT exist in react-native: the system changes
-   the state there, and here the test does. */
+/* O AppState de verdade e a ponte com o ciclo de vida do aparelho; aqui e uma
+   variavel mais um emissor, para o teste do RelativeTime poder mandar o app
+   dormir e acordar. O `setState` NAO existe no react-native: o sistema e quem
+   muda o estado la, e aqui e o teste. */
 type AppStateValue = "active" | "background" | "inactive";
 const appStateListeners = new Set<(state: AppStateValue) => void>();
 let appState: AppStateValue = "active";
@@ -180,7 +178,7 @@ export const AppState = {
     appStateListeners.add(listener);
     return { remove: () => appStateListeners.delete(listener) };
   },
-  /** Double only: pushes the change the system would push. */
+  /** So no duble: empurra a mudanca que o sistema empurraria. */
   setState: (next: AppStateValue) => {
     appState = next;
     for (const listener of appStateListeners) listener(next);
@@ -198,12 +196,12 @@ export const AccessibilityInfo = {
     reduceMotionListeners.add(listener);
     return { remove: () => reduceMotionListeners.delete(listener) };
   },
-  /** Double only: turns the system "reduce motion" on or off. */
+  /** So no duble: liga ou desliga o "reduzir movimento" do sistema. */
   setReduceMotion: (next: boolean) => {
     reduceMotion = next;
     for (const listener of reduceMotionListeners) listener(next);
   },
-  /** Double only: the value the system would answer right now. */
+  /** So no duble: o valor que o sistema responderia agora. */
   get reduceMotionNow() {
     return reduceMotion;
   },

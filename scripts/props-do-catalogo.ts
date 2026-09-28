@@ -1,0 +1,297 @@
+/**
+ * As props de cada peca, lidas do compilador.
+ *
+ * A tabela de props e a parte da documentacao que apodrece primeiro, e ate
+ * aqui ela saia de um snapshot de `.d.ts` que o sync do bundle deixou para
+ * tras: o arquivo dizia `from @rivocode/ui@0.1.0`, e o site publicava as props
+ * daquela versao. O que se perdia era sistematico, e nao caso a caso - o
+ * snapshot nao trazia callback nenhum, entao metade das pecas controladas
+ * aparecia sem `onValueChange`, sem `onOpenChange`, sem `onCheckedChange`. E
+ * peca que mudou de forma desde entao aparecia como "nao tem prop propria",
+ * tendo.
+ *
+ * Aqui quem responde e o proprio checker: para cada export que e componente,
+ * o tipo do primeiro parametro, sem o que vem de `@types/react` - que e o
+ * elemento raiz, e mora numa linha so no fim da tabela.
+ *
+ * `--check` falha quando o JSON versionado divergir dos tipos, e e ele que
+ * entra no `bun run check`: assim a doc nao pode mais divergir em silencio.
+ */
+import { API, SignatureKind, SymbolFlags } from "typescript/unstable/async";
+
+const RAIZ = process.cwd();
+const TARGET = "apps/docs/src/component-props.json";
+
+/** As entradas publicas do pacote. O que nao sai por elas nao e documentavel. */
+const ENTRY_POINTS = [
+  "src/index.ts",
+  "src/form/index.ts",
+  "src/chart/index.ts",
+  "src/ai/index.ts",
+  "src/dnd/index.ts",
+  "src/editor/index.ts",
+];
+
+/**
+ * O que todo componente repassa ao elemento raiz. Fica numa linha so no fim da
+ * tabela, em vez de repetido em 165 paginas.
+ */
+const FORWARDED = new Set(["className", "style", "id", "children"]);
+
+const OWN_SOURCE = `${RAIZ}/src/`.toLowerCase();
+
+const isOwnSource = (path: string) =>
+  path.toLowerCase().startsWith(OWN_SOURCE) && !path.includes("/node_modules/");
+
+export type CatalogProp = {
+  name: string;
+  type: string;
+  required: boolean;
+  note?: string;
+  /**
+   * A versao em que a prop apareceu no catalogo.
+   *
+   * Nao e escrita a mao: `--desde <versao>` carimba, no lancamento, tudo que
+   * ainda nao tem carimbo. Assim a primeira versao em que a prop existiu e a
+   * que fica registrada, e ninguem precisa lembrar de anotar - lembrar e
+   * exatamente o que ninguem faz.
+   *
+   * Prop sem carimbo e prop que ainda nao saiu em versao nenhuma.
+   */
+  since?: string;
+};
+
+export type CatalogPiece = {
+  /** Se ela aceita os atributos do elemento raiz alem das props proprias. */
+  forwardsRoot: boolean;
+  props: CatalogProp[];
+};
+
+/**
+ * `boolean | undefined` numa linha que ja tem a coluna "Obrigatoria: nao" diz
+ * a mesma coisa duas vezes, e a segunda ocupa a largura que o tipo precisa.
+ */
+function withoutUndefined(type: string, optional: boolean): string {
+  if (!optional) return type;
+  const clean = type.replace(/\s*\|\s*undefined\s*$/, "");
+  return clean || type;
+}
+
+function unionParts(type: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let index = 0; index < type.length; index++) {
+    const char = type[index]!;
+    if ("(<{[".includes(char)) depth++;
+    else if (")>}]".includes(char) && type[index - 1] !== "=") depth--;
+    else if (char === "|" && depth === 0) {
+      parts.push(type.slice(start, index).trim());
+      start = index + 1;
+    }
+  }
+  parts.push(type.slice(start).trim());
+  return parts.filter(Boolean);
+}
+
+/** Uma linha so, sem quebra: a tabela da doc e a do site nao aceitam paragrafo. */
+function firstSentence(text: string): string | undefined {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return undefined;
+  const period = clean.indexOf(". ");
+  return period === -1 ? clean : clean.slice(0, period + 1);
+}
+
+/**
+ * Os carimbos que ja existem, lidos do proprio JSON comitado. Sem isto cada
+ * geracao apagaria a memoria de quando cada prop nasceu.
+ */
+const previous: Record<string, CatalogPiece> = await Bun.file(TARGET)
+  .json()
+  .catch(() => ({}));
+
+const stamped = (piece: string, prop: string) =>
+  previous[piece]?.props.find((current) => current.name === prop)?.since;
+
+async function readCatalog(): Promise<Record<string, CatalogPiece>> {
+  const api = new API({ cwd: RAIZ });
+  const snapshot = await api.updateSnapshot({ openProjects: [`${RAIZ}/tsconfig.json`] });
+  const projeto = (await snapshot.getProjects())[0];
+  if (!projeto) throw new Error("Nao consegui abrir o projeto do tsconfig.json.");
+
+  const { checker, program } = projeto;
+  const catalog: Record<string, CatalogPiece> = {};
+  const collisions: string[] = [];
+
+  for (const entrada of ENTRY_POINTS) {
+    const file = await program.getSourceFile(`${RAIZ}/${entrada}`);
+    if (!file) throw new Error(`Nao achei ${entrada}.`);
+
+    const module = await checker.getSymbolAtLocation(file);
+    if (!module) throw new Error(`${entrada} nao resolveu como modulo.`);
+
+    for (const [key, symbol] of await module.getExports()) {
+      const name = String(key);
+      // Componente comeca com maiuscula. Hook e utilitario tem outra forma de
+      // documentacao, e forcar os dois na mesma tabela mente sobre os dois.
+      if (!/^[A-Z]/.test(name) || catalog[name]) continue;
+
+      const type = await checker.getTypeOfSymbol(symbol);
+      if (!type) continue;
+
+      const signatures = await checker.getSignaturesOfType(type, SignatureKind.Call);
+      if (!signatures.length) continue;
+
+      const merged = new Map<string, { types: string[]; required: boolean; note?: string }>();
+      let forwardsRoot = false;
+      let read = 0;
+
+      const overloaded =
+        signatures.length > 1 &&
+        signatures.every((signature) => isOwnSource(String(signature.declaration?.path ?? "")));
+
+      for (const signature of overloaded ? signatures : signatures.slice(0, 1)) {
+        const parameter = await checker.getParameterType(signature, 0);
+        if (!parameter) continue;
+        read++;
+
+        const all = await checker.getPropertiesOfType(parameter);
+        const seen = new Set<string>();
+
+        for (const prop of all) {
+          const paths = prop.declarations.map((declaration) => String(declaration.path ?? ""));
+          const own = paths.some(isOwnSource);
+          if (own && paths.some((path) => !isOwnSource(path)) && !FORWARDED.has(prop.name)) {
+            collisions.push(`${name}.${prop.name}`);
+          }
+          const fromReact = !own && (paths[0] ?? "").includes("@types/react");
+          if (fromReact || FORWARDED.has(prop.name)) {
+            if (prop.name === "className") forwardsRoot = true;
+            continue;
+          }
+
+          const propType = await checker.getTypeOfSymbol(prop);
+          const note = firstSentence(await prop.getDocumentationComment(checker));
+          const optional = Boolean(prop.flags & SymbolFlags.Optional);
+          const written = propType
+            ? (await checker.typeToString(propType)).replace(/\s+/g, " ").trim()
+            : "unknown";
+          const type = withoutUndefined(written, optional);
+
+          seen.add(prop.name);
+          const entry = merged.get(prop.name) ?? { types: [], required: read === 1 };
+          for (const part of overloaded ? unionParts(type) : [type]) {
+            if (overloaded && part === "undefined") continue;
+            if (!entry.types.includes(part)) entry.types.push(part);
+          }
+          entry.required &&= !optional;
+          entry.note ??= note;
+          merged.set(prop.name, entry);
+        }
+
+        for (const [known, entry] of merged) if (!seen.has(known)) entry.required = false;
+      }
+      if (read === 0) continue;
+
+      const props: CatalogProp[] = [...merged].map(([propName, entry]) => {
+        // O carimbo e memoria, e nao derivado do tipo: o compilador nao sabe
+        // quando a prop nasceu, entao ele sobrevive de uma geracao a outra
+        // vindo do proprio JSON comitado.
+        const since = stamped(name, propName);
+        return {
+          name: propName,
+          type: entry.types.join(" | "),
+          required: entry.required,
+          ...(entry.note ? { note: entry.note } : {}),
+          ...(since ? { since } : {}),
+        };
+      });
+
+      // Obrigatoria antes de opcional, e alfabetica dentro de cada grupo: o
+      // que quem chama precisa passar vem antes do que pode passar.
+      props.sort((a, b) =>
+        a.required === b.required ? a.name.localeCompare(b.name) : a.required ? -1 : 1,
+      );
+
+      catalog[name] = { forwardsRoot, props };
+    }
+  }
+
+  await api.close();
+
+  if (collisions.length) {
+    console.error(
+      `${collisions.length} prop(s) propria(s) colidem com um atributo herdado de mesmo nome, e o tipo publicado vira a intersecao dos dois. Tire a chave da base com Omit:`,
+    );
+    for (const collision of collisions) console.error(`  ${collision}`);
+    process.exit(1);
+  }
+
+  // Ordenado, para o arquivo nao trocar de linha a cada rodada e sujar o diff.
+  return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+if (import.meta.main) {
+  const catalog = await readCatalog();
+
+  /*
+   * O carimbo de lancamento.
+   *
+   * `bun run gen:props --desde 0.5.0` escreve a versao em toda prop que ainda
+   * nao tem uma. E o unico momento em que a informacao existe: durante o
+   * desenvolvimento ninguem sabe em que versao a prop vai sair, e adivinhar
+   * produz um numero errado que a doc publica com confianca.
+   */
+  const stampArg = process.argv.indexOf("--desde");
+  if (stampArg !== -1) {
+    const version = process.argv[stampArg + 1];
+    if (!version) {
+      console.error("Falta a versao: bun run gen:props --desde 0.5.0");
+      process.exit(1);
+    }
+
+    let stampedNow = 0;
+    for (const piece of Object.values(catalog)) {
+      for (const prop of piece.props) {
+        if (prop.since) continue;
+        prop.since = version;
+        stampedNow++;
+      }
+    }
+
+    await Bun.write(TARGET, `${JSON.stringify(catalog, null, 2)}\n`);
+    console.log(`${stampedNow} prop(s) carimbada(s) com ${version}.`);
+    process.exit(0);
+  }
+  const text = `${JSON.stringify(catalog, null, 2)}\n`;
+  const checking = process.argv.includes("--check");
+
+  if (checking) {
+    const current = await Bun.file(TARGET)
+      .text()
+      .catch(() => "");
+
+    if (current !== text) {
+      console.error(`${TARGET} divergiu dos tipos. Rode: bun run gen:props`);
+
+      const before: Record<string, CatalogPiece> = current ? JSON.parse(current) : {};
+      for (const [piece, data] of Object.entries(catalog)) {
+        const previous = new Set((before[piece]?.props ?? []).map((p) => p.name));
+        const added = data.props.map((p) => p.name).filter((p) => !previous.has(p));
+        const removed = [...previous].filter(
+          (p) => !data.props.some((current) => current.name === p),
+        );
+        if (added.length) console.error(`  ${piece}: entrou ${added.join(", ")}`);
+        if (removed.length) console.error(`  ${piece}: saiu ${removed.join(", ")}`);
+      }
+      process.exit(1);
+    }
+
+    const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
+    console.log(`props em dia: ${Object.keys(catalog).length} pecas, ${total} props.`);
+  } else {
+    await Bun.write(TARGET, text);
+    const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
+    console.log(`${TARGET}: ${Object.keys(catalog).length} pecas, ${total} props.`);
+  }
+}

@@ -27,23 +27,23 @@ export const aiLabelVariants = cva(
 );
 
 export type AILabelProps = Omit<ComponentPropsWithoutRef<"span">, "children" | "title"> & {
-  /** The badge text. Without it, "IA". Keep it short: it is a badge, not a sentence. */
+  /** O texto do selo. Sem ele, "IA". Curto: e um selo, e nao uma frase. */
   text?: string;
   /**
-   * What the screen reader hears in place of the badge, which on its own would be spelled out.
-   * Without it, "Conteúdo gerado por IA". With `explanation`, it becomes the button's name.
+   * O que o leitor de tela ouve no lugar do selo, que sozinho seria soletrado.
+   * Sem ele, "Conteúdo gerado por IA". Com `explanation`, vira o nome do botao.
    */
   label?: string;
   tone?: "accent" | "neutral";
   size?: "sm" | "md";
   /**
-   * The explanation: who generated it, with what data, what the person should check. With
-   * it the badge becomes a button and opens an anchored panel; without it, it is just the badge.
+   * A explicacao: quem gerou, com que dados, o que a pessoa deve conferir. Com
+   * ela o selo vira botao e abre um painel ancorado; sem ela, e so o selo.
    */
   explanation?: ReactNode;
-  /** The title of the explanation panel. Without it, "Gerado por IA". */
+  /** O titulo do painel da explicacao. Sem ele, "Gerado por IA". */
   title?: ReactNode;
-  /** The side the panel opens on. Without it, below. */
+  /** O lado em que o painel abre. Sem ele, embaixo. */
   side?: "top" | "bottom" | "left" | "right";
 };
 

@@ -25,7 +25,7 @@ function DialogSample({ theme }: { theme: RivoTheme }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-screen p-8">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        {theme} / dialog
+        {theme} / dialogo
       </p>
       <Dialog defaultOpen>
         <DialogContent>
@@ -47,7 +47,7 @@ function AlertSample({ theme }: { theme: RivoTheme }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-screen p-8">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        {theme} / irreversible alert
+        {theme} / aviso sem volta
       </p>
       <AlertDialog defaultOpen>
         <AlertDialogContent>
@@ -71,7 +71,7 @@ function ViewerSample({ theme, density }: { theme: RivoTheme; density: RivoDensi
   return (
     <RivoProvider scope="local" theme={theme} density={density} className="min-h-screen p-8">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        {theme} / {density} / viewer
+        {theme} / {density} / visualizador
       </p>
       <ImageViewer images={PHOTOS} defaultIndex={1} />
     </RivoProvider>
@@ -83,32 +83,32 @@ function Frames() {
     <div className="flex flex-col">
       <iframe
         src="./dialog.html#dialogo-escuro"
-        title="Dialog in the dark theme"
+        title="Dialogo no tema escuro"
         className="h-[420px] w-full border-0"
       />
       <iframe
         src="./dialog.html#dialogo-claro"
-        title="Dialog in the light theme"
+        title="Dialogo no tema claro"
         className="h-[420px] w-full border-0"
       />
       <iframe
         src="./dialog.html#alerta-escuro"
-        title="Irreversible alert in the dark theme"
+        title="Aviso sem volta no tema escuro"
         className="h-[420px] w-full border-0"
       />
       <iframe
         src="./dialog.html#alerta-claro"
-        title="Irreversible alert in the light theme"
+        title="Aviso sem volta no tema claro"
         className="h-[420px] w-full border-0"
       />
       <iframe
         src="./dialog.html#visor-escuro"
-        title="Image viewer in the dark theme"
+        title="Visualizador de imagem no tema escuro"
         className="h-[560px] w-full border-0"
       />
       <iframe
         src="./dialog.html#visor-claro"
-        title="Image viewer in the light theme"
+        title="Visualizador de imagem no tema claro"
         className="h-[560px] w-full border-0"
       />
     </div>

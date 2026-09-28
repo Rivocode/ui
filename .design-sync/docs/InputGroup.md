@@ -1,20 +1,20 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # InputGroup
 
-A frame that attaches text or a button to the field: `R$` before, `.com.br`
-after, a search magnifier, a copy button.
+Moldura que encosta texto ou botão no campo: `R$` antes, `.com.br` depois, lupa
+de busca, botão de copiar.
 
-The border and the focus ring move to the frame, and the inner field gives up
-both. Without that you get two nested borders and two rings, and the whole
-thing stops looking like a single field.
+A borda e o anel de foco passam para a moldura, e o campo de dentro entrega os
+dois. Sem isso aparecem duas bordas encaixadas e dois aneis, e o conjunto deixa
+de parecer um campo só.
 
-Comes with `InputPrefix`, `InputSuffix` and `InputAction`.
+Acompanham `InputPrefix`, `InputSuffix` e `InputAction`.
 
-## In React Native
+## No React Native
 
-Translates, and the shape changes along with it: on the web the frame is composition (`InputGroup` outside, `Input`, `InputPrefix` and `InputAction` inside) and it disarms the field's border with a descendant selector. That selector does not exist in React Native, and whoever wrote the same tree there would get two nested borders with no way to remove the inner one. That is why the native frame draws the field: `value`, `onValueChange`, `prefix`, `suffix` and `actions` are its props. There is no `size`: control height is single on native, because a touch target does not shrink.
+Traduz, e a forma muda junto: no web a moldura é composição (`InputGroup` por fora, `Input`, `InputPrefix` e `InputAction` por dentro) e ela desarma a borda do campo com um seletor de descendente. Esse seletor não existe no React Native, e quem escrevesse a mesma árvore lá ganharia duas bordas encaixadas sem jeito de apagar a de dentro. Por isso a moldura nativa desenha o campo: `value`, `onValueChange`, `prefix`, `suffix` e `actions` são props dela. Não há `size`: altura de controle é única no nativo, porque alvo de toque não encolhe.
 
-The inner pieces become `classNames` parts, with their names: `input`, `prefix`, `suffix` and `action`.
+As peças de dentro viram partes do `classNames`, com o nome delas: `input`, `prefix`, `suffix` e `action`.

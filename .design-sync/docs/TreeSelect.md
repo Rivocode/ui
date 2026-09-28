@@ -1,50 +1,49 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # TreeSelect
 
-A choice inside a tree: department and team, category and subcategory, account
-and cost center.
+Escolha dentro de uma arvore: setor e equipe, categoria e subcategoria, conta e
+centro de custo.
 
-**What counts is the leaf.** The value comes out as a list of leaf ids; checking
-a parent checks all the leaves under it. Storing the parent too would create
-two ways of saying the same thing.
+**Quem vale e a folha.** O valor sai como lista de ids de folha; marcar um pai
+marca todas as folhas debaixo dele. Guardar o pai junto criaria dois jeitos de
+dizer a mesma coisa.
 
-The trigger summarizes instead of listing: up to three names they show, past
-that comes the number. A name cut in the middle says less than "7 escolhidos".
+O gatilho resume em vez de listar: até três nomes eles aparecem, passando disso
+vem o número. Nome cortado no meio diz menos do que "7 escolhidos".
 
-`value`, `defaultValue` and `onValueChange` are the same as `Tree`'s: swapping
-the panel for the inline tree, or the other way around, means changing the
-piece's name and nothing else.
+`value`, `defaultValue` e `onValueChange` são os mesmos do `Tree`: trocar o
+painel pela árvore inline, ou o contrário, é mexer no nome da peça e em mais
+nada.
 
-## The click checks, the arrow opens
+## O clique marca, a seta abre
 
-The panel opens with all branches **closed**, and clicking a branch's name does
-not open it: it checks all the leaves under it at once. Whoever builds the
-screen clicks "Financeiro" expecting to see the children, reads "Contas a
-pagar, Contas a receber" in the trigger and concludes the piece is broken. It
-is not: in the WAI-ARIA `treeview` pattern the whole row is the target of the
-**choice**, and opening and closing is a separate role - without that split
-there would be no way to check a branch without first visiting the leaves
-inside it.
+O painel abre com todos os galhos **fechados**, e clicar no nome de um galho
+não o abre: marca de uma vez todas as folhas debaixo dele. Quem monta a tela
+clica em "Financeiro" esperando ver as filhas, lê "Contas a pagar, Contas a
+receber" no gatilho e conclui que a peça quebrou. Não quebrou: no padrão
+`treeview` do WAI-ARIA a linha inteira é o alvo da **escolha**, e abrir e
+fechar é papel à parte — sem essa divisão não haveria como marcar um galho sem
+antes visitar as folhas de dentro dele.
 
-Opening has three paths, and none of them is the name: the little arrow to its
-left, the `→` key with the row in focus, or the search - while there is text in
-the field the tree stays fully open, and then the open and close arrows have
-nothing to do. Once inside it, `↑` and `↓` move through the visible rows, `←`
-closes the branch or goes up to the parent, and `space` checks. In `dir="rtl"`
-the two horizontal arrows swap roles, for the reason given on the `Tree` page.
+Abrir tem três caminhos, e nenhum deles é o nome: a setinha à esquerda dele, a
+tecla `→` com a linha em foco, ou a busca — enquanto há texto no campo a árvore
+fica inteira aberta, e aí as setas de abrir e fechar não têm o que fazer. Já
+dentro dela, `↑` e `↓` andam pelas linhas visíveis, `←` fecha o galho ou sobe
+para o pai, e `espaço` marca. Em `dir="rtl"` as duas horizontais trocam de
+papel, pela razão que está na página do `Tree`.
 
-The tree is **a single tab stop**: `Tab` goes through the search and stops on
-the row that last had focus, the first one when none did, and from there on it
-is the arrows, with `Home` and `End` at the ends. It is not `Tab` that walks
-the rows.
+A árvore é **uma parada de tabulação só**: o `Tab` passa pela busca e para na
+linha que teve foco por último, a primeira quando nenhuma teve, e daí em diante
+são as setas, com `Home` e `End` nas pontas. Não é o `Tab` que percorre as
+linhas.
 
-## In React Native
+## No React Native
 
-Translates: it is the native `Tree` inside the bottom sheet, with the same level navigation. And that is why it solves what the two chained `Select`s, which this page used to tell you to use, never solved: the depth is not fixed, and the second `Select` only knew how to exist after someone chose in the first.
+Traduz: é o `Tree` nativo dentro da folha de baixo, com a mesma navegação por níveis. E por isso ele resolve o que os dois `Select` encadeados, que esta página mandava usar, nunca resolveram: a profundidade não é fixa, e o segundo `Select` só sabia existir depois que alguém escolhia no primeiro.
 
-**The footer is the half the web does not need to have.** On desktop the panel sits next to the trigger, and the trigger counts how many there were; under a sheet there is no trigger in sight, so the count lives in the footer, next to `Aplicar`, and it counts the **draft**, which is the only number that answers "how many have I checked?" while the person is still checking. The text comes from the same summary as `Select` and `Combobox`, on purpose.
+**O rodapé é a metade que o web não precisa ter.** No desktop o painel fica ao lado do gatilho, e o gatilho conta quantos foram; sob uma folha não há gatilho à vista, então a contagem vive no rodapé, junto do `Aplicar`, e ela conta o **rascunho**, que é o único número que responde "quantos eu já marquei?" enquanto a pessoa ainda está marcando. O texto sai do mesmo resumo do `Select` e do `Combobox`, de propósito.
 
-**Leaving through the side gives up**, and `Aplicar` is the only door that confirms, the same split as `DateRangePicker`: a tap on the dimmed background is the gesture of someone who changed their mind, and it cannot count as applying. No `searchable`, for the reason on the `Tree` page.
+**Sair pela lateral desiste**, e o `Aplicar` é a única porta que confirma, a mesma divisão do `DateRangePicker`: o toque no fundo escurecido é o gesto de quem se arrependeu, e ele não pode valer como aplicar. Sem `searchable`, pela razão que está na página do `Tree`.

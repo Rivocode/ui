@@ -17,7 +17,7 @@ const PERIODOS = [
   { label: 'Este ano', value: 'ano' },
 ]
 
-/** Closed */
+/** Fechado */
 export function ClosedState() {
   return (
     <Select items={PERIODOS} defaultValue="30">
@@ -33,7 +33,7 @@ export function ClosedState() {
   )
 }
 
-/** Open */
+/** Aberto */
 export function Open() {
   return (
     <div className="min-h-56">
@@ -51,7 +51,7 @@ export function Open() {
   )
 }
 
-/** Inside a field */
+/** Dentro de campo */
 export function InsideAField() {
   return (
     <Field name="periodo" className="max-w-xs">
@@ -77,13 +77,13 @@ const NATUREZAS = [
   { label: 'Compra para revenda', value: '1102', flow: 'Entrada' },
 ]
 
-/** Grouped by family */
+/** Agrupado por família */
 export function Grouped() {
   return (
     <div className="min-h-72">
-      {/* `items` is still the WHOLE, flat list: it is how the trigger
-          translates the stored value into the label the person read. The
-          group arranges the open list, not what the trigger shows. */}
+      {/* O `items` continua sendo a lista INTEIRA e plana: e por ele que o
+          gatilho traduz o valor guardado no rotulo que a pessoa leu. O grupo
+          arruma a lista aberta, e nao o que o gatilho mostra. */}
       <Select items={NATUREZAS} defaultValue="5102" defaultOpen /* rc-keep-open */>
         <SelectTrigger aria-label="Natureza da operação" className="min-w-64">
           <SelectValue />
@@ -114,7 +114,7 @@ export function Grouped() {
   )
 }
 
-/** In the three sizes */
+/** Nos três tamanhos */
 export function Sizes() {
   return (
     <div className="flex flex-col items-start gap-3">

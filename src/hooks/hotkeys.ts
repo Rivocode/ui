@@ -8,17 +8,11 @@ import { useLatest } from "./common/latest";
 export type HotkeyBinding = [combo: string, handler: (event: KeyboardEvent) => void];
 
 export type UseHotkeysOptions = {
-  /**
-   * Stops firing with focus in a text field, so `k` does not steal the letter from someone typing.
-   * On by default.
-   */
+  /** Deixa de disparar com o foco num campo de texto, para `k` nao roubar a letra de quem digita. Ligado por padrao. */
   ignoreFields?: boolean;
-  /**
-   * Calls `preventDefault` when the combination matches, so the browser shortcut does not run
-   * along. On by default.
-   */
+  /** Chama `preventDefault` quando a combinacao casa, para o atalho do navegador nao correr junto. Ligado por padrao. */
   preventDefault?: boolean;
-  /** Turns off all the call's shortcuts without unmounting. */
+  /** Desliga todos os atalhos da chamada sem desmontar. */
   enabled?: boolean;
 };
 

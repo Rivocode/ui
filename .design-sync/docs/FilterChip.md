@@ -1,37 +1,37 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # FilterChip
 
-An applied filter: the field, the value and the X that removes it.
+Um filtro aplicado: o campo, o valor e o xis que o tira.
 
 ```tsx
 <FilterChip label="Cliente" value="Clínica São Lucas" onRemove={tirar} />
 ```
 
-`label` renders in normal weight and `value` in medium weight. That is the
-chip's hierarchy, and it is the only one: "Cliente" is the question, and what
-gets read at a glance is the answer. Without `value` the chip becomes the field
-alone, which works for a boolean filter: "Vencidas", "Com anexo".
+O `label` sai em peso normal e o `value` em peso médio. É essa a hierarquia da
+ficha, e é só ela: "Cliente" é a pergunta, e quem se lê de relance é a
+resposta. Sem `value` a ficha vira o campo sozinho, que serve para filtro
+booleano: "Vencidas", "Com anexo".
 
-## No status color, on purpose
+## Sem cor de estado, de propósito
 
-It is a cousin of `Badge` and comes from the same design (the same pill, the
-same border, the same two `size` heights), but it **has no `tone`**. A filter
-is not a status: a row of six colored chips turns into a traffic light where
-no color means anything, and the house rule is to use tone for meaning and
-never for the color you want. Whoever needs color is describing a situation,
-and for that there is `Badge`.
+Ela é prima do `Badge` e nasce do mesmo desenho (a mesma pílula, a mesma
+borda, as mesmas duas alturas de `size`), mas **não tem `tone`**. Um filtro
+não é um estado: uma fileira de seis fichas coloridas vira um semáforo onde
+nenhuma cor significa nada, e a regra da casa é usar o tom pelo significado e
+nunca pela cor que se quer. Quem precisa de cor está descrevendo situação, e
+para isso existe o `Badge`.
 
-## The X's name
+## O nome do xis
 
-`labels.remove` receives the already assembled text and returns what the
-screen reader hears. The default is "Remover filtro Cliente: Clínica São
-Lucas" when the value is text, and "Remover filtro Cliente" when it is not.
-There is no way to read the text back out of a `ReactNode`. It is the same
-`labels.remove` as in `TagsInput` and `ComboboxChip`, and it exists for the
-same reason: without it a row announces itself "Remover, Remover, Remover".
+`labels.remove` recebe o texto já montado e devolve o que o leitor de tela
+ouve. O padrão é "Remover filtro Cliente: Clínica São Lucas" quando o valor é
+texto, e "Remover filtro Cliente" quando não é. De um `ReactNode` não há como
+ler o texto de volta. É o mesmo `labels.remove` do `TagsInput` e do
+`ComboboxChip`, e existe pela mesma razão: sem ele uma fileira se anuncia
+"Remover, Remover, Remover".
 
 ```tsx
 <FilterChip
@@ -42,62 +42,61 @@ same reason: without it a row announces itself "Remover, Remover, Remover".
 />
 ```
 
-The X draws at 12px, and the area the finger reaches is stretched by a
-pseudo-element to the 24px of WCAG 2.5.8 (the same approach as the `Combobox`
-and `TagsInput` chip, which does not fatten the pill).
+O xis desenha 12px, e a área que o dedo alcança é esticada por
+pseudo-elemento até os 24px da WCAG 2.5.8 (a mesma saída da ficha do
+`Combobox` e do `TagsInput`, que não engorda a pílula).
 
-## Without `onRemove` there is no X
+## Sem `onRemove` não há xis
 
-That is how you show a filter the application locks: the person's branch, the
-tenant, the period the closing fixed. It shows because it explains the result,
-and it does not go away because leaving it is not the reader's choice.
+É assim que se mostra filtro que a aplicação trava: a filial da pessoa, o
+tenant, o período que o fechamento fixou. Ele aparece porque explica o
+resultado, e não some porque sair dele não é escolha de quem lê.
 
-## The chip does not handle focus
+## A ficha não cuida do foco
 
-It unmounts when whoever renders it removes it from the list, and the X
-unmounts with it: the focus that was on it falls back to `<body>` if nobody
-chooses where it lands. Inside `FilterBar` that bill is already paid: it moves
-focus to the next X, and from there to "clear". Outside it, whoever builds the
-row inherits the bill.
+Ela desmonta quando quem a renderiza a tira da lista, e o xis desmonta junto: o
+foco que estava nele volta para o `<body>` se ninguém escolher onde ele pousa.
+Dentro da `FilterBar` a conta já está paga: ela move o foco para o xis
+seguinte, e de lá para o "limpar". Fora dela, quem monta a fileira herda a
+conta.
 
-## The value that does not fit
+## O valor que não cabe
 
-The value truncates with an ellipsis at 10rem and carries the whole text in
-`title`. That is what stops a company's legal name from stretching the chip to
-twice the screen on a 390px device, where it almost always lives inside a
-`FilterBar` that scrolls horizontally.
+O valor corta com reticências em 10rem e leva o texto inteiro no `title`. É o
+que impede um nome de razão social de esticar a ficha até o dobro da tela num
+aparelho de 390px, onde ela quase sempre mora dentro de uma `FilterBar` que
+rola na horizontal.
 
-That cut is **the chip's**, and it happens inside the pill. A chip cut off
-vertically, in the middle of a letter and without an ellipsis, is not a defect
-here: it is the edge of the `FilterBar` scroller, and it is the scroller that
-fades to signal that the row continues.
+Esse corte é o **da ficha**, e acontece dentro da pílula. Ficha cortada em pé,
+no meio da letra e sem reticências, não é defeito daqui: é a borda do rolador
+da `FilterBar`, e é ela que esmaece para avisar que a fileira continua.
 
-## Parts
+## As partes
 
-`classNames` dresses `label`, `value` and `remove`.
+`classNames` veste `label`, `value` e `remove`.
 
-## When not to use
+## Quando não usar
 
-To say what status a row is in ("Paga", "Vencida", "Rascunho"), use `Badge`:
-it describes the data, does not go away at the reader's will and has no X.
-`FilterChip` describes a **slice of the list**, and removing it changes what
-you see.
+Para dizer em que situação uma linha está ("Paga", "Vencida", "Rascunho"),
+use `Badge`: ele descreve o dado, não some por vontade de quem lê e não tem
+xis. A `FilterChip` descreve um **recorte da lista**, e tirá-la muda o que se
+vê.
 
-Inside a field that produces its own values, the right chip is the one from
-`TagsInput` or from `Combobox` with `multiple`: there it is the field's value
-and lives inside its frame, with the field's focus ring around it.
-`FilterChip` lives outside any field.
+Dentro de um campo que produz os próprios valores, a ficha certa é a do
+`TagsInput` ou a do `Combobox` com `multiple`: lá ela é o valor do campo e vive
+dentro da moldura dele, com o anel de foco do campo em volta. A `FilterChip`
+vive fora de campo nenhum.
 
-And for a filter that toggles on and off in the same place, use `Toggle` or
-`ToggleGroup`: the chip is the summary of a choice made elsewhere, not the
-place to make it.
+E para um filtro que liga e desliga no mesmo lugar, use `Toggle` ou
+`ToggleGroup`: a ficha é o resumo de uma escolha feita em outro lugar, e não o
+lugar de fazê-la.
 
-## In React Native
+## No React Native
 
-Translates, with the same vocabulary as the web: label, value and the remove button, no `tone`. A filter is not a status, and six colored chips become a traffic light where nothing means anything.
+Traduz, com o mesmo vocabulário do web: rótulo, valor e o botão de tirar, sem `tone`. Filtro não é situação, e seis fichas coloridas viram semáforo onde nada significa nada.
 
-**The target grows without the chip getting fatter.** The root is a 44pt strip and the painted pill is an absolute child inside it, so it stays at 28pt as on the web. The x inherits the strip's 44 vertical points and gets horizontal `hitSlop`.
+**O alvo cresce sem a ficha engordar.** A raiz é uma faixa de 44pt e a pílula pintada é um filho absoluto dentro dela, então ela continua com 28pt como no web. O xis herda os 44 verticais da faixa e ganha `hitSlop` horizontal.
 
-The strip was stretched instead of using vertical `hitSlop` for a platform reason: **on Android a touch outside the parent's bounds is not delivered**. With the 28pt pill as the parent of the button, the slack above and below would be discarded precisely on the device that lacks target the most. Declared consequence: `size` changes only the drawn pill, never the strip's height: the finger does not shrink along with the chip.
+A faixa foi esticada em vez de dar `hitSlop` vertical por uma razão de plataforma: **no Android o toque fora dos limites do pai não é entregue**. Com a pílula de 28pt como pai do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa: o dedo não encolhe junto com a ficha.
 
-The parts are styled through the same `classNames` as the web: `label`, `value` and `remove`, the x's tap target.
+As partes vestem pelo mesmo `classNames` do web: `label`, `value` e `remove`, o toque do xis.

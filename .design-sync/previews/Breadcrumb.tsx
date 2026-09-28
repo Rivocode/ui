@@ -1,6 +1,6 @@
 import { Breadcrumb } from '@rivocode/ui'
 
-/** Path */
+/** Caminho */
 export function Path() {
   return (
     <Breadcrumb
@@ -14,7 +14,7 @@ export function Path() {
   )
 }
 
-/** Collapsed */
+/** Dobrado */
 export function Folded() {
   return (
     <Breadcrumb

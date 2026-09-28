@@ -16,7 +16,7 @@ const CONFIG: ChartConfig = {
   canceladas: { label: "Canceladas", color: "var(--rc-danger)" },
 };
 
-test("the container publishes one variable per series, in palette order", () => {
+test("a moldura publica uma variavel por serie, na ordem da paleta", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <ChartContainer config={CONFIG} className="h-40">
@@ -25,12 +25,12 @@ test("the container publishes one variable per series, in palette order", () => 
     </RivoProvider>,
   );
 
-  const style = container.querySelector("style")!.innerHTML;
-  expect(style).toContain("--color-emitidas: var(--rc-chart-1);");
-  expect(style).toContain("--color-pagas: var(--rc-chart-2);");
+  const estilo = container.querySelector("style")!.innerHTML;
+  expect(estilo).toContain("--color-emitidas: var(--rc-chart-1);");
+  expect(estilo).toContain("--color-pagas: var(--rc-chart-2);");
 });
 
-test("a series with its own color does not take a place in the palette queue", () => {
+test("a serie com cor propria nao entra na fila da paleta", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <ChartContainer config={CONFIG} className="h-40">
@@ -43,7 +43,7 @@ test("a series with its own color does not take a place in the palette queue", (
   );
 });
 
-test("two charts on the same page do not mix their colors", () => {
+test("dois graficos na mesma pagina nao misturam as cores", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <ChartContainer config={{ a: { label: "A" } }} className="h-40">
@@ -55,12 +55,12 @@ test("two charts on the same page do not mix their colors", () => {
     </RivoProvider>,
   );
 
-  const frames = [...container.querySelectorAll("[data-rc-chart]")];
-  const ids = frames.map((node) => node.getAttribute("data-rc-chart"));
+  const molduras = [...container.querySelectorAll("[data-rc-chart]")];
+  const ids = molduras.map((node) => node.getAttribute("data-rc-chart"));
   expect(new Set(ids).size).toBe(2);
 });
 
-test("the tooltip shows the series name, and not the raw key", () => {
+test("a dica mostra o nome da serie, e nao a chave crua", () => {
   render(
     <RivoProvider scope="local">
       <ChartTooltipContent
@@ -76,7 +76,7 @@ test("the tooltip shows the series name, and not the raw key", () => {
   expect(screen.getByText("42")).toBeDefined();
 });
 
-test("the tooltip formats the value when asked", () => {
+test("a dica formata o valor quando pedem", () => {
   render(
     <RivoProvider scope="local">
       <ChartTooltipContent
@@ -90,7 +90,7 @@ test("the tooltip formats the value when asked", () => {
   expect(screen.getByText("R$ 2.480")).toBeDefined();
 });
 
-test("the tooltip disappears when the pointer leaves", () => {
+test("a dica desaparece quando o ponteiro sai", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <ChartTooltipContent active={false} config={CONFIG} payload={[] as never} />
@@ -99,7 +99,7 @@ test("the tooltip disappears when the pointer leaves", () => {
   expect(container.querySelector("[class*=bg-surface-raised]")).toBeNull();
 });
 
-test("the legend uses the config name", () => {
+test("a legenda usa o nome do config", () => {
   render(
     <RivoProvider scope="local">
       <ChartLegendContent
@@ -111,9 +111,9 @@ test("the legend uses the config name", () => {
   expect(screen.getByText("Emitidas")).toBeDefined();
 });
 
-test("in a pie, the slice name rules, and not the shared dataKey", () => {
-  // Every slice of a pie shares the same `dataKey`. Looking only at it would
-  // collapse the whole legend into the same name.
+test("na pizza, o nome da fatia manda, e nao o dataKey compartilhado", () => {
+  // Toda fatia de uma pizza divide o mesmo `dataKey`. Olhar so ele faria a
+  // legenda inteira cair no mesmo nome.
   render(
     <RivoProvider scope="local">
       <ChartLegendContent
@@ -131,7 +131,7 @@ test("in a pie, the slice name rules, and not the shared dataKey", () => {
   expect(screen.getByText("Pagas")).toBeDefined();
 });
 
-test("the pie tooltip also uses the slice name", () => {
+test("a dica da pizza tambem usa o nome da fatia", () => {
   render(
     <RivoProvider scope="local">
       <ChartTooltipContent
@@ -144,7 +144,7 @@ test("the pie tooltip also uses the slice name", () => {
   expect(screen.getByText("Canceladas")).toBeDefined();
 });
 
-test("a loading chart shows a skeleton, and not the empty container", () => {
+test("o grafico carregando mostra esqueleto, e nao a moldura vazia", () => {
   withTheme(
     <ChartContainer config={{ pagas: { label: "Pagas" } }} isLoading className="h-40">
       <LineChart data={[]}>
@@ -155,13 +155,13 @@ test("a loading chart shows a skeleton, and not the empty container", () => {
   expect(document.querySelector(".animate-pulse")).not.toBeNull();
 });
 
-test("the error offers a retry when there is somewhere to retry", () => {
-  let retries = 0;
+test("o erro oferece nova tentativa quando ha para onde tentar", () => {
+  let tentou = 0;
   withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
       isError
-      onRetry={() => retries++}
+      onRetry={() => tentou++}
       className="h-40"
     >
       <LineChart data={[]}>
@@ -171,10 +171,10 @@ test("the error offers a retry when there is somewhere to retry", () => {
   );
 
   fireEvent.click(screen.getByRole("button", { name: /Tentar de novo/ }));
-  expect(retries).toBe(1);
+  expect(tentou).toBe(1);
 });
 
-test("an empty query shows the invitation, and not a chart without points", () => {
+test("consulta vazia mostra o convite, e nao um grafico sem ponto", () => {
   withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
@@ -193,7 +193,7 @@ test("an empty query shows the invitation, and not a chart without points", () =
 const ours = (warn: ReturnType<typeof spyOn<Console, "warn">>) =>
   warn.mock.calls.map((call) => String(call[0])).filter((line) => line.startsWith("[rivocode/ui]"));
 
-test("a container with width and no height is reported: Recharts would draw at 0px", async () => {
+test("moldura com largura e sem altura e acusada: a Recharts desenharia em 0px", async () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   withTheme(
@@ -204,20 +204,19 @@ test("a container with width and no height is reported: Recharts would draw at 0
     </ChartContainer>,
   );
 
-  const frame = document.querySelector<HTMLElement>("[data-rc-chart]")!;
-  Object.defineProperty(frame, "clientWidth", { configurable: true, value: 620 });
-  Object.defineProperty(frame, "clientHeight", { configurable: true, value: 0 });
+  const moldura = document.querySelector<HTMLElement>("[data-rc-chart]")!;
+  Object.defineProperty(moldura, "clientWidth", { configurable: true, value: 620 });
+  Object.defineProperty(moldura, "clientHeight", { configurable: true, value: 0 });
 
   await Bun.sleep(260);
 
   const complaints = ours(warn);
   expect(complaints).toHaveLength(1);
-  expect(complaints[0]).toContain("no height");
-  expect(complaints[0]).toContain("0px");
+  expect(complaints[0]).toContain("altura");
   warn.mockRestore();
 });
 
-test("a container with a measured height silences the piece, and so does a box with no measure at all", async () => {
+test("moldura com altura medida cala a peca, e caixa sem medida nenhuma tambem", async () => {
   const warn = spyOn(console, "warn").mockImplementation(() => {});
 
   withTheme(
@@ -228,9 +227,9 @@ test("a container with a measured height silences the piece, and so does a box w
     </ChartContainer>,
   );
 
-  const frame = document.querySelector<HTMLElement>("[data-rc-chart]")!;
-  Object.defineProperty(frame, "clientWidth", { configurable: true, value: 620 });
-  Object.defineProperty(frame, "clientHeight", { configurable: true, value: 160 });
+  const moldura = document.querySelector<HTMLElement>("[data-rc-chart]")!;
+  Object.defineProperty(moldura, "clientWidth", { configurable: true, value: 620 });
+  Object.defineProperty(moldura, "clientHeight", { configurable: true, value: 160 });
 
   await Bun.sleep(260);
 
@@ -238,7 +237,7 @@ test("a container with a measured height silences the piece, and so does a box w
   warn.mockRestore();
 });
 
-test("the flat box warning measures width and height, and not just one of them", () => {
+test("o aviso de caixa chata mede largura e altura, e nao uma das duas", () => {
   expect(flatBoxComplaint(620, 0)).toContain("0px");
   expect(flatBoxComplaint(620, 1)).toBeUndefined();
   expect(flatBoxComplaint(0, 0)).toBeUndefined();

@@ -11,18 +11,18 @@ export type NumberFieldProps = Omit<ComponentProps<typeof BaseNumberField.Root>,
   placeholder?: string;
   size?: "sm" | "md" | "lg";
   /**
-   * The `Intl.NumberFormat` options. It was `format`, and was renamed because
-   * `format` came to mean "the name of a house formatter, or a function" in the
-   * other pieces that write numbers.
+   * As opcoes do `Intl.NumberFormat`. Era `format`, e mudou de nome porque
+   * `format` passou a significar "nome de formatador da casa, ou funcao" nas
+   * outras pecas que escrevem numero.
    *
-   * Here the formatter name is not accepted, and the reason is that the field is editable: a
-   * formatter only writes, and what the person types has to be read back.
-   * `Intl` knows how to do both.
+   * Aqui o nome de formatador nao entra, e a razao e o campo ser editavel: um
+   * formatador so escreve, e o que a pessoa digita precisa ser lido de volta.
+   * O `Intl` sabe fazer as duas coisas.
    */
   numberFormat?: Intl.NumberFormatOptions;
   /**
-   * The piece's texts, to change the language: `decrement` and `increment` are the
-   * names of the two step buttons. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `decrement` e `increment` sao os
+   * nomes dos dois botoes de passo. Passe so os que mudam.
    */
   labels?: Partial<NumberFieldLabels>;
 };

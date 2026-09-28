@@ -17,52 +17,50 @@ const HIDDEN = {
 } as const;
 
 export type RatingProps = {
-  /** The rating, controlled. `0` is none. */
+  /** A nota, controlada. `0` e nenhuma. */
   value: number;
   /**
-   * Called with the new rating: by tapping a star or by the screen reader's
-   * adjust gesture. Without it, the component only displays.
+   * Chamado com a nota nova: pelo toque na estrela ou pelo gesto de ajuste do
+   * leitor de tela. Sem ele, a peca so exibe.
    */
   onValueChange?: (value: number) => void;
-  /** How many stars. Default 5. */
+  /** Quantas estrelas. Padrao 5. */
   max?: number;
   /**
-   * Accepts half stars: a tap on the reading-start half (the left, or the right
-   * in rtl) gives `n - 0.5`, and the adjust moves in halves.
+   * Aceita meia estrela: o toque na metade de inicio da leitura (a esquerda, ou
+   * a direita em rtl) da `n - 0,5`, e o ajuste anda de meio em meio.
    */
   allowHalf?: boolean;
-  /** Tapping the chosen rating again resets it to zero. Off by default. */
+  /** Tocar de novo na nota escolhida volta a zero. Desligado por padrao. */
   clearable?: boolean;
   /**
-   * Only displays: a product's average. Accepts any fraction and comes out as a
-   * single image for the screen reader, named "4,3 de 5".
+   * So exibe: a media de um produto. Aceita fracao qualquer e sai como uma
+   * imagem so para o leitor de tela, com o nome "4,3 de 5".
    */
   readOnly?: boolean;
-  /** Turns off choosing. The whole layer fades, as everywhere in the native package. */
+  /** Desliga a escolha. A camada inteira esmaece, como em todo o pacote nativo. */
   disabled?: boolean;
   /**
-   * The drawing size. Each star's touch target is always 44pt: `sm` only
-   * shrinks the drawing, not the target.
+   * O tamanho do desenho. O alvo de toque de cada estrela e sempre 44pt: o
+   * `sm` so encolhe o desenho, e nao o alvo.
    */
   size?: "sm" | "md" | "lg";
   /**
-   * Replaces the star. The function receives the color already resolved from
-   * the theme, the size and whether that layer is the full or the empty one:
-   * `icon={({ color, size }) => <Heart color={color} fill={color} size={size}
-   * />}`.
+   * Troca a estrela. A funcao recebe a cor ja resolvida do tema, o tamanho e se
+   * aquela camada e a cheia ou a vazia:
+   * `icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.
    */
   icon?: (glyph: { color: string; size: number; filled: boolean }) => ReactNode;
   /**
-   * The texts the screen reader hears: the group name, the name of each rating
-   * and of the average, and `increment` and `decrement`, the names of the two
-   * adjust actions.
+   * Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da
+   * media, e `increment` e `decrement`, os nomes das duas acoes de ajuste.
    */
   labels?: Partial<RatingLabels>;
   className?: string;
   /**
-   * Class per part: `item` (each star's box), `empty` and `filled` (the empty
-   * and full star). The last two style the house star; with `icon`, the color
-   * arrives through the function.
+   * Classe por parte: `item` (a caixa de cada estrela), `empty` e `filled` (a
+   * estrela vazia e a cheia). As duas ultimas vestem a estrela da casa; com
+   * `icon`, a cor chega pela funcao.
    */
   classNames?: Slots<"item" | "empty" | "filled">;
 };

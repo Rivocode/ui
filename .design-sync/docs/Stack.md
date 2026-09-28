@@ -1,11 +1,10 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Stack
 
-Stacks its children in one direction, with the gap between them taken from the
-house scale.
+Empilha os filhos numa direção, com o vão entre eles saído da escala da casa.
 
 ```tsx
 <Stack gap="lg">
@@ -18,17 +17,17 @@ house scale.
 </Stack>
 ```
 
-`direction` chooses the axis: `column`, the default, puts one below the other;
-`row` puts them side by side. `align` aligns on the cross axis and `justify`
-distributes on the main axis, with `between` pushing the first and the last to
-the ends. `wrap` lets the row wrap when the children do not fit, which is the
-case of a row of badges or chips.
+`direction` escolhe o eixo: `column`, o padrão, põe um embaixo do outro; `row`
+põe lado a lado. `align` alinha no eixo cruzado e `justify` distribui no eixo
+principal, com `between` empurrando o primeiro e o último para as pontas. `wrap`
+deixa a linha quebrar quando os filhos não cabem, que é o caso de uma fileira
+de selos ou de fichas.
 
-## The gap is a scale, and it follows density
+## O vão é uma escala, e ela acompanha a densidade
 
-`gap` does not accept pixels. There are five steps, plus `none`:
+`gap` não aceita pixel. São cinco passos, e mais `none`:
 
-| Step | Comfortable | Compact |
+| Passo | Confortável | Compacta |
 | ----- | ----------- | -------- |
 | `xs`  | 4px         | 4px      |
 | `sm`  | 8px         | 6px      |
@@ -36,17 +35,17 @@ case of a row of badges or chips.
 | `lg`  | 16px        | 12px     |
 | `xl`  | 24px        | 16px     |
 
-The default is `md`. The steps come from the `--rc-gap-*` tokens, which density
-rewrites along with the control height: a screen that switches to
-`density="compact"` also tightens the gap between blocks, not just the controls
-inside them. A hand-written `gap-3` stays at 12px in both.
+O padrão é `md`. Os passos saem dos tokens `--rc-gap-*`, que a densidade
+reescreve junto com a altura de controle: a tela que passa para
+`density="compact"` aperta também o vão entre os blocos, e não só os controles
+dentro deles. Um `gap-3` escrito à mão fica com 12px nas duas.
 
-`xs` does not shrink. Below 4px, badge against badge becomes a single word.
+`xs` não encolhe. Abaixo de 4px, selo encostado em selo vira uma palavra só.
 
-## Another element
+## Outro elemento
 
-`render` swaps the element without changing the arrangement. A list stays a
-list for the screen reader, which announces how many items it has:
+`render` troca o elemento sem mudar o arranjo. Uma lista continua lista para o
+leitor de tela, que anuncia quantos itens ela tem:
 
 ```tsx
 <Stack render={<ul />} gap="sm">
@@ -55,22 +54,21 @@ list for the screen reader, which announces how many items it has:
 </Stack>
 ```
 
-## When not to use
+## Quando não usar
 
-- **When a `div` with a class is enough.** Two elements that align once, in a
-  single place, do not call for a piece: `flex items-center gap-2` says the
-  same thing. `Stack` pays for itself where the gap needs to follow density, or
-  where the same arrangement repeats screen after screen and each one would
-  pick a different number.
-- **A two-dimensional grid.** Cards arranged in columns and rows are `Grid`,
-  with `columns` or `minItemWidth`. A `Stack` with `wrap` wraps the row, but
-  does not align the columns of one row with those of the next.
-- **Frame and inner padding.** `Stack` draws no border and no background. The
-  framed block is `Card`, and the top of the screen, with title and actions, is
+- **Quando uma `div` com classe basta.** Dois elementos que se alinham uma vez,
+  num lugar só, não pedem peça: `flex items-center gap-2` diz a mesma coisa. O
+  `Stack` se paga onde o vão precisa seguir a densidade, ou onde a mesma
+  arrumação se repete tela a tela e cada uma escolheria um número diferente.
+- **Grade em duas dimensões.** Cartões que se arrumam em colunas e linhas são
+  `Grid`, com `columns` ou `minItemWidth`. Um `Stack` com `wrap` quebra a linha,
+  mas não alinha as colunas de uma linha com as da outra.
+- **Moldura e respiro interno.** O `Stack` não desenha borda nem fundo. O bloco
+  com moldura é o `Card`, e o topo da tela, com título e ações, é o
   `PageHeader`.
-- **Two areas the person resizes.** List and detail with a draggable divider
-  are `Splitter`.
+- **Duas áreas que a pessoa redimensiona.** Lista e detalhe com divisória que se
+  arrasta são o `Splitter`.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Stack` - same props, minus `render`; the gap is the comfortable scale, because on touch there is no compact density. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Stack` - mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

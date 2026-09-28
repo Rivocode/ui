@@ -32,19 +32,19 @@ export type SelectProps<Value, Multiple extends boolean | undefined = false> = B
   Multiple
 > & {
   /**
-   * The trigger's size, the same vocabulary and the same height as Input. Lives on the
-   * root, and the inner `SelectTrigger` wears it.
+   * Tamanho do gatilho, o mesmo vocabulario e a mesma altura do Input. Mora na
+   * raiz, e o `SelectTrigger` de dentro o veste.
    */
   size?: ControlSize;
 };
 
 export function missingSelectItemsComplaint(key: string, label: string): string {
   return (
-    `[rivocode/ui] <Select> without \`items\`: the trigger is showing "${key}", which is the ` +
-    `item's value, and not "${label}", which is the text in the list. Without \`items\` Base UI ` +
-    "has nowhere to read the label from and writes the raw key, with no error on screen. Pass " +
-    `items={[{ label: "${label}", value: "${key}" }]} to <Select>, or resolve the label ` +
-    "yourself in <SelectValue>{(choice) => ...}</SelectValue>."
+    `[rivocode/ui] <Select> sem \`items\`: o gatilho está mostrando "${key}", que é o valor do ` +
+    `item, e não "${label}", que é o texto da lista. Sem \`items\` a Base UI não tem de onde ler ` +
+    "o rótulo e escreve a chave crua, sem erro na tela. Passe " +
+    `items={[{ label: "${label}", value: "${key}" }]} ao <Select>, ou resolva o rótulo você ` +
+    "mesmo em <SelectValue>{(escolha) => ...}</SelectValue>."
   );
 }
 

@@ -1,15 +1,15 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Accordion
 
-An accordion, for frequently asked questions and for long form sections.
+Sanfona, para perguntas frequentes e para secoes longas de formulário.
 
-`AccordionItem` delivers header, trigger and panel in a single component,
-because Base UI requires an exact order among them and exposing the loose parts
-would only create a way to assemble it wrong.
+O `AccordionItem` entrega cabeçalho, gatilho e painel numa peça só, porque a
+Base UI exige a ordem exata entre eles e expor as partes soltas só criaria um
+jeito de montar errado.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Accordion` - `value`, `defaultValue` and `onValueChange` on the root, through the `value` of each `AccordionItem`; one open at a time, as on the web (`multiple` allows several), and an item without `value` opens on its own. It opens with the arrow rotating and the body fading in, and with no motion when the system asks to reduce it. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Accordion` - `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; um aberto por vez, como no web (`multiple` deixa vários), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

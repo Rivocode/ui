@@ -27,26 +27,26 @@ type CalendarBase = Omit<
 
 type DayBounds = {
   /**
-   * The first day that can be picked, inclusive, as a `Date` or `aaaa-mm-dd`.
-   * Days before it are disabled and navigation stops at its month.
+   * O primeiro dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`.
+   * Os dias antes dele ficam desabilitados e a navegacao para no mes dele.
    */
   min?: Date | string;
   /**
-   * The last day that can be picked, inclusive, as a `Date` or `aaaa-mm-dd`.
-   * Days after it are disabled and navigation stops at its month.
+   * O ultimo dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`.
+   * Os dias depois dele ficam desabilitados e a navegacao para no mes dele.
    */
   max?: Date | string;
 };
 
 type CountBounds = {
   /**
-   * The first day that can be picked, inclusive, as a `Date` or `aaaa-mm-dd`.
-   * In `range` and `multiple`, a number is the minimum number of days in the selection.
+   * O primeiro dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`.
+   * Em `range` e `multiple`, um numero e o minimo de dias da escolha.
    */
   min?: Date | string | number;
   /**
-   * The last day that can be picked, inclusive, as a `Date` or `aaaa-mm-dd`.
-   * In `range` and `multiple`, a number is the maximum number of days in the selection.
+   * O ultimo dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`.
+   * Em `range` e `multiple`, um numero e o maximo de dias da escolha.
    */
   max?: Date | string | number;
 };
@@ -60,18 +60,18 @@ type NoValue = { value?: undefined; defaultValue?: undefined; onValueChange?: un
 
 type DateValue = Unselected & {
   /**
-   * The chosen day, as a `Date` or `aaaa-mm-dd`. Whoever passes text receives text
-   * in `onValueChange`; `null` is text with no day.
+   * O dia escolhido, em `Date` ou `aaaa-mm-dd`. Quem passa texto recebe texto
+   * no `onValueChange`; `null` e texto sem dia.
    */
   value?: Date;
   /**
-   * The initial day, when the calendar controls its own state. `Date` or
-   * `aaaa-mm-dd`, and `onValueChange` answers in the same format.
+   * O dia inicial, quando o calendario controla o proprio estado. `Date` ou
+   * `aaaa-mm-dd`, e o `onValueChange` responde no mesmo formato.
    */
   defaultValue?: Date;
   /**
-   * Called with the tapped day, in the same format as `value`. Tapping the
-   * chosen day again does not unselect it.
+   * Chamado com o dia tocado, no mesmo formato do `value`. Tocar de novo no
+   * dia escolhido nao desmarca.
    */
   onValueChange?: (value: Date) => void;
 };
@@ -88,9 +88,9 @@ type Selection<P extends PropsMulti | PropsMultiRequired | PropsRange | PropsRan
 > &
   NoValue &
   CountBounds & {
-    /** The chosen days: a list in `multiple`, a `{ from, to }` in `range`. */
+    /** Os dias escolhidos: uma lista em `multiple`, um `{ from, to }` em `range`. */
     selected?: P["selected"];
-    /** Called on every click, with the whole selection in the format of `selected`. */
+    /** Chamado a cada clique, com a escolha inteira no formato do `selected`. */
     onSelect?: P["onSelect"];
   };
 

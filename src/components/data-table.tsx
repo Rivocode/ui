@@ -41,31 +41,31 @@ import {
 } from "./table";
 
 export type Column<Row> = {
-  /** The column's key. Must be unique in the table. */
+  /** Chave da coluna. Precisa ser unica na tabela. */
   key: string;
   header: ReactNode;
-  /** What the cell shows. Without this, the raw value of the key. */
+  /** O que a celula mostra. Sem isto, o valor cru da chave. */
   cell?: (row: Row) => ReactNode;
   align?: "left" | "right";
-  /** Hidden on the phone. Use it for what can be found out some other way. */
+  /** Some no celular. Use para o que da para descobrir de outro jeito. */
   hideOnMobile?: boolean;
-  /** The header becomes a button that toggles ascending, descending, unsorted. */
+  /** O cabecalho vira botao que alterna crescente, decrescente, sem ordem. */
   sortable?: boolean;
   /**
-   * Raw value for sorting and filtering, when `cell` returns JSX or the key
-   * is not a direct field of the row. Without it, `row[key]` applies.
+   * Valor cru para ordenar e filtrar, quando `cell` devolve JSX ou a chave
+   * nao e campo direto da linha. Sem ele, vale `row[key]`.
    */
   value?: (row: Row) => string | number | Date | null | undefined;
   /**
-   * What this column shows in the footer: the sibling of `cell`, one column up.
-   * Where `cell` summarizes a row, this one summarizes the whole column.
+   * O que esta coluna mostra no rodape: o irmao do `cell`, uma coluna acima.
+   * Onde o `cell` resume uma linha, este resume a coluna inteira.
    *
-   * The rows that arrive are **the ones left after the filter, from all
-   * pages** - the total of a search is the total of the search, and turning the page does not
-   * change how much is owed. It takes just one column declaring `total` for the `<tfoot>` to
-   * exist; the others are rendered blank, aligned with what is above.
+   * As linhas que chegam sao **as que sobraram do filtro, de todas as
+   * paginas** - o total de uma busca e o total da busca, e virar de pagina nao
+   * muda quanto se deve. Basta uma coluna declarar `total` para o `<tfoot>`
+   * existir; as outras saem em branco, alinhadas com quem esta em cima.
    *
-   * Money is shown abbreviated, like in the rest of the house:
+   * Dinheiro sai abreviado, como no resto da casa:
    * `total: (rows) => currencyShort(rows.reduce((sum, row) => sum + row.amount, 0))`.
    */
   total?: (rows: Row[]) => ReactNode;
@@ -74,115 +74,115 @@ export type Column<Row> = {
 export type DataTableProps<Row> = {
   data: Row[] | undefined;
   columns: Column<Row>[];
-  /** The row's identity. An index works, but breaks when the list reorders. */
+  /** Identidade da linha. Indice serve, mas quebra quando a lista reordena. */
   rowKey: (row: Row, index: number) => string;
 
   isLoading?: boolean;
   isError?: boolean;
-  /** Without this, the error offers no retry. */
+  /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
   /**
-   * The title of the error notice. Without it, "Nao foi possivel carregar".
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar".
    *
-   * It exists for the same reason as `errorMessage`: a screen that loads three
-   * different listings has to say which one failed, and a product that does not
-   * speak Portuguese has to say it in another language.
+   * Ele existe pelo mesmo motivo do `errorMessage`: uma tela que carrega tres
+   * listagens diferentes precisa dizer qual delas falhou, e um produto que nao
+   * fala portugues precisa dizer isso em outra lingua.
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
-   * The discreet line for when the search finds nothing. Without it, "Nenhum
+   * A linha discreta de quando a busca nao acha nada. Sem ela, "Nenhum
    * resultado para a busca."
    *
-   * Not to be confused with `empty`: a filter that zeroed out is not an empty query, and the
-   * remedy for one - clearing the search - does not serve the other.
+   * Nao se confunde com o `empty`: filtro que zerou nao e consulta vazia, e o
+   * remedio de um - limpar a busca - nao serve ao outro.
    */
   noResultsMessage?: ReactNode;
 
   /**
-   * What appears when the query comes back empty. The description is required
-   * because "nenhum resultado" hands the person the work of finding out
-   * why, and they almost never do.
+   * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
+   * porque "nenhum resultado" transfere para a pessoa o trabalho de descobrir
+   * por que, e ela quase nunca descobre.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 
   onRowClick?: (row: Row) => void;
-  /** How many placeholder rows the loading state shows. */
+  /** Quantas linhas falsas o carregando mostra. */
   skeletonRows?: number;
   className?: string;
   caption?: string;
 
   /**
-   * Turns on client-side pagination, with a footer: count on the left, pages on the
-   * right. Whoever paginates on the server does not use this: show the page that came and
-   * put the house `Pagination` outside.
+   * Liga a paginacao client-side, com rodape: contagem a esquerda, paginas a
+   * direita. Quem pagina no servidor nao usa isto: mostra a pagina que veio e
+   * poe o `Pagination` da casa do lado de fora.
    */
   pageSize?: number;
 
   /**
-   * Controlled global filter: the app puts the search field wherever it wants and passes
-   * the text; the table filters all columns, ignoring case and accents.
+   * Filtro global controlado: o app poe o campo de busca onde quiser e passa
+   * o texto; a tabela filtra todas as colunas, ignorando caixa e acento.
    */
   filter?: string;
 
   /**
-   * Max height of the table. With it the list gets its own frame: scrolls
-   * internally instead of pushing the page, and the header sticks to the top.
+   * Altura maxima da tabela. Com ela a lista ganha moldura propria: rola por
+   * dentro em vez de empurrar a pagina, e o cabecalho gruda no topo.
    *
-   * A number becomes pixels. On its own, it virtualizes nothing - the rows stay
-   * all in the DOM, and that is enough up to a few thousand.
+   * Numero vira pixel. Sozinha, ela nao virtualiza nada - as linhas continuam
+   * todas no DOM, e isso basta ate uns poucos milhares.
    */
   maxHeight?: number | string;
 
   /**
-   * Draws only the rows that fit in the frame, and the middle path appears:
-   * a hundred thousand rows with `sortable` and `filter` still working, without
-   * sending the person to server-side pagination.
+   * Desenha so as linhas que cabem na moldura, e o caminho do meio aparece:
+   * cem mil linhas com `sortable` e `filter` continuando a funcionar, sem
+   * mandar a pessoa para a paginacao no servidor.
    *
-   * Needs `maxHeight` - without a height there is nothing to fit. Does not combine with
-   * `pageSize`: paginating already solves the same problem another way.
+   * Precisa de `maxHeight` - sem altura nao ha o que caber. Nao combina com
+   * `pageSize`: paginar ja resolve o mesmo problema de outro jeito.
    */
   virtual?: boolean;
 
   /**
-   * The height of a row, in pixels, when `virtual` is on.
+   * A altura de uma linha, em pixel, quando `virtual` esta ligado.
    *
-   * It is not a guess: virtualizing only adds up with a row of known height -
-   * and the space for what was not drawn comes out of that multiplication. That is why the
-   * virtualized row receives this height, and the default follows the comfortable
-   * density. In a dense list, or with a two-line cell, pass your own.
+   * Nao e chute: virtualizar so fecha a conta com linha de altura conhecida -
+   * e o espaco de quem nao foi desenhado sai dessa multiplicacao. Por isso a
+   * linha virtualizada recebe esta altura, e o padrao acompanha a densidade
+   * confortavel. Numa lista densa, ou com celula de duas linhas, passe a sua.
    */
   rowHeight?: number;
 
-  /** Checkbox column on the left. The keys come from `rowKey`. */
+  /** Coluna de checkbox a esquerda. As chaves vem do `rowKey`. */
   selectable?: boolean;
   /**
-   * The checked keys, when the consumer controls the selection. Without it, the table
-   * keeps its own and prunes by itself the row that leaves `data`; controlled, the
-   * pruning belongs to whoever controls it, along with the deletion.
+   * As chaves marcadas, quando quem usa controla a selecao. Sem ela, a tabela
+   * guarda a propria e poda sozinha a linha que sai de `data`; controlada, a
+   * poda e de quem controla, junto com a exclusao.
    */
   value?: string[];
-  /** The checked keys on the way out, when the table controls its own selection. */
+  /** As chaves marcadas de saida, quando a tabela controla a propria selecao. */
   defaultValue?: string[];
   onValueChange?: (keys: string[]) => void;
 
   /**
-   * The piece's texts, to change the language: `retry` is the button that runs
-   * `onRetry` - the same key in every piece that handles the four endings -,
-   * `selectAll` and `selectRow` the names of the checkboxes, `range` the
-   * count in the pagination footer and `pagination` the texts of the inner `Pagination`,
-   * with its keys.
-   * `loading` and `loaded` are what the screen reader hears when the query
-   * goes out and when it comes back. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry` - a mesma chave em todas as pecas que resolvem os quatro finais -,
+   * `selectAll` e `selectRow` os nomes das caixas de marcar, `range` a
+   * contagem do rodape da paginacao e `pagination` os textos do `Pagination`
+   * de dentro, com as chaves dele.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta. Passe so os que mudam.
    */
   labels?: Partial<DataTableLabels>;
   /**
-   * Class per part: `table`, `head`, `row`, `cell`, `footer`. Avoids
-   * `[&_tbody_tr]`, which couples the consumer's screen to the piece's internal tree.
+   * Classe por parte: `table`, `head`, `row`, `cell`, `footer`. Evita o
+   * `[&_tbody_tr]`, que acopla a tela de quem usa a arvore interna da peca.
    *
-   * `footer` is the pagination bar below the table, not the totals
-   * row - that one lives inside `<tfoot>` and is dressed through what each column's `total`
-   * returns.
+   * `footer` e a barra de paginacao debaixo da tabela, e nao a linha de
+   * totais - essa mora dentro do `<tfoot>` e se veste pelo que o `total` de
+   * cada coluna devolve.
    */
   classNames?: Slots<"table" | "head" | "row" | "cell" | "footer">;
 };

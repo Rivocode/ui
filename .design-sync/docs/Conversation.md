@@ -1,12 +1,12 @@
 ---
-category: AI
+category: IA
 ---
 
 # Conversation
 
-The scrollable list of messages in a conversation with an assistant. It sticks
-to the bottom while text arrives, stops sticking when the person scrolls up to
-reread, and offers the "Ir para o fim" button to go back. Lives in
+A lista rolável de mensagens de uma conversa com um assistente. Gruda no fim
+enquanto o texto chega, para de grudar quando a pessoa rola para cima para
+reler, e oferece o botão "Ir para o fim" para voltar. Vive em
 `@rivocode/ui/ai`.
 
 ```tsx
@@ -24,37 +24,35 @@ import { Conversation, Message, PromptInput } from '@rivocode/ui/ai'
 </div>
 ```
 
-**The height is yours, by class.** The conversation scrolls inside the space the
-parent gives it; without a defined height it grows with the messages and pushes
-the page, which is the opposite of a conversation.
+**A altura é sua, por classe.** A conversa rola dentro do espaço que o pai
+der; sem altura definida ela cresce com as mensagens e empurra a página, que é
+o contrário de uma conversa.
 
-## Sticking to the bottom, and letting go
+## Grudar no fim, e soltar
 
-While the person is at the bottom, every size change (a new message, a new
-chunk of text, an image that loaded) scrolls to the bottom. When they scroll
-up, the conversation lets go: text keeps arriving below and their reading does
-not jump. The "Ir para o fim" button then appears, which goes back, sticks
-again and disappears.
+Enquanto a pessoa está no fim, toda mudança de tamanho (mensagem nova, pedaço
+de texto novo, imagem que carregou) rola até o fim. Quando ela rola para cima,
+a conversa solta: o texto continua chegando embaixo e a leitura dela não pula.
+Aparece então o botão "Ir para o fim", que volta, gruda de novo e some.
 
-The return is smooth, and becomes a jump when the system asks for less motion.
-`labels.scroll` changes the button's text.
+A volta é suave, e vira salto quando o sistema pede menos movimento.
+`labels.scroll` troca o texto do botão.
 
-## For the screen reader
+## Para o leitor de tela
 
-The area is a `role="log"` region with `aria-live="polite"` and the name
-"Conversa" (or whatever `label` says): a new message is announced when the
-reader finishes the sentence, not in the middle of it. Together with the
-`aria-busy` of a `Message` in `streaming`, the answer is read whole at the end,
-not chunk by chunk.
+A área é uma região `role="log"` com `aria-live="polite"` e o nome "Conversa"
+(ou o que `label` disser): mensagem nova é anunciada quando o leitor termina a
+frase, e não no meio dela. Junto com o `aria-busy` da `Message` em
+`streaming`, a resposta é lida inteira no fim, e não pedaço por pedaço.
 
-The area takes keyboard focus, to scroll with the arrows.
+A área recebe foco pelo teclado, para rolar com as setas.
 
-## Empty
+## Vazia
 
-`empty` draws the house `EmptyState` when there is no message at all. The
-`suggestions` become buttons, and a tap hands the text to `onSuggestion`.
-Without `onSuggestion`, the suggestions do not appear: a button that does
-nothing is worse than none.
+`empty` desenha o `EmptyState` da casa quando não há mensagem nenhuma. As
+`suggestions` viram botões, e o toque entrega o texto ao `onSuggestion`. Sem
+`onSuggestion`, as sugestões não aparecem: botão que não faz nada é pior que
+nenhum.
 
 ```tsx
 <Conversation
@@ -67,27 +65,27 @@ nothing is worse than none.
 />
 ```
 
-## Parts
+## Partes
 
-`classNames` reaches `viewport` (the area that scrolls), `content` (the column
-of messages), `empty`, `suggestions` and `scrollButton`.
+`classNames` alcança `viewport` (a área que rola), `content` (a coluna das
+mensagens), `empty`, `suggestions` e `scrollButton`.
 
-## When not to use
+## Quando não usar
 
-- **A long list of identical rows** is `VirtualList`. `Conversation` draws
-  every message, because a conversation has dozens, not thousands, and what it
-  solves is sticking to the bottom. A log of ten thousand events calls for the
-  virtualized list.
-- **A history of events in order** is `Timeline`. `Timeline` looks back and
-  receives nothing new while the person reads; `Conversation` exists precisely
-  for what is arriving now.
+- **Lista longa de linhas iguais** é `VirtualList`. A `Conversation` desenha
+  todas as mensagens, porque uma conversa tem dezenas e não milhares, e o que
+  ela resolve é o grudar no fim. Um registro de dez mil eventos pede a lista
+  virtualizada.
+- **Histórico de acontecimentos em ordem** é `Timeline`. A `Timeline` olha para
+  trás e não recebe nada novo enquanto a pessoa lê; a `Conversation` existe
+  justamente para o que está chegando agora.
 
-## In React Native
+## No React Native
 
-Translates, on its own path `@rivocode/ui-native/ai`, on top of an inverted `FlatList`: the end of the conversation is the start of the list, so whoever is there stays there when the text grows, with no math at all. Scrolling up shows the same "Ir para o fim" button, and the list holds the reading position while the new message arrives below.
+Traduz, no caminho próprio `@rivocode/ui-native/ai`, sobre uma `FlatList` invertida: o fim da conversa é o começo da lista, então quem está lá continua lá quando o texto cresce, sem conta nenhuma. Rolar para cima mostra o mesmo botão "Ir para o fim", e a lista segura a posição de leitura enquanto a mensagem nova chega embaixo.
 
-**The list comes through `items`**, like the whole package: `renderItem` draws a message and `keyExtractor` gives the key. The order is the web's (newest last), and the inversion belongs to the piece. `empty` with `suggestions` and `onSuggestion` cross over with the same names.
+**A lista vem por `items`**, como todo o pacote: `renderItem` desenha uma mensagem e `keyExtractor` dá a chave. A ordem é a do web (a mais nova por último), e a inversão é da peça. O `empty` com `suggestions` e o `onSuggestion` atravessam com os mesmos nomes.
 
-**The new message is announced**, like the web's `role="log"`: on Android through the live region, and on iOS through the system announcement, once per message and only when `streaming` ends. The spoken text is the loose text `renderItem` returns; whoever draws the message through their own component says the sentence in `announcement`, and `null` there waits.
+**A mensagem nova é anunciada**, como no `role="log"` do web: no Android pela região viva, e no iOS pelo anúncio do sistema, uma vez por mensagem e só quando o `streaming` acaba. O texto dito é o texto solto que o `renderItem` devolve; quem desenha a mensagem por um componente próprio diz a frase em `announcement`, e `null` ali espera.
 
-The parts are styled through the same `classNames` as the web: `viewport` on the `FlatList`, `content` on its `contentContainerClassName`, `empty`, `suggestions` and `scrollButton`.
+As partes vestem pelo mesmo `classNames` do web: `viewport` na `FlatList`, `content` no `contentContainerClassName` dela, `empty`, `suggestions` e `scrollButton`.

@@ -1,12 +1,12 @@
-`@rivocode/ui` is public on npm, under the MIT license. It needs no token, no
-`.npmrc`, and no access to the organization.
+O `@rivocode/ui` é público no npm, sob licença MIT. Não precisa de token, nem
+de `.npmrc`, nem de acesso à organização.
 
-## 1. Install
+## 1. Instalar
 
-`lucide-react` goes along on the same line, and it is not decoration: the
-components import icons straight from it. npm installs that peer on its own,
-but pnpm and yarn do not, and without it `Sidebar`, `Pagination` and
-`DatePicker` break at runtime.
+O `lucide-react` vai junto na mesma linha, e não é enfeite: os componentes
+importam ícone direto dele. O npm instala esse par sozinho, mas o pnpm e o
+yarn não, e sem ele a `Sidebar`, a `Pagination` e o `DatePicker` quebram em
+tempo de execução.
 
 ```bash
 npm install @rivocode/ui lucide-react
@@ -15,31 +15,31 @@ yarn add @rivocode/ui lucide-react
 bun add @rivocode/ui lucide-react
 ```
 
-And Tailwind, as a dev dependency:
+E o Tailwind, como dependência de desenvolvimento:
 
 ```bash
 npm install -D tailwindcss @tailwindcss/vite
 ```
 
-React 19, React DOM 19 and Tailwind 4 are **peer dependencies**: your project
-decides the version, not the library. That avoids a duplicated React, which
-breaks context and hooks in ways that are hard to diagnose.
+React 19, React DOM 19 e Tailwind 4 são **dependências de par**: quem manda na
+versão é o seu projeto, não a biblioteca. Isso evita a duplicação de React, que
+quebra contexto e hooks de formas difíceis de diagnosticar.
 
-These are optional, and only whoever uses them carries the weight:
+Estes são opcionais, e só quem usa carrega o peso:
 
-| If you are going to use | Install alongside                                 |
-| ----------------------- | ------------------------------------------------- |
+| Se você for usar        | Instale junto                                    |
+| ----------------------- | ------------------------------------------------ |
 | `@rivocode/ui/form`     | `react-hook-form`, `zod`, `@hookform/resolvers`   |
 | `@rivocode/ui/chart`    | `recharts`                                        |
 | `@rivocode/ui/dnd`      | `@dnd-kit/core`, `@dnd-kit/sortable`              |
 | `@rivocode/ui/editor`   | `@tiptap/react`, `@tiptap/pm`, `@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extensions` |
 
-## 2. Wire Tailwind into the build
+## 2. Ligar o Tailwind no build
 
-Installing `@tailwindcss/vite` is not enough: it has to go into the plugins
-list. Without it the build **passes with no error at all** and produces CSS
-without a single library class, so the screen shows up bare and nothing in the
-output explains why.
+Instalar o `@tailwindcss/vite` não basta: ele precisa entrar na lista de
+plugins. Sem isso o build **passa sem erro nenhum** e gera um CSS sem uma
+única classe da biblioteca, então a tela aparece crua e nada na saída explica
+por quê.
 
 ```ts
 // vite.config.ts
@@ -52,11 +52,11 @@ export default defineConfig({
 })
 ```
 
-In Next.js the path is the PostCSS plugin, not this one.
+Em Next.js o caminho é o plugin do PostCSS, e não este.
 
-## 3. The two lines of CSS
+## 3. As duas linhas de CSS
 
-In the project's CSS file:
+No arquivo de CSS do projeto:
 
 ```css
 @import "tailwindcss";
@@ -65,18 +65,17 @@ In the project's CSS file:
 @source '../node_modules/@rivocode/ui/dist';
 ```
 
-**The `@source` line is not optional, and it is the one that breaks most.**
-Tailwind 4 only generates the classes it finds while scanning files. Without
-that line it does not scan the library components, does not generate the
-classes they use, and the screen shows up **with no styling at all**, no
-error, no warning, no clue. Adjust the relative path to the folder where your
-CSS lives.
+**A linha `@source` não é opcional, e é a que mais quebra.** O Tailwind 4 só
+gera a classe que encontra ao varrer arquivos. Sem essa linha ele não varre os
+componentes da biblioteca, não gera as classes que eles usam, e a tela aparece
+**sem estilo nenhum**, sem erro, sem aviso, sem pista. Ajuste o caminho
+relativo conforme a pasta onde o seu CSS mora.
 
-The `preset` brings the three token layers, both themes and the brand fonts.
-If your project already has its own typography, see
-[Themes and customization](/temas) to import only the tokens.
+O `preset` traz as três camadas de token, os dois temas e as fontes da marca. Se
+o seu projeto já tem tipografia própria, veja
+[Temas e personalização](/temas) para importar só os tokens.
 
-## 4. The Provider, once
+## 4. O Provider, uma vez
 
 ```tsx
 import { RivoProvider } from '@rivocode/ui'
@@ -85,35 +84,35 @@ import './styles.css'
 export function App() {
   return (
     <RivoProvider theme="rivocode-dark" density="comfortable">
-      <YourApplication />
+      <SuaAplicacao />
     </RivoProvider>
   )
 }
 ```
 
-Without it nothing is styled, and `Dialog`, `Menu`, `Select`, `Tooltip` and
-the toasts throw, since they all read its context. The Provider already mounts
-inside it the tooltip provider, the toast wiring and a portal container that
-carries the theme along. **Do not mount any of them by hand.**
+Sem ele nada tem estilo, e `Dialog`, `Menu`, `Select`, `Tooltip` e os avisos
+lançam erro, todos leem o contexto dele. O Provider já monta por dentro o
+provedor de dica, a fiação de aviso e um container de portal que leva o tema
+junto. **Não monte nenhum deles à mão.**
 
-## 5. Teach your agent
+## 5. Ensinar o seu agente
 
-If you program with Claude Code, Cursor or another agent that reads skills, one
-command installs the one that teaches this library (the contract, the choice
-between similar pieces and the icon vocabulary):
+Se você programa com Claude Code, Cursor ou outro agente que leia skills, um
+comando instala a que ensina esta biblioteca (o contrato, a escolha entre
+peças parecidas e o vocabulário de ícones):
 
 ```bash
 npx rivocode-ui skill
 ```
 
-It goes into `.claude/skills/rivocode-ui` and the team gets it along through
-Git. Details and alternatives in [Skill](/skill).
+Ela entra em `.claude/skills/rivocode-ui` e a equipe recebe junto pelo Git.
+Detalhes e alternativas em [Skill](/skill).
 
 ## Next.js
 
-The components are interactive and carry `"use client"` at the source. The
-Provider has to live in a client file, usually a `providers.tsx` imported by
-the root layout:
+Os componentes são interativos e trazem `"use client"` na origem. O Provider
+precisa viver num arquivo de cliente, normalmente um `providers.tsx` importado
+pelo layout raiz:
 
 ```tsx
 'use client'
@@ -125,19 +124,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## When something does not show up
+## Quando algo não aparece
 
-| Symptom                                   | Almost certain cause                                                     |
+| Sintoma                                   | Causa quase certa                                                        |
 | ----------------------------------------- | ------------------------------------------------------------------------ |
-| Screen with no styling at all, not even yours | the Tailwind plugin is not in the plugins list of `vite.config.ts`   |
-| Your classes apply, the library's do not  | the `@source` line is missing, or its relative path is wrong             |
-| `ChevronRight is not defined` or similar  | `lucide-react` is missing: pnpm and yarn do not install peers on their own |
-| Context error when opening a dialog or menu | tree outside `RivoProvider`                                            |
-| Two Reacts on the page                    | React as a direct dependency of the library instead of a peer; check the lockfile |
-| Floating element without the theme, loose at the end of the page | `scope="local"` without the Provider's portal container |
-| Everything styled, and the whole page in the system font | client theme without `--rc-font-sans`: run `npx rivocode-ui check-theme` on your theme CSS |
+| Tela sem estilo nenhum, nem a sua         | o plugin do Tailwind não está na lista de plugins do `vite.config.ts`   |
+| Suas classes pegam, as da biblioteca não  | falta a linha `@source`, ou o caminho relativo dela está errado          |
+| `ChevronRight is not defined` ou similar  | falta o `lucide-react`: o pnpm e o yarn não instalam par sozinhos        |
+| Erro de contexto ao abrir diálogo ou menu | árvore fora do `RivoProvider`                                            |
+| Dois Reacts na página                     | React como dependência direta da biblioteca em vez de par, verifique o lockfile |
+| Flutuante sem tema, solto no fim da página | `scope="local"` sem o container de portal do Provider                    |
+| Tudo estilizado, e a página inteira na fonte do sistema | tema de cliente sem `--rc-font-sans`: rode `npx rivocode-ui check-theme` no CSS do seu tema |
 
-The last one raises no error anywhere, and that is why it has its own command.
-`rivocode-ui check-theme` reads your project's theme files and flags missing
-roles, saying what happens on screen without each one. Details in
-[Themes and customization](/temas).
+O último não dá erro em lugar nenhum, e por isso tem comando próprio. O
+`rivocode-ui check-theme` lê os arquivos de tema do seu projeto e cobra papel
+faltando, dizendo o que acontece na tela sem cada um. Detalhes em
+[Temas e personalização](/temas).

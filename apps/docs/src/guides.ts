@@ -1,12 +1,12 @@
 /* ---------------------------------------------------------------------------
- * The guides
+ * Os guias
  *
- * The prose pages: installation, first screen, theme, density, agents. Written
- * by hand in `content/`, because none of it can be derived from the source -
- * it is the reasoning around the code, not the code.
+ * As paginas de prosa: instalacao, primeira tela, tema, densidade, agentes.
+ * Escritas a mao em `content/`, em portugues, porque nada disso da para derivar
+ * da fonte - e o raciocinio em volta do codigo, e nao o codigo.
  *
- * The body loads on demand, like the pieces': the guides add up to 72 KB of
- * markdown, and the sidebar only prints their titles.
+ * O corpo carrega sob demanda, como o das pecas: os cinco guias somam 72 KB de
+ * markdown, e a lista lateral so imprime o titulo deles.
  * ------------------------------------------------------------------------- */
 
 import { GUIDE_LIST } from './guide-list'
@@ -20,11 +20,11 @@ export type Guide = {
   slug: string
   title: string
   summary: string
-  /** A guide listed and not yet written opens empty, not with an error. */
+  /** Guia listado e ainda nao escrito abre vazio, e nao com erro. */
   loadBody: () => Promise<string>
 }
 
-/** The same promise on every call: see `once` in `catalog.ts`. */
+/** A mesma promessa em toda chamada: ver o `once` do `catalog.ts`. */
 function once(load: () => Promise<string>) {
   let pending: Promise<string> | null = null
   return () => (pending ??= load())

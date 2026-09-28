@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@rivocode/ui'
 import { ChartRadial, currencyShort } from '@rivocode/ui/chart'
 
-/** Monthly goal */
+/** Meta do mês */
 export function MonthlyGoal() {
   return (
     <div className="w-64">
@@ -10,7 +10,7 @@ export function MonthlyGoal() {
   )
 }
 
-/** With written value */
+/** Com valor escrito */
 export function WithOwnValue() {
   return (
     <Card className="w-64">
@@ -27,7 +27,7 @@ export function WithOwnValue() {
   )
 }
 
-/** Full circle */
+/** Círculo fechado */
 export function FullCircle() {
   return (
     <div className="w-56">
@@ -36,7 +36,7 @@ export function FullCircle() {
   )
 }
 
-/** Segmented gauge */
+/** Medidor segmentado */
 export function SegmentedGauge() {
   return (
     <div className="w-64">

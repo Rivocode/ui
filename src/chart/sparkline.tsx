@@ -5,35 +5,35 @@ import { Area, AreaChart, Bar, BarChart, Line, LineChart, ResponsiveContainer } 
 import { cn } from "../lib/cn";
 
 export type SparklineProps = {
-  /** Just the numbers, in time order. */
+  /** So os numeros, na ordem do tempo. */
   data: number[];
   /**
-   * `line` for pure trend, `area` when volume also counts, `bar`
-   * for counts per period - issuances per day, tickets per week.
+   * `line` para tendencia pura, `area` quando o volume tambem conta, `bar`
+   * para contagem por periodo - emissoes por dia, chamados por semana.
    *
-   * `bar` is the only one that crosses over to `@rivocode/ui-native`: area needs a
-   * filled polygon, which cannot be done without SVG. The name means the same thing
-   * in both, and the absence is written in the parity table.
+   * O `bar` e o unico que atravessa para o `@rivocode/ui-native`: area pede
+   * poligono preenchido, que sem SVG nao sai. O nome significa a mesma coisa
+   * nos dois, e a ausencia esta escrita na tabela de paridade.
    */
   variant?: "line" | "area" | "bar";
   /**
-   * The color. Accepts a token: `var(--rc-accent)`. Without it, the theme accent, which is
-   * the neutral reading of "this is a number on this screen".
+   * A cor. Aceita token: `var(--rc-accent)`. Sem ela, o acento do tema, que e
+   * a leitura neutra de "isto e um numero desta tela".
    */
   color?: string;
   /**
-   * Paints green or red depending on whether it goes up or down from the first to the last
-   * point. Use it only when going up is good: for cost, going up is bad.
+   * Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo
+   * ponto. Use so quando subir for bom: em custo, subir e ruim.
    *
-   * It is not called `tone` on purpose, and "fixing" it does not help: in the rest of the
-   * catalog - `Badge`, `Alert`, `Tracker`, `Timeline`, `MenuItem` - `tone` is
-   * the semantic color scale (`success`, `danger`, `warning`, `info`), with
-   * other values. Two things with the same name cost more than a name unique
-   * to this piece.
+   * Nao se chama `tone` de proposito, e nao adianta "corrigir": no resto do
+   * catalogo - `Badge`, `Alert`, `Tracker`, `Timeline`, `MenuItem` - `tone` e
+   * a escala semantica de cor (`success`, `danger`, `warning`, `info`), com
+   * outros valores. Duas coisas com o mesmo nome custam mais que um nome so
+   * desta peca.
    */
   trend?: "auto" | "none";
   className?: string;
-  /** What the screen reader hears. Without this it is hidden from it. */
+  /** O que o leitor de tela ouve. Sem isto ela e escondida dele. */
   label?: string;
 };
 

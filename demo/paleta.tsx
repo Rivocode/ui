@@ -86,12 +86,12 @@ function Frames() {
     <div className="flex flex-col">
       <iframe
         src="./paleta.html#escuro"
-        title="Command palette in the dark theme"
+        title="Paleta de comandos no tema escuro"
         className="h-[560px] w-full border-0"
       />
       <iframe
         src="./paleta.html#claro"
-        title="Command palette in the light theme"
+        title="Paleta de comandos no tema claro"
         className="h-[560px] w-full border-0"
       />
     </div>

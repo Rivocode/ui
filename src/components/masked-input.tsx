@@ -11,15 +11,15 @@ export type MaskedInputProps = Omit<
   ComponentProps<typeof Input>,
   "onValueChange" | "value" | "defaultValue"
 > & {
-  /** A ready-made mask name, a hand-written mask, or `moeda`. */
+  /** Nome de molde pronto, molde escrito na mao, ou `moeda`. */
   mask: Mask;
-  /** The text already masked, when the consumer controls the state. */
+  /** O texto ja com mascara, quando quem usa controla o estado. */
   value?: string;
-  /** The initial text, when the component controls its own state. */
+  /** O texto inicial, quando o componente controla o proprio estado. */
   defaultValue?: string;
   /**
-   * Called on every keystroke, with the masked text and the raw one. Store the raw one: it is
-   * what the server understands, and the punctuation is a screen concern.
+   * Chamado a cada tecla, com o texto mascarado e o cru. Guarde o cru: e ele
+   * que o servidor entende, e a pontuacao e assunto de tela.
    */
   onValueChange?: (masked: string, raw: string) => void;
 };

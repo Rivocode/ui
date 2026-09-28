@@ -5,7 +5,7 @@ import { Button } from "../src/components/button";
 import { useToast } from "../src/components/toast";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
-function FireToast() {
+function Disparo() {
   const toast = useToast();
   return (
     <Button onClick={() => toast.add({ title: "Nota emitida", description: "Numero 4816." })}>
@@ -14,10 +14,10 @@ function FireToast() {
   );
 }
 
-test("the toast shows after the action, without the app mounting any portal", () => {
+test("o aviso aparece depois da acao, sem o app montar portal nenhum", () => {
   render(
     <RivoProvider>
-      <FireToast />
+      <Disparo />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
@@ -25,10 +25,10 @@ test("the toast shows after the action, without the app mounting any portal", ()
   expect(screen.getByText("Numero 4816.")).toBeDefined();
 });
 
-test("the toast shows inside the container that carries the theme", () => {
+test("o aviso aparece dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
-      <FireToast />
+      <Disparo />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
@@ -36,18 +36,18 @@ test("the toast shows inside the container that carries the theme", () => {
   expect(container!.textContent).toContain("Nota emitida");
 });
 
-test("using the toast outside the Provider throws, instead of failing silently", () => {
-  function Loose() {
+test("usar o aviso fora do Provider da erro, e nao silencio", () => {
+  function Solto() {
     useToast();
     return null;
   }
-  expect(() => render(<Loose />)).toThrow();
+  expect(() => render(<Solto />)).toThrow();
 });
 
-test("the manager has a stable identity, otherwise a useEffect loops", () => {
-  const seen: unknown[] = [];
+test("o gerenciador tem identidade estavel, senao um useEffect entra em laco", () => {
+  const vistos: unknown[] = [];
   function Spy() {
-    seen.push(useToast());
+    vistos.push(useToast());
     return null;
   }
   const { rerender } = render(
@@ -60,14 +60,14 @@ test("the manager has a stable identity, otherwise a useEffect loops", () => {
       <Spy />
     </RivoProvider>,
   );
-  expect(seen.length).toBeGreaterThan(1);
-  expect(seen.every((v) => v === seen[0])).toBe(true);
+  expect(vistos.length).toBeGreaterThan(1);
+  expect(vistos.every((v) => v === vistos[0])).toBe(true);
 });
 
-test("the toast corner is chosen in the provider, and not in the consumer's CSS", () => {
+test("o canto do aviso e escolhido no provider, e nao no CSS de quem usa", () => {
   render(
     <RivoProvider scope="local" toastPosition="top-left">
-      <FireToast />
+      <Disparo />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
@@ -75,26 +75,26 @@ test("the toast corner is chosen in the provider, and not in the consumer's CSS"
   const area = document.querySelector('[class*="fixed"][class*="top-4"]');
   expect(area).not.toBeNull();
   expect(area!.className).toContain("left-4");
-  // The default must not linger alongside: both corners at once would leave the
-  // area stuck at the bottom one, and the choice would be silently ignored.
+  // O padrao nao pode sobrar junto: os dois cantos ao mesmo tempo deixariam a
+  // area presa no de baixo, e a escolha seria silenciosamente ignorada.
   expect(area!.className).not.toContain("bottom-4");
 });
 
-test("the toast enters from the nearest edge, and does not cross the screen", () => {
+test("o aviso entra pela borda mais proxima, e nao atravessa a tela", () => {
   render(
     <RivoProvider scope="local" toastPosition="top-left">
-      <FireToast />
+      <Disparo />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
 
   const alert = screen.getByText("Nota emitida").closest("[class*='rounded-lg']");
   expect(alert).not.toBeNull();
-  // Anchored to the left, it slides in from the left.
+  // Ancorado a esquerda, ele desliza da esquerda.
   expect(alert!.className).toContain("data-[starting-style]:-translate-x-4");
 });
 
-function ToneTrigger({ type }: { type?: string }) {
+function DisparoComTom({ type }: { type?: string }) {
   const toast = useToast();
   return (
     <Button onClick={() => toast.add({ title: "Emissao", description: "Detalhe.", type })}>
@@ -103,43 +103,43 @@ function ToneTrigger({ type }: { type?: string }) {
   );
 }
 
-/** The toast bubble on screen, which is what carries the tone. */
-function bubble() {
+/** O balao do aviso na tela, que e quem carrega o tom. */
+function balao() {
   return document.querySelector('[class*="shadow-3"]') as HTMLElement;
 }
 
-test("the error toast does not look like the success one", () => {
-  // The tone Base UI carries on the object was not read, and Alert and Badge
-  // carefully tell these three apart in the same system: success, error and
-  // warning toasts came out visually identical.
+test("o aviso de erro nao sai igual ao de sucesso", () => {
+  // O tom que a Base UI carrega no objeto nao era lido, e Alert e Badge
+  // separam esses tres com cuidado no mesmo sistema: aviso de sucesso, de erro
+  // e de atencao saiam visualmente identicos.
   const { rerender } = render(
     <RivoProvider>
-      <ToneTrigger type="success" />
+      <DisparoComTom type="success" />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
-  expect(bubble().className).toContain("bg-success-subtle");
+  expect(balao().className).toContain("bg-success-subtle");
 
   rerender(
     <RivoProvider>
-      <ToneTrigger type="error" />
+      <DisparoComTom type="error" />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
-  const tones = [...document.querySelectorAll('[class*="shadow-3"]')].map((node) => node.className);
-  expect(tones.some((name) => name.includes("bg-danger-subtle"))).toBe(true);
+  const tons = [...document.querySelectorAll('[class*="shadow-3"]')].map((no) => no.className);
+  expect(tons.some((classe) => classe.includes("bg-danger-subtle"))).toBe(true);
 });
 
-test("the toast without a tone stays neutral, which is the default", () => {
+test("o aviso sem tom continua neutro, que e o padrao", () => {
   render(
     <RivoProvider>
-      <ToneTrigger />
+      <DisparoComTom />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
 
-  expect(bubble().className).toContain("bg-surface-raised");
-  expect(bubble().className).not.toContain("subtle");
+  expect(balao().className).toContain("bg-surface-raised");
+  expect(balao().className).not.toContain("subtle");
 });
 
 function closeButtons(count: number) {
@@ -162,7 +162,7 @@ function TwoNotices() {
   );
 }
 
-test("closing a toast moves focus to the neighboring toast, and the last one returns focus to whoever had it before", async () => {
+test("fechar o aviso leva o foco para o aviso vizinho, e o ultimo devolve o foco a quem estava antes", async () => {
   render(
     <RivoProvider>
       <TwoNotices />
@@ -185,10 +185,10 @@ test("closing a toast moves focus to the neighboring toast, and the last one ret
   await waitFor(() => expect(document.activeElement).toBe(trigger));
 });
 
-test("the toast's x stretches its target beyond the drawing", () => {
+test("o xis do aviso estica o alvo por fora do desenho", () => {
   render(
     <RivoProvider>
-      <FireToast />
+      <Disparo />
     </RivoProvider>,
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));

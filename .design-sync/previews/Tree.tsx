@@ -19,7 +19,7 @@ const SETORES: TreeNode[] = [
   },
 ]
 
-/** Mixed state */
+/** Estado misto */
 export function MixedState() {
   return (
     <div className="w-72">

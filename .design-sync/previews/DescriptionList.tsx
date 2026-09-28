@@ -1,7 +1,7 @@
 import { Badge, DescriptionItem, DescriptionList } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
 
-/** Details sheet */
+/** Folha de detalhes */
 export function Default() {
   return (
     <div className="w-full max-w-sm">

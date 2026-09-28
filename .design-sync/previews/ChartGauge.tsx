@@ -7,7 +7,7 @@ const DELAY: ChartGaugeBand[] = [
   { until: 20, tone: 'danger', label: 'Crítico' },
 ]
 
-/** Delinquency with bands */
+/** Inadimplência com faixas */
 export function OverdueRate() {
   return (
     <Card className="w-72">
@@ -34,7 +34,7 @@ const QUOTA: ChartGaugeBand[] = [
   { until: 100, tone: 'danger', label: 'No limite' },
 ]
 
-/** Three readings, side by side */
+/** Três leituras, lado a lado */
 export function ThreeReadings() {
   return (
     <div className="grid w-[40rem] grid-cols-3 gap-4">
@@ -45,7 +45,7 @@ export function ThreeReadings() {
   )
 }
 
-/** Without bands */
+/** Sem faixas */
 export function WithoutBands() {
   return (
     <div className="w-64">

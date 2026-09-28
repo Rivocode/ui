@@ -1,4 +1,4 @@
-/* Generated from src/shared/notification.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/notification.ts por bun run gen:compartilhado. Nao editar. */
 
 export type NotificationTone = "neutral" | "info" | "success" | "warning" | "danger";
 

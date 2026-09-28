@@ -8,11 +8,11 @@ import { TextInput } from "./text";
 export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
   value: string;
   onValueChange: (value: string) => void;
-  /** Styles the frame (the box with the magnifier and clear), not the inner field. */
+  /** Veste a moldura (a caixa com lupa e limpar), nao o campo interno. */
   className?: string;
   /**
-   * The component's texts, to change the language: `clear` is the name of the X
-   * that clears the search, "Limpar a busca" without it.
+   * Os textos da peca, para trocar o idioma: `clear` e o nome do xis que
+   * limpa a busca, "Limpar a busca" sem ele.
    */
   labels?: Partial<SearchInputLabels>;
 };

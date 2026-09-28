@@ -1,38 +1,38 @@
-# The interface text
+# O texto da interface
 
-The right piece with the wrong text is a wrong screen. This file says **what to
-write inside** the components, and it is the part of the work no guard
-measures: `tsc`, contrast, `check:classes` and the tests all pass on a message
-that helps nobody.
+A peça certa com o texto errado é uma tela errada. Este arquivo diz **o que
+escrever dentro** dos componentes, e é a parte do trabalho que nenhuma guarda
+mede: `tsc`, contraste, `check:classes` e os testes passam inteiros sobre uma
+mensagem que não ajuda ninguém.
 
-## Contents
+## Conteúdo
 
-- The three sentences every screen writes
-- The button says what will happen
-- The button pair never repeats the same word with two meanings
-- The error message names who failed and what to do
-- The empty state is a door, not a notice
-- Label, hint and placeholder
-- Form: person, tense and length
-- The text the piece writes by itself lives in `labels`
+- As três frases que toda tela escreve
+- O botão diz o que vai acontecer
+- O par de botões nunca repete a mesma palavra com dois sentidos
+- A mensagem de erro nomeia quem falhou e o que fazer
+- O vazio é uma porta, não um aviso
+- Rótulo, dica e marca de lugar
+- Forma: pessoa, tempo e tamanho
+- O texto que a peça escreve sozinha mora em `labels`
 
-## The three sentences every screen writes
+## As três frases que toda tela escreve
 
-Every listing, every chart and every form writes these three, and they are what
-the person reads on the worst days:
+Toda listagem, todo gráfico e todo formulário escrevem estas três, e são elas
+que a pessoa lê nos piores dias:
 
-| Moment | Who writes it | What the sentence needs to have |
+| Momento | Quem escreve | O que a frase precisa ter |
 |---|---|---|
-| It failed | `errorTitle` + `errorMessage` | what failed, who failed, and what to do now |
-| There is nothing | `empty` (title + description) | why it is empty, and the way to stop being empty |
-| No way back | `AlertDialog` title + description | the effect, who is notified, and that it cannot be undone |
+| Deu erro | `errorTitle` + `errorMessage` | o que falhou, quem falhou, e o que fazer agora |
+| Não há nada | `empty` (título + descrição) | por que está vazio, e o caminho para deixar de estar |
+| Vai sem volta | título + descrição do `AlertDialog` | o efeito, quem é avisado, e que não se desfaz |
 
-## The button says what will happen
+## O botão diz o que vai acontecer
 
-The label is a **verb with its object**, not a category. The person decides by
-looking at the button, and "Confirmar" does not say what they are confirming.
+O rótulo é um **verbo com o objeto**, não uma categoria. A pessoa decide olhando
+o botão, e "Confirmar" não diz o que ela está confirmando.
 
-| Instead of | Write |
+| Em vez de | Escreva |
 |---|---|
 | Confirmar | Emitir nota |
 | Salvar | Salvar rascunho |
@@ -40,13 +40,13 @@ looking at the button, and "Confirmar" does not say what they are confirming.
 | Enviar | Enviar para a prefeitura |
 | Sim | Cancelar nota |
 
-When the action cannot be undone, the verb carries that: "Cancelar nota" and
-not "Continuar".
+Quando a ação não tem volta, o verbo carrega isso: "Cancelar nota" e não
+"Continuar".
 
-## The button pair never repeats the same word with two meanings
+## O par de botões nunca repete a mesma palavra com dois sentidos
 
-It is the most expensive text defect there is, and it shows up exactly where it
-hurts: in the box that confirms an irreversible action.
+É o defeito de texto mais caro que existe, e ele aparece exatamente onde dói:
+na caixa que confirma uma ação sem volta.
 
 ```tsx
 <AlertDialogTitle>Cancelar a nota 4813?</AlertDialogTitle>
@@ -59,27 +59,27 @@ hurts: in the box that confirms an irreversible action.
 </AlertDialogFooter>
 ```
 
-The escape button says **"Manter nota"** (keep the invoice). If it said
-"Cancelar", the word would mean two opposite things inside the same box -
-aborting the operation and cancelling the invoice - and the person would have
-to guess which, on an action that notifies the city hall and cannot be undone.
+O botão de escape diz **"Manter nota"**. Se dissesse "Cancelar", a palavra
+significaria duas coisas opostas dentro da mesma caixa — abortar a operação e
+cancelar a nota — e a pessoa teria que adivinhar qual, numa ação que avisa a
+prefeitura e não tem volta.
 
-The rule comes from that: **the escape names the state that remains**, not the
-giving up. "Manter nota", "Continuar editando", "Ficar aqui". Never "Cancelar"
-next to an action that is also called cancel.
+A regra sai daí: **o escape nomeia o estado que fica**, não a desistência.
+"Manter nota", "Continuar editando", "Ficar aqui". Nunca "Cancelar" ao lado de
+uma ação que também se chama cancelar.
 
-In `Popconfirm`, and in the native package's `AlertDialog`, the pair is written
-in `labels`, with the same keys in both:
+No `Popconfirm`, e no `AlertDialog` do pacote nativo, o par se escreve em
+`labels`, com as mesmas chaves nos dois:
 `labels={{ confirm: "Cancelar nota", cancel: "Manter nota" }}`.
 
-The title is a **question that names the object**: "Cancelar a nota 4813?", and
-not "Tem certeza?". A number in the title is what lets someone find out they
-clicked the wrong row.
+O título é uma **pergunta que nomeia o objeto**: "Cancelar a nota 4813?", e não
+"Tem certeza?". Um número no título é o que permite descobrir que se clicou na
+linha errada.
 
-## The error message names who failed and what to do
+## A mensagem de erro nomeia quem falhou e o que fazer
 
-Two sentences, and each one has a job. It is the pattern the whole catalog
-already uses, and it is not negotiated away by haste:
+Duas frases, e cada uma tem um trabalho. É o padrão que o catálogo inteiro já
+usa, e ele não se negocia por pressa:
 
 ```tsx
 <DataTable
@@ -91,35 +91,34 @@ already uses, and it is not negotiated away by haste:
 />
 ```
 
-- **`errorTitle`** says what failed, naming the object: "as notas", "o
-  faturamento", "a agenda". Never "Erro" or "Algo deu errado".
-- **`errorMessage`** says **who** failed and **what to do**: "A prefeitura não
-  respondeu", "A consulta expirou", followed by "Tente de novo em alguns
-  minutos". Who failed is what decides whether the person waits, fixes or calls
-  someone.
-- **`onRetry`** exists when retrying solves it. An error with no way out does
-  not get a button, it gets the path: whom to look for, or where to look.
+- **`errorTitle`** diz o que falhou, nomeando o objeto: "as notas", "o
+  faturamento", "a agenda". Nunca "Erro" nem "Algo deu errado".
+- **`errorMessage`** diz **quem** falhou e **o que fazer**: "A prefeitura não
+  respondeu", "A consulta expirou", seguido de "Tente de novo em alguns
+  minutos". Quem falhou é o que decide se a pessoa espera, corrige ou liga para
+  alguém.
+- **`onRetry`** existe quando repetir resolve. Erro que não tem saída não ganha
+  botão, ganha o caminho: quem procurar, ou onde olhar.
 
-Never write an error code, a `stack` or an endpoint name on the screen. That is
-for the log.
+Nunca escreva código de erro, `stack` ou nome de endpoint na tela. Isso é para o
+log.
 
-**A field error is different from a screen error**: the field one says the
-accepted format ("Use o formato 00.000.000/0000-00"), and not "Valor inválido".
-The person already knew it was invalid; what they do not know is what works.
+**Erro de campo é diferente de erro de tela**: o do campo diz o formato aceito
+("Use o formato 00.000.000/0000-00"), e não "Valor inválido". Inválido a pessoa
+já sabia; o que ela não sabe é o que serve.
 
-## The empty state is a door, not a notice
+## O vazio é uma porta, não um aviso
 
-The same component has two different texts, and swapping them is the common
-mistake:
+O mesmo componente tem dois textos diferentes, e trocá-los é o erro comum:
 
-| Situation | Title | Description |
+| Situação | Título | Descrição |
 |---|---|---|
-| There never was anything | "Nenhuma nota" | "Emita a primeira para ela aparecer." |
-| The filter found nothing | "Nenhuma nota no período" | change the filter, and say which one |
-| The search found nothing | "Nenhum cliente com esse nome" | - |
+| Nunca houve nada | "Nenhuma nota" | "Emita a primeira para ela aparecer." |
+| O filtro não achou | "Nenhuma nota no período" | mude o filtro, e diga qual |
+| A busca não achou | "Nenhum cliente com esse nome" | — |
 
-The first case is the person's first time in the product, and it deserves the
-**action** along with it:
+O primeiro caso é a primeira vez da pessoa no produto, e ele merece a **ação**
+junto:
 
 ```tsx
 <EmptyState
@@ -129,49 +128,46 @@ The first case is the person's first time in the product, and it deserves the
 />
 ```
 
-The second and the third do **not** take a create action: whoever filtered
-wants the filter back, not a new record. And the text names the cut that found
-nothing - "no período", "com esse nome" -, because that is what the person is
-going to change.
+O segundo e o terceiro **não** levam ação de criar: quem filtrou quer o filtro
+de volta, não um cadastro. E o texto nomeia o recorte que não achou — "no
+período", "com esse nome" —, porque é ele que a pessoa vai mexer.
 
-The drawing follows the same split: the first case accepts `illustration`, and
-the second and third take `icon`. When to use each one, and how to paint
-without a literal color, is in
-[design.md](design.md#icon-or-illustration-in-the-empty-state).
+O desenho segue a mesma divisão: o primeiro caso aceita `illustration`, e o
+segundo e o terceiro levam `icon`. Quando usar cada um, e como pintar sem cor
+literal, está em [design.md](design.md#ícone-ou-ilustração-no-estado-vazio).
 
-## Label, hint and placeholder
+## Rótulo, dica e marca de lugar
 
-- **Label** names the field and is always visible. It is not a sentence, it has
-  no colon: "CNPJ do cliente", not "Digite o CNPJ do cliente:".
-- **Placeholder** is an **example**, never a label. It disappears on typing and
-  several screen readers do not announce it: used as a label, the field ends up
-  without a name. Use it to show the format: `00.000.000/0000-00`.
-- **Hint** explains the consequence, it does not repeat the label. "Ela aparece
-  no corpo da nota" works; "Informe a descrição" is worth nothing.
-- **An icon's accessible text** says the action, not the drawing:
-  `aria-label="Excluir nota"`, never `aria-label="Lixeira"`.
+- **Rótulo** nomeia o campo e fica sempre visível. Não é frase, não tem dois
+  pontos: "CNPJ do cliente", não "Digite o CNPJ do cliente:".
+- **Marca de lugar** (`placeholder`) é **exemplo**, nunca rótulo. Ela some ao
+  digitar e vários leitores de tela não a anunciam: usada como rótulo, o campo
+  fica sem nome. Sirva para mostrar o formato: `00.000.000/0000-00`.
+- **Dica** explica a consequência, não repete o rótulo. "Ela aparece no corpo da
+  nota" vale; "Informe a descrição" não vale nada.
+- **Texto acessível de ícone** diz a ação, não o desenho: `aria-label="Excluir
+  nota"`, nunca `aria-label="Lixeira"`.
 
-## Form: person, tense and length
+## Forma: pessoa, tempo e tamanho
 
-- **Speak to the person, in the second person**: "Você ainda não emitiu nenhuma
-  nota". The system does not talk about itself: no "Estamos processando".
-- **Present tense, and active voice.** "A prefeitura não respondeu", not "Não
-  foi possível que a resposta fosse obtida".
-- **No blame and no scare.** Do not say the person made a mistake; say what
-  works. An exclamation mark belongs in no system message.
-- **Short sentence and none of our jargon.** "A consulta expirou", not "timeout
-  no gateway".
-- **PT-BR on the screen, code in English.** Ecosystem terms are not
-  translated: it is "agents", not "agentes".
-- **No dash in the screen's prose.** Two short sentences fit better in an alert
-  than one long one with an aside.
+- **Fale com a pessoa, na segunda pessoa**: "Você ainda não emitiu nenhuma
+  nota". O sistema não fala de si: nada de "Estamos processando".
+- **Presente, e voz ativa.** "A prefeitura não respondeu", não "Não foi possível
+  que a resposta fosse obtida".
+- **Sem culpa e sem susto.** Não diga que a pessoa errou; diga o que serve.
+  Ponto de exclamação não pertence a nenhuma mensagem de sistema.
+- **Frase curta e sem jargão nosso.** "A consulta expirou", não "timeout no
+  gateway".
+- **PT-BR na tela, código em inglês.** Termo do ecossistema não se traduz: é
+  "agents", não "agentes".
+- **Sem travessão na prosa da tela.** Duas frases curtas cabem melhor num alerta
+  do que uma longa com aposto.
 
-## The text the piece writes by itself lives in `labels`
+## O texto que a peça escreve sozinha mora em `labels`
 
-The name of a button the piece draws, what the screen reader hears, a fixed
-phrase like "da etapa anterior": all of that is swapped through a single
-object, `labels`, in both packages and with the same keys. Pass only the keys
-that change.
+O nome de um botão que a peça desenha, o que o leitor de tela ouve, uma frase
+fixa como "da etapa anterior": tudo isso se troca por um objeto só, `labels`,
+nos dois pacotes e com as mesmas chaves. Passe só as chaves que mudam.
 
 ```tsx
 <QueryBoundary data={data} isError={isError} onRetry={refetch} labels={{ retry: "Carregar de novo" }}>
@@ -179,17 +175,17 @@ that change.
 </QueryBoundary>
 ```
 
-There is no loose prop ending in `Label` for interface text. What stays a prop
-is content: the `label` that names the field, the toast's `title` and
-`errorTitle`, the `placeholder`.
+Não há prop solta terminada em `Label` para texto de interface. O que continua
+prop é conteúdo: o `label` que dá nome ao campo, o `title` e o `errorTitle` do
+aviso, o `placeholder`.
 
-Dates have two halves. The month name, the weekday and the time come from
-`locale` (a BCP 47 tag, `"en-US"`), in `EventCalendar` and `Gantt`, and the
-web's `DatePicker` and `DateRangePicker` receive the calendar's `locale`. The
-fixed words around them ("Hoje", "+2 mais", "Dia inteiro", "das 9h às 10h",
-"12 a 18") are `labels`. Native has no `locale`: `Calendar`, `DatePicker` and
-`DateRangePicker` swap the month names and the initials through
-`labels.caption` and `labels.weekdays`.
+Data tem duas metades. O nome do mês, do dia da semana e a hora saem do
+`locale` (tag BCP 47, `"en-US"`), no `EventCalendar` e no `Gantt`, e o
+`DatePicker` e o `DateRangePicker` do web recebem o `locale` do calendário. As
+palavras fixas em volta ("Hoje", "+2 mais", "Dia inteiro", "das 9h às 10h",
+"12 a 18") são `labels`. No nativo não há `locale`: o `Calendar`, o
+`DatePicker` e o `DateRangePicker` trocam os nomes do mês e as iniciais por
+`labels.caption` e `labels.weekdays`.
 
 ```tsx
 <EventCalendar

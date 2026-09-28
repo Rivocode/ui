@@ -15,68 +15,71 @@ import { Skeleton } from "../skeleton";
 export type ChartConfig = Record<
   string,
   {
-    /** The series' readable name. It goes to the legend and to the screen reader. */
+    /** O nome legível da série. Vai para a legenda e para o leitor de tela. */
     label: string;
     /**
-     * The series color, as a **token role**: `chart-1` to `chart-8`, or any
-     * other theme role. Without it, the next one in the palette, in the order
-     * the series appears in `config`. The web accepts any CSS color here
-     * because there it becomes `var(--color-<series>)` and the theme stays in
-     * charge. Here there is no live variable: the color the component receives
-     * is the final value that goes to the drawing, and a `#22c55e` written in
-     * this prop would be the only thing on screen that does not change when the
-     * client switches theme.
+     * A cor da série, como **papel de token**: `chart-1` a `chart-8`, ou
+     * qualquer outro papel do tema. Sem ela, entra o próximo da paleta, na
+     * ordem em que a série aparece no `config`.
+     *
+     * O web aceita qualquer cor de CSS aqui porque lá ela vira
+     * `var(--color-<série>)` e o tema continua no comando. Aqui não há
+     * variável viva: a cor que a peça recebe é o valor final que vai para o
+     * desenho, e um `#22c55e` escrito nesta prop seria a única coisa da tela
+     * que não muda quando o cliente troca de tema.
      */
     color?: RivoNativeColorRole;
   }
 >;
 
 export type ChartFrame = {
-  /** The measured width, in px. Zero on the first frame, before layout. */
+  /** A largura medida, em px. Zero no primeiro quadro, antes do layout. */
   width: number;
   /**
-   * The measured height, in px. It comes from the class of whoever uses the
-   * frame. Zero after the first layout is misuse, not a state: the drawing
-   * comes out empty. The component complains in the console in `__DEV__` when
-   * that happens.
+   * A altura medida, em px. Ela vem da classe de quem usa a moldura.
+   *
+   * Zero depois do primeiro layout e uso errado, e nao um estado: o desenho
+   * sai vazio. A peca acusa no console em `__DEV__` quando isso acontece.
    */
   height: number;
-  /** Each series' color, by the same key as `config`, already resolved. */
+  /** A cor de cada série, pela mesma chave do `config`, já resolvida. */
   colors: Record<string, string>;
 };
 
 export type ChartContainerProps = {
   config: ChartConfig;
   /**
-   * The drawing. As a function, it receives the measurement and the resolved
-   * colors; as JSX, it goes in as it is: that is how `ChartDonut` and
-   * `ChartRadial` get the four endings without needing anything from the frame.
+   * O desenho. Como função, recebe a medida e as cores já resolvidas; como
+   * JSX, entra do jeito que está: é assim que `ChartDonut` e `ChartRadial`
+   * ganham os quatro finais sem precisar de nada da moldura.
    */
   children: ReactNode | ((frame: ChartFrame) => ReactNode);
 
   isLoading?: boolean;
   isError?: boolean;
-  /** Without it, the error offers no retry. */
+  /** Sem isto, o erro não oferece nova tentativa. */
   onRetry?: () => void;
   /**
-   * The title of the error notice. Without it, "Nao foi possivel carregar o
-   * grafico". The same name and the same role as the web `errorTitle`: in a
-   * dashboard with four charts, the usual title repeated four times does not
-   * say which one failed, and a product that does not speak Portuguese gets
-   * nothing from it. It is the top half of the notice, and `errorMessage` the
-   * bottom half. `string` for the same reason as `errorMessage`: the native
-   * `Alert` title is also a `Text`.
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar o grafico".
+   *
+   * O mesmo nome e o mesmo papel do `errorTitle` do web: num painel de quatro
+   * graficos, o titulo de sempre repetido quatro vezes nao diz qual deles
+   * caiu, e um produto que nao fala portugues nao diz nada. Ele e a metade de
+   * cima do aviso, e o `errorMessage` a de baixo.
+   *
+   * `string` pelo mesmo motivo do `errorMessage`: o titulo do `Alert` nativo
+   * tambem e um `Text`.
    */
   errorTitle?: string;
   /**
-   * `string`, and not `ReactNode` as on the web: the native `Alert` body is a
-   * `Text`, and a React node would have nowhere to fit there.
+   * `string`, e não `ReactNode` como no web: o corpo do `Alert` nativo é um
+   * `Text`, e um nó de React ali não teria onde caber.
    */
   errorMessage?: string;
   /**
-   * What appears when the query returns no point at all. The same shape as the
-   * web, and `icon` also accepts the function that receives color and size, as
-   * in the native `EmptyState`.
+   * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
+   * web, e o `icon` aceita tambem a funcao que recebe cor e tamanho, como no
+   * `EmptyState` nativo.
    */
   empty?: {
     title: string;
@@ -85,30 +88,34 @@ export type ChartContainerProps = {
     icon?: EmptyStateProps["icon"];
   };
   /**
-   * The points, so the frame can count zero. **Here it is the only source**,
-   * and that is the difference from the web. There the frame opens the Recharts
-   * child and reads the `data` it already carries; here the child is any
-   * drawing, and there is nothing to open. Without this prop the empty state
-   * never appears, and the development warning exists because of that.
+   * Os pontos, para a moldura saber contar zero.
+   *
+   * **Aqui ela é a única fonte**, e é essa a diferença do web. Lá a moldura
+   * abre o filho da Recharts e lê o `data` que ele já carrega; aqui o filho é
+   * um desenho qualquer, e não há nada para abrir. Sem esta prop o estado
+   * vazio nunca aparece, e o aviso de desenvolvimento abaixo existe por isso.
    */
   data?: readonly unknown[];
 
   /**
-   * What the screen reader hears instead of the drawing, when the drawing is a
-   * function. With a JSX child it is **ignored**, on purpose: the inner
-   * component does the naming. `ChartDonut` and `ChartRadial` already name
-   * themselves, and an `accessible` up here would swallow the donut legend: the
-   * slices, which are the only way to read the value by touch, would become a
-   * single sentence with none of them reachable. Without it, the name comes
-   * from the series labels in `config`.
+   * O que o leitor de tela ouve no lugar do desenho, quando o desenho é uma
+   * função.
+   *
+   * Com filho em JSX ela é **ignorada**, e de propósito: quem nomeia é a peça
+   * de dentro. `ChartDonut` e `ChartRadial` já se nomeiam, e um `accessible`
+   * aqui em cima engoliria a legenda da rosca: as fatias, que são a única
+   * forma de ler o valor no toque, virariam uma frase só e nenhuma delas
+   * alcançável.
+   *
+   * Sem ela, o nome sai dos rótulos das séries do `config`.
    */
   label?: string;
   className?: string;
   /**
-   * The component's texts, to change the language: `retry` is the button that
-   * runs `onRetry`, "Tentar de novo" without it - the same key as the web and
-   * as the query components here. `name` builds the drawing's name without
-   * `label`, from the series labels in `config`.
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave do web e das pecas de
+   * consulta daqui. `name` monta o nome do desenho sem `label`, a partir dos
+   * rotulos das series do `config`.
    */
   labels?: Partial<ChartContainerLabels>;
 };
@@ -231,29 +238,29 @@ function nameFromConfig(config: ChartConfig, name: (series: string[]) => string)
 }
 
 const MISSING_DATA =
-  "[rivocode/ui-native] <ChartContainer empty={...}> without `data`: the frame has no way to " +
-  "count zero, and the empty state will never appear. On the web it reads the points from inside the " +
-  "Recharts chart when the prop is missing; here the child is any drawing and there is " +
-  "nothing to open. Pass `data={points}`.";
+  "[rivocode/ui-native] <ChartContainer empty={...}> sem `data`: a moldura não tem como " +
+  "contar zero, e o estado vazio nunca vai aparecer. No web ela lê os pontos de dentro do " +
+  "gráfico da Recharts quando a prop falta; aqui o filho é um desenho qualquer e não há " +
+  "nada para abrir. Passe `data={pontos}`.";
 
 const IGNORED_LABEL =
-  "[rivocode/ui-native] <ChartContainer label={...}> with a JSX child: the label was " +
-  "ignored. The inner component names the drawing (`ChartDonut` and `ChartRadial` have their own " +
-  "`label`), and naming it here would close the whole child into a single screen reader " +
-  "stop. The frame's `label` applies when `children` is a function.";
+  "[rivocode/ui-native] <ChartContainer label={...}> com filho em JSX: o rótulo foi " +
+  "ignorado. Quem nomeia o desenho é a peça de dentro (`ChartDonut` e `ChartRadial` têm " +
+  "`label` próprio), e nomear aqui fecharia o filho inteiro numa parada só do leitor de " +
+  "tela. O `label` da moldura vale quando `children` é função.";
 
 const FLAT_BOX =
-  "[rivocode/ui-native] <ChartContainer>: the frame measured a width and no height, and the " +
-  "drawing function received `height: 0` - the card stays empty, with no error at all. The height " +
-  'comes from whoever uses the frame: give it a height class (`className="h-56"`), or ' +
-  "give height to the parent that holds it.";
+  "[rivocode/ui-native] <ChartContainer>: a moldura mediu largura e nenhuma altura, e a " +
+  "função de desenho recebeu `height: 0` - o cartão fica vazio, sem erro nenhum. A altura " +
+  'vem de quem usa a moldura: dê a ela uma classe de altura (`className="h-56"`), ou ' +
+  "altura ao pai que a segura.";
 
 export function unknownSeriesComplaint(key: string, known: readonly string[]): string {
   return (
-    `[rivocode/ui-native] <ChartContainer>: the drawing asked for the color "${key}", and \`config\` ` +
-    `does not know that series - \`colors["${key}"]\` returns \`undefined\`, the SVG paints the mark ` +
-    "black, and there is no error at all. The series of this chart are: " +
-    `${known.join(", ")}. Fix the key, or declare the series in \`config\`.`
+    `[rivocode/ui-native] <ChartContainer>: o desenho pediu a cor "${key}", e o \`config\` ` +
+    `não conhece essa série - \`colors["${key}"]\` volta \`undefined\`, o SVG pinta a marca ` +
+    "de preto, e não há erro nenhum. As séries deste gráfico são: " +
+    `${known.join(", ")}. Corrija a chave, ou declare a série no \`config\`.`
   );
 }
 

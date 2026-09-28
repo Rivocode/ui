@@ -13,9 +13,9 @@ export type ChartTooltipContentProps = Partial<
   Pick<TooltipContentProps<number, string>, "active" | "payload" | "label">
 > & {
   config?: ChartConfig;
-  /** Hides the color dot of each row. */
+  /** Esconde a bolinha de cor de cada linha. */
   hideIndicator?: boolean;
-  /** Formats the value. Use it for money and for percentages. */
+  /** Formata o valor. Use para dinheiro e para porcentagem. */
   formatValue?: (value: number, key: string) => ReactNode;
   className?: string;
 };

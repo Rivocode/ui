@@ -7,7 +7,7 @@ import {
 } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Default */
+/** Padrão */
 export function Default() {
   return (
     <FileUpload
@@ -29,7 +29,7 @@ type Item = {
   error?: string
 }
 
-/** With the list of uploaded files */
+/** Com a lista de enviados */
 export function WithList() {
   const toast = useToast()
   const [items, setItems] = useState<Item[]>([
@@ -38,9 +38,8 @@ export function WithList() {
     { id: '3', name: 'contrato-prefeitura.pdf', size: 3_410_000, error: 'A conexão caiu.' },
   ])
 
-  /* A real upload would be a fetch with progress; the demo only records the
-     input. The component knows nothing about the network: each item's state
-     belongs to the app. */
+  /* O envio de verdade seria um fetch com progresso; a demo só registra a
+     entrada. A peça não conhece rede: o estado de cada item é do app. */
   function receive(files: File[]) {
     setItems((current) => [
       ...current,
@@ -94,7 +93,7 @@ export function WithList() {
   )
 }
 
-/** Disabled */
+/** Desabilitada */
 export function Disabled() {
   return (
     <FileUpload

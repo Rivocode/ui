@@ -5,87 +5,87 @@ import { dirname, join, relative, resolve } from "node:path";
 export type Severity = "critico" | "serio" | "moderado" | "menor";
 
 export type Rule = {
-  /** The rule's short name, the same one the suppression comment and the judgment JSON cite. */
+  /** O nome curto da regra, o mesmo que o comentario de supressao e o JSON de julgamento citam. */
   id: string;
-  /** The severity, which decides the weight in the score. */
+  /** A gravidade, que decide o peso na nota. */
   severity: Severity;
-  /** `mecanica` comes from the script; `julgamento` only comes in through the JSON the agent writes. */
+  /** `mecanica` sai do script; `julgamento` so entra pelo JSON que o agente escreve. */
   kind: "mecanica" | "julgamento";
-  /** `arquivo` weighs on the file's score; `projeto` is deducted straight from the final score. */
+  /** `arquivo` pesa na nota do arquivo; `projeto` desconta direto da nota final. */
   scope: "arquivo" | "projeto";
-  /** The rule in one sentence, as it appears in the report. */
+  /** A regra numa frase, como aparece no relatorio. */
   title: string;
-  /** What to write instead. */
+  /** O que escrever no lugar. */
   fix: string;
-  /** The documentation passage the rule came from. */
+  /** O trecho da documentacao de onde a regra saiu. */
   source: string;
 };
 
 export type Finding = {
-  /** The rule's `id`. */
+  /** O `id` da regra. */
   rule: string;
-  /** The file path, relative to the audit root. */
+  /** O caminho do arquivo, relativo a raiz da auditoria. */
   file: string;
-  /** The line, counted from 1. */
+  /** A linha, contada a partir de 1. */
   line: number;
-  /** What was found, with the excerpt. */
+  /** O que foi achado, com o trecho. */
   message: string;
 };
 
 export type Dismissal = {
-  /** The `id` of the dismissed finding's rule. */
+  /** O `id` da regra do achado descartado. */
   rule: string;
-  /** The dismissed finding's file. */
+  /** O arquivo do achado descartado. */
   file: string;
-  /** The dismissed finding's line. */
+  /** A linha do achado descartado. */
   line: number;
-  /** Why the finding does not hold. Without a reason, the dismissal is not accepted. */
+  /** Por que o achado nao vale. Sem motivo, o descarte nao e aceito. */
   reason: string;
 };
 
 export type SourceFile = {
-  /** The path, which appears in the report. */
+  /** O caminho, que aparece no relatorio. */
   path: string;
-  /** The file's text. */
+  /** O texto do arquivo. */
   source: string;
 };
 
 export type AuditInput = {
-  /** The screen files. */
+  /** Os arquivos de tela. */
   files: SourceFile[];
-  /** The app's `package.json` files, from the closest to the monorepo root's, to check the optional peers. */
+  /** Os `package.json` do app, do mais perto ao da raiz do monorepo, para conferir os peers opcionais. */
   manifests?: SourceFile[];
-  /** The judgment findings the agent wrote. */
+  /** Os achados de julgamento que o agente escreveu. */
   findings?: Finding[];
-  /** The mechanical findings the agent dismissed, each with its reason. */
+  /** Os achados mecanicos que o agente descartou, cada um com o motivo. */
   dismissals?: Dismissal[];
 };
 
 export type FileScore = {
-  /** The file path. */
+  /** O caminho do arquivo. */
   file: string;
-  /** `web` or `native`, by what the file imports. */
+  /** `web` ou `native`, pelo que o arquivo importa. */
   platform: Platform;
-  /** The file's score, from 0 to 100. */
+  /** A nota do arquivo, de 0 a 100. */
   score: number;
-  /** How many findings weighed on the score. */
+  /** Quantos achados pesaram na nota. */
   findings: number;
 };
 
 export type Report = {
-  /** The final score, from 0 to 100. */
+  /** A nota final, de 0 a 100. */
   score: number;
-  /** The score's band, in words. */
+  /** A faixa da nota, em palavras. */
   verdict: string;
-  /** The score of each audited file, in path order. */
+  /** A nota de cada arquivo auditado, em ordem de caminho. */
   files: FileScore[];
-  /** The files read and left out, for having neither JSX nor a library import. */
+  /** Os arquivos lidos e deixados de fora, por nao terem JSX nem import da biblioteca. */
   skipped: string[];
-  /** The findings that weighed, in file, line and rule order. */
+  /** Os achados que pesaram, em ordem de arquivo, linha e regra. */
   findings: Finding[];
-  /** The findings a suppression comment or a dismissal took out of the count. */
+  /** Os achados que um comentario de supressao ou um descarte tirou da conta. */
   waived: (Finding & { reason: string })[];
-  /** What could not be checked or was refused: missing manifest, finding for a file outside the audit. */
+  /** O que nao pode ser conferido ou foi recusado: manifesto ausente, achado de arquivo fora da auditoria. */
   notes: string[];
 };
 
@@ -95,10 +95,10 @@ export const WEIGHTS: Record<Severity, number> = { critico: 10, serio: 5, modera
 export const CAP = 3;
 
 const SEVERITY_LABEL: Record<Severity, string> = {
-  critico: "critical",
-  serio: "serious",
-  moderado: "moderate",
-  menor: "minor",
+  critico: "crítico",
+  serio: "sério",
+  moderado: "moderado",
+  menor: "menor",
 };
 
 export const RULES: Rule[] = [
@@ -107,98 +107,98 @@ export const RULES: Rule[] = [
     severity: "critico",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Literal color instead of a theme role",
-    fix: "Use the role: `bg-surface`, `text-fg-muted`, `border-border`, `text-danger-text`, `bg-accent` with `text-accent-fg`. In native, a series color comes from `PALETTE`.",
-    source: "SKILL.md, What never to do; convencoes.md, The vocabulary",
+    title: "Cor literal no lugar de papel do tema",
+    fix: "Use o papel: `bg-surface`, `text-fg-muted`, `border-border`, `text-danger-text`, `bg-accent` com `text-accent-fg`. No nativo, a cor de série é da `PALETTE`.",
+    source: "SKILL.md, O que nunca fazer; convencoes.md, O vocabulário",
   },
   {
     id: "nome-acessivel",
     severity: "critico",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Control without an accessible name",
-    fix: "`IconButton` with `label`, in both packages. An icon-only button is `IconButton`, and not `Button` with an icon inside.",
-    source: "reference/a11y.md, Accessible name; reference/components.md, Icon-only button",
+    title: "Controle sem nome acessível",
+    fix: "`IconButton` com `label`, nos dois pacotes. Botão só com ícone é `IconButton`, e não `Button` com um ícone dentro.",
+    source: "reference/a11y.md, Nome acessível; reference/components.md, Botão só com ícone",
   },
   {
     id: "z-index-numerico",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Numeric z-index",
-    fix: "`z-[var(--rc-z-sticky)]` for what sticks on scroll, `z-[var(--rc-z-base)]` to go back to the plane. The middle steps belong to the pieces.",
-    source: "SKILL.md, What never to do; convencoes.md, eight stacking steps",
+    title: "z-index numérico",
+    fix: "`z-[var(--rc-z-sticky)]` para o que gruda ao rolar, `z-[var(--rc-z-base)]` para voltar ao plano. Os degraus do meio são das peças.",
+    source: "SKILL.md, O que nunca fazer; convencoes.md, oito degraus de empilhamento",
   },
   {
     id: "peca-reescrita",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Piece rewritten by hand when it exists in the catalog",
-    fix: "The catalog piece the message names. The choice table in `reference/components.md` breaks ties between neighbors.",
-    source: "SKILL.md, Check whether the piece already exists; reference/components.md",
+    title: "Peça reescrita à mão quando existe no catálogo",
+    fix: "A peça do catálogo que a mensagem nomeia. A tabela de escolha de `reference/components.md` desempata as vizinhas.",
+    source: "SKILL.md, Confira se a peça já existe; reference/components.md",
   },
   {
     id: "campo-sem-rotulo",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Field without a label",
-    fix: "`Field` with `FieldLabel`, or the field inside `FormField` with `label`. In native, `Field` with `label`. `placeholder` is a format example, not a label.",
-    source: "reference/a11y.md, why placeholder does not work; reference/texto.md, Label",
+    title: "Campo sem rótulo",
+    fix: "`Field` com `FieldLabel`, ou o campo dentro de `FormField` com `label`. No nativo, `Field` com `label`. O `placeholder` é exemplo de formato, e não rótulo.",
+    source: "reference/a11y.md, por que placeholder não serve; reference/texto.md, Rótulo",
   },
   {
     id: "rotulo-fora-do-controle",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Checkbox, Radio or Switch label in an element beside it",
-    fix: "Pass the text as a child: `<Checkbox>ISS retido na fonte</Checkbox>`. The piece wraps itself in a `<label>`.",
-    source: "convencoes.md, A control's label comes as a child",
+    title: "Rótulo de Checkbox, Radio ou Switch num elemento ao lado",
+    fix: "Passe o texto como filho: `<Checkbox>ISS retido na fonte</Checkbox>`. A peça se embrulha num `<label>` sozinha.",
+    source: "convencoes.md, Rótulo de controle vem como filho",
   },
   {
     id: "imagem-sem-alt",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Image without `alt`",
-    fix: '`alt` that says what the image shows, or `alt=""` when it only decorates.',
-    source: "reference/a11y.md, Pitfalls by component",
+    title: "Imagem sem `alt`",
+    fix: '`alt` que diz o que a imagem mostra, ou `alt=""` quando ela só enfeita.',
+    source: "reference/a11y.md, Armadilhas por componente",
   },
   {
     id: "elemento-clicavel",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "`onClick` on an element that is not a control",
-    fix: "`Button` to act, `Link` to go. A `div` with `onClick` does not enter the Tab order.",
-    source: "reference/a11y.md, Focus and keyboard",
+    title: "`onClick` em elemento que não é controle",
+    fix: "`Button` para agir, `Link` para ir. Uma `div` com `onClick` não entra no Tab.",
+    source: "reference/a11y.md, Foco e teclado",
   },
   {
     id: "tabindex-positivo",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Positive `tabIndex`",
-    fix: "Fix the DOM order. `tabIndex` only `0` or `-1`.",
-    source: "reference/a11y.md, Focus and keyboard",
+    title: "`tabIndex` positivo",
+    fix: "Conserte a ordem do DOM. `tabIndex` só `0` ou `-1`.",
+    source: "reference/a11y.md, Foco e teclado",
   },
   {
     id: "foco-apagado",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "`outline-none` without restoring the focus ring",
-    fix: "Next to `outline-none`, `focus-visible:ring-2 focus-visible:ring-ring`.",
-    source: "SKILL.md, What never to do; reference/a11y.md, Focus and keyboard",
+    title: "`outline-none` sem repor o anel de foco",
+    fix: "Junto do `outline-none`, `focus-visible:ring-2 focus-visible:ring-ring`.",
+    source: "SKILL.md, O que nunca fazer; reference/a11y.md, Foco e teclado",
   },
   {
     id: "formulario-sem-zod",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Form built without `useZodForm`",
-    fix: "`Form` and `FormField` from `@rivocode/ui/form`, with the zod schema in `useZodForm(schema)`.",
+    title: "Formulário montado sem `useZodForm`",
+    fix: "`Form` e `FormField` de `@rivocode/ui/form`, com o esquema do zod em `useZodForm(schema)`.",
     source: "reference/forms.md",
   },
   {
@@ -206,8 +206,8 @@ export const RULES: Rule[] = [
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "react-hook-form's `useForm` called directly",
-    fix: "`useZodForm(schema)`: wires the zod resolver and takes the type from the schema.",
+    title: "`useForm` do react-hook-form chamado direto",
+    fix: "`useZodForm(schema)`: liga o resolver do zod e tira o tipo do esquema.",
     source: "reference/forms.md",
   },
   {
@@ -215,62 +215,62 @@ export const RULES: Rule[] = [
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Money as a floating-point number",
-    fix: "`CurrencyInput`, which goes in and out in integer cents, with `z.number().int()` in the schema; `toCents` to convert text.",
-    source: "reference/forms.md, Money is CurrencyInput; convencoes.md, Formatting the number",
+    title: "Dinheiro como número com vírgula",
+    fix: "`CurrencyInput`, que entra e sai em centavos inteiros, com `z.number().int()` no esquema; `toCents` para converter texto.",
+    source: "reference/forms.md, Dinheiro é CurrencyInput; convencoes.md, Formatar o número",
   },
   {
     id: "dinheiro-escrito",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Money formatted by hand",
-    fix: "`currencyShort` in indicators, tables and axes; `currency` where the cent is the subject. Both come from the root.",
-    source: "SKILL.md, Money comes out abbreviated",
+    title: "Dinheiro formatado à mão",
+    fix: "`currencyShort` em indicador, tabela e eixo; `currency` onde o centavo é o assunto. Os dois saem da raiz.",
+    source: "SKILL.md, Dinheiro sai abreviado",
   },
   {
     id: "documento-sem-validador",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "CPF or CNPJ checked without `isValidCpf` or `isValidCnpj`",
-    fix: "`z.string().refine(isValidCnpj, 'CNPJ inválido')`. Both check the digit, accept a mask and the alphanumeric CNPJ.",
-    source: "reference/forms.md; convencoes.md, Formatting the number",
+    title: "CPF ou CNPJ conferido sem `isValidCpf` ou `isValidCnpj`",
+    fix: "`z.string().refine(isValidCnpj, 'CNPJ inválido')`. Os dois conferem o dígito, aceitam máscara e o CNPJ alfanumérico.",
+    source: "reference/forms.md; convencoes.md, Formatar o número",
   },
   {
     id: "mascara-a-mao",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Mask written with `replace`",
-    fix: "`MaskedInput` with `mask` (`cpf`, `cnpj`, `telefone`, `cep`, `boleto`), or `applyMask` for a table cell.",
-    source: "convencoes.md, Formatting the number",
+    title: "Máscara escrita com `replace`",
+    fix: "`MaskedInput` com `mask` (`cpf`, `cnpj`, `telefone`, `cep`, `boleto`), ou `applyMask` para a célula de tabela.",
+    source: "convencoes.md, Formatar o número",
   },
   {
     id: "pix-qr-caseiro",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "QR or Pix built by hand",
-    fix: "`PixCode` to charge, with the copy-and-paste code from `buildPixPayload`; `QRCode` for any other link. In native, both come from `@rivocode/ui-native/chart`.",
-    source: "reference/components.md, Charge by Pix; convencoes.md, Pix has its three",
+    title: "QR ou Pix montado à mão",
+    fix: "`PixCode` para cobrar, com o copia e cola de `buildPixPayload`; `QRCode` para qualquer outro link. No nativo, os dois saem de `@rivocode/ui-native/chart`.",
+    source: "reference/components.md, Cobrar por Pix; convencoes.md, O Pix tem as três dele",
   },
   {
     id: "import-caminho-errado",
     severity: "serio",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Import through the wrong path",
-    fix: "The path the message names. Form, chart, AI, drag and editor live in subpaths; in native, each peer has its own door.",
-    source: "convencoes.md, The four subpaths; The native package, and its five subpaths",
+    title: "Importação pelo caminho errado",
+    fix: "O caminho que a mensagem nomeia. Formulário, gráfico, IA, arrastar e editor moram em subcaminhos; no nativo, cada peer tem a sua porta.",
+    source: "convencoes.md, Os quatro subcaminhos; O pacote nativo, e os cinco subcaminhos dele",
   },
   {
     id: "recharts-direto",
     severity: "menor",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Recharts imported directly",
-    fix: "The marks the theme dresses come from `@rivocode/ui/chart`, inside `ChartContainer`.",
+    title: "Recharts importada direto",
+    fix: "As marcas que o tema veste saem de `@rivocode/ui/chart`, dentro do `ChartContainer`.",
     source: "convencoes.md, `@rivocode/ui/chart`",
   },
   {
@@ -278,89 +278,89 @@ export const RULES: Rule[] = [
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Provider or portal mounted by hand",
-    fix: "Nothing: `RivoProvider` already mounts the tooltip provider, the toast wiring and the portal container.",
-    source: "SKILL.md, The Provider, once, at the root",
+    title: "Provedor ou portal montado à mão",
+    fix: "Nada: o `RivoProvider` já monta o provedor de dica, a fiação de aviso e o container de portal.",
+    source: "SKILL.md, O Provider, uma vez, na raiz",
   },
   {
     id: "altura-cravada",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Hardcoded control height",
-    fix: "`h-[var(--rc-control-md)]`, with `sm` and `lg`: the height comes from the density.",
-    source: "SKILL.md, Control height comes from the density",
+    title: "Altura cravada em controle",
+    fix: "`h-[var(--rc-control-md)]`, com `sm` e `lg`: a altura vem da densidade.",
+    source: "SKILL.md, Altura de controle vem da densidade",
   },
   {
     id: "descendente-arbitrario",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Piece part reached through a descendant variant",
-    fix: "`classNames={{ part: '…' }}`, with the name from the Parts section of the piece's page.",
-    source: "SKILL.md, Below the root, dress the part by name",
+    title: "Parte da peça alcançada por variante de descendente",
+    fix: "`classNames={{ parte: '…' }}`, com o nome da seção Partes da página da peça.",
+    source: "SKILL.md, Abaixo da raiz, vista a parte pelo nome",
   },
   {
     id: "movimento-literal",
     severity: "menor",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Literal duration or curve",
-    fix: "`duration-fast`, `duration-base`, `duration-slow` and `ease-rc`, which go to zero with reduce motion.",
-    source: "convencoes.md, Motion has intent names",
+    title: "Duração ou curva literal",
+    fix: "`duration-fast`, `duration-base`, `duration-slow` e `ease-rc`, que zeram com reduzir movimento.",
+    source: "convencoes.md, Movimento tem nome de intenção",
   },
   {
     id: "consulta-sem-finais",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Listing or chart without the four endings",
-    fix: "`isLoading`, `isError` with `onRetry`, and `empty` with title and description.",
-    source: "SKILL.md, Every listing has four endings; reference/components.md",
+    title: "Listagem ou gráfico sem os quatro finais",
+    fix: "`isLoading`, `isError` com `onRetry`, e `empty` com título e descrição.",
+    source: "SKILL.md, Toda listagem tem quatro finais; reference/components.md",
   },
   {
     id: "texto-sem-acento",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Screen text without accents",
-    fix: "The text the person reads carries its accents.",
-    source: "reference/texto.md, Form",
+    title: "Texto de tela sem acento",
+    fix: "O texto que a pessoa lê vai acentuado.",
+    source: "reference/texto.md, Forma",
   },
   {
     id: "texto-em-ingles",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Screen text in English",
-    fix: "Code in English, content in PT-BR. Ecosystem terms are not translated.",
-    source: "SKILL.md, What never to do; reference/texto.md",
+    title: "Texto de tela em inglês",
+    fix: "Código em inglês, conteúdo em PT-BR. Termo do ecossistema não se traduz.",
+    source: "SKILL.md, O que nunca fazer; reference/texto.md",
   },
   {
     id: "peer-faltando",
     severity: "serio",
     kind: "mecanica",
     scope: "projeto",
-    title: "Subpath peer missing from package.json",
-    fix: "Install the peer the subpath requires. Without it the build breaks, or the piece does not mount.",
-    source: "convencoes.md, The four subpaths; The native package",
+    title: "Peer do subcaminho faltando no package.json",
+    fix: "Instale o peer que o subcaminho cobra. Sem ele o build quebra, ou a peça não monta.",
+    source: "convencoes.md, Os quatro subcaminhos; O pacote nativo",
   },
   {
     id: "escolha-de-peca",
     severity: "serio",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Wrong catalog piece for the situation",
-    fix: "The row of the choice table in `reference/components.md` that matches the situation.",
-    source: "reference/components.md, Choices that usually go wrong",
+    title: "Peça do catálogo errada para a situação",
+    fix: "A linha da tabela de escolha de `reference/components.md` que casa com a situação.",
+    source: "reference/components.md, Escolhas que costumam sair erradas",
   },
   {
     id: "validacao-a-mao",
     severity: "serio",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Form that validates with state and `if`",
-    fix: "The zod schema in `useZodForm`, which validates and gives the type.",
+    title: "Formulário que valida com estado e `if`",
+    fix: "O esquema do zod em `useZodForm`, que valida e dá o tipo.",
     source: "reference/forms.md",
   },
   {
@@ -368,17 +368,17 @@ export const RULES: Rule[] = [
     severity: "serio",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Status told by color alone",
-    fix: 'A word or icon next to the tone: the `Badge` says "Vencida".',
-    source: "reference/a11y.md, Never color alone",
+    title: "Situação dita só pela cor",
+    fix: 'Palavra ou ícone junto do tom: o `Badge` diz "Vencida".',
+    source: "reference/a11y.md, Cor nunca sozinha",
   },
   {
     id: "texto-generico",
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Text that does not say what happens",
-    fix: "A button with verb and object, an error that names who failed and what to do, an empty state that is a door.",
+    title: "Texto que não diz o que acontece",
+    fix: "Botão com verbo e objeto, erro que nomeia quem falhou e o que fazer, vazio que é porta.",
     source: "reference/texto.md",
   },
   {
@@ -386,90 +386,90 @@ export const RULES: Rule[] = [
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Query that only draws the happy path",
-    fix: "Loading, error with a way out and empty with a description, also outside `DataTable`.",
-    source: "reference/components.md, Every query has four endings",
+    title: "Consulta que só desenha o caminho feliz",
+    fix: "Carregando, erro com saída e vazio com descrição, também fora do `DataTable`.",
+    source: "reference/components.md, Toda consulta tem quatro finais",
   },
   {
     id: "titulos-fora-de-ordem",
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Headings that skip a level",
-    fix: "One `h1` per page and then `h2`, `h3` in order; the size changes through `size` on `Heading`.",
-    source: "reference/a11y.md, Heading order",
+    title: "Títulos que pulam nível",
+    fix: "Um `h1` por página e depois `h2`, `h3` em ordem; o tamanho muda por `size` no `Heading`.",
+    source: "reference/a11y.md, Ordem de títulos",
   },
   {
     id: "passo-sem-nome",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Wizard step called by its number",
-    fix: 'A noun name that says the step\'s decision: "Cliente", "Serviço", "Revisão". A step only called "Passo 2" is a scroll, and the content fits in a single form.',
-    source: "reference/fluxo.md, One screen or several",
+    title: "Passo de wizard chamado pelo número",
+    fix: 'Nome de substantivo que diz a decisão do passo: "Cliente", "Serviço", "Revisão". Passo que só se chama "Passo 2" é rolagem, e o conteúdo cabe num formulário só.',
+    source: "reference/fluxo.md, Uma tela ou várias",
   },
   {
     id: "dado-sem-mascara",
     severity: "moderado",
     kind: "mecanica",
     scope: "arquivo",
-    title: "Document, phone or CEP field in a plain Input",
-    fix: '`MaskedInput` with `mask="cpf"`, `"cnpj"`, `"telefone"` or `"placa"`, and `PostalCodeField` for CEP. The mask punctuates, brings up the numeric keyboard, and `onValueChange` delivers the raw value.',
-    source: "SKILL.md, The field comes from the data; reference/components.md",
+    title: "Campo de documento, telefone ou CEP num Input comum",
+    fix: '`MaskedInput` com `mask="cpf"`, `"cnpj"`, `"telefone"` ou `"placa"`, e `PostalCodeField` para CEP. A máscara pontua, põe o teclado numérico, e o `onValueChange` entrega o cru.',
+    source: "SKILL.md, O campo sai do dado; reference/components.md",
   },
   {
     id: "wizard-sem-dependencia",
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Wizard for what is just long",
-    fix: "A single form, in sections with `Fieldset`, and the rare in a `Collapsible`. Steps only when a stage depends on the previous one.",
-    source: "reference/fluxo.md, Wizard or single form: the check",
+    title: "Wizard para o que é só comprido",
+    fix: "Um formulário só, em seções com `Fieldset`, e o raro num `Collapsible`. Passos só quando uma etapa depende da anterior.",
+    source: "reference/fluxo.md, Wizard ou formulário único: a checagem",
   },
   {
     id: "confirmacao-em-reversivel",
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Confirmation for what could have been undone",
-    fix: 'Do it right away and offer "Desfazer" in the toast, with `useToast`\'s `actionProps`. `AlertDialog` is for what cannot be undone.',
-    source: "reference/fluxo.md, Confirm, undo, or nothing",
+    title: "Confirmação para o que dava para desfazer",
+    fix: 'Faça na hora e ofereça "Desfazer" no aviso, com `actionProps` do `useToast`. `AlertDialog` fica para o que não tem volta.',
+    source: "reference/fluxo.md, Confirmar, desfazer, ou nada",
   },
   {
     id: "destrutivo-sem-protecao",
     severity: "serio",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Irreversible action without confirmation or undo",
-    fix: "`AlertDialog` that names the object and says the effect, or, if it can be reversed, undo in the toast.",
-    source: "reference/fluxo.md, Confirm, undo, or nothing",
+    title: "Ação sem volta sem confirmação nem desfazer",
+    fix: "`AlertDialog` que nomeia o objeto e diz o efeito, ou, se der para reverter, desfazer no aviso.",
+    source: "reference/fluxo.md, Confirmar, desfazer, ou nada",
   },
   {
     id: "rascunho-que-some",
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Task that loses what was typed",
-    fix: "A single form beneath the steps, and a submit error that keeps the fields. Storing a draft in the browser is a project decision, and never with sensitive data.",
-    source: "reference/fluxo.md, The well-made wizard",
+    title: "Tarefa que perde o que foi digitado",
+    fix: "Um formulário só por baixo dos passos, e o erro de envio que mantém os campos. Guardar rascunho no navegador é decisão do projeto, e nunca com dado sensível.",
+    source: "reference/fluxo.md, O wizard bem feito",
   },
   {
     id: "sucesso-silencioso",
     severity: "menor",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Action that finishes without saying it finished",
-    fix: 'A toast with what happened and the next step: "Nota 4816 emitida. Ver PDF".',
-    source: "reference/fluxo.md, What makes the product smart",
+    title: "Ação que termina sem dizer que terminou",
+    fix: 'Aviso com o que aconteceu e o próximo passo: "Nota 4816 emitida. Ver PDF".',
+    source: "reference/fluxo.md, O que deixa o produto esperto",
   },
   {
     id: "provider-ausente",
     severity: "critico",
     kind: "julgamento",
     scope: "projeto",
-    title: "Tree without `RivoProvider` at the root",
-    fix: "One `RivoProvider` at the app root, and no tooltip, toast or portal provider by hand.",
-    source: "SKILL.md, The Provider, once, at the root",
+    title: "Árvore sem `RivoProvider` na raiz",
+    fix: "Um `RivoProvider` na raiz do app, e nenhum provedor de dica, aviso ou portal à mão.",
+    source: "SKILL.md, O Provider, uma vez, na raiz",
   },
 ];
 
@@ -1002,28 +1002,28 @@ const NON_INTERACTIVE = new Set([
 ]);
 
 const RAW_TAGS: Record<string, string> = {
-  button: "`Button` (or `IconButton`, when it has only an icon)",
-  select: "`Select` (long list or one from the server: `Combobox`)",
+  button: "`Button` (ou `IconButton`, quando só tem ícone)",
+  select: "`Select` (lista longa ou do servidor: `Combobox`)",
   textarea: "`Textarea`",
-  table: "`DataTable` for a listing, or `Table` built by hand",
-  dialog: "`Dialog` (destructive confirmation: `AlertDialog`)",
+  table: "`DataTable` para listagem, ou `Table` montada à mão",
+  dialog: "`Dialog` (confirmação destrutiva: `AlertDialog`)",
   progress: "`Progress`",
   meter: "`Meter`",
   hr: "`Separator`",
-  details: "`Accordion` or `Collapsible`",
+  details: "`Accordion` ou `Collapsible`",
 };
 
 const INPUT_TYPES: Record<string, string> = {
   checkbox: "`Checkbox`",
-  radio: "`RadioGroup` with `Radio`",
+  radio: "`RadioGroup` com `Radio`",
   range: "`Slider`",
   search: "`SearchInput`",
   password: "`PasswordInput`",
   file: "`FileUpload`",
   date: "`DatePicker`",
-  "datetime-local": "`DatePicker` with `TimeField`",
+  "datetime-local": "`DatePicker` com `TimeField`",
   time: "`TimeField`",
-  number: "`NumberField` (money: `CurrencyInput`)",
+  number: "`NumberField` (dinheiro: `CurrencyInput`)",
   color: "`ColorPicker`",
   submit: '`Button type="submit"`',
   button: "`Button`",
@@ -1034,22 +1034,22 @@ const ROLES: Record<string, string> = {
   alertdialog: "`AlertDialog`",
   tooltip: "`Tooltip`",
   switch: "`Switch`",
-  tablist: "`Tabs` with `TabList`",
+  tablist: "`Tabs` com `TabList`",
   progressbar: "`Progress`",
   menu: "`Menu`",
   combobox: "`Combobox`",
 };
 
 const NATIVE_PRIMITIVES: Record<string, string> = {
-  Button: "`@rivocode/ui-native`'s `Button`",
-  TextInput: "`Input` (or `Textarea`, `PasswordInput`, `CurrencyInput`)",
-  Switch: "`@rivocode/ui-native`'s `Switch`",
-  Modal: "`Dialog` or `Sheet`",
+  Button: "`Button` do `@rivocode/ui-native`",
+  TextInput: "`Input` (ou `Textarea`, `PasswordInput`, `CurrencyInput`)",
+  Switch: "`Switch` do `@rivocode/ui-native`",
+  Modal: "`Dialog` ou `Sheet`",
   ActivityIndicator: "`Spinner`",
-  TouchableOpacity: "`Button` or `IconButton`",
-  TouchableHighlight: "`Button` or `IconButton`",
-  TouchableWithoutFeedback: "`Button`, `IconButton` or `Pressable` with `accessibilityRole`",
-  TouchableNativeFeedback: "`Button` or `IconButton`",
+  TouchableOpacity: "`Button` ou `IconButton`",
+  TouchableHighlight: "`Button` ou `IconButton`",
+  TouchableWithoutFeedback: "`Button`, `IconButton` ou `Pressable` com `accessibilityRole`",
+  TouchableNativeFeedback: "`Button` ou `IconButton`",
 };
 
 const QR_LIBRARIES = new Set([
@@ -1582,23 +1582,23 @@ function checkColors(ctx: Context) {
       const before = parsed.bare.slice(Math.max(0, literal.start - 60), literal.start - 1);
       const address =
         /(?:[!=]==?|\bcase)\s*$/.test(before) || /\.hash\b|\bhash\s*[:=]/.test(before);
-      if (!address) add("cor-literal", literal.start, `hex color \`${value.trim()}\``);
+      if (!address) add("cor-literal", literal.start, `cor hexadecimal \`${value.trim()}\``);
       continue;
     }
     const functional = COLOR_FUNCTION.exec(value);
     if (functional)
-      add("cor-literal", literal.start, `color in a function \`${excerpt(functional[1]!, 20)}…\``);
+      add("cor-literal", literal.start, `cor em função \`${excerpt(functional[1]!, 20)}…\``);
     for (const { token, base } of classTokens(value)) {
       if (/\[[^\]]*#[0-9a-f]{3,8}(?![0-9a-z])[^\]]*\]/i.test(token))
-        add("cor-literal", literal.start, `class with an arbitrary color \`${token}\``);
+        add("cor-literal", literal.start, `classe com cor arbitrária \`${token}\``);
       else if (ARBITRARY_NAMED.test(base))
-        add("cor-literal", literal.start, `class with a named color \`${token}\``);
+        add("cor-literal", literal.start, `classe com cor por nome \`${token}\``);
       else if (PALETTE_CLASS.test(base))
-        add("cor-literal", literal.start, `Tailwind palette class \`${token}\``);
+        add("cor-literal", literal.start, `classe da paleta do Tailwind \`${token}\``);
     }
   }
   for (const match of parsed.code.matchAll(NAMED_COLOR)) {
-    add("cor-literal", match.index!, `named color \`${match[1]}\``);
+    add("cor-literal", match.index!, `cor por nome \`${match[1]}\``);
   }
 }
 
@@ -1634,16 +1634,16 @@ function checkClasses(ctx: Context) {
     const tokens = classTokens(literal.value);
     for (const { token, base } of tokens) {
       if (/^-?z-(?:\d+|\[-?\d+\])$/.test(base))
-        add("z-index-numerico", literal.start, `class \`${token}\``);
+        add("z-index-numerico", literal.start, `classe \`${token}\``);
       if (
         /^(?:duration|delay)-\d+$/.test(base) ||
         (/^(?:ease|duration)-\[/.test(base) && !base.includes("var(--rc-"))
       ) {
-        add("movimento-literal", literal.start, `class \`${token}\``);
+        add("movimento-literal", literal.start, `classe \`${token}\``);
       }
     }
     if (/z-index\s*:\s*-?\d/.test(literal.value))
-      add("z-index-numerico", literal.start, "numeric `z-index` in CSS");
+      add("z-index-numerico", literal.start, "`z-index` numérico em CSS");
   }
   if (platform === "web") {
     const groups = new Map<number, Literal[]>();
@@ -1663,12 +1663,12 @@ function checkClasses(ctx: Context) {
         add(
           "foco-apagado",
           hides.start,
-          `\`${hides.token}\` without \`focus-visible:ring\` in the same class`,
+          `\`${hides.token}\` sem \`focus-visible:ring\` na mesma classe`,
         );
     }
   }
   for (const match of parsed.code.matchAll(/\bzIndex\s*:\s*-?\d/g)) {
-    add("z-index-numerico", match.index!, "numeric `zIndex` in the style");
+    add("z-index-numerico", match.index!, "`zIndex` numérico no estilo");
   }
 }
 
@@ -1709,7 +1709,7 @@ function checkElements(ctx: Context) {
 
     if (name === "IconButton" && !spread(node)) {
       if (!filled("label")) {
-        add("nome-acessivel", node.start, "`IconButton` without `label`");
+        add("nome-acessivel", node.start, "`IconButton` sem `label`");
       }
     }
 
@@ -1719,7 +1719,7 @@ function checkElements(ctx: Context) {
         add(
           "nome-acessivel",
           node.start,
-          `${tagOf(node)} with only an icon and no name: it is \`IconButton\` with \`label\``,
+          `${tagOf(node)} só com ícone e sem nome: é \`IconButton\` com \`label\``,
         );
     }
 
@@ -1733,12 +1733,12 @@ function checkElements(ctx: Context) {
       add(
         "nome-acessivel",
         node.start,
-        `${tagOf(node)} with only an icon and no \`accessibilityLabel\`: it is \`IconButton\` with \`label\``,
+        `${tagOf(node)} só com ícone e sem \`accessibilityLabel\`: é \`IconButton\` com \`label\``,
       );
     }
 
     if (platform === "web" && lower === "img" && !spread(node) && !has("alt")) {
-      add("imagem-sem-alt", node.start, "`<img>` without `alt`");
+      add("imagem-sem-alt", node.start, "`<img>` sem `alt`");
     }
 
     if (
@@ -1748,7 +1748,7 @@ function checkElements(ctx: Context) {
       has("onClick") &&
       !has("role")
     ) {
-      const suffix = lower === "a" ? " without `href`" : "";
+      const suffix = lower === "a" ? " sem `href`" : "";
       add("elemento-clicavel", node.start, `\`<${lower} onClick>\`${suffix}`);
     }
 
@@ -1778,9 +1778,9 @@ function checkElements(ctx: Context) {
       } else if (role?.kind === "string" && ROLES[role.value]) {
         suggestion = ROLES[role.value];
       } else if (has("aria-modal") || (tokens.has("fixed") && tokens.has("inset-0"))) {
-        suggestion = "`Dialog` or `Sheet` (home-made modal)";
+        suggestion = "`Dialog` ou `Sheet` (modal caseiro)";
       }
-      if (suggestion) add("peca-reescrita", node.start, `\`<${lower}>\` instead of ${suggestion}`);
+      if (suggestion) add("peca-reescrita", node.start, `\`<${lower}>\` no lugar de ${suggestion}`);
     }
 
     const primitive = native(node);
@@ -1788,7 +1788,7 @@ function checkElements(ctx: Context) {
       add(
         "peca-reescrita",
         node.start,
-        `react-native's \`${primitive}\` instead of ${NATIVE_PRIMITIVES[primitive]}`,
+        `\`${primitive}\` do react-native no lugar de ${NATIVE_PRIMITIVES[primitive]}`,
       );
     }
 
@@ -1797,10 +1797,10 @@ function checkElements(ctx: Context) {
         platform === "web" &&
         !descendants(node).some((inner) => house(inner) === "FieldLabel" || inner.name === "label")
       ) {
-        add("campo-sem-rotulo", node.start, "`Field` without `FieldLabel`");
+        add("campo-sem-rotulo", node.start, "`Field` sem `FieldLabel`");
       }
       if (platform === "native" && !filled("label"))
-        add("campo-sem-rotulo", node.start, "`Field` without `label`");
+        add("campo-sem-rotulo", node.start, "`Field` sem `label`");
     }
 
     const controls = platform === "native" ? CONTROLS_NATIVE : CONTROLS_WEB;
@@ -1815,11 +1815,11 @@ function checkElements(ctx: Context) {
         LABEL_WRAPPERS.has(house(outer) ?? outer.name),
       );
       if (!named && !wrapped) {
-        const placeholder = has("placeholder") ? ", and `placeholder` is not a label" : "";
+        const placeholder = has("placeholder") ? ", e o `placeholder` não é rótulo" : "";
         add(
           "campo-sem-rotulo",
           node.start,
-          `\`${name}\` outside \`Field\` and without a name${placeholder}`,
+          `\`${name}\` fora de \`Field\` e sem nome${placeholder}`,
         );
       }
     }
@@ -1849,7 +1849,7 @@ function checkElements(ctx: Context) {
             add(
               "rotulo-fora-do-controle",
               node.start,
-              `\`${name}\` without a child, with the text in a ${tagOf(neighbor)} beside it`,
+              `\`${name}\` sem filho, com o texto num ${tagOf(neighbor)} ao lado`,
             );
           }
         }
@@ -1858,7 +1858,7 @@ function checkElements(ctx: Context) {
         add(
           "nome-acessivel",
           node.start,
-          `\`${name}\` without text beside it and without \`label\`: in native the spoken name is \`label\``,
+          `\`${name}\` sem texto ao lado e sem \`label\`: no nativo o nome falado é o \`label\``,
         );
       }
     }
@@ -1869,7 +1869,7 @@ function checkElements(ctx: Context) {
         !(role?.kind === "string" && role.value === "search") &&
         !/\buseZodForm\b/.test(parsed.code)
       ) {
-        add("formulario-sem-zod", node.start, "`<form>` built by hand, without `Form` and `useZodForm`");
+        add("formulario-sem-zod", node.start, "`<form>` montado à mão, sem `Form` e `useZodForm`");
       }
     }
 
@@ -1879,7 +1879,7 @@ function checkElements(ctx: Context) {
         for (const literal of ctx.literalsIn(classes)) {
           for (const { token, base } of classTokens(literal.value)) {
             if (/^h-(?:\d+(?:\.5)?|\[\d+(?:\.\d+)?(?:px|rem)\])$/.test(base)) {
-              add("altura-cravada", literal.start, `\`${token}\` on \`${name}\``);
+              add("altura-cravada", literal.start, `\`${token}\` em \`${name}\``);
             }
           }
         }
@@ -1895,7 +1895,7 @@ function checkElements(ctx: Context) {
           add(
             "consulta-sem-finais",
             node.start,
-            `query \`${name}\` without ${missing.map((key) => `\`${key}\``).join(", ")}`,
+            `\`${name}\` de consulta sem ${missing.map((key) => `\`${key}\``).join(", ")}`,
           );
         }
       }
@@ -1909,14 +1909,14 @@ function checkElements(ctx: Context) {
             add(
               "descendente-arbitrario",
               literal.start,
-              `\`${excerpt(token, 40)}\` on \`${name}\``,
+              `\`${excerpt(token, 40)}\` em \`${name}\``,
             );
         }
       }
     }
 
     if (HAND_PROVIDERS.test(node.name))
-      add("portal-a-mao", node.start, `\`${node.name}\` mounted by hand`);
+      add("portal-a-mao", node.start, `\`${node.name}\` montado à mão`);
 
     const isMoneyInput =
       (lower === "input" || name === "Input") && attr(node, "type")?.value === "number";
@@ -1932,7 +1932,7 @@ function checkElements(ctx: Context) {
         add(
           "dinheiro-float",
           node.start,
-          `numeric field for money (\`${excerpt(labels, 30)}\`): it is \`CurrencyInput\``,
+          `campo numérico para dinheiro (\`${excerpt(labels, 30)}\`): é \`CurrencyInput\``,
         );
     }
   }
@@ -1950,11 +1950,11 @@ function checkCode(ctx: Context) {
       add("dinheiro-float", offset, `\`${excerpt(line, 50)}\``);
     }
     if (/style\s*:\s*["']currency["']|currency\s*:\s*["']BRL["']/.test(line)) {
-      add("dinheiro-escrito", offset, "`Intl.NumberFormat` or `toLocaleString` with a currency");
+      add("dinheiro-escrito", offset, "`Intl.NumberFormat` ou `toLocaleString` com moeda");
     }
     if (/\bcreatePortal\s*\(/.test(line)) add("portal-a-mao", offset, "`createPortal`");
     if (/\bcrc16\w*\s*\(|\bfunction\s+crc\w*/i.test(line))
-      add("pix-qr-caseiro", offset, "BR Code CRC computed by hand");
+      add("pix-qr-caseiro", offset, "CRC do BR Code calculado à mão");
     offset += line.length + 1;
   }
 
@@ -1972,7 +1972,7 @@ function checkCode(ctx: Context) {
     if (/\$1[\s.\-/)]\s*\(?\$2/.test(literal.value))
       add("mascara-a-mao", literal.start, `\`${literal.value}\``);
     if (/^000201/.test(literal.value) || /br\.gov\.bcb\.pix/i.test(literal.value)) {
-      add("pix-qr-caseiro", literal.start, "Pix copy-and-paste code built by hand");
+      add("pix-qr-caseiro", literal.start, "copia e cola do Pix montado à mão");
     }
   }
   for (const node of parsed.elements) {
@@ -1980,7 +1980,7 @@ function checkCode(ctx: Context) {
     for (const child of node.children) {
       if (affix && child.kind === "text" && child.value.trim() === "R$") continue;
       if (child.kind === "text" && WRITTEN_MONEY.test(child.value))
-        add("dinheiro-escrito", child.start, `\`${excerpt(child.value, 40)}\` written in the JSX`);
+        add("dinheiro-escrito", child.start, `\`${excerpt(child.value, 40)}\` escrito no JSX`);
     }
   }
 
@@ -1994,13 +1994,13 @@ function checkCode(ctx: Context) {
       add(
         "documento-sem-validador",
         mentions.index,
-        "CPF or CNPJ checked without the check digit",
+        "CPF ou CNPJ conferido sem o dígito verificador",
       );
   }
 
   for (const literal of parsed.literals) {
     if (/^\s*(?:passo|etapa|step)\s*\d+\s*$/i.test(literal.value))
-      add("passo-sem-nome", literal.start, `\`${literal.value}\` as a step name`);
+      add("passo-sem-nome", literal.start, `\`${literal.value}\` como nome de passo`);
   }
 
   const DATA_FIELD = /\b(?:cpf|cnpj|telefone|celular|whatsapp|cep|placa)\b/i;
@@ -2026,18 +2026,18 @@ function checkCode(ctx: Context) {
           .join(" ")
       : "";
     const hit = DATA_FIELD.exec(`${own} ${label}`);
-    if (hit) add("dado-sem-mascara", node.start, `${hit[0]} field in a plain \`Input\``);
+    if (hit) add("dado-sem-mascara", node.start, `campo de ${hit[0]} num \`Input\` comum`);
   }
 
   for (const entry of imports) {
     const offsetOf = entry.offset;
     if (QR_LIBRARIES.has(entry.source))
-      add("pix-qr-caseiro", offsetOf, `\`${entry.source}\` instead of \`QRCode\` or \`PixCode\``);
+      add("pix-qr-caseiro", offsetOf, `\`${entry.source}\` no lugar de \`QRCode\` ou \`PixCode\``);
     if (
       entry.source === "react-hook-form" &&
       entry.names.some((item) => item.imported === "useForm")
     ) {
-      add("useform-direto", offsetOf, "react-hook-form's `useForm`");
+      add("useform-direto", offsetOf, "`useForm` do react-hook-form");
     }
     if (platform === "web" && entry.source === "recharts")
       add("recharts-direto", offsetOf, "`recharts` importada direto");
@@ -2056,7 +2056,7 @@ function checkImport(ctx: Context, entry: Import, offset: number) {
     add(
       "import-caminho-errado",
       offset,
-      `\`${source}\` is the web package; in React Native it is \`@rivocode/ui-native\``,
+      `\`${source}\` é o pacote web; no React Native é \`@rivocode/ui-native\``,
     );
     return;
   }
@@ -2064,7 +2064,7 @@ function checkImport(ctx: Context, entry: Import, offset: number) {
     add(
       "import-caminho-errado",
       offset,
-      `\`${source}\` is the native package; on the web it is \`@rivocode/ui\``,
+      `\`${source}\` é o pacote nativo; no web é \`@rivocode/ui\``,
     );
     return;
   }
@@ -2076,7 +2076,7 @@ function checkImport(ctx: Context, entry: Import, offset: number) {
     add(
       "import-caminho-errado",
       offset,
-      `\`${source}\` is not a package entry; the entries are \`${root}\` and ${subpaths.map(([path]) => `\`${path}\``).join(", ")}`,
+      `\`${source}\` não é uma entrada do pacote; as entradas são \`${root}\` e ${subpaths.map(([path]) => `\`${path}\``).join(", ")}`,
     );
     return;
   }
@@ -2089,7 +2089,7 @@ function checkImport(ctx: Context, entry: Import, offset: number) {
         add(
           "import-caminho-errado",
           offset,
-          `\`${item.imported}\` comes from \`${home[0]}\`, and not from the root`,
+          `\`${item.imported}\` sai de \`${home[0]}\`, e não da raiz`,
         );
       }
       continue;
@@ -2099,7 +2099,7 @@ function checkImport(ctx: Context, entry: Import, offset: number) {
       add(
         "import-caminho-errado",
         offset,
-        `\`${item.imported}\` does not come from \`${source}\`; ${home ? `it lives in \`${home[0]}\`` : `it lives at the root, \`${root}\``}`,
+        `\`${item.imported}\` não sai de \`${source}\`; ${home ? `mora em \`${home[0]}\`` : `mora na raiz, \`${root}\``}`,
       );
     }
   }
@@ -2205,19 +2205,19 @@ function checkText(ctx: Context) {
 }
 
 export type FileAudit = {
-  /** The file path. */
+  /** O caminho do arquivo. */
   path: string;
-  /** Whether the file counts in the score: it has JSX or imports the library. */
+  /** Se o arquivo entra na nota: tem JSX ou importa a biblioteca. */
   relevant: boolean;
-  /** `web` or `native`. */
+  /** `web` ou `native`. */
   platform: Platform;
-  /** The findings, before the dismissals. */
+  /** Os achados, antes dos descartes. */
   findings: Finding[];
-  /** The findings a suppression comment took out of the count. */
+  /** Os achados que um comentario de supressao tirou da conta. */
   waived: (Finding & { reason: string })[];
-  /** The library entries the file imports. */
+  /** As entradas da biblioteca que o arquivo importa. */
   entries: string[];
-  /** Whether the file calls `useZodForm`. */
+  /** Se o arquivo chama `useZodForm`. */
   usesZod: boolean;
 };
 
@@ -2377,7 +2377,7 @@ export function auditPeers(
   if (!manifest) {
     return {
       findings: [],
-      notes: ["No package.json found: the subpath peers were not checked."],
+      notes: ["Nenhum package.json achado: os peers dos subcaminhos não foram conferidos."],
     };
   }
 
@@ -2389,7 +2389,7 @@ export function auditPeers(
     } catch {
       return {
         findings: [],
-        notes: [`${item.path} is not valid JSON: the peers were not checked.`],
+        notes: [`${item.path} não é JSON válido: os peers não foram conferidos.`],
       };
     }
     for (const key of [
@@ -2413,7 +2413,7 @@ export function auditPeers(
         rule: "peer-faltando",
         file: manifest.path,
         line: 1,
-        message: `\`${entry}\` is imported in ${count} file(s) and \`${name}\` is not in package.json`,
+        message: `\`${entry}\` é importado em ${count} arquivo(s) e \`${name}\` não está no package.json`,
       });
     }
   }
@@ -2432,29 +2432,29 @@ export function fileScore(findings: Finding[]): number {
 export function verdictOf(score: number, critical: boolean): string {
   const band =
     score >= 90
-      ? "Follows the house"
+      ? "Segue a casa"
       : score >= 75
-        ? "Spot fixes"
+        ? "Ajustes pontuais"
         : score >= 50
-          ? "Rework"
-          : "Outside the contract";
-  return critical && band === "Follows the house" ? "Spot fixes" : band;
+          ? "Retrabalho"
+          : "Fora do contrato";
+  return critical && band === "Segue a casa" ? "Ajustes pontuais" : band;
 }
 
 function shapeProblem(item: unknown, text: "message" | "reason"): string | undefined {
   if (!item || typeof item !== "object" || Array.isArray(item))
-    return `\`${JSON.stringify(item)}\` is not an object with \`rule\`, \`file\`, \`line\` and \`${text}\``;
+    return `\`${JSON.stringify(item)}\` não é um objeto com \`rule\`, \`file\`, \`line\` e \`${text}\``;
   const record = item as Record<string, unknown>;
-  const where = `\`${String(record.rule)}\` in ${String(record.file)}:${String(record.line)}`;
+  const where = `\`${String(record.rule)}\` em ${String(record.file)}:${String(record.line)}`;
   if (typeof record.rule !== "string" || record.rule.length === 0)
-    return `${where}, without \`rule\` as text`;
+    return `${where}, sem \`rule\` em texto`;
   if (typeof record.file !== "string" || record.file.length === 0)
-    return `${where}, without \`file\` as text`;
+    return `${where}, sem \`file\` em texto`;
   if (typeof record.line !== "number" || !Number.isInteger(record.line) || record.line < 1)
-    return `${where}, with a \`line\` that is not an integer from 1`;
+    return `${where}, com \`line\` que não é um inteiro a partir de 1`;
   const value = record[text];
   if (typeof value !== "string" || value.trim().length === 0)
-    return text === "reason" ? "no reason" : `${where}, without \`message\``;
+    return text === "reason" ? "sem motivo" : `${where}, sem \`message\``;
   return undefined;
 }
 
@@ -2472,17 +2472,17 @@ export function audit(input: AuditInput): Report {
   for (const finding of input.findings ?? []) {
     const shape = shapeProblem(finding, "message");
     if (shape) {
-      notes.push(`Finding refused: ${shape}.`);
+      notes.push(`Achado recusado: ${shape}.`);
       continue;
     }
     const rule = RULE_BY_ID.get(finding.rule);
     if (!rule) {
-      notes.push(`Finding refused: the rule \`${finding.rule}\` does not exist.`);
+      notes.push(`Achado recusado: a regra \`${finding.rule}\` não existe.`);
       continue;
     }
     const project = rule.scope === "projeto";
     if (!project && !known.has(finding.file)) {
-      notes.push(`Finding refused: \`${finding.file}\` is not among the audited files.`);
+      notes.push(`Achado recusado: \`${finding.file}\` não está entre os arquivos auditados.`);
       continue;
     }
     judged.push({
@@ -2501,10 +2501,10 @@ export function audit(input: AuditInput): Report {
     const shape = shapeProblem(item, "reason");
     if (!shape) {
       dismissals.push(item);
-    } else if (shape === "no reason") {
-      notes.push(`Discard refused, no reason: \`${item.rule}\` in ${item.file}:${item.line}.`);
+    } else if (shape === "sem motivo") {
+      notes.push(`Descarte recusado, sem motivo: \`${item.rule}\` em ${item.file}:${item.line}.`);
     } else {
-      notes.push(`Discard refused: ${shape}.`);
+      notes.push(`Descarte recusado: ${shape}.`);
     }
   }
   for (const finding of all) {
@@ -2521,7 +2521,7 @@ export function audit(input: AuditInput): Report {
   }
   for (const item of dismissals) {
     notes.push(
-      `Discard with no matching finding: \`${item.rule}\` in ${item.file}:${item.line}.`,
+      `Descarte sem achado correspondente: \`${item.rule}\` em ${item.file}:${item.line}.`,
     );
   }
 
@@ -2561,23 +2561,23 @@ export function audit(input: AuditInput): Report {
 }
 
 export const FORMULA = [
-  `Each rule has a weight by severity: critical ${WEIGHTS.critico}, serious ${WEIGHTS.serio}, moderate ${WEIGHTS.moderado}, minor ${WEIGHTS.menor}.`,
-  `File score = max(0, 100 − Σ weight(rule) × min(occurrences of the rule in the file, ${CAP})).`,
-  "Base = average of the audited files' scores, rounded to the nearest integer (no file, 100).",
-  `Final score = max(0, base − Σ weight(project rule) × min(occurrences, ${CAP})).`,
-  "Band: 90 to 100 follows the house, 75 to 89 spot fixes, 50 to 74 rework, below 50 outside the contract. With a critical finding, the band does not go above spot fixes.",
+  `Cada regra tem um peso pela severidade: crítico ${WEIGHTS.critico}, sério ${WEIGHTS.serio}, moderado ${WEIGHTS.moderado}, menor ${WEIGHTS.menor}.`,
+  `Nota do arquivo = max(0, 100 − Σ peso(regra) × min(ocorrências da regra no arquivo, ${CAP})).`,
+  "Base = média das notas dos arquivos auditados, arredondada para o inteiro mais próximo (sem arquivo, 100).",
+  `Nota final = max(0, base − Σ peso(regra de projeto) × min(ocorrências, ${CAP})).`,
+  "Faixa: 90 a 100 segue a casa, 75 a 89 ajustes pontuais, 50 a 74 retrabalho, abaixo de 50 fora do contrato. Com achado crítico, a faixa não passa de ajustes pontuais.",
 ];
 
 export function renderMarkdown(report: Report): string {
   const out: string[] = [];
-  out.push("# @rivocode/ui screen audit", "");
-  out.push(`**Score: ${report.score}/100.** ${report.verdict}.`, "");
+  out.push("# Auditoria de tela do @rivocode/ui", "");
+  out.push(`**Nota: ${report.score}/100.** ${report.verdict}.`, "");
   const platforms =
-    [...new Set(report.files.map((file) => file.platform))].join(" and ") || "none";
+    [...new Set(report.files.map((file) => file.platform))].join(" e ") || "nenhuma";
   out.push(
-    `${report.files.length} file(s) audited, platform ${platforms}.` +
+    `${report.files.length} arquivo(s) auditado(s), plataforma ${platforms}.` +
       (report.skipped.length > 0
-        ? ` ${report.skipped.length} left out for having neither JSX nor a library import.`
+        ? ` ${report.skipped.length} ficaram de fora por não terem JSX nem import da biblioteca.`
         : ""),
     "",
   );
@@ -2587,9 +2587,9 @@ export function renderMarkdown(report: Report): string {
     byRule.set(finding.rule, [...(byRule.get(finding.rule) ?? []), finding]);
   if (byRule.size > 0) {
     out.push(
-      "## By rule",
+      "## Por regra",
       "",
-      "| Rule | Severity | Weight | Occurrences | Files |",
+      "| Regra | Severidade | Peso | Ocorrências | Arquivos |",
       "| --- | --- | --- | --- | --- |",
     );
     const ordered = RULES.filter((rule) => byRule.has(rule.id));
@@ -2604,9 +2604,9 @@ export function renderMarkdown(report: Report): string {
 
   if (report.files.length > 0) {
     out.push(
-      "## By file",
+      "## Por arquivo",
       "",
-      "| File | Platform | Score | Findings |",
+      "| Arquivo | Plataforma | Nota | Achados |",
       "| --- | --- | --- | --- |",
     );
     for (const file of report.files)
@@ -2615,39 +2615,39 @@ export function renderMarkdown(report: Report): string {
   }
 
   if (report.findings.length > 0) {
-    out.push("## Findings", "");
+    out.push("## Achados", "");
     let current = "";
     for (const finding of report.findings) {
       if (finding.file !== current) {
         if (current !== "") out.push("");
         current = finding.file;
         const score = report.files.find((file) => file.file === current)?.score;
-        out.push(`### \`${current}\`${score === undefined ? "" : ` (score ${score})`}`, "");
+        out.push(`### \`${current}\`${score === undefined ? "" : ` (nota ${score})`}`, "");
       }
       const rule = RULE_BY_ID.get(finding.rule)!;
       out.push(
-        `- L${finding.line} **${rule.id}** (${SEVERITY_LABEL[rule.severity]}${rule.kind === "julgamento" ? ", judgment" : ""}): ${finding.message}. ${rule.fix}`,
+        `- L${finding.line} **${rule.id}** (${SEVERITY_LABEL[rule.severity]}${rule.kind === "julgamento" ? ", julgamento" : ""}): ${finding.message}. ${rule.fix}`,
       );
     }
     out.push("");
   } else {
-    out.push("No findings.", "");
+    out.push("Nenhum achado.", "");
   }
 
   if (report.waived.length > 0) {
-    out.push("## Out of the count", "");
+    out.push("## Fora da conta", "");
     for (const item of report.waived)
       out.push(
-        `- \`${item.file}\` L${item.line} **${item.rule}**: ${item.message}. Reason: ${item.reason}`,
+        `- \`${item.file}\` L${item.line} **${item.rule}**: ${item.message}. Motivo: ${item.reason}`,
       );
     out.push("");
   }
 
   if (report.notes.length > 0) {
-    out.push("## Notes", "", ...report.notes.map((note) => `- ${note}`), "");
+    out.push("## Avisos", "", ...report.notes.map((note) => `- ${note}`), "");
   }
 
-  out.push("## The math", "", ...FORMULA.map((line) => `- ${line}`), "");
+  out.push("## A conta", "", ...FORMULA.map((line) => `- ${line}`), "");
   return out.join("\n");
 }
 
@@ -2696,16 +2696,16 @@ function manifestsAbove(from: string): string[] {
 
 function judgmentProblem(value: unknown): string | undefined {
   if (!value || typeof value !== "object" || Array.isArray(value))
-    return 'the top level has to be an object, `{ "findings": [...], "dismissals": [...] }`';
+    return 'o topo tem que ser um objeto, `{ "findings": [...], "dismissals": [...] }`';
   const record = value as Record<string, unknown>;
   for (const key of ["findings", "dismissals"]) {
     const list = record[key];
     if (list === undefined) continue;
-    if (!Array.isArray(list)) return `\`${key}\` has to be a list`;
+    if (!Array.isArray(list)) return `\`${key}\` tem que ser uma lista`;
     const index = list.findIndex(
       (item) => !item || typeof item !== "object" || Array.isArray(item),
     );
-    if (index >= 0) return `\`${key}[${index}]\` has to be an object`;
+    if (index >= 0) return `\`${key}[${index}]\` tem que ser um objeto`;
   }
   return undefined;
 }
@@ -2724,20 +2724,20 @@ function main(argv: string[]) {
     else if (arg === "--minimo") minimum = Number(argv[++at]);
     else if (arg === "--ajuda" || arg === "-h" || arg === "--help") {
       console.log(
-        "Usage: bun audit.mts <file-or-folder>... [--json] [--julgamento findings.json] [--manifesto package.json] [--minimo 85]",
+        "Uso: bun audit.mts <arquivo-ou-pasta>... [--json] [--julgamento achados.json] [--manifesto package.json] [--minimo 85]",
       );
       return 0;
     } else targets.push(arg);
   }
   if (targets.length === 0) {
-    console.error("Say what to audit: bun audit.mts src/pages");
+    console.error("Diga o que auditar: bun audit.mts src/pages");
     return 2;
   }
 
   const paths: string[] = [];
   for (const target of targets) {
     if (!existsSync(target)) {
-      console.error(`Could not find ${target}.`);
+      console.error(`Não achei ${target}.`);
       return 2;
     }
     collect(target, paths);
@@ -2761,12 +2761,12 @@ function main(argv: string[]) {
     try {
       parsedJudgment = JSON.parse(readFileSync(judgment, "utf8"));
     } catch (error) {
-      console.error(`${judgment} is not readable JSON: ${(error as Error).message}`);
+      console.error(`${judgment} não é um JSON legível: ${(error as Error).message}`);
       return 2;
     }
     const problem = judgmentProblem(parsedJudgment);
     if (problem) {
-      console.error(`${judgment} does not have the judgment shape: ${problem}.`);
+      console.error(`${judgment} não tem a forma do julgamento: ${problem}.`);
       return 2;
     }
     extra = parsedJudgment as typeof extra;

@@ -30,19 +30,16 @@ const absolute = new Intl.DateTimeFormat(LOCALE, { dateStyle: "short" });
 const full = new Intl.DateTimeFormat(LOCALE, { dateStyle: "long", timeStyle: "short" });
 
 export type RelativeTimeProps = Omit<ComponentProps<"time">, "dateTime" | "title" | "children"> & {
-  /**
-   * The instant being described. An invalid date is rendered as "—", with no `dateTime`, no `title`
-   * and no clock.
-   */
+  /** O instante que se descreve. Data invalida sai como "—", sem `dateTime`, sem `title` e sem relogio. */
   value: Date | string | number;
   /**
-   * The unit from which to stop counting and show the date. "ha 412 dias"
-   * says nothing; the date does.
+   * A partir de qual unidade parar de contar e mostrar a data. "ha 412 dias"
+   * nao diz nada; a data diz.
    */
   cutoff?: RelativeUnit;
   /**
-   * The "now", for tests and for server rendering. When this is passed, the
-   * text stops updating by itself - whoever pinned "now" does not want a clock.
+   * O agora, para teste e para renderizacao no servidor. Passando isto, o
+   * texto para de se atualizar sozinho - quem fixou o agora nao quer relogio.
    */
   now?: Date;
 };

@@ -18,7 +18,7 @@ export const spinnerVariants = cva("shrink-0 animate-spin motion-reduce:animate-
 
 export type SpinnerProps = ComponentProps<"svg"> &
   VariantProps<typeof spinnerVariants> & {
-    /** What the screen reader announces. Empty hides the spinner from reading. */
+    /** O que o leitor de tela anuncia. Vazio esconde o giro da leitura. */
     label?: string;
   };
 

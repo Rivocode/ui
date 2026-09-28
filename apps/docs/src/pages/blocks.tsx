@@ -7,18 +7,18 @@ import { linkTo, type Route } from '@/routes'
 import { slugify } from '@/slug'
 
 /* ---------------------------------------------------------------------------
- * The page blocks
+ * Os blocos de pagina
  *
- * Whole screens, not loose pieces. Each one is a single file in `blocks/`,
- * which imports only from the library's three paths, zod, lucide and React -
- * `test/page-blocks.test.tsx` enforces that -, so what the person copies from
- * here pastes into a project and compiles.
+ * Telas inteiras, e nao pecas soltas. Cada uma e um arquivo so em `blocks/`,
+ * que importa somente dos tres caminhos da biblioteca, do zod, do lucide e do
+ * React - `test/blocos-de-pagina.test.tsx` cobra isso -, entao o que a pessoa
+ * copia daqui cola num projeto e compila.
  *
- * The preview is ALWAYS a frame, desktop included. A block is a page: it has
- * its own `h1`, and decides the layout by the WINDOW width. Inside the site
- * column it would have the site's window and a second `h1` in the same tree;
- * in the iframe it has its own window and document, and the 1440 desktop
- * shrinks to fit, the way the browser's device toolbar does.
+ * O preview e SEMPRE uma moldura, inclusive no desktop. Um bloco e uma pagina:
+ * ele tem o proprio `h1`, e decide o layout pela largura da JANELA. Dentro da
+ * coluna do site ele teria a janela do site e um segundo `h1` na mesma arvore;
+ * no iframe ele tem janela e documento proprios, e o desktop de 1440 encolhe
+ * para caber, como a barra de dispositivo do navegador faz.
  * ------------------------------------------------------------------------- */
 
 const MODULES = import.meta.glob('../blocks/*.tsx', { eager: true, import: 'default' }) as Record<
@@ -27,14 +27,14 @@ const MODULES = import.meta.glob('../blocks/*.tsx', { eager: true, import: 'defa
 >
 
 /**
- * What the preview swaps in a block so it does not act on the site.
+ * O que o preview troca num bloco para ele nao agir sobre o site.
  *
- * The block runs through a portal inside the frame, but its code's `window`
- * is the /blocos page's: the 500's "Tentar de novo" called
- * `window.location.reload()` and reloaded the whole documentation, taking the
- * person back to the top. The copied file still reloads, which is right on a
- * real error page; here the retry is simulated and returns to the same error,
- * as it would with the server still down.
+ * O bloco roda por portal dentro da moldura, mas o `window` do codigo dele e o
+ * da pagina de /blocos: o "Tentar de novo" do 500 chamava
+ * `window.location.reload()` e recarregava a documentacao inteira, levando a
+ * pessoa de volta ao topo. O arquivo que se copia continua recarregando, que e
+ * o certo numa pagina de erro de verdade; aqui a nova tentativa e simulada e
+ * volta ao mesmo erro, como faria com o servidor ainda fora.
  */
 const PREVIEW_PROPS: Record<string, Record<string, unknown>> = {
   'server-error': {
@@ -43,16 +43,15 @@ const PREVIEW_PROPS: Record<string, Record<string, unknown>> = {
 }
 
 /**
- * Holds the `#` of whoever arrived by direct link until the frames stop
- * growing.
+ * Segura o `#` de quem chegou por link direto ate as molduras pararem de crescer.
  *
- * The prerender delivers each frame at its starting height, and it only takes
- * the block's height after measuring, in the browser. The browser's jump
- * happens before that: whoever opened /blocos#sem-permissao landed in the
- * middle of another block, because the nine above were still going to grow
- * hundreds of pixels each. The observer realigns on every growth and turns off
- * at the person's first gesture - whoever started scrolling chose somewhere
- * else, and pulling back reads as a defect - or when the list goes quiet.
+ * O prerender entrega cada moldura com a altura de partida, e ela so assume a
+ * altura do bloco depois de medir, no navegador. O salto do navegador acontece
+ * antes: quem abria /blocos#sem-permissao caia no meio de outro bloco, porque os
+ * nove de cima ainda iam crescer centenas de pixels cada um. O observador
+ * realinha a cada crescimento e desliga no primeiro gesto da pessoa - quem
+ * comecou a rolar escolheu outro lugar, e puxar de volta le como defeito - ou
+ * quando a lista fica quieta.
  */
 function useHeldAnchor() {
   const list = useRef<HTMLDivElement>(null)
@@ -67,8 +66,8 @@ function useHeldAnchor() {
     const align = () => {
       if (!holding || !window.location.hash) return
       const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
-      // `instant`: the stylesheet puts smooth scrolling on everything, and an
-      // animated position fix looks like the page arguing with the person.
+      // `instant`: a folha poe rolagem suave em tudo, e conserto de posicao
+      // animado parece a pagina discutindo com a pessoa.
       target?.scrollIntoView({ behavior: 'instant', block: 'start' })
     }
 
@@ -109,7 +108,7 @@ const SOURCES = import.meta.glob('../blocks/*.tsx', {
 
 const VIEWPORTS = [
   { id: 'desktop', label: 'Desktop', width: 1440, Icon: Monitor },
-  { id: 'mobile', label: 'Mobile', width: 390, Icon: Smartphone },
+  { id: 'mobile', label: 'Celular', width: 390, Icon: Smartphone },
 ] as const
 
 type ViewportId = (typeof VIEWPORTS)[number]['id']
@@ -117,8 +116,8 @@ type ViewportId = (typeof VIEWPORTS)[number]['id']
 function BlockStage({ block }: { block: BlockEntry }) {
   const Block = MODULES[`../blocks/${block.file}.tsx`]
   const source = SOURCES[`../blocks/${block.file}.tsx`] ?? ''
-  // On mobile the frame opens at mobile width: the 1440 desktop would only fit
-  // in a 350px column as an unreadable thumbnail. The person's choice wins.
+  // No celular a moldura abre na largura de celular: o desktop de 1440 caberia
+  // em 350px de coluna so como miniatura ilegivel. A escolha da pessoa vence.
   const isMobile = useMobile()
   const [picked, setViewport] = useState<ViewportId | null>(null)
   const viewport = picked ?? (isMobile ? 'mobile' : 'desktop')
@@ -127,14 +126,14 @@ function BlockStage({ block }: { block: BlockEntry }) {
   return (
     <section
       id={block.slug}
-      aria-labelledby={`${block.slug}-title`}
+      aria-labelledby={`${block.slug}-titulo`}
       className="overflow-hidden rounded-lg border border-border bg-surface"
     >
       <Tabs defaultValue="preview">
         <header className="space-y-3 border-b border-border px-4 py-3">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0 max-w-2xl space-y-1">
-              <h2 id={`${block.slug}-title`} className="font-display text-lg text-fg">
+              <h2 id={`${block.slug}-titulo`} className="font-display text-lg text-fg">
                 {block.title}
               </h2>
               <p className="text-sm text-fg-muted">{block.summary}</p>
@@ -165,11 +164,11 @@ function BlockStage({ block }: { block: BlockEntry }) {
                 </Tab>
                 <Tab value="code">
                   <Code2 size={14} aria-hidden="true" />
-                  Code
+                  Código
                 </Tab>
               </TabList>
 
-              <Clipboard value={source} labels={{ copy: `Copy the code of the ${block.title} block`, copied: 'Code copied' }} />
+              <Clipboard value={source} labels={{ copy: `Copiar o código do bloco ${block.title}`, copied: 'Código copiado' }} />
             </div>
           </div>
 
@@ -195,7 +194,7 @@ function BlockStage({ block }: { block: BlockEntry }) {
           <div className="bg-bg/40 p-3 sm:p-4">
             {Block ? (
               <ExampleFrame
-                title={`Block ${block.title}, at ${width}px wide`}
+                title={`Bloco ${block.title}, em ${width}px de largura`}
                 width={width}
                 initialHeight={480}
               >
@@ -221,30 +220,29 @@ export function BlocksPage({ navigate }: { navigate: (route: Route) => void }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <header className="max-w-3xl space-y-3">
-        <p className="font-mono text-xs tracking-[0.14em] text-fg-subtle uppercase">Blocks</p>
-        <h1 className="font-display text-3xl text-fg sm:text-4xl">Page blocks</h1>
+        <p className="font-mono text-xs tracking-[0.14em] text-fg-subtle uppercase">Blocos</p>
+        <h1 className="font-display text-3xl text-fg sm:text-4xl">Blocos de página</h1>
         <p className="text-base text-fg-muted">
-          Whole screens, ready to copy: {BLOCK_LIST.length} files built only with @rivocode/ui
-          pieces and the skill's rules. Each one imports only from the library,{' '}
-          <code className="font-mono">zod</code> and <code className="font-mono">lucide-react</code>,
-          and brings the end states the screen needs: data, loading, error and empty.
+          Telas inteiras, prontas para copiar: {BLOCK_LIST.length} arquivos montados só com peças
+          do @rivocode/ui e as regras da skill. Cada um importa apenas da biblioteca, do{' '}
+          <code className="font-mono">zod</code> e do <code className="font-mono">lucide-react</code>,
+          e traz os finais que a tela precisa: dados, carregando, erro e vazio.
         </p>
         <p className="text-sm text-fg-subtle">
-          For agents, each block has its own <code className="font-mono">.md</code>, and all of them
-          are in{' '}
+          Para agents, cada bloco tem o seu <code className="font-mono">.md</code>, e todos estão no{' '}
           <a href="/llms.txt" className="text-accent-text underline underline-offset-4">
             /llms.txt
           </a>
-          . To dress one in a client's brand, use the{' '}
+          . Para vestir com a marca de um cliente, use o{' '}
           <a
             {...linkTo({ kind: 'theme' }, navigate)}
             className="text-accent-text underline underline-offset-4"
           >
-            theme builder
+            montador de tema
           </a>
           .
         </p>
-        <nav aria-label="Blocks" className="flex flex-wrap gap-2 pt-1">
+        <nav aria-label="Blocos" className="flex flex-wrap gap-2 pt-1">
           {BLOCK_LIST.map((block) => (
             <a
               key={block.slug}
@@ -264,7 +262,7 @@ export function BlocksPage({ navigate }: { navigate: (route: Route) => void }) {
       </div>
 
       <p className="mt-10 max-w-3xl text-sm text-fg-subtle">
-        The pieces of each block have their own page, with the props table:{' '}
+        As peças de cada bloco têm a própria página, com a tabela de props:{' '}
         {[...new Set(BLOCK_LIST.flatMap((block) => block.pieces))].sort().map((piece, index, all) => (
           <span key={piece}>
             <a

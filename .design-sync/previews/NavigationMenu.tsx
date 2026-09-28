@@ -8,7 +8,7 @@ import {
   NavigationMenuViewport,
 } from '@rivocode/ui'
 
-/** Site header */
+/** Topo de site */
 export function SiteHeader() {
   return (
     <div className="min-h-64">

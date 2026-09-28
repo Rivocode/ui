@@ -1,6 +1,6 @@
 import { Field, FieldDescription, FieldLabel, NumberField } from '@rivocode/ui'
 
-/** With label */
+/** Com rótulo */
 export function WithLabel() {
   return (
     <Field className="w-56">
@@ -11,7 +11,7 @@ export function WithLabel() {
   )
 }
 
-/** Disabled */
+/** Desabilitado */
 export function Disabled() {
   return (
     <div className="w-56">

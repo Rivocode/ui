@@ -140,14 +140,14 @@ function spokenName(key: string, labels: KbdLabels, mac: boolean) {
 export type KbdProps = ComponentPropsWithoutRef<"kbd"> &
   VariantProps<typeof kbdVariants> & {
     /**
-     * The shortcut, like `"mod+k"`. Each part becomes a key, and `mod` is shown as
-     * `⌘` on the Mac and `Ctrl` elsewhere.
+     * O atalho, como `"mod+k"`. Cada parte vira uma tecla, e `mod` sai como
+     * `⌘` no Mac e `Ctrl` no resto.
      */
     keys?: string;
     /**
-     * What the screen reader hears on the `keys` shortcut, to change the language:
-     * `plus` is the word between the keys, and `up`, `down`, `left` and `right` the
-     * names of the arrows. Pass only the ones that change.
+     * O que o leitor de tela ouve no atalho de `keys`, para trocar o idioma:
+     * `plus` e a palavra entre as teclas, e `up`, `down`, `left` e `right` os
+     * nomes das setas. Passe so os que mudam.
      */
     labels?: Partial<KbdLabels>;
   };

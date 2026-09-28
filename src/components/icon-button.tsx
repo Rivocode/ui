@@ -18,26 +18,26 @@ export type IconButtonProps = Omit<
   "size" | "children" | "aria-label" | "aria-labelledby"
 > & {
   /**
-   * The button's name, required: it is what the screen reader announces, and the text
-   * of the tooltip when `tooltip` is on. State the action ("Excluir nota"), not the
-   * drawing ("Lixeira").
+   * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o texto
+   * da dica quando `tooltip` esta ligado. Diga a acao ("Excluir nota"), e nao o
+   * desenho ("Lixeira").
    */
   label: string;
-  /** Refused by the type: the accessible name has a single path, which is `label`. */
+  /** Recusado pelo tipo: o nome acessivel tem um caminho so, que e o `label`. */
   "aria-label"?: never;
-  /** Refused by the type, for the same reason as `aria-label`. */
+  /** Recusado pelo tipo, pelo mesmo motivo do `aria-label`. */
   "aria-labelledby"?: never;
-  /** The icon, alone. It is rendered `aria-hidden`, because `label` is what names it. */
+  /** O icone, sozinho. Ele sai `aria-hidden`, porque quem nomeia e o `label`. */
   children: ReactNode;
-  /** The side of the square, read from `--rc-control-*`: shrinks with density. */
+  /** O lado do quadrado, lido de `--rc-control-*`: encolhe com a densidade. */
   size?: "sm" | "md" | "lg";
   /**
-   * Shows `label` in a tooltip on pointer hover or keyboard focus.
-   * Turn it on when the icon is not universal; the tooltip does not go into the name, which already
-   * is `label`, so the screen reader does not hear the same sentence twice.
+   * Mostra o `label` numa dica ao pousar o ponteiro ou focar pelo teclado.
+   * Ligue quando o icone nao for universal; a dica nao entra no nome, que ja
+   * e o `label`, entao o leitor de tela nao ouve a mesma frase duas vezes.
    */
   tooltip?: boolean;
-  /** The side the tooltip opens on, when `tooltip` is on. Without it, on top. */
+  /** O lado em que a dica abre, quando `tooltip` esta ligado. Sem ele, em cima. */
   tooltipSide?: "top" | "bottom" | "left" | "right";
 };
 

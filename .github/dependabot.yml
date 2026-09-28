@@ -1,12 +1,12 @@
 version: 2
 
-# What proves an update breaks nothing is `ci.yml`, which runs the whole gate
-# on every PR. Minor and patch arrive in a single PR per folder; a major arrives
-# on its own, because it is a decision and not routine.
+# Quem prova que a atualizacao nao quebra nada e o `ci.yml`, que roda o gate
+# inteiro em todo PR. Menor e correcao chegam num PR so por pasta; major chega
+# sozinho, porque e decisao e nao rotina.
 #
-# `native/` is left out on purpose: it is not a workspace, and installing there
-# creates a second React (`check:install`). The versions the native package is
-# tested against live in `examples/native`.
+# `native/` fica de fora de proposito: ela nao e workspace, e instalar la cria
+# um segundo React (`check:instalacao`). As versoes que o nativo testa moram em
+# `examples/native`.
 updates:
   - package-ecosystem: "bun"
     directory: "/"
@@ -20,21 +20,20 @@ updates:
     groups:
       web:
         update-types: ["minor", "patch"]
-    # The site has to use the SAME React as the root: the blocks test mounts
-    # `apps/docs/src/blocks` together with the suite, and two copies bring the
-    # hook down with "Invalid hook call". The root stays on the React that the
-    # Expo SDK pins in `examples/native`, so the native suite tests the React
-    # the app runs. React moves together with the SDK upgrade, done by a person,
-    # in both folders.
+    # O site tem que usar o MESMO React da raiz: o teste dos blocos monta
+    # `apps/docs/src/blocks` junto com a suite, e duas copias derrubam o hook
+    # com "Invalid hook call". A raiz fica no React que o SDK do Expo fixa em
+    # `examples/native`, para a suite do nativo testar o React que o app roda.
+    # React sobe junto com a troca de SDK, feita por uma pessoa, nas duas pastas.
     ignore:
       - dependency-name: "react"
         update-types: ["version-update:semver-minor", "version-update:semver-major"]
       - dependency-name: "react-dom"
         update-types: ["version-update:semver-minor", "version-update:semver-major"]
 
-  # The Expo SDK pins React, React Native and the native modules. Bumping one
-  # of them outside the SDK breaks the app, so only patches come in here; an
-  # SDK upgrade is `npx expo install --fix`, done by a person.
+  # O SDK do Expo fixa React, React Native e os modulos nativos. Subir um deles
+  # fora do SDK quebra o app, entao so correcao entra por aqui; troca de SDK e
+  # `npx expo install --fix`, feita por uma pessoa.
   - package-ecosystem: "bun"
     directory: "/examples/native"
     schedule:
@@ -45,7 +44,7 @@ updates:
     commit-message:
       prefix: "chore"
     groups:
-      native:
+      nativo:
         update-types: ["minor", "patch"]
     ignore:
       - dependency-name: "react"

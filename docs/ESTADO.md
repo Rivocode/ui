@@ -1,65 +1,61 @@
-# Where we stopped
+# Onde paramos
 
-Snapshot of the repository on **25/09/2026**, rewritten from scratch. Every
-number here was measured in this tree, on that day, and the section **How to
-check each number** gives the command for each one: whoever comes later
-measures again instead of believing.
+Retrato do repositorio em **25/09/2026**, reescrito do zero. Todo numero daqui
+foi medido nesta arvore, nesse dia, e a secao **Como conferir cada numero** diz
+o comando de cada um: quem chegar depois mede de novo em vez de acreditar.
 
-This file is the STATE: what exists, what is really missing, what is waiting on
-a person. The RULE lives in `CLAUDE.md`; the contract for whoever consumes, in
-`.design-sync/conventions.md` and in `.claude/skills/rivocode-ui/SKILL.md`. The
-history - why each thing ended up as it is - lives in the `git log` and in the
-three CHANGELOGs, and is not repeated here.
+Este arquivo e o ESTADO: o que existe, o que falta de verdade, o que espera uma
+pessoa. A REGRA mora em `CLAUDE.md`; o contrato de quem consome, em
+`.design-sync/conventions.md` e em `.claude/skills/rivocode-ui/SKILL.md`. A
+historia - por que cada coisa ficou como esta - mora no `git log` e nos tres
+CHANGELOGs, e nao e repetida aqui.
 
-## The packages
+## Os pacotes
 
-| Package               | Where     | Manifest  | On npm on 25/09                    | Tag              |
+| Pacote                | Onde      | Manifesto | No npm em 25/09                    | Tag              |
 | --------------------- | --------- | --------- | ---------------------------------- | ---------------- |
-| `@rivocode/ui`        | `src/`    | 1.0.0     | **1.0.0**, with provenance         | `v1.0.0`         |
-| `@rivocode/ui-native` | `native/` | 1.0.0     | **1.0.0**, with provenance         | `native-v1.0.0`  |
-| `@rivocode/ui-mcp`    | `mcp/`    | 0.6.0     | **0.6.0**, with provenance         | `mcp-v0.6.0`     |
+| `@rivocode/ui`        | `src/`    | 1.0.0     | **1.0.0**, com procedencia         | `v1.0.0`         |
+| `@rivocode/ui-native` | `native/` | 1.0.0     | **1.0.0**, com procedencia         | `native-v1.0.0`  |
+| `@rivocode/ui-mcp`    | `mcp/`    | 0.6.0     | **0.6.0**, com procedencia         | `mcp-v0.6.0`     |
 
-The `ds.rivocode.com.br` site comes out of `apps/docs/` on every push to `main`
-(`docs.yml`), and is up to date with `db0fad9`. `origin` has 36 tags; `gh release
-list` is still empty, because a tag does not become a GitHub release and that
-was never automated.
+O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
+(`docs.yml`), e esta em dia com `db0fad9`. O `origin` tem 36 tags; `gh release
+list` continua vazio, porque tag nao vira release no GitHub e isso nunca foi
+automatizado.
 
-**Native 0.14.0 shipped on the second attempt.** The first died at
-`npm publish` with `ENEEDAUTH`: trusted publishing for `@rivocode/ui-native`
-was misconfigured on npmjs.com, and a green rehearsal would not catch that,
-because `--dry-run` does not authenticate. Once the configuration was fixed,
-the same tag published through
-`gh workflow run release-native --field tag=native-v0.14.0`: the version had
-not been burned.
+**A 0.14.0 do nativo saiu na segunda tentativa.** A primeira morreu no
+`npm publish` com `ENEEDAUTH`: a publicacao confiavel do `@rivocode/ui-native`
+estava configurada errada no npmjs.com, e o ensaio verde nao pegaria isso,
+porque o `--dry-run` nao autentica. Corrigida a configuracao, a mesma tag
+publicou por `gh workflow run release-native --field tag=native-v0.14.0`: a
+versao nao tinha queimado.
 
-### Trusted publishing, since 25/09
+### Publicacao confiavel, desde 25/09
 
-The three release workflows publish through npm's trusted publishing (OIDC),
-without `NPM_TOKEN` and without `registry-url`: no token is written to
-`.npmrc`. Each one installs the newest npm (trusted publishing requires 11.5.1
-or later) and fails early if the OIDC token is not there. `--provenance` and
-`id-token: write` go together, and `--dry-run` exercises neither.
+Os tres workflows de release publicam pela publicacao confiavel do npm (OIDC),
+sem `NPM_TOKEN` e sem `registry-url`: nenhum token e escrito em `.npmrc`. Cada
+um instala o npm mais novo (a publicacao confiavel exige 11.5.1 ou mais) e
+falha cedo se o token OIDC nao estiver la. `--provenance` e `id-token: write`
+andam juntos, e o `--dry-run` nao exercita nenhum dos dois.
 
-Web 0.18.1 and native 0.14.0 shipped through that path, signed.
-`@rivocode/ui-mcp` has not published through it yet: only its next version
-proves its trusted publisher configuration. The `NPM_TOKEN` secret **is still
-registered** in the repository (`gh secret list`, created on 04/09) and no
-workflow reads it anymore: it should be deleted on GitHub and revoked on npm by
-the owner.
+A 0.18.1 do web e a 0.14.0 do nativo sairam por esse caminho, assinadas. O
+`@rivocode/ui-mcp` ainda nao publicou por ele: so a proxima versao dele prova a
+configuracao do publicador confiavel dele. O segredo `NPM_TOKEN` **continua cadastrado** no
+repositorio (`gh secret list`, criado em 04/09) e nenhum workflow o le mais:
+ele deve ser apagado no GitHub e revogado no npm pelo dono.
 
-Versions without provenance, and they stay that way because publishing cannot
-be undone: up to `v0.8.0` and `native-v0.3.1`, when the repository was
-private.
+Versoes sem procedencia, e assim ficam porque publicacao nao se desfaz: ate
+`v0.8.0` e `native-v0.3.1`, quando o repositorio era privado.
 
-## The catalog
+## O catalogo
 
-**134 pieces** and **222 documents** in `.design-sync/docs/`. The difference is
-the **88 parts**: `CardHeader`, `DialogFooter`, `SelectItem` only exist inside
-another piece, and live on its page with their own anchor. A part is not a
-piece; whoever counts files as the catalog opens `CardTitle.md` as if it were a
-component. The rule is in `apps/docs/src/parts.ts` (`findParent`).
+**134 pecas** e **222 documentos** em `.design-sync/docs/`. A diferenca sao as
+**88 partes**: `CardHeader`, `DialogFooter`, `SelectItem` so existem dentro de
+outra peca, e moram na pagina dela com ancora propria. Parte nao e peca; quem
+conta arquivo como catalogo abre `CardTitle.md` como se fosse componente. A
+regra esta em `apps/docs/src/parts.ts` (`findParent`).
 
-| Family       | Qty | Pieces                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Familia      | Qtd | Pecas                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------ | --: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Formulario   |  37 | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, CurrencyInput, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, PostalCodeField, Questionnaire, RadioGroup, Rating, RichTextEditor, SearchInput, Select, SignaturePad, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, TransferList, Tree, TreeSelect |
 | Estrutura    |  25 | Accordion, Affix, AppShell, AspectRatio, Avatar, Card, Carousel, Collapsible, Container, DataTable, DescriptionList, FilterBar, FilterChip, Grid, Item, PageHeader, ResizablePanelGroup, ScrollArea, Separator, Splitter, Spoiler, Stack, Stat, Table, VirtualList                                                                                                                                                                       |
@@ -73,303 +69,295 @@ component. The rule is in `apps/docs/src/parts.ts` (`findParent`).
 | IA           |   5 | AILabel, Conversation, Message, PromptInput, ToolCall                                                                                                                                                                                                                                                                                                                                                                                    |
 | Fundacao     |   1 | RivoProvider                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
-The family comes from each document's `category`, and the site writes it with
-accents.
+A familia sai do `category` de cada documento, e o site a escreve com acento.
 
-### Subpaths
+### Subcaminhos
 
-Rule of both packages: **one subpath per peer, and not one per subject** - the
-peer is what charges the installation, so it is what decides the door. The
-exception is `/ai`, which has no peer and exists because of weight.
+Regra dos dois pacotes: **um subcaminho por peer, e nao um por assunto** - o
+peer e quem cobra a instalacao, entao e ele que decide a porta. A excecao e o
+`/ai`, que nao tem peer e existe pelo peso.
 
-| Web                   | Optional peer                        | What it exports                                                                          |
+| Web                   | Peer opcional                        | O que exporta                                                                            |
 | --------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `@rivocode/ui/chart`  | `recharts`                           | `ChartContainer` and axes, tooltip, gradient, the six shapes, `Sparkline`, `useChartMotion` |
+| `@rivocode/ui/chart`  | `recharts`                           | `ChartContainer` e eixos, dica, gradiente, as seis formas, `Sparkline`, `useChartMotion` |
 | `@rivocode/ui/form`   | `react-hook-form`, `zod`, resolvers  | `Form`, `FormField`, `useZodForm`                                                        |
-| `@rivocode/ui/ai`     | none                                 | `AILabel`, `Conversation`, `Message`, `PromptInput`, `ToolCall`                          |
+| `@rivocode/ui/ai`     | nenhum                               | `AILabel`, `Conversation`, `Message`, `PromptInput`, `ToolCall`                          |
 | `@rivocode/ui/dnd`    | `@dnd-kit/core`, `@dnd-kit/sortable` | `SortableList`, `Kanban`                                                                 |
-| `@rivocode/ui/editor` | `@tiptap/*` (Tiptap 3)               | `RichTextEditor`, `RichTextView` (the latter does not import Tiptap)                     |
+| `@rivocode/ui/editor` | `@tiptap/*` (Tiptap 3)               | `RichTextEditor`, `RichTextView` (este nao importa o Tiptap)                             |
 
-Besides them the web exports `./styles.css`, `./fonts.css`, `./preset` and
-`./tokens/*`, and the `rivocode-ui` binary (`check-theme` and `tokens`, which
-writes DTCG 2025.10 JSON). Native exports `./form`, `./chart`, `./clipboard`,
-`./file-upload`, `./ai`, `./dnd`, `./tokens`, `./contrast` and `./theme.css`,
-and three binaries: `rivocode-ui-native-css`, `-theme` and `-init`.
-`check:chart` guards the boundaries (eleven, across both packages) and
-`check:contract` demands that every subpath export be in `conventions.md` AND
-in the skill.
+Alem deles o web exporta `./styles.css`, `./fonts.css`, `./preset` e
+`./tokens/*`, e o binario `rivocode-ui` (`check-theme` e `tokens`, que escreve
+JSON DTCG 2025.10). O nativo exporta `./form`, `./chart`, `./clipboard`,
+`./file-upload`, `./ai`, `./dnd`, `./tokens`, `./contrast` e `./theme.css`, e
+tres binarios: `rivocode-ui-native-css`, `-theme` e `-init`. `check:chart`
+guarda as fronteiras (onze, nos dois pacotes) e `check:contrato` cobra que todo
+export de subcaminho esteja no `conventions.md` E na skill.
 
-## React Native
+## O React Native
 
-Of the 134 pieces: **103 translate** with the same name, **5 become** another
+Das 134 pecas: **103 traduzem** com o mesmo nome, **5 viram** outra
 (`Autocomplete` -> `Combobox`, `DataTable` -> `DataList`, `ToastViewport` ->
-`useToast`, `Popconfirm` -> `AlertDialog`, `ContextMenu` -> `Menu`), **26 do not
-port** by written decision, and **0 are queued**. `DECLARED_QUEUE` is empty and
-the agreement is that it stays so: a new web piece is born in both packages on
-the same day, or is born with `no` and the reason.
+`useToast`, `Popconfirm` -> `AlertDialog`, `ContextMenu` -> `Menu`), **26 nao
+portam** por decisao escrita, e **0 estao na fila**. `FILA_DECLARADA` esta
+vazia e o acordo e que continue: peca web nova nasce nos dois pacotes no mesmo
+dia, ou nasce com `nao` e o motivo.
 
-The 26 that do not port, with each one's note in `scripts/native-parity.ts`:
+As 26 que nao portam, com a nota de cada uma em `scripts/paridade-nativo.ts`:
 
-| Piece               | Why not                                                                                          |
+| Peca                | Por que nao                                                                                      |
 | ------------------- | ------------------------------------------------------------------------------------------------ |
-| Affix               | the platform already gives it: an absolute sibling of `ScrollView`, or `stickyHeaderIndices`                     |
-| AppShell            | the app skeleton on a phone is the router: tab bar, drawer, stack bar                        |
-| Breadcrumb          | the way back is the router's back button                                                 |
-| ButtonGroup         | `Tabs` and `ToggleGroup` cover it; a button against a button becomes a single target under the finger                  |
-| Command             | a command palette is a desktop gesture: field, list and keyboard                                       |
-| Container           | the phone is already narrower than the smallest step; the breathing room is the screen's padding                    |
-| CookieConsent       | an app has no cookies; consent is the platform's prompt (ATT on iOS)                         |
-| EventCalendar       | a time grid is a desktop idiom; on the phone it is a list, and the month is `Calendar`                     |
-| Gantt               | a schedule is a desktop idiom; tasks per day are a list, a deadline is `Calendar`                          |
-| Kanban              | at 390px one column fits; moving a card is a "Mover para" menu, not a drag                           |
-| Kbd                 | there is no keyboard to draw                                                                     |
-| Menubar             | desktop idiom; native navigation is the router's tab bar and drawer                                    |
-| NavigationMenu      | same                                                                                             |
-| Pagination          | a phone list scrolls; choosing a page number is a desktop gesture                                 |
-| Popover             | an anchored panel the finger itself covers: use `Sheet`                                            |
-| PreviewCard         | appears on pointer hover, and there is no hover on touch                                           |
-| ResizablePanelGroup | dragging to split the width is desktop; on a phone each area is a screen                       |
-| RichTextEditor      | another engine (WebView or native module); the phone writes with `Textarea` and reads with `RichTextView` |
-| ScrollToTop         | the platform already gives it: tap the status bar (iOS) and tap the tab again                        |
-| Sidebar             | desktop idiom; native navigation is the router's tab bar and drawer                                    |
-| Splitter            | two areas side by side do not fit; list and detail are two screens                                 |
-| Table               | there is no table on a phone; the query becomes `DataList`                                             |
-| TableOfContents     | an app screen has no side index: sections in a list, or `Tabs`                                 |
-| Toolbar             | a desktop editing surface: tab stop and arrows, which touch does not have                    |
-| Tooltip             | hover does not exist on touch; the label needs to be on screen                                        |
-| VirtualList         | the platform already virtualizes: `FlatList` and `FlashList`                                             |
+| Affix               | a plataforma ja da: irmao absoluto da `ScrollView`, ou `stickyHeaderIndices`                     |
+| AppShell            | o esqueleto do app no celular e o router: tab bar, drawer, barra da pilha                        |
+| Breadcrumb          | o caminho de volta e o botao de voltar do router                                                 |
+| ButtonGroup         | `Tabs` e `ToggleGroup` cobrem; botao encostado em botao vira um alvo so no dedo                  |
+| Command             | paleta de comandos e gesto de mesa: campo, lista e teclado                                       |
+| Container           | o celular ja e mais estreito que o menor passo; o respiro e o padding da tela                    |
+| CookieConsent       | app nao tem cookie; o consentimento e o aviso da plataforma (ATT no iOS)                         |
+| EventCalendar       | grade de tempo e idioma de mesa; no telefone e lista, e o mes e o `Calendar`                     |
+| Gantt               | cronograma e idioma de mesa; tarefa por dia e lista, prazo e `Calendar`                          |
+| Kanban              | a 390px cabe uma coluna; mover cartao e menu "Mover para", nao arrasto                           |
+| Kbd                 | nao ha teclado para desenhar                                                                     |
+| Menubar             | idioma de mesa; navegacao nativa e tab bar e drawer do router                                    |
+| NavigationMenu      | idem                                                                                             |
+| Pagination          | lista de celular rola; escolher numero de pagina e gesto de mesa                                 |
+| Popover             | painel ancorado que o proprio dedo cobre: use `Sheet`                                            |
+| PreviewCard         | aparece ao pousar o ponteiro, e nao ha pousar no toque                                           |
+| ResizablePanelGroup | arrastar para dividir a largura e de mesa; no celular cada area e uma tela                       |
+| RichTextEditor      | outro motor (WebView ou modulo nativo); o celular escreve com `Textarea` e le com `RichTextView` |
+| ScrollToTop         | a plataforma ja da: toque na barra de status (iOS) e toque de novo na aba                        |
+| Sidebar             | idioma de mesa; navegacao nativa e tab bar e drawer do router                                    |
+| Splitter            | duas areas lado a lado nao cabem; lista e detalhe sao duas telas                                 |
+| Table               | nao ha tabela no celular; a consulta vira `DataList`                                             |
+| TableOfContents     | tela de app nao tem indice lateral: secoes numa lista, ou `Tabs`                                 |
+| Toolbar             | superficie de edicao de mesa: parada de tabulacao e seta, que o toque nao tem                    |
+| Tooltip             | hover nao existe no toque; o rotulo precisa estar na tela                                        |
+| VirtualList         | a plataforma ja virtualiza: `FlatList` e `FlashList`                                             |
 
-**Same name is not same API.** In native everything is controlled (no
-`defaultValue`) and the list comes through `items`, not composition. What is
-reused is the class vocabulary, the token and the choice of piece; the JSX is
-rewritten. `check:signature` checks **222 signature divergences in 91
-pieces** against both props catalogs - the native one,
-`apps/docs/src/native-props.json` (117 pieces, 773 props), is a committed
-artifact, because generating it requires `examples/native` installed;
-`check:props:native` keeps it up to date in the CI's `nativo` job, next to
-`check:native:types`.
+**Nome igual nao e API igual.** No nativo tudo e controlado (sem
+`defaultValue`) e a lista vem por `items`, nao por composicao. O que se
+reaproveita e o vocabulario de classes, o token e a escolha da peca; o JSX se
+reescreve. `check:assinatura` confere **222 divergencias de assinatura em 91
+pecas** contra os dois catalogos de props - o do nativo,
+`apps/docs/src/native-props.json` (117 pecas, 773 props), e artefato comitado,
+porque gerar exige `examples/native` instalado; `check:props:nativo` o mantem
+em dia no job `nativo` da CI, ao lado do `check:native:types`.
 
-Pure code crosses over through `src/shared/` and `src/hooks/common/`, mirrored
-in `native/`: **38 files**, with `check:shared` demanding that the mirror have
-no global nor platform import, and 16 declared copies.
+Codigo puro atravessa por `src/shared/` e `src/hooks/common/`, espelhados em
+`native/`: **38 arquivos**, com `check:compartilhado` cobrando que o espelho
+nao tenha global nem import de plataforma, e 16 copias declaradas.
 
-## The gate
+## O gate
 
-`bun run check` is **37 steps** - 36 checks plus `bun test` -, in sequence,
-stopping at the first one that fails. It matches `CLAUDE.md`. On 25/09 it came
-out green.
+`bun run check` sao **37 passos** - 36 verificacoes mais `bun test` -, em
+sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 25/09
+saiu verde.
 
-The suite: **3096 tests in 227 files, 23255 `expect`**, 0 failures. Native has
-971 tests in 75 files; web, 2125 in 152. The site's home page shows the same
-number (`TESTS` in `apps/docs/src/pages/home.tsx`), and `check:tests` fails if
-they diverge.
+A suite: **3096 testes em 227 arquivos, 23255 `expect`**, 0 falhas. Do nativo
+sao 971 testes em 75 arquivos; do web, 2125 em 152. A home do site exibe o
+mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
+falha se divergir.
 
-| Guard                   | What it says on 25/09                                                                                        |
+| Guarda                  | O que ela diz em 25/09                                                                                       |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check:props`           | 308 entries (pieces and parts), 4380 props; an own prop that collides with an inherited attribute fails              |
-| `check:colors`          | 188 files with no literal color outside `src/tokens/`                                                           |
-| `check:opacity`       | 4 uses of partial opacity, all declared, 2 alpha measurements                                             |
-| `check:contrast`        | 138 pairs per theme, in both themes, plus 14 from `scales.css`                                                  |
-| `check:contrast:native-map` | per scheme: 60 text, 47 for 1.4.11, 1 layer, 16 over series ink, 3 for checked; 7 roles without a pair |
-| `check:native:contrast` | `native/scripts/contrast.mjs` mirror up to date, 273 lines measured equal                                      |
-| `check:themes`           | 90 theme and shape tokens, 55 required roles                                                            |
-| `check:doc`             | 222 pages, all with code                                                                                |
-| `check:examples`        | names in `tsx` blocks against 752 names published by 14 entries                                           |
-| `check:readme`          | 134 of 134 pieces cited, none declared out                                                             |
-| `check:classes`         | 369 files, every class generates a rule, no exception list                                                   |
-| `check:groups`          | 8 declared groups, each consumed and each consumption declared; a declaration without consumption fails              |
-| `check:cli`             | 4 desk files outside the 205 files the library reaches in `dist/`                                 |
-| `check:size`         | root 143.4 of 156.2 KB gzip; `Button` alone 12.2 of 13.6 KB; all entries between 90% and 97% of the limit   |
-| `check:skill`           | 128 props cited in the skill examples, all existing; `reference/native.md` against the native table   |
-| `check:skill-list`     | 13 reference files, in the index and in the site's `curl` loop                                                |
-| `check:theme:native`     | 8 seeds, 37 derived, 45 in `@theme`                                                                     |
-| `check:parity`        | 134 pieces: the table and the pages say the same                                                               |
-| `check:pieces`           | 134, equal to the README, `package.json` and the site meta                                                     |
-| `check:demo`            | 133 of 134 in the showcase, 1 declared out (`ToastViewport`), across 21 pages                                     |
-| `check:portraits`        | 12 section portraits over 6 areas, 23256 squares, 90 markers in the demo                                   |
-| `check:recipe`         | 7 files, 9 CSS directives, 5 peers, and no Babel in either                                             |
+| `check:props`           | 308 entradas (pecas e partes), 4380 props; prop propria que colide com atributo herdado reprova              |
+| `check:colors`          | 188 arquivos sem cor literal fora de `src/tokens/`                                                           |
+| `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                             |
+| `check:contrast`        | 138 pares por tema, nos dois temas, mais 14 de `scales.css`                                                  |
+| `check:contrast:nativo` | por esquema: 60 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par |
+| `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 273 linhas medidas iguais                                      |
+| `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                            |
+| `check:doc`             | 222 paginas, todas com codigo                                                                                |
+| `check:exemplos`        | nomes dos blocos `tsx` contra 752 nomes publicados por 14 entradas                                           |
+| `check:readme`          | 134 de 134 pecas citadas, nenhuma declarada fora                                                             |
+| `check:classes`         | 369 arquivos, toda classe gera regra, sem lista de excecao                                                   |
+| `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
+| `check:cli`             | 4 arquivos de mesa fora dos 205 arquivos que a biblioteca alcanca no `dist/`                                 |
+| `check:tamanho`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 97% do limite   |
+| `check:skill`           | 128 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
+| `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
+| `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
+| `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
+| `check:pecas`           | 134, igual ao README, ao `package.json` e a meta do site                                                     |
+| `check:demo`            | 133 de 134 na vitrine, 1 declarada fora (`ToastViewport`), em 21 paginas                                     |
+| `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 90 marcadores no demo                                   |
+| `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
 
-`check:size` is near the ceiling on every entry (`/ai` at 97%; `styles.css`
-went down from 98% to 92% on 25/09, without whitespace and without the fourteen
-rules the scanner generated from words that were not classes): the next piece
-that grows the package raises the limit in the same commit, with the reason in
-the `why` of `scripts/size-budget.ts`.
+O `check:tamanho` esta perto do teto em todas as entradas (o `/ai` em 97%; a
+`styles.css` desceu de 98% para 92% em 25/09, sem espaco em branco e sem as
+catorze regras que o scanner gerava de palavra que nao era classe): a proxima peca que crescer o pacote sobe o limite no mesmo commit, com o
+motivo no `why` de `scripts/orcamento-de-tamanho.ts`.
 
-### Outside the gate: `a11y`, `shot`, `visual` and the bench
+### Fora do gate: `a11y`, `shot`, `visual` e a bancada
 
-All three need Chrome and stay out of `check`. `bun run shot` builds the
-showcase and takes **56 portraits** (44 of the showcase and 12 of sections, the
-entries of `demo/assinaturas.json`); `bun run visual` compares them with the
-signatures and refuses a portrait that is not from the current build (the
-`rc-build` mark in the PNG); `bun run a11y` runs axe-core, focus that survives
-the action, the 24px target and reflow at 320px.
+Os tres precisam do Chrome e ficam fora do `check`. `bun run shot` monta a
+vitrine e tira **56 retratos** (44 de vitrine e 12 de secao, as entradas de
+`demo/assinaturas.json`); `bun run visual` compara com as assinaturas e recusa
+retrato que nao seja do build atual (marca `rc-build` no PNG); `bun run a11y`
+roda o axe-core, o foco que sobrevive a acao, o alvo de 24px e o reflow a
+320px.
 
-In CI all three run through the **bench** (`.github/workflows/bancada.yml`), on
-PR and push to `main`, DIFFERENTIALLY: base and head on the same runner, judged
-by `scripts/bench-comparison.ts`. It fails an accessibility problem the base did
-not have and a portrait that changed without its signature changing along; the
-`retrato-aceito` label is the valve for a difference that only exists on linux.
+Na CI os tres rodam pela **bancada** (`.github/workflows/bancada.yml`), em PR e
+push na `main`, de forma DIFERENCIAL: base e cabeca no mesmo runner, julgadas
+por `scripts/comparacao-da-bancada.ts`. Ela reprova problema de acessibilidade
+que a base nao tinha e retrato que mudou sem a assinatura mudar junto; a
+etiqueta `retrato-aceito` e a valvula para diferenca que so existe no linux.
 
-**The bench has been green on `main` since `946d594`**, the first run with
-deterministic capture, and again at `d5f98c2`; the runs before came out red
-with no screen change. The portrait now comes out the same twice in a row, on
-mac and on linux: proven with Chrome 154 in three runs on an ubuntu 24.04 and
-two on the mac, the 56 PNGs identical pixel by pixel. The four causes `shot.ts`
-started controlling, which hold for whoever touches it:
+**A bancada esta verde na `main` desde `946d594`**, a primeira corrida com a
+captura deterministica, e de novo em `d5f98c2`; as corridas de antes saiam
+vermelhas sem mudanca de tela. O retrato agora sai igual duas vezes seguidas, no mac e no linux:
+provado com o Chrome 154 em tres corridas num ubuntu 24.04 e duas no mac, os
+56 PNG iguais pixel a pixel. As quatro causas que o `shot.ts` passou a
+controlar, e que valem para quem mexer nele:
 
-- **Unpainted tile.** Headless Chrome's `--screenshot` photographs before
-  rasterizing the tall page. `shot.ts` drives Chrome through the debugging
-  protocol (`launchChrome`, in `scripts/portraits.ts`, the same as `a11y`),
-  captures in 2048px strips and stitches the PNG.
-- **Font arriving after the measurement.** `demo/secao.html` waits for the
-  inner page's `document.fonts.ready`, remeasures when it changes size, and only
-  then marks `data-rc-ready`.
-- **Focus order decided by the clock.** A scheduled click that depends on
-  another waits for it, and a document with more than one modal frame fighting
-  for focus comes out with no focus at all.
-- **Clock, timezone and language.** The capture freezes `Date` at 15/10/2026
-  13:00 UTC, fixes `America/Sao_Paulo` and `pt-BR`, and turns on focus
-  emulation.
+- **Ladrilho sem pintar.** O `--screenshot` do Chrome sem janela fotografa
+  antes de rasterizar a pagina alta. O `shot.ts` dirige o Chrome pelo protocolo
+  de depuracao (`launchChrome`, em `scripts/retratos.ts`, o mesmo do `a11y`),
+  captura em faixas de 2048px e costura o PNG.
+- **Fonte chegando depois da medida.** `demo/secao.html` espera o
+  `document.fonts.ready` da pagina de dentro, remede quando ela muda de
+  tamanho, e so entao marca `data-rc-ready`.
+- **Ordem de foco decidida por relogio.** Clique agendado que depende de outro
+  espera por ele, e documento com mais de uma moldura modal disputando o foco
+  sai sem foco nenhum.
+- **Relogio, fuso e idioma.** A captura congela o `Date` em 15/10/2026 13:00
+  UTC, fixa `America/Sao_Paulo` e `pt-BR`, e liga a emulacao de foco.
 
-The capture only happens when the page has settled (fonts loaded, finite
-animations at the end and infinite ones at frame zero, three equal readings in
-a row with a 1.5s floor); a page that does not settle in 20s brings the run
-down with its name. The cost: `shot` got slower: 119s of wall clock on the mac
-on 25/09.
+A captura so acontece quando a pagina parou (fontes carregadas, animacao finita
+no fim e infinita no quadro zero, tres leituras seguidas iguais com piso de
+1,5s); pagina que nao para em 20s derruba a corrida com o nome. O custo: o
+`shot` ficou mais lento: 119s de relogio no mac em 25/09.
 
-## The declared debt lists
+## As listas de divida declarada
 
-Every exception list **only shrinks**: an entry that no longer flags is an
-error, and the guard says to delete the line.
+Toda lista de excecao **so encolhe**: entrada que nao acusa mais e erro, e a
+guarda manda apagar a linha.
 
-| List              | Guard                   |    Size | Who is in it                                                                                       |
+| Lista             | Guarda                  | Tamanho | Quem esta nela                                                                                     |
 | ----------------- | ----------------------- | ------: | -------------------------------------------------------------------------------------------------- |
-| `DEBT`            | `check:comments`     |       0 | empty                                                                                              |
-| `DEBT`            | `check:names`           |       0 | empty                                                                                              |
-| `DEBT`            | `check:contrast:native-map` |       0 | empty                                                                                              |
-| `DECLARED_QUEUE`  | `check:parity`        |       0 | empty                                                                                              |
-| `OUT_OF_SCOPE`    | `check:skill`           |       0 | removed: `reference/native.md` checks against `native-props.json`                                  |
-| `OUT`             | `check:floor`            |       0 | empty: `retratos` and `regressao-visual` scan with `scanAtLeast`                                   |
-| `OUT_OF_README`   | `check:readme`          |       0 | empty: `README.md` cites the 134 pieces                                                            |
-| `WITHOUT_SHOWCASE`     | `check:demo`            |       1 | `ToastViewport` - `RivoProvider` mounts it, and no app writes it                                   |
-| `DECLARED`      | `check:opacity`       |       4 | chart legend (2), loading `Button`, disabled `ColorPicker`                                         |
+| `DEBT`            | `check:comentarios`     |       0 | vazia                                                                                              |
+| `DEBT`            | `check:nomes`           |       0 | vazia                                                                                              |
+| `DEBT`            | `check:contrast:nativo` |       0 | vazia                                                                                              |
+| `FILA_DECLARADA`  | `check:paridade`        |       0 | vazia                                                                                              |
+| `OUT_OF_SCOPE`    | `check:skill`           |       0 | removida: `reference/native.md` confere contra `native-props.json`                                 |
+| `OUT`             | `check:piso`            |       0 | vazia: `retratos` e `regressao-visual` varrem com `scanAtLeast`                                    |
+| `OUT_OF_README`   | `check:readme`          |       0 | vazia: o `README.md` cita as 134 pecas                                                             |
+| `SEM_VITRINE`     | `check:demo`            |       1 | `ToastViewport` - o `RivoProvider` a monta, e nenhum app a escreve                                 |
+| `DECLARADAS`      | `check:opacidade`       |       4 | legenda de grafico (2), `Button` carregando, `ColorPicker` desabilitado                            |
 | `OUT`             | `check:scripts`         |       6 | `regressao-visual`, `shot`, `acessibilidade`, `serve`, `props-do-catalogo-nativo`, `fumaca-do-mcp` |
-| `DECLARED_COPIES` | `check:shared`   |      16 | code that does not cross over: `useZodForm`, `RivoContext`, `normalizeColor` and 13 more           |
+| `COPIA_DECLARADA` | `check:compartilhado`   |      16 | codigo que nao atravessa: `useZodForm`, `RivoContext`, `normalizeColor` e mais 13                  |
 
-Outside `check`, in `a11y`: `IGNORED_RULES` with 6 showcase layout rules and
-`IGNORED_NODES` with 2 library nodes. `check:classes` was born without an
-exception list and still has none.
+Fora do `check`, no `a11y`: `IGNORED_RULES` com 6 regras de layout de vitrine e
+`IGNORED_NODES` com 2 nos de biblioteca. `check:classes` nasceu sem lista de
+excecao e continua sem.
 
-## What is really pending
+## O que esta pendente de verdade
 
-### Waiting on the owner
+### Esperando o dono
 
-None of these has code to write here.
+Nenhum destes tem codigo a escrever aqui.
 
-1. **Delete the `NPM_TOKEN` secret** on GitHub and revoke the token on npm.
-2. The `@rivocode/ui-mcp` trusted publisher was checked by the owner on 25/09;
-   the next mcp version is the first to ship through it.
-3. **Test on an iPhone** what tests and `react-native-web` do not reach:
-   pasting a value into `CurrencyInput`; `Rating`'s half star, including in
-   RTL; the native `Tour`; and `PromptInput`'s limit announcement with
-   VoiceOver, which may be cut off by the last typed letter.
-4. **Import the DTCG tokens into Figma** (`rivocode-ui tokens --out <folder>`).
+1. **Apagar o segredo `NPM_TOKEN`** do GitHub e revogar o token no npm.
+2. O publicador confiavel do `@rivocode/ui-mcp` foi conferido pelo dono em
+   25/09; a proxima versao do mcp e a primeira a sair por ele.
+3. **Testar no iPhone** o que teste e `react-native-web` nao alcancam: colar
+   valor no `CurrencyInput`; meia estrela do `Rating`, inclusive em RTL; o
+   `Tour` nativo; e o anuncio de limite do `PromptInput` com o VoiceOver, que
+   pode ser cortado pela ultima letra digitada.
+4. **Importar os tokens DTCG no Figma** (`rivocode-ui tokens --out <pasta>`).
 
-### Code debt, checked against the tree
+### Divida de codigo, conferida contra a arvore
 
-- **Imperative ref without a written rule.** `useImperativeHandle` appears in
-  two places in the web, `VirtualList` (`scrollToIndex`) and
-  `ResizablePanelGroup`, and neither `conventions.md` nor the skill say when to
-  expose an imperative ref.
-- **`QueryBoundary` does not handle stale data while revalidating.** The limit
-  is written on the piece's page ("O que ela nao trata"), with the workaround
-  through `isFetching`; the behavior is still the same.
+- **Ref imperativo sem regra escrita.** `useImperativeHandle` aparece em dois
+  lugares do web, `VirtualList` (`scrollToIndex`) e `ResizablePanelGroup`, e
+  nem `conventions.md` nem a skill dizem quando expor ref imperativo.
+- **`QueryBoundary` nao trata dado velho enquanto revalida.** O limite esta
+  escrito na pagina da peca ("O que ela nao trata"), com o contorno por
+  `isFetching`; o comportamento continua o mesmo.
 
-### What was not measured
+### O que nao foi medido
 
-- The native pieces on a real device, beyond the iPhone items above.
-- `npx rivocode-ui-native-init` on a freshly created Expo app: `check:recipe`
-  only compares with `examples/native`, where the recipe already works.
-- The landing (repo `rivocode.com`): it is not on this machine nor in the GitHub
-  organization visible from here. The last measurement was `^0.7.0`.
-- The sync with claude.ai/design, stopped since 24/08 (`.design-sync/NOTES.md`).
+- As pecas nativas em aparelho de verdade, alem dos itens do iPhone acima.
+- O `npx rivocode-ui-native-init` num Expo recem-criado: `check:receita` so
+  compara com o `examples/native`, onde a receita ja funciona.
+- A landing (repo `rivocode.com`): nao esta nesta maquina nem na organizacao do
+  GitHub visivel daqui. A ultima medida era `^0.7.0`.
+- O sync com o claude.ai/design, parado desde 24/08 (`.design-sync/NOTES.md`).
 
-## Decisions that still hold
+## Decisoes que continuam valendo
 
-- **Mobile first.** Decide 390px before desktop: a floating panel does not touch
-  the edge, the calendar drops to one month, a dialog becomes a bottom sheet, a
-  table scrolls inside its own frame.
-- **One subpath per peer**, in both packages.
-- **Literal color only in `src/tokens/`**, and contrast measured, not
-  estimated. A color the math cannot read fails.
-- **Desk tooling does not travel in the bundle.** Contrast, `theme-check`, DTCG
-  and the role catalog go in `dist/cli.js`; `check:cli` reads the import graph.
-- **TanStack Table is an internal engine** of `DataTable`; no third-party type
-  leaks into the public signature. **React Query stays out**: it is application
-  architecture. **Whole-screen recipes** too.
-- **In native, density does not exist** (the control would fall below 44pt) and
-  class color only changes at build: two themes per build, at most, through
+- **Mobile primeiro.** Decidir 390px antes do desktop: painel flutuante nao
+  encosta na borda, calendario cai para um mes, dialogo vira folha de baixo,
+  tabela rola dentro da propria moldura.
+- **Um subcaminho por peer**, nos dois pacotes.
+- **Cor literal so em `src/tokens/`**, e contraste medido, nao estimado. Cor que
+  a conta nao sabe ler reprova.
+- **Ferramenta de mesa nao viaja no bundle.** Contraste, `theme-check`, DTCG e
+  catalogo de papeis vao em `dist/cli.js`; `check:cli` le o grafo de imports.
+- **TanStack Table e motor interno** do `DataTable`; nenhum tipo de terceiro
+  vaza para a assinatura publica. **React Query fica de fora**: e arquitetura de
+  aplicacao. **Receitas de tela inteira** tambem.
+- **No nativo, densidade nao existe** (o controle cairia abaixo de 44pt) e cor
+  de classe so muda em build: dois temas por build, no maximo, por
   `light-dark()`.
-- **The tag is born by machine; the version number and the CHANGELOG are not.**
-  `tag.yml` only creates a tag with the four `decideRelease` guards green, and
-  `[no-release]` in the commit SUBJECT holds back all three packages.
-- **A guard only counts if it bites.** A scan declares a floor
-  (`scanAtLeast`), a class is compared by token (`split(" ")`), and a new guard
-  only counts after going red in front of you.
-- **Shared tree: no `git stash`, `git checkout --` or `git reset --hard`** while
-  more than one front is writing. An old version is read with
-  `git show HEAD:<file>`.
-- **An agent's report is not a measurement.** A number is checked with the
-  command.
+- **A tag nasce por maquina; o numero da versao e o CHANGELOG, nao.** O
+  `tag.yml` so cria tag com as quatro guardas de `decideRelease` verdes, e
+  `[no-release]` no ASSUNTO do commit segura os tres pacotes.
+- **Guarda so vale se morde.** Varredura declara piso (`scanAtLeast`), classe se
+  compara por token (`split(" ")`), e guarda nova so conta depois de ficar
+  vermelha na sua frente.
+- **Arvore compartilhada: sem `git stash`, `git checkout --` nem `git reset
+--hard`** enquanto houver mais de uma frente escrevendo. Versao antiga se le
+  com `git show HEAD:<arquivo>`.
+- **Relato de agente nao e medida.** Numero se confere com o comando.
 
-## How to resume
+## Como retomar
 
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
-bun install                  # at the root, never inside native/
-bun run check                # 37 steps, ends with the 3096 tests
-bun run build                # some breaks only show when packaging; builds mcp/dist
-bun run smoke:mcp           # the MCP server over stdio
-bun run shot && bun run visual   # the 56 portraits against the signatures (~2 min)
-bun run a11y                 # axe, focus, target and reflow on the showcase
-cd apps/docs && bun run dev  # the site, locally
+bun install                  # na raiz, nunca dentro de native/
+bun run check                # 37 passos, termina nos 3096 testes
+bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
+bun run fumaca:mcp           # o servidor MCP pelo stdio
+bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
+bun run a11y                 # axe, foco, alvo e reflow na vitrine
+cd apps/docs && bun run dev  # o site, local
 ```
 
-To see the tag decision without creating anything: `gh workflow run tag`. To
-go through a release without publishing: `gh workflow run release --field
-dry_run=true` (same for `release-native` and `release-mcp`).
+Para ver a decisao de tag sem criar nada: `gh workflow run tag`. Para
+atravessar um release sem publicar: `gh workflow run release --field
+ensaio=true` (idem `release-native` e `release-mcp`).
 
-## How to check each number
+## Como conferir cada numero
 
 ```sh
 npm view @rivocode/ui version                       # 1.0.0
 npm view @rivocode/ui-native version                # 1.0.0
 npm view @rivocode/ui-mcp version                   # 0.6.0
-curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.18.1 | head -c 80   # signed
-gh run list --workflow=release-native --limit 3     # native-v0.14.0: failure (ENEEDAUTH), then success
-gh secret list                                      # NPM_TOKEN still registered
-grep -rn NPM_TOKEN .github/workflows                # nothing: no workflow reads it
+curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.18.1 | head -c 80   # assinada
+gh run list --workflow=release-native --limit 3     # native-v0.14.0: failure (ENEEDAUTH), depois success
+gh secret list                                      # NPM_TOKEN ainda cadastrado
+grep -rn NPM_TOKEN .github/workflows                # nada: nenhum workflow o le
 git ls-remote --tags origin | grep -vc '\^{}'       # 36 tags
-ls .design-sync/docs/*.md | wc -l                   # 222 documents
-bun run check:pieces                                 # 134 pieces (222 - 88 parts)
-grep -oE 'state: "[a-z]+"' scripts/native-parity.ts | sort | uniq -c   # same, renamed, no
-grep -n DECLARED_QUEUE scripts/native-parity.ts   # {} empty
+ls .design-sync/docs/*.md | wc -l                   # 222 documentos
+bun run check:pecas                                 # 134 pecas (222 - 88 partes)
+grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
+grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:tests                                # 3096 tests in 227 files
-bun test native/test                                # 762 in 63 files
-bun run check:signature                            # 222 divergences in 91 pieces
+bun run check:testes                                # 3096 testes em 227 arquivos
+bun test native/test                                # 762 em 63 arquivos
+bun run check:assinatura                            # 222 divergencias em 91 pecas
 node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117
-bun run check:shared                         # 38 mirrored, 16 copies
-bun run check:contrast | grep -cE '^ +ok'          # 290: 138 per theme plus 14 from scales.css
-bun run check:contrast:native-map                       # 60 + 47 + 1 + 16 + 3 per scheme
-bun run check:size                               # the budget table
-bun run check:demo                                  # 133 of 134, 1 out
-bun run check:readme                                # 134 of 134, 0 out
-bun run check:scripts                               # 6 outside the gate
-node -e 'console.log(Object.keys(require("./demo/assinaturas.json")).length)'   # 56 portraits
-gh run list --workflow=bancada --limit 5            # green at 946d594 and d5f98c2
-node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false: the props debt
+bun run check:compartilhado                         # 38 espelhados, 16 copias
+bun run check:contrast | grep -cE '^ +ok'          # 290: 138 por tema mais 14 de scales.css
+bun run check:contrast:nativo                       # 60 + 47 + 1 + 16 + 3 por esquema
+bun run check:tamanho                               # a tabela do orcamento
+bun run check:demo                                  # 133 de 134, 1 fora
+bun run check:readme                                # 134 de 134, 0 fora
+bun run check:scripts                               # 6 fora do gate
+node -e 'console.log(Object.keys(require("./demo/assinaturas.json")).length)'   # 56 retratos
+gh run list --workflow=bancada --limit 5            # verde em 946d594 e d5f98c2
+node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false: a divida das props
 ```
 
-Each piece's family comes from the document's `category:`, and a piece is the
-document whose `findParent` (in `apps/docs/src/parts.ts`) finds no owner.
+A familia de cada peca sai do `category:` do documento, e peca e o documento
+cujo `findParent` (em `apps/docs/src/parts.ts`) nao acha dono.

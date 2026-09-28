@@ -9,21 +9,21 @@ export type NumberFieldProps = {
   value: number;
   onValueChange: (value: number) => void;
   /**
-   * The floor, inclusive. Starts at 0, and not unbounded as on the web. With a
-   * negative `min` the field accepts a typed minus sign and switches to a
-   * keyboard that has the sign, and the stepper goes down to it.
+   * O piso, inclusive. Nasce em 0, e nao sem piso como no web. Com `min`
+   * negativo o campo aceita o sinal de menos digitado e troca para um teclado
+   * que tem o sinal, e o stepper desce ate ele.
    */
   min?: number;
   max?: number;
   step?: number;
-  /** The name the screen reader announces: "Quantidade de parcelas". */
+  /** O nome que o leitor de tela anuncia: "Quantidade de parcelas". */
   label: string;
   disabled?: boolean;
   className?: string;
   /**
-   * The component's texts, to change the language: `decrement` and `increment`
-   * receive `label` and return the name of each step button, "Diminuir
-   * Quantidade de parcelas" without them. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `decrement` e `increment`
+   * recebem o `label` e devolvem o nome de cada botao de passo, "Diminuir
+   * Quantidade de parcelas" sem eles. Passe so os que mudam.
    */
   labels?: Partial<NumberFieldLabels>;
 };

@@ -1,7 +1,7 @@
 import { ToolCall } from '@rivocode/ui/ai'
 import { useState } from 'react'
 
-/** The states */
+/** Os estados */
 export function States() {
   return (
     <div className="flex w-full max-w-xl flex-col gap-3">
@@ -25,7 +25,7 @@ export function States() {
   )
 }
 
-/** Awaiting approval */
+/** Aguardando aprovação */
 export function AwaitingApproval() {
   const [status, setStatus] = useState<'approval' | 'running' | 'error'>('approval')
 

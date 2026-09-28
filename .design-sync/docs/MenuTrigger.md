@@ -1,10 +1,10 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # MenuTrigger
 
-What opens the menu.
+O que abre o menu.
 
-No style of its own on purpose: it almost always wraps a `Button` through
-`render`, and a style here would fight the button's.
+Sem estilo próprio de propósito: quase sempre ele envolve um `Button` por
+`render`, e um estilo aqui brigaria com o do botão.

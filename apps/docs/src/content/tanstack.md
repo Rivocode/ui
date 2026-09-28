@@ -1,25 +1,24 @@
-The library draws the screen, and does not create routes or fetch data: that
-belongs to your application. This page shows how to connect the pieces to
-TanStack Router and TanStack Query, which make a good pair for a React app
-built from scratch.
+A biblioteca desenha a tela, e não cria rota nem busca dado: isso é do seu
+aplicativo. Esta página mostra como ligar as peças ao TanStack Router e ao
+TanStack Query, que é uma boa dupla para um app React feito do zero.
 
-Neither of them is a dependency of `@rivocode/ui`, and neither will be. The
-pieces take a link through `render` and the query state through props
-(`data`, `isLoading`, `isError`, `onRetry`), so they work with them, with
-React Router, with Next or with a hand-written `fetch`. What is here is only
-the wiring, which fits in a few lines in your project.
+Nenhum dos dois é dependência do `@rivocode/ui`, e nem vai ser. As peças
+recebem um link por `render` e o estado da consulta por prop (`data`,
+`isLoading`, `isError`, `onRetry`), então funcionam com eles, com o React
+Router, com o Next ou com `fetch` na mão. O que está aqui é só a ligação, que
+cabe em poucas linhas no seu projeto.
 
 ```sh
 npm install @tanstack/react-router @tanstack/react-query
 ```
 
-## Routes with TanStack Router
+## Rotas com o TanStack Router
 
-### The house link, with a typed route
+### O link da casa, com a rota tipada
 
-The Router's `createLink` wraps the library's `Link`. The result has the design
-from here and the Router's `to`: a route that does not exist is a type error,
-and the route params are enforced.
+O `createLink` do Router embrulha o `Link` da biblioteca. O resultado tem o
+desenho daqui e o `to` do Router: rota que não existe é erro de tipo, e os
+parâmetros da rota são cobrados.
 
 ```tsx
 import { createLink, type LinkComponent } from '@tanstack/react-router'
@@ -32,21 +31,21 @@ export const AppLink: LinkComponent<typeof Link> = (props) => (
 )
 ```
 
-Create that file once in the project and use `AppLink` in place of `Link`. The
-piece's props still apply alongside the Router's:
+Crie esse arquivo uma vez no projeto e use o `AppLink` no lugar do `Link`. As
+props da peça continuam valendo ao lado das do Router:
 
 ```tsx
 <AppLink to="/notas/$id" params={{ id: '4816' }}>Nota 4816</AppLink>
 <AppLink to="/notas" tone="neutral" underline="hover">Notas</AppLink>
 ```
 
-`preload="intent"` starts loading the route when the pointer passes over the
-link, before the click. Remove it if the route is expensive to load.
+O `preload="intent"` começa a carregar a rota quando o ponteiro passa por
+cima do link, antes do clique. Tire-o se a rota for cara de carregar.
 
-### Button, menu item and sidebar that navigate
+### Botão, item de menu e barra lateral que navegam
 
-`Button`, `MenuLinkItem` and `SidebarMenuItem` take the Router link through
-`render`. The tag is still a link, and the design is the piece's:
+O `Button`, o `MenuLinkItem` e o `SidebarMenuItem` recebem o link do Router
+pelo `render`. A tag continua sendo de link, e o desenho é o da peça:
 
 ```tsx
 import { Link as RouterLink } from '@tanstack/react-router'
@@ -61,18 +60,18 @@ import { Button, MenuLinkItem, SidebarMenuItem } from '@rivocode/ui'
 </SidebarMenuItem>
 ```
 
-Without `render`, the sidebar item is a plain `<a href>`, and every click
-reloads the whole page.
+Sem o `render`, o item da barra lateral é um `<a href>` comum, e cada clique
+recarrega a página inteira.
 
-The Router's `Link` and the library's have the same name, which is why one of
-them is renamed on import.
+O `Link` do Router e o da biblioteca têm o mesmo nome, e por isso um deles é
+renomeado na importação.
 
-## Data with TanStack Query
+## Dados com o TanStack Query
 
-### The four end states of a query
+### Os quatro finais de uma consulta
 
-`QueryBoundary` draws loading, error, empty and the data. The query delivers
-the first three, and the function child receives the data already without
+O `QueryBoundary` desenha o carregando, o erro, o vazio e o dado. A consulta
+entrega os três primeiros, e o filho em função recebe o dado já sem o
 `undefined`:
 
 ```tsx
@@ -95,15 +94,15 @@ const query = useQuery({ queryKey: ['notas'], queryFn: fetchInvoices })
 </QueryBoundary>
 ```
 
-Use `isLoading`, not `isFetching`. `isLoading` is only true on the first
-fetch, when there is nothing to show yet. `isFetching` is also true when the
-query fetches again in the background, and passing it would swap what the
-person was already reading for the skeleton.
+Use `isLoading`, e não `isFetching`. O `isLoading` só é verdadeiro na
+primeira busca, quando ainda não há nada para mostrar. O `isFetching` também é
+verdadeiro quando a consulta busca de novo em segundo plano, e passá-lo
+trocaria pelo esqueleto o que a pessoa já estava lendo.
 
-### Table and chart
+### Tabela e gráfico
 
-`DataTable` and `ChartContainer` already have the four end states built in,
-with the same prop names, so the query goes straight into them:
+O `DataTable` e o `ChartContainer` já têm os quatro finais embutidos, com os
+mesmos nomes de prop, então a consulta entra direto neles:
 
 ```tsx
 <DataTable
@@ -116,11 +115,11 @@ with the same prop names, so the query goes straight into them:
 />
 ```
 
-### Server-side pagination
+### Paginação no servidor
 
-`DataTable` paginates on its own when it gets the whole list. When the server
-paginates, the current page becomes part of the query key, and `Pagination`
-changes the page:
+O `DataTable` pagina sozinho quando recebe a lista inteira. Quando é o
+servidor que pagina, a página atual vira parte da chave da consulta, e o
+`Pagination` troca de página:
 
 ```tsx
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -148,14 +147,14 @@ const query = useQuery({
 )}
 ```
 
-`keepPreviousData` holds the previous page on screen while the next one
-arrives, instead of flashing the skeleton on every click. `aria-busy` tells the
-screen reader the table is being updated.
+O `keepPreviousData` segura a página anterior na tela enquanto a próxima
+chega, em vez de piscar o esqueleto a cada clique. O `aria-busy` avisa o
+leitor de tela de que a tabela está sendo atualizada.
 
-### Save and notify
+### Salvar e avisar
 
-On writes, `useMutation` drives the `Button`'s `loading` and `useToast`
-reports the result. Invalidating the key makes the list fetch again:
+Na escrita, o `useMutation` liga o `loading` do `Button` e o `useToast` avisa
+o resultado. Invalidar a chave faz a lista buscar de novo:
 
 ```tsx
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -177,12 +176,12 @@ const mutation = useMutation({
 </Button>
 ```
 
-## In React Native
+## No React Native
 
-TanStack Query works the same, and `@rivocode/ui-native`'s `QueryBoundary` has
-the same prop names. TanStack Router is not for mobile: in Expo, Expo Router
-does the navigating, and the native pieces navigate through `onPress`, because
-there is no anchor to swap there:
+O TanStack Query funciona igual, e o `QueryBoundary` do `@rivocode/ui-native`
+tem os mesmos nomes de prop. O TanStack Router não é para o celular: no Expo quem
+navega é o Expo Router, e as peças nativas navegam por `onPress`, porque ali
+não há âncora para trocar:
 
 ```tsx
 import { router } from 'expo-router'

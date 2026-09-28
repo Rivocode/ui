@@ -96,55 +96,54 @@ import {
 import { Sample } from '@/theme-builder/sample'
 
 /* ---------------------------------------------------------------------------
- * The theme builder
+ * O montador de tema
  *
- * The person picks the brand color, the other seven seeds and the three
- * fonts, sees real pieces dressed in both schemes and both densities, reads
- * each pair's measurement and takes the theme away in three formats. The
- * state lives in the URL, so a link pasted in a chat opens exactly what was
- * built.
+ * A pessoa escolhe a cor da marca, as outras sete sementes e as tres fontes,
+ * ve pecas de verdade vestidas nos dois esquemas e nas duas densidades, le a
+ * medida de cada par e leva o tema embora em tres formatos. O estado mora na
+ * URL, para o link colado num chat abrir exatamente o que foi montado.
  *
- * Everything the page computes comes from `theme-builder/engine.ts`, which
- * reuses the CLI's math, DTCG export and derivation. This page only draws.
+ * Tudo o que a pagina calcula sai do `theme-builder/engine.ts`, que reusa a
+ * conta, a exportacao DTCG e a derivacao da CLI. Esta pagina so desenha.
  * ------------------------------------------------------------------------- */
 
 const HOUSE = houseBlocks(HOUSE_CSS)
 
-const SCHEME_LABEL: Record<Scheme, string> = { light: 'Light', dark: 'Dark' }
+const SCHEME_LABEL: Record<Scheme, string> = { light: 'Claro', dark: 'Escuro' }
 
 const SEED_LABEL: Record<Seed, string> = {
-  bg: 'Page background',
-  surface: 'Surface',
-  fg: 'Text',
-  accent: 'Accent',
-  success: 'Success',
-  warning: 'Warning',
-  danger: 'Danger',
-  info: 'Info',
+  bg: 'Fundo da página',
+  surface: 'Superfície',
+  fg: 'Texto',
+  accent: 'Acento',
+  success: 'Sucesso',
+  warning: 'Atenção',
+  danger: 'Perigo',
+  info: 'Informação',
 }
 
 const BRAND = [
-  { value: '#d4f34a', label: 'Lime' },
-  { value: '#2563eb', label: 'Blue' },
-  { value: '#7c3aed', label: 'Violet' },
-  { value: '#db2777', label: 'Pink' },
-  { value: '#ea580c', label: 'Orange' },
-  { value: '#0d9488', label: 'Teal' },
-  { value: '#16a34a', label: 'Green' },
-  { value: '#0f172a', label: 'Graphite' },
+  { value: '#d4f34a', label: 'Lima' },
+  { value: '#2563eb', label: 'Azul' },
+  { value: '#7c3aed', label: 'Violeta' },
+  { value: '#db2777', label: 'Rosa' },
+  { value: '#ea580c', label: 'Laranja' },
+  { value: '#0d9488', label: 'Verde-água' },
+  { value: '#16a34a', label: 'Verde' },
+  { value: '#0f172a', label: 'Grafite' },
 ]
 
 const RADIUS_LABEL: Record<Radius, string> = {
-  house: 'House',
-  square: 'Square',
-  soft: 'Soft',
-  round: 'Round',
+  house: 'Da casa',
+  square: 'Reto',
+  soft: 'Suave',
+  round: 'Redondo',
 }
 
 const FONT_ROLE_LABEL: Record<FontRole, string> = {
-  sans: 'Body',
-  display: 'Display',
-  mono: 'Code',
+  sans: 'Corpo',
+  display: 'Título',
+  mono: 'Código',
 }
 
 const HOUSE_FAMILY: Record<FontRole, string> = {
@@ -154,9 +153,9 @@ const HOUSE_FAMILY: Record<FontRole, string> = {
 }
 
 const CATEGORY_LABEL = {
-  'sans-serif': 'sans serif',
-  serif: 'serif',
-  monospace: 'monospace',
+  'sans-serif': 'sem serifa',
+  serif: 'serifada',
+  monospace: 'largura fixa',
 } as const
 
 type FontItem = { value: FontChoice; label: string }
@@ -165,8 +164,8 @@ const FONT_ITEMS: Record<FontRole, FontItem[]> = Object.fromEntries(
   FONT_ROLES.map((role) => [
     role,
     [
-      { value: 'house', label: `House font (${HOUSE_FAMILY[role]})` },
-      { value: 'system', label: 'System font' },
+      { value: 'house', label: `Fonte da casa (${HOUSE_FAMILY[role]})` },
+      { value: 'system', label: 'Fonte do sistema' },
       ...ROLE_CATEGORIES[role].flatMap((category) =>
         FAMILIES.filter((family) => family.category === category).map((family) => ({
           value: family.id,
@@ -178,8 +177,8 @@ const FONT_ITEMS: Record<FontRole, FontItem[]> = Object.fromEntries(
 ) as Record<FontRole, FontItem[]>
 
 const DENSITY_LABEL: Record<RivoDensity, string> = {
-  comfortable: 'Comfortable',
-  compact: 'Compact',
+  comfortable: 'Confortável',
+  compact: 'Compacta',
 }
 
 function compute(state: BuilderState) {
@@ -242,7 +241,7 @@ function DownloadButton({ name, text, type }: { name: string; text: string; type
   return (
     <Button variant="secondary" size="sm" onClick={() => download(name, text, type)}>
       <Download size={14} aria-hidden="true" />
-      Download {name}
+      Baixar {name}
     </Button>
   )
 }
@@ -268,7 +267,7 @@ function SeedRow({
         <input
           type="color"
           value={value}
-          aria-label={`${SEED_LABEL[seed]}, color picker`}
+          aria-label={`${SEED_LABEL[seed]}, seletor de cor`}
           onChange={(event) => onChange(event.target.value)}
           className="h-[var(--rc-control-sm)] w-10 shrink-0 cursor-pointer rounded-md border border-border-strong bg-transparent p-0.5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         />
@@ -291,7 +290,7 @@ function SeedRow({
         />
       </div>
       {!valid && (
-        <FieldError match>Use hex, rgb(), hsl() or oklch(), without transparency.</FieldError>
+        <FieldError match>Use hexadecimal, rgb(), hsl() ou oklch(), sem transparência.</FieldError>
       )}
     </Field>
   )
@@ -300,7 +299,7 @@ function SeedRow({
 const joinWeights = (weights: number[]) =>
   weights.length === 1
     ? String(weights[0])
-    : `${weights.slice(0, -1).join(', ')} and ${weights[weights.length - 1]}`
+    : `${weights.slice(0, -1).join(', ')} e ${weights[weights.length - 1]}`
 
 function FontPicker({
   role,
@@ -327,11 +326,11 @@ function FontPicker({
         }}
       >
         <ComboboxInput
-          aria-label={`${FONT_ROLE_LABEL[role]} font`}
-          placeholder="Search families"
+          aria-label={`Fonte do ${FONT_ROLE_LABEL[role].toLowerCase()}`}
+          placeholder="Buscar família"
           clearable={false}
         />
-        <ComboboxContent emptyMessage="No family by that name in the list.">
+        <ComboboxContent emptyMessage="Nenhuma família com esse nome na lista.">
           <ComboboxList>
             {(item: FontItem) => (
               <ComboboxItem key={item.value} value={item}>
@@ -343,26 +342,26 @@ function FontPicker({
       </Combobox>
       {family && (
         <FieldDescription>
-          {CATEGORY_LABEL[family.category]}, {family.variable ? 'variable' : 'static'}, weights{' '}
+          {CATEGORY_LABEL[family.category]}, {family.variable ? 'variável' : 'estática'}, pesos{' '}
           {joinWeights(family.weights.filter((weight) => weight >= 300 && weight <= 800))}.
         </FieldDescription>
       )}
       {fits.length > 0 && (
         <Alert tone="info" className="mt-1">
           <AlertTitle>
-            {family!.family} does not have {fits.length === 1 ? 'weight' : 'weights'}{' '}
-            {joinWeights([...new Set(fits.map((item) => item.wanted))])}, and the theme already adjusts
+            {family!.family} não tem {fits.length === 1 ? 'o peso' : 'os pesos'}{' '}
+            {joinWeights([...new Set(fits.map((item) => item.wanted))])}, e o tema já se ajusta
           </AlertTitle>
           <AlertDescription>
             <span className="block space-y-1">
               {fits.map((item) => (
                 <span key={item.intent} className="block">
-                  <code className="font-mono">{weightClass(item.intent)}</code> asks for {item.wanted} and comes
-                  out with {item.falls}, the closest weight the family has:{' '}
+                  <code className="font-mono">{weightClass(item.intent)}</code> pede {item.wanted} e sai
+                  com {item.falls}, o peso mais próximo que a família tem:{' '}
                   <code className="font-mono">
                     {weightToken(item.intent)}: {item.falls}
                   </code>
-                  {item.synthetic ? ', instead of the synthetic bold the browser would draw.' : '.'}
+                  {item.synthetic ? ', em vez do negrito sintético que o navegador desenharia.' : '.'}
                 </span>
               ))}
             </span>
@@ -409,7 +408,7 @@ function Controls({
     <Card>
       <CardContent className="space-y-6 py-5">
         <Field>
-          <FieldLabel>Theme name</FieldLabel>
+          <FieldLabel>Nome do tema</FieldLabel>
           <Input
             value={nameDraft}
             onChange={(event) => {
@@ -420,12 +419,12 @@ function Controls({
             onBlur={() => setNameDraft(state.name)}
           />
           <FieldDescription>
-            Becomes the selector <code className="font-mono">{selectorOf(state.name, 'dark')}</code>.
+            Vira o seletor <code className="font-mono">{selectorOf(state.name, 'dark')}</code>.
           </FieldDescription>
         </Field>
 
         <ColorPicker
-          label="Brand color, in both schemes"
+          label="Cor da marca, nos dois esquemas"
           value={state.seeds.dark.accent}
           onValueChange={setBrand}
           swatches={BRAND}
@@ -433,10 +432,10 @@ function Controls({
         />
 
         <div className="space-y-3">
-          <p className="text-sm font-medium text-fg">The eight seeds</p>
+          <p className="text-sm font-medium text-fg">As oito sementes</p>
           <p className="text-sm text-fg-muted">
-            The same ones <code className="font-mono">rivocode-ui-native-theme</code> reads. The
-            other roles come out of them, by the command's rules.
+            As mesmas que o <code className="font-mono">rivocode-ui-native-theme</code> lê. Os
+            outros papéis saem delas, pelas regras do comando.
           </p>
           <Tabs defaultValue="light">
             <TabList variant="segmented">
@@ -462,10 +461,10 @@ function Controls({
         </div>
 
         <div className="space-y-3">
-          <p className="text-sm font-medium text-fg">The three fonts</p>
+          <p className="text-sm font-medium text-fg">As três fontes</p>
           <p className="text-sm text-fg-muted">
-            Google Fonts families picked for interfaces. The sample downloads the chosen one right
-            away, with the 400, 500, 600 and 700 weights the pieces use.
+            Famílias do Google Fonts escolhidas para interface. A amostra baixa a escolhida na hora,
+            com os pesos 400, 500, 600 e 700 que as peças usam.
           </p>
           {FONT_ROLES.map((role) => (
             <FontPicker
@@ -478,9 +477,9 @@ function Controls({
         </div>
 
         <Field>
-          <FieldLabel>Corners</FieldLabel>
+          <FieldLabel>Canto</FieldLabel>
           <ToggleGroup
-            aria-label="Corners"
+            aria-label="Canto"
             value={[state.radius]}
             onValueChange={(value) => {
               const next = value[0] as Radius | undefined
@@ -496,9 +495,9 @@ function Controls({
         </Field>
 
         <Field>
-          <FieldLabel>Sample density</FieldLabel>
+          <FieldLabel>Densidade da amostra</FieldLabel>
           <ToggleGroup
-            aria-label="Sample density"
+            aria-label="Densidade da amostra"
             value={[density]}
             onValueChange={(value) => {
               const next = value[0] as RivoDensity | undefined
@@ -511,14 +510,14 @@ function Controls({
               </Toggle>
             ))}
           </ToggleGroup>
-          <FieldDescription>Density is not a theme: it comes from the Provider prop.</FieldDescription>
+          <FieldDescription>Densidade não é tema: ela vem da prop do Provider.</FieldDescription>
         </Field>
 
         <Switch
           checked={state.autoFix}
           onCheckedChange={(checked) => setState((current) => ({ ...current, autoFix: checked }))}
         >
-          Adjust each tone's text until it passes
+          Ajustar o texto de cada tom até passar
         </Switch>
 
         <Button
@@ -528,7 +527,7 @@ function Controls({
           }
         >
           <RotateCcw size={14} aria-hidden="true" />
-          Back to the house colors
+          Voltar às cores da casa
         </Button>
       </CardContent>
     </Card>
@@ -545,9 +544,9 @@ function Preview({
   result: Result
 }) {
   return (
-    <section aria-labelledby="sample" className="space-y-3">
-      <h2 id="sample" className="font-display text-xl text-fg">
-        The sample, in both schemes
+    <section aria-labelledby="amostra" className="space-y-3">
+      <h2 id="amostra" className="font-display text-xl text-fg">
+        A amostra, nos dois esquemas
       </h2>
       <style>{result.preview}</style>
       <div className="grid gap-4 2xl:grid-cols-2 [&>*]:min-w-0">
@@ -563,7 +562,7 @@ function Preview({
                   </span>
                 </p>
                 <Badge tone={failing === 0 ? 'success' : 'danger'} size="sm">
-                  {failing === 0 ? 'Contrast passes' : `${failing} failing`}
+                  {failing === 0 ? 'Contraste aprovado' : `${failing} reprovado${failing === 1 ? '' : 's'}`}
                 </Badge>
               </div>
               <RivoProvider scope="local" theme={`${name}-${scheme}`} density={density}>
@@ -584,10 +583,10 @@ function PairTable({ pairs }: { pairs: Pair[] }) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Pair</TableHead>
-          <TableHead className="text-right">Measured</TableHead>
-          <TableHead className="text-right">Minimum</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Par</TableHead>
+          <TableHead className="text-right">Medida</TableHead>
+          <TableHead className="text-right">Mínimo</TableHead>
+          <TableHead>Situação</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -597,14 +596,14 @@ function PairTable({ pairs }: { pairs: Pair[] }) {
               {pair.text.replace(/\s+\d+\.\d+:1.*$/, '')}
             </TableCell>
             <TableCell className="text-right font-mono text-xs">
-              {pair.ratio === null ? '—' : `${pair.ratio.toFixed(2)}:1`}
+              {pair.ratio === null ? '—' : `${pair.ratio.toFixed(2).replace('.', ',')}:1`}
             </TableCell>
             <TableCell className="text-right font-mono text-xs">
-              {pair.min === null ? '—' : String(pair.min)}
+              {pair.min === null ? '—' : String(pair.min).replace('.', ',')}
             </TableCell>
             <TableCell>
               <Badge tone={pair.ok ? 'success' : 'danger'} size="sm">
-                {pair.ok ? 'Pass' : 'Fail'}
+                {pair.ok ? 'Aprovado' : 'Reprovado'}
               </Badge>
             </TableCell>
           </TableRow>
@@ -616,14 +615,14 @@ function PairTable({ pairs }: { pairs: Pair[] }) {
 
 function Contrast({ result }: { result: Result }) {
   return (
-    <section aria-labelledby="contrast" className="space-y-3">
-      <h2 id="contrast" className="font-display text-xl text-fg">
-        Each pair measured
+    <section aria-labelledby="contraste" className="space-y-3">
+      <h2 id="contraste" className="font-display text-xl text-fg">
+        A medida de cada par
       </h2>
       <p className="max-w-prose text-sm text-fg-muted">
-        The same math as <code className="font-mono">npx rivocode-ui check-theme</code> and the
-        repository guards: 7:1 for body text, 4.5:1 for text, 3:1 for control boundaries and chart
-        series, with alpha composited over the background it is drawn on.
+        A mesma conta do <code className="font-mono">npx rivocode-ui check-theme</code> e das
+        guardas do repositório: 7:1 para o corpo, 4,5:1 para texto, 3:1 para fronteira de controle
+        e série de gráfico, com o alfa composto sobre o fundo em que ele é desenhado.
       </p>
 
       <div className="grid gap-4 xl:grid-cols-2 [&>*]:min-w-0">
@@ -640,17 +639,17 @@ function Contrast({ result }: { result: Result }) {
               <CardHeader>
                 <CardTitle>{SCHEME_LABEL[scheme]}</CardTitle>
                 <CardDescription>
-                  {pairs.length - failing.length} of {pairs.length} pairs pass on the web
+                  {pairs.length - failing.length} de {pairs.length} pares aprovados no web
                   {native.length === 0
-                    ? ', and the React Native map passes.'
-                    : `, and ${native.length} failing in the React Native map.`}
+                    ? ', e o mapa do React Native passa.'
+                    : `, e ${native.length} reprovado${native.length === 1 ? '' : 's'} no mapa do React Native.`}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {failing.length > 0 && (
                   <Alert tone="danger">
                     <AlertTitle>
-                      {failing.length} {failing.length === 1 ? 'failing pair' : 'failing pairs'}
+                      {failing.length} {failing.length === 1 ? 'par reprovado' : 'pares reprovados'}
                     </AlertTitle>
                     <AlertDescription>
                       <span className="mt-1 block space-y-1 font-mono text-xs">
@@ -664,7 +663,7 @@ function Contrast({ result }: { result: Result }) {
 
                 {native.length > 0 && (
                   <Alert tone="warning">
-                    <AlertTitle>The native command would refuse this palette</AlertTitle>
+                    <AlertTitle>O comando do nativo recusaria esta paleta</AlertTitle>
                     <AlertDescription>
                       <span className="mt-1 block space-y-1 font-mono text-xs">
                         {native.map((line) => (
@@ -678,12 +677,12 @@ function Contrast({ result }: { result: Result }) {
                 {fixes.length > 0 && (
                   <Alert tone="info">
                     <AlertTitle>
-                      {fixes.length === 1 ? 'One text was adjusted' : `${fixes.length} texts were adjusted`}
+                      {fixes.length === 1 ? 'Um texto foi ajustado' : `${fixes.length} textos foram ajustados`}
                     </AlertTitle>
                     <AlertDescription>
-                      The tone came out equal to the fill and did not pass as text. The adjustment
-                      pulls the color toward white or black up to the first value that passes, and
-                      goes into the exported palette as a written seed:
+                      O tom saía igual ao preenchimento e não passava como texto. O ajuste puxa a
+                      cor para o branco ou para o preto até o primeiro valor que passa, e entra na
+                      paleta exportada como semente escrita:
                       <span className="mt-2 block space-y-1 font-mono text-xs">
                         {fixes.map((fix) => (
                           <span key={fix.role} className="block">
@@ -697,19 +696,19 @@ function Contrast({ result }: { result: Result }) {
 
                 {swapped && (
                   <Alert tone="warning">
-                    <AlertTitle>The background does not match the scheme name</AlertTitle>
+                    <AlertTitle>O fundo não combina com o nome do esquema</AlertTitle>
                     <AlertDescription>
-                      The {SCHEME_LABEL[scheme].toLowerCase()} scheme has a{' '}
-                      {isDarkScheme(bg) ? 'dark' : 'light'} background. The CSS comes out with the{' '}
-                      <code className="font-mono">color-scheme</code> the background asks for, but
-                      native picks the <code className="font-mono">light-dark()</code> slot by
-                      name, not by measurement.
+                      O esquema {SCHEME_LABEL[scheme].toLowerCase()} tem fundo{' '}
+                      {isDarkScheme(bg) ? 'escuro' : 'claro'}. O CSS sai com o{' '}
+                      <code className="font-mono">color-scheme</code> que o fundo pede, mas o
+                      nativo escolhe a vaga do <code className="font-mono">light-dark()</code> pelo
+                      nome, e não pela medida.
                     </AlertDescription>
                   </Alert>
                 )}
 
                 <Accordion>
-                  <AccordionItem value="all" title={`All ${pairs.length} pairs`}>
+                  <AccordionItem value="todos" title={`Todos os ${pairs.length} pares`}>
                     <PairTable pairs={pairs} />
                   </AccordionItem>
                 </Accordion>
@@ -732,13 +731,13 @@ function DtcgFiles({ name, css }: { name: string; css: string }) {
   return (
     <div className="space-y-3">
       <p className="max-w-prose text-sm text-fg-muted">
-        The same output as <code className="font-mono">rivocode-ui tokens</code>: {dtcg.count}{' '}
-        tokens in {files.length} files, in the DTCG 2025.10 that Tokens Studio and Figma's variable
-        import read directly. Both themes point to the palette and the scale by alias.
+        A mesma saída do <code className="font-mono">rivocode-ui tokens</code>: {dtcg.count} tokens
+        em {files.length} arquivos, no DTCG 2025.10 que o Tokens Studio e a importação de variáveis
+        do Figma leem direto. Os dois temas apontam para a paleta e a escala por alias.
       </p>
       <div className="flex flex-wrap items-end gap-3">
         <Field className="min-w-0 flex-1 sm:max-w-xs">
-          <FieldLabel>File</FieldLabel>
+          <FieldLabel>Arquivo</FieldLabel>
           <Select value={file} onValueChange={(value) => value && setPicked(String(value))} items={files.map((item) => ({ label: item, value: item }))}>
             <SelectTrigger className="w-full font-mono">
               <SelectValue />
@@ -759,9 +758,9 @@ function DtcgFiles({ name, css }: { name: string; css: string }) {
       </CodeBlock>
       {dtcg.skipped.length > 0 && (
         <p className="max-w-prose text-sm text-fg-subtle">
-          {dtcg.skipped.length} values were left out, because the format has no way to express them -
-          the finishes set to <code className="font-mono">none</code> and the size in{' '}
-          <code className="font-mono">clamp()</code>, among them. The CLI lists the same.
+          {dtcg.skipped.length} valores ficaram de fora, porque o formato não tem como dizê-los -
+          os acabamentos em <code className="font-mono">none</code> e o tamanho em{' '}
+          <code className="font-mono">clamp()</code>, entre eles. O CLI lista o mesmo.
         </p>
       )}
     </div>
@@ -775,52 +774,52 @@ function Export({ name, result }: { name: string; result: Result }) {
   const required = result.missing[0]?.required ?? 0
 
   return (
-    <section aria-labelledby="export" className="space-y-3">
-      <h2 id="export" className="font-display text-xl text-fg">
-        Take the theme
+    <section aria-labelledby="exportar" className="space-y-3">
+      <h2 id="exportar" className="font-display text-xl text-fg">
+        Levar o tema
       </h2>
 
       {failing > 0 ? (
         <Alert tone="danger">
           <AlertTitle>
-            The theme goes out with {failing} {failing === 1 ? 'failing pair' : 'failing pairs'}
+            O tema sai com {failing} {failing === 1 ? 'par reprovado' : 'pares reprovados'}
           </AlertTitle>
           <AlertDescription>
-            The list is written in the CSS header, and{' '}
-            <code className="font-mono">check-theme</code> exits with code 1 while it exists.
-            Change the pair's seed, or turn on the per-tone text adjustment.
+            A lista vai escrita no cabeçalho do CSS, e o <code className="font-mono">check-theme</code>{' '}
+            sai com código 1 enquanto ela existir. Troque a semente do par, ou ligue o ajuste do
+            texto de cada tom.
           </AlertDescription>
         </Alert>
       ) : (
         <Alert tone="success">
-          <AlertTitle>All pairs pass, in both schemes</AlertTitle>
+          <AlertTitle>Todos os pares aprovados, nos dois esquemas</AlertTitle>
           <AlertDescription>
             {missing === 0
-              ? `The ${required} required roles are declared in both selectors.`
-              : `${missing} roles are missing: check-theme will flag them.`}
+              ? `Os ${required} papéis obrigatórios estão declarados nos dois seletores.`
+              : `Faltam ${missing} papéis: o check-theme vai acusar.`}
           </AlertDescription>
         </Alert>
       )}
 
       <Tabs defaultValue="css">
         <TabList>
-          <Tab value="css">Web CSS</Tab>
+          <Tab value="css">CSS do web</Tab>
           <Tab value="dtcg">JSON DTCG</Tab>
           <Tab value="nativo">React Native</Tab>
-          <Tab value="comandos">Commands</Tab>
+          <Tab value="comandos">Comandos</Tab>
         </TabList>
 
         <TabPanel value="css" className="space-y-3 pt-4">
           <p className="max-w-prose text-sm text-fg-muted">
-            Layer 3, with both schemes. Import it after the preset and pass{' '}
-            <code className="font-mono">theme="{name}-dark"</code> or{' '}
-            <code className="font-mono">"{name}-light"</code> to{' '}
+            A camada 3, com os dois esquemas. Importe depois do preset e passe{' '}
+            <code className="font-mono">theme="{name}-dark"</code> ou{' '}
+            <code className="font-mono">"{name}-light"</code> ao{' '}
             <code className="font-mono">RivoProvider</code>.
           </p>
           <p className="max-w-prose text-sm text-fg-muted">
             {result.fontInstall
-              ? 'The chosen fonts go at the top, as fontsource @import lines, with the Google Fonts link commented out as an alternative. With them, do not import @rivocode/ui/fonts.css.'
-              : 'The fonts are the house ones: they arrive through @rivocode/ui/fonts.css, imported once in the entry CSS.'}
+              ? 'As fontes escolhidas entram no topo, como @import do fontsource, com o link do Google Fonts comentado como alternativa. Com elas, não importe o @rivocode/ui/fonts.css.'
+              : 'As fontes são as da casa: elas chegam pelo @rivocode/ui/fonts.css, importado uma vez no CSS de entrada.'}
           </p>
           <DownloadButton name={`tema-${name}.css`} text={result.css} type="text/css" />
           <CodeBlock title={`src/tema-${name}.css`} copyable className="max-h-96 overflow-y-auto">
@@ -834,9 +833,9 @@ function Export({ name, result }: { name: string; result: Result }) {
 
         <TabPanel value="nativo" className="space-y-3 pt-4">
           <p className="max-w-prose text-sm text-fg-muted">
-            The palette <code className="font-mono">rivocode-ui-native-theme</code> reads, with the
-            seeds and the adjustments written. Running the command on it writes the{' '}
-            <code className="font-mono">@theme</code> below, role by role.
+            A paleta que o <code className="font-mono">rivocode-ui-native-theme</code> lê, com as
+            sementes e os ajustes escritos. Rodar o comando sobre ela escreve o{' '}
+            <code className="font-mono">@theme</code> de baixo, papel por papel.
           </p>
           <div className="flex flex-wrap gap-2">
             <DownloadButton name={`${name}.json`} text={result.palette} type="application/json" />
@@ -849,14 +848,14 @@ function Export({ name, result }: { name: string; result: Result }) {
             {result.nativeCss}
           </CodeBlock>
           <p className="max-w-prose text-sm text-fg-muted">
-            The font does not go into <code className="font-mono">@theme</code>: on mobile the app
-            loads the file, with <code className="font-mono">expo-font</code>, and{' '}
-            <code className="font-mono">RivoProvider</code> receives the registered name. Each
-            weight is a file with its own name, so each role takes just one: 400 for body and code,
-            600 for display when the family has it.
+            A fonte não vai no <code className="font-mono">@theme</code>: no celular quem carrega o
+            arquivo é o app, com o <code className="font-mono">expo-font</code>, e o{' '}
+            <code className="font-mono">RivoProvider</code> recebe o nome registrado. Cada peso é
+            um arquivo com nome próprio, então cada papel leva um só: 400 no corpo e no código,
+            600 no título quando a família tem.
           </p>
           {result.nativeInstall && (
-            <CodeBlock title="install the fonts" copyable>
+            <CodeBlock title="instalar as fontes" copyable>
               {result.nativeInstall}
             </CodeBlock>
           )}
@@ -867,29 +866,29 @@ function Export({ name, result }: { name: string; result: Result }) {
 
         <TabPanel value="comandos" className="space-y-3 pt-4">
           <p className="max-w-prose text-sm text-fg-muted">
-            What the CLI does with the files from here, in your project. The first one is the one
-            worth putting in CI: it checks the roles and redoes this same measurement.
+            O que a CLI faz com os arquivos daqui, no seu projeto. O primeiro é o que vale pôr no
+            CI: ele cobra os papéis e refaz esta mesma medida.
           </p>
-          <CodeBlock title="web: check the theme" copyable>
+          <CodeBlock title="web: conferir o tema" copyable>
             {npxCheck!}
           </CodeBlock>
-          <CodeBlock title="web: export the tokens to Figma" copyable>
+          <CodeBlock title="web: exportar os tokens para o Figma" copyable>
             {npxTokens!}
           </CodeBlock>
-          <CodeBlock title="React Native: generate the @theme from the palette" copyable>
+          <CodeBlock title="React Native: gerar o @theme a partir da paleta" copyable>
             {npxNative!}
           </CodeBlock>
           {result.fontInstall && (
-            <CodeBlock title="web: install the fonts the CSS imports" copyable>
+            <CodeBlock title="web: instalar as fontes que o CSS importa" copyable>
               {result.fontInstall}
             </CodeBlock>
           )}
           {result.native.light.length + result.native.dark.length > 0 && (
             <Alert tone="warning">
-              <AlertTitle>The last command would refuse this palette</AlertTitle>
+              <AlertTitle>O último comando recusaria esta paleta</AlertTitle>
               <AlertDescription>
-                The React Native map has failing pairs, and the command does not write a theme that
-                does not pass. The list is in the measurement section, above.
+                O mapa do React Native tem pares reprovados, e o comando não escreve tema que não
+                passa. A lista está na seção de medida, acima.
               </AlertDescription>
             </Alert>
           )}
@@ -899,7 +898,7 @@ function Export({ name, result }: { name: string; result: Result }) {
   )
 }
 
-const FONT_LINK_ID = 'rc-builder-fonts'
+const FONT_LINK_ID = 'rc-montador-fontes'
 
 function useGoogleFonts(fonts: FontState) {
   const url = googleFontsUrl(fonts)
@@ -949,19 +948,19 @@ export function ThemePage() {
   return (
     <div className="mx-auto max-w-[96rem] px-4 py-10 sm:px-6">
       <header className="max-w-3xl space-y-3">
-        <p className="font-mono text-xs tracking-[0.14em] text-fg-subtle uppercase">Theme</p>
-        <h1 className="font-display text-3xl text-fg sm:text-4xl">Theme builder</h1>
+        <p className="font-mono text-xs tracking-[0.14em] text-fg-subtle uppercase">Tema</p>
+        <h1 className="font-display text-3xl text-fg sm:text-4xl">Montador de tema</h1>
         <p className="text-base text-fg-muted">
-          Pick the brand color and see the real pieces dressed in it, in both schemes and both
-          densities. Each pair is measured with the same math as{' '}
-          <code className="font-mono">check-theme</code>, and the theme comes out as CSS, as DTCG
-          JSON and as the React Native palette.
+          Escolha a cor da marca e veja as peças de verdade vestidas com ela, nos dois esquemas e
+          nas duas densidades. Cada par é medido com a mesma conta do{' '}
+          <code className="font-mono">check-theme</code>, e o tema sai em CSS, em JSON DTCG e na
+          paleta do React Native.
         </p>
         <div className="flex flex-wrap items-center gap-2">
-          <Clipboard value={href} labels={{ copy: 'Copy the link to this theme', copied: 'Link copied' }}>
-            Copy the link to this theme
+          <Clipboard value={href} labels={{ copy: 'Copiar o link deste tema', copied: 'Link copiado' }}>
+            Copiar o link deste tema
           </Clipboard>
-          <span className="text-sm text-fg-subtle">The link keeps everything you chose.</span>
+          <span className="text-sm text-fg-subtle">O link guarda tudo o que foi escolhido.</span>
         </div>
       </header>
 

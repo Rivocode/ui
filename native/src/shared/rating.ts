@@ -1,4 +1,4 @@
-/* Generated from src/shared/rating.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/rating.ts por bun run gen:compartilhado. Nao editar. */
 
 export type RatingLabels = {
   group: string;

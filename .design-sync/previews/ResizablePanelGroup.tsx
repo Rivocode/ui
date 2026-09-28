@@ -2,7 +2,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@rivocode/
 
 const PASTAS = ['Notas emitidas', 'Canceladas', 'Rascunhos', 'Modelos']
 
-/** Three areas, with the middle one split vertically */
+/** Três áreas, com a do meio dividida em pé */
 export function Workspace() {
   return (
     <div className="h-72 w-[40rem] overflow-hidden rounded-lg border border-border">
@@ -37,7 +37,7 @@ export function Workspace() {
   )
 }
 
-/** A side panel that collapses and remembers its size */
+/** Lateral que recolhe e lembra a medida */
 export function CollapsibleSidebar() {
   return (
     <div className="h-56 w-[36rem] overflow-hidden rounded-lg border border-border">

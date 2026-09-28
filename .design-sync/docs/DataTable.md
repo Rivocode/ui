@@ -1,54 +1,51 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # DataTable
 
-A table with the three states every listing has and almost none handles:
-loading, error and empty.
+Tabela com os três estados que toda listagem tem e quase nenhuma trata:
+carregando, erro e vazio.
 
-It knows nothing about React Query, and that is on purpose: three booleans go
-in, and it works the same with a hand-written `fetch`, with SWR or with a
-server component.
+Não conhece React Query, e isso é de propósito: entram três booleanos, e funciona
+igual com `fetch` na mao, com SWR ou com server component.
 
-The order matters: error beats loading, and empty only counts after the query
-has come back. Without that, a new search over an error flashes "no results"
-before showing the problem.
+A ordem importa: erro vence carregando, e vazio só vale depois que a consulta
+voltou. Sem isso, uma nova busca sobre um erro pisca "nenhum resultado" antes de
+mostrar o problema.
 
-## Sort, search, paginate, select
+## Ordenar, buscar, paginar, selecionar
 
-All opt-in, all client-side, nothing changes for whoever does not ask:
+Tudo opt-in, tudo client-side, nada muda para quem não pedir:
 
-- **`sortable` on the column**: the header becomes a button that cycles
-  ascending, descending, unsorted. When `cell` returns JSX, deliver the raw
-  value in `value`, otherwise the sort compares whatever is in `row[key]`.
-  There is a single arrow and it **turns half a circle** when the direction
-  flips, at `--rc-duration-base`: swapping the drawing all at once made the
-  flip go unnoticed, and it is what says the list below turned upside down.
-- **`filter` on the table**, a controlled global filter: the app puts the
-  search field wherever the screen calls for and passes the text; the table
-  compares ignoring case and accents ("otica" finds "Ótica"). With no results,
-  a discreet row explains. `empty` stays reserved for a query that came back
-  empty.
-- **`pageSize`**, pagination with a footer: "1–4 de 7" on the left, the pages
-  on the right. Filtering or re-sorting goes back to the first page.
-- **`selectable`**: a checkbox column on the left, keys from `rowKey`, notice
-  in `onValueChange`. Pass `value` to control it from outside, or
-  `defaultValue` to only say what it starts with, the same pair as `Tree` and
-  `TreeSelect`. The header checkbox checks the visible page, not the whole
-  list.
+- **`sortable` na coluna**: o cabeçalho vira botão que alterna crescente,
+  decrescente, sem ordem. Quando `cell` devolve JSX, entregue o valor cru em
+  `value`, senão a ordem compara o que estiver em `row[key]`. A seta é uma
+  só e **gira meia volta** ao inverter o sentido, no tempo `--rc-duration-base`:
+  trocar o desenho de uma vez fazia a inversão passar despercebida, e é ela que
+  diz que a lista embaixo virou de ponta-cabeça.
+- **`filter` na tabela**, filtro global controlado: o app põe o campo de busca
+  onde a tela pedir e passa o texto; a tabela compara ignorando caixa e acento
+  ("otica" acha "Ótica"). Sem resultado, uma linha discreta explica. O
+  `empty` continua reservado para consulta que voltou vazia.
+- **`pageSize`**, paginação com rodapé: "1–4 de 7" à esquerda, as páginas à
+  direita. Filtrar ou reordenar volta para a primeira página.
+- **`selectable`**: coluna de checkbox à esquerda, chaves do `rowKey`, aviso
+  em `onValueChange`. Passe `value` para controlar de fora, ou `defaultValue`
+  para só dizer com o que ela começa, o mesmo par do `Tree` e do `TreeSelect`.
+  O checkbox do cabeçalho marca a página visível, não a lista inteira.
 
-## The totals row
+## A linha de totais
 
-Every Brazilian financial listing ends in "Total: R$ 248,3K". Built in a
-`<div>` below the table, that row loses the column alignment (a `<div>` does
-not take part in the table layout algorithm and knows the width of none of
-them) and, with `maxHeight`, disappears on scroll.
+Toda listagem financeira brasileira termina em "Total: R$ 248,3K". Montada numa
+`<div>` embaixo da tabela, essa linha perde o alinhamento das colunas (uma
+`<div>` não participa do algoritmo de layout de tabela e não conhece a largura
+de nenhuma delas) e, com `maxHeight`, some ao rolar.
 
-The total is **per column**, and it is the sibling of `cell` one row up: where
-`cell` summarizes a row, `total` summarizes the whole column. It takes just one
-column declaring `total` for the `<tfoot>` to exist; the others come out
-blank, aligned with what is above.
+O total é **por coluna**, e é o irmão do `cell` uma linha acima: onde o `cell`
+resume uma linha, o `total` resume a coluna inteira. Basta uma coluna declarar
+`total` para o `<tfoot>` existir; as outras saem em branco, alinhadas com quem
+está em cima.
 
 ```tsx
 const COLUMNS: Column<Invoice>[] = [
@@ -64,62 +61,60 @@ const COLUMNS: Column<Invoice>[] = [
 ]
 ```
 
-Right alignment, `hideOnMobile` and sticking to the bottom with `maxHeight`
-come for free: the total cell already is that column's cell. **Money comes out
-abbreviated**, as in the rest of the house: the full `currency` is for where
-the cent is the subject.
+Alinhamento à direita, `hideOnMobile` e o grudar embaixo com `maxHeight` vêm de
+graça: a célula do total já é a célula daquela coluna. **O dinheiro sai
+abreviado**, como no resto da casa: `currency` por extenso fica para onde o
+centavo é o assunto.
 
-**The rows that reach `total` are the ones left after the filter, from all
-pages.** The pagination footer next to it already counts that way ("1–4 de 7"
-counts what is left of the search), and a total that changed at every page turn
-would not be a total of anything. While loading there is no footer (there is
-nothing to add up), and neither for a search with no results: the explaining
-row already takes up the whole table.
+**As linhas que chegam ao `total` são as que sobraram do filtro, de todas as
+páginas.** O rodapé de paginação ao lado já conta assim ("1–4 de 7" conta o que
+sobrou da busca), e um total que mudasse a cada virada de página não seria um
+total de nada. Carregando não há rodapé (não há o que somar), e busca sem
+resultado também não: a linha que explica já ocupa a tabela inteira.
 
-Why not a `footer?: (rows) => ReactNode`: it would hand the problem back to
-where it came from. Whoever wrote it would have to build the `<tr>` and the
-`<td>` by hand, count the columns hidden on mobile and repeat the alignment of
-each one, and getting any of those wrong is having the total off axis again,
-now inside a table. For the arrangement a column cannot reach (a cell that
-spans two columns, two summary rows), the path is `Table` with `TableFooter`,
-which exists precisely for the table you draw.
+Por que não um `footer?: (rows) => ReactNode`: ele devolveria o problema de onde
+ele veio. Quem escrevesse teria de montar a `<tr>` e as `<td>` na mão, contar as
+colunas escondidas no celular e repetir o alinhamento de cada uma, e errar em
+qualquer um desses é voltar a ter o total fora de eixo, agora dentro de uma
+tabela. Para o arranjo que uma coluna não alcança (célula que junta duas
+colunas, duas linhas de resumo), o caminho é o `Table` com `TableFooter`, que
+existe justamente para a tabela que você desenha.
 
-`classNames.footer` is still the pagination bar below the table, and not this
-row: the totals row is dressed by what each column's `total` returns.
+`classNames.footer` continua sendo a barra de paginação debaixo da tabela, e não
+esta linha: a linha de totais se veste pelo que o `total` de cada coluna
+devolve.
 
-## The texts the piece writes
+## Os textos que a peça escreve
 
-They used to be hard-coded, and none had a prop:
+Eram cravados, e nenhum tinha prop:
 
-- **`errorTitle`** (default "Não foi possível carregar") and
-  **`errorMessage`** are the pair of the error state. A screen that loads three
-  listings needs to say which one failed. `ChartContainer` uses the same two
-  names.
-- **`labels.retry`** (default "Tentar de novo") is the name of the button that
-  runs `onRetry`. It exists for the same reason as `errorTitle`, and with the
-  same key in the query pieces: without it, a screen in another language came
-  out with the title translated and the button in Portuguese.
-- **`noResultsMessage`** (default "Nenhum resultado para a busca.") is the
-  discreet row for when the filter zeroed out. It is not to be confused with
-  `empty`: a filter that zeroed out is not an empty query, and the remedy for
-  one (clearing the search) does not work for the other.
+- **`errorTitle`** (padrão "Não foi possível carregar") e **`errorMessage`** são
+  o par do estado de erro. Uma tela que carrega três listagens precisa dizer
+  qual delas falhou. O `ChartContainer` usa os mesmos dois nomes.
+- **`labels.retry`** (padrão "Tentar de novo") é o nome do botão que executa o
+  `onRetry`. Ele existe pelo mesmo motivo do `errorTitle`, e com a mesma chave
+  nas peças de consulta: sem ele, a tela em outra língua saía com o
+  título traduzido e o botão em português.
+- **`noResultsMessage`** (padrão "Nenhum resultado para a busca.") é a linha
+  discreta de quando o filtro zerou. Ela não se confunde com o `empty`: filtro
+  que zerou não é consulta vazia, e o remédio de um (limpar a busca) não serve
+  ao outro.
 
-`errorTitle`, `errorMessage` and `noResultsMessage` apply the same way in React
-Native's `DataList`, with a difference in default: there the error notice was
-born as a single line, so `errorTitle` appears only when you pass one. Without
-it, `errorMessage` is what speaks.
+`errorTitle`, `errorMessage` e `noResultsMessage` valem igual no `DataList` do
+React Native, com uma diferença de padrão: lá o aviso de erro nasceu de uma linha só, então `errorTitle` aparece
+apenas quando você passa um. Sem ele, quem fala é a `errorMessage`.
 
-## Many rows: own scrolling and virtualization
+## Muita linha: rolagem própria e virtualização
 
-Between "fits on a page" and "send it to the server" there is the middle case,
-which is where a log dashboard lives: tens of thousands of rows, and still
-sorting and searching need to work. Paginating on the server solves the volume
-and costs `sortable` and `filter`: the piece goes back to being a bare table.
+Entre "cabe numa página" e "manda para o servidor" existe o caso do meio, que é
+onde mora um painel de log: dezenas de milhares de linhas, e ainda assim
+ordenar e buscar precisam funcionar. Paginar no servidor resolve o volume e
+custa `sortable` e `filter`: a peça volta a ser tabela crua.
 
 ```tsx
 <DataTable
-  data={events}          // 80 thousand rows
-  columns={COLUMNS}      // with sortable as you please
+  data={events}          // 80 mil linhas
+  columns={COLUMNS}      // com sortable à vontade
   rowKey={(event) => event.id}
   filter={search}
   maxHeight={480}
@@ -127,66 +122,62 @@ and costs `sortable` and `filter`: the piece goes back to being a bare table.
 />
 ```
 
-They are two props, and they are independent on purpose:
+São duas props, e elas são independentes de propósito:
 
-- **`maxHeight`** gives the table a frame with its own scrolling: it scrolls
-  inside instead of pushing the page, and the header sticks to the top of that
-  frame (`--rc-z-sticky`, below menu, dialog and toast). On its own, it
-  virtualizes nothing: every row stays in the DOM, and that is enough up to a
-  few thousand.
-- **`virtual`** draws only the rows that fit in the frame. It needs
-  `maxHeight`: without a height there is nothing to fit into. Do not combine it
-  with `pageSize`: paginating already solves the same problem another way.
-- **`rowHeight`** (default 44) is the height of the virtualized row, and the
-  piece applies it. It is not a guess: the space of what was not drawn comes
-  out of that multiplication, and a row that grows makes the scroll promise an
-  end that never arrives. In a dense list, or with a two-line cell, pass your
-  own.
+- **`maxHeight`** dá à tabela uma moldura com rolagem própria: ela rola por
+  dentro em vez de empurrar a página, e o cabeçalho gruda no topo dessa moldura
+  (`--rc-z-sticky`, abaixo de menu, diálogo e toast). Sozinha, ela não
+  virtualiza nada: todas as linhas continuam no DOM, e isso basta até uns
+  poucos milhares.
+- **`virtual`** desenha só as linhas que cabem na moldura. Precisa de
+  `maxHeight`: sem altura não há o que caber. Não combine com `pageSize`:
+  paginar já resolve o mesmo problema de outro jeito.
+- **`rowHeight`** (padrão 44) é a altura da linha virtualizada, e a peça a
+  aplica. Não é chute: o espaço de quem não foi desenhado sai dessa
+  multiplicação, e linha que cresce faz a rolagem prometer um fim que não
+  chega. Numa lista densa, ou com célula de duas linhas, passe a sua.
 
-**It still renders as a real `<table>`.** The common way of virtualizing (each
-row in `position: absolute` with `translateY`) would break that: an absolute
-row leaves the table layout algorithm, and with it go the shared column width
-and the alignment between header and cell. What is left is a grid of `div`
-that looks like a table. Here the visible rows stay in normal flow and the
-space of what was not drawn becomes two empty rows, one before and one after,
-with the missing height. The `<tbody>` still has only `<tr>` as children, and
-each `<tr>` only `<td>`.
+**Ela continua saindo como `<table>` de verdade.** O jeito comum de virtualizar
+(cada linha em `position: absolute` com `translateY`) quebraria isso: linha
+absoluta sai do algoritmo de layout de tabela, e com ela vão a largura de coluna
+compartilhada e o alinhamento entre cabeçalho e célula. O que sobra é uma grade
+de `div` com cara de tabela. Aqui as linhas visíveis ficam em fluxo normal e o
+espaço de quem não foi desenhado vira duas linhas vazias, uma antes e uma
+depois, com a altura que falta. O `<tbody>` continua tendo só `<tr>` por filho,
+e cada `<tr>` só `<td>`.
 
-The empty rows leave the screen reader's flow with `aria-hidden`, and what
-carries the right count is the table's `aria-rowcount` plus each row's
-`aria-rowindex`, otherwise the list would be announced as "12 rows" in the
-middle of eighty thousand.
+As linhas vazias saem do fluxo do leitor de tela com `aria-hidden`, e quem
+carrega a contagem certa é o `aria-rowcount` da tabela mais o `aria-rowindex` de
+cada linha, senão a lista seria anunciada como "12 linhas" no meio de oitenta
+mil.
 
-Whoever sorts, filters or paginates **on the server** already receives the data
-ready: show the page that came and put the house `Pagination` outside, and do
-not mark `sortable` nor use `filter`, because two sorts disagreeing is worse
-than one.
+Quem ordena, filtra ou pagina **no servidor** já recebe os dados prontos: mostre
+a página que veio e ponha o `Pagination` da casa do lado de fora, e não marque
+`sortable` nem use `filter`, porque duas ordenações discordando é pior que uma.
 
-## Waiting is announced
+## A espera se anuncia
 
-**Waiting is announced out loud.** `aria-busy` on a node without a role is not
-read by any screen reader: it describes the state of a region, and only reaches
-whoever is already inside it. Whoever was waiting heard silence, and the
-arrival of the data, which swaps the whole screen, said nothing either. The
-four siblings publish the same live region (`role="status" aria-live="polite"`,
-marked with `data-rc-status`), which says "Carregando…" while the query has not
-come back and "Conteúdo carregado" when it does. It exists before the text
-changes and is the same node from the first state to the last: a region born
-with the text already inside triggers no announcement at all.
+**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
+leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
+está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
+tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
+(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
+"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
+volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
+estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
-## Motion
+## Movimento
 
-The table body fades in once when it goes from the skeleton to the rows (`animate-appear`, `--rc-duration-base`), as a whole, and not row by row: sorting moves the rows in the DOM, and an animation tied to the row would restart on every header click. With "reduce motion", the rows appear still.
+O corpo da tabela esmaece uma vez quando sai do esqueleto para as linhas (`animate-appear`, `--rc-duration-base`), inteiro, e não linha a linha: ordenar move as linhas no DOM, e a animação presa na linha recomeçaria a cada clique no cabeçalho. Com "reduzir movimento", as linhas aparecem paradas.
 
-## When not to use
+## Quando não usar
 
-For the table you draw row by row, use `Table`. It composes with `TableRow`,
-`TableCell` and `TableFooter`, and accepts any arrangement: a cell that spans
-two columns, two summary rows, the layout of a receipt. This one takes
-`columns` and `rows`, and that is the trade: it handles the states and the
-sorting, and in exchange the drawing of each row has to fit within what a
-column can do.
+Para a tabela que você desenha linha a linha, use `Table`. Ela compõe com
+`TableRow`, `TableCell` e `TableFooter`, e aceita qualquer arranjo: célula que
+junta duas colunas, duas linhas de resumo, o quadro de um recibo. Esta aqui
+recebe `columns` e `rows`, e essa é a troca: ela cuida dos estados e da ordenação, e em compensação
+o desenho de cada linha passa a caber no que uma coluna sabe fazer.
 
-## In React Native
+## No React Native
 
-Becomes `DataList`. A table does not exist on the phone: what crosses over is the state machine (loading, error, empty, data) in the same order, with error winning over loading and empty counting only after the response has arrived. The texts of those endings are configured with the web's names: `errorTitle`, `errorMessage`, `labels.retry` and `noResultsMessage`, all `string` because text here lives inside a `Text`. Only the default of `errorTitle` differs: here there is none, because the list's alert was born as a single line, and that line is `errorMessage`. Of the four opt-ins from here, two port with the same prop name (`filter` and `selectable`, with the selection in `value` and `onValueChange`) and **two do not port by design**: sorting and `pageSize`. A clickable header does not exist without a header, and on the phone sorting is a "sort by" `Menu` that the screen builds on top of the list. In place of the columns, `renderItem`. And that is why `filter` wants a `filterValue`, since nobody can read text from inside the JSX you return.
+Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de estados (carregando, erro, vazio, dados) na mesma ordem, com o erro vencendo o carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se configuram com os nomes do web: `errorTitle`, `errorMessage`, `labels.retry` e `noResultsMessage`, todos `string` porque texto aqui mora dentro de um `Text`. Só o padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha só, e essa linha é a `errorMessage`. Dos quatro opt-in daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`, com a seleção em `value` e `onValueChange`) e **dois não portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em cima da lista. No lugar das colunas, `renderItem`. E por isso o `filter` quer um `filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.

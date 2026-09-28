@@ -9,40 +9,39 @@ import { Text } from "./text";
 export type ColorSwatch = string | { value: string; label: string };
 
 export type ColorPickerProps = {
-  /** The chosen color, in six-digit hexadecimal. Empty is `""`. */
+  /** A cor escolhida, em hexadecimal de seis dígitos. Vazio é `""`. */
   value: string;
-  /** Notified with the normalized hexadecimal, always six digits and lowercase. */
+  /** Avisado com o hexadecimal normalizado, sempre de seis dígitos e minúsculo. */
   onValueChange: (value: string) => void;
   /**
-   * The swatches. Without them, a generated spread of hues, useful for
-   * experimenting, not for representing a brand: a theme builder passes the
-   * client's palette here.
+   * As amostras. Sem elas, um leque de tons gerado, útil para experimentar, e
+   * não para representar uma marca: um construtor de tema entrega aqui a
+   * paleta do cliente.
    */
   swatches?: ColorSwatch[];
-  /** How many swatches per row. */
+  /** Quantas amostras por linha. */
   columns?: number;
   /**
-   * The text above the swatches, and their name for the screen reader. Inside a
-   * `Field` it only names, without appearing: the on-screen label there is the
-   * `Field`'s, and `forValue` delivers the same text here.
+   * O texto acima das amostras, e o nome delas no leitor de tela. Dentro de um
+   * `Field` ele so nomeia, sem aparecer: o rotulo na tela ali e o do `Field`,
+   * e o `forValue` entrega o mesmo texto aqui.
    */
   label?: string;
-  /** Hides the text field and leaves only the swatches. */
+  /** Esconde o campo de texto e deixa só as amostras. */
   hideInput?: boolean;
   disabled?: boolean;
   className?: string;
   /**
-   * The component's texts, to change the language: `swatches` is the name of
-   * the swatch group when there is no `label`, `hex` that of the text field and
-   * `swatch` that of each plain-text swatch, which receives its hexadecimal. A
-   * `{ value, label }` swatch is named by its own `label`. Pass only the ones
-   * that change.
+   * Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto
+   * das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o
+   * de cada amostra em texto puro, que recebe o hexadecimal dela. A amostra
+   * `{ value, label }` se nomeia pelo proprio `label`. Passe so os que mudam.
    */
   labels?: Partial<ColorPickerLabels>;
   /**
-   * Class per part: `label`, `swatches` (the swatch group), `swatch` (each
-   * swatch's touch target), `field` (the field row), `preview` (the current
-   * color beside the field) and `input`.
+   * Classe por parte: `label`, `swatches` (o conjunto das amostras), `swatch`
+   * (o toque de cada amostra), `field` (a fileira do campo), `preview` (a cor
+   * de agora ao lado do campo) e `input`.
    */
   classNames?: Slots<"label" | "swatches" | "swatch" | "field" | "preview" | "input">;
 };

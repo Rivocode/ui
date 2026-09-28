@@ -10,36 +10,37 @@ const WIDEST_MARKED = 48;
 export function indicatorWidthComplaint(width: number): string | undefined {
   if (width <= WIDEST_MARKED) return undefined;
   return (
-    "[rivocode/ui-native] <Indicator>: the child is " +
-    `${Math.round(width)}px wide, and the pill sits on top of it without ` +
-    `reserving space - above ${WIDEST_MARKED}px it covers content. ` +
-    "The component marks a small target: the bell button, the tab bar item, the avatar. " +
-    "To mark a whole row, put the count beside it, with a `Badge`."
+    "[rivocode/ui-native] <Indicator>: o filho mede " +
+    `${Math.round(width)}px de largura, e a pastilha fica por cima dele sem ` +
+    `reservar espaço - acima de ${WIDEST_MARKED}px ela cobre conteúdo. ` +
+    "A peça marca alvo pequeno: o botão do sino, o item da barra, o avatar. " +
+    "Para marcar uma linha inteira, ponha a contagem ao lado, com um `Badge`."
   );
 }
 
 export type IndicatorProps = {
-  /** What receives the mark: the bell button, the tab bar item, the avatar. */
+  /** O que recebe a marca: o botão do sino, o item da barra, o avatar. */
   children: ReactNode;
   /**
-   * How many. Zero draws nothing - a pill with "0" draws attention to say there
-   * is nothing, which is the opposite of its job.
+   * Quantos. Zero não desenha nada - uma pastilha com "0" chama atenção para
+   * dizer que não há nada, que é o contrário do trabalho dela.
    */
   count?: number;
-  /** The cap: above it "99+" is shown, instead of the pill stretching. */
+  /** O teto: acima dele sai "99+", em vez de a pastilha esticar. */
   max?: number;
   /**
-   * What the screen reader hears instead of the number: "3 notificações".
-   * Required, and it is the difference the component exists to make. The number
-   * alone does not say what the three are, and on the phone it is even smaller
-   * than on the web - someone who enlarges the system font to read does not
-   * want to discover the subject by the pill's color.
+   * O que o leitor de tela ouve no lugar do número: "3 notificações".
+   *
+   * Obrigatório, e é a diferença que a peça existe para fazer. O número
+   * sozinho não diz o que são três, e no celular ele é ainda menor do que no
+   * web - quem aumenta a fonte do sistema para ler não quer descobrir o
+   * assunto pela cor da pastilha.
    */
   label: string;
-  /** No count: just the dot, for "there is something new here". */
+  /** Sem contagem: só o ponto, para "tem algo novo aqui". */
   dot?: boolean;
   className?: string;
-  /** Class per part: `badge`, the pill. `className` styles the wrapper around the child. */
+  /** Classe por parte: `badge`, a pastilha. O `className` veste o que embrulha o filho. */
   classNames?: Slots<"badge">;
 };
 

@@ -31,11 +31,11 @@ const ComboboxSize = createContext<ControlSize>("md");
 
 export function missingComboboxLabelComplaint(key: string, label: string): string {
   return (
-    `[rivocode/ui] <Combobox> without \`itemToStringLabel\`: the field is showing "${key}", ` +
-    `which is the item's key, and not "${label}", which is the text in the list. An object item ` +
-    "without `label` has no label for Base UI to read, and it writes the raw key, with no error " +
-    "on screen. Pass itemToStringLabel={(item) => item.name} to <Combobox>, or give the item " +
-    "the shape { value, label }."
+    `[rivocode/ui] <Combobox> sem \`itemToStringLabel\`: o campo está mostrando "${key}", que é ` +
+    `a chave do item, e não "${label}", que é o texto da lista. Item em objeto sem \`label\` ` +
+    "não tem rótulo de onde a Base UI possa ler, e ela escreve a chave crua, sem erro na tela. " +
+    "Passe itemToStringLabel={(item) => item.nome} ao <Combobox>, ou dê ao item a forma " +
+    "{ value, label }."
   );
 }
 
@@ -61,8 +61,8 @@ export type ComboboxProps<
   Multiple extends boolean | undefined = false,
 > = BaseCombobox.Root.Props<Value, Multiple> & {
   /**
-   * The field's size, the same vocabulary and the same height as Input. Lives on the
-   * root, and the inner `ComboboxInput` wears it.
+   * Tamanho do campo, o mesmo vocabulario e a mesma altura do Input. Mora na
+   * raiz, e o `ComboboxInput` de dentro o veste.
    */
   size?: ControlSize;
 };
@@ -95,18 +95,18 @@ export function Combobox<Value, Multiple extends boolean | undefined = false>({
 }
 
 export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
-  /** Shows the clear button when there is a selection. */
+  /** Mostra o botao de limpar quando ha escolha. */
   clearable?: boolean;
   /**
-   * Class per part: `wrapper`, `input`. `className` dresses the root, which here
-   * is the frame holding the field and the two buttons - so dressing the inner
-   * `<input>` was only possible through a descendant variant.
+   * Classe por parte: `wrapper`, `input`. O `className` veste a raiz, que aqui
+   * e a moldura que segura o campo e os dois botoes - entao vestir o `<input>`
+   * de dentro so era possivel por variante de descendente.
    */
   classNames?: Slots<"wrapper" | "input">;
   /**
-   * The piece's texts, to change the language: `clear` is the name of the x that
-   * clears the selection, and `open` that of the arrow that opens the list. Pass only the ones that
-   * change.
+   * Os textos da peca, para trocar o idioma: `clear` e o nome do xis que
+   * limpa a escolha, e `open` o da seta que abre a lista. Passe so os que
+   * mudam.
    */
   labels?: Partial<ComboboxInputLabels>;
 };
@@ -170,7 +170,7 @@ export function ComboboxInput({
 
 export type ComboboxContentProps = ComponentProps<typeof BaseCombobox.Popup> &
   FloatingPositionProps & {
-    /** What appears when the search finds nothing. */
+    /** O que aparece quando a busca nao acha nada. */
     emptyMessage?: ReactNode;
   };
 
@@ -274,9 +274,9 @@ export function ComboboxValue(props: ComponentProps<typeof BaseCombobox.Value>) 
 
 export type ComboboxChipProps = ComponentProps<typeof BaseCombobox.Chip> & {
   /**
-   * What the screen reader hears on the x. `remove` receives the chip's text, which
-   * the piece takes from its own content when it is text, and from `aria-label`
-   * when it is not.
+   * O que o leitor de tela ouve no xis. `remove` recebe o texto da ficha, que
+   * a peca tira do proprio conteudo quando ele e texto, e do `aria-label`
+   * quando nao e.
    */
   labels?: { remove?: (label: string) => string };
 };

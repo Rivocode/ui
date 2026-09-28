@@ -15,9 +15,9 @@ import type { Slots } from "../lib/slots";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export type TrackerPoint = {
-  /** What happened in that period. */
+  /** O que aconteceu nesse periodo. */
   tone?: "neutral" | "success" | "warning" | "danger" | "accent";
-  /** What the screen reader hears and what the tooltip shows. */
+  /** O que o leitor de tela ouve e o que a dica mostra. */
   label: ReactNode;
 };
 
@@ -31,9 +31,9 @@ const TONE: Record<NonNullable<TrackerPoint["tone"]>, string> = {
 
 export type TrackerProps = Omit<ComponentProps<"div">, "children"> & {
   data: TrackerPoint[];
-  /** What the strip measures, spelled out for the screen reader. */
+  /** O que a faixa mede, dito por extenso para o leitor de tela. */
   label: string;
-  /** Class per part: `label`, `track`, `cell`. */
+  /** Classe por parte: `label`, `track`, `cell`. */
   classNames?: Slots<"label" | "track" | "cell">;
 };
 

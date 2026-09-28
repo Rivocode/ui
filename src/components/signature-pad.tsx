@@ -36,20 +36,20 @@ import { IconButton } from "./icon-button";
 
 export type SignatureExportOptions = {
   /**
-   * The ink color. Without it, that of the `--rc-signature-ink` token, which is dark in
-   * both themes: a signature made in the dark theme does not come out light on the document.
+   * A cor da tinta. Sem ela, a do token `--rc-signature-ink`, que e escura nos
+   * dois temas: a assinatura feita no tema escuro nao sai clara no documento.
    */
   ink?: string;
   /**
-   * The background. `true` paints the paper from the `--rc-signature-paper` token, a color
-   * paints that color, and without it the background is transparent, to sit on top of
-   * the document.
+   * O fundo. `true` pinta o papel do token `--rc-signature-paper`, uma cor
+   * pinta aquela cor, e sem ele o fundo sai transparente, para assentar sobre
+   * o documento.
    */
   paper?: boolean | string;
 };
 
 export type SignaturePngOptions = SignatureExportOptions & {
-  /** How many pixels per drawing unit. `2` gives 1200px of width, sharp on a dense screen. */
+  /** Quantos pixels por unidade do desenho. `2` da 1200px de largura, nitido em tela densa. */
   scale?: number;
 };
 
@@ -58,49 +58,44 @@ export type SignaturePadProps = Omit<
   "defaultValue" | "onChange" | "children"
 > & {
   /**
-   * The signature, controlled: the drawn strokes (`kind: "drawn"`) or the typed
-   * name (`kind: "typed"`). `null` is no signature. Use with `onValueChange`.
+   * A assinatura, controlada: os tracos desenhados (`kind: "drawn"`) ou o nome
+   * digitado (`kind: "typed"`). `null` e sem assinatura. Use com `onValueChange`.
    */
   value?: SignatureValue | null;
-  /** The signature on mount, when nobody controls it. Without it, empty. */
+  /** A assinatura ao montar, quando ninguem controla. Sem ela, vazia. */
   defaultValue?: SignatureValue | null;
   /**
-   * Called at the end of each stroke, on each typed letter, on undo and on
-   * clear. `null` arrives when the area becomes empty, which is what the form's
-   * schema reads as "no signature".
+   * Chamado ao fim de cada traco, a cada letra digitada, ao desfazer e ao
+   * limpar. Chega `null` quando a area fica vazia, que e o que o schema do
+   * formulario le como "sem assinatura".
    */
   onValueChange?: (value: SignatureValue | null) => void;
-  /** Locks drawing, typing and the buttons. Inside a disabled `Field`, it locks by itself. */
+  /** Trava o desenho, a digitacao e os botoes. Dentro de um `Field` desabilitado, trava sozinho. */
   disabled?: boolean;
-  /** Only displays the signature: no drawing, no buttons and no typing mode. */
+  /** So exibe a assinatura: sem desenho, sem botoes e sem o modo de digitar. */
   readOnly?: boolean;
   /**
-   * Paints the frame in danger and announces `aria-invalid`. Inside a `Field`
-   * with `invalid`, or a `FormField` with an error, it turns on by itself.
+   * Pinta a moldura de perigo e anuncia `aria-invalid`. Dentro de um `Field`
+   * com `invalid`, ou de um `FormField` com erro, liga sozinho.
    */
   invalid?: boolean;
   /**
-   * The field's name in a `<form>`: goes in a hidden `input` with the signature's
-   * SVG, and empty when there is no signature.
+   * Nome do campo num `<form>`: vai num `input` escondido com o SVG da
+   * assinatura, e vazio quando nao ha assinatura.
    */
   name?: string;
-  /** Width over height of the area. Default `3`: 600 by 200 drawing units. */
+  /** Largura sobre altura da area. Padrao `3`: 600 por 200 unidades de desenho. */
   ratio?: number;
   /**
-   * The cursive family for typing mode, in CSS (`'"Great Vibes", cursive'`).
-   * Load the font on the page: without it, the browser falls back to the system cursive.
+   * A familia cursiva do modo de digitar, em CSS (`'"Great Vibes", cursive'`).
+   * Carregue a fonte na pagina: sem ela, o navegador cai na cursiva do sistema.
    */
   font?: string;
-  /** Which mode the area opens in when it is empty. Default `draw`. */
+  /** Em que modo a area abre quando esta vazia. Padrao `draw`. */
   defaultMode?: "draw" | "type";
-  /**
-   * The piece's texts: button labels, instruction, "Assine aqui" and what the screen reader hears.
-   */
+  /** Os textos da peca: rotulos dos botoes, instrucao, "Assine aqui" e o que o leitor de tela ouve. */
   labels?: Partial<SignaturePadLabels>;
-  /**
-   * Class per part: `pad` (the paper), `placeholder`, `baseline`, `actions` and `input` (the name
-   * field).
-   */
+  /** Classe por parte: `pad` (o papel), `placeholder`, `baseline`, `actions` e `input` (o campo do nome). */
   classNames?: Slots<"pad" | "placeholder" | "baseline" | "actions" | "input">;
   ref?: Ref<HTMLDivElement>;
 };
@@ -149,8 +144,8 @@ export async function signatureToPng(
   const context = canvas.getContext("2d");
   if (!context) {
     throw new Error(
-      "[rivocode/ui] signatureToPng: the browser did not provide the canvas 2d context, " +
-        "and without it there is no image. Use signatureToSvg, which does not depend on canvas.",
+      "[rivocode/ui] signatureToPng: o navegador não entregou o contexto 2d do canvas, " +
+        "e sem ele não há imagem. Use signatureToSvg, que não depende de canvas.",
     );
   }
 

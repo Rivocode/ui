@@ -1,13 +1,13 @@
-## How to build with @rivocode/ui
+## Como construir com o @rivocode/ui
 
-RivoCode's white-label library. No component knows the brand color: it asks
-for a semantic token and the theme answers. That is what lets the same piece
-serve RivoCode in one project and another client in the next.
+Biblioteca white-label da RivoCode. Nenhum componente conhece a cor da marca:
+ele pede um token semantico e o tema responde. Isso e o que permite a mesma
+peca servir a RivoCode num projeto e outro cliente no seguinte.
 
-### Wrap everything in RivoProvider
+### Envolva tudo no RivoProvider
 
-Without it nothing has style, and `Dialog`, `Menu`, `Select`, `Tooltip` and the
-toasts throw, because they read its context.
+Sem ele nada tem estilo, e `Dialog`, `Menu`, `Select`, `Tooltip` e os avisos
+lancam erro, porque leem o contexto dele.
 
 ```tsx
 import { RivoProvider, Button } from '@rivocode/ui'
@@ -17,111 +17,108 @@ import { RivoProvider, Button } from '@rivocode/ui'
 </RivoProvider>
 ```
 
-- `theme`: `rivocode-dark` (default), `rivocode-light` or `system`.
-- `density`: `comfortable` (default) or `compact`, for operations screens.
-- `scope`: `global` dresses the page; `local` dresses only this tree and
-  **paints the background**. In a preview and in an isolated card use `local`,
-  or the content ends up light on light.
+- `theme`: `rivocode-dark` (padrao), `rivocode-light` ou `system`.
+- `density`: `comfortable` (padrao) ou `compact`, para tela de operacao.
+- `scope`: `global` veste a pagina; `local` veste so esta arvore e **pinta o
+  fundo**. Em preview e em cartao isolado use `local`, senao o conteudo fica
+  claro sobre claro.
 
-The Provider already carries inside it the tooltip provider, the toast wiring
-and a portal container that carries the theme along. Do not mount any of them
-by hand.
+O Provider ja carrega por dentro o provedor de dica, a fiacao de aviso e um
+container de portal que leva o tema junto. Nao monte nenhum deles a mao.
 
-Inside the theme, any box's scrollbar comes out thin and in the border color
-(`--rc-border-strong`), light or dark with the theme. The rule lives in the
-`base` layer, so a class of yours wins: `[scrollbar-width:none]` hides the bar,
-as the tabs and the carousel already do.
+Dentro do tema, a barra de rolagem de qualquer caixa sai fina e na cor da
+borda (`--rc-border-strong`), clara ou escura com o tema. A regra mora na
+camada `base`, entao uma classe sua vence: `[scrollbar-width:none]` esconde a
+barra, como as abas e o carrossel ja fazem.
 
-### The vocabulary, which is Tailwind v4's
+### O vocabulario, que e o do Tailwind v4
 
-Write layout with the same classes the components use. **Never write a
-literal color or a numeric `z-index`.**
+Escreva layout com as mesmas classes que os componentes usam. **Nunca escreva
+cor literal nem `z-index` numerico.**
 
-| Family | Classes |
+| Familia | Classes |
 |---|---|
-| Surface | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay` |
-| Text | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled` |
-| Accent | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle` |
-| Line and focus | `border-border`, `border-border-strong`, `ring-ring` |
-| State | `bg-success`, `text-success-text`, `bg-danger-subtle`, and the same for `warning` and `info` |
-| Selection and loading | `bg-selected`, `bg-skeleton` |
-| Machine-read code | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: dark on light with the same value in every theme, and they are not theme roles |
-| Media stage | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: dark in both themes with the same value, and they are not theme roles. They belong to the full-screen `ImageViewer` |
-| Signature paper | `bg-signature-paper`, `fill-signature-ink`, `text-signature-guide`, `stroke-signature-guide`, `text-signature-disabled`: dark ink on light paper in both themes, and they are not theme roles. They belong to `SignaturePad`, so the exported signature does not come out inverted |
-| Shape | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
-| Text | `text-xs` to `text-3xl`, `font-sans`, `font-display`, `font-mono` |
-| Weight | `font-rc-regular`, `font-rc-medium`, `font-rc-strong`, `font-rc-bold`, `font-rc-display` |
-| Shadow | `shadow-1`, `shadow-2`, `shadow-3` |
-| Stacking | `z-[var(--rc-z-sticky)]`, and the peers `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
-| Entrance | `animate-enter`, `animate-appear`, `animate-pop`, `animate-fill`, `animate-reveal` |
+| Superficie | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay` |
+| Texto | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled` |
+| Acento | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle` |
+| Linha e foco | `border-border`, `border-border-strong`, `ring-ring` |
+| Estado | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
+| Selecao e carga | `bg-selected`, `bg-skeleton` |
+| Codigo lido por maquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e nao sao papel de tema |
+| Palco de midia | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: escuro nos dois temas com o mesmo valor, e nao sao papel de tema. Sao do `ImageViewer` em tela cheia |
+| Papel da assinatura | `bg-signature-paper`, `fill-signature-ink`, `text-signature-guide`, `stroke-signature-guide`, `text-signature-disabled`: tinta escura sobre papel claro nos dois temas, e nao sao papel de tema. Sao do `SignaturePad`, para a assinatura exportada nao sair invertida |
+| Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
+| Texto | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
+| Peso | `font-rc-regular`, `font-rc-medium`, `font-rc-strong`, `font-rc-bold`, `font-rc-display` |
+| Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
+| Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
+| Entrada | `animate-enter`, `animate-appear`, `animate-pop`, `animate-fill`, `animate-reveal` |
 
-**Filling and writing text are different tokens.** `bg-danger` fills and takes
-`text-danger-fg` on top. `text-danger-text` is the red that reads on the page
-background. No color serves both jobs. The same goes for the accent:
-`bg-accent` with `text-accent-fg`, or `text-accent-text` alone.
+**Preencher e escrever texto sao tokens diferentes.** `bg-danger` preenche e
+recebe `text-danger-fg` por cima. `text-danger-text` e o vermelho que se le
+sobre o fundo da pagina. Nenhuma cor serve para as duas funcoes. Vale igual
+para o acento: `bg-accent` com `text-accent-fg`, ou `text-accent-text` solto.
 
-**There are eight stacking steps, and the two at the ends are yours.** The six
-in the middle belong to the pieces - `Dialog` rises to `dialog` on its own,
-`Menu` to `dropdown` - and you rarely write them. The ones your screen writes
-are the other two: `--rc-z-base` to bring an element back to the content
-plane, and `--rc-z-sticky` for **a header, a frozen column and an action bar
-that sticks on scroll**. A sticky header with `--rc-z-dropdown` sits in front
-of the menu it opens itself; that is the error the lack of this line has
-already produced.
+**Sao oito degraus de empilhamento, e os dois das pontas sao seus.** Os seis do
+meio pertencem as pecas - o `Dialog` sobe sozinho para o `dialog`, o `Menu` para
+o `dropdown` - e voce raramente os escreve. Os que a sua tela escreve sao os
+outros dois: `--rc-z-base` para trazer um elemento de volta ao plano do
+conteudo, e `--rc-z-sticky` para **cabecalho, coluna congelada e barra de acao
+que gruda ao rolar**. Cabecalho grudado com `--rc-z-dropdown` fica na frente do
+menu que ele mesmo abre; e o erro que a falta desta linha ja produziu.
 
-**What opens from inside a layer stays above it.** A `Select` inside a
-`Dialog`, an `AlertDialog` opened by a button inside a `Popover`, a `Menu`
-inside a `Sheet`: each piece that opens a layer reads the step of whoever
-opened it and stays one above it - `max(<its own step>, <the opener's> + 1)`,
-always on top of the `--rc-z-*`. Outside any layer, each one stays on its own
-step, as before. The rule travels through the React tree: the floating element
-has to be mounted INSIDE the layer's content (`DialogContent`,
-`PopoverContent`, `SheetContent`...), and not beside it. `Tour` also reads the
-DOM: with the target inside a `Dialog`, the mask rises above the dialog and the
-rest of it goes dim and unclickable. `Toast` and `Tooltip` stay on top of
-everything.
+**O que abre de dentro de uma camada fica acima dela.** Um `Select` dentro de
+um `Dialog`, um `AlertDialog` aberto por um botao dentro de um `Popover`, um
+`Menu` dentro de uma `Sheet`: cada peca que abre camada le o degrau de quem a
+abriu e fica um acima dele - `max(<o proprio degrau>, <o de quem abriu> + 1)`,
+sempre em cima dos `--rc-z-*`. Fora de qualquer camada, cada uma fica no
+proprio degrau, como antes. A regra anda pela arvore do React: o flutuante tem
+que ser montado DENTRO do conteudo da camada (`DialogContent`,
+`PopoverContent`, `SheetContent`...), e nao ao lado dela. O `Tour` le tambem o
+DOM: com o alvo dentro de um `Dialog`, a mascara sobe acima do dialogo e o
+resto dele fica apagado e sem clique. `Toast` e `Tooltip` continuam por cima
+de tudo.
 
-**Pieces animate in on mount, and the frame does not.** What arrives animates
-in - the chart draws itself, the progress bar fills from zero, `Alert` and
-`EmptyState` rise 4px fading, the `DataTable` body fades on leaving the
-skeleton - and what is layout (`Card`, `PageHeader`, `Sidebar`) stays still. The
-`Entrance` classes are the same ones the pieces use, for what you build outside
-them: all last one token, go to zero with "reduce motion", run once per mount
-and hold no state after finishing. `animate-none` turns it off on one instance.
+**As pecas entram na montagem, e a moldura nao.** O que chega entra - o
+grafico se desenha, a barra de progresso enche do zero, o `Alert` e o
+`EmptyState` sobem 4px esmaecendo, o corpo do `DataTable` esmaece ao sair do
+esqueleto - e o que e layout (`Card`, `PageHeader`, `Sidebar`) fica parado. As
+classes de `Entrada` sao as mesmas que as pecas usam, para o que voce monta por
+fora: todas duram um token, zeram com "reduzir movimento", rodam uma vez por
+montagem e nao prendem estado depois de acabar. `animate-none` desliga numa
+instancia.
 
-**Motion has intent names.** Duration: `duration-fast`, `duration-base`,
-`duration-slow`. Curve: `ease-rc` (default), `ease-rc-enter` (what arrives),
-`ease-rc-exit` (what leaves). Spring, with the duration of the same name:
-`ease-rc-spatial duration-spatial` for position and size,
-`ease-rc-expressive duration-expressive` for the same with more body, and
-`ease-rc-effects duration-effects` for color and opacity, which must not
-overshoot the target. Every duration goes to zero with "reduce motion". Never
-`duration-150` nor `ease-[cubic-bezier(...)]`.
+**Movimento tem nome de intencao.** Duracao: `duration-fast`, `duration-base`,
+`duration-slow`. Curva: `ease-rc` (padrao), `ease-rc-enter` (o que chega),
+`ease-rc-exit` (o que sai). Mola, com a duracao do mesmo nome:
+`ease-rc-spatial duration-spatial` para posicao e tamanho,
+`ease-rc-expressive duration-expressive` para o mesmo com mais corpo, e
+`ease-rc-effects duration-effects` para cor e opacidade, que nao podem passar do
+alvo. Toda duracao zera com "reduzir movimento". Nunca `duration-150` nem
+`ease-[cubic-bezier(...)]`.
 
-**Control height comes from the density**, never hardcoded:
-`h-[var(--rc-control-md)]`, with `sm` and `lg` available.
+**Altura de controle vem da densidade**, nunca cravada:
+`h-[var(--rc-control-md)]`, com `sm` e `lg` disponiveis.
 
-### The font is a theme role, and comes in a separate file
+### A fonte é papel de tema, e vem em arquivo separado
 
-`font-sans`, `font-display` and `font-mono` come from `--rc-font-sans`,
-`--rc-font-display` and `--rc-font-mono`, and all three are declared **by the
-theme**, in the same `[data-rc-theme="..."]` selector the colors are in. There
-is no `:root` value underneath: a theme that does not declare a family ends up
-with no family at all, just as a theme without `--rc-bg` ends up without a
-background.
+`font-sans`, `font-display` e `font-mono` saem de `--rc-font-sans`,
+`--rc-font-display` e `--rc-font-mono`, e os três são declarados **pelo tema**,
+no mesmo seletor `[data-rc-theme="..."]` em que as cores estão. Não há valor de
+`:root` por baixo: tema que não declara família fica sem família nenhuma, do
+mesmo jeito que tema sem `--rc-bg` fica sem fundo.
 
-RivoCode's faces (Manrope, Poppins and JetBrains Mono) **no longer travel in
-`styles.css`**. They have their own entry, and only whoever wants the brand
-imports it:
+As faces da RivoCode (Manrope, Poppins e JetBrains Mono) **não viajam mais
+no `styles.css`**. Elas têm entrada própria, e só quem quer a marca a importa:
 
 ```css
 @import "@rivocode/ui/styles.css";
-@import "@rivocode/ui/fonts.css";   /* optional: RivoCode's faces */
+@import "@rivocode/ui/fonts.css";   /* opcional: as faces da RivoCode */
 ```
 
-To dress a client's font, install their family and point the three tokens in
-their theme selector, together with the colors. Without
-`@rivocode/ui/fonts.css`, no RivoCode `.woff2` is downloaded:
+Para vestir a fonte de um cliente, instale a família dele e aponte os três
+tokens no seletor do tema dele, junto com as cores. Sem
+`@rivocode/ui/fonts.css`, nenhum `.woff2` da RivoCode é baixado:
 
 ```css
 @import "@rivocode/ui/styles.css";
@@ -132,33 +129,32 @@ their theme selector, together with the colors. Without
   --rc-font-display: "Inter Variable", system-ui, sans-serif;
   --rc-font-mono: ui-monospace, SFMono-Regular, monospace;
 
-  /* ...and the fifty color roles. */
+  /* …e os cinquenta papéis de cor. */
 }
 ```
 
-That is how two clients with different fonts coexist in the same application:
-each `data-rc-theme` carries its family, and the switch happens by selector,
-like the color one.
+É assim que dois clientes com fontes diferentes convivem na mesma aplicação:
+cada `data-rc-theme` carrega a sua família, e a troca acontece por seletor,
+como a de cor.
 
-### Weight is also a token, and has an intent name
+### O peso também é token, e tem nome de intenção
 
-The pieces do not write `font-medium` or `font-semibold`: they write the
-intent, and the number lives in `--rc-weight-*`, with the house value in
-`:root` and optional in the theme.
+As peças não escrevem `font-medium` nem `font-semibold`: escrevem a intenção, e
+o número mora em `--rc-weight-*`, com o valor da casa em `:root` e opcional no
+tema.
 
-| Class | Token | House | When |
+| Classe | Token | Casa | Quando |
 |---|---|---|---|
-| `font-rc-regular` | `--rc-weight-regular` | 400 | body |
-| `font-rc-medium` | `--rc-weight-medium` | 500 | label, button, tab, table header |
-| `font-rc-strong` | `--rc-weight-strong` | 600 | strong emphasis in the body |
-| `font-rc-bold` | `--rc-weight-bold` | 700 | rich text bold, marketing call-out |
-| `font-rc-display` | `--rc-weight-display` | 600 | all text in `font-display` |
+| `font-rc-regular` | `--rc-weight-regular` | 400 | corpo |
+| `font-rc-medium` | `--rc-weight-medium` | 500 | rótulo, botão, aba, cabeçalho de tabela |
+| `font-rc-strong` | `--rc-weight-strong` | 600 | ênfase forte no corpo |
+| `font-rc-bold` | `--rc-weight-bold` | 700 | negrito de texto rico, chamada de marketing |
+| `font-rc-display` | `--rc-weight-display` | 600 | todo texto em `font-display` |
 
-On your screen, use the same ones when the text has to follow the client's
-font: `font-display font-rc-display` on a hand-built title takes the weight the
-theme decided, and `font-semibold` stays hardcoded at 600 even if the family
-does not have it. A theme that swaps the font redefines the weight in the same
-selector:
+Na sua tela, use as mesmas quando o texto tem que seguir a fonte do cliente:
+`font-display font-rc-display` num título montado à mão pega o peso que o tema
+decidiu, e `font-semibold` fica cravado em 600 mesmo que a família não o tenha.
+O tema que troca a fonte redefine o peso no mesmo seletor:
 
 ```css
 [data-rc-theme="cliente-acme"] {
@@ -167,19 +163,20 @@ selector:
 }
 ```
 
-The library's `cn` knows the five classes: `cn("font-rc-medium", className)`
-with `font-rc-strong` in `className` keeps the second, and `font-display` next
-to `font-rc-display` do not cancel each other. In React Native the five exist
-with the same values, in the package's `theme.css`.
+O `cn` da biblioteca conhece as cinco classes: `cn("font-rc-medium", className)`
+com `font-rc-strong` no `className` fica com a segunda, e `font-display` ao lado
+de `font-rc-display` não se anulam. No React Native as cinco existem com os
+mesmos valores, no `theme.css` do pacote.
 
-### The four subpaths
+### Os quatro subcaminhos
 
-Besides the main package, four families live in subpaths and arrive through
-the same global:
+Alem do pacote principal, quatro familias vivem em subcaminhos e chegam pelo
+mesmo global:
 
-- **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` and the adapters
-  `forDate`, `forValue`, `forChecked`: the name says the shape, and not the
-  piece. The control comes through a function, not by cloning the child:
+- **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
+  `forDate`, `forValue`, `forChecked`: o nome diz o formato, e não a peça.
+  O controle vem por funcao,
+  nao por clonagem do filho:
 
   ```tsx
   <FormField name="email" label="E-mail" description="Para onde vai a nota">
@@ -187,14 +184,13 @@ the same global:
   </FormField>
   ```
 
-- **`@rivocode/ui/chart`**, Recharts dressed by the theme.
+- **`@rivocode/ui/chart`**, a Recharts vestida pelo tema.
 
-  The frame is `ChartContainer`, which also receives the four endings of a
-  query: `isLoading`, `isError`, `onRetry` and `empty`. **The height is yours,
-  by class: a chart without a defined height disappears.**
+  A moldura e o `ChartContainer`, que recebe tambem os quatro finais de uma
+  consulta: `isLoading`, `isError`, `onRetry` e `empty`. **A altura e sua, por
+  classe: grafico sem altura definida some.**
 
-  Each series' color comes from `config` and becomes a variable named after the
-  series:
+  A cor de cada serie vem do `config` e vira variavel com o nome da serie:
 
   ```tsx
   const config = { pagas: { label: "Pagas" } }
@@ -209,28 +205,28 @@ the same global:
   </ChartContainer>
   ```
 
-  | Piece | What for |
+  | Peca | Para que |
   |---|---|
-  | `ChartXAxis`, `ChartYAxis` | Axes with the right default already, and `format` for the number |
-  | `ChartTooltip`, `ChartTooltipContent` | The tooltip, with the name from `config` |
-  | `ChartLegend`, `ChartLegendContent` | The legend. With `useSeriesToggle` it becomes a filter |
-  | `ChartAreaGradient`, `areaGradient(id, series)` | Area gradient. The `id` is yours, and it has to be unique on the page |
-  | `ChartDonut` | Donut with the total in the hole, and the list of slices below |
-  | `ChartRadial` | The arc of a single measure: goal, quota, conversion |
-  | `ChartGauge` | Gauge from 0 to `max` with bands (good, attention, critical) and the value written in the middle |
-  | `ChartHeatmap` | Row-by-column grid, the color telling the size: issuances by day and hour |
-  | `ChartFunnel` | The stages of a path, with the conversion rate from one to the next |
-  | `ChartTreemap` | Area proportional to each category, with the label that disappears when it does not fit |
-  | `Sparkline` | The tiny line that fits inside an indicator |
+  | `ChartXAxis`, `ChartYAxis` | Eixos com o padrao ja certo, e `format` para o numero |
+  | `ChartTooltip`, `ChartTooltipContent` | A dica, com o nome do `config` |
+  | `ChartLegend`, `ChartLegendContent` | A legenda. Com `useSeriesToggle` ela vira filtro |
+  | `ChartAreaGradient`, `areaGradient(id, serie)` | Gradiente de area. O `id` e seu, e precisa ser unico na pagina |
+  | `ChartDonut` | Rosca com o total no buraco, e lista de fatias embaixo |
+  | `ChartRadial` | O arco de uma medida so: meta, cota, conversao |
+  | `ChartGauge` | Medidor de 0 a `max` com faixas (bom, atencao, critico) e o valor escrito no meio |
+  | `ChartHeatmap` | Grade de linha por coluna, a cor dizendo o tamanho: emissoes por dia e hora |
+  | `ChartFunnel` | As etapas de um caminho, com a taxa de conversao de uma para a seguinte |
+  | `ChartTreemap` | Area proporcional por categoria, com o rotulo que some quando nao cabe |
+  | `Sparkline` | A linha miuda que cabe dentro de um indicador |
 
-  `ChartContainer` takes care of motion on its own: every mark that animates
-  (`Line`, `Bar`, `Area`, `Pie`, `Radar`, `RadialBar`, `Scatter`) comes out with
-  `animationDuration` from `--rc-duration-slow`, `animationEasing` from
-  `--rc-ease` and `isAnimationActive` on before the mark mounts, and off with
-  "reduce motion". The first time it appears with data, the chart draws itself,
-  and when the data changes each mark moves to the new value. A mark with
-  `isAnimationActive={false}` stays still. `useChartMotion()` returns the same
-  trio for whoever draws with Recharts outside the frame:
+  O `ChartContainer` cuida do movimento sozinho: toda marca que anima (`Line`,
+  `Bar`, `Area`, `Pie`, `Radar`, `RadialBar`, `Scatter`) sai com
+  `animationDuration` de `--rc-duration-slow`, `animationEasing` de `--rc-ease`
+  e `isAnimationActive` ligado antes de a marca montar, e desligado com "reduzir
+  movimento". Na primeira vez que aparece com dados, o grafico se desenha, e
+  quando o dado muda cada marca anda ate o valor novo. Marca com
+  `isAnimationActive={false}` fica parada. O `useChartMotion()` devolve o mesmo
+  trio para quem desenha com a Recharts fora da moldura:
 
   ```tsx
   const movimento = useChartMotion()
@@ -238,42 +234,41 @@ the same global:
   <Line dataKey="pagas" stroke="var(--color-pagas)" {...movimento} />
   ```
 
-  `ChartDonut` and `ChartRadial` enter sweeping from zero and move to the new
-  value the same way; `Sparkline` only fades on entering, and does not move on
-  data change, because it appears by the dozen in a table.
+  A `ChartDonut` e a `ChartRadial` entram varrendo do zero e andam ate o valor
+  novo do mesmo jeito; a `Sparkline` so esmaece ao entrar, e nao anda na troca
+  de dados, porque aparece as dezenas numa tabela.
 
-  The four at the bottom do not use Recharts and do not go into
-  `ChartContainer`: the four endings of a query come from the `QueryBoundary`
-  around them. The `ChartHeatmap` scale is a single series color, in five ink
-  steps; `ChartTreemap` writes the label in `fg` over the category color at
-  30%, a pair the contrast guard measures in all eight series; and
-  `ChartGauge` paints the bands with the `success-text`, `warning-text` and
-  `danger-text` roles. None of the four depends on color alone: the number is in
-  the tooltip, in a table or list hidden from view, or written on the screen.
+  As quatro de baixo nao usam a Recharts e nao entram no `ChartContainer`: os
+  quatro finais de uma consulta vem do `QueryBoundary` em volta delas. A escala
+  do `ChartHeatmap` e uma cor de serie so, em cinco degraus de tinta; o
+  `ChartTreemap` escreve o rotulo em `fg` sobre a cor da categoria a 30%, par
+  que a guarda de contraste mede nas oito series; e o `ChartGauge` pinta as
+  faixas com os papeis `success-text`, `warning-text` e `danger-text`. Nenhuma
+  das quatro depende de cor sozinha: o numero esta na dica, numa tabela ou lista
+  escondida da vista, ou escrito na tela.
 
-  The axis and tooltip formatters are the same as the rest of the library's,
-  and are right below.
+  Os formatadores do eixo e da dica sao os mesmos do resto da biblioteca, e
+  estao logo abaixo.
 
-  The Recharts pieces that come out of here: `Area`, `AreaChart`, `Bar`,
+  As pecas da Recharts que saem por aqui: `Area`, `AreaChart`, `Bar`,
   `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`, `Cell`, `Scatter`,
   `ScatterChart`, `Radar`, `RadarChart`, `RadialBar`, `RadialBarChart`,
   `PolarGrid`, `PolarAngleAxis`, `PolarRadiusAxis`, `CartesianGrid`, `XAxis`,
-  `YAxis`, `ZAxis`, `LabelList`, `Rectangle`, `ReferenceLine` and
-  `ReferenceArea`. Its `Tooltip` and `Legend` do **not**: ours already wrap
-  both, and the name would collide with the catalog's `Tooltip`.
+  `YAxis`, `ZAxis`, `LabelList`, `Rectangle`, `ReferenceLine` e
+  `ReferenceArea`. O `Tooltip` e o `Legend` dela **nao**: os nossos ja embrulham
+  os dois, e o nome colidiria com o `Tooltip` do catalogo.
 
-**Series palette:** eight colors per theme, in `var(--rc-chart-1)` to
-`var(--rc-chart-8)`, plus `var(--rc-chart-grid)` for the grid. Here the
-variable comes before the property class: the stylesheet you receive is the
-compiled one, and a utility class no component uses does not exist in it. The
-variable always resolves.
+**Paleta de serie:** oito cores por tema, em `var(--rc-chart-1)` a
+`var(--rc-chart-8)`, mais `var(--rc-chart-grid)` para a grade. Aqui a variavel
+vem antes da classe de propriedade: a folha que voce recebe e a compilada, e
+uma classe utilitaria que nenhum componente usa nao existe nela. A variavel
+sempre resolve.
 
-- **`@rivocode/ui/ai`**, the pieces for a conversation with an assistant. It
-  has no peer at all: it is a subpath because of WEIGHT, since only an app that
-  talks to a model needs them, and it does not charge whoever builds invoices.
-  **None knows an AI SDK**: the message comes in by prop, and what the person
-  does comes out by event. Whoever talks to the model is your screen, with the
-  SDK it already uses.
+- **`@rivocode/ui/ai`**, as pecas de conversa com um assistente. Nao tem peer
+  nenhum: ele e subcaminho pelo PESO, porque so app que conversa com um modelo
+  precisa delas, e nao cobra de quem monta nota fiscal. **Nenhuma conhece SDK
+  de IA**: a mensagem entra por prop, e o que a pessoa faz sai por evento. Quem
+  fala com o modelo e a sua tela, com o SDK que ela ja usa.
 
   ```tsx
   import { Conversation, Message, PromptInput, ToolCall, AILabel } from '@rivocode/ui/ai'
@@ -290,20 +285,20 @@ variable always resolves.
   </div>
   ```
 
-  | Piece | What for |
+  | Peca | Para que |
   |---|---|
-  | `PromptInput` | The field: grows with the text, Enter sends, Shift+Enter breaks the line, and in `streaming` send becomes stop (`onStop`) |
-  | `Message` | One turn: `role` `user`, `assistant` or `system` decides the look; `streaming` announces `aria-busy` and hides copy and retry |
-  | `Conversation` | The scrollable list: sticks to the end while the text arrives, lets go when the person scrolls up, and is a polite `role="log"` |
-  | `ToolCall` | The tool call: five states with icon and text, input and output in `CodeBlock`, and approve and reject in `approval` |
-  | `AILabel` | The "IA" badge for generated content, with an optional explanation in a panel. `aiLabelVariants` comes along, for whoever needs the class |
+  | `PromptInput` | O campo: cresce com o texto, Enter envia, Shift+Enter quebra a linha, e em `streaming` o enviar vira parar (`onStop`) |
+  | `Message` | Um turno: `role` `user`, `assistant` ou `system` decide o desenho; `streaming` anuncia `aria-busy` e esconde copiar e tentar de novo |
+  | `Conversation` | A lista rolavel: gruda no fim enquanto o texto chega, solta quando a pessoa rola para cima, e e `role="log"` educado |
+  | `ToolCall` | A chamada de ferramenta: cinco estados com icone e texto, entrada e saida no `CodeBlock`, e aprovar e recusar em `approval` |
+  | `AILabel` | O selo "IA" do conteudo gerado, com explicacao opcional num painel. `aiLabelVariants` sai junto, para quem precisa da classe |
 
-  **The `Conversation` height is yours, by class**, like the chart's: without
-  it the conversation grows and pushes the page.
+  **A altura da `Conversation` e sua, por classe**, como a do grafico: sem ela
+  a conversa cresce e empurra a pagina.
 
-- **`@rivocode/ui/dnd`**, drag and drop. Optional peer: `@dnd-kit/core` and
-  `@dnd-kit/sortable`, installed by whoever imports this path, and by nobody
-  else.
+- **`@rivocode/ui/dnd`**, arrastar e soltar. Peer opcional: `@dnd-kit/core` e
+  `@dnd-kit/sortable`, instalados por quem importa este caminho, e por mais
+  ninguem.
 
   ```bash
   npm install @dnd-kit/core @dnd-kit/sortable
@@ -321,25 +316,24 @@ variable always resolves.
   />
   ```
 
-  | Piece | What for |
+  | Peca | Para que |
   |---|---|
-  | `SortableList` | The list the person orders by hand: a handle with the grab icon, vertical or horizontal, and `handle={false}` with `handleProps` for the handle to be yours |
-  | `Kanban` | The column board: card between columns and within them, count, a `limit` that warns and does not lock, an empty column that accepts drops |
+  | `SortableList` | A lista que a pessoa ordena a mao: alca com o icone de pegar, vertical ou horizontal, e `handle={false}` com `handleProps` para a alca ser sua |
+  | `Kanban` | O quadro de colunas: cartao entre colunas e dentro delas, contagem, `limit` que avisa e nao tranca, coluna vazia que recebe |
 
-  **Both are controlled.** The new order comes out ready in `onReorder`, and the
-  board change comes out in `onMove({ itemId, from, to, index })`; whoever
-  swaps `items` or `columns` is your screen. Without swapping, the item goes
-  back in place.
+  **As duas sao controladas.** A ordem nova sai pronta em `onReorder`, e a
+  mudanca do quadro sai em `onMove({ itemId, from, to, index })`; quem troca
+  `items` ou `columns` e a sua tela. Sem trocar, o item volta ao lugar.
 
-  **The keyboard is not optional**: Space picks up, arrows move, Space drops,
-  Esc cancels, and each step is announced in Portuguese ("Item Nota 1043
-  movido para a posicao 3 de 8"). `getLabel` gives the name the announcement
-  speaks, and `labels` swaps any phrase. The neighbors move with the tokens'
-  spatial spring, and with "reduce motion" they swap places without sliding.
+  **O teclado nao e opcional**: Espaco pega, setas movem, Espaco solta, Esc
+  cancela, e cada passo e anunciado em portugues ("Item Nota 1043 movido para
+  a posicao 3 de 8"). `getLabel` da o nome que o anuncio fala, e `labels` troca
+  qualquer frase. Os vizinhos andam com a mola espacial dos tokens, e com
+  "reduzir movimento" trocam de lugar sem deslizar.
 
-- **`@rivocode/ui/editor`**, formatted text, on Tiptap 3. The peers are
-  OPTIONAL and only this path demands them: `@tiptap/react`, `@tiptap/pm`,
-  `@tiptap/core`, `@tiptap/starter-kit` and `@tiptap/extensions`.
+- **`@rivocode/ui/editor`**, o texto com formatacao, sobre o Tiptap 3. Os peers
+  sao OPCIONAIS e so este caminho os cobra: `@tiptap/react`, `@tiptap/pm`,
+  `@tiptap/core`, `@tiptap/starter-kit` e `@tiptap/extensions`.
 
   ```tsx
   import { RichTextEditor, RichTextView } from '@rivocode/ui/editor'
@@ -352,29 +346,28 @@ variable always resolves.
   <RichTextView value={nota.descricao} empty="Sem descrição." />
   ```
 
-  | Piece | What for |
+  | Peca | Para que |
   |---|---|
-  | `RichTextEditor` | The field: toolbar with arrows and `aria-pressed`, shortcuts, link with a panel, `value` in HTML and optional `onJsonChange`, `maxLength` with a counter. The blank editor delivers `""`, and in a form the adapter is `forValue` plus `onBlur` |
-  | `RichTextView` | Displays the saved HTML or JSON with the same typography, without `innerHTML` and without Tiptap: only the editor's blocks and marks, and links only `http`, `https`, `mailto`, `tel` or relative |
+  | `RichTextEditor` | O campo: barra de ferramentas com setas e `aria-pressed`, atalhos, link com painel, `value` em HTML e `onJsonChange` opcional, `maxLength` com contador. O editor em branco entrega `""`, e no formulario o adaptador e o `forValue` mais o `onBlur` |
+  | `RichTextView` | Exibe o HTML ou o JSON salvo com a mesma tipografia, sem `innerHTML` e sem o Tiptap: so os blocos e marcas do editor, e link so `http`, `https`, `mailto`, `tel` ou relativo |
 
-  **The editor does not mount on the server** (`immediatelyRender: false`): in
-  its place comes the already formatted content, and it becomes editable when
-  the JavaScript arrives. The HTML that reaches the server is user input like
-  any other; displayed through a path other than `RichTextView`, run it through
-  a sanitizer.
+  **O editor nao monta no servidor** (`immediatelyRender: false`): no lugar
+  dele sai o conteudo ja formatado, e ele vira editavel quando o JavaScript
+  chega. O HTML que chega ao servidor e entrada de usuario como qualquer outra;
+  exibido por outro caminho que nao o `RichTextView`, passe por sanitizador.
 
-### Formatting the number
+### Formatar o numero
 
-A single vocabulary, for the axis, the tooltip, the indicator, the table cell
-and a control's label. They were born in the chart subpath and today come out
-**also from the root**, because formatting money in a cell was never a chart
-matter:
+Um vocabulario so, para o eixo, a dica, o indicador, a celula da tabela e o
+rotulo de um controle. Eles nasceram no subcaminho do grafico e saem hoje
+**tambem pela raiz**, porque formatar dinheiro numa celula nunca foi assunto de
+grafico:
 
 ```tsx
 import { currencyShort, percent, formatters } from '@rivocode/ui'
 ```
 
-| Formatter | Writes |
+| Formatador | Escreve |
 |---|---|
 | `currency` | `R$ 2.480,00` |
 | `currencyShort` | `R$ 2,5K` |
@@ -382,26 +375,26 @@ import { currencyShort, percent, formatters } from '@rivocode/ui'
 | `compact` | `12,4K` |
 | `compactWords` | `12,4 mil` |
 | `integer` | `1.240` |
-| `percent` | `62%`, from the number as it is in the data |
+| `percent` | `62%`, do numero como ele esta no dado |
 | `monthShort` | `mar` |
 | `dayMonth` | `12/03` |
 
-`compact` abbreviates with a symbol, which is the dashboard convention and fits
-in fewer pixels. `compactWords` and `currencyShortWords` write it out, which
-reads better in running text. **Do not mix the two on the same screen.**
+`compact` abrevia com simbolo, que e a convencao de painel e cabe em menos
+pixel. `compactWords` e `currencyShortWords` escrevem por extenso, que le melhor
+em texto corrido. **Nao misture as duas na mesma tela.**
 
-**Money comes out abbreviated.** Use `currencyShort` in indicators, tables,
-axes, legends and tooltips. `currency`, which writes it out in full, is for the
-place where the cent is the subject: the amount the person confirms before
-issuing, and the receipt afterwards.
+**Dinheiro sai abreviado.** Use `currencyShort` em indicador, tabela, eixo,
+legenda e dica. O `currency`, que escreve por extenso, fica para o lugar onde o
+centavo e o assunto: o valor que a pessoa confirma antes de emitir, e o
+comprovante depois.
 
-**The `format` prop accepts the name of one of them, or a function of yours.**
-It exists on `Meter`, `Progress`, `Slider`, `ChartXAxis`, `ChartYAxis` and
-`ChartDonut` - the type is `Format`, and `FormatName` is just the name. The
-`formatters` object gathers all nine, for whoever builds the choice at runtime.
-`@rivocode/ui-native` exports the same nine from the root, from the same file,
-and `format` works the same on its `Meter`, `Progress`, `Slider`, `ChartDonut`
-and on its `Stat`'s `deltaFormat`:
+**A prop `format` aceita o nome de um deles, ou uma funcao sua.** Ela existe no
+`Meter`, no `Progress`, no `Slider`, no `ChartXAxis`, no `ChartYAxis` e no
+`ChartDonut` - o tipo e `Format`, e `FormatName` e so o nome. O objeto
+`formatters` reune os nove, para quem monta a escolha em runtime. O
+`@rivocode/ui-native` exporta os mesmos nove pela raiz, do mesmo arquivo, e o
+`format` vale igual no `Meter`, no `Progress`, no `Slider`, no `ChartDonut` e no
+`deltaFormat` do `Stat` de la:
 
 ```tsx
 <Meter value={72} format="percent" />
@@ -409,60 +402,59 @@ and on its `Stat`'s `deltaFormat`:
 <Slider defaultValue={25} max={50} format={(valor) => `${valor} dias`} />
 ```
 
-Date and mask have their own, for the same reason: `formatDate`, `parseDate`
-and `applyDateMask` for `dd/mm/aaaa`, and `applyMask`, `applyPattern`,
-`applyCurrencyMask`, `unmask`, `toCents` and `phonePatternFor` for the patterns
-in `MASKS`. Formatting a CPF in a table cell does not need a field nearby.
-`isValidCpf` and `isValidCnpj` check the check digits, with or without
-punctuation and with the alphanumeric CNPJ. `isValidCnh`, `isValidVoterId`
-(voter ID), `isValidPis` (PIS, PASEP, NIT and NIS), `isValidRenavam` (the
-9-digit one still counts) and `isValidPlate` (the old one and Mercosul) follow
-the same pattern: text with or without punctuation, `true` or `false`, and no
-registry lookup. All of them also exist in native, with the same math, and the
-site's "Documentos brasileiros" guide says what each one checks.
+Data e mascara tem as suas, pelo mesmo motivo: `formatDate`, `parseDate` e
+`applyDateMask` para `dd/mm/aaaa`, e `applyMask`, `applyPattern`,
+`applyCurrencyMask`, `unmask`, `toCents` e `phonePatternFor` para os moldes de
+`MASKS`. Formatar CPF numa celula de tabela nao precisa de um campo por perto.
+`isValidCpf` e `isValidCnpj` conferem os digitos verificadores, com ou sem
+pontuacao e com o CNPJ alfanumerico. `isValidCnh`, `isValidVoterId` (titulo de
+eleitor), `isValidPis` (PIS, PASEP, NIT e NIS), `isValidRenavam` (o de 9 digitos
+continua valendo) e `isValidPlate` (a antiga e a Mercosul) seguem o mesmo
+molde: texto com ou sem pontuacao, `true` ou `false`, e nenhuma consulta a
+cadastro. Todas existem tambem no nativo, pela mesma conta, e o guia
+"Documentos brasileiros" do site diz o que cada uma confere.
 
-Pix has its three, in both packages and from the root: `buildPixPayload` builds
-the static copy-and-paste code in the Central Bank's BR Code standard, with the
-CRC16 at the end; `parsePixPayload` reads it back and returns `null` when the
-CRC does not match; and `isValidPixKey` checks the key as the DICT stores it
-(CPF and CNPJ without punctuation, e-mail in lowercase, mobile with `+55`,
-random key with its hyphens). The drawing is `PixCode`.
+O Pix tem as tres dele, nos dois pacotes e pela raiz: `buildPixPayload` monta
+o copia e cola estatico no padrao BR Code do Banco Central, com o CRC16 no fim;
+`parsePixPayload` le de volta e devolve `null` quando o CRC nao confere; e
+`isValidPixKey` confere a chave como o DICT a guarda (CPF e CNPJ sem
+pontuacao, e-mail em minusculas, celular com `+55`, chave aleatoria com os
+hifens). O desenho e o `PixCode`.
 
-Typed money is `CurrencyInput`: `value` and `onValueChange` in integer cents
-(`number | null`, empty is `null`), `min` and `max` in cents that only mark it
-invalid, `allowNegative` and `name` that puts the cents in a hidden field. In
-`FormField`, `{...forValue(field)}`. Native has the same name, controlled.
+Dinheiro digitado e o `CurrencyInput`: `value` e `onValueChange` em centavos
+inteiros (`number | null`, vazio e `null`), `min` e `max` em centavos que so
+marcam invalido, `allowNegative` e `name` que poe os centavos num campo
+escondido. No `FormField`, `{...forValue(field)}`. O nativo tem o mesmo nome,
+controlado.
 
-An on-screen signature is `SignaturePad`: `value` and `onValueChange` with
-`SignatureValue | null` (the strokes in `kind: "drawn"`, or the typed name in
-`kind: "typed"`), empty is `null`, and `onValueChange` arrives at the end of
-each stroke. The type-your-name mode is the alternative for whoever does not
-draw, and it cannot be turned off. `signatureToSvg` and `signatureToPng`
-export with the fixed ink, and `isSignatureEmpty` answers whether there is a
-signature. In `FormField`, `{...forValue(field)}`. In native it lives in
-`@rivocode/ui-native/chart`, because of `react-native-svg`, and exports only
-the SVG.
+Assinatura na tela e o `SignaturePad`: `value` e `onValueChange` com
+`SignatureValue | null` (os tracos em `kind: "drawn"`, ou o nome digitado em
+`kind: "typed"`), vazio e `null`, e `onValueChange` chega ao fim de cada traco.
+O modo de digitar o nome e a alternativa de quem nao desenha, e nao se desliga.
+`signatureToSvg` e `signatureToPng` exportam com a tinta fixa, e
+`isSignatureEmpty` responde se ha assinatura. No `FormField`,
+`{...forValue(field)}`. No nativo mora em `@rivocode/ui-native/chart`, pelo
+`react-native-svg`, e exporta so o SVG.
 
-The boleto has three: `isValidBoletoLine` checks the whole typeable line - the
-bank one, 47 digits, with the three fields in modulo 10 and the general check
-digit in 11, and the utility-bill one, 48 digits starting with 8, in the
-modulo the third position asks for -, `boletoLineToBarcode` returns the
-barcode's 44 digits or `null`, and `parseBoleto` returns `BoletoData` (`kind`,
-`bank`, `amount` in cents, `dueDate`, `segment`, `line` and `barcode`) or
-`null`. It also accepts the optical reader's 44 digits. The due-date factor
-went back to 1000 on 22/02/2025, and the same factor serves two dates:
-`parseBoleto` picks the one closest to today, and `{ today }` fixes the
-reference day. `MASKS` gains the `boleto` pattern, which switches to the
-utility-bill one when the first digit is 8, and the native `MaskedInput`
-accepts the same name.
+O boleto tem tres: `isValidBoletoLine` confere a linha digitavel inteira - a de
+banco, de 47 digitos, com os tres campos no modulo 10 e o verificador geral no
+11, e a de convenio, de 48 e comecando com 8, no modulo que a terceira casa
+pede -, `boletoLineToBarcode` devolve os 44 digitos do codigo de barras ou
+`null`, e `parseBoleto` devolve `BoletoData` (`kind`, `bank`, `amount` em
+centavos, `dueDate`, `segment`, `line` e `barcode`) ou `null`. Ele aceita
+tambem os 44 digitos do leitor otico. O fator de vencimento voltou a 1000 em
+22/02/2025, e o mesmo fator serve a duas datas: `parseBoleto` escolhe a mais
+perto de hoje, e `{ today }` fixa o dia de referencia. `MASKS` ganha o molde
+`boleto`, que troca para o de convenio quando o primeiro digito e 8, e o
+`MaskedInput` nativo aceita o mesmo nome.
 
-### What CSS does not reach
+### O que o CSS nao alcanca
 
-`useMobile()` is true below Tailwind's `sm`, at the same breakpoint the sidebar
-uses to become a sheet and the calendar to show a single month. It is exported
-so the application decides together, instead of writing its own `640` in some
-corner: when each screen keeps its own number, one of them changes and the two
-halves start to disagree about what a phone is.
+`useMobile()` e verdadeiro abaixo do `sm` do Tailwind, no mesmo corte que a
+barra lateral usa para virar folha e o calendario para mostrar um mes so. Ele
+existe exportado para a aplicacao decidir junto, em vez de escrever o proprio
+`640` num canto: quando cada tela guarda o seu numero, uma delas muda e as duas
+metades passam a discordar sobre o que e celular.
 
 ```tsx
 const isMobile = useMobile()
@@ -470,36 +462,36 @@ const isMobile = useMobile()
 return isMobile ? <Sheet>{filtros}</Sheet> : <aside>{filtros}</aside>
 ```
 
-`useMediaQuery(query)` is the general one, for any other question only JS
-answers. **Layout is still a job for utility classes**: swapping
-`grid-cols-3` for `grid-cols-1` is a matter for `sm:`, and not for a hook. The
-hook is for what changes piece, not size. On the server it returns `false`,
-and not a guess.
+`useMediaQuery(query)` e o geral, para qualquer outra pergunta que so o JS
+responde. **Layout continua sendo trabalho de classe utilitaria**: trocar
+`grid-cols-3` por `grid-cols-1` e assunto de `sm:`, e nao de hook. O hook e para
+o que muda de peca, e nao de tamanho. No servidor ele devolve `false`, e nao um
+palpite.
 
-Inside a `SidebarProvider`, prefer `useSidebar().isMobile`: it is the same
-value, and avoids a second subscriber to the same media query.
+Dentro de um `SidebarProvider`, prefira `useSidebar().isMobile`: e o mesmo
+valor, e evita um segundo assinante da mesma media query.
 
-### Utility hooks
+### Hooks utilitarios
 
-The root exports the hooks every screen rewrites, with no new dependency.
-Before writing a `useEffect` with `setTimeout`, `addEventListener` or
-`localStorage`, look here. All of them clean up timers, listeners and observers
-on unmount, and all of them render on the server without touching `window`.
+A raiz exporta os hooks que toda tela reescreve, sem dependencia nova. Antes de
+escrever `useEffect` com `setTimeout`, `addEventListener` ou `localStorage`,
+procure aqui. Todos limpam timer, escuta e observer no desmonte, e todos
+renderizam no servidor sem tocar em `window`.
 
-- **State:** `useDisclosure` (`[open, { open, close, toggle }]`),
-  `useToggle`, `useCounter` (floor, ceiling, step), `useListState` (`append`,
+- **Estado:** `useDisclosure` (`[aberto, { open, close, toggle }]`),
+  `useToggle`, `useCounter` (piso, teto, passo), `useListState` (`append`,
   `prepend`, `insert`, `remove`, `reorder`, `swap`, `replace`, `update`,
-  `filter`, all immutable), `useSetState` (merges the partial), `usePrevious`
-  (the previous DIFFERENT value).
-- **Time:** `useDebouncedValue`, `useDebouncedCallback`,
-  `useThrottledCallback` (with `cancel`, `flush`, `isPending`), `useInterval`
-  and `useTimeout` (a `null` delay pauses), `useIdle`.
-- **Browser:** `useLocalStorage` and `useSessionStorage` (JSON, default on the
-  server, syncs across tabs through the `storage` event, falls back to memory
-  if storage throws), `useClickOutside`, `useHotkeys` (`mod` is Cmd on Mac and
-  Ctrl elsewhere; ignores text fields by default), `useInfiniteScroll`
-  (sentinel, `hasMore`, `loading`), `useIntersection`, `useElementSize`,
-  `useClipboard` (`copied` resets itself), `useReducedMotion`,
+  `filter`, todos imutaveis), `useSetState` (mescla o parcial), `usePrevious`
+  (o valor anterior DIFERENTE).
+- **Tempo:** `useDebouncedValue`, `useDebouncedCallback`,
+  `useThrottledCallback` (com `cancel`, `flush`, `isPending`), `useInterval` e
+  `useTimeout` (atraso `null` pausa), `useIdle`.
+- **Navegador:** `useLocalStorage` e `useSessionStorage` (JSON, padrao no
+  servidor, sincroniza entre abas pelo evento `storage`, cai para memoria se o
+  armazenamento lancar), `useClickOutside`, `useHotkeys` (`mod` e Cmd no Mac e
+  Ctrl fora; ignora campo de texto por padrao), `useInfiniteScroll`
+  (sentinela, `hasMore`, `loading`), `useIntersection`, `useElementSize`,
+  `useClipboard` (`copied` volta sozinho), `useReducedMotion`,
   `useDocumentTitle`, `useNetworkStatus`, `useMounted`, `useIsFirstRender`.
 
 ```tsx
@@ -508,64 +500,60 @@ const [settled] = useDebouncedValue(query, 300)
 const [opened, { open, close }] = useDisclosure()
 ```
 
-The piece comes before the hook: `Popover`, `Menu`, `Dialog` and `Sheet`
-already close on click outside, and `Clipboard` already is the copy button.
-`useFocusTrap` does not exist on purpose: Base UI traps focus in modal
-overlays.
+A peca vem antes do hook: `Popover`, `Menu`, `Dialog` e `Sheet` ja fecham no
+clique fora, e o `Clipboard` ja e o botao de copiar. `useFocusTrap` nao existe
+de proposito: a Base UI prende o foco nas sobreposicoes modais.
 
-In native, the root exports the twelve that do not depend on the browser,
-generated from the same source as the web: `useDisclosure`, `useToggle`,
-`useCounter`, `useListState`, `useSetState`, `usePrevious`,
-`useIsFirstRender`, `useDebouncedValue`, `useDebouncedCallback`,
-`useThrottledCallback`, `useInterval` and `useTimeout`.
+No nativo, a raiz exporta os doze que nao dependem do navegador, gerados da
+mesma fonte do web: `useDisclosure`, `useToggle`, `useCounter`, `useListState`,
+`useSetState`, `usePrevious`, `useIsFirstRender`, `useDebouncedValue`,
+`useDebouncedCallback`, `useThrottledCallback`, `useInterval` e `useTimeout`.
 
-### The native package, and its five subpaths
+### O pacote nativo, e os cinco subcaminhos dele
 
-`@rivocode/ui-native` is the same catalog in React Native, published as
-**source**: the class vocabulary above is the same, through NativeWind, on the
-same tokens. What crosses over is the class, the token and the choice of piece:
-**the JSX is rewritten**. In native everything is controlled (no
-`defaultValue`, no `defaultChecked`, no `defaultOpen`; the exception is
-`Accordion` and `Collapsible`, which accept both modes) and the list comes
-through `items`, and not by composition:
-`<Select items={…} value onValueChange label />`, without `SelectTrigger` or
-`SelectItem`.
+`@rivocode/ui-native` é o mesmo catálogo em React Native, publicado como
+**fonte**: o vocabulário de classes acima é o mesmo, via NativeWind, sobre os
+mesmos tokens. O que atravessa é a classe, o token e a escolha da peça: **o
+JSX se reescreve**. No nativo tudo é controlado (sem `defaultValue`, sem
+`defaultChecked`, sem `defaultOpen`; a exceção é `Accordion` e `Collapsible`,
+que aceitam os dois modos) e a lista vem por `items`, e não por
+composição: `<Select items={…} value onValueChange label />`, sem
+`SelectTrigger` nem `SelectItem`.
 
-**The class crosses over with the same address.** `className` dresses the
-root, and a native piece that accepts `classNames` uses the same keys as the
-web page's "Parts" section: `<Banner classNames={{ title: 'font-rc-strong' }} />`
-is written the same in both packages, and the consumer's class beats the
-piece's. A part native does not draw stays out of the type, and does not
-become an invented node (`Carousel`'s `pause`, without `autoplay`; `QRCode`'s
-`code`, which is `Svg` and takes no class). In React Native text color does
-not flow down from `View` to `Text`: to paint text, dress the part that is the
-text itself. There is no `<part>ClassName` prop in either package: where the
-web composes pieces and native draws a single one, the pieces become parts
-(`<InputGroup classNames={{ prefix }} />`, `<Menu classNames={{ trigger }} />`).
-The exception is the native `ScrollArea`'s `contentContainerClassName`, the
-name `ScrollView` already gives the scrolling content.
+**A classe atravessa com o mesmo endereço.** `className` veste a raiz, e a
+peça nativa que aceita `classNames` usa as mesmas chaves da seção "Partes" da
+página web: `<Banner classNames={{ title: 'font-rc-strong' }} />` se escreve
+igual nos dois pacotes, e a classe de quem usa vence a da peça. Parte que o
+nativo não desenha fica fora do tipo, e não vira nó inventado (o `pause` do
+`Carousel`, sem `autoplay`; o `code` do `QRCode`, que é `Svg` e não recebe
+classe). No React Native a cor de texto não desce de `View` para `Text`: para
+pintar texto, vista a parte que é o próprio texto. Não há prop
+`<parte>ClassName` em nenhum dos dois pacotes: onde o web compõe peças e o
+nativo desenha uma só, as peças viram partes (`<InputGroup classNames={{ prefix
+}} />`, `<Menu classNames={{ trigger }} />`). A exceção é o
+`contentContainerClassName` do `ScrollArea` nativo, nome que a `ScrollView` já
+dá ao conteúdo que rola.
 
-**The spoken name is `label` on native pieces**, in place of the web's
-`aria-label`: `Checkbox` and `Switch` with no text beside them require
-`label`, and `OTPField` and `SignaturePad` accept it. `accessibilityLabel`
-stays only where the piece is the platform's `TextInput` and on `Item`, whose
-row already has text.
+**O nome falado é `label` nas peças nativas**, no lugar do `aria-label` do
+web: o `Checkbox` e o `Switch` sem texto ao lado exigem `label`, e o
+`OTPField` e o `SignaturePad` o aceitam. `accessibilityLabel` fica só onde a
+peça é o `TextInput` da plataforma e no `Item`, cuja linha já tem texto.
 
-The rule that shapes the package is **one subpath per peer, and not one per
-subject**. Four peers are optional, and the peer decides where the door is: on
-the phone an Expo module and `react-native-svg` cost **build**, and not just
-bytes, and metro resolves imports per file. So whoever only wants a `Button`
-cannot find any of them in the root index. Putting `Clipboard` and
-`FileUpload` in a single door, an `/expo`, would charge the document picker to
-whoever only copies an NF-e access key; that is why there are two. The written
-exception is `/ai`, which has no peer and is its own path because of weight,
-explained further below.
+A regra que desenha o pacote é **um subcaminho por peer, e não um por
+assunto**. Quatro peers são opcionais, e é o peer que decide onde a porta
+fica: no celular um módulo do Expo e o `react-native-svg` custam **build**, e
+não só bytes, e o metro resolve import por arquivo. Então quem só quer um
+`Button` não pode encontrar nenhum deles no índice da raiz. Juntar `Clipboard`
+e `FileUpload` numa porta só, um `/expo`, cobraria o seletor de documentos de
+quem apenas copia a chave de acesso de uma NF-e; por isso são duas. A
+exceção escrita é o `/ai`, que não tem peer e é caminho próprio pelo peso,
+explicado mais abaixo.
 
-| Subpath | The peer it costs | What comes out of it |
+| Subcaminho | O peer que ele custa | O que sai por ele |
 |---|---|---|
-| `@rivocode/ui-native/form` | `react-hook-form`, plus `zod` and `@hookform/resolvers` for `useZodForm` | `Form`, `FormField`, `useZodForm` and the adapters `forText`, `forValue`, `forChecked`, `forDate` |
-| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, `ChartGauge`, `ChartHeatmap`, `ChartFunnel`, `ChartTreemap`, the `ChartBar` and `ChartLine` marks, `PALETTE`, and `QRCode` and `PixCode`, which draw with the same peer |
-| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, the `ChartBar` and `ChartLine` marks, `PALETTE`, `QRCode`, `PixCode` and `SignaturePad` (with `signatureToSvg` and `isSignatureEmpty`), which draw with the same peer |
+| `@rivocode/ui-native/form` | `react-hook-form`, mais `zod` e `@hookform/resolvers` no `useZodForm` | `Form`, `FormField`, `useZodForm` e os adaptadores `forText`, `forValue`, `forChecked`, `forDate` |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, `ChartGauge`, `ChartHeatmap`, `ChartFunnel`, `ChartTreemap`, as marcas `ChartBar` e `ChartLine`, a `PALETTE`, e o `QRCode` e o `PixCode`, que desenham com o mesmo peer |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, as marcas `ChartBar` e `ChartLine`, a `PALETTE`, o `QRCode`, o `PixCode` e o `SignaturePad` (com `signatureToSvg` e `isSignatureEmpty`), que desenham com o mesmo peer |
 | `@rivocode/ui-native/clipboard` | `expo-clipboard` | `Clipboard` |
 | `@rivocode/ui-native/file-upload` | `expo-document-picker` | `FileUpload`, `FileUploadList`, `FileUploadItem` |
 
@@ -573,182 +561,175 @@ explained further below.
 npx expo install react-native-svg expo-clipboard expo-document-picker
 ```
 
-**The form has one more adapter, `forText`**, because in native the field does
-not return an event: `TextInput` delivers the text directly, and `forValue`
-does not fit. And **nothing submits by itself**: without `<form>`, without
-`type="submit"` and without Enter, `Form` delivers `{ submit, isSubmitting }`
-through a function. The label travels in the field: without `for` or `id`,
-`FormField` puts `accessibilityLabel` and `invalid` on the row, and the adapter
-carries them to the control: as `label` on the pieces, which are named by it,
-and as `accessibilityLabel` on `Input` and `Textarea`, which are the platform's
-`TextInput`.
+**O formulário tem um adaptador a mais, o `forText`**, porque no nativo o campo
+não devolve evento: o `TextInput` entrega o texto direto, e `forValue` não
+serve. E **nada envia sozinho**: sem `<form>`, sem `type="submit"` e sem
+Enter, o `Form` entrega `{ submit, isSubmitting }` por função. O rótulo viaja
+no campo: sem `for` nem `id`, o `FormField` põe `accessibilityLabel` e
+`invalid` na linha, e o adaptador os leva ao controle: como `label` nas peças,
+que se nomeiam por ele, e como `accessibilityLabel` no `Input` e no `Textarea`,
+que são o `TextInput` da plataforma.
 
 ```tsx
 import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
 ```
 
-**The chart has no Recharts, no CSS variable, and no container that
-measures.** `ChartContainer` does all three by hand and **delivers**:
-`children` as a function receives `{ width, height, colors }`, in place of
-`var(--color-series)`, and the measurement arrives zeroed on the first frame.
-The four endings of a query (`isLoading`, `isError`, `onRetry`, `empty`) cross
-over with the same names, and the height is still yours, by class.
+**O gráfico não tem Recharts, nem variável de CSS, nem contentor que meça.** O
+`ChartContainer` faz as três coisas à mão e **entrega**: `children` como função
+recebe `{ width, height, colors }`, no lugar de `var(--color-série)`, e a
+medida chega zerada no primeiro quadro. Os quatro finais de uma consulta
+(`isLoading`, `isError`, `onRetry`, `empty`) atravessam com os mesmos nomes, e
+a altura continua sendo sua, por classe.
 
-`PALETTE` is the list of the theme's eight series roles (`chart-1` to
-`chart-8`), in the order they should be used: a series without `color` in
-`config` gets the palette's next one, and it is what `ChartDonut` walks slice
-by slice. **A series color here is a token role, never a hex.** The web
-accepts any CSS color in the same prop because there it becomes
-`var(--color-series)` and the theme stays in command; here the color the piece
-receives is the final value that goes into the drawing, and a `#22c55e` written
-there would be the only thing on the screen that does not change when the
-client switches theme.
+A `PALETTE` é a lista dos oito papéis de série do tema (`chart-1` a `chart-8`),
+na ordem em que devem ser usados: série sem `color` no `config` recebe o
+próximo da paleta, e é ela que o `ChartDonut` percorre fatia a fatia. **Cor de
+série aqui é papel de token, nunca hexadecimal.** O web aceita qualquer cor de
+CSS na mesma prop porque lá ela vira `var(--color-série)` e o tema continua no
+comando; aqui a cor que a peça recebe é o valor final que vai para o desenho, e
+um `#22c55e` escrito ali seria a única coisa da tela que não muda quando o
+cliente troca de tema.
 
 ```tsx
 import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
 ```
 
-`ChartBar` and `ChartLine` are the marks that move: draw the bar and the line
-with them, inside the frame's function, instead of raw `Rect` and `Path`. On
-mount they animate in (the bar grows from the base, the line rises from the
-`baseline`, or from the lowest point) and, when the data changes, they go to
-the new value with the motion tokens, through Reanimated; with "reduce motion",
-they are born in place and jump. The donut and the arc do the same on their
-own, and `Sparkline` only fades on entering.
+`ChartBar` e `ChartLine` são as marcas que andam: desenhe a barra e a linha com
+elas, dentro da função da moldura, no lugar de `Rect` e `Path` crus. Na
+montagem elas entram (a barra cresce da base, a linha sobe da `baseline`, ou do
+ponto mais baixo) e, quando o dado muda, vão até o valor novo com os tokens de
+movimento, pelo Reanimated; com "reduzir movimento", nascem no lugar e saltam.
+A rosca e o arco fazem o mesmo sozinhos, e a `Sparkline` só esmaece ao entrar.
 
-`Sparkline` stays out of this subpath, at the root and drawn with `View`: it is
-the `Stat`'s `chart` slot, `Stat` comes from the root, and bringing it here
-would charge `react-native-svg` to whoever only wanted a number in a card.
+A `Sparkline` fica fora deste subcaminho, na raiz e desenhada com `View`: ela é
+o slot `chart` do `Stat`, o `Stat` sai da raiz, e trazê-la para cá cobraria o
+`react-native-svg` de quem só queria um número num cartão.
 
-**Copying confirms twice.** `Clipboard` changes the button's name, as on the
-web, and **also** fires a toast: an `accessibilityLabel` swapped on a
-`Pressable` that is already under focus is not re-announced by either
-VoiceOver or TalkBack, and the `RivoProvider` toast is the only channel on the
-screen that speaks by itself (`toast={false}` turns it off).
+**Copiar confirma duas vezes.** O `Clipboard` troca o nome do botão, como no
+web, e dispara **também** um aviso: `accessibilityLabel` trocado num
+`Pressable` que já está sob o foco não é reanunciado nem pelo VoiceOver nem
+pelo TalkBack, e o aviso do `RivoProvider` é o único canal da tela que fala
+sozinho (`toast={false}` desliga).
 
-**And the drop zone does not exist.** On a phone there is no dragging:
-`FileUpload` opens the system picker through a control-height button, with the
-`hint` inside the spoken name, and `accept` speaks MIME, which is what the
-picker knows how to filter. What comes back is a `PickedFile` with a local
-`uri`: `size` may be missing, and `maxSize` only refuses what it measured. The
-list of what has already come in is `FileUploadList`, with one
-`FileUploadItem` per file.
+**E a área de soltar não existe.** No celular não há arrastar: o `FileUpload`
+abre o seletor do sistema por um botão de altura de controle, com o `hint`
+dentro do nome falado, e o `accept` fala MIME, que é o que o seletor sabe
+filtrar. O que volta é um `PickedFile` com `uri` local: `size` pode faltar, e
+`maxSize` só recusa o que mediu. A lista do que já entrou é a `FileUploadList`,
+com um `FileUploadItem` por arquivo.
 
 ```tsx
 import { Clipboard } from '@rivocode/ui-native/clipboard'
 import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
 ```
 
-**The AI pieces live in `@rivocode/ui-native/ai`, one of the two paths
-without a peer.** The peer rule still holds for the other four; this one
-exists because of weight. Metro does not tree-shake: importing a `Button` from
-the root index compiles everything it reaches, and the conversation with a
-model cannot get into the app of someone who only issues invoices. It is the
-same path as the web, swapping the package name.
+**As peças de IA moram em `@rivocode/ui-native/ai`, um dos dois caminhos sem
+peer.** A regra do peer continua valendo para os outros quatro; este existe
+pelo peso. O metro não sacode árvore: importar um `Button` do índice da raiz
+compila tudo o que ele alcança, e a conversa com um modelo não pode entrar no
+aplicativo de quem só emite nota. É o mesmo caminho do web, trocando o nome do
+pacote.
 
 ```tsx
 import { AILabel, Conversation, Message, PromptInput, ToolCall } from '@rivocode/ui-native/ai'
 ```
 
-`Conversation` comes through `items`, `renderItem` and `keyExtractor`, over an
-inverted `FlatList`; `PromptInput` is controlled and sends only through the
-button, because the phone keyboard's return breaks the line; `Message` has
-`onCopy` in place of `copyValue`, because copying belongs to `expo-clipboard`;
-and the `AILabel` explanation opens in a `Sheet`.
+A `Conversation` vem por `items`, `renderItem` e `keyExtractor`, sobre uma
+`FlatList` invertida; o `PromptInput` é controlado e envia só pelo botão,
+porque o retorno do teclado do celular quebra a linha; a `Message` tem `onCopy`
+no lugar do `copyValue`, porque copiar é do `expo-clipboard`; e a explicação do
+`AILabel` abre numa `Sheet`.
 
-**`SortableList` lives in `@rivocode/ui-native/dnd`, the other path without a
-peer.** On the web it carries dnd-kit; here the gesture is core's
-`PanResponder`, the same as `Slider`'s, and `react-native-gesture-handler` is
-not required. The separate path exists so the import line is the same in both
-packages. **Only the handle drags** (44pt, and it holds the gesture until the
-finger leaves), because the whole row as a handle would turn every scroll
-gesture into a drag; the screen reader moves through two actions, "Mover para
-cima" and "Mover para baixo", with the same announcements as the web.
+**A `SortableList` mora em `@rivocode/ui-native/dnd`, o outro caminho sem
+peer.** No web ela carrega o dnd-kit; aqui o gesto é o `PanResponder` do core,
+o mesmo do `Slider`, e o `react-native-gesture-handler` não é pedido. O caminho
+próprio existe para a linha de import ser a mesma nos dois pacotes. **Só a
+alça arrasta** (44pt, e ela segura o gesto até o dedo sair), porque a linha
+inteira como alça transformaria todo gesto de rolar num arrasto; o leitor de
+tela move por duas ações, "Mover para cima" e "Mover para baixo", com os
+mesmos anúncios do web.
 
 ```tsx
 import { SortableList } from '@rivocode/ui-native/dnd'
 ```
 
-**`Kanban` does not port, by decision.** At 390px one column fits, and dragging
-a card to the column that is not on screen fights the finger with the scroll.
-In the app, each column becomes a list (`Tabs` or sections) and changing column
-is a `Menu` with "Mover para"; the `onMove` on the side that keeps the state is
-the same.
+**O `Kanban` não porta, por decisão.** A 390px cabe uma coluna, e arrastar um
+cartão para a coluna que não está na tela disputa o dedo com a rolagem. No
+aplicativo, cada coluna vira uma lista (`Tabs` ou seções) e mudar de coluna é
+um `Menu` com "Mover para"; o `onMove` do lado de quem guarda o estado é o
+mesmo.
 
-**A client theme here is a BUILD decision, and not a runtime prop.** The two
-house themes switch with the screen open, because they were compiled as
-`light-dark()` and the provider only flips `Appearance`. A client's color does
-not: the `react-native-css` compiler hardcodes the token's value inside the
-class, and `<RivoProvider theme={{ light, dark }}>` only reaches whoever reads
-color through JS (the charts, the `Button` spinner, the `Switch` track),
-leaving background, card, button, badge and border in the house color - the
-screen comes out **mixed**, and not brandless. Dress the client by overriding
-the roles in an `@theme` in the app's CSS before compiling, and pass the theme
-map along so the JS half agrees. There are **two themes per build**, because
-`light-dark()` has two slots. The step by step is at
-<https://ds.rivocode.com.br/temas.md>.
+**Tema de cliente aqui é decisão de BUILD, e não prop de runtime.** Os dois
+temas de casa trocam com a tela aberta, porque foram compilados como
+`light-dark()` e o provider só gira o `Appearance`. A cor de um cliente, não: o
+compilador do `react-native-css` crava o valor do token dentro da classe, e
+`<RivoProvider theme={{ light, dark }}>` alcança só quem lê cor por JS (os
+gráficos, o giro do `Button`, o trilho do `Switch`), deixando fundo, cartão,
+botão, selo e borda com a cor da casa - a tela sai **misturada**, e não sem
+marca. Vista o cliente sobrescrevendo os papéis num `@theme` do CSS do app antes
+de compilar, e passe o mapa de tema junto para a metade de JS concordar. São
+**dois temas por build**, porque `light-dark()` tem duas vagas. O passo a passo
+está em <https://ds.rivocode.com.br/temas.md>.
 
-The rest of the parity (what translates, what changes name and what does not
-port by decision) is at <https://ds.rivocode.com.br/react-native.md>.
+O resto da paridade (o que traduz, o que muda de nome e o que não porta por
+decisão) está em <https://ds.rivocode.com.br/react-native.md>.
 
-### Where the truth is
+### Onde esta a verdade
 
-| What | Where |
+| O que | Onde |
 |---|---|
-| Index of everything | <https://ds.rivocode.com.br/llms.txt> |
-| One piece, with props and examples | `https://ds.rivocode.com.br/componentes/<kebab-name>.md` |
-| A theme's roles, all of them | <https://ds.rivocode.com.br/temas.md> |
-| A whole system, assembled | <https://ds.rivocode.com.br/demonstracao> |
+| Indice de tudo | <https://ds.rivocode.com.br/llms.txt> |
+| Uma peca, com props e exemplos | `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md` |
+| Os papeis de um tema, todos | <https://ds.rivocode.com.br/temas.md> |
+| Um sistema inteiro, montado | <https://ds.rivocode.com.br/demonstracao> |
 
-**Never invent a prop.** If the piece's `.md` does not list it, it does not
-exist.
+**Nunca invente prop.** Se o `.md` da peca nao a lista, ela nao existe.
 
-### Versions
+### Versões
 
-From 1.0 on, `@rivocode/ui` and `@rivocode/ui-native` follow strict semantic
-versioning, each with its own number:
+Da 1.0 em diante, o `@rivocode/ui` e o `@rivocode/ui-native` seguem
+versionamento semântico à risca, cada um no seu número:
 
-- **Breaks only in a major version.** Removing or renaming a prop, piece or
-  export, changing a prop's default or a callback's shape is a break, and only
-  ships in a major version.
-- **What is going away becomes deprecated first.** The old prop keeps working
-  with `@deprecated` in the type, saying the new path, for at least one minor
-  version, and only leaves in the following major version.
-- **A new prop and a new piece are a minor version.**
-- **A fix is a patch version.**
+- **Quebra só em versão maior.** Tirar ou renomear prop, peça ou export,
+  trocar o padrão de uma prop ou o formato de um callback é quebra, e só sai
+  numa versão maior.
+- **O que vai sair fica obsoleto antes.** A prop antiga continua funcionando
+  com `@deprecated` no tipo, dizendo o caminho novo, por pelo menos uma versão
+  menor, e só sai na versão maior seguinte.
+- **Prop nova e peça nova são versão menor.**
+- **Correção é versão de correção.**
 
-A prop marked `@deprecated` is not used in new code: the piece's `.md` says the
-name that stays.
+Prop marcada `@deprecated` não se usa em código novo: o `.md` da peça diz o nome que fica.
 
-### The state names
+### Os nomes do estado
 
-Each state idea has a single name, in both packages: the controlled one, the
-initial one (where the piece knows how to keep itself) and the notification.
+Cada ideia de estado tem um nome só, nos dois pacotes: o controlado, o inicial
+(onde a peça sabe se guardar sozinha) e o aviso.
 
-| The idea | The trio | Where |
+| A ideia | O trio | Onde |
 |---|---|---|
-| open or closed | `open`, `defaultOpen`, `onOpenChange` | `Collapsible`, `AccordionItem`, `Spoiler`, `Tour`, `ToolCall`, the `Dialog`s; on `Tree`, the list of open branches |
-| the step of a sequence | `step`, `defaultStep`, `onStepChange` | `Tour`; `Steps` only controlled, through `useWizard` |
-| the position in a collection | `index`, `defaultIndex`, `onIndexChange` | `Carousel`, `ImageViewer` |
-| the page of a paginated list | `page`, `onPageChange` | `Pagination` |
-| what was chosen or typed | `value`, `defaultValue`, `onValueChange` | fields, `Accordion`, `Tabs` |
+| aberto ou fechado | `open`, `defaultOpen`, `onOpenChange` | `Collapsible`, `AccordionItem`, `Spoiler`, `Tour`, `ToolCall`, os `Dialog`; na `Tree`, a lista de galhos abertos |
+| o passo de uma sequência | `step`, `defaultStep`, `onStepChange` | `Tour`; o `Steps` só controlado, pelo `useWizard` |
+| a posição numa coleção | `index`, `defaultIndex`, `onIndexChange` | `Carousel`, `ImageViewer` |
+| a página de uma lista paginada | `page`, `onPageChange` | `Pagination` |
+| o que foi escolhido ou digitado | `value`, `defaultValue`, `onValueChange` | campos, `Accordion`, `Tabs` |
 
-`step` and `index` count from zero, because they are program positions. `page`
-counts from one, because it is the number the person reads on the screen and
-that the server receives in the query: `page={3}` is page 3, and converting in
-both directions on every call is where the off-by-one error is born. `step` is
-a step of a sequence that moves forward; `index` is a place in a collection
-walked in any order, like the `Carousel` slide.
+`step` e `index` contam de zero, porque são posição de programa. `page` conta
+de um, porque é o número que a pessoa lê na tela e que o servidor recebe na
+query: `page={3}` é a página 3, e converter nos dois sentidos em toda chamada
+é onde nasce o erro de um a mais. `step` é passo de uma sequência que anda
+para a frente; `index` é lugar numa coleção que se percorre em qualquer ordem,
+como o slide do `Carousel`.
 
-There is no `expanded`, `visible` or `current` for these ideas. `Accordion`
-stays on `value` because what it keeps is which items are open, and not
-whether one is; with `multiple` it lets several be open at the same time, and
-without it opens one at a time, in both packages.
+Não existe `expanded`, `visible` nem `current` para essas ideias. O
+`Accordion` fica em `value` porque o que ele guarda é quais itens estão
+abertos, e não se um está; com `multiple` ele deixa vários ao mesmo tempo, e
+sem ela abre um por vez, nos dois pacotes.
 
-### A control's label comes as a child
+### Rotulo de controle vem como filho
 
-`Checkbox`, `Radio` and `Switch` accept the text as a child and wrap themselves
-in a `<label>`, so clicking the text also checks it:
+`Checkbox`, `Radio` e `Switch` aceitam o texto como filho e se embrulham num
+`<label>`, entao clicar no texto tambem marca:
 
 ```tsx
 <Checkbox defaultChecked>ISS retido na fonte</Checkbox>
@@ -756,15 +737,15 @@ in a `<label>`, so clicking the text also checks it:
 <Switch>Enviar o XML junto com o PDF</Switch>
 ```
 
-Without a child only the control comes out, for when the label has its own
-structure. Then the `<label>` around it is yours.
+Sem filho sai so o controle, para quando o rotulo tiver estrutura propria. Ai o
+`<label>` em volta e seu.
 
-### Interface text lives in `labels`
+### Texto de interface mora em `labels`
 
-The text the piece writes by itself - a button's name, what the screen reader
-hears, a fixed phrase - is swapped through a single object, `labels`, in both
-packages and with the same keys. Pass only the keys that change; the rest stays
-at the Portuguese default:
+O texto que a peca escreve sozinha - o nome de um botao, o que o leitor de tela
+ouve, uma frase fixa - se troca por um objeto so, `labels`, nos dois pacotes e
+com as mesmas chaves. Passe so as chaves que mudam; o resto fica no padrao em
+portugues:
 
 ```tsx
 <Popconfirm
@@ -778,29 +759,27 @@ at the Portuguese default:
 </QueryBoundary>
 ```
 
-There is no loose prop ending in `Label` for interface text: the key is the old
-prop's name without the `Label` (`retry`, `dismiss`, `confirm`, `cancel`,
-`busy`, `submit`, `stop`, `scroll`, `swatches`, `external`, `empty`). What
-stays outside `labels` is CONTENT, and remains a prop: the `label` that names
-the field or the region, a notice's `title` and `errorTitle`, a chart's
-`centerLabel`, a `Stat`'s `deltaLabel`, a `Slider`'s `thumbLabel`, the
-`placeholder`.
+Nao existe prop solta terminada em `Label` para texto de interface: a chave e o
+nome da prop antiga sem o `Label` (`retry`, `dismiss`, `confirm`, `cancel`,
+`busy`, `submit`, `stop`, `scroll`, `swatches`, `external`, `empty`). O que fica
+fora de `labels` e CONTEUDO, e continua prop: o `label` que da nome ao campo ou a
+regiao, o `title` e o `errorTitle` de um aviso, o `centerLabel` de um grafico, o
+`deltaLabel` de um `Stat`, o `thumbLabel` de um `Slider`, o `placeholder`.
 
-Dates have two halves. The month name, the weekday and the time come from
-`locale` (a BCP 47 tag), in `EventCalendar` and `Gantt`; the fixed words
-around them - "Hoje", "+2 mais", "Dia inteiro", "12 a 18" - are `labels`.
-Native has no `locale`: `Calendar`, `DatePicker` and `DateRangePicker` swap the
-written month and the weekday initials through `labels.caption` and
-`labels.weekdays`.
+Data tem duas metades. O nome do mes, do dia da semana e a hora saem do
+`locale` (tag BCP 47), no `EventCalendar` e no `Gantt`; as palavras fixas em
+volta - "Hoje", "+2 mais", "Dia inteiro", "12 a 18" - sao `labels`. No nativo
+nao ha `locale`: o `Calendar`, o `DatePicker` e o `DateRangePicker` trocam o
+mes escrito e as iniciais da semana por `labels.caption` e `labels.weekdays`.
 
-### The two tab shapes
+### As duas formas de aba
 
-`TabList` has `variant`. The underline, which is the default, says "this part
-of the page". The little box, `variant="segmented"`, says "the same thing,
-another way": screen width, preview and code, dark and light. Swapping one for
-the other makes the control promise what it does not do.
+`TabList` tem `variant`. O risco embaixo, que e o padrao, diz "esta parte da
+pagina". A caixinha, `variant="segmented"`, diz "a mesma coisa, de outro jeito":
+largura de tela, preview e codigo, escuro e claro. Trocar uma pela outra faz o
+controle prometer o que ele nao faz.
 
-### An example of the idiom
+### Um exemplo do idioma
 
 ```tsx
 <RivoProvider theme="rivocode-dark">
@@ -823,5 +802,5 @@ the other makes the control promise what it does not do.
 </RivoProvider>
 ```
 
-The pill button (`shape="pill"`) and the `xl` size are for marketing pages. On
-a product screen the default is the 8px corner.
+Botao em pilula (`shape="pill"`) e o tamanho `xl` sao de pagina de marketing.
+Em tela de produto o padrao e o canto de 8px.

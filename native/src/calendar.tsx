@@ -62,26 +62,25 @@ type CalendarPart =
   | "disabled";
 
 export type CalendarProps = {
-  /** The chosen date, as `yyyy-mm-dd`. */
+  /** A data escolhida, como `aaaa-mm-dd`. */
   value: string | null;
   onValueChange: (value: string) => void;
-  /** Inclusive limits, in the same format. */
+  /** Limites inclusivos, no mesmo formato. */
   min?: string;
   max?: string;
   /**
-   * Class per part, with the names of the web `DayPicker`: `root`, `nav` (the
-   * row of arrows), `button_previous`, `button_next`, `caption_label` (the
-   * written month), `weekdays` and `weekday`, `month_grid` (the grid of days),
-   * `day` (each day's box) and `day_button` (its touch target). `today`,
-   * `selected` and `disabled` add to the box of the day in that state, as on
-   * the web.
+   * Classe por parte, com os nomes do `DayPicker` do web: `root`, `nav` (a
+   * fileira das setas), `button_previous`, `button_next`, `caption_label` (o
+   * mes escrito), `weekdays` e `weekday`, `month_grid` (a grade dos dias), `day`
+   * (a caixa de cada dia) e `day_button` (o toque dele). `today`, `selected` e
+   * `disabled` somam na caixa do dia que esta naquele estado, como no web.
    */
   classNames?: Slots<CalendarPart>;
   /**
-   * The calendar texts, to change the language: `previous` and `next` are the
-   * names of the two arrows, `caption` writes the month at the top (receives
-   * the year and the month counting from 0) and `weekdays` are the seven
-   * initials starting on Sunday. Pass only the ones that change.
+   * Os textos do calendario, para trocar o idioma: `previous` e `next` sao os
+   * nomes das duas setas, `caption` escreve o mes no alto (recebe o ano e o mes
+   * contando de 0) e `weekdays` sao as sete iniciais a partir do domingo. Passe
+   * so os que mudam.
    */
   labels?: Partial<CalendarLabels>;
 };
@@ -95,27 +94,27 @@ function Chevron({ left }: { left?: boolean }) {
 }
 
 export type DayPaint = {
-  /** An end of the selection: the accent pill with the number on top. */
+  /** Ponta da escolha: a pastilha de acento com o numero em cima. */
   chosen: boolean;
-  /** A day between the two ends of a range. */
+  /** Dia entre as duas pontas de um intervalo. */
   within?: boolean;
-  /** Where the band starts and ends, to round only the two edges. */
+  /** Onde a faixa comeca e termina, para arredondar so as duas beiradas. */
   edge?: "start" | "end" | "both";
 };
 
 export type MonthViewProps = {
-  /** The month drawn, and who changes it: the month state lives in the caller. */
+  /** O mes desenhado, e quem o troca: o estado do mes mora em quem chama. */
   year: number;
   month: number;
   onMonthChange: (year: number, month: number) => void;
   min?: string;
   max?: string;
-  /** How each day is painted, decided by the caller. */
+  /** Como cada dia se pinta, decidido por quem chama. */
   paintOf: (iso: string) => DayPaint;
   onDayPress: (iso: string) => void;
-  /** Class per part, the same names as the `Calendar` `classNames`. */
+  /** Classe por parte, os mesmos nomes do `classNames` do `Calendar`. */
   classNames?: Slots<CalendarPart>;
-  /** The texts, the same as the `Calendar` `labels`. */
+  /** Os textos, os mesmos do `labels` do `Calendar`. */
   labels?: Partial<CalendarLabels>;
 };
 
@@ -296,11 +295,11 @@ export type DatePickerProps = {
   min?: string;
   max?: string;
   disabled?: boolean;
-  /** Forces the error border of the trigger, or clears it with `false`, over the `Field` error. */
+  /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
-  /** Styles the trigger; the calendar in the sheet is the same for everyone. */
+  /** Veste o gatilho; o calendario na folha e o mesmo para todos. */
   className?: string;
-  /** The texts of the sheet calendar, the same as the `Calendar` `labels`. */
+  /** Os textos do calendario da folha, os mesmos do `labels` do `Calendar`. */
   labels?: Partial<DatePickerLabels>;
 };
 

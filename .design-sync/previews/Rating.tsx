@@ -2,7 +2,7 @@ import { Rating } from '@rivocode/ui'
 import { Heart } from 'lucide-react'
 import { useState } from 'react'
 
-/** Choosing the rating */
+/** Escolher a nota */
 export function Choose() {
   const [value, setValue] = useState(0)
 
@@ -19,7 +19,7 @@ export function Choose() {
   )
 }
 
-/** Half star */
+/** Meia estrela */
 export function Half() {
   const [value, setValue] = useState(3.5)
 
@@ -33,7 +33,7 @@ export function Half() {
   )
 }
 
-/** Average, read-only */
+/** Média, só leitura */
 export function Average() {
   return (
     <div className="flex items-center gap-2">
@@ -44,7 +44,7 @@ export function Average() {
   )
 }
 
-/** Sizes, icon and disabled */
+/** Tamanhos, ícone e desabilitado */
 export function Sizes() {
   return (
     <div className="flex flex-col gap-3">

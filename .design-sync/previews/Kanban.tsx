@@ -53,7 +53,7 @@ function NoteCard({ note }: { note: Note }) {
   )
 }
 
-/** The invoice board */
+/** O quadro das notas */
 export function Notes() {
   const [columns, setColumns] = useState(BOARD)
 
@@ -71,7 +71,7 @@ export function Notes() {
   )
 }
 
-/** Over the limit */
+/** Acima do limite */
 export function OverLimit() {
   const [columns, setColumns] = useState<KanbanColumn<Note>[]>(() =>
     move(BOARD, { itemId: '1041', from: 'todo', to: 'review', index: 0 }),

@@ -191,7 +191,7 @@ function typed(name: string, literal: string): Typed {
   if (literal === "none" || literal === "initial" || literal === "") {
     return {
       reason:
-        "empty on purpose: the hook exists for the theme that wants to use it, and 'none' has no type in DTCG",
+        "vazio de propósito: o gancho existe para o tema que quiser usá-lo, e 'none' não tem tipo no DTCG",
     };
   }
 
@@ -208,7 +208,7 @@ function typed(name: string, literal: string): Typed {
     const shadow = shadowValue(literal);
     return shadow
       ? { token: { $type: "shadow", $value: shadow } }
-      : { reason: "a shadow that does not break down into offset, blur, spread and color" };
+      : { reason: "sombra que não se decompõe em deslocamento, desfoque, espalhamento e cor" };
   }
 
   const color = readColor(literal);
@@ -240,7 +240,7 @@ function typed(name: string, literal: string): Typed {
       token: {
         $type: "number",
         $value: Number(em[1]),
-        $description: "In em: multiplies the font size. DTCG only accepts px and rem in a dimension.",
+        $description: "Em em: multiplica o tamanho da fonte. O DTCG só aceita px e rem em dimensão.",
       },
       original: literal,
     };
@@ -256,7 +256,7 @@ function typed(name: string, literal: string): Typed {
           $type: "dimension",
           $value: { value: Number(size[1]), unit: size[2] },
           $description:
-            "Fluid in the CSS, between the minimum and the maximum of the clamp(). This holds the maximum, which is the wide-screen size.",
+            "Fluido no CSS, entre o mínimo e o máximo do clamp(). Aqui vai o máximo, que é o tamanho da tela larga.",
         },
         original: literal,
       };
@@ -266,11 +266,11 @@ function typed(name: string, literal: string): Typed {
   if (literal.startsWith("linear(")) {
     return {
       reason:
-        "the spring curve is linear(), and DTCG only has the cubic-bezier curve: the spring goes out as its damping and stiffness numbers, in spring.*",
+        "a curva de mola é linear(), e o DTCG só tem curva cubic-bezier: a mola sai pelos números de amortecimento e rigidez, em spring.*",
     };
   }
 
-  return { reason: "has no type in DTCG 2025.10" };
+  return { reason: "não tem tipo no DTCG 2025.10" };
 }
 
 function nest(entries: Iterable<Entry>, description: string): DtcgGroup {
@@ -406,23 +406,23 @@ export function exportDtcg(house: string, clientThemes: CssSource[] = []): DtcgE
   const files: Record<string, object> = {
     [file(palette)]: nest(
       palette.entries.values(),
-      "Layer 1 of @rivocode/ui: the raw palette. No piece reads from here; the theme roles point here.",
+      "Camada 1 do @rivocode/ui: a paleta crua. Nenhuma peça lê daqui; os papéis do tema apontam para cá.",
     ),
     [file(scales)]: nest(
       scales.entries.values(),
-      "Scale and shape of @rivocode/ui: typography, line height, stacking, focus, radius, letter spacing, weight and motion. They do not change with the color theme.",
+      "Escala e forma do @rivocode/ui: tipografia, altura de linha, empilhamento, foco, raio, espaçamento de letra, peso e movimento. Não mudam com o tema de cor.",
     ),
   };
   for (const scope of densities) {
     files[file(scope)] = nest(
       scope.entries.values(),
-      `Density ${scope.name.replace(/^density-/, "")}: control height, panel and item padding. The two density files have the same tokens, and serve as modes of each other.`,
+      `Densidade ${scope.name.replace(/^density-/, "")}: altura de controle, respiro de painel e de item. Os dois arquivos de densidade têm os mesmos tokens, e servem de modo um ao outro.`,
     );
   }
   for (const scope of themes) {
     files[file(scope)] = nest(
       scope.entries.values(),
-      `Layer 3, the ${scope.name} theme: the roles the pieces paint. The aliases point to the palette and the scale; load both files with it.`,
+      `Camada 3, o tema ${scope.name}: os papéis que as peças pintam. Os aliases apontam para a paleta e para a escala; carregue os dois arquivos junto.`,
     );
   }
 
@@ -432,14 +432,14 @@ export function exportDtcg(house: string, clientThemes: CssSource[] = []): DtcgE
   const modifiers: Record<string, object> = {};
   if (densities.length > 0) {
     modifiers.density = {
-      description: "The same screen at two heights.",
+      description: "A mesma tela em duas alturas.",
       contexts: contexts(densities),
       default: densityValues.has("comfortable") ? "comfortable" : densities[0]!.name.replace(/^density-/, ""),
     };
   }
   if (themes.length > 0) {
     modifiers.theme = {
-      description: "The color theme. The theme comes last, and so it wins over any shape it redefines.",
+      description: "O tema de cor. O tema vem por último, e por isso vence a forma que ele redefinir.",
       contexts: contexts(themes),
       default: themes[0]!.name,
     };
@@ -451,7 +451,7 @@ export function exportDtcg(house: string, clientThemes: CssSource[] = []): DtcgE
     version: DTCG_VERSION,
     sets: {
       base: {
-        description: "Palette, scale and shape: what every theme inherits.",
+        description: "Paleta, escala e forma: o que todo tema herda.",
         sources: [{ $ref: file(palette) }, { $ref: file(scales) }],
       },
     },

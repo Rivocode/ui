@@ -16,25 +16,25 @@
         "name": "defaultValue",
         "type": "string[]",
         "required": false,
-        "note": "The items open on mount, for uncontrolled use."
+        "note": "Os abertos na montagem, para quem nao controla."
       },
       {
         "name": "multiple",
         "type": "boolean",
         "required": false,
-        "note": "Lets several items stay open at once."
+        "note": "Deixa varios abertos ao mesmo tempo."
       },
       {
         "name": "onValueChange",
         "type": "((value: string[]) => void)",
         "required": false,
-        "note": "Receives the whole list of open items on every tap on an item with `value`."
+        "note": "Recebe a lista inteira de abertos a cada toque num item com `value`."
       },
       {
         "name": "value",
         "type": "string[]",
         "required": false,
-        "note": "The open items, by the `value` of each `AccordionItem`."
+        "note": "Os itens abertos, pelo `value` de cada `AccordionItem`."
       }
     ]
   },
@@ -60,13 +60,13 @@
         "name": "defaultOpen",
         "type": "boolean",
         "required": false,
-        "note": "Open on mount, for an item without `value`."
+        "note": "O aberto na montagem, para item sem `value`."
       },
       {
         "name": "value",
         "type": "string",
         "required": false,
-        "note": "The item's name within the root's `value`."
+        "note": "O nome do item dentro do `value` da raiz."
       }
     ]
   },
@@ -77,43 +77,43 @@
         "name": "count",
         "type": "number",
         "required": true,
-        "note": "How many items are selected."
+        "note": "Quantos itens estao selecionados."
       },
       {
         "name": "bottomInset",
         "type": "number",
         "required": false,
-        "note": "The height of the bottom safe area, in points: `useSafeAreaInsets().bottom`."
+        "note": "A altura da area segura de baixo, em pontos: `useSafeAreaInsets().bottom`."
       },
       {
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "note": "The batch actions, after the count."
+        "note": "As acoes do lote, depois da contagem."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the bar panel, the same element as `classNames.bar`."
+        "note": "Veste o painel da barra, o mesmo elemento que `classNames.bar`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"bar\" | \"clear\" | \"count\", string>>",
         "required": false,
-        "note": "Class per part: `bar` (the panel), `count` (the count sentence) and `clear` (the clear button)."
+        "note": "Classe por parte: `bar` (o painel), `count` (a frase da contagem) e `clear` (o botao de limpar)."
       },
       {
         "name": "labels",
         "type": "{ selected?: ((count: number) => string) | undefined; clear?: string | undefined; region?: string | undefined; cleared?: string | undefined; }",
         "required": false,
-        "note": "The same texts as the web: `selected` receives the count and returns the sentence."
+        "note": "Os mesmos textos do web: `selected` recebe a contagem e devolve a frase."
       },
       {
         "name": "onClear",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on \"Limpar seleção\"."
+        "note": "Liga o \"Limpar seleção\"."
       }
     ]
   },
@@ -129,13 +129,13 @@
         "name": "explanation",
         "type": "string",
         "required": false,
-        "note": "The explanation: who generated it, from what data, what to check."
+        "note": "A explicacao: quem gerou, com que dados, o que conferir."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader hears instead of the badge, which on its own would be spelled out."
+        "note": "O que o leitor de tela ouve no lugar do selo, que sozinho seria soletrado."
       },
       {
         "name": "size",
@@ -146,13 +146,13 @@
         "name": "text",
         "type": "string",
         "required": false,
-        "note": "The badge text."
+        "note": "O texto do selo."
       },
       {
         "name": "title",
         "type": "string",
         "required": false,
-        "note": "The title of the explanation sheet."
+        "note": "O titulo da folha da explicacao."
       },
       {
         "name": "tone",
@@ -183,19 +183,19 @@
         "name": "icon",
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": false,
-        "note": "The symbol to the left of the text, hidden from the screen reader."
+        "note": "O simbolo a esquerda do texto, escondido do leitor de tela."
       },
       {
         "name": "labels",
         "type": "Partial<AlertLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `dismiss` is the name of the X, \"Fechar aviso\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, \"Fechar aviso\" sem ele."
       },
       {
         "name": "onDismiss",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on the X that closes the notice, in the right corner."
+        "note": "Liga o xis que fecha o aviso, no canto direito."
       },
       {
         "name": "tone",
@@ -216,7 +216,7 @@
         "name": "onConfirm",
         "type": "() => unknown",
         "required": true,
-        "note": "The action, which may return a promise for the modal to wait on."
+        "note": "A acao, que pode devolver promessa para o modal esperar por ela."
       },
       {
         "name": "onOpenChange",
@@ -237,25 +237,25 @@
         "name": "labels",
         "type": "Partial<AlertDialogLabels>",
         "required": false,
-        "note": "The modal texts, with the same keys as the web `Popconfirm`."
+        "note": "Os textos do modal, com as mesmas chaves do `Popconfirm` do web."
       },
       {
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "A waiting state coming from outside, for those who already have the call in a store."
+        "note": "Estado de espera vindo de fora, para quem ja tem a chamada em uma store."
       },
       {
         "name": "onCancel",
         "type": "(() => void)",
         "required": false,
-        "note": "Called on every exit without confirming: the cancel button and the Android back."
+        "note": "Chamado em toda saida sem confirmar: o botao de cancelar e o voltar do Android."
       },
       {
         "name": "tone",
         "type": "\"danger\" | \"neutral\"",
         "required": false,
-        "note": "`danger` paints the button red; `neutral` is for what can be undone, like archiving."
+        "note": "`danger` pinta o botao de vermelho; `neutral` serve para o que se desfaz, como arquivar."
       }
     ]
   },
@@ -271,7 +271,7 @@
         "name": "ratio",
         "type": "number",
         "required": true,
-        "note": "Width over height: `16 / 9`, `1`, `4 / 3`."
+        "note": "Largura sobre altura: `16 / 9`, `1`, `4 / 3`."
       },
       {
         "name": "className",
@@ -287,31 +287,31 @@
         "name": "items",
         "type": "string[] | AutocompleteItemGroup[]",
         "required": true,
-        "note": "The suggestions, as text: a flat list or `{ label, items }` groups."
+        "note": "As sugestoes, em texto: lista rasa ou grupos `{ label, items }`."
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The field name: screen reader label and sheet title."
+        "note": "O nome do campo: rotulo do leitor de tela e titulo da folha."
       },
       {
         "name": "onValueChange",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Receives the text on every keystroke, and the whole suggestion when it is tapped."
+        "note": "Recebe o texto a cada tecla, e a sugestao inteira quando ela e tocada."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The field text, typed or coming from a tapped suggestion."
+        "note": "O texto do campo, digitado ou vindo de uma sugestao tocada."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the closed field; the suggestions sheet belongs to the platform."
+        "note": "Veste o campo fechado; a folha de sugestoes e da plataforma."
       },
       {
         "name": "disabled",
@@ -322,19 +322,19 @@
         "name": "emptyMessage",
         "type": "string",
         "required": false,
-        "note": "What to say when no suggestion matches the text."
+        "note": "O que dizer quando nenhuma sugestao casa com o texto."
       },
       {
         "name": "invalid",
         "type": "boolean",
         "required": false,
-        "note": "Forces the error border of the closed field, or clears it with `false`, over the `Field` error."
+        "note": "Forca a borda de erro do campo fechado, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
         "name": "labels",
         "type": "Partial<AutocompleteLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `hint` is the hint of the closed field, `count` what the screen reader hears with the number of suggestions and `done` the button that closes the sheet."
+        "note": "Os textos da peca, para trocar o idioma: `hint` e a dica do campo fechado, `count` o que o leitor de tela ouve com a quantidade de sugestoes e `done` o botao que fecha a folha."
       },
       {
         "name": "placeholder",
@@ -350,13 +350,13 @@
         "name": "fallback",
         "type": "string",
         "required": true,
-        "note": "The initials that hold the place while the photo downloads, and that come back if it fails - which is why they remain required even with `src`."
+        "note": "As iniciais que ocupam o lugar enquanto a foto baixa, e que voltam se ela falhar - por isso continuam obrigatorias mesmo com `src`."
       },
       {
         "name": "alt",
         "type": "string",
         "required": false,
-        "note": "Description of the photo for the screen reader, empty when the name already appears beside it - otherwise it reads the person twice."
+        "note": "Descricao da foto para o leitor de tela, vazia quando o nome ja aparece do lado - senao ele fala a pessoa duas vezes."
       },
       {
         "name": "className",
@@ -372,7 +372,7 @@
         "name": "src",
         "type": "string",
         "required": false,
-        "note": "The photo, by address: `https://` from the network, `file://` from the device, embedded `data:`."
+        "note": "A foto, por endereco: `https://` da rede, `file://` do aparelho, `data:` embutida."
       }
     ]
   },
@@ -403,13 +403,13 @@
         "name": "description",
         "type": "string",
         "required": true,
-        "note": "What happened and what the person does about it."
+        "note": "O que aconteceu e o que a pessoa faz a respeito."
       },
       {
         "name": "actions",
         "type": "ReactNode",
         "required": false,
-        "note": "The banner buttons, below the text."
+        "note": "Os botoes da faixa, embaixo do texto."
       },
       {
         "name": "className",
@@ -420,37 +420,37 @@
         "name": "classNames",
         "type": "Partial<Record<\"actions\" | \"content\" | \"description\" | \"dismiss\" | \"icon\" | \"title\", string>>",
         "required": false,
-        "note": "Class per part: `icon`, `content` (the text column), `title`, `description`, `actions` and `dismiss` (the X)."
+        "note": "Classe por parte: `icon`, `content` (a coluna do texto), `title`, `description`, `actions` e `dismiss` (o xis)."
       },
       {
         "name": "icon",
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": false,
-        "note": "The symbol on the left, hidden from the screen reader."
+        "note": "O simbolo a esquerda, escondido do leitor de tela."
       },
       {
         "name": "labels",
         "type": "Partial<BannerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `dismiss` is the name of the X, \"Fechar aviso\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, \"Fechar aviso\" sem ele."
       },
       {
         "name": "onDismiss",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on the close X."
+        "note": "Liga o xis de fechar."
       },
       {
         "name": "title",
         "type": "string",
         "required": false,
-        "note": "The short sentence before the description, in the tone color."
+        "note": "A frase curta antes da descricao, na cor do tom."
       },
       {
         "name": "tone",
         "type": "\"danger\" | \"info\" | \"success\" | \"warning\"",
         "required": false,
-        "note": "The tone decides color and urgency: `danger` and `warning` come out as `alert` and are read right away; `info` and `success` wait, in a polite live region."
+        "note": "O tom decide a cor e a urgencia: `danger` e `warning` saem como `alert` e sao lidos na hora; `info` e `success` esperam, em regiao viva educada."
       }
     ]
   },
@@ -471,7 +471,7 @@
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "Waiting: does not accept touch and announces `busy`."
+        "note": "Em espera: nao aceita toque e anuncia `busy`."
       },
       {
         "name": "size",
@@ -482,7 +482,7 @@
         "name": "variant",
         "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
-        "note": "The button's look, with the web names."
+        "note": "O desenho do botao, com os nomes do web."
       }
     ]
   },
@@ -498,19 +498,19 @@
         "name": "value",
         "type": "string | null",
         "required": true,
-        "note": "The chosen date, as `yyyy-mm-dd`."
+        "note": "A data escolhida, como `aaaa-mm-dd`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<CalendarPart, string>>",
         "required": false,
-        "note": "Class per part, with the names of the web `DayPicker`: `root`, `nav` (the row of arrows), `button_previous`, `button_next`, `caption_label` (the written month), `weekdays` and `weekday`, `month_grid` (the grid of days), `day` (each day's box) and `day_button` (its touch target)."
+        "note": "Classe por parte, com os nomes do `DayPicker` do web: `root`, `nav` (a fileira das setas), `button_previous`, `button_next`, `caption_label` (o mes escrito), `weekdays` e `weekday`, `month_grid` (a grade dos dias), `day` (a caixa de cada dia) e `day_button` (o toque dele)."
       },
       {
         "name": "labels",
         "type": "Partial<CalendarLabels>",
         "required": false,
-        "note": "The calendar texts, to change the language: `previous` and `next` are the names of the two arrows, `caption` writes the month at the top (receives the year and the month counting from 0) and `weekdays` are the seven initials starting on Sunday."
+        "note": "Os textos do calendario, para trocar o idioma: `previous` e `next` sao os nomes das duas setas, `caption` escreve o mes no alto (recebe o ano e o mes contando de 0) e `weekdays` sao as sete iniciais a partir do domingo."
       },
       {
         "name": "max",
@@ -521,7 +521,7 @@
         "name": "min",
         "type": "string",
         "required": false,
-        "note": "Inclusive limits, in the same format."
+        "note": "Limites inclusivos, no mesmo formato."
       }
     ]
   },
@@ -587,7 +587,7 @@
         "name": "index",
         "type": "number",
         "required": true,
-        "note": "The front slide, counting from zero."
+        "note": "O slide da frente, contando de zero."
       },
       {
         "name": "items",
@@ -598,13 +598,13 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The carousel name, required: the screen reader announces it on entering the row."
+        "note": "O nome do carrossel, obrigatorio: o leitor de tela o anuncia ao entrar na fileira."
       },
       {
         "name": "onIndexChange",
         "type": "(index: number) => void",
         "required": true,
-        "note": "Called by the buttons, the dots and the drag, when scrolling settles."
+        "note": "Chamado pelos botoes, pelos pontos e pelo arrasto, quando a rolagem assenta."
       },
       {
         "name": "renderItem",
@@ -620,25 +620,25 @@
         "name": "classNames",
         "type": "Partial<Record<\"footer\" | \"indicator\" | \"indicators\" | \"next\" | \"previous\" | \"slide\" | \"viewport\", string>>",
         "required": false,
-        "note": "Class per part: `viewport` (the scrolling window), `slide`, `footer` (the row below), `previous`, `next`, `indicators` and `indicator` (each tappable dot)."
+        "note": "Classe por parte: `viewport` (a janela que rola), `slide`, `footer` (a fileira embaixo), `previous`, `next`, `indicators` e `indicator` (cada ponto tocavel)."
       },
       {
         "name": "controls",
         "type": "boolean",
         "required": false,
-        "note": "The previous and next buttons, below the row."
+        "note": "Os botoes anterior e proximo, embaixo da fileira."
       },
       {
         "name": "gap",
         "type": "\"lg\" | \"md\" | \"none\" | \"sm\"",
         "required": false,
-        "note": "The gap between slides, in points: 0, 8, 12 or 16."
+        "note": "O vao entre os slides, em pontos: 0, 8, 12 ou 16."
       },
       {
         "name": "indicators",
         "type": "boolean",
         "required": false,
-        "note": "One dot per position instead of the \"2 de 5\" counter."
+        "note": "Um ponto por posicao no lugar do contador \"2 de 5\"."
       },
       {
         "name": "keyExtractor",
@@ -654,13 +654,13 @@
         "name": "loop",
         "type": "boolean",
         "required": false,
-        "note": "From the last one, next goes back to the first, and vice versa."
+        "note": "Do ultimo, o proximo volta ao primeiro, e vice-versa."
       },
       {
         "name": "slidesPerView",
         "type": "number",
         "required": false,
-        "note": "How many slides fit side by side."
+        "note": "Quantos slides cabem lado a lado."
       }
     ]
   },
@@ -671,37 +671,37 @@
         "name": "fill",
         "type": "string",
         "required": true,
-        "note": "The final color, as the frame's `colors` delivers it: `colors.receita`."
+        "note": "A cor final, como o `colors` do quadro entrega: `colors.receita`."
       },
       {
         "name": "height",
         "type": "number",
         "required": true,
-        "note": "The height, in px."
+        "note": "A altura, em px."
       },
       {
         "name": "width",
         "type": "number",
         "required": true,
-        "note": "The width, in px."
+        "note": "A largura, em px."
       },
       {
         "name": "x",
         "type": "number",
         "required": true,
-        "note": "The left edge, in px of the frame the container measured."
+        "note": "A borda esquerda, em px do quadro que a moldura mediu."
       },
       {
         "name": "y",
         "type": "number",
         "required": true,
-        "note": "The top of the bar, in px."
+        "note": "O topo da barra, em px."
       },
       {
         "name": "radius",
         "type": "number",
         "required": false,
-        "note": "The corner radius, in px."
+        "note": "O raio do canto, em px."
       }
     ]
   },
@@ -712,7 +712,7 @@
         "name": "children",
         "type": "((frame: ChartFrame) => ReactNode) | ReactNode",
         "required": true,
-        "note": "The drawing."
+        "note": "O desenho."
       },
       {
         "name": "config",
@@ -728,25 +728,25 @@
         "name": "data",
         "type": "readonly unknown[]",
         "required": false,
-        "note": "The points, so the frame can count zero."
+        "note": "Os pontos, para a moldura saber contar zero."
       },
       {
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
-        "note": "What appears when the query returns no point at all."
+        "note": "O que aparece quando a consulta volta sem nenhum ponto."
       },
       {
         "name": "errorMessage",
         "type": "string",
         "required": false,
-        "note": "`string`, and not `ReactNode` as on the web: the native `Alert` body is a `Text`, and a React node would have nowhere to fit there."
+        "note": "`string`, e não `ReactNode` como no web: o corpo do `Alert` nativo é um `Text`, e um nó de React ali não teria onde caber."
       },
       {
         "name": "errorTitle",
         "type": "string",
         "required": false,
-        "note": "The title of the error notice."
+        "note": "O titulo do aviso de erro."
       },
       {
         "name": "isError",
@@ -762,19 +762,19 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader hears instead of the drawing, when the drawing is a function."
+        "note": "O que o leitor de tela ouve no lugar do desenho, quando o desenho é uma função."
       },
       {
         "name": "labels",
         "type": "Partial<ChartContainerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `retry` is the button that runs `onRetry`, \"Tentar de novo\" without it - the same key as the web and as the query components here."
+        "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry`, \"Tentar de novo\" sem ele - a mesma chave do web e das pecas de consulta daqui."
       },
       {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
-        "note": "Without it, the error offers no retry."
+        "note": "Sem isto, o erro não oferece nova tentativa."
       }
     ]
   },
@@ -790,25 +790,25 @@
         "name": "nameKey",
         "type": "keyof Slice & string",
         "required": true,
-        "note": "Where each slice's name comes from."
+        "note": "De onde sai o nome de cada fatia."
       },
       {
         "name": "valueKey",
         "type": "keyof Slice & string",
         "required": true,
-        "note": "Where each slice's number comes from."
+        "note": "De onde sai o número de cada fatia."
       },
       {
         "name": "centerLabel",
         "type": "string",
         "required": false,
-        "note": "The small line below the number."
+        "note": "A linha pequena embaixo do número."
       },
       {
         "name": "centerValue",
         "type": "string",
         "required": false,
-        "note": "The big number in the middle."
+        "note": "O número grande no meio."
       },
       {
         "name": "className",
@@ -824,37 +824,37 @@
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
-        "note": "What appears in place of the donut when there is no slice or the sum is zero."
+        "note": "O que aparece no lugar da rosca quando nao ha fatia ou a soma da zero."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`currencyShort`, `percent`, `integer`...) or your own function."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader hears instead of the drawing."
+        "note": "O que o leitor de tela ouve no lugar do desenho."
       },
       {
         "name": "labels",
         "type": "Partial<ChartDonutLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `name` builds the drawing's name without `label` and without a legend, and receives each slice already written with its value; `hint` is the hint of each legend row."
+        "note": "Os textos da peca, para trocar o idioma: `name` monta o nome do desenho sem `label` e sem legenda, e recebe cada fatia ja escrita com o valor; `hint` e a dica de cada linha da legenda."
       },
       {
         "name": "legend",
         "type": "boolean",
         "required": false,
-        "note": "The list of slices below, with name and value."
+        "note": "A lista de fatias embaixo, com nome e valor."
       },
       {
         "name": "thickness",
         "type": "number",
         "required": false,
-        "note": "Ring thickness, as a fraction of the radius."
+        "note": "Espessura do anel, em fração do raio."
       }
     ]
   },
@@ -865,25 +865,25 @@
         "name": "data",
         "type": "Stage[]",
         "required": true,
-        "note": "The stages, in the order the person goes through them: the first is the mouth of the funnel."
+        "note": "As etapas, na ordem em que a pessoa atravessa: a primeira é a boca do funil."
       },
       {
         "name": "nameKey",
         "type": "keyof Stage & string",
         "required": true,
-        "note": "Where each stage's name comes from."
+        "note": "De onde sai o nome de cada etapa."
       },
       {
         "name": "valueKey",
         "type": "keyof Stage & string",
         "required": true,
-        "note": "Where each stage's number comes from."
+        "note": "De onde sai o número de cada etapa."
       },
       {
         "name": "align",
         "type": "\"center\" | \"start\"",
         "required": false,
-        "note": "`center` draws the funnel centered; `start` aligns the bars to the left."
+        "note": "`center` desenha o funil centrado; `start` alinha as barras à esquerda."
       },
       {
         "name": "className",
@@ -894,43 +894,43 @@
         "name": "classNames",
         "type": "Partial<Record<\"bar\" | \"rate\" | \"stage\", string>>",
         "required": false,
-        "note": "Class per part: `stage` (each stage's block), `bar` (the bar) and `rate` (the rate line between two stages)."
+        "note": "Classe por parte: `stage` (o bloco de cada etapa), `bar` (a barra) e `rate` (a linha da taxa entre duas etapas)."
       },
       {
         "name": "color",
         "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
         "required": false,
-        "note": "The bar color, as a token role."
+        "note": "A cor das barras, como papel de token."
       },
       {
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
-        "note": "What appears in place of the drawing when the list arrives empty or the sum is zero."
+        "note": "O que aparece no lugar do desenho quando a lista chega vazia ou a soma da zero."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`currencyShort`, `percent`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "formatRate",
         "type": "((rate: number) => string)",
         "required": false,
-        "note": "How the rate is written, receiving 0 to 100."
+        "note": "Como a taxa é escrita, recebendo de 0 a 100."
       },
       {
         "name": "labels",
         "type": "Partial<ChartFunnelLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `rate` is what follows the rate between two stages, \"da etapa anterior\" without it, and `overall` the end-to-end conversion sentence, \"do inicio ao fim\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `rate` e o que vem depois da taxa entre duas etapas, \"da etapa anterior\" sem ele, e `overall` a frase da conversao de ponta a ponta, \"do inicio ao fim\" sem ela."
       },
       {
         "name": "showOverall",
         "type": "boolean",
         "required": false,
-        "note": "Shows the end-to-end conversion line, below."
+        "note": "Mostra a linha da conversao de ponta a ponta, embaixo."
       }
     ]
   },
@@ -941,25 +941,25 @@
         "name": "value",
         "type": "number",
         "required": true,
-        "note": "From 0 to `max`."
+        "note": "De 0 a `max`."
       },
       {
         "name": "bands",
         "type": "readonly ChartGaugeBand[]",
         "required": false,
-        "note": "The bands, in order, each one up to its `until`."
+        "note": "As faixas, em ordem, cada uma até o seu `until`."
       },
       {
         "name": "centerLabel",
         "type": "string",
         "required": false,
-        "note": "The small line below the number."
+        "note": "A linha pequena embaixo do número."
       },
       {
         "name": "centerValue",
         "type": "string",
         "required": false,
-        "note": "The big number in the middle."
+        "note": "O número grande no meio."
       },
       {
         "name": "className",
@@ -970,25 +970,25 @@
         "name": "classNames",
         "type": "Partial<Record<\"label\" | \"value\", string>>",
         "required": false,
-        "note": "Class per part: `value` (the big number in the middle) and `label` (the line below it)."
+        "note": "Classe por parte: `value` (o numero grande no meio) e `label` (a linha embaixo dele)."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`currencyShort`, `percent`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader hears."
+        "note": "O que o leitor de tela ouve."
       },
       {
         "name": "labels",
         "type": "Partial<ChartGaugeLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `value` joins the written value to the maximum in the name, and `band` describes each band in the scale that comes with it."
+        "note": "Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao maximo no nome, e `band` descreve cada faixa na regua que vem junto."
       },
       {
         "name": "max",
@@ -999,7 +999,7 @@
         "name": "sweep",
         "type": "number",
         "required": false,
-        "note": "How many degrees the arc covers, with the opening at the bottom."
+        "note": "Quantos graus o arco cobre, com a abertura embaixo."
       }
     ]
   },
@@ -1010,31 +1010,31 @@
         "name": "columnKey",
         "type": "keyof Cell & string",
         "required": true,
-        "note": "Where the grid column comes from."
+        "note": "De onde sai a coluna da grade."
       },
       {
         "name": "data",
         "type": "Cell[]",
         "required": true,
-        "note": "One row per filled cell, in the long format the query returns."
+        "note": "Uma linha por célula preenchida, no formato longo que a consulta devolve."
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the grid measures, in full: it is the name the screen reader announces."
+        "note": "O que a grade mede, por extenso: é o nome que o leitor de tela anuncia."
       },
       {
         "name": "rowKey",
         "type": "keyof Cell & string",
         "required": true,
-        "note": "Where the grid row comes from."
+        "note": "De onde sai a linha da grade."
       },
       {
         "name": "valueKey",
         "type": "keyof Cell & string",
         "required": true,
-        "note": "Where the number comes from."
+        "note": "De onde sai o número."
       },
       {
         "name": "className",
@@ -1045,55 +1045,55 @@
         "name": "classNames",
         "type": "Partial<Record<\"cell\" | \"grid\" | \"legend\", string>>",
         "required": false,
-        "note": "Class per part: `grid` (the grid that receives the drag), `cell` (each cell) and `legend` (the color scale)."
+        "note": "Classe por parte: `grid` (a grade que recebe o arrasto), `cell` (cada celula) e `legend` (a regua de cor)."
       },
       {
         "name": "color",
         "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
         "required": false,
-        "note": "The color of the strongest step, as a token role."
+        "note": "A cor do degrau mais forte, como papel de token."
       },
       {
         "name": "columns",
         "type": "readonly string[]",
         "required": false,
-        "note": "The order of the columns, by the same rule as `rows`."
+        "note": "A ordem das colunas, pela mesma regra de `rows`."
       },
       {
         "name": "domain",
         "type": "readonly [number, number]",
         "required": false,
-        "note": "The scale range, `[min, max]`."
+        "note": "O intervalo da escala, `[menor, maior]`."
       },
       {
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
-        "note": "What appears in place of the grid when no cell has a number or all of them are zero."
+        "note": "O que aparece no lugar da grade quando nao ha celula com numero ou todas dao zero."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`currencyShort`, `percent`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "labels",
         "type": "Partial<ChartHeatmapLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `empty` is what the reading says on a cell with no data, \"Sem dado\" without it, and `next` and `previous` the names of the two adjust actions that move between cells."
+        "note": "Os textos da peca, para trocar o idioma: `empty` e o que a leitura diz na celula sem dado, \"Sem dado\" sem ele, e `next` e `previous` os nomes das duas acoes de ajuste que andam de celula."
       },
       {
         "name": "legend",
         "type": "boolean",
         "required": false,
-        "note": "The color scale below the grid."
+        "note": "A régua de cor embaixo da grade."
       },
       {
         "name": "rows",
         "type": "readonly string[]",
         "required": false,
-        "note": "The order of the rows, and the ones that exist even with no data at all."
+        "note": "A ordem das linhas, e as que existem mesmo sem dado nenhum."
       }
     ]
   },
@@ -1104,25 +1104,25 @@
         "name": "points",
         "type": "readonly ChartPoint[]",
         "required": true,
-        "note": "The points, already in frame px, in axis order."
+        "note": "Os pontos, ja em px do quadro, na ordem do eixo."
       },
       {
         "name": "stroke",
         "type": "string",
         "required": true,
-        "note": "The final stroke color: `colors.receita`."
+        "note": "A cor final do traco: `colors.receita`."
       },
       {
         "name": "baseline",
         "type": "number",
         "required": false,
-        "note": "The `y` the line rises from on entry, in frame px: the axis base."
+        "note": "O `y` de onde a linha sobe na entrada, em px do quadro: a base do eixo."
       },
       {
         "name": "strokeWidth",
         "type": "number",
         "required": false,
-        "note": "The stroke thickness, in px."
+        "note": "A espessura do traco, em px."
       }
     ]
   },
@@ -1133,19 +1133,19 @@
         "name": "value",
         "type": "number",
         "required": true,
-        "note": "From 0 to `max`."
+        "note": "De 0 a `max`."
       },
       {
         "name": "centerLabel",
         "type": "string",
         "required": false,
-        "note": "The small line below the number."
+        "note": "A linha pequena embaixo do número."
       },
       {
         "name": "centerValue",
         "type": "string",
         "required": false,
-        "note": "The big number in the middle."
+        "note": "O número grande no meio."
       },
       {
         "name": "className",
@@ -1156,13 +1156,13 @@
         "name": "color",
         "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
         "required": false,
-        "note": "The arc color, as a token role."
+        "note": "A cor do arco, como papel de token."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader hears."
+        "note": "O que o leitor de tela ouve."
       },
       {
         "name": "max",
@@ -1173,19 +1173,19 @@
         "name": "segments",
         "type": "number",
         "required": false,
-        "note": "How many dashes, in `segmented`."
+        "note": "Quantos tracinhos, no `segmented`."
       },
       {
         "name": "sweep",
         "type": "number",
         "required": false,
-        "note": "How many degrees the arc covers."
+        "note": "Quantos graus o arco cobre."
       },
       {
         "name": "variant",
         "type": "\"segmented\" | \"solid\"",
         "required": false,
-        "note": "`solid` draws a smooth arc; `segmented` draws the arc in dashes, the most requested gauge variation in dashboards."
+        "note": "`solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que é a variação mais pedida de medidor em painel."
       }
     ]
   },
@@ -1196,19 +1196,19 @@
         "name": "data",
         "type": "Item[]",
         "required": true,
-        "note": "The categories."
+        "note": "As categorias."
       },
       {
         "name": "nameKey",
         "type": "keyof Item & string",
         "required": true,
-        "note": "Where each category's name comes from."
+        "note": "De onde sai o nome de cada categoria."
       },
       {
         "name": "valueKey",
         "type": "keyof Item & string",
         "required": true,
-        "note": "Where the number comes from, which becomes area."
+        "note": "De onde sai o número, que vira área."
       },
       {
         "name": "className",
@@ -1219,25 +1219,25 @@
         "name": "classNames",
         "type": "Partial<Record<\"cell\" | \"label\", string>>",
         "required": false,
-        "note": "Class per part: `cell` (each category's block) and `label` (the name and value written inside it)."
+        "note": "Classe por parte: `cell` (o bloco de cada categoria) e `label` (o nome e o valor escritos dentro dele)."
       },
       {
         "name": "config",
         "type": "ChartConfig",
         "required": false,
-        "note": "Readable name and color role per category, the same shape as the donut here."
+        "note": "Nome legível e papel de cor por categoria, o mesmo formato da rosca daqui."
       },
       {
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
-        "note": "What appears in place of the drawing when the list arrives empty or the sum is zero."
+        "note": "O que aparece no lugar do desenho quando a lista chega vazia ou a soma da zero."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`currencyShort`, `percent`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       }
     ]
   },
@@ -1258,7 +1258,7 @@
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "note": "The visible label."
+        "note": "O rotulo visivel."
       },
       {
         "name": "className",
@@ -1269,7 +1269,7 @@
         "name": "classNames",
         "type": "Partial<Record<\"box\" | \"indicator\" | \"label\", string>>",
         "required": false,
-        "note": "Class per part: `box` (the drawn box), `indicator` (the tick or dash inside it) and `label` (the text beside it)."
+        "note": "Classe por parte: `box` (a caixa desenhada), `indicator` (o tique ou o traco dentro dela) e `label` (o texto ao lado)."
       },
       {
         "name": "disabled",
@@ -1280,19 +1280,19 @@
         "name": "hitSlop",
         "type": "number | Insets | null",
         "required": false,
-        "note": "Touch area beyond the drawing."
+        "note": "Area de toque alem do desenho."
       },
       {
         "name": "indeterminate",
         "type": "boolean",
         "required": false,
-        "note": "The third state, that of the master box of a partly checked list: draws a dash instead of the tick and announces `mixed`."
+        "note": "O terceiro estado, o da caixa mestra de uma lista meio marcada: desenha um traco no lugar do tique e anuncia `mixed`."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The spoken name, required when there are no `children`."
+        "note": "O nome falado, obrigatorio quando nao ha `children`."
       }
     ]
   },
@@ -1313,7 +1313,7 @@
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "The checked values."
+        "note": "Os valores marcados."
       },
       {
         "name": "className",
@@ -1329,7 +1329,7 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The group's name for the screen reader."
+        "note": "O nome do conjunto para o leitor de tela."
       }
     ]
   },
@@ -1340,13 +1340,13 @@
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "What goes to the clipboard."
+        "note": "O que vai para a área de transferência."
       },
       {
         "name": "children",
         "type": "string",
         "required": false,
-        "note": "The text beside the icon before copying, and the spoken name along with it."
+        "note": "O texto ao lado do ícone enquanto não copiou, e o nome falado junto com ele."
       },
       {
         "name": "className",
@@ -1362,31 +1362,31 @@
         "name": "labels",
         "type": "{ copy?: string | undefined; copied?: string | undefined; }",
         "required": false,
-        "note": "What the screen reader calls the button before and after copying."
+        "note": "O que o leitor de tela chama o botão antes e depois de copiar."
       },
       {
         "name": "onCopy",
         "type": "((value: string) => void)",
         "required": false,
-        "note": "Called after copying, for those who want to fire their own notice."
+        "note": "Chamado depois de copiar, para quem quer disparar um aviso próprio."
       },
       {
         "name": "timeout",
         "type": "number",
         "required": false,
-        "note": "How long the confirmation stays on the button, in ms."
+        "note": "Quanto tempo a confirmação fica no botão, em ms."
       },
       {
         "name": "toast",
         "type": "boolean",
         "required": false,
-        "note": "The \"Copiado\" notice, on by default."
+        "note": "O aviso de \"Copiado\", ligado por padrão."
       },
       {
         "name": "variant",
         "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
-        "note": "The button's look, with the same names and the same visuals as `Button`."
+        "note": "O desenho do botao, com os mesmos nomes e o mesmo visual do `Button`."
       }
     ]
   },
@@ -1397,7 +1397,7 @@
         "name": "children",
         "type": "string",
         "required": true,
-        "note": "The raw snippet: `app.json`, `--frozen-lockfile`, `emitida_em`."
+        "note": "O trecho, cru: `app.json`, `--frozen-lockfile`, `emitida_em`."
       },
       {
         "name": "className",
@@ -1408,7 +1408,7 @@
         "name": "selectable",
         "type": "boolean",
         "required": false,
-        "note": "A long press selects and the system offers to copy."
+        "note": "O toque longo seleciona e o sistema oferece copiar."
       }
     ]
   },
@@ -1424,7 +1424,7 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The trigger label: \"Ver os detalhes do calculo\"."
+        "note": "O rotulo do gatilho: \"Ver os detalhes do calculo\"."
       },
       {
         "name": "className",
@@ -1435,19 +1435,19 @@
         "name": "defaultOpen",
         "type": "boolean",
         "required": false,
-        "note": "Open on mount, for uncontrolled use."
+        "note": "O aberto na montagem, para quem nao controla."
       },
       {
         "name": "onOpenChange",
         "type": "((open: boolean) => void)",
         "required": false,
-        "note": "Reports every tap on the trigger, controlled or not."
+        "note": "Avisa todo toque no gatilho, controlado ou nao."
       },
       {
         "name": "open",
         "type": "boolean",
         "required": false,
-        "note": "Leaves the open state to the consumer."
+        "note": "Deixa o aberto por conta de quem usa."
       }
     ]
   },
@@ -1458,13 +1458,13 @@
         "name": "onValueChange",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Notified with the normalized hexadecimal, always six digits and lowercase."
+        "note": "Avisado com o hexadecimal normalizado, sempre de seis dígitos e minúsculo."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The chosen color, in six-digit hexadecimal."
+        "note": "A cor escolhida, em hexadecimal de seis dígitos."
       },
       {
         "name": "className",
@@ -1475,13 +1475,13 @@
         "name": "classNames",
         "type": "Partial<Record<\"field\" | \"input\" | \"label\" | \"preview\" | \"swatch\" | \"swatches\", string>>",
         "required": false,
-        "note": "Class per part: `label`, `swatches` (the swatch group), `swatch` (each swatch's touch target), `field` (the field row), `preview` (the current color beside the field) and `input`."
+        "note": "Classe por parte: `label`, `swatches` (o conjunto das amostras), `swatch` (o toque de cada amostra), `field` (a fileira do campo), `preview` (a cor de agora ao lado do campo) e `input`."
       },
       {
         "name": "columns",
         "type": "number",
         "required": false,
-        "note": "How many swatches per row."
+        "note": "Quantas amostras por linha."
       },
       {
         "name": "disabled",
@@ -1492,25 +1492,25 @@
         "name": "hideInput",
         "type": "boolean",
         "required": false,
-        "note": "Hides the text field and leaves only the swatches."
+        "note": "Esconde o campo de texto e deixa só as amostras."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The text above the swatches, and their name for the screen reader."
+        "note": "O texto acima das amostras, e o nome delas no leitor de tela."
       },
       {
         "name": "labels",
         "type": "Partial<ColorPickerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `swatches` is the name of the swatch group when there is no `label`, `hex` that of the text field and `swatch` that of each plain-text swatch, which receives its hexadecimal."
+        "note": "Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o de cada amostra em texto puro, que recebe o hexadecimal dela."
       },
       {
         "name": "swatches",
         "type": "ColorSwatch[]",
         "required": false,
-        "note": "The swatches."
+        "note": "As amostras."
       }
     ]
   },
@@ -1521,7 +1521,7 @@
         "name": "items",
         "type": "ComboboxItem[] | ComboboxItemGroup[]",
         "required": true,
-        "note": "A flat list, or `{ label, items }` groups - the same shape the web `items` accepts."
+        "note": "Lista rasa, ou grupos `{ label, items }` - a mesma forma que o `items` do web aceita."
       },
       {
         "name": "label",
@@ -1542,7 +1542,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the trigger; the search sheet belongs to the platform."
+        "note": "Veste o gatilho; a folha de busca e da plataforma."
       },
       {
         "name": "disabled",
@@ -1553,19 +1553,19 @@
         "name": "emptyMessage",
         "type": "string",
         "required": false,
-        "note": "What to say when the search finds nothing - with the why, as always."
+        "note": "O que dizer quando a busca nao acha nada - com o porque, como sempre."
       },
       {
         "name": "invalid",
         "type": "boolean",
         "required": false,
-        "note": "Forces the error border of the trigger, or clears it with `false`, over the `Field` error."
+        "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
         "name": "labels",
         "type": "Partial<PickerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `selected` is the trigger summary with more than one choice, and `done` the button that closes the sheet in `multiple`."
+        "note": "Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`."
       },
       {
         "name": "multiple",
@@ -1591,7 +1591,7 @@
         "name": "items",
         "type": "Item[]",
         "required": true,
-        "note": "The messages, in arrival order: the newest last, as on the web."
+        "note": "As mensagens, em ordem de chegada: a mais nova por ultimo, como no web."
       },
       {
         "name": "keyExtractor",
@@ -1602,13 +1602,13 @@
         "name": "renderItem",
         "type": "(item: Item, index: number) => ReactNode",
         "required": true,
-        "note": "Draws one message."
+        "note": "Desenha uma mensagem."
       },
       {
         "name": "announcement",
         "type": "((item: Item, index: number) => string | null | undefined)",
         "required": false,
-        "note": "What VoiceOver says when a message arrives at the end of the list."
+        "note": "O que o VoiceOver diz quando uma mensagem chega ao fim da lista."
       },
       {
         "name": "className",
@@ -1619,31 +1619,31 @@
         "name": "classNames",
         "type": "Partial<Record<\"content\" | \"empty\" | \"scrollButton\" | \"suggestions\" | \"viewport\", string>>",
         "required": false,
-        "note": "Class per part: `viewport` (the scrolling list), `content` (its content, via `contentContainerClassName`), `empty`, `suggestions` (the row of suggestions) and `scrollButton` (the go-to-end button)."
+        "note": "Classe por parte: `viewport` (a lista que rola), `content` (o conteudo dela, pelo `contentContainerClassName`), `empty`, `suggestions` (a fileira das sugestoes) e `scrollButton` (o botao de ir para o fim)."
       },
       {
         "name": "empty",
         "type": "{ title: string; description: string; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; suggestions?: string[] | undefined; }",
         "required": false,
-        "note": "What appears when `items` is empty."
+        "note": "O que aparece quando `items` esta vazio."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The list's name for the screen reader."
+        "note": "O nome da lista para o leitor de tela."
       },
       {
         "name": "labels",
         "type": "Partial<ConversationLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `scroll` is the button that goes back to the end of the conversation, \"Ir para o fim\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `scroll` e o botao que volta ao fim da conversa, \"Ir para o fim\" sem ele."
       },
       {
         "name": "onSuggestion",
         "type": "((suggestion: string) => void)",
         "required": false,
-        "note": "Called with the text of the tapped suggestion."
+        "note": "Chamado com o texto da sugestao tocada."
       }
     ]
   },
@@ -1654,37 +1654,37 @@
         "name": "onValueChange",
         "type": "(cents: number | null) => void",
         "required": true,
-        "note": "Called on every keystroke with the cents, or `null` when the field empties."
+        "note": "Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia."
       },
       {
         "name": "value",
         "type": "number | null",
         "required": true,
-        "note": "The value in whole cents: `123456` is R$ 1.234,56."
+        "note": "O valor em centavos inteiros: `123456` e R$ 1.234,56."
       },
       {
         "name": "allowNegative",
         "type": "boolean",
         "required": false,
-        "note": "Accepts a negative value, with `-` anywhere in the field; a second `-` removes the sign."
+        "note": "Aceita valor negativo, com o `-` em qualquer ponto do campo; um segundo `-` tira o sinal."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the root, which wraps the field and the \"R$\"."
+        "note": "Veste a raiz, que embrulha o campo e o \"R$\"."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"input\" | \"prefix\", string>>",
         "required": false,
-        "note": "Class per part: `input` (the field) and `prefix` (the \"R$\" text)."
+        "note": "Classe por parte: `input` (o campo) e `prefix` (o texto do \"R$\")."
       },
       {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "The provider family that styles what is typed."
+        "note": "A familia do provider que veste o que se digita."
       },
       {
         "name": "invalid",
@@ -1695,13 +1695,13 @@
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "The largest accepted value, in cents."
+        "note": "O maior valor aceito, em centavos."
       },
       {
         "name": "min",
         "type": "number",
         "required": false,
-        "note": "The smallest accepted value, in cents."
+        "note": "O menor valor aceito, em centavos."
       },
       {
         "name": "ref",
@@ -1747,19 +1747,19 @@
         "name": "errorTitle",
         "type": "string",
         "required": false,
-        "note": "A title line above the error message."
+        "note": "Uma linha de titulo acima da mensagem de erro."
       },
       {
         "name": "filter",
         "type": "string",
         "required": false,
-        "note": "Controlled filter, the same name and the same shape as `DataTable`: the screen places the `SearchInput` wherever it wants and passes the text; the list narrows ignoring case and accents."
+        "note": "Filtro controlado, o mesmo nome e o mesmo formato do `DataTable`: a tela poe o `SearchInput` onde quiser e passa o texto; a lista estreita ignorando caixa e acento."
       },
       {
         "name": "filterValue",
         "type": "((row: Row) => string)",
         "required": false,
-        "note": "What `filter` reads in each row."
+        "note": "O que o `filter` le em cada linha."
       },
       {
         "name": "isError",
@@ -1775,13 +1775,13 @@
         "name": "labels",
         "type": "Partial<DataListLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `retry` is the button that runs `onRetry` - the same key as the web `DataTable` -, and `selectRow` the name of each row's checkbox."
+        "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry` - a mesma chave do `DataTable` do web -, e `selectRow` o nome da caixa de marcar de cada linha."
       },
       {
         "name": "noResultsMessage",
         "type": "string",
         "required": false,
-        "note": "The discreet line for when `filter` narrowed to zero."
+        "note": "A linha discreta de quando o `filter` zerou."
       },
       {
         "name": "onRetry",
@@ -1802,7 +1802,7 @@
         "name": "selectable",
         "type": "boolean",
         "required": false,
-        "note": "Checkbox to the left of each row."
+        "note": "Caixa de marcar a esquerda de cada linha."
       },
       {
         "name": "skeletonRows",
@@ -1813,7 +1813,7 @@
         "name": "value",
         "type": "string[]",
         "required": false,
-        "note": "The checked keys, when the consumer controls the selection, as in the web `DataTable`."
+        "note": "As chaves marcadas, quando quem usa controla a selecao, como no `DataTable` web."
       }
     ]
   },
@@ -1839,7 +1839,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the trigger; the calendar in the sheet is the same for everyone."
+        "note": "Veste o gatilho; o calendario na folha e o mesmo para todos."
       },
       {
         "name": "disabled",
@@ -1850,13 +1850,13 @@
         "name": "invalid",
         "type": "boolean",
         "required": false,
-        "note": "Forces the error border of the trigger, or clears it with `false`, over the `Field` error."
+        "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
         "name": "labels",
         "type": "Partial<CalendarLabels>",
         "required": false,
-        "note": "The texts of the sheet calendar, the same as the `Calendar` `labels`."
+        "note": "Os textos do calendario da folha, os mesmos do `labels` do `Calendar`."
       },
       {
         "name": "max",
@@ -1882,13 +1882,13 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the screen reader announces on the trigger, and the sheet title."
+        "note": "O que o leitor de tela anuncia no gatilho, e o título da folha."
       },
       {
         "name": "onValueChange",
         "type": "(range: DateRange | null) => void",
         "required": true,
-        "note": "`null` when the person taps Limpar."
+        "note": "`null` quando a pessoa toca em Limpar."
       },
       {
         "name": "value",
@@ -1899,7 +1899,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the trigger; the sheet is the same for everyone."
+        "note": "Veste o gatilho; a folha é a mesma para todos."
       },
       {
         "name": "disabled",
@@ -1910,7 +1910,7 @@
         "name": "labels",
         "type": "Partial<DateRangePickerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `clear` and `apply` are the sheet's two buttons, `pickFirst` the notice before the first tap and `pickLast` the one after it, which receives the first day already written."
+        "note": "Os textos da peca, para trocar o idioma: `clear` e `apply` sao os dois botoes da folha, `pickFirst` o aviso antes do primeiro toque e `pickLast` o de depois dele, que recebe o primeiro dia ja escrito."
       },
       {
         "name": "max",
@@ -1921,7 +1921,7 @@
         "name": "min",
         "type": "string",
         "required": false,
-        "note": "Inclusive limits, in the same ISO format."
+        "note": "Limites inclusivos, no mesmo formato ISO."
       },
       {
         "name": "placeholder",
@@ -1987,7 +1987,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the central card, not the dimmed backdrop."
+        "note": "Veste o cartao central, nao o fundo escurecido."
       },
       {
         "name": "description",
@@ -1998,7 +1998,7 @@
         "name": "labels",
         "type": "Partial<DialogLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `close` is the name of the dimmed backdrop, which closes the modal on tap, \"Fechar\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `close` e o nome do fundo escurecido, que fecha o modal ao toque, \"Fechar\" sem ele."
       }
     ]
   },
@@ -2009,19 +2009,19 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the screen reader calls the field, open or closed."
+        "note": "O que o leitor de tela chama o campo, aberto ou fechado."
       },
       {
         "name": "onValueChange",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Notified on confirmation, and never on Cancelar."
+        "note": "Avisado na confirmacao, e nunca no Cancelar."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The current text."
+        "note": "O texto de agora."
       },
       {
         "name": "className",
@@ -2032,7 +2032,7 @@
         "name": "classNames",
         "type": "Partial<Record<\"input\" | \"preview\", string>>",
         "required": false,
-        "note": "Class per part: `preview` (the value as read, the area you hold to edit) and `input` (the open field)."
+        "note": "Classe por parte: `preview` (o valor lido, a area que se segura para editar) e `input` (o campo aberto)."
       },
       {
         "name": "disabled",
@@ -2043,13 +2043,13 @@
         "name": "labels",
         "type": "Partial<EditableLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `edit` is the name of the action that opens the field, `hint` the hint on how to open it, `empty` what the screen reader hears in place of the empty value and `cancel` the button that closes without saving."
+        "note": "Os textos da peca, para trocar o idioma: `edit` e o nome da acao que abre o campo, `hint` a dica de como abrir, `empty` o que o leitor de tela ouve no lugar do valor vazio e `cancel` o botao que fecha sem salvar."
       },
       {
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "note": "What appears in place of the empty value."
+        "note": "O que aparece no lugar do valor vazio."
       }
     ]
   },
@@ -2060,7 +2060,7 @@
         "name": "description",
         "type": "string",
         "required": true,
-        "note": "Required for the same reason as on the web: \"nenhum resultado\" without the why shifts the work to the person, and they almost never figure it out."
+        "note": "Obrigatoria pelo mesmo motivo do web: \"nenhum resultado\" sem o porque transfere o trabalho para a pessoa, e ela quase nunca descobre."
       },
       {
         "name": "title",
@@ -2081,13 +2081,13 @@
         "name": "icon",
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": false,
-        "note": "Symbol of the empty state."
+        "note": "Simbolo do vazio."
       },
       {
         "name": "illustration",
         "type": "ReactNode",
         "required": false,
-        "note": "A drawing larger than the icon, for the first-time empty state: the home screen with nothing yet, the onboarding step."
+        "note": "Desenho maior que o icone, para o vazio de primeira vez: a tela inicial sem nada ainda, o passo de onboarding."
       }
     ]
   },
@@ -2113,31 +2113,31 @@
         "name": "description",
         "type": "string",
         "required": false,
-        "note": "The help text below the field."
+        "note": "A ajuda embaixo do campo."
       },
       {
         "name": "error",
         "type": "string",
         "required": false,
-        "note": "The error wins over the description, as on the web."
+        "note": "O erro vence a descricao, como no web."
       },
       {
         "name": "validate",
         "type": "((value: unknown, formValues: Record<string, unknown>) => Promise<FieldVerdict> | FieldVerdict)",
         "required": false,
-        "note": "The field's own validation, with the web signature: receives the control's value and returns the message, a list of them, or nothing when the value is fine."
+        "note": "A validacao do proprio campo, com a assinatura do web: recebe o valor do controle e devolve a mensagem, uma lista delas, ou nada quando o valor serve."
       },
       {
         "name": "validationDebounceTime",
         "type": "number",
         "required": false,
-        "note": "Wait, in milliseconds, between the keystroke and `validate` in `onChange` mode."
+        "note": "Espera, em milissegundos, entre a tecla e o `validate` no modo `onChange`."
       },
       {
         "name": "validationMode",
         "type": "FieldValidationMode",
         "required": false,
-        "note": "When `validate` runs, as on the web."
+        "note": "Quando o `validate` roda, como no web."
       }
     ]
   },
@@ -2153,7 +2153,7 @@
         "name": "legend",
         "type": "string",
         "required": true,
-        "note": "The group title: \"Endereço de cobrança\"."
+        "note": "O titulo do grupo: \"Endereço de cobrança\"."
       },
       {
         "name": "className",
@@ -2174,13 +2174,13 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the button says: \"Escolher o XML da nota\"."
+        "note": "O que o botão diz: \"Escolher o XML da nota\"."
       },
       {
         "name": "accept",
         "type": "string | string[]",
         "required": false,
-        "note": "The accepted types."
+        "note": "Os tipos aceitos."
       },
       {
         "name": "className",
@@ -2196,19 +2196,19 @@
         "name": "hint",
         "type": "string",
         "required": false,
-        "note": "The fine print: formats and limit, so the person does not find out on rejection."
+        "note": "A letra miúda: formatos e limite, para a pessoa não descobrir na recusa."
       },
       {
         "name": "labels",
         "type": "Partial<FileUploadLabels>",
         "required": false,
-        "note": "The rejection reasons, to change the language: `invalidType` is the one for a type outside `accept`, and `tooLarge` receives the limit already written (\"5 MB\") and returns the one for a file that is too large."
+        "note": "Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora do `accept`, e `tooLarge` recebe o limite ja escrito (\"5 MB\") e devolve o do arquivo grande demais."
       },
       {
         "name": "maxSize",
         "type": "number",
         "required": false,
-        "note": "In bytes."
+        "note": "Em bytes."
       },
       {
         "name": "multiple",
@@ -2219,13 +2219,13 @@
         "name": "onReject",
         "type": "((rejections: Rejection[]) => void)",
         "required": false,
-        "note": "The ones that did not pass, each with a readable reason."
+        "note": "Os que não passaram, cada um com o motivo legível."
       },
       {
         "name": "onSelect",
         "type": "((files: PickedFile[]) => void)",
         "required": false,
-        "note": "The ones that passed validation."
+        "note": "Os que passaram na validação."
       }
     ]
   },
@@ -2246,7 +2246,7 @@
         "name": "size",
         "type": "number",
         "required": true,
-        "note": "In bytes."
+        "note": "Em bytes."
       },
       {
         "name": "className",
@@ -2257,13 +2257,13 @@
         "name": "error",
         "type": "string",
         "required": false,
-        "note": "Wins over progress: shows the text and offers a retry."
+        "note": "Vence o progresso: mostra o texto e oferece nova tentativa."
       },
       {
         "name": "labels",
         "type": "Partial<FileUploadItemLabels>",
         "required": false,
-        "note": "The row's texts, to change the language: `retry` is the retry button, and `remove` and `uploading` receive the file name and return the name of the remove button and of the progress bar."
+        "note": "Os textos da linha, para trocar o idioma: `retry` e o botao de nova tentativa, e `remove` e `uploading` recebem o nome do arquivo e devolvem o nome do botao de remover e o da barra de progresso."
       },
       {
         "name": "onRetry",
@@ -2274,7 +2274,7 @@
         "name": "progress",
         "type": "number",
         "required": false,
-        "note": "0 to 100 becomes a bar."
+        "note": "0 a 100 vira barra."
       }
     ]
   },
@@ -2300,73 +2300,73 @@
         "name": "filters",
         "type": "AppliedFilter[]",
         "required": true,
-        "note": "The current filters."
+        "note": "Os filtros de agora."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the whole row."
+        "note": "Veste a fileira inteira."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"chip\" | \"clear\" | \"empty\" | \"item\" | \"list\", string>>",
         "required": false,
-        "note": "Class per part: `list` (the scrolling row, via its content), `item` (each chip's wrapper), `chip` (the chip), `clear` (the clear button) and `empty` (the reserved row when there is no filter)."
+        "note": "Classe por parte: `list` (a fileira que rola, pelo conteudo dela), `item` (o embrulho de cada ficha), `chip` (a ficha), `clear` (o botao de limpar) e `empty` (a linha guardada quando nao ha filtro)."
       },
       {
         "name": "clearFrom",
         "type": "number",
         "required": false,
-        "note": "From how many filters \"limpar\" appears."
+        "note": "A partir de quantos filtros o \"limpar\" aparece."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Locks every X and clear, so the refetching query does not accept a second tap."
+        "note": "Trava todos os xis e o limpar, para a consulta que refaz nao aceitar um segundo toque."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The row's name for the screen reader."
+        "note": "O nome da fileira para o leitor de tela."
       },
       {
         "name": "labels",
         "type": "{ remove?: ((filter: string) => string) | undefined; clear?: ((total: number) => string) | undefined; status?: ((total: number) => string) | undefined; empty?: string | undefined; }",
         "required": false,
-        "note": "The texts the component writes: `remove` on the X, `clear` on the clear button, `status` in the live notice and `empty` on the reserved row."
+        "note": "Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` no aviso vivo e `empty` na linha guardada."
       },
       {
         "name": "onClear",
         "type": "(() => void)",
         "required": false,
-        "note": "Called when \"limpar\" is pressed, before `onFiltersChange`."
+        "note": "Chamado quando o \"limpar\" e apertado, antes do `onFiltersChange`."
       },
       {
         "name": "onFiltersChange",
         "type": "((filters: AppliedFilter[]) => void)",
         "required": false,
-        "note": "Receives what remains, on both the X and clear."
+        "note": "Recebe o que sobrou, tanto no xis quanto no limpar."
       },
       {
         "name": "onRemove",
         "type": "((filter: AppliedFilter) => void)",
         "required": false,
-        "note": "The filter that left, with the whole object, when its X is pressed."
+        "note": "O filtro que saiu, com o objeto inteiro, quando o xis dele e apertado."
       },
       {
         "name": "reserve",
         "type": "boolean",
         "required": false,
-        "note": "Keeps the row height when there is no filter at all, so the screen does not jump when the first one comes in."
+        "note": "Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao pular quando o primeiro entra."
       },
       {
         "name": "size",
         "type": "ChipSize",
         "required": false,
-        "note": "The pill height."
+        "note": "A altura das pilulas."
       }
     ]
   },
@@ -2377,49 +2377,49 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The filtered field: \"Cliente\", \"Vencimento\"."
+        "note": "O campo filtrado: \"Cliente\", \"Vencimento\"."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the whole chip - the 44pt touch strip, not the pill painted inside it."
+        "note": "Veste a ficha inteira - a faixa de toque de 44pt, e nao a pilula pintada dentro dela."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"label\" | \"remove\" | \"value\", string>>",
         "required": false,
-        "note": "Class per part: `label` (the field), `value` (the chosen value) and `remove` (the X's touch target)."
+        "note": "Classe por parte: `label` (o campo), `value` (o escolhido) e `remove` (o toque do xis)."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Locks the X and dims the chip, so the refetching query does not accept a second tap."
+        "note": "Trava o xis e apaga a ficha, para a consulta que refaz nao aceitar um segundo toque."
       },
       {
         "name": "labels",
         "type": "{ remove?: ((filter: string) => string) | undefined; }",
         "required": false,
-        "note": "What the screen reader hears on the X."
+        "note": "O que o leitor de tela ouve no xis."
       },
       {
         "name": "onRemove",
         "type": "(() => void)",
         "required": false,
-        "note": "What happens on the X."
+        "note": "O que acontece no xis."
       },
       {
         "name": "size",
         "type": "ChipSize",
         "required": false,
-        "note": "The height of the drawn pill, and only that: the X's touch target is 44pt in both, because the finger does not shrink along with the chip."
+        "note": "A altura da pilula desenhada, e so ela: o alvo de toque do xis e 44pt nas duas, porque o dedo nao encolhe junto com a ficha."
       },
       {
         "name": "value",
         "type": "string",
         "required": false,
-        "note": "What was chosen for that field."
+        "note": "O que foi escolhido nesse campo."
       }
     ]
   },
@@ -2430,19 +2430,19 @@
         "name": "children",
         "type": "((handle: FormHandle) => ReactNode) | ReactNode",
         "required": true,
-        "note": "The fields."
+        "note": "Os campos."
       },
       {
         "name": "form",
         "type": "UseFormReturn<Values, unknown, Parsed>",
         "required": true,
-        "note": "The return of `useZodForm` or `useForm`."
+        "note": "O retorno do `useZodForm` ou do `useForm`."
       },
       {
         "name": "onSubmit",
         "type": "SubmitHandler<Parsed>",
         "required": true,
-        "note": "Called with the values already validated and converted by the schema."
+        "note": "Chamado com os valores já validados e convertidos pelo schema."
       },
       {
         "name": "className",
@@ -2458,19 +2458,19 @@
         "name": "children",
         "type": "(row: FormFieldRow<Values, Name>, state: ControllerFieldState) => ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": true,
-        "note": "Receives the field ready for the adapter."
+        "note": "Recebe o campo pronto para o adaptador."
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "Required, unlike on the web."
+        "note": "Obrigatório, ao contrário do web."
       },
       {
         "name": "name",
         "type": "Name",
         "required": true,
-        "note": "The field's path in the schema."
+        "note": "O caminho do campo no schema."
       },
       {
         "name": "className",
@@ -2481,7 +2481,7 @@
         "name": "control",
         "type": "Control<Values>",
         "required": false,
-        "note": "Only when the field lives outside a `<Form>`."
+        "note": "Só quando o campo vive fora de um `<Form>`."
       },
       {
         "name": "description",
@@ -2507,19 +2507,19 @@
         "name": "columns",
         "type": "number",
         "required": false,
-        "note": "How many columns, fixed and of equal width."
+        "note": "Quantas colunas, fixas e de largura igual."
       },
       {
         "name": "gap",
         "type": "\"lg\" | \"md\" | \"none\" | \"sm\" | \"xl\" | \"xs\"",
         "required": false,
-        "note": "The gap between rows and columns, on the same scale as `Stack`."
+        "note": "O vao entre linhas e colunas, na mesma escala do `Stack`."
       },
       {
         "name": "minItemWidth",
         "type": "number",
         "required": false,
-        "note": "The minimum width of each item, in points."
+        "note": "A largura minima de cada item, em pontos."
       }
     ]
   },
@@ -2530,7 +2530,7 @@
         "name": "level",
         "type": "HeadingLevel",
         "required": true,
-        "note": "The heading's place in the screen outline, from 1 to 6."
+        "note": "O lugar do titulo no esboco da tela, de 1 a 6."
       },
       {
         "name": "className",
@@ -2541,13 +2541,13 @@
         "name": "size",
         "type": "HeadingSize",
         "required": false,
-        "note": "The body size on the house scale, from `sm` (13px) to `3xl` (30px)."
+        "note": "O corpo na escala da casa, de `sm` (13px) a `3xl` (30px)."
       },
       {
         "name": "truncate",
         "type": "boolean",
         "required": false,
-        "note": "Truncates to one line with an ellipsis at the end."
+        "note": "Corta em uma linha com reticencias no fim."
       }
     ]
   },
@@ -2558,55 +2558,55 @@
         "name": "children",
         "type": "string",
         "required": true,
-        "note": "The whole text, as a string."
+        "note": "O texto inteiro, como string."
       },
       {
         "name": "query",
         "type": "string | readonly string[]",
         "required": true,
-        "note": "The searched term, or a list of them."
+        "note": "O termo buscado, ou uma lista deles."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"mark\", string>>",
         "required": false,
-        "note": "Class per part: `mark`, each match found, the nested `Text` that paints the background."
+        "note": "Classe por parte: `mark`, cada trecho achado, o `Text` aninhado que pinta o fundo."
       },
       {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "Which of the provider's three families styles this text: `sans` for running text, `display` for headings, `mono` where fixed width aligns a column."
+        "note": "Qual das tres familias do provider veste este texto: `sans` no corrido, `display` no titulo, `mono` onde a largura fixa alinha coluna."
       },
       {
         "name": "lineClamp",
         "type": "1 | 2 | 3 | 4 | 5 | 6",
         "required": false,
-        "note": "Truncates after that many lines, from 1 to 6."
+        "note": "Corta depois de tantas linhas, de 1 a 6."
       },
       {
         "name": "size",
         "type": "TextSize",
         "required": false,
-        "note": "The body size on the house scale, from `xs` (12px) to `lg` (18px); above that is `Heading`."
+        "note": "O corpo na escala da casa, de `xs` (12px) a `lg` (18px); acima disso e o `Heading`."
       },
       {
         "name": "tone",
         "type": "TextTone",
         "required": false,
-        "note": "The color role, the same eight as the web."
+        "note": "O papel de cor, os mesmos oito do web."
       },
       {
         "name": "truncate",
         "type": "boolean",
         "required": false,
-        "note": "Truncates to one line with an ellipsis at the end."
+        "note": "Corta em uma linha com reticencias no fim."
       },
       {
         "name": "weight",
         "type": "TextWeight",
         "required": false,
-        "note": "The font weight, read from the theme weight tokens: `regular` is `--rc-weight-regular`, `medium` is `--rc-weight-medium`, `semibold` is `--rc-weight-strong` and `bold` is `--rc-weight-bold`."
+        "note": "O peso da letra, lido dos tokens de peso do tema: `regular` e `--rc-weight-regular`, `medium` e `--rc-weight-medium`, `semibold` e `--rc-weight-strong` e `bold` e `--rc-weight-bold`."
       }
     ]
   },
@@ -2617,13 +2617,13 @@
         "name": "children",
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": true,
-        "note": "The icon."
+        "note": "O icone."
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The button name, required: it is what the screen reader announces, and the button has no other text."
+        "note": "O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o botao nao tem outro texto."
       },
       {
         "name": "className",
@@ -2634,19 +2634,19 @@
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "Waiting: swaps the icon for the spinner, does not accept touch and announces `busy`."
+        "note": "Em espera: troca o icone pelo giro, nao aceita toque e anuncia `busy`."
       },
       {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
-        "note": "The square side: 32, 44 or 48."
+        "note": "O lado do quadrado: 32, 44 ou 48."
       },
       {
         "name": "variant",
         "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
-        "note": "The `Button` variants, read from the same classes."
+        "note": "As variantes do `Button`, lidas das mesmas classes."
       }
     ]
   },
@@ -2657,31 +2657,31 @@
         "name": "images",
         "type": "ImageViewerImage[]",
         "required": true,
-        "note": "The images, in navigation order."
+        "note": "As imagens, na ordem da navegacao."
       },
       {
         "name": "index",
         "type": "number | null",
         "required": true,
-        "note": "The open image, counting from zero, or `null` with the viewer closed."
+        "note": "A imagem aberta, contando de zero, ou `null` com o visualizador fechado."
       },
       {
         "name": "onIndexChange",
         "type": "(index: number | null) => void",
         "required": true,
-        "note": "Called on opening from the thumbnail, on navigating and with `null` on closing."
+        "note": "Chamado ao abrir pela miniatura, ao navegar e com `null` ao fechar."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the thumbnail grid, the same element as `classNames.thumbnails`."
+        "note": "Veste a grade de miniaturas, o mesmo elemento que `classNames.thumbnails`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"caption\" | \"counter\" | \"image\" | \"stage\" | \"thumbnail\" | \"thumbnails\" | \"toolbar\" | \"viewer\", string>>",
         "required": false,
-        "note": "Class per part: `thumbnails` (the grid), `thumbnail` (each tappable thumbnail), `viewer` (the full screen), `toolbar`, `counter`, `stage` (the image area), `image` and `caption`."
+        "note": "Classe por parte: `thumbnails` (a grade), `thumbnail` (cada miniatura tocavel), `viewer` (a tela cheia), `toolbar`, `counter`, `stage` (a area da imagem), `image` e `caption`."
       },
       {
         "name": "labels",
@@ -2692,19 +2692,19 @@
         "name": "loop",
         "type": "boolean",
         "required": false,
-        "note": "From the last one, next goes back to the first, and vice versa."
+        "note": "Da ultima, a proxima volta a primeira, e vice-versa."
       },
       {
         "name": "maxZoom",
         "type": "number",
         "required": false,
-        "note": "The maximum zoom, in multiples of the size that fits the screen."
+        "note": "O zoom maximo, em vezes o tamanho que cabe na tela."
       },
       {
         "name": "thumbnails",
         "type": "boolean",
         "required": false,
-        "note": "Draws the thumbnail grid that opens the viewer."
+        "note": "Desenha a grade de miniaturas que abre o visualizador."
       }
     ]
   },
@@ -2715,13 +2715,13 @@
         "name": "children",
         "type": "ReactNode",
         "required": true,
-        "note": "What receives the mark: the bell button, the tab bar item, the avatar."
+        "note": "O que recebe a marca: o botão do sino, o item da barra, o avatar."
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the screen reader hears instead of the number: \"3 notificações\"."
+        "note": "O que o leitor de tela ouve no lugar do número: \"3 notificações\"."
       },
       {
         "name": "className",
@@ -2732,25 +2732,25 @@
         "name": "classNames",
         "type": "Partial<Record<\"badge\", string>>",
         "required": false,
-        "note": "Class per part: `badge`, the pill."
+        "note": "Classe por parte: `badge`, a pastilha."
       },
       {
         "name": "count",
         "type": "number",
         "required": false,
-        "note": "How many."
+        "note": "Quantos."
       },
       {
         "name": "dot",
         "type": "boolean",
         "required": false,
-        "note": "No count: just the dot, for \"there is something new here\"."
+        "note": "Sem contagem: só o ponto, para \"tem algo novo aqui\"."
       },
       {
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "The cap: above it \"99+\" is shown, instead of the pill stretching."
+        "note": "O teto: acima dele sai \"99+\", em vez de a pastilha esticar."
       }
     ]
   },
@@ -2761,7 +2761,7 @@
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "The provider family that styles what is typed."
+        "note": "A familia do provider que veste o que se digita."
       },
       {
         "name": "invalid",
@@ -2772,7 +2772,7 @@
         "name": "onValueChange",
         "type": "((value: string) => void)",
         "required": false,
-        "note": "Receives the text on every keystroke, like the web Input `onValueChange`."
+        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Input web."
       },
       {
         "name": "ref",
@@ -2798,19 +2798,19 @@
         "name": "actions",
         "type": "InputGroupAction[]",
         "required": false,
-        "note": "The buttons attached to the field, after the suffix."
+        "note": "Os botões colados no campo, depois do sufixo."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the frame."
+        "note": "Veste a moldura."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"action\" | \"input\" | \"prefix\" | \"suffix\", string>>",
         "required": false,
-        "note": "Class per part, with the names of the web components: `input` (the field), `prefix`, `suffix` and `action` (each button attached to the field, before the action's own `className`)."
+        "note": "Classe por parte, com os nomes das pecas do web: `input` (o campo), `prefix`, `suffix` e `action` (cada botao colado no campo, antes do `className` da propria acao)."
       },
       {
         "name": "invalid",
@@ -2821,13 +2821,13 @@
         "name": "prefix",
         "type": "ReactNode",
         "required": false,
-        "note": "The addon before the field: `R$`, an acronym, an icon."
+        "note": "O encosto antes do campo: `R$`, uma sigla, um ícone."
       },
       {
         "name": "suffix",
         "type": "ReactNode",
         "required": false,
-        "note": "The addon after the field: `,00`, `kg`, `@empresa.com.br`."
+        "note": "O encosto depois do campo: `,00`, `kg`, `@empresa.com.br`."
       }
     ]
   },
@@ -2838,19 +2838,19 @@
         "name": "title",
         "type": "string",
         "required": true,
-        "note": "The text that names the row."
+        "note": "O texto que nomeia a linha."
       },
       {
         "name": "accessibilityLabel",
         "type": "string",
         "required": false,
-        "note": "What the screen reader announces on the row."
+        "note": "O que o leitor de tela anuncia na linha."
       },
       {
         "name": "actions",
         "type": "ReactNode",
         "required": false,
-        "note": "The right corner: value, `Badge`, `Button`, `Indicator`."
+        "note": "O canto da direita: valor, `Badge`, `Button`, `Indicator`."
       },
       {
         "name": "className",
@@ -2861,25 +2861,25 @@
         "name": "description",
         "type": "string",
         "required": false,
-        "note": "The second, smaller line: the complement that fits."
+        "note": "A segunda linha, menor: o complemento que cabe."
       },
       {
         "name": "media",
         "type": "ReactNode",
         "required": false,
-        "note": "The left corner: `Avatar`, icon, thumbnail."
+        "note": "O canto da esquerda: `Avatar`, ícone, miniatura."
       },
       {
         "name": "onPress",
         "type": "(() => void)",
         "required": false,
-        "note": "Tap and go."
+        "note": "Toca e vai."
       },
       {
         "name": "variant",
         "type": "\"outline\" | \"plain\"",
         "required": false,
-        "note": "`plain` for a list inside a card or sheet; `outline` for a grid of choices."
+        "note": "`plain` para lista dentro de card ou folha; `outline` para grade de escolhas."
       }
     ]
   },
@@ -2900,31 +2900,31 @@
         "name": "external",
         "type": "boolean",
         "required": false,
-        "note": "Leaves the app: draws the exit arrow and tells the screen reader with `labels.external`, as a hint after the name."
+        "note": "Sai do app: desenha a seta de saida e avisa o leitor de tela com o `labels.external`, como dica depois do nome."
       },
       {
         "name": "href",
         "type": "string",
         "required": false,
-        "note": "The address the tap opens through React Native `Linking`: `https:`, `mailto:`, `tel:`."
+        "note": "O endereco que o toque abre pelo `Linking` do React Native: `https:`, `mailto:`, `tel:`."
       },
       {
         "name": "labels",
         "type": "Partial<LinkLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `external` is the hint the screen reader reads after the name of an `external` link, \"Abre fora do app.\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `external` e a dica que o leitor de tela le depois do nome de um link `external`, \"Abre fora do app.\" sem ele."
       },
       {
         "name": "onPress",
         "type": "((event: GestureResponderEvent) => void)",
         "required": false,
-        "note": "What navigates inside the app: `onPress={() => router.push(\"/notas\")}`."
+        "note": "Quem navega dentro do app: `onPress={() => router.push(\"/notas\")}`."
       },
       {
         "name": "tone",
         "type": "LinkTone",
         "required": false,
-        "note": "The color role, the same four as the web."
+        "note": "O papel de cor, os mesmos quatro do web."
       }
     ]
   },
@@ -2935,25 +2935,25 @@
         "name": "mask",
         "type": "Mask",
         "required": true,
-        "note": "The pattern, in the same syntax as the web: a ready-made name (`cpf`, `cnpj`, `cep`, `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`, `moeda`) or a hand-written pattern, with `9` for a digit, `A` for a letter and `*` for either."
+        "note": "O molde, na mesma sintaxe do web: um nome pronto (`cpf`, `cnpj`, `cep`, `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`, `moeda`) ou um molde escrito na mao, com `9` para digito, `A` para letra e `*` para os dois."
       },
       {
         "name": "onValueChange",
         "type": "(clean: string, masked: string) => void",
         "required": true,
-        "note": "Called on every keystroke with the clean value and, in the second argument, the masked text that the web passes first."
+        "note": "Chamado a cada tecla com o valor limpo e, no segundo argumento, o texto com mascara que o web entrega primeiro."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The CLEAN value, without punctuation and with letters in uppercase - the mask belongs to the field, the data does not carry it."
+        "note": "O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega."
       },
       {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "The provider family that styles what is typed."
+        "note": "A familia do provider que veste o que se digita."
       },
       {
         "name": "invalid",
@@ -2989,31 +2989,31 @@
         "name": "title",
         "type": "string",
         "required": true,
-        "note": "The subject of the actions: \"Nota 4813\"."
+        "note": "O sujeito das acoes: \"Nota 4813\"."
       },
       {
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "note": "The area that opens the menu on long press - the phone's right click."
+        "note": "A area que abre o menu no toque longo - o botao direito do celular."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the list of actions inside the sheet, the same node as `classNames.content`."
+        "note": "Veste a lista de acoes dentro da folha, o mesmo no de `classNames.content`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"content\" | \"item\" | \"trigger\", string>>",
         "required": false,
-        "note": "Class per part, with the names of the web components: `trigger` (the long-press area, which wraps the children, so inherit their layout), `content` (the list of actions) and `item` (each action)."
+        "note": "Classe por parte, com os nomes das pecas do web: `trigger` (a area do toque longo, que envolve os filhos, entao herde o layout deles), `content` (a lista de acoes) e `item` (cada acao)."
       },
       {
         "name": "labels",
         "type": "Partial<MenuLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `open` is the name of the action that opens the sheet from the screen reader, and `hint` the hint of the long-press area, which receives `title`."
+        "note": "Os textos da peca, para trocar o idioma: `open` e o nome da acao que abre a folha pelo leitor de tela, e `hint` a dica da area do toque longo, que recebe o `title`."
       }
     ]
   },
@@ -3024,31 +3024,31 @@
         "name": "role",
         "type": "MessageRole",
         "required": true,
-        "note": "Who is speaking."
+        "note": "Quem fala."
       },
       {
         "name": "actions",
         "type": "ReactNode",
         "required": false,
-        "note": "Your own buttons, after copy and retry."
+        "note": "Os botoes proprios, depois do copiar e do tentar de novo."
       },
       {
         "name": "author",
         "type": "string",
         "required": false,
-        "note": "The speaker's name, for the screen reader."
+        "note": "O nome de quem fala, para o leitor de tela."
       },
       {
         "name": "avatar",
         "type": "ReactNode",
         "required": false,
-        "note": "The `Avatar` next to the message."
+        "note": "O `Avatar` ao lado da mensagem."
       },
       {
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "note": "The content."
+        "note": "O conteudo."
       },
       {
         "name": "className",
@@ -3059,37 +3059,37 @@
         "name": "classNames",
         "type": "Partial<Record<\"actions\" | \"avatar\" | \"bubble\" | \"content\" | \"error\" | \"indicator\", string>>",
         "required": false,
-        "note": "Class per part: `avatar`, `bubble`, `content` (the content `Text`, when it arrives as text), `indicator` (the three dots), `error` and `actions`."
+        "note": "Classe por parte: `avatar`, `bubble`, `content` (o `Text` do conteudo, quando ele chega como texto), `indicator` (os tres pontos), `error` e `actions`."
       },
       {
         "name": "error",
         "type": "string",
         "required": false,
-        "note": "The answer failed: the sentence appears below the content, in the danger tone."
+        "note": "A resposta falhou: a frase sai embaixo do conteudo, no tom de perigo."
       },
       {
         "name": "labels",
         "type": "{ copy?: string | undefined; retry?: string | undefined; }",
         "required": false,
-        "note": "The names of the action buttons."
+        "note": "Os nomes dos botoes de acao."
       },
       {
         "name": "onCopy",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on the copy button."
+        "note": "Liga o botao de copiar."
       },
       {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on the retry button, which asks for another answer."
+        "note": "Liga o botao de tentar de novo, que pede outra resposta."
       },
       {
         "name": "streaming",
         "type": "boolean",
         "required": false,
-        "note": "The text is still arriving: announces `busy`, shows the indicator and hides the actions."
+        "note": "O texto ainda esta chegando: anuncia `busy`, mostra o indicador e esconde as acoes."
       }
     ]
   },
@@ -3100,13 +3100,13 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The measurement's name."
+        "note": "O nome da medida."
       },
       {
         "name": "value",
         "type": "number",
         "required": true,
-        "note": "Where the measurement is now, on the scale from `min` to `max`."
+        "note": "Onde a medida esta agora, na escala de `min` a `max`."
       },
       {
         "name": "className",
@@ -3117,37 +3117,37 @@
         "name": "classNames",
         "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
         "required": false,
-        "note": "Class per part: `label`, `value` (the written number), `track` (the track) and `indicator` (the fill)."
+        "note": "Classe por parte: `label`, `value` (o numero escrito), `track` (o trilho) e `indicator` (o preenchimento)."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`percent`, `currencyShort`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "The ceiling of the scale: the quota, the plan limit, the contracted disk."
+        "note": "O teto da escala: a cota, o limite do plano, o disco contratado."
       },
       {
         "name": "min",
         "type": "number",
         "required": false,
-        "note": "The floor of the scale."
+        "note": "O piso da escala."
       },
       {
         "name": "showValue",
         "type": "boolean",
         "required": false,
-        "note": "Writes the percentage next to the label."
+        "note": "Escreve a porcentagem ao lado do rotulo."
       },
       {
         "name": "valueLabel",
         "type": "string",
         "required": false,
-        "note": "The measurement already written - \"8 GB de 15 GB\", \"R$ 4.200 de R$ 5.000\"."
+        "note": "A medida ja escrita - \"8 GB de 15 GB\", \"R$ 4.200 de R$ 5.000\"."
       }
     ]
   },
@@ -3158,13 +3158,13 @@
         "name": "icon",
         "type": "Glyph",
         "required": true,
-        "note": "The button's bell."
+        "note": "O sino do botao."
       },
       {
         "name": "items",
         "type": "NotificationItem[]",
         "required": true,
-        "note": "The notifications already loaded, newest to oldest."
+        "note": "As notificacoes ja carregadas, da mais nova para a mais antiga."
       },
       {
         "name": "onOpenChange",
@@ -3175,61 +3175,61 @@
         "name": "open",
         "type": "boolean",
         "required": true,
-        "note": "The sheet is open."
+        "note": "A folha aberta."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the bell button, the same element as `classNames.trigger`."
+        "note": "Veste o botao do sino, o mesmo elemento que `classNames.trigger`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"empty\" | \"filters\" | \"header\" | \"item\" | \"list\" | \"panel\" | \"trigger\", string>>",
         "required": false,
-        "note": "Class per part: `trigger` (the bell button), `panel` (the sheet content), `header` (the row with the filter and mark-all), `filters`, `list`, `item` (each row) and `empty`."
+        "note": "Classe por parte: `trigger` (o botao do sino), `panel` (o conteudo da folha), `header` (a fileira do filtro e do marcar todas), `filters`, `list`, `item` (cada linha) e `empty`."
       },
       {
         "name": "filter",
         "type": "NotificationFilter",
         "required": false,
-        "note": "The filter, controlled."
+        "note": "O filtro, controlado."
       },
       {
         "name": "hasMore",
         "type": "boolean",
         "required": false,
-        "note": "There is more to load: turns on \"Carregar mais\" at the end of the list."
+        "note": "Ha mais para carregar: liga o \"Carregar mais\" no fim da lista."
       },
       {
         "name": "isLoading",
         "type": "boolean",
         "required": false,
-        "note": "The first load has not returned yet: the list becomes placeholders."
+        "note": "A primeira carga ainda nao voltou: a lista vira marca de lugar."
       },
       {
         "name": "isLoadingMore",
         "type": "boolean",
         "required": false,
-        "note": "The next page is arriving: the button spins and does not accept touch."
+        "note": "A proxima pagina esta chegando: o botao gira e nao aceita toque."
       },
       {
         "name": "labels",
         "type": "Partial<NotificationCenterLabels>",
         "required": false,
-        "note": "The component's texts, to change the language or the wording."
+        "note": "Os textos da peca, para trocar o idioma ou o termo."
       },
       {
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "The cap of the number on the bell: above it \"99+\" is shown."
+        "note": "O teto do numero no sino: acima dele sai \"99+\"."
       },
       {
         "name": "now",
         "type": "Date",
         "required": false,
-        "note": "The \"now\" for relative dates, for tests and frozen screens."
+        "note": "O agora das datas relativas, para teste e tela congelada."
       },
       {
         "name": "onFilterChange",
@@ -3240,7 +3240,7 @@
         "name": "onItemPress",
         "type": "((item: NotificationItem) => void)",
         "required": false,
-        "note": "Called on tapping a notification."
+        "note": "Chamado ao tocar numa notificacao."
       },
       {
         "name": "onLoadMore",
@@ -3251,19 +3251,19 @@
         "name": "onMarkAllRead",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on \"Marcar todas como lidas\" at the top of the sheet."
+        "note": "Liga o \"Marcar todas como lidas\" no topo da folha."
       },
       {
         "name": "onMarkRead",
         "type": "((id: string) => void)",
         "required": false,
-        "note": "Turns on the mark-as-read button on each unread one."
+        "note": "Liga o botao de marcar como lida em cada nao lida."
       },
       {
         "name": "unreadCount",
         "type": "number",
         "required": false,
-        "note": "How many unread ones exist, when the server knows more than the loaded page."
+        "note": "Quantas nao lidas existem, quando o servidor sabe mais do que a pagina carregada."
       }
     ]
   },
@@ -3274,7 +3274,7 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The name the screen reader announces: \"Quantidade de parcelas\"."
+        "note": "O nome que o leitor de tela anuncia: \"Quantidade de parcelas\"."
       },
       {
         "name": "onValueChange",
@@ -3300,7 +3300,7 @@
         "name": "labels",
         "type": "Partial<NumberFieldLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `decrement` and `increment` receive `label` and return the name of each step button, \"Diminuir Quantidade de parcelas\" without them."
+        "note": "Os textos da peca, para trocar o idioma: `decrement` e `increment` recebem o `label` e devolvem o nome de cada botao de passo, \"Diminuir Quantidade de parcelas\" sem eles."
       },
       {
         "name": "max",
@@ -3311,7 +3311,7 @@
         "name": "min",
         "type": "number",
         "required": false,
-        "note": "The floor, inclusive."
+        "note": "O piso, inclusive."
       },
       {
         "name": "step",
@@ -3342,19 +3342,19 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The name the screen reader hears on the field: \"Codigo enviado por SMS\"."
+        "note": "O nome que o leitor de tela ouve no campo: \"Codigo enviado por SMS\"."
       },
       {
         "name": "length",
         "type": "number",
         "required": false,
-        "note": "How many digits the code has."
+        "note": "Quantos digitos o codigo tem."
       },
       {
         "name": "onValueComplete",
         "type": "((value: string) => void)",
         "required": false,
-        "note": "Called once, when the last digit is entered."
+        "note": "Chamado uma vez, quando o ultimo digito entra."
       }
     ]
   },
@@ -3370,31 +3370,31 @@
         "name": "actions",
         "type": "ReactNode",
         "required": false,
-        "note": "The screen's actions: a primary Button, at most two."
+        "note": "As acoes da tela: um Button primario, no maximo dois."
       },
       {
         "name": "badge",
         "type": "ReactNode",
         "required": false,
-        "note": "The tag next to the title: a Badge, typically."
+        "note": "A etiqueta ao lado do titulo: um Badge, tipicamente."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the root, the same row as `classNames.row`."
+        "note": "Veste a raiz, a mesma fileira de `classNames.row`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"actions\" | \"description\" | \"heading\" | \"row\" | \"title\", string>>",
         "required": false,
-        "note": "Class per part: `row` (the title row with the actions), `heading` (the title and description column), `title`, `description` and `actions`."
+        "note": "Classe por parte: `row` (a fileira do titulo com as acoes), `heading` (a coluna do titulo e da descricao), `title`, `description` e `actions`."
       },
       {
         "name": "description",
         "type": "string",
         "required": false,
-        "note": "The context sentence below the title, not a decorative subtitle."
+        "note": "A frase de contexto embaixo do titulo, nao um subtitulo decorativo."
       }
     ]
   },
@@ -3415,13 +3415,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the frame."
+        "note": "Veste a moldura."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"action\" | \"input\" | \"wrapper\", string>>",
         "required": false,
-        "note": "Class per part: `wrapper` (the frame, the same node as `className`), `input` (the field) and `action` (the eye button)."
+        "note": "Classe por parte: `wrapper` (a moldura, o mesmo no de `className`), `input` (o campo) e `action` (o botao do olho)."
       },
       {
         "name": "invalid",
@@ -3432,7 +3432,7 @@
         "name": "labels",
         "type": "{ show: string; hide: string; }",
         "required": false,
-        "note": "What the screen reader hears on the button, before and after revealing."
+        "note": "O que o leitor de tela ouve no botão, antes e depois de revelar."
       }
     ]
   },
@@ -3443,13 +3443,13 @@
         "name": "payload",
         "type": "string",
         "required": true,
-        "note": "The whole Pix copy-and-paste code, as the PSP or `buildPixPayload` returns it."
+        "note": "O Pix copia e cola inteiro, como o PSP ou o `buildPixPayload` devolvem."
       },
       {
         "name": "amount",
         "type": "number",
         "required": false,
-        "note": "The amount in reais, highlighted, which overrides the one in the code; in a dynamic QR only this one applies."
+        "note": "O valor em reais em destaque, que vence o do codigo; no QR dinamico so vale este."
       },
       {
         "name": "className",
@@ -3460,49 +3460,49 @@
         "name": "classNames",
         "type": "Partial<Record<\"amount\" | \"code\" | \"payload\" | \"receiver\", string>>",
         "required": false,
-        "note": "Class per part: `code` (the QR, its placeholder or the expired notice), `amount`, `receiver` and `payload` (the copy-and-paste text)."
+        "note": "Classe por parte: `code` (o QR, a marca de lugar dele ou o aviso de expirado), `amount`, `receiver` e `payload` (o texto do copia e cola)."
       },
       {
         "name": "expired",
         "type": "boolean",
         "required": false,
-        "note": "Replaces the QR with a notice and removes the copy: an expired code is not offered for payment."
+        "note": "Troca o QR por um aviso e tira o copiar: codigo vencido nao se oferece para pagar."
       },
       {
         "name": "labels",
         "type": "Partial<PixCodeLabels>",
         "required": false,
-        "note": "The component's texts, for another language or another tone."
+        "note": "Os textos da peca, para quem precisa de outro idioma ou outro tom."
       },
       {
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "While the charge is being generated: a placeholder in the QR and in the text, and the notice to the screen reader."
+        "note": "Enquanto a cobranca e gerada: marca de lugar no QR e no texto, e o aviso ao leitor de tela."
       },
       {
         "name": "onRenew",
         "type": "(() => void)",
         "required": false,
-        "note": "Turns on the button that generates another code, in the expired notice."
+        "note": "Liga o botao de gerar outro codigo, no aviso de expirado."
       },
       {
         "name": "receiver",
         "type": "string",
         "required": false,
-        "note": "The receiver's name as the screen should show it, with accents."
+        "note": "O nome do recebedor como a tela deve mostrar, com acento."
       },
       {
         "name": "renderCopy",
         "type": "((payload: string) => ReactNode)",
         "required": false,
-        "note": "The copy button, which lives in `@rivocode/ui-native/clipboard` because of `expo-clipboard`."
+        "note": "O botao de copiar, que mora em `@rivocode/ui-native/clipboard` por causa do `expo-clipboard`."
       },
       {
         "name": "size",
         "type": "number",
         "required": false,
-        "note": "The QR side in px."
+        "note": "O lado do QR em px."
       }
     ]
   },
@@ -3513,37 +3513,37 @@
         "name": "lookup",
         "type": "PostalCodeLookup",
         "required": true,
-        "note": "The address lookup, written by the consumer: receives the 8 digits and the `signal`, and returns the address or `null` when the CEP does not exist."
+        "note": "A busca do endereco, escrita por quem usa: recebe os 8 digitos e o `signal`, e devolve o endereco ou `null` quando o CEP nao existe."
       },
       {
         "name": "onValueChange",
         "type": "(digits: string, masked: string) => void",
         "required": true,
-        "note": "Called on every keystroke with the digits and, in the second argument, the punctuated CEP that the web passes first."
+        "note": "Chamado a cada tecla com os digitos e, no segundo argumento, o CEP pontuado que o web entrega primeiro."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The digits, without punctuation: the mask belongs to the field, the data does not carry it."
+        "note": "Os digitos, sem a pontuacao: a mascara e do campo, o dado nao a carrega."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the root, which wraps the field and the notice."
+        "note": "Veste a raiz, que embrulha o campo e o aviso."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"input\" | \"message\" | \"retry\" | \"suffix\", string>>",
         "required": false,
-        "note": "Class per part: `input`, `suffix` (the spinner, only while searching), `message` and `retry` (the retry button)."
+        "note": "Classe por parte: `input`, `suffix` (o giro, so enquanto busca), `message` e `retry` (o botao de tentar de novo)."
       },
       {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "The provider family that styles what is typed."
+        "note": "A familia do provider que veste o que se digita."
       },
       {
         "name": "invalid",
@@ -3554,19 +3554,19 @@
         "name": "labels",
         "type": "Partial<{ searching: string; found: string; notFound: string; failed: string; retry: string; }>",
         "required": false,
-        "note": "The same texts as the web: `searching`, `found`, `notFound`, `failed` and `retry`."
+        "note": "Os mesmos textos do web: `searching`, `found`, `notFound`, `failed` e `retry`."
       },
       {
         "name": "onAddress",
         "type": "((address: PostalAddress, postalCode: string) => void)",
         "required": false,
-        "note": "Called when the lookup finds the address."
+        "note": "Chamado quando a busca acha o endereco."
       },
       {
         "name": "onStatusChange",
         "type": "((status: PostalCodeStatus) => void)",
         "required": false,
-        "note": "Called on every change of lookup state."
+        "note": "Chamado a cada troca de estado da busca."
       },
       {
         "name": "ref",
@@ -3587,31 +3587,31 @@
         "name": "value",
         "type": "number",
         "required": true,
-        "note": "0 to 100."
+        "note": "0 a 100."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the root: without `showValue`, the track, the same node as `classNames.track`."
+        "note": "Veste a raiz: sem `showValue`, o trilho, o mesmo no de `classNames.track`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
         "required": false,
-        "note": "Class per part: `label` and `value` (the two texts, only with `showValue`), `track` (the track) and `indicator` (the fill)."
+        "note": "Classe por parte: `label` e `value` (os dois textos, so com `showValue`), `track` (o trilho) e `indicator` (o preenchimento)."
       },
       {
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter (`percent`, `currencyShort`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "showValue",
         "type": "boolean",
         "required": false,
-        "note": "Writes the label above the bar and the percentage next to it."
+        "note": "Escreve o rotulo acima da barra e a porcentagem ao lado dele."
       }
     ]
   },
@@ -3622,31 +3622,31 @@
         "name": "onSubmit",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Called by the send button, with the text."
+        "note": "Chamado pelo botao de enviar, com o texto."
       },
       {
         "name": "onValueChange",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Called on every keystroke, with the whole text."
+        "note": "Chamado a cada tecla, com o texto inteiro."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The field text."
+        "note": "O texto do campo."
       },
       {
         "name": "actions",
         "type": "ReactNode",
         "required": false,
-        "note": "The footer buttons, on the left: attach, dictate."
+        "note": "Os botoes do rodape, a esquerda: anexar, ditar."
       },
       {
         "name": "attachments",
         "type": "ReactNode",
         "required": false,
-        "note": "The attachments already chosen, above the field."
+        "note": "Os anexos ja escolhidos, acima do campo."
       },
       {
         "name": "className",
@@ -3657,7 +3657,7 @@
         "name": "classNames",
         "type": "Partial<Record<\"attachments\" | \"count\" | \"footer\" | \"submit\" | \"textarea\", string>>",
         "required": false,
-        "note": "Class per part: `attachments`, `textarea` (the field), `footer` (the bottom row), `count` and `submit` (the send button, and the stop button in its place)."
+        "note": "Classe por parte: `attachments`, `textarea` (o campo), `footer` (a fileira de baixo), `count` e `submit` (o botao de enviar, e o de parar no lugar dele)."
       },
       {
         "name": "disabled",
@@ -3668,31 +3668,31 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The field name for the screen reader."
+        "note": "O nome do campo para o leitor de tela."
       },
       {
         "name": "labels",
         "type": "Partial<PromptInputLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `submit` and `stop` are the names of the send and stop buttons, `hint` the hint tied to the field, `count` what is heard from the counter (also in the field hint) and `limit` the announcement on hitting the cap."
+        "note": "Os textos da peca, para trocar o idioma: `submit` e `stop` sao os nomes do botao de enviar e do de parar, `hint` a dica ligada ao campo, `count` o que se ouve do contador (tambem na dica do campo) e `limit` o anuncio ao bater no teto."
       },
       {
         "name": "maxLength",
         "type": "number",
         "required": false,
-        "note": "The character cap."
+        "note": "O teto de caracteres."
       },
       {
         "name": "maxRows",
         "type": "number",
         "required": false,
-        "note": "How many lines the field grows before it scrolls inside."
+        "note": "Quantas linhas o campo cresce antes de rolar por dentro."
       },
       {
         "name": "onStop",
         "type": "(() => void)",
         "required": false,
-        "note": "Called by the stop button, which exists only while `streaming`."
+        "note": "Chamado pelo botao de parar, que so existe em `streaming`."
       },
       {
         "name": "placeholder",
@@ -3703,13 +3703,13 @@
         "name": "showCount",
         "type": "boolean",
         "required": false,
-        "note": "Shows the character count in the footer, in the danger tone when it hits the cap."
+        "note": "Mostra a contagem de caracteres no rodape, no tom de perigo ao bater no teto."
       },
       {
         "name": "streaming",
         "type": "boolean",
         "required": false,
-        "note": "The answer is arriving: the send button becomes the stop button."
+        "note": "A resposta esta chegando: o botao de enviar vira o de parar."
       }
     ]
   },
@@ -3720,13 +3720,13 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The name the screen reader hears, saying what the code is for, and not the raw content."
+        "note": "O nome que o leitor de tela ouve, dizendo para que o codigo serve, e nao o conteudo cru."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The text the code carries: a link, a Pix copy-and-paste code, an access key."
+        "note": "O texto que o codigo carrega: link, copia e cola do Pix, chave de acesso."
       },
       {
         "name": "className",
@@ -3737,31 +3737,31 @@
         "name": "classNames",
         "type": "Partial<Record<\"logo\", string>>",
         "required": false,
-        "note": "Class per part: `logo`, the paper box that holds the mark in the center."
+        "note": "Classe por parte: `logo`, a caixa de papel que segura a marca no centro."
       },
       {
         "name": "labels",
         "type": "{ tooLong?: string | undefined; }",
         "required": false,
-        "note": "The component's texts."
+        "note": "Os textos da peca."
       },
       {
         "name": "level",
         "type": "\"H\" | \"L\" | \"M\" | \"Q\"",
         "required": false,
-        "note": "Error correction, from `L` (recovers 7% of the symbol) to `H` (30%), with `M` (15%) without a logo and `H` with a logo."
+        "note": "A correcao de erro, de `L` (recupera 7% do simbolo) a `H` (30%), com `M` (15%) sem logo e `H` com logo."
       },
       {
         "name": "logo",
         "type": "ReactNode",
         "required": false,
-        "note": "The mark in the center, which appears only with `level=\"H\"`: the modules under it are erased."
+        "note": "A marca no centro, que so aparece com `level=\"H\"`: os modulos embaixo dela sao apagados."
       },
       {
         "name": "size",
         "type": "number",
         "required": false,
-        "note": "The square side in px, quiet zone included."
+        "note": "O lado do quadrado em px, com a margem de silencio incluida."
       }
     ]
   },
@@ -3772,49 +3772,49 @@
         "name": "children",
         "type": "((data: NonNullable<Data>) => ReactNode) | ReactNode",
         "required": true,
-        "note": "The response on screen."
+        "note": "A resposta na tela."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the three endings, not the children: the frame that reserves the height applies equally to the skeleton, the error notice and the empty state."
+        "note": "Veste os tres finais, e nao os filhos: a moldura que reserva a altura vale igual para o esqueleto, para o aviso de erro e para o vazio."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"empty\" | \"error\" | \"loading\", string>>",
         "required": false,
-        "note": "Class per part: `loading` (the skeleton frame), `error` (the notice with the button) and `empty` (the empty state)."
+        "note": "Classe por parte: `loading` (a moldura do esqueleto), `error` (a do aviso com o botao) e `empty` (o estado vazio)."
       },
       {
         "name": "data",
         "type": "Data",
         "required": false,
-        "note": "The query response."
+        "note": "A resposta da consulta."
       },
       {
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
-        "note": "What appears when the query comes back empty."
+        "note": "O que aparece quando a consulta volta vazia."
       },
       {
         "name": "errorMessage",
         "type": "string",
         "required": false,
-        "note": "The bottom line of the notice."
+        "note": "A linha de baixo do aviso."
       },
       {
         "name": "errorTitle",
         "type": "string",
         "required": false,
-        "note": "The title of the error notice."
+        "note": "O titulo do aviso de erro."
       },
       {
         "name": "isEmpty",
         "type": "boolean",
         "required": false,
-        "note": "States emptiness instead of `data`, for a response that is not a list: `isEmpty={page.total === 0}`."
+        "note": "Diz o vazio no lugar do `data`, para a resposta que nao e uma lista: `isEmpty={page.total === 0}`."
       },
       {
         "name": "isError",
@@ -3830,25 +3830,25 @@
         "name": "labels",
         "type": "Partial<QueryBoundaryLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `retry` is the button that runs `onRetry`, \"Tentar de novo\" without it - the same key as the web and as the query components here -, and `loading` what the screen reader hears during the generic wait, \"Carregando\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry`, \"Tentar de novo\" sem ele - a mesma chave do web e das pecas de consulta daqui -, e `loading` o que o leitor de tela ouve na espera generica, \"Carregando\" sem ele."
       },
       {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
-        "note": "Without it, the error offers no retry."
+        "note": "Sem isto, o erro nao oferece nova tentativa."
       },
       {
         "name": "skeleton",
         "type": "ReactNode",
         "required": false,
-        "note": "The waiting drawing, in the shape of what comes next - the three-row list, the card, the sheet of fields."
+        "note": "O desenho da espera, no formato do que vem depois - a lista de tres linhas, o cartao, a folha de campos."
       },
       {
         "name": "skeletonRows",
         "type": "number",
         "required": false,
-        "note": "How many fake rows the generic wait shows."
+        "note": "Quantas linhas falsas a espera generica mostra."
       }
     ]
   },
@@ -3859,13 +3859,13 @@
         "name": "item",
         "type": "string",
         "required": true,
-        "note": "The open question, by `name`."
+        "note": "A pergunta aberta, pelo `name`."
       },
       {
         "name": "items",
         "type": "QuestionnaireQuestion[]",
         "required": true,
-        "note": "The questions, in the order they appear."
+        "note": "As perguntas, na ordem em que aparecem."
       },
       {
         "name": "onItemChange",
@@ -3876,7 +3876,7 @@
         "name": "onSubmit",
         "type": "(answers: QuestionnaireAnswers) => void",
         "required": true,
-        "note": "Called when the last question validates and all the previous ones too, with clean answers: a skipped, disabled or empty question is left out."
+        "note": "Chamado quando a ultima pergunta valida e todas as anteriores tambem, com as respostas limpas: pergunta pulada, desabilitada ou vazia fica ausente."
       },
       {
         "name": "onValueChange",
@@ -3887,7 +3887,7 @@
         "name": "value",
         "type": "QuestionnaireAnswers",
         "required": true,
-        "note": "The answers: text in `single` and `text`, a list in `multiple`."
+        "note": "As respostas: texto em `single` e `text`, lista em `multiple`."
       },
       {
         "name": "className",
@@ -3898,13 +3898,13 @@
         "name": "labels",
         "type": "Partial<QuestionnaireLabels>",
         "required": false,
-        "note": "The same texts as the web, and the same names."
+        "note": "Os mesmos textos do web, e os mesmos nomes."
       },
       {
         "name": "onStatusChange",
         "type": "((item: string, status: QuestionnaireItemStatus) => void)",
         "required": false,
-        "note": "Called when a question changes between `unanswered`, `answered` and `skipped`."
+        "note": "Chamado quando uma pergunta muda entre `unanswered`, `answered` e `skipped`."
       }
     ]
   },
@@ -3940,7 +3940,7 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The group's name for the screen reader."
+        "note": "O nome do grupo para o leitor de tela."
       }
     ]
   },
@@ -3951,13 +3951,13 @@
         "name": "value",
         "type": "number",
         "required": true,
-        "note": "The rating, controlled."
+        "note": "A nota, controlada."
       },
       {
         "name": "allowHalf",
         "type": "boolean",
         "required": false,
-        "note": "Accepts half stars: a tap on the reading-start half (the left, or the right in rtl) gives `n - 0.5`, and the adjust moves in halves."
+        "note": "Aceita meia estrela: o toque na metade de inicio da leitura (a esquerda, ou a direita em rtl) da `n - 0,5`, e o ajuste anda de meio em meio."
       },
       {
         "name": "className",
@@ -3968,55 +3968,55 @@
         "name": "classNames",
         "type": "Partial<Record<\"empty\" | \"filled\" | \"item\", string>>",
         "required": false,
-        "note": "Class per part: `item` (each star's box), `empty` and `filled` (the empty and full star)."
+        "note": "Classe por parte: `item` (a caixa de cada estrela), `empty` e `filled` (a estrela vazia e a cheia)."
       },
       {
         "name": "clearable",
         "type": "boolean",
         "required": false,
-        "note": "Tapping the chosen rating again resets it to zero."
+        "note": "Tocar de novo na nota escolhida volta a zero."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Turns off choosing."
+        "note": "Desliga a escolha."
       },
       {
         "name": "icon",
         "type": "((glyph: { color: string; size: number; filled: boolean; }) => ReactNode)",
         "required": false,
-        "note": "Replaces the star."
+        "note": "Troca a estrela."
       },
       {
         "name": "labels",
         "type": "Partial<RatingLabels>",
         "required": false,
-        "note": "The texts the screen reader hears: the group name, the name of each rating and of the average, and `increment` and `decrement`, the names of the two adjust actions."
+        "note": "Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media, e `increment` e `decrement`, os nomes das duas acoes de ajuste."
       },
       {
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "How many stars."
+        "note": "Quantas estrelas."
       },
       {
         "name": "onValueChange",
         "type": "((value: number) => void)",
         "required": false,
-        "note": "Called with the new rating: by tapping a star or by the screen reader's adjust gesture."
+        "note": "Chamado com a nota nova: pelo toque na estrela ou pelo gesto de ajuste do leitor de tela."
       },
       {
         "name": "readOnly",
         "type": "boolean",
         "required": false,
-        "note": "Only displays: a product's average."
+        "note": "So exibe: a media de um produto."
       },
       {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
-        "note": "The drawing size."
+        "note": "O tamanho do desenho."
       }
     ]
   },
@@ -4027,7 +4027,7 @@
         "name": "value",
         "type": "string | number | Date",
         "required": true,
-        "note": "The instant being described."
+        "note": "O instante que se descreve."
       },
       {
         "name": "className",
@@ -4038,19 +4038,19 @@
         "name": "cutoff",
         "type": "\"day\" | \"hour\" | \"minute\" | \"month\" | \"week\" | \"year\"",
         "required": false,
-        "note": "From which unit to stop counting and show the date."
+        "note": "A partir de qual unidade parar de contar e mostrar a data."
       },
       {
         "name": "labels",
         "type": "Partial<RelativeTimeLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `now` is what shows in the first minute, and `past` and `future` write the distance, with the number and the unit (`minute`, `hour`, `day`, `week`, `month`, `year`)."
+        "note": "Os textos da peca, para trocar o idioma: `now` e o que sai no primeiro minuto, e `past` e `future` escrevem a distancia, com o numero e a unidade (`minute`, `hour`, `day`, `week`, `month`, `year`)."
       },
       {
         "name": "now",
         "type": "Date",
         "required": false,
-        "note": "The \"now\", for tests and frozen screens."
+        "note": "O agora, para teste e para tela congelada."
       }
     ]
   },
@@ -4061,7 +4061,7 @@
         "name": "value",
         "type": "string | RichTextJson | null | undefined",
         "required": true,
-        "note": "The content saved by the web `RichTextEditor`: the HTML from `onValueChange` or the JSON from `onJsonChange`."
+        "note": "O conteudo salvo pelo `RichTextEditor` do web: o HTML do `onValueChange` ou o JSON do `onJsonChange`."
       },
       {
         "name": "className",
@@ -4072,7 +4072,7 @@
         "name": "empty",
         "type": "ReactNode",
         "required": false,
-        "note": "What appears when the content has no text: `null`, an empty string or the `<p></p>` of a blank editor."
+        "note": "O que aparece quando o conteudo nao tem texto: `null`, string vazia ou o `<p></p>` de um editor em branco."
       }
     ]
   },
@@ -4088,19 +4088,19 @@
         "name": "fonts",
         "type": "RivoFonts",
         "required": false,
-        "note": "The families the APP has already loaded with `expo-font`, one per role."
+        "note": "As familias que o APP ja carregou com o `expo-font`, uma por papel."
       },
       {
         "name": "isFontLoaded",
         "type": "((family: string) => boolean)",
         "required": false,
-        "note": "The `isLoaded` from `expo-font`, so the provider can check in `__DEV__` whether each name in `fonts` actually reached the device."
+        "note": "O `isLoaded` do `expo-font`, para o provider conferir em `__DEV__` se cada nome de `fonts` chegou mesmo ao aparelho."
       },
       {
         "name": "theme",
         "type": "\"rivocode-dark\" | \"rivocode-light\" | \"system\"",
         "required": false,
-        "note": "`rivocode-dark` is the default, as on the web; `system` follows the device."
+        "note": "`rivocode-dark` e o padrao, como no web; `system` segue o aparelho."
       }
     ]
   },
@@ -4111,7 +4111,7 @@
         "name": "bottomOffset",
         "type": "number",
         "required": false,
-        "note": "In points, how far above the keyboard the focused field sits - or above the `footer`, when there is one."
+        "note": "Em pontos, quanto o campo em foco fica acima do teclado - ou acima do `footer`, quando ha um."
       },
       {
         "name": "children",
@@ -4122,25 +4122,25 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the outer box, the one that fills the screen."
+        "note": "Veste a caixa de fora, a que ocupa a tela."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"footer\", string>>",
         "required": false,
-        "note": "Class per part: `footer`, the `footer` strip - background, border and padding."
+        "note": "Classe por parte: `footer`, a faixa do `footer` - fundo, borda e respiro."
       },
       {
         "name": "contentContainerClassName",
         "type": "string",
         "required": false,
-        "note": "Styles the scrolling content: `gap-4 p-5` is the usual."
+        "note": "Veste o conteudo que rola: `gap-4 p-5` e o comum."
       },
       {
         "name": "footer",
         "type": "ReactNode",
         "required": false,
-        "note": "What stays pinned below the scroll and rises with the keyboard: the form's submit action."
+        "note": "O que fica preso embaixo da rolagem e sobe junto com o teclado: a acao de enviar o formulario."
       }
     ]
   },
@@ -4161,13 +4161,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the frame (the box with the magnifier and clear), not the inner field."
+        "note": "Veste a moldura (a caixa com lupa e limpar), nao o campo interno."
       },
       {
         "name": "labels",
         "type": "Partial<SearchInputLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `clear` is the name of the X that clears the search, \"Limpar a busca\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `clear` e o nome do xis que limpa a busca, \"Limpar a busca\" sem ele."
       }
     ]
   },
@@ -4178,7 +4178,7 @@
         "name": "items",
         "type": "SelectItem[] | SelectItemGroup[]",
         "required": true,
-        "note": "A flat list of `{ label, value }`, or `{ label, items }` groups - the same shape the web `items` accepts."
+        "note": "Lista rasa de `{ label, value }`, ou grupos `{ label, items }` - a mesma forma que o `items` do web aceita."
       },
       {
         "name": "label",
@@ -4199,7 +4199,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the trigger; the options sheet belongs to the platform."
+        "note": "Veste o gatilho; a folha de opcoes e da plataforma."
       },
       {
         "name": "disabled",
@@ -4210,13 +4210,13 @@
         "name": "invalid",
         "type": "boolean",
         "required": false,
-        "note": "Forces the error border of the trigger, or clears it with `false`, over the `Field` error."
+        "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
         "name": "labels",
         "type": "Partial<PickerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `selected` is the trigger summary with more than one choice, and `done` the button that closes the sheet in `multiple`."
+        "note": "Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`."
       },
       {
         "name": "multiple",
@@ -4227,7 +4227,7 @@
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "note": "What the trigger shows with no choice: \"Selecione o período\"."
+        "note": "O que o gatilho mostra sem escolha: \"Selecione o período\"."
       }
     ]
   },
@@ -4268,7 +4268,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the sheet panel, not the dimmed backdrop."
+        "note": "Veste o painel da folha, nao o fundo escurecido."
       },
       {
         "name": "description",
@@ -4279,7 +4279,7 @@
         "name": "labels",
         "type": "Partial<SheetLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `close` is the name of the dimmed backdrop, which closes the sheet on tap, \"Fechar\" without it."
+        "note": "Os textos da peca, para trocar o idioma: `close` e o nome do fundo escurecido, que fecha a folha ao toque, \"Fechar\" sem ele."
       }
     ]
   },
@@ -4290,7 +4290,7 @@
         "name": "value",
         "type": "SignatureValue | null",
         "required": true,
-        "note": "The signature, controlled: the strokes (`kind: \"drawn\"`) or the typed name (`kind: \"typed\"`)."
+        "note": "A assinatura, controlada: os tracos (`kind: \"drawn\"`) ou o nome digitado (`kind: \"typed\"`)."
       },
       {
         "name": "className",
@@ -4301,67 +4301,67 @@
         "name": "classNames",
         "type": "Partial<Record<\"actions\" | \"input\" | \"pad\" | \"placeholder\", string>>",
         "required": false,
-        "note": "Class per part: `pad` (the paper), `placeholder`, `actions` (the row of buttons) and `input` (the name field)."
+        "note": "Classe por parte: `pad` (o papel), `placeholder`, `actions` (a fileira dos botoes) e `input` (o campo do nome)."
       },
       {
         "name": "defaultMode",
         "type": "\"draw\" | \"type\"",
         "required": false,
-        "note": "Which mode the area opens in when empty."
+        "note": "Em que modo a area abre quando esta vazia."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Locks the drawing, the name and the buttons."
+        "note": "Trava o desenho, o nome e os botoes."
       },
       {
         "name": "font",
         "type": "string",
         "required": false,
-        "note": "The cursive family for typing mode, already loaded in the app."
+        "note": "A familia cursiva do modo de digitar, ja carregada no app."
       },
       {
         "name": "invalid",
         "type": "boolean",
         "required": false,
-        "note": "The danger border."
+        "note": "A borda de perigo."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The name the screen reader hears on the group, before the summary of what is signed."
+        "note": "O nome que o leitor de tela ouve no grupo, antes do resumo do que esta assinado."
       },
       {
         "name": "labels",
         "type": "Partial<SignaturePadLabels>",
         "required": false,
-        "note": "The component's texts, the same as the web."
+        "note": "Os textos da peca, os mesmos do web."
       },
       {
         "name": "onDrawingChange",
         "type": "((drawing: boolean) => void)",
         "required": false,
-        "note": "Reports when the finger starts and ends a stroke."
+        "note": "Avisa quando o dedo comeca e termina um traco."
       },
       {
         "name": "onValueChange",
         "type": "((value: SignatureValue | null) => void)",
         "required": false,
-        "note": "Called at the end of each stroke, on each letter, on undo and on clear."
+        "note": "Chamado ao fim de cada traco, a cada letra, ao desfazer e ao limpar."
       },
       {
         "name": "ratio",
         "type": "number",
         "required": false,
-        "note": "Width over height of the area."
+        "note": "Largura sobre altura da area."
       },
       {
         "name": "readOnly",
         "type": "boolean",
         "required": false,
-        "note": "Only displays the signature: no drawing, no buttons and no typing mode."
+        "note": "So exibe a assinatura: sem desenho, sem botoes e sem o modo de digitar."
       }
     ]
   },
@@ -4382,7 +4382,7 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The name the screen reader announces: \"Volume do alerta\"."
+        "note": "O nome que o leitor de tela anuncia: \"Volume do alerta\"."
       },
       {
         "name": "onValueChange",
@@ -4398,13 +4398,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the root: without `showValue`, the control, the same node as `classNames.control`."
+        "note": "Veste a raiz: sem `showValue`, o controle, o mesmo no de `classNames.control`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"control\" | \"indicator\" | \"label\" | \"thumb\" | \"track\" | \"value\", string>>",
         "required": false,
-        "note": "Class per part: `control` (the area that receives the drag), `track` (the track), `indicator` (the fill), `thumb` (the thumb), and `label` and `value` (the two texts, only with `showValue`)."
+        "note": "Classe por parte: `control` (a area que recebe o arrasto), `track` (o trilho), `indicator` (o preenchimento), `thumb` (o polegar), e `label` e `value` (os dois textos, so com `showValue`)."
       },
       {
         "name": "disabled",
@@ -4415,13 +4415,13 @@
         "name": "format",
         "type": "Format",
         "required": false,
-        "note": "How the number is written: the name of a house formatter or your own function, the same vocabulary as the web."
+        "note": "Como o numero e escrito: nome de formatador da casa ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "labels",
         "type": "Partial<SliderLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `increment` and `decrement` are the names of the two adjust actions the screen reader offers."
+        "note": "Os textos da peca, para trocar o idioma: `increment` e `decrement` sao os nomes das duas acoes de ajuste que o leitor de tela oferece."
       },
       {
         "name": "max",
@@ -4437,7 +4437,7 @@
         "name": "showValue",
         "type": "boolean",
         "required": false,
-        "note": "Writes the label above the control and the value next to it."
+        "note": "Escreve o rotulo acima do controle e o valor ao lado dele."
       },
       {
         "name": "step",
@@ -4453,25 +4453,25 @@
         "name": "getKey",
         "type": "(item: Item) => string | number",
         "required": true,
-        "note": "Each item's identity."
+        "note": "A identidade de cada item."
       },
       {
         "name": "items",
         "type": "readonly Item[]",
         "required": true,
-        "note": "The items, in the current order."
+        "note": "Os itens, na ordem de agora."
       },
       {
         "name": "onReorder",
         "type": "(items: Item[], move: SortableListMove) => void",
         "required": true,
-        "note": "The new order, already assembled, on dropping in a place different from where the item came from, or on each screen reader move action."
+        "note": "A ordem nova, ja montada, ao soltar num lugar diferente de onde o item saiu, ou a cada acao de mover do leitor de tela."
       },
       {
         "name": "renderItem",
         "type": "(item: Item, state: SortableItemState) => ReactNode",
         "required": true,
-        "note": "How each item is drawn."
+        "note": "O desenho de cada item."
       },
       {
         "name": "className",
@@ -4487,31 +4487,31 @@
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Locks the gesture and the move actions."
+        "note": "Trava o gesto e as acoes de mover."
       },
       {
         "name": "getLabel",
         "type": "((item: Item) => string)",
         "required": false,
-        "note": "The item's name in the announcements and in the handle's name: \"Nota 1043\"."
+        "note": "O nome do item nos anuncios e no nome da alca: \"Nota 1043\"."
       },
       {
         "name": "handle",
         "type": "boolean",
         "required": false,
-        "note": "Draws the 44pt handle at the start of each item, and only it drags: the rest of the row keeps scrolling the screen."
+        "note": "Desenha a alca de 44pt no inicio de cada item, e so ela arrasta: o resto da linha continua rolando a tela."
       },
       {
         "name": "labels",
         "type": "Partial<NativeSortableListLabels>",
         "required": false,
-        "note": "The texts of the announcements, the handle's name, the hint and the two move actions (`earlier` and `later`), for another language."
+        "note": "Os textos dos anuncios, do nome da alca, da dica e das duas acoes de mover (`earlier` e `later`), para outra lingua."
       },
       {
         "name": "orientation",
         "type": "\"horizontal\" | \"vertical\"",
         "required": false,
-        "note": "The list axis."
+        "note": "O eixo da lista."
       }
     ]
   },
@@ -4522,7 +4522,7 @@
         "name": "data",
         "type": "number[]",
         "required": true,
-        "note": "Only the numbers, in time order."
+        "note": "So os numeros, na ordem do tempo."
       },
       {
         "name": "className",
@@ -4533,31 +4533,31 @@
         "name": "color",
         "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
         "required": false,
-        "note": "The token role that paints the stroke - `chart-1` to `chart-8` when the component joins a series."
+        "note": "O papel de token que pinta o traco - `chart-1` a `chart-8` quando a peca entra numa serie."
       },
       {
         "name": "height",
         "type": "number",
         "required": false,
-        "note": "The drawing height, in px."
+        "note": "A altura do desenho, em px."
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader hears."
+        "note": "O que o leitor de tela ouve."
       },
       {
         "name": "trend",
         "type": "\"auto\" | \"none\"",
         "required": false,
-        "note": "Paints green or red depending on whether it rises or falls from the first to the last point."
+        "note": "Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo ponto."
       },
       {
         "name": "variant",
         "type": "\"bar\" | \"line\"",
         "required": false,
-        "note": "`line` for pure trend; `bar` when each period counts on its own."
+        "note": "`line` para tendencia pura; `bar` quando cada periodo conta sozinho."
       }
     ]
   },
@@ -4568,13 +4568,13 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the screen reader announces."
+        "note": "O que o leitor de tela anuncia."
       },
       {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
-        "note": "The web names."
+        "note": "Os nomes do web."
       }
     ]
   },
@@ -4585,7 +4585,7 @@
         "name": "children",
         "type": "ReactNode",
         "required": true,
-        "note": "The long content."
+        "note": "O conteudo longo."
       },
       {
         "name": "className",
@@ -4596,43 +4596,43 @@
         "name": "classNames",
         "type": "Partial<Record<\"content\" | \"trigger\", string>>",
         "required": false,
-        "note": "Class per part: `content` (the clipping box) and `trigger` (the button)."
+        "note": "Classe por parte: `content` (a caixa que corta) e `trigger` (o botao)."
       },
       {
         "name": "defaultOpen",
         "type": "boolean",
         "required": false,
-        "note": "Open on first paint, uncontrolled."
+        "note": "Aberto na primeira pintura, sem controlar."
       },
       {
         "name": "fadeOver",
         "type": "\"bg\" | \"surface\" | \"surface-raised\"",
         "required": false,
-        "note": "The background the block sits on, for the fade to blend into it: on the phone there is no mask, and the fade is painted in the background color."
+        "note": "O fundo em que o bloco pousa, para o degrade sumir nele: no celular nao ha mascara, e o degrade e pintado na cor do fundo."
       },
       {
         "name": "labels",
         "type": "{ more?: string | undefined; less?: string | undefined; }",
         "required": false,
-        "note": "The button texts, the same as the web."
+        "note": "Os textos do botao, os mesmos do web."
       },
       {
         "name": "maxHeight",
         "type": "number",
         "required": false,
-        "note": "The collapsed height, in points."
+        "note": "A altura do recolhido, em pontos."
       },
       {
         "name": "onOpenChange",
         "type": "((open: boolean) => void)",
         "required": false,
-        "note": "Receives the new state on every tap on \"Ler mais\" and \"Ler menos\"."
+        "note": "Recebe o estado novo a cada toque no \"Ler mais\" e no \"Ler menos\"."
       },
       {
         "name": "open",
         "type": "boolean",
         "required": false,
-        "note": "Open, for controlled use."
+        "note": "Aberto, para quem controla."
       }
     ]
   },
@@ -4643,7 +4643,7 @@
         "name": "align",
         "type": "\"baseline\" | \"center\" | \"end\" | \"start\" | \"stretch\"",
         "required": false,
-        "note": "Alignment on the cross axis."
+        "note": "O alinhamento no eixo cruzado."
       },
       {
         "name": "children",
@@ -4659,25 +4659,25 @@
         "name": "direction",
         "type": "\"column\" | \"row\"",
         "required": false,
-        "note": "The children's axis."
+        "note": "O eixo dos filhos."
       },
       {
         "name": "gap",
         "type": "\"lg\" | \"md\" | \"none\" | \"sm\" | \"xl\" | \"xs\"",
         "required": false,
-        "note": "The gap between children, on the house scale: `xs` 4, `sm` 8, `md` 12, `lg` 16 and `xl` 24 points."
+        "note": "O vao entre os filhos, na escala da casa: `xs` 4, `sm` 8, `md` 12, `lg` 16 e `xl` 24 pontos."
       },
       {
         "name": "justify",
         "type": "\"between\" | \"center\" | \"end\" | \"start\"",
         "required": false,
-        "note": "Distribution on the main axis."
+        "note": "A distribuicao no eixo principal."
       },
       {
         "name": "wrap",
         "type": "boolean",
         "required": false,
-        "note": "Lets the children wrap when they do not fit."
+        "note": "Deixa os filhos quebrarem linha quando nao cabem."
       }
     ]
   },
@@ -4693,13 +4693,13 @@
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "Already formatted, as on the web: abbreviated money, raw count."
+        "note": "Ja formatado, como no web: dinheiro abreviado, contagem crua."
       },
       {
         "name": "chart",
         "type": "ReactNode",
         "required": false,
-        "note": "The trend slot, when there is a native chart to put there."
+        "note": "O slot de tendencia, quando houver um grafico nativo para por."
       },
       {
         "name": "className",
@@ -4715,7 +4715,7 @@
         "name": "deltaFormat",
         "type": "Format",
         "required": false,
-        "note": "How the change is written: the name of a house formatter (`percent`, `currencyShort`, `integer`...) or your own function, the same vocabulary as the web."
+        "note": "Como a variacao e escrita: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "deltaLabel",
@@ -4726,7 +4726,7 @@
         "name": "invert",
         "type": "boolean",
         "required": false,
-        "note": "Rising is bad here: overdue items, cost, default rate."
+        "note": "Subir e ruim aqui: vencidas, custo, inadimplencia."
       }
     ]
   },
@@ -4737,7 +4737,7 @@
         "name": "step",
         "type": "number",
         "required": true,
-        "note": "Index of the current step, counting from zero."
+        "note": "Índice do passo atual, contando de zero."
       },
       {
         "name": "steps",
@@ -4753,7 +4753,7 @@
         "name": "labels",
         "type": "Partial<StepsLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `position` is the \"Passo 2 de 5\" count, which receives the current step counting from 1 and the total."
+        "note": "Os textos da peca, para trocar o idioma: `position` e a contagem \"Passo 2 de 5\", que recebe o passo atual contando de 1 e o total."
       }
     ]
   },
@@ -4774,19 +4774,19 @@
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "note": "The visible label, on the same line as the switch; tapping it also toggles."
+        "note": "O rotulo visivel, na mesma linha do interruptor; tocar nele tambem troca."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the ROW (label + switch); without a label there is nothing to style."
+        "note": "Veste a LINHA (rotulo + interruptor); sem rotulo nao ha o que vestir."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"label\", string>>",
         "required": false,
-        "note": "Class per part: `label`, the text beside it."
+        "note": "Classe por parte: `label`, o texto ao lado."
       },
       {
         "name": "disabled",
@@ -4797,7 +4797,7 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "The spoken name, required when there are no `children`."
+        "note": "O nome falado, obrigatorio quando nao ha `children`."
       }
     ]
   },
@@ -4838,19 +4838,19 @@
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "The current tags."
+        "note": "As fichas de agora."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the whole box, the same node as `classNames.field`."
+        "note": "Veste a caixa toda, o mesmo no de `classNames.field`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"field\" | \"input\" | \"remove\" | \"tag\", string>>",
         "required": false,
-        "note": "Class per part: `field` (the box), `tag` (each tag), `remove` (the tag's X) and `input` (the typing field)."
+        "note": "Classe por parte: `field` (a caixa), `tag` (cada ficha), `remove` (o xis da ficha) e `input` (o campo de digitar)."
       },
       {
         "name": "invalid",
@@ -4861,19 +4861,19 @@
         "name": "labels",
         "type": "{ remove?: ((tag: string) => string) | undefined; }",
         "required": false,
-        "note": "What the screen reader hears on the component's buttons, as on the web and in FilterChip."
+        "note": "O que o leitor de tela ouve nos botoes da peca, como no web e no FilterChip."
       },
       {
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "Tag cap."
+        "note": "Teto de fichas."
       },
       {
         "name": "separators",
         "type": "string[]",
         "required": false,
-        "note": "What closes a tag besides Enter."
+        "note": "O que fecha uma ficha além do Enter."
       }
     ]
   },
@@ -4884,37 +4884,37 @@
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "Which of the provider's three families styles this text: `sans` for running text, `display` for headings, `mono` where fixed width aligns a column."
+        "note": "Qual das tres familias do provider veste este texto: `sans` no corrido, `display` no titulo, `mono` onde a largura fixa alinha coluna."
       },
       {
         "name": "lineClamp",
         "type": "1 | 2 | 3 | 4 | 5 | 6",
         "required": false,
-        "note": "Truncates after that many lines, from 1 to 6."
+        "note": "Corta depois de tantas linhas, de 1 a 6."
       },
       {
         "name": "size",
         "type": "TextSize",
         "required": false,
-        "note": "The body size on the house scale, from `xs` (12px) to `lg` (18px); above that is `Heading`."
+        "note": "O corpo na escala da casa, de `xs` (12px) a `lg` (18px); acima disso e o `Heading`."
       },
       {
         "name": "tone",
         "type": "TextTone",
         "required": false,
-        "note": "The color role, the same eight as the web."
+        "note": "O papel de cor, os mesmos oito do web."
       },
       {
         "name": "truncate",
         "type": "boolean",
         "required": false,
-        "note": "Truncates to one line with an ellipsis at the end."
+        "note": "Corta em uma linha com reticencias no fim."
       },
       {
         "name": "weight",
         "type": "TextWeight",
         "required": false,
-        "note": "The font weight, read from the theme weight tokens: `regular` is `--rc-weight-regular`, `medium` is `--rc-weight-medium`, `semibold` is `--rc-weight-strong` and `bold` is `--rc-weight-bold`."
+        "note": "O peso da letra, lido dos tokens de peso do tema: `regular` e `--rc-weight-regular`, `medium` e `--rc-weight-medium`, `semibold` e `--rc-weight-strong` e `bold` e `--rc-weight-bold`."
       }
     ]
   },
@@ -4930,13 +4930,13 @@
         "name": "onValueChange",
         "type": "((value: string) => void)",
         "required": false,
-        "note": "Receives the text on every keystroke, like the web Textarea `onValueChange`."
+        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Textarea web."
       },
       {
         "name": "rows",
         "type": "number",
         "required": false,
-        "note": "Initial height in rows; the field grows with the content."
+        "note": "Altura inicial em linhas; o campo cresce com o conteudo."
       }
     ]
   },
@@ -4947,7 +4947,7 @@
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
-        "note": "The provider family that styles what is typed."
+        "note": "A familia do provider que veste o que se digita."
       },
       {
         "name": "ref",
@@ -4963,25 +4963,25 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The name the screen reader announces, and what the two step buttons repeat: \"Horario da entrega\"."
+        "note": "O nome que o leitor de tela anuncia, e o que os dois botoes de passo repetem: \"Horario da entrega\"."
       },
       {
         "name": "onValueChange",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Called only with a whole time: `\"08:30\"`, or `\"\"` when the field empties."
+        "note": "Chamado so com hora inteira: `\"08:30\"`, ou `\"\"` quando o campo esvazia."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The chosen time, in 24h and always `\"HH:MM\"`."
+        "note": "A hora escolhida, em 24h e sempre `\"HH:MM\"`."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the frame that joins the two buttons and the field."
+        "note": "Veste a moldura que junta os dois botoes e o campo."
       },
       {
         "name": "disabled",
@@ -4992,31 +4992,31 @@
         "name": "invalid",
         "type": "boolean",
         "required": false,
-        "note": "Paints the field as an error by an outside decision; without it the field decides on its own."
+        "note": "Pinta o campo de erro por decisao de fora; sem ela o campo decide sozinho."
       },
       {
         "name": "max",
         "type": "string",
         "required": false,
-        "note": "Last time of the window, in `\"HH:MM\"`."
+        "note": "Ultima hora da janela, em `\"HH:MM\"`."
       },
       {
         "name": "min",
         "type": "string",
         "required": false,
-        "note": "First time of the window, in `\"HH:MM\"`."
+        "note": "Primeira hora da janela, em `\"HH:MM\"`."
       },
       {
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "note": "The gray pattern of the empty field."
+        "note": "O molde cinza do campo vazio."
       },
       {
         "name": "step",
         "type": "number",
         "required": false,
-        "note": "How many minutes the plus and minus buttons move, landing on the grid."
+        "note": "Quantos minutos os botoes de mais e de menos andam, pousando na grade."
       }
     ]
   },
@@ -5037,7 +5037,7 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "What the line tells: \"Histórico da nota 4471\"."
+        "note": "O que a linha conta: \"Histórico da nota 4471\"."
       }
     ]
   },
@@ -5048,31 +5048,31 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the screen reader announces on the trigger, and the sheet title."
+        "note": "O que o leitor de tela anuncia no gatilho, e o titulo da folha."
       },
       {
         "name": "onValueChange",
         "type": "(value: string) => void",
         "required": true,
-        "note": "Called only with a whole time, the same way as in `TimeField`."
+        "note": "Chamado so com hora inteira, do mesmo jeito que no `TimeField`."
       },
       {
         "name": "value",
         "type": "string",
         "required": true,
-        "note": "The chosen time, in 24h and always `\"HH:MM\"`."
+        "note": "A hora escolhida, em 24h e sempre `\"HH:MM\"`."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the trigger, the same node as `classNames.trigger`."
+        "note": "Veste o gatilho, o mesmo no de `classNames.trigger`."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"column\" | \"option\" | \"panel\" | \"trigger\", string>>",
         "required": false,
-        "note": "Class per part: `trigger` (the trigger), `panel` (the sheet), `column` (the list of each column) and `option` (each hour and each minute)."
+        "note": "Classe por parte: `trigger` (o gatilho), `panel` (a folha), `column` (a lista de cada coluna) e `option` (cada hora e cada minuto)."
       },
       {
         "name": "disabled",
@@ -5083,31 +5083,31 @@
         "name": "labels",
         "type": "TimePickerLabels",
         "required": false,
-        "note": "The names of the two columns."
+        "note": "Os nomes das duas colunas."
       },
       {
         "name": "max",
         "type": "string",
         "required": false,
-        "note": "Last time of the window, in `\"HH:MM\"`."
+        "note": "Ultima hora da janela, em `\"HH:MM\"`."
       },
       {
         "name": "min",
         "type": "string",
         "required": false,
-        "note": "First time of the window, in `\"HH:MM\"`."
+        "note": "Primeira hora da janela, em `\"HH:MM\"`."
       },
       {
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "note": "What the trigger shows with no choice: \"Escolha o horario\"."
+        "note": "O que o gatilho mostra sem escolha: \"Escolha o horario\"."
       },
       {
         "name": "step",
         "type": "number",
         "required": false,
-        "note": "The minute interval the right column steps by."
+        "note": "De quantos em quantos minutos a coluna da direita anda."
       }
     ]
   },
@@ -5158,7 +5158,7 @@
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "The pressed values."
+        "note": "Os valores apertados."
       },
       {
         "name": "className",
@@ -5174,7 +5174,7 @@
         "name": "multiple",
         "type": "boolean",
         "required": false,
-        "note": "`multiple` accepts several at once; the default unpresses the previous one."
+        "note": "`multiple` aceita varios ao mesmo tempo; o padrao desaperta o anterior."
       }
     ]
   },
@@ -5185,13 +5185,13 @@
         "name": "name",
         "type": "string",
         "required": true,
-        "note": "The tool name, as the model called it: `buscar_notas`."
+        "note": "O nome da ferramenta, como o modelo a chamou: `buscar_notas`."
       },
       {
         "name": "status",
         "type": "ToolCallStatus",
         "required": true,
-        "note": "Where the call stands."
+        "note": "Em que pe a chamada esta."
       },
       {
         "name": "className",
@@ -5202,37 +5202,37 @@
         "name": "classNames",
         "type": "Partial<Record<\"actions\" | \"error\" | \"name\" | \"panel\" | \"status\" | \"trigger\", string>>",
         "required": false,
-        "note": "Class per part: `trigger` (the header that opens it), `name`, `status` (the spinner and the badge), `panel` (the input and output), `error` and `actions` (the approve and reject buttons)."
+        "note": "Classe por parte: `trigger` (o cabecalho que abre), `name`, `status` (o giro e o selo), `panel` (a entrada e a saida), `error` e `actions` (os botoes de aprovar e recusar)."
       },
       {
         "name": "defaultOpen",
         "type": "boolean",
         "required": false,
-        "note": "Starts open."
+        "note": "Comeca aberto."
       },
       {
         "name": "error",
         "type": "string",
         "required": false,
-        "note": "The error sentence, when `status` is `error`."
+        "note": "A frase do erro, quando `status` e `error`."
       },
       {
         "name": "input",
         "type": "unknown",
         "required": false,
-        "note": "The call arguments."
+        "note": "Os argumentos da chamada."
       },
       {
         "name": "labels",
         "type": "Partial<Record<\"approve\" | \"input\" | \"output\" | \"reject\" | ToolCallStatus, string>>",
         "required": false,
-        "note": "The texts of the states and buttons, for another language or another tone."
+        "note": "Os textos dos estados e dos botoes, para outra lingua ou outro tom."
       },
       {
         "name": "onApprove",
         "type": "(() => void)",
         "required": false,
-        "note": "Called by the approve button, which appears only in `approval`, outside the panel."
+        "note": "Chamado pelo botao de aprovar, que so aparece em `approval`, fora do painel."
       },
       {
         "name": "onOpenChange",
@@ -5243,25 +5243,25 @@
         "name": "onReject",
         "type": "(() => void)",
         "required": false,
-        "note": "Called by the reject button, which appears only in `approval`."
+        "note": "Chamado pelo botao de recusar, que so aparece em `approval`."
       },
       {
         "name": "open",
         "type": "boolean",
         "required": false,
-        "note": "Open, controlled."
+        "note": "Aberto, controlado."
       },
       {
         "name": "output",
         "type": "unknown",
         "required": false,
-        "note": "What the tool returned, with the same rule as `input`."
+        "note": "O que a ferramenta devolveu, com a mesma regra do `input`."
       },
       {
         "name": "title",
         "type": "string",
         "required": false,
-        "note": "The human-readable sentence, below the name: \"Consultando as notas em aberto\"."
+        "note": "A frase para gente, embaixo do nome: \"Consultando as notas em aberto\"."
       }
     ]
   },
@@ -5272,13 +5272,13 @@
         "name": "onOpenChange",
         "type": "(open: boolean) => void",
         "required": true,
-        "note": "Called on finishing, on skipping and on Android back."
+        "note": "Chamado ao concluir, ao pular e no voltar do Android."
       },
       {
         "name": "onStepChange",
         "type": "(step: number) => void",
         "required": true,
-        "note": "Called on every change: Voltar, Proximo and a step skipped for lack of a target."
+        "note": "Chamado a cada troca: Voltar, Proximo e passo pulado por falta de alvo."
       },
       {
         "name": "open",
@@ -5289,49 +5289,49 @@
         "name": "step",
         "type": "number",
         "required": true,
-        "note": "The current step, counting from zero."
+        "note": "O passo atual, contando de zero."
       },
       {
         "name": "steps",
         "type": "TourStep[]",
         "required": true,
-        "note": "The steps, in order."
+        "note": "Os passos, na ordem."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the sheet, not the mask."
+        "note": "Veste a folha, nao a mascara."
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"counter\" | \"description\" | \"footer\" | \"mask\" | \"title\", string>>",
         "required": false,
-        "note": "Class per part: `mask` (the four dark strips around the target), `counter`, `title`, `description` and `footer` (the row of buttons)."
+        "note": "Classe por parte: `mask` (as quatro faixas escuras em volta do alvo), `counter`, `title`, `description` e `footer` (a fileira dos botoes)."
       },
       {
         "name": "labels",
         "type": "Partial<TourLabels>",
         "required": false,
-        "note": "The texts of the buttons and the counter, to change the language or the wording."
+        "note": "Os textos dos botoes e do contador, para trocar o idioma ou o termo."
       },
       {
         "name": "onFinish",
         "type": "(() => void)",
         "required": false,
-        "note": "Called on Concluir of the last step."
+        "note": "Chamado no Concluir do ultimo passo."
       },
       {
         "name": "onSkip",
         "type": "((step: number) => void)",
         "required": false,
-        "note": "Called on \"Pular tour\" and on Android back, with the step where the person gave up."
+        "note": "Chamado no \"Pular tour\" e no voltar do Android, com o passo da desistencia."
       },
       {
         "name": "topInset",
         "type": "number",
         "required": false,
-        "note": "The height of the top safe area, in points: `useSafeAreaInsets().top`."
+        "note": "A altura da area segura de cima, em pontos: `useSafeAreaInsets().top`."
       }
     ]
   },
@@ -5347,7 +5347,7 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What the strip measures, spelled out: \"Emissões dos últimos 90 dias\"."
+        "note": "O que a faixa mede, dito por extenso: \"Emissões dos últimos 90 dias\"."
       },
       {
         "name": "className",
@@ -5358,13 +5358,13 @@
         "name": "classNames",
         "type": "Partial<Record<\"cell\" | \"track\", string>>",
         "required": false,
-        "note": "Class per part: `track` (the strip that receives the drag) and `cell` (each period)."
+        "note": "Classe por parte: `track` (a faixa que recebe o arrasto) e `cell` (cada periodo)."
       },
       {
         "name": "labels",
         "type": "Partial<TrackerLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `next` and `previous` are the names of the two adjust actions that move between periods."
+        "note": "Os textos da peca, para trocar o idioma: `next` e `previous` sao os nomes das duas acoes de ajuste que andam de periodo."
       }
     ]
   },
@@ -5375,19 +5375,19 @@
         "name": "items",
         "type": "TransferListItem[]",
         "required": true,
-        "note": "All the items, on both sides."
+        "note": "Todos os itens, dos dois lados."
       },
       {
         "name": "onValueChange",
         "type": "(value: string[]) => void",
         "required": true,
-        "note": "Receives the new `value` on every move."
+        "note": "Recebe o `value` novo a cada movimento."
       },
       {
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "The `value`s of the chosen items, in the order they appear in the second list."
+        "note": "Os `value` dos escolhidos, na ordem em que aparecem na segunda lista."
       },
       {
         "name": "className",
@@ -5398,25 +5398,25 @@
         "name": "classNames",
         "type": "Partial<Record<\"actions\" | \"empty\" | \"header\" | \"list\" | \"option\" | \"panel\" | \"search\", string>>",
         "required": false,
-        "note": "Class per part: `panel` (each list with its frame), `header`, `search`, `list` (the scrolling box), `option`, `actions` (the row of move buttons, below each list) and `empty`."
+        "note": "Classe por parte: `panel` (cada lista com a moldura), `header`, `search`, `list` (a caixa que rola), `option`, `actions` (a fileira dos botoes de mover, embaixo de cada lista) e `empty`."
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Turns off both lists, the searches and the move buttons."
+        "note": "Desliga as duas listas, as buscas e os botoes de mover."
       },
       {
         "name": "labels",
         "type": "TransferListLabels",
         "required": false,
-        "note": "The component's texts, the same as the web."
+        "note": "Os textos da peca, os mesmos do web."
       },
       {
         "name": "searchable",
         "type": "boolean",
         "required": false,
-        "note": "Turns on the search at the top of each list, accent-insensitive."
+        "note": "Liga a busca no topo de cada lista, sem acento importar."
       }
     ]
   },
@@ -5432,7 +5432,7 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "The name of the top level: \"Centro de custo\"."
+        "note": "O nome do nivel de cima: \"Centro de custo\"."
       },
       {
         "name": "onValueChange",
@@ -5443,7 +5443,7 @@
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "Ids of the checked LEAVES."
+        "note": "Ids das FOLHAS marcadas."
       },
       {
         "name": "className",
@@ -5454,19 +5454,19 @@
         "name": "emptyMessage",
         "type": "string",
         "required": false,
-        "note": "What to say when a level has nothing inside."
+        "note": "O que dizer quando um nivel nao tem nada dentro."
       },
       {
         "name": "labels",
         "type": "Partial<TreeLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `back` is the name of the button that goes up a level, and receives the name of the level above; `selectAll` that of the box that checks a whole branch; `branch` what the screen reader hears on a branch, with the total of leaves and how many are chosen; and `enter` its hint."
+        "note": "Os textos da peca, para trocar o idioma: `back` e o nome do botao que sobe um nivel, e recebe o nome do nivel de cima; `selectAll` o da caixa que marca um galho inteiro; `branch` o que o leitor de tela ouve num galho, com o total de folhas e quantas estao escolhidas; e `enter` a dica dele."
       },
       {
         "name": "multiple",
         "type": "boolean",
         "required": false,
-        "note": "Without it, only one leaf at a time and no branch gets checked."
+        "note": "Sem isto, so uma folha por vez e nenhum galho se marca."
       }
     ]
   },
@@ -5482,7 +5482,7 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "What is being chosen: \"Centro de custo\"."
+        "note": "O que se escolhe: \"Centro de custo\"."
       },
       {
         "name": "onValueChange",
@@ -5493,13 +5493,13 @@
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "Ids of the chosen LEAVES - the same contract as `Tree` and the web."
+        "note": "Ids das FOLHAS escolhidas - o mesmo contrato do `Tree` e do web."
       },
       {
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Styles the trigger; the sheet belongs to the platform."
+        "note": "Veste o gatilho; a folha e da plataforma."
       },
       {
         "name": "disabled",
@@ -5510,19 +5510,19 @@
         "name": "labels",
         "type": "Partial<TreeSelectLabels>",
         "required": false,
-        "note": "The component's texts, to change the language: `selected` is the summary with more than one choice, `empty` the sheet footer with no choice at all and `apply` the confirm button."
+        "note": "Os textos da peca, para trocar o idioma: `selected` e o resumo com mais de uma escolha, `empty` o rodape da folha sem escolha nenhuma e `apply` o botao que confirma."
       },
       {
         "name": "multiple",
         "type": "boolean",
         "required": false,
-        "note": "On by default, as on the web: a tree is almost always chosen by the handful."
+        "note": "Ligada por padrao, como no web: arvore quase sempre se escolhe aos punhados."
       },
       {
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "note": "What the trigger shows with no choice."
+        "note": "O que o gatilho mostra sem escolha."
       }
     ]
   },

@@ -22,58 +22,58 @@ function dropzone(props: Partial<React.ComponentProps<typeof FileUpload>> = {}) 
   );
 }
 
-test("the area is a real button, with the visible label", () => {
+test("a area e um botao de verdade, com o rotulo visivel", () => {
   dropzone({ hint: "XML até 5 MB" });
   expect(screen.getByRole("button", { name: /arraste o xml/i })).toBeDefined();
   expect(screen.getByText("XML até 5 MB")).toBeDefined();
 });
 
-test("picking through the file chooser delivers the accepted ones", () => {
-  let received: File[] = [];
-  const { container } = dropzone({ onSelect: (files) => (received = files) });
+test("escolher pelo seletor entrega os aceitos", () => {
+  let recebidos: File[] = [];
+  const { container } = dropzone({ onSelect: (files) => (recebidos = files) });
 
   const input = container.querySelector<HTMLInputElement>("input[type=file]")!;
   fireEvent.change(input, { target: { files: [file("nota.xml", 100)] } });
 
-  expect(received.map((file) => file.name)).toEqual(["nota.xml"]);
+  expect(recebidos.map((file) => file.name)).toEqual(["nota.xml"]);
 });
 
-test("dropping on the area also delivers", () => {
-  let received: File[] = [];
-  dropzone({ onSelect: (files) => (received = files) });
+test("soltar na area tambem entrega", () => {
+  let recebidos: File[] = [];
+  dropzone({ onSelect: (files) => (recebidos = files) });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
   fireEvent.drop(area, { dataTransfer: { files: [file("nota.xml", 100)] } });
 
-  expect(received.map((file) => file.name)).toEqual(["nota.xml"]);
+  expect(recebidos.map((file) => file.name)).toEqual(["nota.xml"]);
 });
 
-test("without multiple, dropping several delivers the first and rejects the others with a reason", () => {
-  let received: File[] = [];
-  let rejections: { file: File; reason: string }[] = [];
-  dropzone({ onSelect: (files) => (received = files), onReject: (list) => (rejections = list) });
+test("sem multiple, soltar varios entrega o primeiro e recusa os outros com motivo", () => {
+  let recebidos: File[] = [];
+  let recusas: { file: File; reason: string }[] = [];
+  dropzone({ onSelect: (files) => (recebidos = files), onReject: (list) => (recusas = list) });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
   fireEvent.drop(area, {
     dataTransfer: { files: [file("a.xml", 10), file("b.xml", 10), file("c.xml", 10)] },
   });
 
-  expect(received.map((item) => item.name)).toEqual(["a.xml"]);
-  expect(rejections.map((item) => item.file.name)).toEqual(["b.xml", "c.xml"]);
-  expect(rejections.map((item) => item.reason)).toEqual(["só um arquivo por vez", "só um arquivo por vez"]);
+  expect(recebidos.map((item) => item.name)).toEqual(["a.xml"]);
+  expect(recusas.map((item) => item.file.name)).toEqual(["b.xml", "c.xml"]);
+  expect(recusas.map((item) => item.reason)).toEqual(["só um arquivo por vez", "só um arquivo por vez"]);
 });
 
-test("the reason for the extra file is replaced through labels", () => {
-  let rejections: { file: File; reason: string }[] = [];
-  dropzone({ onReject: (list) => (rejections = list), labels: { tooMany: "one file only" } });
+test("o motivo do arquivo que sobra troca pelo labels", () => {
+  let recusas: { file: File; reason: string }[] = [];
+  dropzone({ onReject: (list) => (recusas = list), labels: { tooMany: "one file only" } });
 
   fireEvent.drop(screen.getByRole("button", { name: /arraste o xml/i }), {
     dataTransfer: { files: [file("a.xml", 10), file("b.xml", 10)] },
   });
-  expect(rejections.map((item) => item.reason)).toEqual(["one file only"]);
+  expect(recusas.map((item) => item.reason)).toEqual(["one file only"]);
 });
 
-test("dragging over lights up, leaving turns it off", () => {
+test("arrastar por cima acende, sair apaga", () => {
   dropzone();
   const area = screen.getByRole("button", { name: /arraste o xml/i });
 
@@ -84,31 +84,31 @@ test("dragging over lights up, leaving turns it off", () => {
   expect(area.getAttribute("data-drag")).toBeNull();
 });
 
-test("larger than maxSize is rejected with a readable reason", () => {
-  let rejections: Rejection[] = [];
-  let accepted: File[] = [];
+test("maior que maxSize e recusado com motivo legivel", () => {
+  let recusas: Rejection[] = [];
+  let aceitos: File[] = [];
   dropzone({
     maxSize: 1024,
-    onSelect: (files) => (accepted = files),
-    onReject: (rejected) => (rejections = rejected),
+    onSelect: (files) => (aceitos = files),
+    onReject: (rejected) => (recusas = rejected),
   });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
   fireEvent.drop(area, { dataTransfer: { files: [file("pesado.xml", 4096)] } });
 
-  expect(accepted).toEqual([]);
-  expect(rejections[0]?.file.name).toBe("pesado.xml");
-  expect(rejections[0]?.reason).toMatch(/1 KB/);
+  expect(aceitos).toEqual([]);
+  expect(recusas[0]?.file.name).toBe("pesado.xml");
+  expect(recusas[0]?.reason).toMatch(/1 KB/);
 });
 
-test("a type outside accept is rejected, the others pass", () => {
-  let rejections: Rejection[] = [];
-  let accepted: File[] = [];
+test("tipo fora do accept e recusado, os demais passam", () => {
+  let recusas: Rejection[] = [];
+  let aceitos: File[] = [];
   dropzone({
     accept: ".xml,application/pdf",
     multiple: true,
-    onSelect: (files) => (accepted = files),
-    onReject: (rejected) => (rejections = rejected),
+    onSelect: (files) => (aceitos = files),
+    onReject: (rejected) => (recusas = rejected),
   });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
@@ -122,22 +122,22 @@ test("a type outside accept is rejected, the others pass", () => {
     },
   });
 
-  expect(accepted.map((file) => file.name)).toEqual(["nota.xml", "recibo.pdf"]);
-  expect(rejections.map((rejection) => rejection.file.name)).toEqual(["foto.png"]);
+  expect(aceitos.map((file) => file.name)).toEqual(["nota.xml", "recibo.pdf"]);
+  expect(recusas.map((rejection) => rejection.file.name)).toEqual(["foto.png"]);
 });
 
-test("when disabled, the area accepts neither click nor drop", () => {
-  let accepted: File[] = [];
-  dropzone({ disabled: true, onSelect: (files) => (accepted = files) });
+test("desabilitada, a area nao aceita nem clique nem soltar", () => {
+  let aceitos: File[] = [];
+  dropzone({ disabled: true, onSelect: (files) => (aceitos = files) });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
   expect(area.hasAttribute("disabled")).toBe(true);
 
   fireEvent.drop(area, { dataTransfer: { files: [file("nota.xml", 100)] } });
-  expect(accepted).toEqual([]);
+  expect(aceitos).toEqual([]);
 });
 
-test("the item shows name and size formatted in pt-BR", () => {
+test("o item mostra nome e tamanho formatado em pt-BR", () => {
   render(
     <RivoProvider scope="local">
       <FileUploadList>
@@ -151,7 +151,7 @@ test("the item shows name and size formatted in pt-BR", () => {
   expect(screen.getByRole("button", { name: /remover nota-4813.xml/i })).toBeDefined();
 });
 
-test("progress becomes a bar with an announced value", () => {
+test("progress vira barra com valor anunciado", () => {
   render(
     <RivoProvider scope="local">
       <FileUploadList>
@@ -164,8 +164,8 @@ test("progress becomes a bar with an announced value", () => {
   expect(bar.getAttribute("aria-valuenow")).toBe("62");
 });
 
-test("error beats progress and offers a retry", () => {
-  let attempts = 0;
+test("erro vence progresso e oferece nova tentativa", () => {
+  let tentativas = 0;
   render(
     <RivoProvider scope="local">
       <FileUploadList>
@@ -174,7 +174,7 @@ test("error beats progress and offers a retry", () => {
           size={100}
           progress={62}
           error="A conexão caiu"
-          onRetry={() => (attempts += 1)}
+          onRetry={() => (tentativas += 1)}
           onRemove={() => {}}
         />
       </FileUploadList>
@@ -184,5 +184,5 @@ test("error beats progress and offers a retry", () => {
   expect(screen.queryByRole("progressbar")).toBeNull();
   expect(screen.getByText("A conexão caiu")).toBeDefined();
   fireEvent.click(screen.getByRole("button", { name: /tentar de novo/i }));
-  expect(attempts).toBe(1);
+  expect(tentativas).toBe(1);
 });

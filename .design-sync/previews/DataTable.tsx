@@ -6,7 +6,7 @@ type Invoice = {
   id: string
   number: string
   customer: string
-  /** As a number, not as ready-made text: the formatter is what abbreviates it. */
+  /** Em número, e não em texto pronto: é o formatador que abrevia. */
   amount: number
   status: 'Paga' | 'Aberta'
 }
@@ -35,7 +35,7 @@ const COLUMNS: Column<Invoice>[] = [
   },
 ]
 
-/** With data */
+/** Com dados */
 export function WithData() {
   return (
     <DataTable
@@ -47,7 +47,7 @@ export function WithData() {
   )
 }
 
-/** Loading */
+/** Carregando */
 export function Loading() {
   return (
     <DataTable<Invoice>
@@ -59,7 +59,7 @@ export function Loading() {
   )
 }
 
-/** Error */
+/** Erro */
 export function Error() {
   return (
     <DataTable<Invoice>
@@ -74,7 +74,7 @@ export function Error() {
   )
 }
 
-/** Empty */
+/** Vazio */
 export function Empty() {
   return (
     <DataTable<Invoice>
@@ -91,8 +91,8 @@ export function Empty() {
 }
 
 /*
- * The stories below use a larger list: with two rows, sorting shows nothing
- * and pagination does not exist.
+ * As historias abaixo usam uma lista maior: com duas linhas, ordenar nao
+ * mostra nada e paginar nao existe.
  */
 const MANY: Invoice[] = [
   ...INVOICES,
@@ -103,7 +103,7 @@ const MANY: Invoice[] = [
   { id: '7', number: '4819', customer: 'Auto Escola Rota', amount: 890, status: 'Aberta' },
 ]
 
-/** The amount column sorts by the raw number, which `value` provides. */
+/** A coluna de valor ordena pelo numero cru, que `value` entrega. */
 const SORTABLE: Column<Invoice>[] = [
   { key: 'number', header: 'Número', sortable: true },
   { key: 'customer', header: 'Cliente', sortable: true },
@@ -125,19 +125,18 @@ const SORTABLE: Column<Invoice>[] = [
   },
 ]
 
-/** Sortable */
+/** Ordenável */
 export function Sortable() {
   return <DataTable data={MANY} columns={SORTABLE} rowKey={(invoice) => invoice.id} />
 }
 
-/** With search */
+/** Com busca */
 export function Filtered() {
   const [filter, setFilter] = useState('')
   return (
     <div className="flex w-full flex-col gap-3">
-      {/* The field belongs to the app, not the table: it goes wherever the
-          screen needs it, and the table only receives the text. Accents and
-          case do not get in the way. */}
+      {/* O campo é do app, não da tabela: ele vai onde a tela pedir, e a
+          tabela só recebe o texto. Acento e caixa não atrapalham. */}
       <Input
         aria-label="Buscar nota"
         placeholder="Buscar por cliente ou número…"
@@ -155,14 +154,14 @@ export function Filtered() {
   )
 }
 
-/** With pagination */
+/** Com paginação */
 export function Paginated() {
   return (
     <DataTable data={MANY} columns={SORTABLE} rowKey={(invoice) => invoice.id} pageSize={4} />
   )
 }
 
-/** With selection */
+/** Com seleção */
 export function Selectable() {
   const [selected, setSelected] = useState<string[]>(['2'])
   return (
@@ -184,9 +183,9 @@ export function Selectable() {
 }
 
 /*
- * The middle case: many rows, and sorting and searching still working. Five
- * thousand already makes the point - with server-side pagination, this screen
- * would lose both.
+ * O caso do meio: muita linha, e ainda assim ordenar e buscar funcionando.
+ * Cinco mil ja mostra o ponto - com paginacao no servidor, esta tela perderia
+ * as duas coisas.
  */
 type Event = {
   id: string
@@ -215,7 +214,7 @@ const EVENT_COLUMNS: Column<Event>[] = [
   { key: 'message', header: 'Evento' },
 ]
 
-/** Virtualized */
+/** Virtualizada */
 export function Virtual() {
   const [filter, setFilter] = useState('')
   return (
@@ -241,8 +240,8 @@ export function Virtual() {
 }
 
 /*
- * The sum of a column, in the footer. `total` is the sibling of `cell` one
- * column up: whoever knows how to format the cell knows how to format its sum.
+ * A soma de uma coluna, no rodape. `total` e o irmao do `cell` uma coluna
+ * acima: quem sabe formatar a celula sabe formatar a soma dela.
  */
 const TOTALS: Column<Invoice>[] = [
   { key: 'number', header: 'Número', sortable: true, total: () => 'Total' },
@@ -270,12 +269,12 @@ const TOTALS: Column<Invoice>[] = [
   },
 ]
 
-/** With a totals row */
+/** Com linha de totais */
 export function WithTotals() {
   return <DataTable data={MANY} columns={TOTALS} rowKey={(invoice) => invoice.id} />
 }
 
-/** Totals that follow the search */
+/** Totais que acompanham a busca */
 export function TotalsWithFilter() {
   const [filter, setFilter] = useState('')
   return (
@@ -287,8 +286,8 @@ export function TotalsWithFilter() {
         onChange={(event) => setFilter(event.target.value)}
         className="max-w-64"
       />
-      {/* The total counts what is left after the filter, not the page: turning
-          the page does not change how much is owed. */}
+      {/* O total conta o que sobrou do filtro, e nao a pagina: virar de
+          pagina nao muda quanto se deve. */}
       <DataTable
         data={MANY}
         columns={TOTALS}
@@ -300,14 +299,14 @@ export function TotalsWithFilter() {
   )
 }
 
-/** Total stuck to the frame's footer */
+/** Total grudado no rodapé da moldura */
 export function StickyTotals() {
   return (
     <DataTable data={MANY} columns={TOTALS} rowKey={(invoice) => invoice.id} maxHeight={220} />
   )
 }
 
-/** Only scrolling, without virtualizing */
+/** Só a rolagem, sem virtualizar */
 export function Scrollable() {
   return (
     <DataTable

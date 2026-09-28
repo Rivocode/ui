@@ -1,17 +1,17 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # RadioGroup
 
-Groups the `Radio`s and takes care of the single choice and arrow-key
-navigation. Pass `aria-label` or point to a heading with `aria-labelledby`:
-without that the group exists for the mouse and not for the screen reader.
+Agrupa os `Radio` e cuida da escolha única e da navegação por setas. Passe
+`aria-label` ou aponte para um título com `aria-labelledby`: sem isso o grupo
+existe para o mouse e não para o leitor de tela.
 
-## In React Native
+## No React Native
 
-Translates with `items` on the root: there is no standalone `Radio` to compose, and everything is controlled.
+Traduz com `items` na raiz: não há `Radio` solto para compor, e tudo é controlado.
 
-**`label` is the web's `aria-label` under another name.** The page over there already demanded it: without a name, the group exists for the finger and not for the screen reader. Here there was no way to demand it, and the hole was worse than a missing prop: the form subpath's `forValue` already delivered `accessibilityLabel`, but the type is closed and a JSX spread does not check excess properties, so the name was **silently discarded with TypeScript green**. Today `forValue` delivers the `FormField`'s label also as `label`, and the group comes out named without repeating the text.
+**O `label` é o `aria-label` do web com outro nome.** A página de lá já cobrava: sem nome, o grupo existe para o dedo e não para o leitor de tela. Aqui não havia como cobrar, e o buraco era pior do que faltar a prop: o `forValue` do subcaminho de formulário já entregava `accessibilityLabel`, mas o tipo é fechado e espalhamento em JSX não confere propriedade excedente, então o nome era **descartado em silêncio com o TypeScript verde**. Hoje o `forValue` entrega o rótulo do `FormField` também como `label`, e o grupo sai nomeado sem repetir o texto.
 
-It draws nothing: the visible text belongs to the `Field`, as with `Select` and `Combobox`.
+Ele não desenha nada: o texto visível é do `Field`, como no `Select` e no `Combobox`.

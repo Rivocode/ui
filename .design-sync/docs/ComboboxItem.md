@@ -1,7 +1,7 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # ComboboxItem
 
-One option. Shows the check mark when selected.
+Uma opção. Mostra o visto quando escolhida.

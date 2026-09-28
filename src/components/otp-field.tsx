@@ -6,12 +6,12 @@ import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
 
 export type OTPFieldProps = Omit<ComponentProps<typeof BaseOTPField.Root>, "length"> & {
-  /** How many slots the code has. */
+  /** Quantas casas o codigo tem. */
   length?: number;
   /**
-   * The piece's texts, to change the language: `digit` is the name of each slot
-   * after the first, which receives the position counting from 1 and the total. The
-   * first one takes the field's name. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `digit` e o nome de cada casa
+   * depois da primeira, que recebe a posicao contando de 1 e o total. A
+   * primeira leva o nome do campo. Passe so os que mudam.
    */
   labels?: Partial<OTPFieldLabels>;
 };

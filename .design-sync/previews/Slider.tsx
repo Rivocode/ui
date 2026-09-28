@@ -1,6 +1,6 @@
 import { Slider } from '@rivocode/ui'
 
-/** With label */
+/** Com rótulo */
 export function WithLabel() {
   return (
     <div className="w-72">
@@ -9,7 +9,7 @@ export function WithLabel() {
   )
 }
 
-/** Range */
+/** Faixa */
 export function Range() {
   return (
     <div className="w-72">

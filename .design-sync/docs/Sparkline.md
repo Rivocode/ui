@@ -1,69 +1,66 @@
 ---
-category: Charts
+category: Gráfico
 ---
 
 # Sparkline
 
-The tiny line that fits inside a number.
+A linha miúda que cabe dentro de um número.
 
 ```tsx
 <Sparkline data={[12, 15, 14, 19, 22, 28]} className="h-8 w-24" />
 ```
 
-No axis, no grid, no tooltip. It does not answer "how much was it in May", but
-"is this going up or down". An indicator alone is a number without a story, and
-opening a whole chart next to each indicator fills the dashboard with frames.
+Sem eixo, sem grade, sem dica. Ela não responde "quanto foi em maio", e sim
+"isto vem subindo ou descendo". Um indicador sozinho é um número sem história, e
+abrir um gráfico inteiro ao lado de cada indicador enche o painel de moldura.
 
-## Color
+## Cor
 
-By default it comes out in the theme's accent, which is the neutral reading of
-"this is a number on this screen".
+Por padrão sai no acento do tema, que é a leitura neutra de "isto é um número
+desta tela".
 
-`trend="auto"` paints green or red depending on whether it goes up or down from
-the first point to the last. **Use it only when going up is good.** In cost,
-delinquency or overdue invoices, going up is bad, and the piece has no way of
-knowing that: invert the numbers before passing them, or fix the color through
-the `color` prop. With fewer than two points there is no trend, and it comes out
-in the neutral accent color.
+`trend="auto"` pinta de verde ou vermelho conforme suba ou desça do primeiro ao
+último ponto. **Use só quando subir for bom.** Em custo, inadimplência ou nota
+vencida, subir é ruim, e a peça não tem como saber disso: inverta os números
+antes de passar, ou fixe a cor pela prop `color`. Com menos de dois pontos não
+há tendência, e ela sai na cor neutra do acento.
 
-The prop is not called `tone` on purpose: that is the name the whole catalog
-uses for the semantic color scale, `success`, `danger`, `warning`, `info`, in
-`Badge`, `Alert`, `Tracker` and `Timeline`. Here the word would mean something
-else, with other values.
+A prop não se chama `tone` de propósito: esse é o nome que o catálogo inteiro
+usa para a escala semântica de cor, `success`, `danger`, `warning`, `info`, no
+`Badge`, no `Alert`, no `Tracker` e no `Timeline`. Aqui a palavra quereria dizer
+outra coisa, e com outros valores.
 
-## It fades in, and that is all
+## Entra esmaecendo, e só
 
-The Sparkline enters, but briefly and quietly: the drawing fades in over
-`--rc-duration-base` (200 ms) when it appears, and it neither draws itself
-stroke by stroke nor moves when the data changes. It lives in table rows and in
-rows of indicators, and in those places it shows up by the dozen: twenty lines
-drawing themselves left to right at the same time are a wave crossing the
-table, and twenty lines changing shape on a filter are noise, not the change.
-The fade says only "arrived", which is what the thumbnail needs to say. And it
-costs one CSS animation per thumbnail, instead of one JavaScript interpolation
-per frame, which across fifty rows is felt in scrolling.
+A Sparkline entra, mas curta e discreta: o desenho esmaece em
+`--rc-duration-base` (200 ms) quando aparece, e não se desenha traço a traço nem
+anda quando os dados mudam. Ela mora em linha de tabela e em fileira de
+indicadores, e nesses lugares aparece às dezenas: vinte linhas se desenhando da
+esquerda para a direita ao mesmo tempo são uma onda atravessando a tabela, e
+vinte linhas trocando de forma no filtro são ruído, e não a mudança. O
+esmaecer diz só "chegou", que é o que a miniatura precisa dizer. E ele custa
+uma animação de CSS por miniatura, em vez de uma interpolação de JavaScript por
+quadro, que em cinquenta linhas se sente no rolar.
 
-The animation lives on the SVG surface itself, not on the box around it:
-Recharts only paints after measuring, and a box coming from the server would
-already have faded in before the stroke existed. With "reduce motion", it
-appears still. `ChartContainer`, the donut and the gauge draw themselves and
-move to the new value because each one is the subject of its card; the
-thumbnail is a detail of the number next to it.
+A animação mora na própria superfície do SVG, e não na caixa em volta: a
+Recharts só pinta depois de medir, e a caixa que viesse do servidor já teria
+esmaecido antes de o traço existir. Com "reduzir movimento", ela aparece
+parada. O `ChartContainer`, a rosca e o arco se desenham e andam até o valor
+novo porque cada um é o assunto do cartão; a miniatura é um detalhe do número
+ao lado dela.
 
-## Accessibility
+## Acessibilidade
 
-It comes out hidden from the screen reader on purpose: a trend drawing with no
-number has nothing to read out loud, and the number next to it has already been
-read.
+Ela sai escondida do leitor de tela de propósito: um desenho de tendência sem
+número não tem o que ler em voz alta, e o número ao lado dela já foi lido.
 
-Pass `label` when it is the only information there, and it becomes `role="img"`
-with the text you write.
+Passe `label` quando ela for a única informação ali, e ela vira `role="img"` com
+o texto que você escrever.
 
-`variant="bar"` counts occurrences per period (issues per day, tickets per
-week) instead of a continuous trend. It is the only variant that crosses over to
-`@rivocode/ui-native`: the area needs a filled polygon, which does not come out
-without SVG.
+`variant="bar"` conta ocorrência por período (emissões por dia, chamados por
+semana) em vez de tendência contínua. É a única variante que atravessa para o
+`@rivocode/ui-native`: a área pede polígono preenchido, que sem SVG não sai.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Sparkline`, and it is what the native `Stat`'s `chart` slot was waiting for. It is drawn with `View`, without SVG, and that decides what crosses over: `variant="line"` and `variant="bar"` mean the same thing in both worlds, and **`area` does not port**: an area wants a filled polygon, which `View` does not do. Two other differences, both deliberate: the stroke draws 2px instead of 1.5 (at 1.5 it disappears on a phone screen in daylight) and the width comes from the parent, with the height in `height`. **Without `label` it is hidden from the screen reader on purpose**: a line without a description says nothing to whoever cannot see it, and announcing "image" would be worse than staying silent. And it enters **only by fading in**, as on the web, at `duration-base`: it does not draw itself or move when the data changes, and with "reduce motion" it appears still.
+Traduz: o `@rivocode/ui-native` exporta `Sparkline`, e ela é o que o slot `chart` do `Stat` nativo esperava. Ela é desenhada com `View`, sem SVG, e isso decide o que atravessa: `variant="line"` e `variant="bar"` significam a mesma coisa nos dois mundos, e **`area` não porta**: área quer polígono preenchido, que `View` não faz. Duas outras diferenças, ambas deliberadas: o traço desenha 2px em vez de 1,5 (a 1,5 ele desaparece na tela do telefone sob luz) e a largura vem do pai, com a altura em `height`. **Sem `label` ela é escondida do leitor de tela de propósito**: uma linha sem descrição não diz nada a quem não a vê, e anunciar "imagem" seria pior do que calar. E ela entra **só esmaecendo**, como no web, em `duration-base`: não se desenha nem anda na troca de dados, e com "reduzir movimento" aparece parada.

@@ -24,17 +24,17 @@ const TODAY = new Date(2026, 8, 24);
 const day = (date: Date | null) =>
   date ? [date.getFullYear(), date.getMonth() + 1, date.getDate()] : null;
 
-test("the bank line checks the three fields in modulo 10 and the general check digit in modulo 11", () => {
+test("a linha de banco confere os tres campos no modulo 10 e o verificador geral no 11", () => {
   for (const line of BANK_LINES) expect(isValidBoletoLine(line), line).toBe(true);
   expect(isValidBoletoLine("10492.00650 61000.100042 00997.263900 9 89810000021403")).toBe(true);
 });
 
-test("the collection line checks the four blocks and the general digit, in the modulo the third digit asks for", () => {
+test("a linha de convenio confere os quatro blocos e o geral, no modulo que a terceira casa pede", () => {
   for (const line of COLLECTION_LINES) expect(isValidBoletoLine(line), line).toBe(true);
   expect(isValidBoletoLine("84630000000-3 29990296202-4 00410136000-8 00200644114-7")).toBe(true);
 });
 
-test("a swapped digit in any field of the bank line fails", () => {
+test("um digito trocado em qualquer campo da linha de banco reprova", () => {
   const line = BANK_LINES[0]!;
   const swap = (at: number) =>
     line.slice(0, at) + String((Number(line[at]) + 1) % 10) + line.slice(at + 1);
@@ -47,19 +47,19 @@ test("a swapped digit in any field of the bank line fails", () => {
   expect(isValidBoletoLine(swap(46))).toBe(false);
 });
 
-test("the general check digit catches what the fields let through", () => {
+test("o verificador geral pega o que os campos deixam passar", () => {
   expect(isValidBoletoLine("10492006506100010005900997263900989810000021403")).toBe(false);
   expect(isValidBoletoLine("846300000003299902962032004101360008002006441147")).toBe(false);
 });
 
-test("for banks, a modulo 11 remainder of 0 or 1 becomes check digit 1, as Carta-Circular 2.926 requires", () => {
+test("no banco, resto 0 ou 1 do modulo 11 vira verificador 1, como manda a Carta-Circular 2.926", () => {
   expect(isValidBoletoLine("00190000090234567890400000123174110000000010005")).toBe(true);
   expect(isValidBoletoLine("00190000090234567890400000123174110000000010009")).toBe(true);
   expect(isValidBoletoLine("00190000090234567890400000123174010000000010005")).toBe(false);
   expect(isValidBoletoLine("00190000090234567890400000123174010000000010009")).toBe(false);
 });
 
-test("a swapped digit in a collection block fails", () => {
+test("um digito trocado num bloco do convenio reprova", () => {
   const line = COLLECTION_LINES[2]!;
   const swap = (at: number) =>
     line.slice(0, at) + String((Number(line[at]) + 1) % 10) + line.slice(at + 1);
@@ -70,7 +70,7 @@ test("a swapped digit in a collection block fails", () => {
   expect(isValidBoletoLine(swap(47))).toBe(false);
 });
 
-test("mismatched length and type fail", () => {
+test("tamanho e tipo que nao combinam reprovam", () => {
   expect(isValidBoletoLine(BANK_LINES[0]!.slice(0, 46))).toBe(false);
   expect(isValidBoletoLine(`${BANK_LINES[0]}0`)).toBe(false);
   expect(isValidBoletoLine(COLLECTION_LINES[0]!.slice(0, 47))).toBe(false);
@@ -80,7 +80,7 @@ test("mismatched length and type fail", () => {
   expect(isValidBoletoLine("")).toBe(false);
 });
 
-test("the line becomes the 44-digit barcode the optical reader reads", () => {
+test("a linha vira o codigo de barras de 44 digitos que o leitor otico le", () => {
   expect(boletoLineToBarcode(BANK_LINES[0]!)).toBe("10499898100000214032006561000100040099726390");
   expect(boletoLineToBarcode("34191.57007 00000.000000 00000.000000 7 19450000248000")).toBe(
     "34197194500002480001570000000000000000000000",
@@ -91,7 +91,7 @@ test("the line becomes the 44-digit barcode the optical reader reads", () => {
   expect(boletoLineToBarcode(`${BANK_LINES[0]!.slice(0, 46)}4`)).toBeNull();
 });
 
-test("a bank boleto tells the bank, the amount in cents and the due date", () => {
+test("o boleto de banco diz o banco, o valor em centavos e o vencimento", () => {
   expect(parseBoleto(BANK_LINES[1]!, { today: TODAY })).toEqual({
     kind: "bank",
     line: BANK_LINES[1]!,
@@ -108,7 +108,7 @@ test("a bank boleto tells the bank, the amount in cents and the due date", () =>
   expect(day(federal!.dueDate)).toEqual([2022, 5, 10]);
 });
 
-test("the factor wraps to 1000 on 22/02/2025, and 9999 is the day before", () => {
+test("o fator volta a 1000 em 22/02/2025, e o 9999 e o dia anterior", () => {
   const last = parseBoleto("00190000090234567890400000123174199990000015000", { today: TODAY });
   const first = parseBoleto("00190000090234567890400000123174710000000015000", { today: TODAY });
   const later = parseBoleto("34191570070000000000000000000000719450000248000", { today: TODAY });
@@ -119,7 +119,7 @@ test("the factor wraps to 1000 on 22/02/2025, and 9999 is the day before", () =>
   expect(later?.amount).toBe(248000);
 });
 
-test("the same factor serves two cycles, and the one closest to the reference day wins", () => {
+test("o mesmo fator serve a dois ciclos, e vale o mais perto do dia de referencia", () => {
   expect(day(boletoDueDate(1000, new Date(2010, 0, 1)))).toEqual([2000, 7, 3]);
   expect(day(boletoDueDate(1000, TODAY))).toEqual([2025, 2, 22]);
   expect(day(boletoDueDate(7586, TODAY))).toEqual([2018, 7, 15]);
@@ -127,7 +127,7 @@ test("the same factor serves two cycles, and the one closest to the reference da
   expect(day(boletoDueDate(1001, TODAY))).toEqual([2025, 2, 23]);
 });
 
-test("a zero factor and a zero amount become null, and not an invented date and amount", () => {
+test("fator zerado e valor zerado viram null, e nao data e valor inventados", () => {
   const blank = parseBoleto(BANK_LINES[4]!, { today: TODAY });
   expect(blank?.dueDate).toBeNull();
   expect(blank?.amount).toBeNull();
@@ -135,7 +135,7 @@ test("a zero factor and a zero amount become null, and not an invented date and 
   expect(boletoDueDate(0)).toBeNull();
 });
 
-test("a collection boleto tells the segment and the amount when the third digit is 6 or 8", () => {
+test("o convenio diz o segmento e o valor quando a terceira casa e 6 ou 8", () => {
   const energy = parseBoleto(COLLECTION_LINES[1]!);
   expect(energy?.kind).toBe("collection");
   expect(energy?.segment).toBe(3);
@@ -146,7 +146,7 @@ test("a collection boleto tells the segment and the amount when the third digit 
   expect(parseBoleto(COLLECTION_LINES[2]!)?.amount).toBe(5725);
 });
 
-test("a collection boleto carrying a reference, third digit 7 or 9, does not invent an amount", () => {
+test("o convenio que carrega referencia, na terceira casa 7 ou 9, nao inventa valor", () => {
   const ten = parseBoleto("817500000010234501232024609240000008000000000018");
   const eleven = parseBoleto("859200000013234501232025609240000007000000000019");
 
@@ -156,7 +156,7 @@ test("a collection boleto carrying a reference, third digit 7 or 9, does not inv
   expect(eleven?.amount).toBeNull();
 });
 
-test("a barcode read by the scanner goes straight in, and the line comes out assembled", () => {
+test("o codigo de barras lido pelo leitor entra direto, e a linha sai montada", () => {
   const fromBarcode = parseBoleto("10499898100000214032006561000100040099726390", { today: TODAY });
   expect(fromBarcode?.line).toBe(BANK_LINES[0]!);
   expect(fromBarcode?.amount).toBe(21403);
@@ -168,7 +168,7 @@ test("a barcode read by the scanner goes straight in, and the line comes out ass
   expect(parseBoleto("texto qualquer")).toBeNull();
 });
 
-test("the boleto mask punctuates the bank line and switches to the collection one when it starts with 8", () => {
+test("o molde boleto pontua a linha de banco e troca para o de convenio quando comeca com 8", () => {
   expect(applyMask(BANK_LINES[0]!, "boleto")).toBe(
     "10492.00650 61000.100042 00997.263900 9 89810000021403",
   );
@@ -186,7 +186,7 @@ test("the boleto mask punctuates the bank line and switches to the collection on
 const BANK_BARCODE = "10499898100000214032006561000100040099726390";
 const COLLECTION_BARCODE = "84630000000299902962020041013600000200644114";
 
-test("the 44 barcode digits pasted into the boleto mask stay without the line punctuation", () => {
+test("os 44 digitos do codigo de barras colados no molde boleto ficam sem a pontuacao da linha", () => {
   expect(applyMask(BANK_BARCODE, "boleto")).toBe(BANK_BARCODE);
   expect(applyMask(COLLECTION_BARCODE, "boleto")).toBe(COLLECTION_BARCODE);
   expect(applyMask(` ${BANK_BARCODE}\n`, "boleto")).toBe(BANK_BARCODE);
@@ -199,7 +199,7 @@ test("the 44 barcode digits pasted into the boleto mask stay without the line pu
   );
 });
 
-test("in MaskedInput, a pasted barcode stays raw, and the clean value is the same", () => {
+test("no MaskedInput, o codigo de barras colado fica cru, e o valor limpo e o mesmo", () => {
   const values: string[][] = [];
   const { getByRole } = render(
     <MaskedInput
@@ -213,7 +213,7 @@ test("in MaskedInput, a pasted barcode stays raw, and the clean value is the sam
   expect((getByRole("textbox") as HTMLInputElement).value).toBe(BANK_BARCODE);
 });
 
-test("the boleto MaskedInput opens the numeric keyboard", () => {
+test("o MaskedInput de boleto abre o teclado numerico", () => {
   const { getByRole } = render(<MaskedInput mask="boleto" aria-label="Linha digitável" />);
   expect(getByRole("textbox").getAttribute("inputmode")).toBe("numeric");
 });

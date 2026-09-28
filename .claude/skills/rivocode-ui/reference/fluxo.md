@@ -1,98 +1,93 @@
-# The shape of the task
+# A forma da tarefa
 
-The other files decide the shape of the **screen**. This one decides the shape
-of the **task**: how many screens it fits in, where the person confirms, what
-happens when they make a mistake, and how they go back.
+Os outros arquivos decidem a forma da **tela**. Este decide a forma da
+**tarefa**: em quantas telas ela cabe, onde a pessoa confirma, o que acontece
+quando ela erra, e como ela volta atrás.
 
-It is the part no guard measures. A screen can be perfect in contrast, tokens
-and keyboard, and still ask for three confirmations on something reversible and
-none on what deletes.
+É a parte que nenhuma guarda mede. Uma tela pode estar perfeita no contraste, no
+token e no teclado, e ainda pedir três confirmações para algo reversível e
+nenhuma para o que apaga.
 
-## Contents
+## Conteúdo
 
-- One screen or several
-- Wizard or single form: the check
-- The well-made wizard
-- Confirm, undo, or nothing
-- What to do when it goes wrong
-- The four endings, and what each one decides
-- When the screen disappears under the person
-- What makes the product smart
-- Flow mistakes that always show up
+- Uma tela ou várias
+- Wizard ou formulário único: a checagem
+- O wizard bem feito
+- Confirmar, desfazer, ou nada
+- O que fazer quando dá errado
+- Os quatro finais, e o que cada um decide
+- Quando a tela some por baixo da pessoa
+- O que deixa o produto esperto
+- Erros de fluxo que aparecem sempre
 
-## One screen or several
+## Uma tela ou várias
 
-The question is not how many fields there are, it is **how many independent
-decisions** the person makes.
+A pergunta não é quantos campos existem, é **quantas decisões independentes** a
+pessoa toma.
 
-| Shape | When | Piece |
+| Forma | Quando | Peça |
 |---|---|---|
-| A single form | the fields are answered together, and the person already knows everything | `Card` with `Field` |
-| Steps | there is a decision that changes the following fields, or the person needs to fetch data midway | `Steps` + `WizardFooter` |
-| Side sheet | the task is accessory and the context behind matters | `Sheet` |
-| Dialog | one short decision that cannot be dismissed by mistake | `Dialog` |
+| Um formulário só | os campos se respondem juntos, e a pessoa já sabe tudo | `Card` com `Field` |
+| Passos | há decisão que muda os campos seguintes, ou a pessoa precisa buscar dado no meio | `Steps` + `WizardFooter` |
+| Folha lateral | a tarefa é acessória e o contexto de trás importa | `Sheet` |
+| Diálogo | uma decisão, curta, que não pode ser dispensada por engano | `Dialog` |
 
-**Steps are not for fitting.** Breaking fifteen fields into three screens of
-five does not reduce the work, it only hides its size and takes away the view
-of the whole. Break when stage 2 **depends** on stage 1.
+**Passos não são para caber.** Quebrar quinze campos em três telas de cinco não
+diminui o trabalho, só esconde o tamanho dele e tira a visão do conjunto. Quebre
+quando a etapa 2 **depende** da 1.
 
-When there are steps, each one has to be **nameable by a noun**: "Cliente",
-"Serviço", "Revisão". A step that is only called "Passo 2" was not a step, it
-was a scroll.
+Quando houver passos, cada um tem que ser **nomeável por substantivo**:
+"Cliente", "Serviço", "Revisão". Passo que só se chama "Passo 2" não era um
+passo, era uma rolagem.
 
-**The last stage is always review**, with what was decided and a way back to
-each part. It is where the person checks before what cannot be undone.
+**A última etapa é sempre revisão**, com o que foi decidido e um caminho de
+volta para cada parte. É onde a pessoa confere antes do que não tem volta.
 
-## Wizard or single form: the check
+## Wizard ou formulário único: a checagem
 
-A wizard is not the default. The default is **a single form**, in sections with
-`Fieldset` and a title, which lets the person see the size of the task, go back
-to any field without navigating and submit whenever they want. Answer the four
-questions before breaking it into steps; a wizard only if at least one is "yes".
+Wizard não é o padrão. O padrão é **um formulário só**, em seções com
+`Fieldset` e título, que deixa a pessoa ver o tamanho da tarefa, voltar a
+qualquer campo sem navegar e enviar quando quiser. Responda as quatro perguntas
+antes de quebrar em passos; wizard só se pelo menos uma for "sim".
 
-1. **Does an answer change what is asked afterwards?** Individual or company
-   swaps the fields; the type of service decides the tax rates.
-2. **Does the person need to leave to fetch data midway?** The service code at
-   the city hall, the receipt in the e-mail.
-3. **Does a stage have its own cost when confirmed?** Looking up the CNPJ at
-   the Receita, reserving the time slot, generating the QR.
-4. **Is the task long and rare, and does the person get lost without a map?**
-   Setting up the company in the system for the first time, configuring
-   issuance.
+1. **Uma resposta muda o que se pergunta depois?** Pessoa física ou jurídica
+   troca os campos; o tipo de serviço decide as alíquotas.
+2. **A pessoa precisa sair para buscar um dado no meio?** O código do serviço
+   na prefeitura, o comprovante no e-mail.
+3. **Uma etapa tem custo próprio ao ser confirmada?** Consultar o CNPJ na
+   Receita, reservar o horário, gerar o QR.
+4. **A tarefa é longa e rara, e a pessoa se perde sem mapa?** Abrir a empresa
+   no sistema pela primeira vez, configurar a emissão.
 
-All "no" is a single form, even with thirty fields. A field few people use goes
-into a `Collapsible` ("Mais opções"), and not into one more step. Questions one
-at a time, branching on the answer (triage, survey, the agent asking for
-clarification), is `Questionnaire`, and not `Steps`.
+Tudo "não" é formulário único, mesmo com trinta campos. Campo que poucos usam
+vai para um `Collapsible` ("Mais opções"), e não para um passo a mais. Perguntas
+uma por vez, com ramificação pela resposta (triagem, pesquisa, o agente pedindo
+esclarecimento), é o `Questionnaire`, e não o `Steps`.
 
-## The well-made wizard
+## O wizard bem feito
 
-- **A single form beneath the steps.** One `useZodForm` with the fields of all
-  stages, and each step shows its part. A form per step loses what was typed
-  when going back.
-- **Validate the step before moving on, and only it.**
-  `next(() => form.trigger([...]))` from `useWizard` demands that step's
-  fields; "Próximo" stays locked while the async check runs, and two taps move
-  a single step.
-- **Going back never loses anything**, and the steps already done are clickable
-  in `Steps` through `onStepChange`. Skipping forward is not: the next step
-  depends on the previous one.
-- **Going back a step and a failed submit never lose anything**: the form stays
-  in memory while the screen is open.
-- **A draft across visits is a project decision, not the library's.** Storing
-  it in the browser to survive a page reload exposes what was typed:
-  `localStorage` stays on the machine, unencrypted, and any script on the page
-  reads it. If the product wants it, store only what is not sensitive (never a
-  password, card, document, health or financial data), with `useLocalStorage`,
-  and clear it on a successful submit. When in doubt, do not store.
-- **The last stage is review**, with each part summarized and an "Alterar"
-  that goes back to its step. The final button says the effect: "Emitir nota",
-  and not "Concluir".
-- **No confirmation on top of the review.** The review already is the
-  confirmation.
-- **On a phone `Steps` becomes "2 de 4" with the step name**, and
-  `WizardFooter` sticks to the bottom, with Back and the advance always in the
-  same place.
+- **Um formulário só por baixo dos passos.** Um `useZodForm` com os campos de
+  todas as etapas, e cada passo mostra a parte dele. Formulário por passo perde
+  o que foi digitado ao voltar.
+- **Valida o passo antes de avançar, e só ele.** `next(() => form.trigger([...]))`
+  do `useWizard` cobra os campos daquele passo; o "Próximo" fica travado
+  enquanto a checagem assíncrona roda, e dois toques andam um passo só.
+- **Voltar nunca perde nada**, e os passos já feitos são clicáveis no `Steps`
+  pelo `onStepChange`. Pular para a frente não: o passo seguinte depende do
+  anterior.
+- **Voltar um passo e errar o envio nunca perdem nada**: o formulário fica na
+  memória enquanto a tela está aberta.
+- **Rascunho entre visitas é decisão do projeto, e não da biblioteca.** Guardar
+  no navegador para sobreviver a recarregar a página expõe o que foi digitado:
+  o `localStorage` fica na máquina, sem criptografia, e qualquer script da
+  página o lê. Se o produto quiser, guarde só o que não for sensível (nunca
+  senha, cartão, documento, dado de saúde ou financeiro), com
+  `useLocalStorage`, e limpe no sucesso do envio. Na dúvida, não guarde.
+- **A última etapa é revisão**, com cada parte resumida e um "Alterar" que volta
+  ao passo dela. O botão final diz o efeito: "Emitir nota", e não "Concluir".
+- **Sem confirmação em cima da revisão.** A revisão já é a confirmação.
+- **No celular o `Steps` vira "2 de 4" com o nome do passo**, e o
+  `WizardFooter` gruda embaixo, com Voltar e o avanço sempre no mesmo lugar.
 
 ```tsx
 const STEPS = [
@@ -118,114 +113,110 @@ const wizard = useWizard(STEPS)
 </WizardFooter>
 ```
 
-The form is a single one for the three steps, so going back from Revisão to
-Cliente finds everything as it was.
+O formulário é um só para os três passos, então voltar da Revisão ao Cliente
+encontra tudo como estava.
 
-## Confirm, undo, or nothing
+## Confirmar, desfazer, ou nada
 
-This is the decision most people get wrong, and it has a single rule: **the
-cost of undoing decides.**
+Esta é a decisão que mais gente erra, e ela tem uma regra só: **o custo de
+desfazer decide.**
 
-| The action | What it gets |
+| A ação | O que ela ganha |
 |---|---|
-| Reversible and cheap (mark, archive, reorder) | **nothing.** Do it and done |
-| Reversible but confusing to reverse (delete a draft, remove a row) | **undo**, in a `Toast`, with a deadline |
-| Irreversible and with external effect (issue, cancel an invoice, delete for good) | **confirm**, with `AlertDialog` |
+| Reversível e barata (marcar, arquivar, reordenar) | **nada.** Faz e pronto |
+| Reversível mas confusa de reverter (excluir rascunho, remover linha) | **desfazer**, num `Toast`, com prazo |
+| Sem volta e de efeito externo (emitir, cancelar nota, apagar de vez) | **confirmar**, com `AlertDialog` |
 
-**Undo beats confirm whenever possible.** A confirmation charges everyone,
-every time, to protect the occasional mistake - and the person learns to click
-without reading, which is exactly the state the confirmation existed to
-prevent. Undo only charges whoever made the mistake.
+**Desfazer ganha de confirmar sempre que for possível.** Confirmação cobra de
+todo mundo, toda vez, para proteger o engano de vez em quando — e a pessoa
+aprende a clicar sem ler, que é exatamente o estado que a confirmação existia
+para evitar. Desfazer só cobra de quem errou.
 
-A confirmation is only justified when **undo does not exist**: the city hall
-already received it, the e-mail already went out, the record is already gone.
+Confirmação só se justifica quando **desfazer não existe**: a prefeitura já
+recebeu, o e-mail já saiu, o registro já foi embora.
 
-When confirming is the right answer:
+Quando confirmar for a resposta certa:
 
-- `AlertDialog` for what is not dismissed by clicking outside;
-- `Popconfirm` for what is local and small, anchored on the trigger itself;
-- the title names the object, the description says the effect and who is
-  notified, and the escape button names the state that remains. `texto.md` has
-  the exact shape.
+- `AlertDialog` para o que não se dispensa clicando fora;
+- `Popconfirm` para o que é local e pequeno, ancorado no próprio gatilho;
+- o título nomeia o objeto, a descrição diz o efeito e quem é avisado, e o botão
+  de escape nomeia o estado que fica. `texto.md` tem a forma exata.
 
-**Never confirm the same thing twice.** If the wizard's review already showed
-what will happen, the dialog on top of it is noise.
+**Nunca confirme duas vezes a mesma coisa.** Se a revisão do wizard já mostrou o
+que vai acontecer, o diálogo em cima dela é ruído.
 
-## What to do when it goes wrong
+## O que fazer quando dá errado
 
-- **Preserve what the person typed.** An error that returns the form empty
-  costs the whole work again, and it is the most common reason for
-  abandonment. What was typed stays in the fields, always.
-- **The error appears near its cause.** A field error on the field; an
-  operation error at the top of the form or in an `Alert`; a loading error in
-  place of the content that did not come.
-- **An error that is solved by retrying gets `onRetry`.** One that is not
-  solved by retrying gets the path: whom to look for, or what to fix.
-- **Validate on leaving the field, not on every keystroke.** Demanding the full
-  CNPJ at the third digit is accusing someone who is still typing.
-- **`Toast` does not work for an error that requires action.** It goes away.
-  What needs to stay visible is `Alert`.
+- **Preserve o que a pessoa digitou.** Erro que devolve o formulário vazio custa
+  o trabalho inteiro de novo, e é o motivo mais comum de abandono. O que foi
+  digitado continua nos campos, sempre.
+- **O erro aparece perto da causa.** Erro de campo no campo; erro da operação no
+  topo do formulário ou num `Alert`; erro de carregamento no lugar do conteúdo
+  que não veio.
+- **Erro que se resolve repetindo ganha `onRetry`.** O que não se resolve
+  repetindo ganha o caminho: quem procurar, ou o que corrigir.
+- **Valide na saída do campo, não a cada tecla.** Cobrar o CNPJ completo no
+  terceiro dígito é acusar quem ainda está digitando.
+- **`Toast` não serve para erro que exige ação.** Ele some. O que precisa
+  continuar visível é `Alert`.
 
-## The four endings, and what each one decides
+## Os quatro finais, e o que cada um decide
 
-Every query has four, and each is a flow decision, not just a screen:
+Toda consulta tem quatro, e cada um é uma decisão de fluxo, não só uma tela:
 
-| Ending | The decision |
+| Final | A decisão |
 |---|---|
-| loading | skeleton in the shape of the coming content, with the column width, so the screen does not jump when the data arrives |
-| error | what the person does now, and whether retrying solves it |
-| empty | is it their first time, or did the filter find nothing? They are different texts and actions |
-| data | the happy path |
+| carregando | esqueleto na forma do conteúdo que vem, com a largura da coluna, para a tela não pular quando os dados chegarem |
+| erro | o que a pessoa faz agora, e se repetir resolve |
+| vazio | é a primeira vez dela, ou o filtro não achou? São textos e ações diferentes |
+| dados | o caminho feliz |
 
-Delivering only the fourth is delivering half the screen, and the missing half
-is the one that shows up on the worst day.
+Entregar só o quarto é entregar metade da tela, e a metade que falta é a que
+aparece no pior dia.
 
-## When the screen disappears under the person
+## Quando a tela some por baixo da pessoa
 
-- **Do not move what they are about to click.** Content that arrives later
-  comes in below the reading point, or reserves the space from the start.
-- **An action that takes a while stays tied to the button**, with `loading` and
-  the button disabled - never a scrim that covers the screen and takes away the
-  reference to what they were doing.
-- **Confirmation does not change place.** The confirming button always stays in
-  the same corner of the footer, in every dialog of the product.
-- **Closing a sheet or a dialog returns focus to the trigger**, or the keyboard
-  starts over from the top of the page. The house pieces already do this;
-  hand-written layout does not.
+- **Não mova o que ela vai clicar.** Conteúdo que chega depois entra abaixo do
+  ponto de leitura, ou reserva o espaço desde o começo.
+- **Ação que demora fica presa ao botão**, com `loading` e o botão desabilitado
+  — nunca uma tarja que cobre a tela e tira a referência do que estava fazendo.
+- **Confirmação não muda de lugar.** O botão que confirma fica sempre no mesmo
+  canto do rodapé, em todos os diálogos do produto.
+- **Fechar uma folha ou um diálogo devolve o foco ao gatilho**, senão o teclado
+  recomeça do topo da página. As peças da casa já fazem isso; layout escrito à
+  mão não.
 
-## What makes the product smart
+## O que deixa o produto esperto
 
-What separates a correct screen from a screen that is good to use is the work it
-saves. Before delivering, go through these eight questions.
+O que separa uma tela correta de uma tela boa de usar é o trabalho que ela
+poupa. Antes de entregar, passe por estas oito perguntas.
 
-| Question | What to do | Piece |
+| Pergunta | O que fazer | Peça |
 |---|---|---|
-| Can it fill itself in? | A CEP that brings the address, the amount that comes from the chosen service, today's date on the due date | `PostalCodeField`, `defaultValues` |
-| Can it remember? | The filter, column, view and tab the person chose come back on the next visit | `useLocalStorage` |
-| Is the default the most common one? | The field already comes with what 80% choose; the exception is what changes it | `defaultValue` |
-| Can one act without opening another screen? | Edit in place, act in bulk, see the detail in a sheet | `Editable`, `ActionBar`, `Sheet` |
-| Can it undo instead of confirming? | Do it right away and offer the way back in the toast | `useToast` with `actionProps` |
-| Do daily users have a shortcut? | Global search and the most used actions by keyboard, with the shortcut visible | `Command`, `useHotkeys`, `Kbd` |
-| Is what is rare out of the way? | Advanced options collapsed, and not mixed with the everyday ones | `Collapsible` |
-| Does the person know they finished? | Visible success, with what happened and the next step: "Nota 4816 emitida. Ver PDF" | `useToast`, `Alert` |
+| Dá para preencher sozinho? | CEP que traz o endereço, o valor que vem do serviço escolhido, a data de hoje no vencimento | `PostalCodeField`, `defaultValues` |
+| Dá para lembrar? | Filtro, coluna, visão e aba que a pessoa escolheu voltam na próxima visita | `useLocalStorage` |
+| O padrão é o mais comum? | O campo já vem com o que 80% escolhe; a exceção é que troca | `defaultValue` |
+| Dá para agir sem abrir outra tela? | Editar no lugar, agir em lote, ver o detalhe numa folha | `Editable`, `ActionBar`, `Sheet` |
+| Dá para desfazer em vez de confirmar? | Faz na hora e oferece a volta no aviso | `useToast` com `actionProps` |
+| Quem usa todo dia tem atalho? | Busca global e as ações mais usadas pelo teclado, com o atalho visível | `Command`, `useHotkeys`, `Kbd` |
+| O que é raro está fora do caminho? | Opções avançadas recolhidas, e não misturadas com as de todo dia | `Collapsible` |
+| A pessoa sabe que terminou? | Sucesso visível, com o que aconteceu e o próximo passo: "Nota 4816 emitida. Ver PDF" | `useToast`, `Alert` |
 
-A screen that answers "no" to almost all of them works, but charges the person
-for work the system could have done.
+Uma tela que responde "não" a quase todas funciona, mas cobra da pessoa o
+trabalho que o sistema podia ter feito.
 
-## Flow mistakes that always show up
+## Erros de fluxo que aparecem sempre
 
-- A confirmation on a reversible action, and none on the one that deletes.
-- A wizard used to make things fit, with no dependency between stages.
-- An error that clears the form.
-- `Toast` for what the person needs to read calmly.
-- A filter empty state offering "create", when whoever filtered wants the
-  filter back.
-- Two confirmations for the same action, one in the review and another in the
-  dialog.
-- A stage called "Passo 2", which is not a decision but a scroll.
-- Silent success: the action finished and nothing on the screen says it did.
-- A wizard for a registration that is just long, with no stage that depends on
-  the previous one.
-- Going back a wizard step and finding the fields empty.
-- A confirmation to delete what could have been undone.
-- A field the system already knew how to fill, left blank for the person.
+- Confirmação em ação reversível, e nenhuma na que apaga.
+- Wizard usado para caber, sem dependência entre as etapas.
+- Erro que limpa o formulário.
+- `Toast` para o que a pessoa precisa ler com calma.
+- Vazio de filtro oferecendo "criar", quando quem filtrou quer o filtro de volta.
+- Duas confirmações para a mesma ação, uma na revisão e outra no diálogo.
+- Etapa chamada "Passo 2", que não é uma decisão e sim uma rolagem.
+- Sucesso silencioso: a ação terminou e nada na tela diz que terminou.
+- Wizard para um cadastro que é só comprido, sem nenhuma etapa que dependa da
+  anterior.
+- Voltar um passo do wizard e encontrar os campos vazios.
+- Confirmação para excluir o que dava para desfazer.
+- Campo que o sistema já sabia preencher, deixado em branco para a pessoa.

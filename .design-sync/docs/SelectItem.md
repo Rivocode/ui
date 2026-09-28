@@ -1,11 +1,11 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # SelectItem
 
-An option in the list.
+Uma opção da lista.
 
-`value` is what comes back in `onValueChange`; the content is what the person
-reads. The checkmark has its own column, so short and long labels align on the
-same vertical line.
+O `value` é o que volta no `onValueChange`; o conteúdo é o que a pessoa lê. A
+marca de escolhido tem coluna própria, então rótulo curto e longo alinham pela
+mesma vertical.

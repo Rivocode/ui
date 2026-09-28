@@ -47,12 +47,9 @@ const SIGNATURE_NATIVE_FONT =
   Platform.select({ ios: "Snell Roundhand", android: "cursive", default: "cursive" }) ?? "cursive";
 
 export type SignatureExportOptions = {
-  /** The ink color. Without it, the `signature-ink` token, dark in both themes. */
+  /** A cor da tinta. Sem ela, a do token `signature-ink`, escura nos dois temas. */
   ink?: string;
-  /**
-   * The background: `true` paints the `signature-paper` token paper, a color
-   * paints that color, and without it the background is transparent.
-   */
+  /** O fundo: `true` pinta o papel do token `signature-paper`, uma cor pinta aquela cor, e sem ele sai transparente. */
   paper?: boolean | string;
 };
 
@@ -71,51 +68,44 @@ export function signatureToSvg(
 
 export type SignaturePadProps = {
   /**
-   * The signature, controlled: the strokes (`kind: "drawn"`) or the typed name
-   * (`kind: "typed"`). `null` is no signature. The same shape as the web.
+   * A assinatura, controlada: os tracos (`kind: "drawn"`) ou o nome digitado
+   * (`kind: "typed"`). `null` e sem assinatura. O mesmo formato do web.
    */
   value: SignatureValue | null;
-  /**
-   * Called at the end of each stroke, on each letter, on undo and on clear.
-   * Without it, the component only displays.
-   */
+  /** Chamado ao fim de cada traco, a cada letra, ao desfazer e ao limpar. Sem ele, a peca so exibe. */
   onValueChange?: (value: SignatureValue | null) => void;
   /**
-   * The name the screen reader hears on the group, before the summary of what
-   * is signed. Default `labels.group`. Inside `FormField`, it arrives on its
-   * own via `forValue`.
+   * O nome que o leitor de tela ouve no grupo, antes do resumo do que esta
+   * assinado. Padrao `labels.group`. Dentro do `FormField`, chega sozinho pelo
+   * `forValue`.
    */
   label?: string;
-  /**
-   * Locks the drawing, the name and the buttons. The layer fades, as everywhere
-   * in the native package.
-   */
+  /** Trava o desenho, o nome e os botoes. A camada esmaece, como em todo o pacote nativo. */
   disabled?: boolean;
-  /** Only displays the signature: no drawing, no buttons and no typing mode. */
+  /** So exibe a assinatura: sem desenho, sem botoes e sem o modo de digitar. */
   readOnly?: boolean;
-  /** The danger border. `FormField` shows the error below; turn it on together with it. */
+  /** A borda de perigo. O `FormField` mostra o erro embaixo; ligue junto com ele. */
   invalid?: boolean;
-  /** Width over height of the area. Default `3`, same as the web. */
+  /** Largura sobre altura da area. Padrao `3`, igual ao web. */
   ratio?: number;
   /**
-   * The cursive family for typing mode, already loaded in the app. Without it,
-   * the system cursive: Snell Roundhand on iOS, `cursive` on Android.
+   * A familia cursiva do modo de digitar, ja carregada no app. Sem ela, a
+   * cursiva do sistema: Snell Roundhand no iOS, `cursive` no Android.
    */
   font?: string;
-  /** Which mode the area opens in when empty. Default `draw`. */
+  /** Em que modo a area abre quando esta vazia. Padrao `draw`. */
   defaultMode?: "draw" | "type";
   /**
-   * Reports when the finger starts and ends a stroke. Wire it to the
-   * `scrollEnabled` of the surrounding `ScrollView` when the screen scrolls, so
-   * the stroke does not turn into a scroll.
+   * Avisa quando o dedo comeca e termina um traco. Ligue ao `scrollEnabled` da
+   * `ScrollView` em volta quando a tela rola, para o traco nao virar rolagem.
    */
   onDrawingChange?: (drawing: boolean) => void;
-  /** The component's texts, the same as the web. */
+  /** Os textos da peca, os mesmos do web. */
   labels?: Partial<SignaturePadLabels>;
   className?: string;
   /**
-   * Class per part: `pad` (the paper), `placeholder`, `actions` (the row of
-   * buttons) and `input` (the name field).
+   * Classe por parte: `pad` (o papel), `placeholder`, `actions` (a fileira dos
+   * botoes) e `input` (o campo do nome).
    */
   classNames?: Slots<"pad" | "placeholder" | "actions" | "input">;
 };

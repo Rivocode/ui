@@ -12,7 +12,7 @@ export function DescriptionList({ className, ...props }: DescriptionListProps) {
 
 export type DescriptionItemProps = Omit<ComponentProps<"div">, "children"> & {
   label: ReactNode;
-  /** The value. Text, `Badge`, money from `currencyShort` - whatever the row calls for. */
+  /** O valor. Texto, `Badge`, dinheiro do `currencyShort` - o que a linha pedir. */
   children: ReactNode;
 };
 

@@ -36,30 +36,30 @@ function CheckIcon({ variant }: { variant: ButtonVariant }) {
 }
 
 export type ClipboardProps = {
-  /** What goes to the clipboard. */
+  /** O que vai para a área de transferência. */
   value: string;
   /**
-   * The text beside the icon before copying, and the spoken name along with it.
-   * After copying, `labels.copied` replaces both, and the button never says one
-   * thing and announces another.
+   * O texto ao lado do ícone enquanto não copiou, e o nome falado junto com
+   * ele. Depois de copiar, `labels.copied` entra no lugar dos dois, e o botão
+   * nunca diz uma coisa e anuncia outra.
    */
   children?: string;
-  /** How long the confirmation stays on the button, in ms. */
+  /** Quanto tempo a confirmação fica no botão, em ms. */
   timeout?: number;
-  /** What the screen reader calls the button before and after copying. */
+  /** O que o leitor de tela chama o botão antes e depois de copiar. */
   labels?: { copy?: string; copied?: string };
-  /** Called after copying, for those who want to fire their own notice. */
+  /** Chamado depois de copiar, para quem quer disparar um aviso próprio. */
   onCopy?: (value: string) => void;
   /**
-   * The "Copiado" notice, on by default. Turn it off on a screen that copies
-   * several things in a row and does not want a stack of notices, or when the
-   * app itself already notifies another way.
+   * O aviso de "Copiado", ligado por padrão. Veja o comentário da peça.
+   * Desligue na tela que copia várias coisas seguidas e não quer uma pilha de
+   * avisos, ou quando o próprio app já avisa por outro caminho.
    */
   toast?: boolean;
   /**
-   * The button's look, with the same names and the same visuals as `Button`. On
-   * the filled ones (`primary` and `danger`) the confirmation check uses the
-   * label ink, because the success green does not read over their background.
+   * O desenho do botao, com os mesmos nomes e o mesmo visual do `Button`. Nos
+   * preenchidos (`primary` e `danger`) o visto da confirmacao usa a tinta
+   * do rotulo, porque o verde de sucesso nao se le sobre o fundo deles.
    */
   variant?: ButtonVariant;
   disabled?: boolean;

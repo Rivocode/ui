@@ -1,24 +1,24 @@
 # @rivocode/ui-mcp
 
-[MCP](https://modelcontextprotocol.io) server for RivoCode's design system.
-It gives an agent the catalog of `@rivocode/ui` and `@rivocode/ui-native`
-— the page of each piece, the props, the tokens, the React Native parity and
-the guides — through tools it calls in the middle of the work, instead of
-guessing the API from the name.
+Servidor [MCP](https://modelcontextprotocol.io) do design system da RivoCode.
+Ele entrega a um agent o catálogo do `@rivocode/ui` e do `@rivocode/ui-native`
+— a página de cada peça, as props, os tokens, a paridade com o React Native e
+os guias — por ferramentas que ele chama no meio do trabalho, em vez de
+adivinhar a API pelo nome.
 
-It runs on your machine, over stdio. There is no hosted server, and it opens no
-network connection: the documentation travels inside the package.
+Roda na sua máquina, pelo stdio. Não há servidor hospedado, e ele não abre
+conexão de rede: a documentação viaja dentro do pacote.
 
-## Installation
+## Instalação
 
-In Claude Code:
+No Claude Code:
 
 ```bash
 claude mcp add rivocode-ui -- npx -y @rivocode/ui-mcp
 ```
 
-In any client that reads its configuration as JSON (Claude Desktop, Cursor,
-Windsurf, VS Code and the like):
+Em qualquer cliente que leia a configuração em JSON (Claude Desktop, Cursor,
+Windsurf, VS Code e afins):
 
 ```json
 {
@@ -31,39 +31,39 @@ Windsurf, VS Code and the like):
 }
 ```
 
-Requires Node 20 or newer.
+Precisa de Node 20 ou mais novo.
 
-## Which documentation it serves
+## Que documentação ele serve
 
-**The one from the design system version the package was generated from.** The
-`@rivocode/ui-mcp` 0.6.0 was generated from the documentation of
-**`@rivocode/ui` 1.0.0** and **`@rivocode/ui-native` 1.0.0**. Every answer ends
-by saying so, and the server repeats it on stderr when it starts.
+**A da versão do design system em que o pacote foi gerado.** O `@rivocode/ui-mcp`
+0.6.0 foi gerado da documentação do **`@rivocode/ui` 1.0.0** e do
+**`@rivocode/ui-native` 1.0.0**. Toda resposta termina dizendo isso, e o
+servidor repete no stderr ao subir.
 
-The content is produced at build time from the same source that the site
-[ds.rivocode.com.br](https://ds.rivocode.com.br) publishes: the piece pages, the
-props table extracted from the compiler, the parity table checked against the
-native package, the conventions, the skill and the tokens as DTCG JSON. If the
-project uses a newer version of the library than the one cited above, the piece
-page on the site is the reference.
+O conteúdo sai no build da mesma fonte que o site
+[ds.rivocode.com.br](https://ds.rivocode.com.br) publica: as páginas de peça, a
+tabela de props extraída do compilador, a tabela de paridade conferida contra o
+pacote nativo, as convenções, a skill e os tokens em JSON DTCG. Se o projeto usa
+uma versão mais nova da biblioteca do que a citada acima, a página da peça no
+site é a referência.
 
-## Tools
+## Ferramentas
 
-| Tool | What it returns |
+| Ferramenta | O que devolve |
 | --- | --- |
-| `list_components` | The catalog by family, one line per piece, with the parts and the state on React Native. Filters by `family`. |
-| `get_component` | The whole page of a piece: import, examples that run, props, parts, "When not to use" and React Native. Accepts `DataTable`, `data-table` or a part, such as `CardHeader`. |
-| `search_docs` | Full-text search over all the documentation, ignoring accents and case, with the matching snippets. |
-| `recommend_component` | Given an interface intent in free text, the candidate pieces in order, with the reason: the row of the house choice table, the piece description and the "When not to use" of each one, plus the neighbors it names. `platform: "native"` says how each one looks on a phone. |
-| `get_tokens` | Color roles in both themes, scales, density and motion. With `file`, the raw DTCG 2025.10 JSON. |
-| `get_native_parity` | The parity row (translates, becomes another piece, does not port), the React Native section of the page, each prop that changes in the call and the props of the native piece. |
-| `get_guide` | A whole guide: conventions, installation, themes, tokens, density, icons, React Native, AI and agents, and the skill references (method, flow, text, layout, design, choosing a piece, accessibility, forms, charts). Without `name`, lists the guides. |
-| `audit_screen` | Audits screen files (path and text) against the house rules and returns the report with a deterministic score from 0 to 100. With `package_jsons` (the manifests from the one nearest the screen to the monorepo root, which add up) or `package_json` (a single one), it checks the peers; with `findings` and `dismissals`, it brings the agent's judgment into the same math. It is the audit of the `rivocode-ui-audit` skill. |
+| `list_components` | O catálogo por família, uma linha por peça, com as partes e o estado no React Native. Filtra por `family`. |
+| `get_component` | A página inteira de uma peça: importação, exemplos que rodam, props, partes, "Quando não usar" e React Native. Aceita `DataTable`, `data-table` ou uma parte, como `CardHeader`. |
+| `search_docs` | Busca textual em toda a documentação, sem acento e sem caixa, com os trechos que casaram. |
+| `recommend_component` | Dada uma intenção de interface em texto livre, as peças candidatas em ordem, com o motivo: a linha da tabela de escolha da casa, a descrição da peça e o "Quando não usar" de cada uma, mais as vizinhas que ele nomeia. `platform: "native"` diz como cada uma fica no celular. |
+| `get_tokens` | Papéis de cor nos dois temas, escalas, densidade e movimento. Com `file`, o JSON DTCG 2025.10 cru. |
+| `get_native_parity` | A linha de paridade (traduz, vira outra, não porta), a seção React Native da página, cada prop que muda na chamada e as props da peça nativa. |
+| `get_guide` | Um guia inteiro: convenções, instalação, temas, tokens, densidade, ícones, React Native, IA e agents, e as referências da skill (método, fluxo, texto, layout, design, escolha de peça, acessibilidade, formulários, gráficos). Sem `name`, lista os guias. |
+| `audit_screen` | Audita arquivos de tela (caminho e texto) contra as regras da casa e devolve o relatório com nota de 0 a 100, determinística. Com `package_jsons` (os manifestos do mais perto da tela ao da raiz do monorepo, que somam) ou `package_json` (um só), confere os peers; com `findings` e `dismissals`, leva o julgamento do agent para a mesma conta. É a auditoria da skill `rivocode-ui-audit`. |
 
-Each page is also served as an MCP resource: `rivocode://docs/componentes/<piece>.md`,
-`rivocode://docs/<guide>.md`, `rivocode://docs/skill/...` and
-`rivocode://tokens/<file>.tokens.json`.
+Cada página também sai como resource MCP: `rivocode://docs/componentes/<peça>.md`,
+`rivocode://docs/<guia>.md`, `rivocode://docs/skill/...` e
+`rivocode://tokens/<arquivo>.tokens.json`.
 
-## License
+## Licença
 
 MIT.

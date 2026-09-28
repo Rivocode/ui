@@ -1,11 +1,12 @@
 ---
-category: Charts
+category: Gráfico
 ---
 
 # ChartTreemap
 
-A rectangle split into areas proportional to the value of each category: the
-month's revenue per service-list item, storage per file type.
+Um retângulo repartido em áreas proporcionais ao valor de cada categoria: o
+faturamento do mês por item da lista de serviço, o armazenamento por tipo de
+arquivo.
 
 ```tsx
 <ChartTreemap
@@ -19,73 +20,67 @@ month's revenue per service-list item, storage per file type.
 />
 ```
 
-The area comes from an algorithm of nearly square rectangles (the *squarified*
-one by Bruls, Huizing and van Wijk), which is what makes it possible to compare
-size by eye. The `config` is the same as the donut's: a readable name and a
-color per category, and without a color each one takes the next in the
-palette, in the order of `data`. **The height is yours, by class**: without it,
-`h-64`.
+A área sai de um algoritmo de retângulos quase quadrados (o *squarified* de
+Bruls, Huizing e van Wijk), que é o que deixa comparar tamanho a olho. O
+`config` é o mesmo da rosca: nome legível e cor por categoria, e sem cor cada
+uma pega a próxima da paleta, na ordem de `data`. **A altura é sua, por classe**:
+sem ela, `h-64`.
 
-## The label disappears when it does not fit
+## O rótulo some quando não cabe
 
-Each rectangle writes the name and the value when both fit, only the name when
-only one line fits, and **nothing** when not even the whole name fits. There
-are no ellipses: "Retenç…" in a forty-pixel rectangle does not say which
-category it is, and takes up the space that would let the rectangle read as
-small, which is the right information. The math uses the box's real
-measurement, and before the box is measured no label is drawn, instead of
-guessing.
+Cada retângulo escreve o nome e o valor quando cabem os dois, só o nome quando
+só cabe uma linha, e **nada** quando nem o nome cabe inteiro. Não há reticências:
+"Retenç…" num retângulo de quarenta pixels não diz qual categoria é, e ocupa o
+lugar que faria o retângulo se ler como pequeno, que é a informação certa. A
+conta usa a medida real da caixa, e antes de a caixa ser medida nenhum rótulo é
+desenhado, em vez de adivinhar.
 
-What disappears from the drawing remains in three places: in the tooltip, which
-the pointer opens over any rectangle; on the keyboard, because the map is a
-single Tab stop and the arrows move through the categories from top to bottom;
-and in a visually hidden list, with each one's name, value and share, which is
-what the screen reader reads. A category with zero, which gets no area at all,
-is in it too.
+O que some do desenho continua em três lugares: na dica, que o ponteiro abre
+sobre qualquer retângulo; no teclado, porque o mapa é uma parada só no Tab e as
+setas percorrem as categorias de cima para baixo; e numa lista escondida da
+vista, com nome, valor e fatia de cada uma, que é o que o leitor de tela lê.
+Categoria com zero, que não ganha área nenhuma, também está nela.
 
-## Colors and contrast
+## As cores e o contraste
 
-The rectangle is the category color at 30% over the background, with an
-outline in the full color, and the label is written in `fg` on top. It is not
-the full color with light text, and the reason is measured: the light theme's
-dark lime with white text gives 4.10:1, below the 4.5 for text. With the 30%
-tint, the worst pair among the eight series colors in both themes is 6.77:1,
-and the contrast guard measures all sixteen on every commit. A color written by
-hand in the `config` does not enter that measurement.
+O retângulo é a cor da categoria a 30% sobre o fundo, com um contorno na cor
+cheia, e o rótulo é escrito em `fg` por cima. Não é a cor cheia com texto claro,
+e a razão é medida: a lima escura do tema claro com texto branco dá 4,10:1,
+abaixo dos 4,5 de texto. Na tinta a 30%, o pior par das oito cores de série
+nos dois temas é 6,77:1, e a guarda de contraste mede os dezesseis a cada
+commit. Cor escrita à mão no `config` não entra nessa medida.
 
-## Motion
+## Movimento
 
-The map fades in, and when the data changes each rectangle moves to its new
-position and size in `--rc-duration-slow`. With "reduce motion", the change is
-abrupt.
+O mapa entra esmaecendo, e quando os dados mudam cada retângulo anda até a
+posição e o tamanho novos em `--rc-duration-slow`. Com "reduzir movimento", a
+troca é seca.
 
-## No data
+## Sem dado
 
-`empty` is the same object as in `ChartContainer` and `DataTable`: `title`, a
-required `description`, optional `action` and `icon`. It shows up in place of
-the drawing when the list comes empty or the sum is zero. Without it, the map keeps an empty frame, and the screen reader list keeps stating each category.
+`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
+`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
+desenho quando a lista vem vazia ou a soma dá zero. Sem ele, o mapa fica com a moldura vazia, e a lista do leitor de tela continua dizendo cada categoria.
 
-## Right to left
+## Direita para a esquerda
 
-In `rtl` the boxes mirror: the largest category opens on the right, and the
-arrow that moves forward (the left one) goes to the box that is on the left of
-the screen. Before, the drawing stayed in `ltr` order and the arrow moved
-against the eye.
+No `rtl` as caixas se espelham: a maior categoria abre à direita, e a seta que
+anda para a frente (a da esquerda) vai para a caixa que está à esquerda na tela.
+Antes o desenho ficava na ordem do `ltr` e a seta andava ao contrário do olho.
 
 
-Up to six categories, `ChartDonut` answers the same question with a total in
-the middle and a legend that never disappears. When the exact number matters
-more than the proportion, a horizontal bar: comparing area is less precise than
-comparing length. And when the hierarchy is for **navigating**, opening a
-folder and seeing what is inside, it is `Tree`: the treemap shows a single
-level, and is not clickable.
+Até seis categorias, o `ChartDonut` responde a mesma pergunta com um total no
+meio e uma legenda que nunca some. Quando o número exato importa mais que a
+proporção, barra deitada: comparar área é menos preciso que comparar
+comprimento. E quando a hierarquia é para **navegar**, abrir uma pasta e ver o
+que tem dentro, é o `Tree`: o treemap mostra um nível só, e não é clicável.
 
-## In React Native
+## No React Native
 
-Translates, in `@rivocode/ui-native/chart`, with the same props: `valueKey`, `nameKey`, `config`, `format`. The geometry is the same function as the web (the *squarified* one, generated in `native/src/shared/`), and so is the label rule: name and value when both fit, only the name when one line fits, nothing when not even the name fits, and nothing before `onLayout` measures the box. The 30% ink with `fg` on top is the same, and the sixteen pairs are in the native contrast map.
+Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, `config`, `format`. A geometria é a mesma função do web (o *squarified*, gerado em `native/src/shared/`), e a regra do rótulo também: nome e valor quando cabem os dois, só o nome quando cabe uma linha, nada quando nem o nome cabe, e nada antes do `onLayout` medir a caixa. A tinta a 30% com `fg` por cima é a mesma, e os dezesseis pares estão no mapa de contraste do nativo.
 
-One type change: `config.color` is a token role, as in the whole family.
+Uma mudança de tipo: o `config.color` é papel de token, como em toda a família.
 
-**What changes is how a category is read.** Here there are few (beyond a dozen the treemap stops informing), and few categories become few stops: each rectangle is a button with name, value and share, the donut legend's decision and not the `Tracker`'s. Tapping lights the outline and writes the reading below, in place of the web's tooltip; tapping again clears it. That is why there is no `label`: the web uses it to name the group and the hidden list, and on the phone neither exists. The card's title plays that role.
+**O que muda é como se lê uma categoria.** Aqui são poucas (acima de uma dúzia o treemap para de informar), e poucas categorias viram poucas paradas: cada retângulo é um botão com nome, valor e fatia, a decisão da legenda da rosca e não a do `Tracker`. Tocar acende o contorno e escreve a leitura embaixo, no lugar da dica do web; tocar de novo apaga. Por isso não há `label`: o web o usa para nomear o grupo e a lista escondida, e no celular nem um nem outro existe. O título do cartão faz esse papel.
 
-The parts are styled through the same `classNames` as the web: `cell`, each category's block, and `label`, the name and value inside it. With `empty` (the `ChartContainer` format), an empty list or a zero sum shows the empty state in place of the blocks.
+As partes vestem pelo mesmo `classNames` do web: `cell`, o bloco de cada categoria, e `label`, o nome e o valor dentro dele. Com `empty` (o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar dos blocos.

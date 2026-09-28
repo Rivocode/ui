@@ -6,7 +6,7 @@ import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
 
 export type ScrollAreaProps = ComponentProps<typeof BaseScrollArea.Root> & {
-  /** Sideways scrolling too. Use with a table and with a row of cards. */
+  /** Rolagem de lado tambem. Use com tabela e com fila de cartoes. */
   horizontal?: boolean;
 };
 

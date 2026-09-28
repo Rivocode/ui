@@ -1,4 +1,4 @@
-/* Generated from src/shared/questionnaire.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/questionnaire.ts por bun run gen:compartilhado. Nao editar. */
 
 export type QuestionnaireItemStatus = "unanswered" | "answered" | "skipped";
 
@@ -7,19 +7,19 @@ export type QuestionnaireAnswers = Record<string, string | string[]>;
 export type QuestionnaireShortcuts = "letters" | "numbers";
 
 export type QuestionnaireLabels = {
-  /** The top sentence: receives the position, counting from one, and the total. */
+  /** A frase de cima: recebe a posicao, contando de um, e o total. */
   progress: (current: number, total: number) => string;
   previous: string;
   skip: string;
   next: string;
   submit: string;
-  /** The error for a required question with no answer. */
+  /** O erro da pergunta obrigatoria sem resposta. */
   required: string;
-  /** The error for an optional question that was neither answered nor skipped. */
+  /** O erro da pergunta opcional que nao foi respondida nem pulada. */
   unanswered: string;
-  /** The spoken name of the free field that sits beside the options. */
+  /** O nome falado do campo livre que fica ao lado das opcoes. */
   other: string;
-  /** The mark beside the title of a question that can be skipped. */
+  /** A marca ao lado do titulo da pergunta que aceita pular. */
   optional: string;
 };
 

@@ -32,34 +32,34 @@ const LABELS: CarouselLabels = {
 };
 
 export type CarouselProps<Item> = {
-  /** The carousel name, required: the screen reader announces it on entering the row. */
+  /** O nome do carrossel, obrigatorio: o leitor de tela o anuncia ao entrar na fileira. */
   label: string;
   items: Item[];
   renderItem: (item: Item, index: number) => ReactNode;
   keyExtractor?: (item: Item, index: number) => string;
-  /** The front slide, counting from zero. Controlled, like everything in native. */
+  /** O slide da frente, contando de zero. Controlado, como tudo no nativo. */
   index: number;
-  /** Called by the buttons, the dots and the drag, when scrolling settles. */
+  /** Chamado pelos botoes, pelos pontos e pelo arrasto, quando a rolagem assenta. */
   onIndexChange: (index: number) => void;
   /**
-   * How many slides fit side by side. With one, the row pages by the full width
-   * (`pagingEnabled`); with more, it snaps slide by slide.
+   * Quantos slides cabem lado a lado. Com um, a fileira pagina pela largura
+   * inteira (`pagingEnabled`); com mais, assenta de slide em slide.
    */
   slidesPerView?: number;
-  /** The gap between slides, in points: 0, 8, 12 or 16. */
+  /** O vao entre os slides, em pontos: 0, 8, 12 ou 16. */
   gap?: "none" | "sm" | "md" | "lg";
-  /** The previous and next buttons, below the row. On by default. */
+  /** Os botoes anterior e proximo, embaixo da fileira. Ligados por padrao. */
   controls?: boolean;
-  /** One dot per position instead of the "2 de 5" counter. Off by default. */
+  /** Um ponto por posicao no lugar do contador "2 de 5". Desligados por padrao. */
   indicators?: boolean;
-  /** From the last one, next goes back to the first, and vice versa. */
+  /** Do ultimo, o proximo volta ao primeiro, e vice-versa. */
   loop?: boolean;
   labels?: Partial<CarouselLabels>;
   className?: string;
   /**
-   * Class per part: `viewport` (the scrolling window), `slide`, `footer` (the
-   * row below), `previous`, `next`, `indicators` and `indicator` (each tappable
-   * dot).
+   * Classe por parte: `viewport` (a janela que rola), `slide`, `footer` (a
+   * fileira embaixo), `previous`, `next`, `indicators` e `indicator` (cada
+   * ponto tocavel).
    */
   classNames?: Slots<
     "viewport" | "slide" | "footer" | "previous" | "next" | "indicators" | "indicator"

@@ -249,63 +249,60 @@ export type RichTextEditorProps = Omit<
   "defaultValue" | "onChange" | "onFocus" | "onBlur" | "children" | "placeholder" | "dir"
 > & {
   /**
-   * The content, in HTML, when the consumer keeps the text. It is the same format that
-   * `onValueChange` returns, and what `RichTextView` displays. Changing the value
-   * from outside replaces the document without firing `onValueChange`.
+   * O conteudo, em HTML, quando quem usa guarda o texto. E o mesmo formato que
+   * o `onValueChange` devolve, e o que o `RichTextView` exibe. Trocar o valor
+   * por fora substitui o documento sem disparar `onValueChange`.
    */
   value?: string;
-  /** The HTML of the first render, when the piece keeps its own text. */
+  /** O HTML do primeiro desenho, quando a peca guarda o proprio texto. */
   defaultValue?: string;
   /**
-   * Notified on every change, with the whole document in HTML. A blank editor
-   * hands over an empty string, and not `<p></p>`: it is what lets `z.string().min(1)`
-   * refuse the empty field.
+   * Avisado a cada mudanca, com o documento inteiro em HTML. O editor em
+   * branco entrega string vazia, e nao `<p></p>`: e o que deixa `z.string().min(1)`
+   * recusar o campo vazio.
    */
   onValueChange?: (value: string) => void;
   /**
-   * Notified on every change with the document in JSON, the Tiptap format. Store
-   * this one when the text will be displayed on the server or on the phone:
-   * `RichTextView` reads both formats.
+   * Avisado a cada mudanca com o documento em JSON, o formato do Tiptap. Guarde
+   * este quando o texto for exibido no servidor ou no celular: o
+   * `RichTextView` le os dois formatos.
    */
   onJsonChange?: (value: RichTextJson) => void;
-  /** Called when the text gains focus. */
+  /** Chamado quando o texto ganha foco. */
   onFocus?: () => void;
-  /** Called when the text loses focus; it is what marks the field as touched in the form. */
+  /** Chamado quando o texto perde foco; e o que marca o campo como tocado no formulario. */
   onBlur?: () => void;
-  /**
-   * The text that appears in the empty editor. Does not replace the label: use `FieldLabel` or
-   * `aria-label`.
-   */
+  /** O texto que aparece no editor vazio. Nao substitui o rotulo: use `FieldLabel` ou `aria-label`. */
   placeholder?: string;
   /**
-   * Read only: the text can be selected and copied, and the
-   * toolbar disappears. To display what was saved outside a form,
-   * `RichTextView` is lighter.
+   * So leitura: o texto pode ser selecionado e copiado, e a barra de
+   * ferramentas some. Para exibir o que foi salvo fora de um formulario, o
+   * `RichTextView` e mais leve.
    */
   readOnly?: boolean;
-  /** Locks the text and the toolbar. Inside a disabled `Field`, it locks by itself. */
+  /** Trava o texto e a barra. Dentro de um `Field` desabilitado, trava sozinho. */
   disabled?: boolean;
   /**
-   * Paints the frame in danger and announces `aria-invalid`. Inside a `Field`
-   * with `invalid`, or a `FormField` with an error, it turns on by itself.
+   * Pinta a moldura de perigo e anuncia `aria-invalid`. Dentro de um `Field`
+   * com `invalid`, ou de um `FormField` com erro, liga sozinho.
    */
   invalid?: boolean;
   /**
-   * The cap of text characters, not counting the HTML markup. Turns on the
-   * counter in the footer, and the editor refuses typing and pasting that go past
-   * it. Saved content bigger than the cap opens whole, and only accepts deleting.
+   * O teto de caracteres de texto, sem contar as marcas do HTML. Liga o
+   * contador no rodape, e o editor recusa a digitacao e a colagem que passam
+   * dele. Conteudo salvo maior que o teto abre inteiro, e so aceita apagar.
    */
   maxLength?: number;
-  /** The field's name when the form submits: the HTML goes in a hidden `input`. */
+  /** O nome do campo no envio do formulario: o HTML sai num `input` escondido. */
   name?: string;
   /**
-   * The texts of the toolbar, the link panel and the counter, in Portuguese by
-   * default. Pass only the ones that change: `{ bold: "Bold", count: (n, max) => ... }`.
-   * `count` is what the screen reader hears about the counter, and `limit` the warning
-   * on hitting the cap.
+   * Os textos da barra, do painel de link e do contador, em portugues por
+   * padrao. Passe so os que mudam: `{ bold: "Bold", count: (n, max) => ... }`.
+   * `count` e o que o leitor de tela ouve sobre o contador, e `limit` o aviso
+   * ao bater no teto.
    */
   labels?: Partial<Labels>;
-  /** Class per part: `toolbar`, `content`, `footer`, `count`. */
+  /** Classe por parte: `toolbar`, `content`, `footer`, `count`. */
   classNames?: Slots<"toolbar" | "content" | "footer" | "count">;
   ref?: Ref<HTMLDivElement>;
 };

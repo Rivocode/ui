@@ -20,45 +20,44 @@ const LABELS: AppShellLabels = {
 };
 
 export type AppShellProps = Omit<SidebarProviderProps, "children"> & {
-  /** The page that is open. Goes inside `<main>`, which is the skip link's target. */
+  /** A pagina que esta aberta. Vai dentro do `<main>`, que e o alvo do link de pular. */
   children: ReactNode;
   /**
-   * What lives in the fixed header: brand, search, bell, account menu. The
-   * button that opens and closes the sidebar comes in on its own at the front, when there is
-   * a `sidebar`. Rendered in a `<header>`, which the screen reader announces as a banner.
+   * O que mora no cabecalho fixo: marca, busca, sininho, menu da conta. O
+   * botao que abre e fecha a barra lateral entra sozinho na frente, quando ha
+   * `sidebar`. Sai num `<header>`, que o leitor de tela anuncia como banner.
    */
   header?: ReactNode;
   /**
-   * The inside of the sidebar: `SidebarHeader`, `SidebarContent`,
-   * `SidebarFooter` and the rest of the `Sidebar` family. The shell wraps it in a
-   * `<nav>` and in the house `Sidebar`, which collapses on desktop and becomes a sheet on the
-   * phone.
+   * O miolo da barra lateral: `SidebarHeader`, `SidebarContent`,
+   * `SidebarFooter` e o resto da familia do `Sidebar`. A casca embrulha num
+   * `<nav>` e no `Sidebar` da casa, que encolhe na mesa e vira folha no celular.
    */
   sidebar?: ReactNode;
-  /** Which side the sidebar lives on. */
+  /** De que lado mora a barra lateral. */
   sidebarSide?: "left" | "right";
   /**
-   * Column beside the content: help, summary, recent activity. Rendered in an
-   * `<aside>`, on the right from `lg` up and below the content before that.
+   * Coluna ao lado do conteudo: ajuda, resumo, atividade recente. Sai num
+   * `<aside>`, a direita a partir de `lg` e embaixo do conteudo antes disso.
    */
   aside?: ReactNode;
-  /** The application footer, below the content. Rendered in a `<footer>`. */
+  /** O rodape da aplicacao, embaixo do conteudo. Sai num `<footer>`. */
   footer?: ReactNode;
   /**
-   * Puts the content in a house `Container`, with its max width and
-   * side padding plus the panel's top and bottom padding. `true` uses `lg`;
-   * a size picks another. Without it, the content touches the edges.
+   * Poe o conteudo num `Container` da casa, com a largura maxima e o respiro
+   * lateral dele e o respiro de cima e de baixo do painel. `true` usa o `lg`;
+   * um tamanho escolhe outro. Sem ele, o conteudo encosta nas bordas.
    */
   container?: boolean | ContainerProps["size"];
   /**
-   * Fills the parent's box instead of the window: the sidebar and the content
-   * column start scrolling internally. For a shell inside a panel, a
-   * `Splitter` or a documentation example.
+   * Ocupa a caixa do pai em vez da janela: a barra lateral e a coluna de
+   * conteudo passam a rolar por dentro. Para shell dentro de um painel, de um
+   * `Splitter` ou de um exemplo de documentacao.
    */
   contained?: boolean;
-  /** The `id` of `<main>`, the skip link's target. Without it, a generated one. */
+  /** O `id` do `<main>`, alvo do link de pular. Sem ele, um gerado. */
   mainId?: string;
-  /** The skip link's texts and the region names the screen reader announces. */
+  /** Os textos do link de pular e os nomes das regioes que o leitor de tela anuncia. */
   labels?: Partial<AppShellLabels>;
   classNames?: Slots<
     "skipLink" | "sidebar" | "column" | "header" | "body" | "main" | "aside" | "footer"

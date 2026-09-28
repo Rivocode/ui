@@ -1,4 +1,4 @@
-/* Generated from src/shared/selection.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/selection.ts por bun run gen:compartilhado. Nao editar. */
 
 export function selectedLabel(count: number): string {
   if (count === 1) return "1 selecionado";

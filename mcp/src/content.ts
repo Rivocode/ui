@@ -1,68 +1,68 @@
 export type ComponentEntry = {
-  /** The name the package exports, such as `DataTable`. */
+  /** O nome exportado pelo pacote, como `DataTable`. */
   name: string;
-  /** The kebab name, the same as the site address `/componentes/<slug>.md`. */
+  /** O nome em kebab, o mesmo do endereco `/componentes/<slug>.md` do site. */
   slug: string;
-  /** The catalog family, read from the page frontmatter. */
+  /** A familia do catalogo, lida do frontmatter da pagina. */
   family: string;
-  /** The first sentence of the page, without markup. */
+  /** A primeira frase da pagina, sem marcacao. */
   summary: string;
-  /** The parts that only exist inside this piece, such as `CardHeader` in `Card`. */
+  /** As partes que so existem dentro desta peca, como `CardHeader` no `Card`. */
   parts: string[];
 };
 
 export type Choice = {
-  /** The situation, as the choice table writes it. */
+  /** A situacao, como a tabela de escolha a escreve. */
   situation: string;
-  /** The pieces named in the right-piece column, in the order they appear. */
+  /** As pecas citadas na coluna da peca certa, na ordem em que aparecem. */
   pieces: string[];
-  /** The why column, raw. */
+  /** A coluna do porque, crua. */
   why: string;
 };
 
 export type ParityRow = {
-  /** The middle cell of the parity table, such as `✔ translates` or `✕ does not port`. */
+  /** A celula do meio da tabela de paridade, como `✔ traduz` ou `✕ não porta`. */
   state: string;
-  /** The table note, on one line. */
+  /** A nota da tabela, em uma linha. */
   note: string;
 };
 
 export type NativeProp = { name: string; type: string; required: boolean };
 
 export type Guide = {
-  /** The name `get_guide` accepts. */
+  /** O nome que `get_guide` aceita. */
   slug: string;
-  /** The published title. */
+  /** O titulo publicado. */
   title: string;
-  /** One line about the guide. */
+  /** Uma linha sobre o guia. */
   summary: string;
-  /** The path inside `files`. */
+  /** O caminho dentro de `files`. */
   path: string;
 };
 
 export type Content = {
-  /** The versions of both packages whose documentation was bundled. */
+  /** As versoes dos dois pacotes cuja documentacao foi empacotada. */
   generatedFrom: { web: string; native: string };
-  /** Every markdown file the site serves to agents, by path. */
+  /** Todo markdown que o site entrega a agents, por caminho. */
   files: Record<string, string>;
-  /** The catalog pieces, without the parts. */
+  /** As pecas do catalogo, sem as partes. */
   components: ComponentEntry[];
-  /** Each part and the piece that contains it. */
+  /** Cada parte e a peca que a compoe. */
   parts: Record<string, string>;
-  /** The "When not to use" section of each piece that has one. */
+  /** A secao "Quando nao usar" de cada peca que tem uma. */
   avoid: Record<string, string>;
-  /** The choice table of `reference/components.md`, row by row. */
+  /** A tabela de escolha de `reference/components.md`, linha a linha. */
   choices: Choice[];
-  /** The React Native parity row of each piece. */
+  /** A linha de paridade com o React Native de cada peca. */
   parity: Record<string, ParityRow>;
-  /** The header of the native signature table. */
+  /** O cabecalho da tabela de assinatura nativa. */
   signatureHeader: string;
-  /** The rows of the native signature table, by web piece. */
+  /** As linhas da tabela de assinatura nativa, por peca do web. */
   signature: Record<string, string[]>;
-  /** The props of each piece of the native package. */
+  /** As props de cada peca do pacote nativo. */
   nativeProps: Record<string, { entry: string; props: NativeProp[] }>;
-  /** The DTCG files of the house tokens, by name. */
+  /** Os arquivos DTCG dos tokens da casa, por nome. */
   tokens: Record<string, unknown>;
-  /** The guides `get_guide` serves. */
+  /** Os guias que `get_guide` serve. */
   guides: Guide[];
 };

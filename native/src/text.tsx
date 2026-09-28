@@ -51,33 +51,33 @@ const WEIGHT: Record<TextWeight, string> = {
 
 export type TextProps = NativeTextProps & {
   /**
-   * Which of the provider's three families styles this text: `sans` for running
-   * text, `display` for headings, `mono` where fixed width aligns a column. The
-   * caller's style still wins, because it comes after.
+   * Qual das tres familias do provider veste este texto: `sans` no corrido,
+   * `display` no titulo, `mono` onde a largura fixa alinha coluna. O estilo de
+   * quem chama continua vencendo, porque entra depois.
    */
   font?: RivoFontRole;
   /**
-   * The body size on the house scale, from `xs` (12px) to `lg` (18px); above
-   * that is `Heading`. Without it, a `Text` inside another `Text` inherits the
-   * outer one's size, and the outer one stays at the device default.
+   * O corpo na escala da casa, de `xs` (12px) a `lg` (18px); acima disso e o
+   * `Heading`. Sem ele, o `Text` dentro de outro `Text` herda o corpo do de
+   * fora, e o de fora fica no padrao do aparelho.
    */
   size?: TextSize;
   /**
-   * The color role, the same eight as the web. Without it, a nested `Text`
-   * inherits the outer one's color; at the top, pass the tone, because React
-   * Native does not inherit color from `View`.
+   * O papel de cor, os mesmos oito do web. Sem ele, o `Text` aninhado herda a
+   * cor do de fora; no topo, passe o tom, porque o React Native nao herda cor
+   * de `View`.
    */
   tone?: TextTone;
   /**
-   * The font weight, read from the theme weight tokens: `regular` is
-   * `--rc-weight-regular`, `medium` is `--rc-weight-medium`, `semibold` is
-   * `--rc-weight-strong` and `bold` is `--rc-weight-bold`. Without it, it
-   * inherits, like size and color.
+   * O peso da letra, lido dos tokens de peso do tema: `regular` e
+   * `--rc-weight-regular`, `medium` e `--rc-weight-medium`, `semibold` e
+   * `--rc-weight-strong` e `bold` e `--rc-weight-bold`. Sem ele herda, como o
+   * corpo e a cor.
    */
   weight?: TextWeight;
-  /** Truncates to one line with an ellipsis at the end. */
+  /** Corta em uma linha com reticencias no fim. */
   truncate?: boolean;
-  /** Truncates after that many lines, from 1 to 6. Wins over `truncate` and `numberOfLines`. */
+  /** Corta depois de tantas linhas, de 1 a 6. Vence o `truncate` e o `numberOfLines`. */
   lineClamp?: 1 | 2 | 3 | 4 | 5 | 6;
 };
 
@@ -113,7 +113,7 @@ export function Text({
 }
 
 export type TextInputProps = NativeTextInputProps & {
-  /** The provider family that styles what is typed. */
+  /** A familia do provider que veste o que se digita. */
   font?: RivoFontRole;
   ref?: Ref<NativeTextInput>;
 };

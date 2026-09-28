@@ -1,6 +1,6 @@
 import { ContextMenu, ContextMenuTrigger, MenuContent, MenuItem, MenuSeparator } from '@rivocode/ui'
 
-/** On a table row */
+/** Na linha da tabela */
 export function InATableRow() {
   return (
     <ContextMenu>

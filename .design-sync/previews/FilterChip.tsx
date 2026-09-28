@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FilterChip } from '@rivocode/ui'
 
-/** Default */
+/** Padrão */
 export function Default() {
   const [applied, setApplied] = useState(true)
 
@@ -12,12 +12,12 @@ export function Default() {
   )
 }
 
-/** No close button, because the app locks it */
+/** Sem xis, porque o app trava */
 export function Locked() {
   return <FilterChip label="Filial" value="Matriz" />
 }
 
-/** The value that does not fit */
+/** O valor que não cabe */
 export function LongValue() {
   return (
     <div className="w-72">
@@ -30,7 +30,7 @@ export function LongValue() {
   )
 }
 
-/** The two heights */
+/** As duas alturas */
 export function Sizes() {
   return (
     <div className="flex items-center gap-2">

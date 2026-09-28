@@ -1,15 +1,15 @@
 ---
-category: Charts
+category: Gráfico
 ---
 
 # ChartTooltipContent
 
-The tooltip that follows the pointer, dressed in our tokens. It goes in the
-`content` of `ChartTooltip`.
+A dica que segue o ponteiro, vestida com os nossos tokens. Entra no `content`
+do `ChartTooltip`.
 
-It replaces the Recharts tooltip entirely, instead of painting over it: the
-original ships with a white background and a gray border written as inline
-styles, and no class can fix an inline style; in the dark theme it becomes a
-white rectangle in the middle of the chart.
+Ela substitui a dica da Recharts inteira, em vez de pintar por cima: a original
+sai com fundo branco e borda cinza escritos em estilo embutido, e não ha classe
+que corrija estilo embutido, no tema escuro ela vira um retangulo branco no
+meio do gráfico.
 
-`formatValue` formats the number; use it for money and percentages.
+`formatValue` formata o número; use para dinheiro e porcentagem.

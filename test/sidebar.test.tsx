@@ -46,36 +46,36 @@ function sidebar(defaultOpen: boolean) {
   );
 }
 
-test("open, the bar shows the name of each destination", () => {
+test("aberta, a barra mostra o nome de cada destino", () => {
   sidebar(true);
 
   expect(screen.getByText("Painel")).toBeDefined();
   expect(screen.getByText("Cadastros")).toBeDefined();
-  // An open submenu already leaves the child reachable, without another click.
+  // O submenu aberto ja deixa o filho alcancavel, sem mais um clique.
   expect(screen.getByText("Clientes")).toBeDefined();
 });
 
-test("collapsed, the search field becomes a button, because 3.5rem does not fit text", () => {
+test("encolhida, o campo de busca vira botao, porque 3,5rem nao aceitam texto", () => {
   const { container } = sidebar(false);
 
   expect(container.querySelector("input[type=search]")).toBeNull();
   expect(screen.getByRole("button", { name: "Buscar" })).toBeDefined();
 });
 
-test("collapsed, the submenu becomes a side menu instead of disappearing", () => {
+test("encolhida, o submenu vira menu ao lado em vez de sumir", () => {
   sidebar(false);
 
-  // The list leaves the bar, otherwise it would indent inside 3.5rem.
+  // A lista some da barra, senao ela indentaria dentro de 3,5rem.
   expect(screen.queryByText("Clientes")).toBeNull();
 
-  // And the parent stays reachable, now as a menu trigger.
+  // E o pai continua alcancavel, agora como gatilho de menu.
   const trigger = screen.getByRole("button", { name: "Cadastros" });
   fireEvent.click(trigger);
 
   expect(screen.getByRole("menuitem", { name: "Clientes" })).toBeDefined();
 });
 
-test("on desktop the trigger collapses and expands the bar, and says which one in the name and in aria", () => {
+test("na mesa o gatilho recolhe e expande a barra, e diz qual dos dois no nome e no aria", () => {
   sidebar(true);
 
   const trigger = screen.getByRole("button", { name: "Recolher barra lateral" });
@@ -88,7 +88,7 @@ test("on desktop the trigger collapses and expands the bar, and says which one i
   ).toBe("false");
 });
 
-test("a loose item in the footer does not become an li outside a list, and the one inside the menu gets no marker", () => {
+test("o item solto no rodape nao vira li fora de lista, e o de dentro do menu nao ganha marcador", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen>
@@ -117,7 +117,7 @@ test("a loose item in the footer does not become an li outside a list, and the o
   expect(container.querySelectorAll("li").length).toBeGreaterThan(0);
 });
 
-test("the placeholder says it is loading, and does not fake a list", () => {
+test("a marca de lugar avisa que esta carregando, e nao finge uma lista", () => {
   const { container } = render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen>
@@ -134,16 +134,16 @@ test("the placeholder says it is loading, and does not fake a list", () => {
 });
 
 /* ---------------------------------------------------------------------------
- * Mobile
+ * Celular
  *
- * The test environment answers `false` to every media query, so the mobile
- * path was never exercised: the two bugs it had, opening by itself on load and
- * still covering the page after picking an item, went straight through the
- * suite.
+ * O ambiente de teste responde `false` para toda media query, entao o caminho
+ * do celular nunca era exercitado: os dois bugs que ele teve, abrir sozinha ao
+ * carregar e continuar cobrindo a pagina depois de escolher um item, passaram
+ * inteiros pela suite.
  * ------------------------------------------------------------------------- */
 
-/** Makes the mobile breakpoint answer true while the test runs. */
-function onMobile<T>(run: () => T): T {
+/** Faz o corte de celular responder verdadeiro enquanto o teste roda. */
+function comCelular<T>(run: () => T): T {
   const real = window.matchMedia;
   window.matchMedia = ((query: string) =>
     ({
@@ -164,29 +164,29 @@ function onMobile<T>(run: () => T): T {
   }
 }
 
-test("on mobile the bar starts closed, even with defaultOpen", () => {
-  onMobile(() => {
+test("no celular a barra comeca fechada, mesmo com defaultOpen", () => {
+  comCelular(() => {
     sidebar(true);
-    // `defaultOpen` is about the desktop column. On mobile the bar covers the
-    // screen, and opening by itself hides exactly what the person came to see.
+    // `defaultOpen` fala da coluna da mesa. No celular a barra cobre a tela, e
+    // abrir sozinha tapa justamente o que a pessoa veio ver.
     expect(screen.queryByText("Painel")).toBeNull();
   });
 });
 
-test("on mobile the trigger opens the sheet", () => {
-  onMobile(() => {
+test("no celular o gatilho abre a folha", () => {
+  comCelular(() => {
     sidebar(true);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     expect(screen.getByText("Painel")).toBeDefined();
   });
 });
 
-test("on mobile, picking a destination closes the sheet", () => {
-  onMobile(() => {
+test("no celular, escolher um destino fecha a folha", () => {
+  comCelular(() => {
     sidebar(true);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     fireEvent.click(screen.getByText("Painel"));
-    // On desktop it would stay open: there the bar covers nothing.
+    // Na mesa ela continuaria aberta: ali a barra nao cobre nada.
     expect(screen.queryByText("Painel")).toBeNull();
   });
 });
@@ -209,47 +209,46 @@ function sidebarWithGroup(defaultOpen: boolean) {
   );
 }
 
-test("collapsed, the group label disappears instead of being clipped", () => {
-  // In 3.5rem "CATALOGO" would become "CATA". Disappearing says less; lying
-  // about the group name says something wrong.
+test("encolhida, o rotulo do grupo some em vez de sair cortado", () => {
+  // Em 3,5rem "CATALOGO" viraria "CATA". Sumir diz menos; mentir sobre o nome
+  // do grupo diz errado.
   const { container } = sidebarWithGroup(false);
 
   expect(screen.queryByText("Catalogo")).toBeNull();
-  // The destination is still there: collapsed, it is only the icon, with the name in the tooltip.
+  // O destino continua la: encolhida, ele e so o icone, com o nome no tooltip.
   expect(container.querySelector('a[href="#pecas"]')).not.toBeNull();
 });
 
-test("open, the group label shows", () => {
+test("aberta, o rotulo do grupo aparece", () => {
   sidebarWithGroup(true);
 
   expect(screen.getByText("Catalogo")).toBeDefined();
 });
 
 /* ---------------------------------------------------------------------------
- * The name of each destination with the bar collapsed
+ * Nome de cada destino com a barra encolhida
  *
- * With the bar collapsed, the label leaves the screen and the `<a>` is left
- * with only the icon. An interaction suite measured the browser's
- * accessibility tree and found twelve links with no name at all - in the state
- * that is the default of every operations screen. The screen reader announces
- * "link" twelve times in a row.
+ * Encolhida a barra, o rotulo sai da tela e o `<a>` fica so com o icone. Uma
+ * suite de interacao mediu a arvore de acessibilidade do navegador e achou
+ * doze links sem nome nenhum - no estado que e o padrao de toda tela de
+ * operacao. O leitor de tela anuncia "link" doze vezes seguidas.
  *
- * What these tests do not reach: happy-dom does not compute the browser's
- * accessibility tree. `getByRole(..., { name })` here uses the
- * dom-accessibility-api computation, which reads `aria-label` and the children's
- * text - enough to prove the name exists in the DOM, and not to prove how each
- * engine announces it.
+ * O que estes testes nao alcancam: o happy-dom nao computa a arvore de
+ * acessibilidade do navegador. O `getByRole(..., { name })` aqui usa o calculo
+ * do dom-accessibility-api, que le `aria-label` e o texto dos filhos - e o
+ * bastante para provar que o nome existe no DOM, e nao para provar como cada
+ * motor o anuncia.
  * ------------------------------------------------------------------------- */
 
-test("collapsed, the destination still has a name, and does not become a mute link", () => {
+test("encolhida, o destino continua tendo nome, e nao vira um link mudo", () => {
   sidebar(false);
 
   expect(screen.getByRole("link", { name: "Painel" })).toBeDefined();
 });
 
-test("collapsed, a destination with structured children also has a name", () => {
-  // Not every item arrives as plain text: whoever builds the bar often passes a
-  // `<span>` with markup inside, and then there is no string to become `aria-label`.
+test("encolhida, o destino de filho estruturado tambem tem nome", () => {
+  // Nem todo item chega como texto puro: quem monta a barra costuma passar um
+  // `<span>` com marcacao dentro, e ai nao ha string para virar `aria-label`.
   render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen={false}>
@@ -267,7 +266,7 @@ test("collapsed, a destination with structured children also has a name", () => 
   expect(screen.getByRole("link", { name: "Feedback" })).toBeDefined();
 });
 
-test("collapsed, the footer menu takes the track width, and the row does not shrink down to the icon", () => {
+test("encolhida, o menu do rodape ocupa a largura da trilha, e a linha nao encolhe ate o icone", () => {
   render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen={false}>
@@ -289,20 +288,20 @@ test("collapsed, the footer menu takes the track width, and the row does not shr
   expect(link.className.split(" ")).toContain("w-full");
 });
 
-test("open, the name comes from the text in the row, with no repeated label", () => {
-  // Wide, the text is visible and an `aria-label` on top would only create a
-  // second source of truth for the same name.
+test("aberta, o nome vem do texto na linha, sem rotulo repetido", () => {
+  // Larga, o texto esta visivel e um `aria-label` por cima so criaria uma
+  // segunda fonte de verdade para o mesmo nome.
   sidebar(true);
 
   const link = screen.getByRole("link", { name: "Painel" });
   expect(link.getAttribute("aria-label")).toBeNull();
 });
 
-test("the row action button has a name, even if the caller forgets to give one", () => {
-  // An icon button without a name is a "button" announced by the screen reader,
-  // and nothing more. The default does not replace the right name - "Opcoes de
-  // Clientes" says more than "Mais opcoes" - but it beats silence, and whoever
-  // passes their own still rules.
+test("o botao de acao da linha tem nome, mesmo quem esquecer de dar um", () => {
+  // Um botao de icone sem nome e um "botao" anunciado pelo leitor de tela, e
+  // nada mais. O padrao nao substitui o nome certo - "Opcoes de Clientes" diz
+  // mais que "Mais opcoes" - mas e melhor que o silencio, e quem passa o seu
+  // continua mandando.
   withTheme(
     <SidebarProvider defaultOpen>
       <Sidebar>
@@ -321,7 +320,7 @@ test("the row action button has a name, even if the caller forgets to give one",
   expect(screen.getByRole("button", { name: "Mais opções" })).toBeDefined();
 });
 
-test("the name written by the caller beats the default", () => {
+test("o nome escrito por quem monta vence o padrao", () => {
   withTheme(
     <SidebarProvider defaultOpen>
       <Sidebar>
@@ -355,28 +354,28 @@ function sidebarWithFooter(defaultOpen: boolean) {
   );
 }
 
-test("collapsed, the footer centers as the brand already centers", () => {
-  // With the brand centered at the top and the footer against the left, the
-  // collapsed column looks crooked - the same symptom the SidebarBrand comment
-  // describes, only at the other end of the bar.
+test("encolhida, o rodape centraliza como a marca ja centraliza", () => {
+  // Com a marca centrada no topo e o rodape encostado a esquerda, a coluna
+  // encolhida fica torta - o mesmo sintoma que o comentario do SidebarBrand
+  // descreve, so que na outra ponta da barra.
   sidebarWithFooter(false);
 
   expect(screen.getByTestId("rodape").className).toContain("items-center");
 });
 
-test("open, the footer goes back to aligning left", () => {
-  // Always centering would trade one defect for another: with a wide bar, the
-  // user block would float in the middle of the column.
+test("aberta, o rodape volta a alinhar pela esquerda", () => {
+  // Centralizar sempre trocaria um defeito por outro: com a barra larga, o
+  // bloco do usuario ficaria boiando no meio da coluna.
   sidebarWithFooter(true);
 
   expect(screen.getByTestId("rodape").className).not.toContain("items-center");
 });
 
-test("a row with an action does not nest one <li> inside another", () => {
-  // SidebarMenuRow already is the row's <li>. If the item opens another one
-  // inside, the HTML is invalid - and the bill only arrives with SSR: the
-  // browser receives the text, fixes it by splitting the two into siblings, and
-  // the fixed tree does not match the one React expects on hydration.
+test("a linha com acao nao aninha um <li> dentro do outro", () => {
+  // O SidebarMenuRow ja e o <li> da linha. Se o item abrir outro por dentro,
+  // o HTML sai invalido - e a conta so chega no SSR: o navegador recebe o
+  // texto, conserta separando os dois em irmaos, e a arvore consertada nao
+  // bate com a que o React espera na hidratacao.
   const { container } = withTheme(
     <SidebarProvider defaultOpen>
       <Sidebar>
@@ -396,9 +395,9 @@ test("a row with an action does not nest one <li> inside another", () => {
   expect(container.querySelectorAll("li")).toHaveLength(1);
 });
 
-test("without the row around it, the item is still its own <li>", () => {
-  // The lone item inside the <ul> must keep delivering the <li>, otherwise
-  // the list loses the semantics the screen reader counts out loud.
+test("sem a linha em volta, o item continua sendo o proprio <li>", () => {
+  // O item sozinho dentro do <ul> precisa continuar entregando o <li>, senao
+  // a lista perde a semantica que o leitor de tela conta em voz alta.
   const { container } = withTheme(
     <SidebarProvider defaultOpen>
       <Sidebar>

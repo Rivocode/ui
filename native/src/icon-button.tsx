@@ -19,25 +19,24 @@ const HIDDEN = {
 
 export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLabel" | "className"> & {
   /**
-   * The icon. Color does not flow down from the `View` to the SVG, so the form
-   * that paints itself is the function: it receives the variant color and the
-   * square size - `{({ color, size }) => <Trash2 color={color} size={size}
-   * />}`.
+   * O icone. A cor nao desce da `View` para o SVG, entao a forma que pinta
+   * sozinha e a funcao: ela recebe a cor da variante e o tamanho do quadrado -
+   * `{({ color, size }) => <Trash2 color={color} size={size} />}`.
    */
   children: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
-  /** The `Button` variants, read from the same classes. */
+  /** As variantes do `Button`, lidas das mesmas classes. */
   variant?: keyof typeof BUTTON_CONTAINER;
   /**
-   * The square side: 32, 44 or 48. `sm` gets `hitSlop` up to 44, because the
-   * touch target does not shrink with the drawing.
+   * O lado do quadrado: 32, 44 ou 48. O `sm` ganha `hitSlop` ate 44, porque o
+   * alvo de toque nao encolhe com o desenho.
    */
   size?: "sm" | "md" | "lg";
-  /** Waiting: swaps the icon for the spinner, does not accept touch and announces `busy`. */
+  /** Em espera: troca o icone pelo giro, nao aceita toque e anuncia `busy`. */
   loading?: boolean;
   /**
-   * The button name, required: it is what the screen reader announces, and the
-   * button has no other text. The same name as the web. Say the action
-   * ("Excluir nota"), not the drawing.
+   * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o
+   * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
+   * nota"), e nao o desenho.
    */
   label: string;
   className?: string;

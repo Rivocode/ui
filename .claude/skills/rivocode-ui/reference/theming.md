@@ -1,45 +1,44 @@
-# Dressing it in another client's color
+# Vestir com a cor de outro cliente
 
-## Contents
+## Conteúdo
 
-- The three layers
-- Why writing half a theme fails silently
-- The font is also a theme role
-- The pairs that need to pass contrast
-- In React Native the client theme is build time, not runtime
-- Where the full list is
+- As três camadas
+- Por que escrever meio tema falha em silêncio
+- A fonte também é papel de tema
+- Os pares que precisam passar no contraste
+- No React Native o tema de cliente é build, não runtime
+- Onde está a lista completa
 
-## The three layers
+## As três camadas
 
-1. **Palette** (`--rc-p-*`): the raw colors, without a role. Only the theme
-   talks to it.
-2. **Contract** (`@theme inline`, `--color-*`): what becomes a Tailwind class.
-   You do not touch this to switch brands.
-3. **Theme** (`[data-rc-theme]`, `--rc-*`): what binds a role to a color. **It
-   is the only layer a new client writes.**
+1. **Paleta** (`--rc-p-*`): as cores cruas, sem papel. Só o tema fala com ela.
+2. **Contrato** (`@theme inline`, `--color-*`): o que vira classe do Tailwind.
+   Não se mexe aqui para trocar de marca.
+3. **Tema** (`[data-rc-theme]`, `--rc-*`): quem liga papel a cor. **É a única
+   camada que um cliente novo escreve.**
 
-No component knows the brand color: it asks for a role and the theme answers.
-That is what lets the same piece serve two clients.
+Componente nenhum conhece a cor da marca: ele pede um papel e o tema responde.
+É isso que deixa a mesma peça servir dois clientes.
 
-## Why writing half a theme fails silently
+## Por que escrever meio tema falha em silêncio
 
-There are **dozens of roles**. Writing only the obvious ones gives no error:
-the missing role falls back to the previous theme's value, and an isolated
-RivoCode color shows up in the middle of the client's brand, almost always in a
-chart or a state nobody opened during development.
+São **dezenas de papéis**. Escrever só os óbvios não dá erro: o papel que
+faltou cai no valor do tema anterior, e aparece uma cor da RivoCode isolada no
+meio da marca do cliente, quase sempre num gráfico ou num estado que ninguém
+abriu durante o desenvolvimento.
 
-Write the whole theme at once, starting from the ready skeleton.
+Escreva o tema inteiro de uma vez, a partir do esqueleto pronto.
 
-## The font is also a theme role
+## A fonte também é papel de tema
 
-`--rc-font-sans`, `--rc-font-display` and `--rc-font-mono` live in the theme
-selector, next to the colors, and do **not** have a `:root` value underneath. A
-theme that forgets all three ends up with no family at all, exactly as a theme
-that forgets `--rc-bg` ends up without a background. Always declare them.
+`--rc-font-sans`, `--rc-font-display` e `--rc-font-mono` moram no seletor do
+tema, ao lado das cores, e **não** têm valor de `:root` por baixo. Tema que
+esquece as três fica sem família nenhuma, exatamente como um tema que esquece
+`--rc-bg` fica sem fundo. Declare-as sempre.
 
-RivoCode's faces come in a separate file, `@rivocode/ui/fonts.css`. A client
-theme does **not** import that file: it imports the client's family and points
-the three tokens at it.
+As faces da RivoCode saem num arquivo separado, `@rivocode/ui/fonts.css`. Um
+tema de cliente **não** importa esse arquivo: importa a família do cliente e
+aponta os três tokens para ela.
 
 ```css
 @import "@rivocode/ui/styles.css";
@@ -50,62 +49,61 @@ the three tokens at it.
   --rc-font-display: "Inter Variable", system-ui, sans-serif;
   --rc-font-mono: ui-monospace, SFMono-Regular, monospace;
 
-  /* ...and the fifty color roles. */
+  /* …e os cinquenta papéis de cor. */
 }
 ```
 
-Two clients with different fonts coexist in the same application through this
-mechanism: the family switches by `data-rc-theme`, like the color.
+Dois clientes com fontes diferentes convivem na mesma aplicação por esse
+mecanismo: a família troca por `data-rc-theme`, como a cor.
 
-Weight goes together with the family. `--rc-weight-regular`,
-`--rc-weight-medium`, `--rc-weight-strong`, `--rc-weight-bold` and
-`--rc-weight-display` have the house value in `:root` (400, 500, 600, 700 and
-600) and are **optional** in the theme: declare only what the client's family
-lacks. A title font without 600 asks for `--rc-weight-display: 700` (or the
-closest weight it has), or the browser draws a synthetic bold.
+O peso anda junto com a família. `--rc-weight-regular`, `--rc-weight-medium`,
+`--rc-weight-strong`, `--rc-weight-bold` e `--rc-weight-display` têm o valor da
+casa em `:root` (400, 500, 600, 700 e 600) e são **opcionais** no tema: declare
+só o que a família do cliente não tem. Fonte de título sem 600 pede
+`--rc-weight-display: 700` (ou o peso mais próximo que ela tiver), senão o
+navegador desenha um negrito sintético.
 
-## The pairs that need to pass contrast
+## Os pares que precisam passar no contraste
 
-The library repository has a guard that fails if a pair that carries text
-falls below the standard. When writing a theme, ensure at least:
+O repositório da biblioteca tem uma guarda que falha se um par que carrega texto
+ficar abaixo da norma. Ao escrever um tema, garanta pelo menos:
 
-| Pair | Minimum |
+| Par | Mínimo |
 |---|---|
-| `--rc-fg` on `--rc-bg` and on `--rc-surface` | 7:1 |
-| `--rc-fg-muted` and `--rc-fg-subtle` on both backgrounds | 4.5:1 |
-| `--rc-accent-fg` on `--rc-accent` | 4.5:1 |
-| `--rc-*-fg` on the `--rc-*` of the same family | 4.5:1 |
-| `--rc-*-text` on `--rc-bg` and `--rc-surface` | 4.5:1 |
+| `--rc-fg` sobre `--rc-bg` e sobre `--rc-surface` | 7:1 |
+| `--rc-fg-muted` e `--rc-fg-subtle` sobre os dois fundos | 4.5:1 |
+| `--rc-accent-fg` sobre `--rc-accent` | 4.5:1 |
+| `--rc-*-fg` sobre o `--rc-*` da mesma família | 4.5:1 |
+| `--rc-*-text` sobre `--rc-bg` e `--rc-surface` | 4.5:1 |
 
-Remember the rule from `design.md`: the color that fills and the color that
-writes are never the same. A theme that points `--rc-accent-text` at the same
-value as `--rc-accent` produces invisible text on the accent itself.
+Lembre da regra do `design.md`: a cor que preenche e a cor que se escreve nunca
+são a mesma. Um tema que aponta `--rc-accent-text` para o mesmo valor de
+`--rc-accent` produz texto invisível sobre o próprio acento.
 
-## In React Native the client theme is build time, not runtime
+## No React Native o tema de cliente é build, não runtime
 
-The same CSS file dresses both platforms, but the **moment** the color is
-decided changes, and this is where a day gets lost.
+O mesmo arquivo CSS veste as duas plataformas, mas o **momento** em que a cor é
+decidida muda, e é aqui que se perde um dia.
 
-On the phone the `react-native-css` compiler resolves the token at build time
-and hardcodes the value inside the rule: `.bg-accent` becomes
-`{"backgroundColor":"#d4f34a"}`, and not a single `--` is left in the compiled
-CSS. So no theme object passed at runtime ever changed a class's color.
+No celular o compilador do `react-native-css` resolve o token em build e crava o
+valor dentro da regra: `.bg-accent` vira `{"backgroundColor":"#d4f34a"}`, e no
+CSS compilado não sobra uma ocorrência de `--`. Então nenhum objeto de tema
+passado em runtime jamais trocou cor de classe.
 
-It only changed whoever reads the color through JS: `ChartDonut`,
-`ChartRadial`, the spinner of `Button` and `Spinner`, the `Switch` track,
-`Sparkline`, the fields' hint text. Background, card, button, badge and border
-kept RivoCode's color, and the result on screen **was not the missing brand: it
-was the mixed screen**, a donut from one theme and a button from another.
+Ele trocava só quem lê a cor por JS: `ChartDonut`, `ChartRadial`, o giro do
+`Button` e do `Spinner`, o trilho do `Switch`, a `Sparkline`, o texto de dica dos
+campos. Fundo, cartão, botão, selo e borda continuavam com a cor da RivoCode, e o
+resultado na tela **não era a marca ausente: era a tela misturada**, donut de um
+tema e botão de outro.
 
-**The map left the provider.** The provider resolves the 45 roles by reading the
-compiled CSS, one `bg-` class per role, and publishes them in the context the
-pieces already read: context and class always say the same color. The `theme`
-prop accepts only `rivocode-dark`, `rivocode-light` and `system` - a theme
-object no longer compiles -, and the `scheme` prop left with it, because it was
-what chose the map's scheme.
+**O mapa saiu do provider.** O provider resolve os 45 papéis lendo o CSS
+compilado, uma classe `bg-` por papel, e publica no contexto que as peças já
+liam: contexto e classe dizem sempre a mesma cor. A prop `theme` aceita só
+`rivocode-dark`, `rivocode-light` e `system` - objeto de tema não compila mais -,
+e a prop `scheme` saiu junto, porque era ela que escolhia o esquema do mapa.
 
-The path that works is to override the roles in an `@theme` in the app's
-`global.css`, after `@rivocode/ui-native/theme.css`, and precompile again with
+O caminho que funciona é sobrescrever os papéis num `@theme` do `global.css` do
+app, depois do `@rivocode/ui-native/theme.css`, e pré-compilar de novo com
 `npx rivocode-ui-native-css`:
 
 ```css
@@ -116,47 +114,43 @@ The path that works is to override the roles in an `@theme` in the app's
   --color-accent: #2563eb;
   --color-accent-fg: #ffffff;
   --color-bg: light-dark(#f7f8fa, #0d1220);
-  /* ...and the other roles the brand changes. */
+  /* …e os outros papéis que a marca troca. */
 }
 ```
 
-This alone dresses the whole screen: the class paints the new color, and the
-piece that reads color through JS reads the same color from the same CSS. Do
-not pass any map in the `theme` prop.
+Isto sozinho veste a tela inteira: a classe pinta a cor nova, e a peça que lê
+cor por JS lê a mesma cor do mesmo CSS. Não passe mapa nenhum na prop `theme`.
 
-**And there is an architectural ceiling: two themes per build.** `light-dark()`
-has two slots, a light one and a dark one. One client per app fits easily; a
-showcase of five themes, like the web one, needs five bundles.
+**E há um teto de arquitetura: dois temas por build.** `light-dark()` tem duas
+vagas, uma clara e uma escura. Um cliente por app cabe folgado; uma vitrine de
+cinco temas, como a do web, pede cinco bundles.
 
-## Where the full list is
+## Onde está a lista completa
 
-<https://ds.rivocode.com.br/temas.md> has the fifty roles, what each one
-dresses, the ready skeleton to copy and how to apply it through
-`data-rc-theme`.
+<https://ds.rivocode.com.br/temas.md> traz os cinquenta papéis, o que cada um
+veste, o esqueleto pronto para copiar e como aplicar por `data-rc-theme`.
 
-Read that file before writing a theme. Do not guess a role name: they are
-verified by a guard, and an invented name simply paints nothing.
+Leia esse arquivo antes de escrever um tema. Não deduza nome de papel: eles são
+verificados por uma guarda, e um nome inventado simplesmente não pinta nada.
 
-## After writing, check
+## Depois de escrever, confira
 
 ```bash
 npx rivocode-ui check-theme caminho/do/tema.css
 ```
 
-The command comes in the package and runs in the consuming project. It demands
-the fifty-five required roles, exits with code 1 if any is missing, and the
-message says what happens **on the screen** without each one. Also run it after
-bumping the library version: a new role in a new version is the break nobody
-sees, and that is how `--rc-font-*` caught whoever had a theme written for
-0.6.x.
+O comando vem no pacote e roda no projeto que consome. Ele cobra os cinquenta e
+cinco papéis obrigatórios, sai com código 1 se faltar algum, e a mensagem diz o
+que acontece **na tela** sem cada um. Rode também depois de subir a versão da
+biblioteca: papel novo numa versão nova é a quebra que ninguém vê, e foi assim
+que `--rc-font-*` pegou quem tinha tema escrito para a 0.6.x.
 
-After completeness it **measures contrast** - 76 pairs per theme, with the same
-math and the same table the library demands of itself, and with the alpha
-composited over the background it is drawn on. The order matters: a missing
-role first, because measuring what does not exist returns a pretty number by
-accident.
+Depois da completude ele **mede o contraste** — 76 pares por tema, com a mesma
+conta e a mesma tabela que a biblioteca cobra de si mesma, e com o alfa composto
+sobre o fundo em que ele é desenhado. A ordem importa: papel faltando primeiro,
+porque medir o que não existe devolve um número bonito por acidente.
 
-The extension says which theme shape it is: `.css` for the web's layer 3, and
-`.ts`, `.mjs` or `.js` for React Native's map with `light` and `dark`. In the
-native project the same table is in `@rivocode/ui-native/contrast`, exporting
-`checkThemeMap`, `contrastRatio` and `compose` - do not port the math by hand.
+A extensão diz qual forma de tema é: `.css` para a camada 3 do web, e `.ts`,
+`.mjs` ou `.js` para o mapa com `light` e `dark` do React Native. No projeto
+nativo a mesma tabela está em `@rivocode/ui-native/contrast`, exportando
+`checkThemeMap`, `contrastRatio` e `compose` — não porte a conta a mão.

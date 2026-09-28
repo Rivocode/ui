@@ -1,10 +1,11 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Container
 
-Centers the page content at a maximum width, with spacing on both sides.
+Centraliza o conteúdo da página numa largura máxima, com respiro dos dois
+lados.
 
 ```tsx
 <Container render={<main />} size="md">
@@ -13,39 +14,39 @@ Centers the page content at a maximum width, with spacing on both sides.
 </Container>
 ```
 
-There are five steps, and each is a width the site and the example screens
-already use:
+São cinco passos, e cada um é uma largura que o site e as telas de exemplo já
+usam:
 
-| `size` | Max width | For what                                              |
-| ------ | --------- | ----------------------------------------------------- |
-| `sm`   | 36rem     | short form, sign-in screen                            |
-| `md`   | 48rem     | registration, settings, running text                  |
-| `lg`   | 72rem     | page with columns; it is the default                  |
-| `xl`   | 80rem     | wide panel, listing with a filter at the side         |
-| `full` | no ceiling | only the side spacing, for the screen that uses the full width |
+| `size` | Largura máxima | Para quê                                         |
+| ------ | -------------- | ------------------------------------------------ |
+| `sm`   | 36rem          | formulário curto, tela de entrada                |
+| `md`   | 48rem          | cadastro, configuração, texto corrido            |
+| `lg`   | 72rem          | página com colunas; é o padrão                   |
+| `xl`   | 80rem          | painel largo, listagem com filtro ao lado        |
+| `full` | sem teto       | só o respiro lateral, para a tela que usa a largura toda |
 
-The side spacing comes from the panel tokens: `--rc-pad-panel-sm` on a phone
-and `--rc-pad-panel` from 640px up. Both shrink in the compact density, so the
-operations screen gains the same usable width it gains in the controls.
+O respiro lateral sai dos tokens de painel: `--rc-pad-panel-sm` no celular e
+`--rc-pad-panel` a partir de 640px. Os dois encolhem na densidade compacta, então
+a tela de operação ganha a mesma largura útil que ganha nos controles.
 
-`render` swaps the element without changing the width. The page's main region
-is usually a `Container`, and writing it as `<main>` gives screen reader users
-the shortcut to skip straight to the content.
+`render` troca o elemento sem mudar a largura. A região principal da página
+costuma ser um `Container`, e escrevê-la como `<main>` dá a quem usa leitor de
+tela o atalho para pular direto para o conteúdo.
 
-## When not to use
+## Quando não usar
 
-- **When a `div` with a class is enough.** A width that shows up on a single
-  screen, and that is none of the five steps, is `mx-auto max-w-[40rem]`. The
-  component exists so the product's screens agree with each other, not to
-  cover every possible width.
-- **Inside a block.** `Container` measures the page. Inside a `Card`, a sheet
-  or a `Splitter` column, the spacing already comes from the frame, and a
-  second side spacing pushes the content inward twice.
-- **The top of the screen.** Title, trail and actions are `PageHeader`, which
-  goes inside the `Container`, not in its place.
-- **Arranging the children.** `Container` only limits the width. The gap
-  between blocks is `Stack`, and the columns are `Grid`.
+- **Quando uma `div` com classe basta.** Uma largura que aparece numa tela só,
+  e que não é nenhum dos cinco passos, é `mx-auto max-w-[40rem]`. A peça existe
+  para as telas do produto concordarem entre si, e não para cobrir toda largura
+  possível.
+- **Dentro de um bloco.** O `Container` mede a página. Dentro de um `Card`, de
+  uma folha ou de uma coluna do `Splitter`, o respiro já vem da moldura, e um
+  segundo respiro lateral empurra o conteúdo para dentro duas vezes.
+- **O topo da tela.** Título, trilha e ações são o `PageHeader`, que vai dentro
+  do `Container`, e não no lugar dele.
+- **Arrumar os filhos.** O `Container` só limita a largura. O vão entre os
+  blocos é `Stack`, e as colunas são `Grid`.
 
-## In React Native
+## No React Native
 
-Does not port, and it is not queued. `Container` limits the width of a page that can be 1920px, and its smallest step, `sm`, is 36rem: wider than any phone held upright. On touch it would be just side breathing room, and the breathing room of a native screen does not belong to a piece, it belongs to the screen: a `View` with `px-4` inside the safe area, or the `ScrollArea`'s `contentContainerClassName`. To arrange what goes inside, `Stack` and `Grid` port.
+Não porta, e não é fila. O `Container` limita a largura de uma página que pode ter 1920px, e o menor passo dele, `sm`, tem 36rem: mais largo que qualquer celular em pé. No toque ele seria só um respiro lateral, e o respiro de uma tela nativa não é de uma peça, é da tela: um `View` com `px-4` dentro da área segura, ou o `contentContainerClassName` do `ScrollArea`. Para arrumar o que vai dentro, `Stack` e `Grid` portam.

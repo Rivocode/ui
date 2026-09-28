@@ -6,19 +6,19 @@ import { gapSize } from "./stack";
 
 export type GridProps = {
   /**
-   * How many columns, fixed and of equal width. For a grid that changes with
-   * the width, use `minItemWidth` instead: the two together do not combine, and
-   * `minItemWidth` wins.
+   * Quantas colunas, fixas e de largura igual. Para a grade que muda com a
+   * largura, use `minItemWidth` no lugar: as duas juntas nao combinam, e
+   * `minItemWidth` vence.
    */
   columns?: number;
   /**
-   * The minimum width of each item, in points. The grid measures its own width
-   * and fits as many columns as it can; the last row keeps the place of the
-   * missing ones, so a lone item does not stretch to the edge. Before the first
-   * measurement, there is one column.
+   * A largura minima de cada item, em pontos. A grade mede a propria largura e
+   * poe quantas colunas couberem; a ultima linha guarda o lugar das que
+   * faltam, para o item solto nao esticar ate a borda. Antes da primeira
+   * medida, sai uma coluna.
    */
   minItemWidth?: number;
-  /** The gap between rows and columns, on the same scale as `Stack`. */
+  /** O vao entre linhas e colunas, na mesma escala do `Stack`. */
   gap?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
   children?: ReactNode;
   className?: string;

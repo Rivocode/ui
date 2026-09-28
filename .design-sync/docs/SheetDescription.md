@@ -1,7 +1,7 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # SheetDescription
 
-The context line below the title, tied to the panel by `aria-describedby`.
+A linha de contexto embaixo do título, ligada ao painel por `aria-describedby`.

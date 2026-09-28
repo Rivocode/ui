@@ -8,22 +8,22 @@ import { gapClass } from "./stack";
 
 export type GridProps = ComponentProps<"div"> & {
   /**
-   * How many columns, fixed and of equal width. For a grid that changes with the
-   * screen, use `minItemWidth` instead: the two together do not combine, and
-   * `minItemWidth` wins.
+   * Quantas colunas, fixas e de largura igual. Para a grade que muda com a
+   * tela, use `minItemWidth` no lugar: as duas juntas nao combinam, e
+   * `minItemWidth` vence.
    */
   columns?: number;
   /**
-   * The minimum width of each item: a number in pixels or a CSS measure (`"16rem"`).
-   * The grid places as many columns as fit and splits the leftover among them, with no media
-   * query. On a screen narrower than the minimum, the item takes the whole row
-   * instead of overflowing.
+   * A largura minima de cada item: numero em pixels ou medida CSS (`"16rem"`).
+   * A grade poe quantas colunas couberem e divide a sobra entre elas, sem media
+   * query. Numa tela mais estreita que o minimo, o item ocupa a linha inteira
+   * em vez de vazar.
    */
   minItemWidth?: number | string;
-  /** The gap between rows and columns, on the same scale and with the same density as `Stack`. */
+  /** O vao entre linhas e colunas, na mesma escala e com a mesma densidade do `Stack`. */
   gap?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
   /**
-   * Swaps the rendered element while keeping the arrangement:
+   * Troca o elemento renderizado mantendo o arranjo:
    * `<Grid render={<ul />}>`.
    */
   render?: ReactElement;

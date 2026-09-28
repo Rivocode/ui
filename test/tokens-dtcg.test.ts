@@ -53,7 +53,7 @@ function colorProblem(value: unknown): string | undefined {
   if (color?.colorSpace !== "srgb") return "colorSpace";
   const components = color.components as number[];
   if (!Array.isArray(components) || components.length !== 3) return "components";
-  if (components.some((part) => typeof part !== "number" || part < 0 || part > 1)) return "range";
+  if (components.some((part) => typeof part !== "number" || part < 0 || part > 1)) return "faixa";
   if (color.alpha !== undefined && (typeof color.alpha !== "number" || color.alpha < 0 || color.alpha > 1))
     return "alpha";
   if (color.hex !== undefined && !/^#[\da-f]{6}$/.test(color.hex as string)) return "hex";
@@ -62,36 +62,36 @@ function colorProblem(value: unknown): string | undefined {
 
 function valueProblem(type: string, value: unknown): string | undefined {
   if (type === "color") return colorProblem(value);
-  if (type === "dimension") return unit(value, ["px", "rem"]) ? undefined : "dimension";
-  if (type === "duration") return unit(value, ["ms", "s"]) ? undefined : "duration";
-  if (type === "number") return typeof value === "number" ? undefined : "number";
+  if (type === "dimension") return unit(value, ["px", "rem"]) ? undefined : "dimensao";
+  if (type === "duration") return unit(value, ["ms", "s"]) ? undefined : "duracao";
+  if (type === "number") return typeof value === "number" ? undefined : "numero";
   if (type === "cubicBezier") {
     const points = value as number[];
-    if (!Array.isArray(points) || points.length !== 4) return "curve";
-    if (points.some((point) => typeof point !== "number")) return "curve";
+    if (!Array.isArray(points) || points.length !== 4) return "curva";
+    if (points.some((point) => typeof point !== "number")) return "curva";
     return points[0]! >= 0 && points[0]! <= 1 && points[2]! >= 0 && points[2]! <= 1
       ? undefined
-      : "x outside [0, 1]";
+      : "x fora de [0, 1]";
   }
   if (type === "fontFamily") {
     return typeof value === "string" || (Array.isArray(value) && value.every((item) => typeof item === "string"))
       ? undefined
-      : "family";
+      : "familia";
   }
   if (type === "fontWeight") {
-    return typeof value === "number" && value >= 1 && value <= 1000 ? undefined : "weight";
+    return typeof value === "number" && value >= 1 && value <= 1000 ? undefined : "peso";
   }
   if (type === "shadow") {
     const layers = Array.isArray(value) ? value : [value];
     for (const layer of layers as Node[]) {
-      if (colorProblem(layer.color)) return "shadow color";
+      if (colorProblem(layer.color)) return "cor da sombra";
       for (const key of ["offsetX", "offsetY", "blur", "spread"]) {
-        if (!unit(layer[key], ["px", "rem"])) return `shadow without ${key}`;
+        if (!unit(layer[key], ["px", "rem"])) return `sombra sem ${key}`;
       }
     }
     return undefined;
   }
-  return `type without a validator: ${type}`;
+  return `tipo sem validador: ${type}`;
 }
 
 function context(theme: string, density = "comfortable"): Flat {
@@ -110,8 +110,8 @@ function context(theme: string, density = "comfortable"): Flat {
 
 function resolved(tokens: Flat, path: string, seen: string[] = []): Node {
   const token = tokens.get(path);
-  if (!token) throw new Error(`alias without a target: ${[...seen, path].join(" -> ")}`);
-  if (seen.includes(path)) throw new Error(`circular alias: ${[...seen, path].join(" -> ")}`);
+  if (!token) throw new Error(`alias sem destino: ${[...seen, path].join(" -> ")}`);
+  if (seen.includes(path)) throw new Error(`alias circular: ${[...seen, path].join(" -> ")}`);
   return isAlias(token.$value) ? resolved(tokens, token.$value.slice(1, -1), [...seen, path]) : token;
 }
 
@@ -119,7 +119,7 @@ const contract = readFileSync("src/tokens/contract.css", "utf8");
 const themeBlock = contract.slice(contract.indexOf("@theme"), contract.indexOf("@layer"));
 const CONTRACT = [...new Set([...themeBlock.matchAll(/var\((--rc-[\w-]+)\)/g)].map((hit) => hit[1]!))];
 
-test("the house export comes out as one file per layer, per density and per theme", () => {
+test("o export da casa sai em um arquivo por camada, por densidade e por tema", () => {
   expect(Object.keys(files).sort()).toEqual(
     [
       "density-compact.tokens.json",
@@ -135,7 +135,7 @@ test("the house export comes out as one file per layer, per density and per them
   expect(result.count).toBeGreaterThan(180);
 });
 
-test("every token has a DTCG 2025.10 type and a value in that type's shape", () => {
+test("todo token tem um tipo do DTCG 2025.10 e um valor na forma desse tipo", () => {
   let seen = 0;
   const problems: string[] = [];
   for (const [file, content] of Object.entries(files)) {
@@ -144,7 +144,7 @@ test("every token has a DTCG 2025.10 type and a value in that type's shape", () 
       seen++;
       const type = token.$type as string;
       if (!TYPES.has(type)) {
-        problems.push(`${file} ${path}: type ${type}`);
+        problems.push(`${file} ${path}: tipo ${type}`);
         continue;
       }
       if (isAlias(token.$value)) continue;
@@ -156,7 +156,7 @@ test("every token has a DTCG 2025.10 type and a value in that type's shape", () 
   expect(problems).toEqual([]);
 });
 
-test("the weight comes out as fontWeight, with the house value on each intent", () => {
+test("o peso sai como fontWeight, com o valor da casa em cada intencao", () => {
   const scales = flatten(files["scales.tokens.json"]!);
   const weights = [...scales].filter(([path]) => path.startsWith("weight."));
 
@@ -169,7 +169,7 @@ test("the weight comes out as fontWeight, with the house value on each intent", 
   ]);
 });
 
-test("every alias resolves, without a cycle, to a token of the same type", () => {
+test("todo alias resolve, sem ciclo, para um token do mesmo tipo", () => {
   let aliases = 0;
   const problems: string[] = [];
   for (const theme of result.themes) {
@@ -191,7 +191,7 @@ test("every alias resolves, without a cycle, to a token of the same type", () =>
   expect(problems).toEqual([]);
 });
 
-test("every token the Tailwind contract reads is in the export, in both themes", () => {
+test("todo token que o contrato do Tailwind le esta no export, nos dois temas", () => {
   expect(CONTRACT.length).toBeGreaterThan(60);
   for (const theme of result.themes) {
     const present = new Set(
@@ -207,7 +207,7 @@ test("every token the Tailwind contract reads is in the export, in both themes",
   }
 });
 
-test("a role pointing at the palette in CSS becomes a palette alias, and not a copy of the color", () => {
+test("o papel que aponta para a paleta no CSS vira alias da paleta, e nao uma copia da cor", () => {
   const css = readFileSync("src/tokens/themes/rivocode-light.css", "utf8");
   const pointing = [...css.matchAll(/--rc-([\w-]+):\s*var\(--rc-p-([\w-]+)\)/g)];
   expect(pointing.length).toBeGreaterThan(20);
@@ -220,7 +220,7 @@ test("a role pointing at the palette in CSS becomes a palette alias, and not a c
   }
 });
 
-test("the color at the end of the alias is the same as the CSS, with the alpha preserved", () => {
+test("a cor que chega ao fim do alias e a mesma do CSS, com o alfa preservado", () => {
   const dark = context("rivocode-dark");
   expect((resolved(dark, "color.accent").$value as Node).hex).toBe("#d4f34a");
   expect(dark.get("color.chart-grid")?.$value).toBe("{color.border}");
@@ -232,7 +232,7 @@ test("the color at the end of the alias is the same as the CSS, with the alpha p
   expect((resolved(light, "color.accent-text").$value as Node).hex).toBe("#4a7100");
 });
 
-test("both densities have the same tokens, and compact shrinks the control", () => {
+test("as duas densidades tem os mesmos tokens, e a compacta encolhe o controle", () => {
   const comfortable = flatten(files["density-comfortable.tokens.json"]!);
   const compact = flatten(files["density-compact.tokens.json"]!);
   expect(comfortable.size).toBeGreaterThan(10);
@@ -241,7 +241,7 @@ test("both densities have the same tokens, and compact shrinks the control", () 
   expect(compact.get("control.md")?.$value).toEqual({ value: 32, unit: "px" });
 });
 
-test("the resolver points only at files the export wrote", () => {
+test("o resolver aponta so para arquivos que o export escreveu", () => {
   const resolver = files[RESOLVER] as { version: string; resolutionOrder: unknown[] };
   expect(resolver.version).toBe("2025.10");
   const refs = [...JSON.stringify(resolver).matchAll(/"\$ref":"([^"#][^"]*)"/g)].map((hit) => hit[1]!);
@@ -250,43 +250,43 @@ test("the resolver points only at files the export wrote", () => {
   expect(resolver.resolutionOrder).toHaveLength(3);
 });
 
-test("what is left out is only the empty hook and the spring curve, with the reason", () => {
+test("o que fica de fora e so o gancho vazio e a curva de mola, com o motivo", () => {
   expect(
     result.skipped.every((item) => item.value === "none" || item.value.startsWith("linear(")),
   ).toBe(true);
   expect(result.skipped.map((item) => item.variable)).toContain("--rc-accent-image");
 });
 
-test("the tokens command exports a client theme, with its own color and the rest pointing at the palette", async () => {
+test("o comando tokens exporta um tema de cliente, com a cor propria e o resto apontando para a paleta", async () => {
   const dir = mkdtempSync(join(tmpdir(), "rc-dtcg-"));
   const dark = readFileSync("src/tokens/themes/rivocode-dark.css", "utf8")
     .replace('"rivocode-dark"', '"acme-dark"')
     .replace("--rc-accent: var(--rc-p-lima-500);", "--rc-accent: var(--acme-brand);");
-  const theme = join(dir, "acme-theme.css");
+  const theme = join(dir, "tema-acme.css");
   writeFileSync(theme, `:root {\n  --acme-brand: oklch(0.62 0.19 260);\n}\n\n${dark}`);
 
-  const run = Bun.spawnSync(["bun", "src/cli.ts", "tokens", theme, "--out", join(dir, "out")]);
+  const run = Bun.spawnSync(["bun", "src/cli.ts", "tokens", theme, "--out", join(dir, "saida")]);
   expect(run.exitCode).toBe(0);
 
-  const written = JSON.parse(readFileSync(join(dir, "out", "acme-dark.tokens.json"), "utf8")) as Node;
+  const written = JSON.parse(readFileSync(join(dir, "saida", "acme-dark.tokens.json"), "utf8")) as Node;
   const tokens = flatten(written);
   expect(tokens.size).toBeGreaterThan(40);
   const accent = tokens.get("color.accent")!;
   expect(isAlias(accent.$value)).toBe(false);
   expect(colorProblem(accent.$value)).toBeUndefined();
   expect(tokens.get("color.bg")?.$value).toBe("{palette.graphite.950}");
-  expect(existsSync(join(dir, "out", "palette.tokens.json"))).toBe(true);
-  expect(existsSync(join(dir, "out", "rivocode-dark.tokens.json"))).toBe(false);
+  expect(existsSync(join(dir, "saida", "palette.tokens.json"))).toBe(true);
+  expect(existsSync(join(dir, "saida", "rivocode-dark.tokens.json"))).toBe(false);
 
-  const resolver = readFileSync(join(dir, "out", RESOLVER), "utf8");
+  const resolver = readFileSync(join(dir, "saida", RESOLVER), "utf8");
   expect(resolver).toContain('"acme-dark.tokens.json"');
 });
 
-test("the tokens command rejects a file without a theme, instead of exporting the house one in its place", () => {
+test("o comando tokens recusa o arquivo sem tema, em vez de exportar a casa no lugar", () => {
   const dir = mkdtempSync(join(tmpdir(), "rc-dtcg-"));
-  const loose = join(dir, "loose.css");
+  const loose = join(dir, "solto.css");
   writeFileSync(loose, ":root { --acme-brand: #123456; }\n");
-  const run = Bun.spawnSync(["bun", "src/cli.ts", "tokens", loose, "--out", join(dir, "out")]);
+  const run = Bun.spawnSync(["bun", "src/cli.ts", "tokens", loose, "--out", join(dir, "saida")]);
   expect(run.exitCode).toBe(1);
-  expect(existsSync(join(dir, "out"))).toBe(false);
+  expect(existsSync(join(dir, "saida"))).toBe(false);
 });

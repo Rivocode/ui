@@ -44,8 +44,8 @@ function InvoiceForm({ values, withError }: { values: Partial<Entry>; withError?
     defaultValues: { email: "", dueDate: undefined, forma: "", aceite: false, ...values },
   });
 
-  // The showcase is a photo: without triggering validation, the error state
-  // would never show up in the portrait.
+  // A vitrine e uma foto: sem disparar a validacao, o estado de erro nunca
+  // apareceria no retrato.
   useEffect(() => {
     if (withError) form.trigger();
   }, [withError, form]);

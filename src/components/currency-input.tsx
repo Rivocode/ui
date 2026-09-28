@@ -25,37 +25,28 @@ export type CurrencyInputProps = Omit<
   | "prefix"
   | "name"
 > & {
-  /** The value in whole cents: `123456` is R$ 1.234,56. An empty field is `null`. */
+  /** O valor em centavos inteiros: `123456` e R$ 1.234,56. Campo vazio e `null`. */
   value?: number | null;
-  /** The initial value in cents, when the field controls its own state. */
+  /** O valor inicial em centavos, quando o campo controla o proprio estado. */
   defaultValue?: number | null;
   /**
-   * Called on every keystroke with the cents, or `null` when the field empties.
-   * Store the cents: the punctuated text is a screen concern.
+   * Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia.
+   * Guarde os centavos: o texto pontuado e assunto de tela.
    */
   onValueChange?: (cents: number | null) => void;
-  /**
-   * The smallest accepted value, in cents. Below it the field marks itself invalid, and nothing is
-   * corrected automatically.
-   */
+  /** O menor valor aceito, em centavos. Abaixo dele o campo se marca invalido, e nada e corrigido sozinho. */
   min?: number;
-  /**
-   * The largest accepted value, in cents. Above it the field marks itself invalid, and nothing is
-   * corrected automatically.
-   */
+  /** O maior valor aceito, em centavos. Acima dele o campo se marca invalido, e nada e corrigido sozinho. */
   max?: number;
   /**
-   * Accepts negative values. The sign comes in through `-`, anywhere in the field,
-   * and a second `-` removes the sign. When on, the phone keyboard is no longer the
-   * numeric one, which on the iPhone has no sign.
+   * Aceita valor negativo. O sinal entra pelo `-`, em qualquer ponto do campo,
+   * e um segundo `-` tira o sinal. Ligado, o teclado do celular deixa de ser o
+   * numerico, que no iPhone nao tem o sinal.
    */
   allowNegative?: boolean;
-  /**
-   * Goes up in the native form with the cents, never with the punctuated text. Inside `<Field
-   * name>`, without it, the Field's name applies.
-   */
+  /** Some no formulario nativo com os centavos, e nunca com o texto pontuado. Dentro de `<Field name>`, sem ele, vale o nome do Field. */
   name?: string;
-  /** Class per part: `input` and `prefix` (the "R$"). `className` dresses the root. */
+  /** Classe por parte: `input` e `prefix` (o "R$"). `className` veste a raiz. */
   classNames?: Slots<"input" | "prefix">;
 };
 

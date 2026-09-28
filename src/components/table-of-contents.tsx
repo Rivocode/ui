@@ -17,57 +17,48 @@ import { focusLandmark } from "../lib/focus";
 import type { Slots } from "../lib/slots";
 
 export type TableOfContentsItem = {
-  /** The heading's `id` on the page, without the `#`. */
+  /** O `id` do titulo na pagina, sem o `#`. */
   id: string;
-  /** The row's text in the table of contents. */
+  /** O texto da linha no indice. */
   label: ReactNode;
-  /**
-   * The heading's level: 2 for `h2`, 3 for `h3`. The smallest level in the list is the outer
-   * margin.
-   */
+  /** O nivel do titulo: 2 para `h2`, 3 para `h3`. O menor nivel da lista e a margem de fora. */
   level?: number;
 };
 
 export type TableOfContentsProps = Omit<ComponentPropsWithoutRef<"nav">, "children"> & {
   /**
-   * The ready-made list. With it the piece does not read the page; without it, it reads the
-   * headings that
-   * match `selector` inside `container`.
+   * A lista pronta. Com ela a peca nao le a pagina; sem ela, le os titulos que
+   * casam com `selector` dentro de `container`.
    */
   items?: TableOfContentsItem[];
-  /**
-   * Which headings come in, when the list is not ready-made. The level comes from the tag, `h2` to
-   * `h6`.
-   */
+  /** Quais titulos entram, quando a lista nao vem pronta. O nivel sai da tag, `h2` a `h6`. */
   selector?: string;
   /**
-   * Where to look for the headings. Without it, the whole document. Content that arrives
-   * later (an example loaded on demand, a section mounted late) comes in by itself.
+   * Onde procurar os titulos. Sem ele, o documento inteiro. Conteudo que chega
+   * depois (exemplo carregado sob demanda, secao montada tarde) entra sozinho.
    */
   container?: HTMLElement | null;
-  /** The scrolling box, when it is not the window. It is where the visible section is measured. */
+  /** A caixa que rola, quando nao e a janela. E nela que a secao visivel e medida. */
   root?: HTMLElement | null;
   /**
-   * The height of what sticks to the top (a fixed header), in pixels. The heading stops
-   * below it on click, and a section only counts as visible below it.
+   * A altura do que gruda no topo (cabecalho fixo), em pixels. O titulo para
+   * abaixo dela ao clicar, e a secao so conta como visivel abaixo dela.
    */
   offset?: number;
-  /** The navigation region's name, which also appears as the table of contents' title. */
+  /** O nome da regiao de navegacao, que tambem aparece como titulo do indice. */
   label?: string;
-  /** Hides the visible title. `label` still names the navigation for the screen reader. */
+  /** Esconde o titulo visivel. O `label` continua nomeando a navegacao para o leitor de tela. */
   hideLabel?: boolean;
   /**
-   * Writes the `#id` into the address bar on click, with `history.replaceState`,
-   * without pushing history. Off by default, so as not to fight the router.
+   * Escreve o `#id` na barra de endereco ao clicar, com `history.replaceState`,
+   * sem empilhar historico. Desligado por padrao, para nao brigar com o router.
    */
   updateHash?: boolean;
-  /**
-   * Called when the marked section changes: on scroll or on click. `null` before the first heading.
-   */
+  /** Chamado quando a secao marcada muda: ao rolar ou ao clicar. `null` antes do primeiro titulo. */
   onActiveChange?: (id: string | null) => void;
   /**
-   * Called on a row click, before scrolling. `event.preventDefault()`
-   * cancels the smooth scroll and lets the browser follow the link.
+   * Chamado no clique de uma linha, antes da rolagem. `event.preventDefault()`
+   * cancela a rolagem suave e deixa o navegador seguir o link.
    */
   onItemClick?: (item: TableOfContentsItem, event: MouseEvent<HTMLAnchorElement>) => void;
   classNames?: Slots<"label" | "list" | "item" | "link">;

@@ -1,15 +1,14 @@
 ---
-category: Actions
+category: Ações
 ---
 
 # Toolbar
 
-A toolbar: the controls sit in a single tab stop, and the arrows move between
-them.
+Barra de ferramentas: os controles ficam numa parada de tabulacao só, e as
+setas andam entre eles.
 
-That is what sets it apart from a `div` with buttons: **ten loose buttons are
-ten Tab stops** between the previous field and the next. In a toolbar, it is
-one.
+E isso que a diferencia de uma `div` com botões: **dez botões soltos sao dez
+paradas de Tab** entre o campo anterior e o proximo. Numa barra, e uma.
 
 ```tsx
 <Toolbar>
@@ -20,16 +19,16 @@ one.
 </Toolbar>
 ```
 
-Use `ToolbarButton` with `render` to dress `Button`, `Toggle` or `Select`
-without losing that navigation.
+Use `ToolbarButton` com `render` para vestir `Button`, `Toggle` ou `Select` sem
+perder essa navegação.
 
-## Parts
+## As partes
 
-`ToolbarGroup` gathers buttons that belong to the same subject (align left,
-center, right), and `ToolbarSeparator` separates one group from the next. For
-the screen reader, the group is what says the three options are a single
-choice.
+`ToolbarGroup` junta botões que fazem parte do mesmo assunto (alinhar à
+esquerda, ao centro, à direita), e o `ToolbarSeparator` separa um grupo do
+outro. Para o leitor de tela, o grupo é o que diz que as três opções são uma
+escolha só.
 
-## In React Native
+## No React Native
 
-Does not port, by decision - a desktop editing surface: a single tab stop and arrow navigation, which touch does not have. It is not queued: it will not exist. The [parity table](/react-native) gives the reason for each one.
+Não porta, por decisão - superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

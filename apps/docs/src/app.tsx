@@ -11,14 +11,14 @@ import { Toc } from '@/components/toc'
 import { revealWithin } from '@/reveal'
 
 /*
- * One route, one chunk.
+ * Uma rota, um chunk.
  *
- * The cover stays with the shell because it is where almost everyone arrives.
- * The other five dragged into the entry chunk everything they mount - the icon
- * gallery, the foundation's Recharts, the whole demo screen - and none of that
- * shows on the cover. While they were static imports, Vite also wrote a
- * `modulepreload` for each of their dependencies into `index.html`: eighty
- * preload lines competing for bandwidth with what the first screen needed.
+ * A capa fica junto da casca porque e onde quase todo mundo chega. As outras
+ * cinco arrastavam para o chunk de entrada tudo que elas montam - a galeria de
+ * icones, o Recharts da fundacao, a tela inteira da demonstracao - e nada disso
+ * aparece na capa. Enquanto elas eram import estatico, a Vite ainda escrevia um
+ * `modulepreload` para cada dependencia delas no `index.html`: oitenta linhas
+ * de preload disputando banda com o que a primeira tela precisava.
  */
 const CatalogPage = lazy(() =>
   import('@/pages/catalog').then((mod) => ({ default: mod.CatalogPage })),
@@ -35,12 +35,12 @@ const ThemePage = lazy(() => import('@/pages/theme').then((mod) => ({ default: m
 const BlocksPage = lazy(() => import('@/pages/blocks').then((mod) => ({ default: mod.BlocksPage })))
 
 /**
- * The page's place while its chunks arrive.
+ * O lugar da pagina enquanto os pedacos dela chegam.
  *
- * A full window of height, not half: the footer has to stay OFF screen until
- * the page exists. Appearing earlier, it moves down when the content arrives,
- * and that move is layout shift - the metric Lighthouse's agentic navigation
- * category charges together with the accessibility tree.
+ * Uma janela inteira de altura, e nao meia: o rodape tem que ficar FORA da
+ * tela ate a pagina existir. Aparecendo antes, ele desce quando o conteudo
+ * chega, e essa descida e layout shift - a metrica que a categoria de
+ * navegacao agentica do Lighthouse cobra junto com a arvore de acessibilidade.
  */
 function PageFallback() {
   return <div className="min-h-dvh" />
@@ -53,19 +53,19 @@ function Brand({ navigate }: { navigate: (route: Route) => void }) {
       className="flex min-w-0 items-center gap-2 font-display text-sm tracking-wide text-fg"
     >
       <Logo className="h-4 w-auto shrink-0 text-accent" />
-      {/* The brand is its own flex item so it can shrink with an ellipsis
-          instead of being cut in the middle of a letter. */}
+      {/* A marca e item de flex proprio para poder encolher com reticencia em
+          vez de sair cortada no meio de uma letra. */}
       <span className="truncate">RIVOCODE</span>
-      {/* The suffix is the first thing to go on mobile: at 320px the header
-          row was 23px wider than the window, and dropping this is the cheapest
-          way to pay for part of that - the name alone still identifies the
+      {/* O sufixo e a primeira coisa a sair no celular: em 320px a linha do
+          cabecalho ficava 23px mais larga que a janela, e largar isto e o jeito
+          mais barato de pagar parte disso - o nome sozinho ainda identifica o
           site. */}
       <span className="hidden font-mono text-xs font-normal text-fg-subtle sm:inline">/ui</span>
     </a>
   )
 }
 
-/** The list of pieces, with a filter. Serves the sidebar and the mobile sheet. */
+/** A lista de pecas, com filtro. Serve a barra lateral e a folha do celular. */
 function Nav({
   route,
   navigate,
@@ -79,19 +79,18 @@ function Nav({
   const list = useRef<HTMLDivElement>(null)
 
   /*
-   * Whoever arrives through a component link lands on a list of sixty-six
-   * names scrolled to the top, with the name they are reading off screen.
-   * Nothing said where they were in the family, nor that the list went on
-   * below.
+   * Quem chega por um link de componente cai numa lista de sessenta e seis
+   * nomes rolada no topo, com o nome que ele esta lendo fora da tela. Nada
+   * dizia onde ele estava na familia, nem que a lista continuava para baixo.
    *
-   * Only on page change: scrolling the list while the person filters would
-   * take the gesture out of their hand.
+   * So na troca de pagina: rolar a lista enquanto a pessoa filtra tiraria a
+   * mao dela do gesto.
    */
   const here = route.kind + ('slug' in route ? `:${route.slug}` : '')
   useEffect(() => {
     const current = list.current?.querySelector<HTMLElement>('[aria-current="page"]')
-    // The larger-than-default margin is the family heading, which sticks to
-    // the top of the list and would cover the row if it stopped under it.
+    // A folga maior que a padrao e o titulo da familia, que fica grudado no
+    // topo da lista e cobriria a linha se ela parasse debaixo dele.
     if (list.current && current) revealWithin(list.current, current, 44)
   }, [here])
 
@@ -113,36 +112,36 @@ function Nav({
   const foundationLink = linkTo({ kind: 'foundation' }, navigate)
 
   /*
-   * The row, just once.
+   * A linha, uma vez so.
    *
-   * Every group hangs from the same vertical thread, and the active row swaps
-   * its piece of that thread for the accent. That is what carries "you are
-   * here" through a list of sixty-six names: a filled pill alone reads as
-   * hover at a second glance, and hover is exactly the one thing it must not
-   * be mistaken for.
+   * Todo grupo pende de um mesmo fio vertical, e a linha ativa troca o pedaco
+   * dela desse fio pelo acento. E o que carrega o "voce esta aqui" por uma
+   * lista de sessenta e seis nomes: uma pilula preenchida sozinha le como hover
+   * na segunda olhada, e hover e justamente a unica coisa com que ela nao pode
+   * ser confundida.
    */
   const rowClass = (active: boolean) =>
     [
       'relative block rounded-r-md py-1.5 pr-3 pl-4 text-sm',
       'transition-[color,background-color] duration-[var(--rc-duration-fast)] ease-rc',
-      // The piece of thread this row owns. Transparent by default, so the
-      // group's own line shows and the list reads as a single column.
+      // O pedaco de fio que esta linha possui. Transparente por padrao, para a
+      // linha do proprio grupo aparecer e a lista ler como uma coluna so.
       'before:absolute before:inset-y-0 before:-left-px before:w-px before:transition-colors',
       active
         ? 'bg-accent-subtle text-accent-text before:bg-accent before:w-0.5'
         : 'text-fg-muted before:bg-transparent hover:bg-surface/70 hover:text-fg',
     ].join(' ')
 
-  /* Sticky, so the family a name belongs to stays on screen after the scroll
-   * goes past its heading. */
+  /* Grudado, para a familia a que um nome pertence continuar na tela depois de
+   * a rolagem passar do titulo dela. */
   const headingClass =
     'sticky top-0 z-[1] -mx-1 bg-bg px-4 pt-2 pb-2 font-mono text-[0.68rem] font-medium tracking-[0.14em] text-fg-subtle uppercase'
 
   return (
-    /* A named landmark: the page has two navs, and the unnamed one was this,
-       the larger of the two. In a landmark list, "navigation" next to
-       "navigation, On this page" left exactly the wrong one anonymous. */
-    <nav aria-label="Pieces and guides" className="flex h-full flex-col gap-4">
+    /* Landmark com nome: a pagina tem dois navs, e o sem nome era este, o maior
+       dos dois. Numa lista de landmarks, "navigation" ao lado de "navigation,
+       Nesta pagina" deixava anonimo justamente o errado. */
+    <nav aria-label="Peças e guias" className="flex h-full flex-col gap-4">
       <div className="relative">
         <Search
           size={14}
@@ -151,15 +150,15 @@ function Nav({
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={`Search ${ENTRIES.length} pieces`}
-          aria-label="Search pieces"
+          placeholder={`Buscar entre ${ENTRIES.length} peças`}
+          aria-label="Buscar peça"
           className="border-transparent bg-surface pl-8 focus-visible:border-border"
         />
       </div>
 
       <div ref={list} className="rc-scroll min-h-0 flex-1 overflow-y-auto pr-2">
         <div className="mb-6">
-          <h2 className={headingClass}>Get started</h2>
+          <h2 className={headingClass}>Começar</h2>
           <ul className="border-l border-border">
             {GUIDES.map((guide) => {
               const link = linkTo({ kind: 'guide', slug: guide.slug }, navigate)
@@ -191,21 +190,21 @@ function Nav({
                 aria-current={route.kind === 'foundation' ? 'page' : undefined}
                 className={rowClass(route.kind === 'foundation')}
               >
-                Conventions
+                Convenções
               </a>
             </li>
           </ul>
         </div>
 
         {found === 0 && (
-          <p className="px-3 py-6 text-sm text-fg-subtle">Nothing by that name in the catalog.</p>
+          <p className="px-3 py-6 text-sm text-fg-subtle">Nada com esse nome no catálogo.</p>
         )}
 
         {(() => {
           const link = linkTo({ kind: 'catalog' }, navigate)
           return (
             <div className="mb-6">
-              <h2 className={headingClass}>Catalog</h2>
+              <h2 className={headingClass}>Catálogo</h2>
               <ul className="border-l border-border">
                 <li>
                   <a
@@ -217,7 +216,7 @@ function Nav({
                     aria-current={route.kind === 'catalog' ? 'page' : undefined}
                     className={rowClass(route.kind === 'catalog')}
                   >
-                    All pieces, on one screen
+                    Todas as peças, numa tela
                   </a>
                 </li>
               </ul>
@@ -259,48 +258,49 @@ function Nav({
 
 export function App() {
   const { route, navigate } = useRoute()
-  // Idempotent: each loader keeps its own promise, so repeating it on every
-  // render only returns what is already in flight. See `preloadPage`.
+  // Idempotente: cada loader guarda a propria promessa, entao repetir a cada
+  // render so devolve o que ja esta em voo. Ver o `preloadPage`.
   if (route.kind === 'component') preloadPage(route.slug)
-  // These two use the whole window: 256px of name list next to a page that is
-  // already a list of names buys nothing.
-  // The theme builder and the blocks too: both show whole screens side by
-  // side, and the 768px reading column would squeeze them.
+  // As duas usam a janela inteira: 256px de lista de nomes ao lado de uma
+  // pagina que ja e uma lista de nomes nao compra nada.
+  // O montador e os blocos tambem: os dois mostram telas inteiras lado a lado,
+  // e a coluna de leitura de 768px as espremeria.
   const fullWidth =
     route.kind === 'home' || route.kind === 'demo' || route.kind === 'theme' || route.kind === 'blocks'
 
   return (
     <RivoProvider theme="rivocode-dark" density="comfortable">
       <div className="min-h-dvh">
-        {/* The sidebar repeats some 90 links on every page, so the first
-            control of an example was tab stop number 105. A screen reader
-            skips that by landmark; someone driving by keyboard alone had no
-            way out. First focusable element of the page, and it has to APPEAR
-            when it receives focus - `sr-only` alone would leave it invisible
-            under the cursor, which is worse than not having it. */}
+        {/* A barra lateral repete uns 90 links em cada pagina, entao o primeiro
+            controle de um exemplo ficava na parada de tab numero 105. Leitor de
+            tela pula isso por landmark; quem dirige so pelo teclado nao tinha
+            saida. Primeiro elemento focavel da pagina, e ele tem que APARECER
+            ao receber foco - `sr-only` sozinho o deixaria invisivel embaixo do
+            cursor, o que e pior que nao ter. */}
         <a
           href="#conteudo"
           className="sr-only rounded-md focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[var(--rc-z-sticky)] focus:m-0 focus:h-auto focus:w-auto focus:overflow-visible focus:border focus:border-accent focus:bg-surface-raised focus:px-3 focus:py-2 focus:font-sans focus:text-sm focus:whitespace-nowrap focus:text-fg focus:shadow-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Skip to content
+          Pular para o conteúdo
         </a>
 
         <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-md">
-          {/* The `min-w-0` on the left block is what keeps the row from
-              overflowing at 320px: a flex item starts with `min-width: auto`,
-              so the drawer button plus the brand refused to shrink and pushed
-              the chips 23px out of the window on every route - WCAG 1.4.10.
-              The chips keep `shrink-0` so the squeeze falls on the brand,
-              which has an ellipsis, and not on the three targets.
+          {/* O `min-w-0` no bloco da esquerda e o que impede a linha de vazar em
+              320px: item de flex nasce com `min-width: auto`, entao o botao da
+              gaveta mais a marca se recusavam a encolher e empurravam as
+              fichas 23px para fora da janela em toda rota - WCAG 1.4.10. As
+              fichas ficam com `shrink-0` para o aperto cair na marca, que tem
+              reticencia, e nao nos tres alvos.
 
-              The smaller gaps and padding below `sm` are what keep that
-              ellipsis from showing: without them the brand fit with zero slack
-              and became "RIVOCO..." depending on when the display font
-              finished loading. The chips stay well above WCAG 2.5.8's 24x24. */}
+              As folgas e o padding menores abaixo de `sm` sao o que impedem
+              essa reticencia de aparecer: sem eles a marca cabia com folga zero
+              e virava "RIVOCO..." dependendo de quando a fonte de display
+              terminava de carregar. As fichas continuam bem acima dos 24x24 da
+              WCAG 2.5.8. */}
           <div className="flex h-14 items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-              {/* On mobile the sidebar becomes a drawer: 256px of fixed menu
-                  inside a 390px screen leaves no page to read. */}
+              {/* No celular a barra lateral vira gaveta: 256px de menu fixo
+                  dentro de 390px de tela nao deixam pagina para ler. */}
               {!fullWidth && (
                 <Sheet side="left">
                   <SheetTrigger
@@ -308,7 +308,7 @@ export function App() {
                       <IconButton
                         size="sm"
                         variant="ghost"
-                        label="Open the menu"
+                        label="Abrir o menu"
                         className="lg:hidden"
                       >
                         <Menu size={16} />
@@ -324,17 +324,16 @@ export function App() {
             </div>
 
             <div className="flex shrink-0 items-center gap-2">
-              {/* The documentation needs its own door on every page, and it
-                  opens where someone actually starts: installation. From there
-                  the sidebar takes the person to any piece. */}
-              {/* The label repeats the text that only appears from `sm` up:
-                  below that the link had an icon and nothing else, and a link
-                  without an accessible name is a link agents and screen
-                  readers cannot tell where it goes. They are the same words as
-                  the screen on purpose - a name that differs from the visible
-                  one breaks voice control (WCAG 2.5.3). */}
+              {/* A documentacao precisa de uma porta propria em toda pagina, e
+                  ela abre onde alguem de fato comeca: a instalacao. Dali a
+                  barra lateral leva a pessoa a qualquer peca. */}
+              {/* O rotulo repete o texto que so aparece a partir de `sm`: abaixo
+                  disso o link ficava com um icone e nada mais, e link sem nome
+                  acessivel e link que agente e leitor de tela nao sabem para
+                  onde vai. Sao as mesmas palavras da tela de proposito - nome
+                  que difere do visivel quebra o comando de voz (WCAG 2.5.3). */}
               <a
-                aria-label="docs"
+                aria-label="documentação"
                 {...linkTo({ kind: 'guide', slug: 'instalacao' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'guide' || route.kind === 'component' || route.kind === 'foundation'
@@ -343,37 +342,37 @@ export function App() {
                 }`}
               >
                 <BookOpen size={13} />
-                <span className="hidden sm:inline">docs</span>
+                <span className="hidden sm:inline">documentação</span>
               </a>
 
-              {/* The two tools get their own door in the header: whoever comes
-                  to dress a client or build a screen does not go through the
-                  list of pieces. Same design as the neighboring chips, and the
-                  label repeats the visible word for the same reason. */}
+              {/* As duas ferramentas ganham porta propria no cabecalho: quem
+                  chega para vestir um cliente ou montar uma tela nao passa pela
+                  lista de pecas. Mesmo desenho das fichas vizinhas, e o rotulo
+                  repete a palavra visivel pelo mesmo motivo delas. */}
               <a
-                aria-label="theme"
+                aria-label="tema"
                 {...linkTo({ kind: 'theme' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'theme' ? 'border-accent text-fg' : 'border-border text-fg-subtle'
                 }`}
               >
                 <Palette size={13} />
-                <span className="hidden md:inline">theme</span>
+                <span className="hidden md:inline">tema</span>
               </a>
 
               <a
-                aria-label="blocks"
+                aria-label="blocos"
                 {...linkTo({ kind: 'blocks' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'blocks' ? 'border-accent text-fg' : 'border-border text-fg-subtle'
                 }`}
               >
                 <Blocks size={13} />
-                <span className="hidden md:inline">blocks</span>
+                <span className="hidden md:inline">blocos</span>
               </a>
 
               <a
-                aria-label="demo"
+                aria-label="demonstração"
                 {...linkTo({ kind: 'demo' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'demo'
@@ -382,7 +381,7 @@ export function App() {
                 }`}
               >
                 <LayoutGrid size={13} />
-                <span className="hidden sm:inline">demo</span>
+                <span className="hidden sm:inline">demonstração</span>
               </a>
 
               <a
@@ -398,9 +397,9 @@ export function App() {
         </header>
 
         {fullWidth ? (
-          /* The `tabIndex={-1}` is not decoration: without it Chrome and Safari
-             only scroll, leaving the cursor on the skip link, and the next Tab
-             goes straight back to the header. */
+          /* O `tabIndex={-1}` nao e enfeite: sem ele o Chrome e o Safari so
+             rolam, deixando o cursor no link de pular, e o Tab seguinte volta
+             direto para o cabecalho. */
           <main id="conteudo" tabIndex={-1} className="outline-none">
             {route.kind === 'home' ? (
               <Home navigate={navigate} />
@@ -415,9 +414,9 @@ export function App() {
             )}
           </main>
         ) : (
-          /* The sidebar touches the window edge, like the header above it.
-             Centering the whole shell left a gap on the left and put the
-             divider in the middle of the screen, which read as a defect. */
+          /* A barra lateral encosta na borda da janela, como o cabecalho acima
+             dela. Centrar a casca inteira deixava um vao a esquerda e punha o
+             divisor no meio da tela, o que lia como defeito. */
           <div className="flex w-full">
             <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-64 shrink-0 border-r border-border py-4 pr-2 pl-4 lg:block xl:w-72 xl:pl-6">
               <Nav route={route} navigate={navigate} />
@@ -425,9 +424,9 @@ export function App() {
 
             <div className="flex min-w-0 flex-1 justify-center">
               <main id="conteudo" tabIndex={-1} className="min-w-0 flex-1 outline-none xl:max-w-3xl">
-                {/* The `key` resets the boundary on page change: without it, a
-                    failure would leave the message in place of every piece
-                    opened afterwards, and only reloading would clear it. */}
+                {/* A `key` reseta a fronteira na troca de pagina: sem ela, uma
+                    falha deixaria a mensagem no lugar de toda peca aberta
+                    depois, e so recarregar tiraria. */}
                 <PageBoundary key={`${route.kind}:${'slug' in route ? route.slug : ''}`}>
                   <Suspense fallback={<PageFallback />}>
                     {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
@@ -443,24 +442,24 @@ export function App() {
           </div>
         )}
 
-        {/* The docs footer does not go into the demo: there the screen is the
-            system, and a site footer under it breaks the illusion the whole
-            page exists to sustain. */}
+        {/* O rodape da documentacao nao entra na demonstracao: ali a tela e o
+            sistema, e um rodape de site embaixo dele quebra a ilusao que a
+            pagina inteira existe para sustentar. */}
         {route.kind !== 'demo' && (
         <footer className="border-t border-border px-6 py-10">
           <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <p className="max-w-xl text-sm text-fg-subtle">
-              @rivocode/ui, {ENTRIES.length} pieces in the catalog. This page is generated from the
-              same files that feed the design system, so it does not go stale on its own.
+              @rivocode/ui, {ENTRIES.length} peças no catálogo. Esta página é gerada dos mesmos
+              arquivos que alimentam o design system, então ela não envelhece sozinha.
             </p>
 
-            {/* The credit sits in the footer of every page, not just the cover:
-                whoever arrives through a component link never passes the
-                cover, and that is exactly the person who will want to know
-                whose library it is before installing. */}
+            {/* O credito fica no rodape de todas as paginas, e nao so na capa:
+                quem chega por um link de componente nunca passa pela capa, e e
+                justamente essa pessoa que vai querer saber de quem e a
+                biblioteca antes de instalar. */}
             <div className="text-sm text-fg-subtle sm:text-right">
               <p>
-                Made by{' '}
+                Feito por{' '}
                 <a
                   href="https://rivocode.com.br"
                   target="_blank"

@@ -9,7 +9,7 @@ import { Sheet } from "./sheet";
 import { Text } from "./text";
 
 export type DateRange = {
-  /** `yyyy-mm-dd`, as in `DatePicker`. */
+  /** `aaaa-mm-dd`, como no `DatePicker`. */
   from: string;
   to: string;
 };
@@ -18,23 +18,23 @@ type Draft = { from: string; to: string | null };
 
 export type DateRangePickerProps = {
   value: DateRange | null;
-  /** `null` when the person taps Limpar. */
+  /** `null` quando a pessoa toca em Limpar. */
   onValueChange: (range: DateRange | null) => void;
-  /** What the screen reader announces on the trigger, and the sheet title. */
+  /** O que o leitor de tela anuncia no gatilho, e o título da folha. */
   label: string;
   placeholder?: string;
-  /** Inclusive limits, in the same ISO format. */
+  /** Limites inclusivos, no mesmo formato ISO. */
   min?: string;
   max?: string;
   disabled?: boolean;
-  /** Styles the trigger; the sheet is the same for everyone. */
+  /** Veste o gatilho; a folha é a mesma para todos. */
   className?: string;
   /**
-   * The component's texts, to change the language: `clear` and `apply` are the
-   * sheet's two buttons, `pickFirst` the notice before the first tap and
-   * `pickLast` the one after it, which receives the first day already written.
-   * `previous`, `next`, `caption` and `weekdays` go to the calendar, with the
-   * names of the `Calendar` `labels`. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `clear` e `apply` sao os dois
+   * botoes da folha, `pickFirst` o aviso antes do primeiro toque e `pickLast`
+   * o de depois dele, que recebe o primeiro dia ja escrito. `previous`,
+   * `next`, `caption` e `weekdays` vao para o calendario, com os nomes do
+   * `labels` do `Calendar`. Passe so os que mudam.
    */
   labels?: Partial<DateRangePickerLabels>;
 };

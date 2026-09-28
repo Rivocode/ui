@@ -1,28 +1,26 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # Calendar
 
-The bare month, for whoever wants the calendar on the screen itself.
+O mes cru, para quem quer o calendário na própria tela.
 
-It is the only component in the catalog with an outside foundation,
-`react-day-picker`, and it comes in only as an engine: none of its style sheets
-is imported, the whole drawing comes from our tokens. The default locale is
-`pt-BR`.
+E a única peça do catalogo com fundacao de fora, a `react-day-picker`, e ela
+entra só como motor: nenhuma folha de estilo dela e importada, todo o desenho vem
+dos nossos tokens. O locale padrão e `pt-BR`.
 
-At phone width it shows a single month, even when more are asked for, and the
-day gets a 44px target. On screens narrower than that, below about 360px, the
-day shrinks with the screen so the seven columns fit without horizontal
-scrolling: at 320px each day is about 38px, still above the 24 of WCAG 2.5.8.
+Em largura de celular mostra um mes só, mesmo quando pedem mais, e o dia ganha
+44px de alvo. Na tela mais estreita que isso, abaixo de uns 360px, o dia encolhe
+junto com a tela para as sete colunas caberem sem rolar para o lado: a 320px
+cada dia fica com uns 38px, ainda acima dos 24 da WCAG 2.5.8.
 
-## Value
+## Valor
 
-The selected day comes in through `value` and goes out through
-`onValueChange`, as in every picker in the catalog and as in
-`@rivocode/ui-native`. The value can be a `Date` or `yyyy-mm-dd` text, and the
-component answers in the format it received: whoever passes text gets text,
-and the same call compiles in both packages.
+O dia escolhido entra por `value` e sai por `onValueChange`, como em todo
+seletor do catálogo e como no `@rivocode/ui-native`. O valor pode ser `Date` ou
+texto `aaaa-mm-dd`, e a peça responde no formato que recebeu: quem passa texto
+recebe texto, e a mesma chamada compila nos dois pacotes.
 
 ```tsx
 const [vencimento, setVencimento] = useState<string | null>(null)
@@ -35,35 +33,35 @@ const [vencimento, setVencimento] = useState<string | null>(null)
 />
 ```
 
-Without state of your own, `defaultValue` gives the initial day and the
-calendar keeps the selection on its own, in the same two formats and answering
-in the same format, like `DatePicker`:
+Sem estado próprio, `defaultValue` dá o dia inicial e o calendário guarda a
+escolha sozinho, nos mesmos dois formatos e respondendo no mesmo formato, como o
+`DatePicker`:
 
 ```tsx
 <Calendar defaultValue="2026-09-25" onValueChange={(dia) => console.log(dia)} />
 ```
 
-The text is read as a calendar day, not as an instant: `"2026-09-25"` is
-September 25 in any time zone. JavaScript's `new Date("2026-09-25")` reads
-midnight UTC, which in Brasília is still the 24th.
+O texto é lido como dia do calendário, e não como instante: `"2026-09-25"` é
+25 de setembro em qualquer fuso. O `new Date("2026-09-25")` do JavaScript lê
+meia-noite em UTC, que em Brasília ainda é dia 24.
 
-`min` and `max` are inclusive and accept the same two formats. Days outside
-them are disabled, and navigation stops at the month of each end. Tapping the
-selected day again does not deselect it.
+`min` e `max` são inclusivos e aceitam os mesmos dois formatos. Os dias de fora
+ficam desabilitados, e a navegação para no mês de cada ponta. Tocar de novo no
+dia escolhido não desmarca.
 
-A single date is always `value` and `onValueChange`, with no `mode`. Several
-separate dates and a range go through `react-day-picker`'s `mode`, `"multiple"`
-or `"range"`, with `selected` and `onSelect`; there `min` and `max` also accept
-a number, which is the minimum and maximum number of days in the selection.
+Data única é sempre `value` e `onValueChange`, sem `mode`. Várias datas soltas
+e intervalo vão pelo `mode` do `react-day-picker`, `"multiple"` ou `"range"`,
+com `selected` e `onSelect`; ali o `min` e o `max` aceitam também um número,
+que é a quantidade mínima e máxima de dias da escolha.
 
 ```tsx
 <Calendar mode="range" selected={periodo} onSelect={setPeriodo} min="2026-01-01" />
 ```
 
-Changing month animates: the new month comes in from the side the person moved
-toward, in 200ms, and with "reduce motion" on the change is instant.
-`animate={false}` turns it off.
+A troca de mês anima: o mês novo entra pelo lado para onde a pessoa andou, em
+200ms, e com "reduzir movimento" ligado a troca é instantânea. `animate={false}`
+desliga.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Calendar` - month drawn by hand; `value`, `onValueChange`, `min` and `max` in ISO `yyyy-mm-dd`, which the web also accepts; displayed as `dd/mm/yyyy`; the new month fades in; `classNames` with the names of the web's `DayPicker`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Calendar` - mês desenhado à mão; `value`, `onValueChange`, `min` e `max` em ISO `aaaa-mm-dd`, que o web também aceita; exibição `dd/mm/aaaa`; o mês novo entra por fade; `classNames` com os nomes do `DayPicker` do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

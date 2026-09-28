@@ -106,35 +106,32 @@ function TimeColumn({
 }
 
 export type TimePickerLabels = {
-  /** Name of the button that opens the panel. */
+  /** Nome do botao que abre o painel. */
   open?: string;
-  /** Title read on the phone, where the panel becomes a sheet and loses its context. */
+  /** Titulo lido no celular, onde o painel vira folha e perde o contexto. */
   title?: string;
-  /** Name of the hours column. */
+  /** Nome da coluna das horas. */
   hours?: string;
-  /** Name of the minutes column. */
+  /** Nome da coluna dos minutos. */
   minutes?: string;
 };
 
 export type TimePickerProps = Omit<ComponentProps<typeof TimeField>, "className" | "classNames"> & {
   /**
-   * Goes to the `<input>`, and not to the frame.
+   * Vai para o `<input>`, e nao para a moldura.
    *
-   * The same applies to `aria-label`, `aria-describedby` and the rest of what
-   * `TimeField` accepts: what needs a name here is the field, and it is on it that the
-   * `<label htmlFor>` has to land. The consequence is that
-   * `getElementById` returns the field, and not the box that joins field and
-   * clock - to reach the frame, use `className`.
+   * O mesmo vale para `aria-label`, `aria-describedby` e o resto do que o
+   * `TimeField` aceita: quem precisa de nome aqui e o campo, e e nele que o
+   * `<label htmlFor>` tem que pousar. A consequencia e que
+   * `getElementById` devolve o campo, e nao a caixa que junta campo e
+   * relogio - para alcancar a moldura, use `className`.
    */
   id?: string;
-  /** Dresses the frame that joins field and button, and not the field. */
+  /** Veste a moldura que junta campo e botao, e nao o campo. */
   className?: string;
-  /** Class per part: `field`, `trigger`, `panel`, `column`, `option`. */
+  /** Classe por parte: `field`, `trigger`, `panel`, `column`, `option`. */
   classNames?: Slots<"field" | "trigger" | "panel" | "column" | "option">;
-  /**
-   * The texts the screen reader hears. Each one has its own default, and changing one does not
-   * erase the others.
-   */
+  /** Os textos que o leitor de tela ouve. Cada um tem padrao proprio, e trocar um nao apaga os outros. */
   labels?: TimePickerLabels;
 };
 

@@ -1,6 +1,6 @@
 import { Button, Spinner } from '@rivocode/ui'
 
-/** Sizes */
+/** Tamanhos */
 export function Sizes() {
   return (
     <div className="flex items-center gap-4 text-fg">
@@ -11,7 +11,7 @@ export function Sizes() {
   )
 }
 
-/** Inside a button */
+/** Dentro de botão */
 export function InsideAButton() {
   return (
     <Button disabled>

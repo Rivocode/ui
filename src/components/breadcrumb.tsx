@@ -7,23 +7,23 @@ import { cn } from "../lib/cn";
 
 export type Crumb = {
   label: ReactNode;
-  /** Without `href`, the crumb is just text. The last one is usually like that. */
+  /** Sem `href`, a migalha e so texto. A ultima costuma ser assim. */
   href?: string;
 };
 
 export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
   items: Crumb[];
   /**
-   * How many crumbs fit before the middle turns into an ellipsis: collapsed, the trail
-   * shows the first and the last `max - 1`, and never fewer than the last one.
+   * Quantas migalhas cabem antes de o meio virar reticencia: dobrada, a trilha
+   * mostra a primeira e as `max - 1` ultimas, e nunca menos que a ultima.
    *
-   * `max` is what the rest of the catalog calls the cap of a list - `Indicator`,
-   * `AvatarGroup` and `TagsInput` already called it that, and only the trail diverged.
+   * `max` e como o resto do catalogo chama o teto de uma lista - `Indicator`,
+   * `AvatarGroup` e `TagsInput` ja o chamavam assim, e so a trilha divergia.
    */
   max?: number;
   /**
-   * The piece's texts, to change the language: `navigation` is the region's name,
-   * "Caminho" without it.
+   * Os textos da peca, para trocar o idioma: `navigation` e o nome da regiao,
+   * "Caminho" sem ele.
    */
   labels?: Partial<BreadcrumbLabels>;
 };

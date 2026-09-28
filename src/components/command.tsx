@@ -19,22 +19,21 @@ import { useRivoContext } from "../provider/rivo-provider";
 import { Kbd } from "./kbd";
 
 export type CommandItem = {
-  /** The action's identity. Must be stable across searches. */
+  /** Identidade da acao. Precisa ser estavel entre buscas. */
   id: string;
   label: string;
-  /** Supporting line, for when the label alone does not decide. */
+  /** Linha de apoio, para quando o rotulo sozinho nao decide. */
   description?: string;
   icon?: ReactNode;
-  /** The action's own shortcut, like `"mod+n"`. Only shows it; registers nothing. */
+  /** Atalho proprio da acao, como `"mod+n"`. So mostra; nao registra nada. */
   shortcut?: string;
   /**
-   * Other words that find this item. "nf", "fatura" and "boleto" leading to
-   * Notas fiscais is what separates a useful palette from one that only finds things for people who
-   * already
-   * know the exact name.
+   * Outras palavras que acham este item. "nf", "fatura" e "boleto" levando a
+   * Notas fiscais e o que separa uma paleta util de uma que so acha quem ja
+   * sabe o nome exato.
    *
-   * Accepts a list or a string with the words separated by spaces - the
-   * JSDoc described a list from the start, and the type only accepted the string.
+   * Aceita uma lista ou uma string com as palavras separadas por espaco - o
+   * JSDoc descrevia uma lista desde o inicio, e o tipo so aceitava a string.
    */
   keywords?: string | string[];
   disabled?: boolean;
@@ -51,23 +50,23 @@ export type CommandProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   onOpenChange: (open: boolean) => void;
   groups: CommandGroup[];
   placeholder?: string;
-  /** Text for when the search finds nothing. */
+  /** Texto de quando a busca nao acha nada. */
   emptyMessage?: string;
   /**
-   * Shortcut that opens it, combined with Ctrl or Cmd. Ignores case and does not
-   * fire inside a text field or an editor. `null` turns it off, for those who
-   * prefer to register the shortcut in their own application.
+   * Atalho que abre, combinado com Ctrl ou Cmd. Ignora maiuscula e nao
+   * dispara dentro de campo de texto nem de editor. `null` desliga, para quem
+   * prefere registrar o atalho na propria aplicacao.
    */
   shortcut?: string | null;
-  /** Title read by the screen reader. The palette has no visible title. */
+  /** Titulo lido pelo leitor de tela. A paleta nao tem titulo visivel. */
   title?: string;
   /**
-   * Dresses the PANEL, and not the backdrop behind it - width, corner, max height.
+   * Veste o PAINEL, e nao a tarja atras dele - largura, canto, altura maxima.
    *
-   * The palette takes no child and has no `*Content` of its own, so it was the piece
-   * with no door at all for its caller's class: the way to widen it was
-   * to reach the portal through a descendant selector, which couples the screen to the
-   * internal tree here.
+   * A paleta nao recebe filho nem tem `*Content` proprio, entao ela era a peca
+   * sem porta nenhuma para a classe de quem a chama: o jeito de alargar era
+   * alcancar o portal por seletor de descendente, que acopla a tela a arvore
+   * interna daqui.
    */
   className?: string;
 };

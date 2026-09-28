@@ -49,13 +49,12 @@ export function ButtonSpinner({ variant }: { variant: ButtonVariant }) {
 export type ButtonProps = Omit<PressableProps, "children" | "className"> & {
   children: ReactNode;
   /**
-   * The button's look, with the web names. `outline` is just the thick border,
-   * no fill: the action that sits next to the primary one without competing
-   * with it.
+   * O desenho do botao, com os nomes do web. `outline` e so a borda grossa, sem
+   * fundo: a acao que fica ao lado da principal sem competir com ela.
    */
   variant?: keyof typeof BUTTON_CONTAINER;
   size?: "sm" | "md" | "lg";
-  /** Waiting: does not accept touch and announces `busy`. The same name as the web. */
+  /** Em espera: nao aceita toque e anuncia `busy`. O mesmo nome do web. */
   loading?: boolean;
 };
 

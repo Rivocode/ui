@@ -54,38 +54,38 @@ const CLAMP = {
 
 export type TextProps = ComponentPropsWithoutRef<"p"> & {
   /**
-   * The size on the house scale, from `xs` (12px) to `lg` (18px); above that it is a
-   * heading, and the heading is `Heading`. Without it the text inherits the size of what
-   * surrounds it, which is what a stretch inside another sentence needs.
+   * O corpo na escala da casa, de `xs` (12px) a `lg` (18px); acima disso e
+   * titulo, e o titulo e o `Heading`. Sem ele o texto herda o corpo de quem o
+   * cerca, que e o que um trecho dentro de outra frase precisa.
    */
   size?: TextSize;
   /**
-   * The color role: `neutral` is running text, `muted` the secondary, `subtle`
-   * the caption, and the status tones are the `-text` ones, those that read over the page
-   * background. Without it the text inherits the color of what surrounds it.
+   * O papel de cor: `neutral` e o texto corrido, `muted` o secundario, `subtle`
+   * a legenda, e os tons de estado sao os `-text`, os que se leem sobre o fundo
+   * da pagina. Sem ele o texto herda a cor de quem o cerca.
    */
   tone?: TextTone;
   /**
-   * The font weight, read from the theme's weight tokens: `regular` is
-   * `--rc-weight-regular`, `medium` is `--rc-weight-medium`, `semibold` is
-   * `--rc-weight-strong` and `bold` is `--rc-weight-bold`. Without it inherits, like the
-   * size and the color.
+   * O peso da letra, lido dos tokens de peso do tema: `regular` e
+   * `--rc-weight-regular`, `medium` e `--rc-weight-medium`, `semibold` e
+   * `--rc-weight-strong` e `bold` e `--rc-weight-bold`. Sem ele herda, como o
+   * corpo e a cor.
    */
   weight?: TextWeight;
   /**
-   * Truncates to one line with an ellipsis. The whole sentence stays in the DOM, so
-   * whoever listens to the screen hears everything; whoever sees it needs a `title` or a `Tooltip`.
+   * Corta em uma linha com reticencias. A frase inteira continua no DOM, entao
+   * quem ouve a tela ouve tudo; quem ve precisa de um `title` ou de um `Tooltip`.
    */
   truncate?: boolean;
   /**
-   * Truncates after so many lines, from 1 to 6, with an ellipsis on the last. Wins over
-   * `truncate` when both come together.
+   * Corta depois de tantas linhas, de 1 a 6, com reticencias na ultima. Vence o
+   * `truncate` quando os dois vem juntos.
    */
   lineClamp?: 1 | 2 | 3 | 4 | 5 | 6;
   /**
-   * Swaps the element while keeping the look: `<Text render={<span />}>` for a
-   * stretch inside a sentence, `<Text render={<div />}>` for a block that
-   * contains another block. Without it a `<p>` is rendered.
+   * Troca o elemento mantendo a aparencia: `<Text render={<span />}>` para o
+   * trecho dentro de uma frase, `<Text render={<div />}>` para o bloco que
+   * contem outro bloco. Sem ele sai um `<p>`.
    */
   render?: ReactElement;
   ref?: Ref<HTMLParagraphElement>;

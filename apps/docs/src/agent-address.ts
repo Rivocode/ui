@@ -1,28 +1,27 @@
 /* ---------------------------------------------------------------------------
- * Where a piece lives, for whoever reads the raw markdown
+ * Onde uma peca mora, para quem le o markdown cru
  *
- * A part does not get its own page. It is already published in full - prose,
- * props and the example that assembles it - inside the page of the piece it
- * composes, and the standalone version never had an example: there is nothing
- * to demonstrate about a `CardHeader` without the `Card` around it. Seventy-six
- * of the hundred and fifty-seven files were that, and each one cost an agent a
- * fetch that added nothing.
+ * Parte nao ganha pagina propria. Ela ja e publicada inteira - prosa, props e o
+ * exemplo que a monta - dentro da pagina da peca que a compoe, e a versao
+ * avulsa nunca teve exemplo: nao ha o que demonstrar sobre um `CardHeader` sem
+ * o `Card` em volta. Setenta e seis dos cento e cinquenta e sete arquivos eram
+ * isso, e cada um custava a um agente um fetch que nao somava nada.
  *
- * These two functions live here, and not inside the plugin, so a test can read
- * them without building the site first. A test that reads `dist/` passes on
- * the machine that just built and fails in CI, which is the worst kind: it
- * looks like a guard and is a coin toss.
+ * Estas duas funcoes moram aqui, e nao dentro do plugin, para um teste poder
+ * le-las sem construir o site antes. Teste que le `dist/` passa na maquina que
+ * acabou de construir e falha na CI, que e o pior tipo: parece guarda e e cara
+ * ou coroa.
  * ------------------------------------------------------------------------- */
 
-/** `/componentes/card.md#cardheader` - the part, inside whoever assembles it. */
+/** `/componentes/card.md#cardheader` - a parte, dentro de quem a monta. */
 export function addressOf(slug: string, part?: { name: string; ownerSlug: string }) {
   if (!part) return `/componentes/${slug}.md`
   return `/componentes/${part.ownerSlug}.md#${part.name.toLowerCase()}`
 }
 
 /**
- * One index line, in the llmstxt.org format: `- [name](address): note`.
- * A part is indented under the piece, and the note opens saying it is a part.
+ * Uma linha do indice, no formato de llmstxt.org: `- [nome](endereco): nota`.
+ * Parte fica indentada sob a peca, e a nota abre dizendo que e parte.
  */
 export function indexLine(
   name: string,
@@ -35,20 +34,20 @@ export function indexLine(
   if (!owner) return `- [${name}](${addressOf(slug)})${note ? `: ${note}` : ''}`
 
   const address = addressOf(slug, { name, ownerSlug: owner.slug })
-  return `  - [${name}](${address}): part of ${owner.name}${note ? `. ${note}` : ''}`
+  return `  - [${name}](${address}): parte de ${owner.name}${note ? `. ${note}` : ''}`
 }
 
 /**
- * The note left at the part's old address.
+ * O bilhete deixado no endereco antigo da parte.
  *
- * An agent that saved the link cannot be met with nothing, so the address
- * keeps answering - with three lines saying what that is and where the whole
- * thing lives.
+ * Um agente que guardou o link nao pode ser recebido com o vazio, entao o
+ * endereco continua respondendo - com tres linhas que dizem o que aquilo e e
+ * onde mora a coisa inteira.
  */
 export function partNote(name: string, owner: { name: string; slug: string }) {
   return (
-    `# ${name}\n\n${name} is part of ${owner.name}, and is documented on its ` +
-    `page, with the prose, the props table and the example that assembles both:\n\n` +
+    `# ${name}\n\n${name} é parte de ${owner.name}, e é documentada na página ` +
+    `dele, com a prosa, a tabela de props e o exemplo que monta as duas:\n\n` +
     `[/componentes/${owner.slug}.md](${addressOf(name, { name, ownerSlug: owner.slug })})\n`
   )
 }

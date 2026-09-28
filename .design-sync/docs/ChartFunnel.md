@@ -1,11 +1,11 @@
 ---
-category: Charts
+category: Gráfico
 ---
 
 # ChartFunnel
 
-The stages of a path, with how many reached each one and how many made it from
-one to the next: from whoever visited to whoever issued their first invoice.
+As etapas de um caminho, com quantos chegaram a cada uma e quantos passaram de
+uma para a seguinte: de quem visitou a quem emitiu a primeira nota.
 
 ```tsx
 <ChartFunnel
@@ -17,64 +17,62 @@ one to the next: from whoever visited to whoever issued their first invoice.
 />
 ```
 
-Each stage has its name, its number and a bar with a width proportional to the
-widest stage. Between two stages comes the **conversion rate**, written out:
-"↓ 25% da etapa anterior". At the end, the end-to-end conversion. The rate is
-the information the funnel drawing alone does not give, because the eye
-compares width and not ratio, and it is almost always the question of whoever
-opened the panel.
+Cada etapa tem o nome, o número e uma barra com largura proporcional à etapa
+mais larga. Entre duas etapas vem a **taxa de conversão**, escrita: "↓ 25%
+da etapa anterior". No fim, a conversão de ponta a ponta. A taxa é a informação
+que o desenho de funil sozinho não dá, porque o olho compara largura e não
+razão, e é quase sempre a pergunta de quem abriu o painel.
 
-## The math
+## A conta
 
-The rate is the stage over the previous one, and the end-to-end rate is the
-last over the first. A zeroed previous stage does not invent a rate: "—"
-shows up. `formatRate` changes how it is written, and takes 0 to 100.
-`labels.rate` and `labels.overall` change the sentences, which is what a
-product in another language needs; `showOverall={false}` hides the total line.
+A taxa é a etapa sobre a anterior, e a de ponta a ponta é a última sobre a
+primeira. Etapa anterior zerada não inventa taxa: aparece "—". `formatRate`
+troca a escrita, e recebe de 0 a 100. `labels.rate` e `labels.overall` trocam
+as frases, que é o que um produto em outra língua precisa; `showOverall={false}`
+esconde a linha do total.
 
-## The drawing
+## O desenho
 
-`align="center"` draws a real funnel, each bar centered under the one above.
-`align="start"` aligns the bars to the left, which reads better when the names
-are long and what matters is comparing length.
+`align="center"` desenha o funil de verdade, cada barra centrada sob a de cima.
+`align="start"` alinha as barras à esquerda, que lê melhor quando os nomes são
+longos e o que importa é comparar comprimento.
 
-All bars have the same color, `var(--rc-chart-1)` or the one in `color`, and
-that is on purpose: the stages are not different categories, they are the same
-population shrinking, and one color per stage would suggest the opposite.
+Todas as barras têm a mesma cor, `var(--rc-chart-1)` ou a do `color`, e isso é
+de propósito: as etapas não são categorias diferentes, são a mesma população
+encolhendo, e uma cor por etapa sugeriria o contrário.
 
-## Screen reader
+## Leitor de tela
 
-There is no drawing to describe: the component **is** an ordered list, with
-each stage's name, number and rate as text, and the bar is hidden from it.
-`label` names the list.
+Não há desenho para descrever: a peça **é** uma lista ordenada, com o nome de
+cada etapa, o número e a taxa em texto, e a barra fica escondida dele. `label`
+dá nome à lista.
 
-## Motion
+## Movimento
 
-The bars grow from the center (or from the left, with `start`) the first time,
-and move to the new width when the data changes, in `--rc-duration-slow`. With
-"reduce motion", they are born in place.
+As barras crescem do centro (ou da esquerda, no `start`) na primeira vez, e
+andam até a largura nova quando os dados mudam, em `--rc-duration-slow`. Com
+"reduzir movimento", nascem no lugar.
 
-## No data
+## Sem dado
 
-`empty` is the same object as in `ChartContainer` and `DataTable`: `title`,
-a required `description`, optional `action` and `icon`. It shows up in place of
-the drawing when the list comes empty or all stages add up to zero. Without it,
-the funnel draws the stages with zero-width bars.
+`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
+`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
+desenho quando a lista vem vazia ou todas as etapas somam zero. Sem ele, o funil desenha as etapas com barra de largura zero.
 
 
-When the stages are not subsets of one another (acquisition channels, invoice
-types), there is no conversion to compute, and what exists is comparison: a
-horizontal bar. When the subject is **where the person is** in a process, and
-not how many went through, it is `Steps`, which looks ahead. And to say which
-part of the total belongs to each thing, it is `ChartDonut`: a slice is part of
-a whole, and a funnel stage is not.
+Quando as etapas não são um subconjunto uma da outra (canais de aquisição,
+naturezas de nota), não há conversão para calcular, e o que existe é
+comparação: barra deitada. Quando o assunto é **onde a pessoa está** num
+processo, e não quantas passaram, é o `Steps`, que olha para a frente. E para
+dizer que parte do total é de cada coisa, é o `ChartDonut`: fatia é parte de um
+todo, e etapa de funil não é.
 
-## In React Native
+## No React Native
 
-Translates, in `@rivocode/ui-native/chart`, and it is the chart piece that needs `react-native-svg` least: the bars are `View`s, and the rate math is the same function as the web, generated in `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, `showOverall`, `labels` and `format`, with a formatter name or a function, cross over unchanged.
+Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do `react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, `showOverall`, `labels` e `format`, com nome de formatador ou função, atravessam iguais.
 
-One type change, the same as the donut: `color` is a token role (`chart-2`), not a CSS color. And one reading change: on the web the piece is an ordered list and the screen reader reads the name, the number and the rate in pieces; here **each stage is a single stop**, with all three in the same sentence ("Cadastros: 400, 40% da etapa anterior"), because the phone's screen reader moves from element to element and three stops per stage would triple the path. There is no `label`: on touch there is no list name, and the card's title plays that role.
+Uma mudança de tipo, a mesma da rosca: `color` é papel de token (`chart-2`) e não cor de CSS. E uma de leitura: no web a peça é uma lista ordenada e o leitor de tela lê o nome, o número e a taxa em pedaços; aqui **cada etapa é uma parada só**, com os três na mesma frase ("Cadastros: 400, 40% da etapa anterior"), porque o leitor de tela do celular anda de elemento em elemento e três paradas por etapa triplicariam o caminho. Não há `label`: no toque não existe nome de lista, e o título do cartão faz esse papel.
 
-The bars grow from zero on appearing and move to the new width when the data changes, through Reanimated and with the motion tokens; with "reduce motion", they are born in place.
+As barras crescem do zero ao aparecer e andam até a largura nova quando os dados mudam, pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.
 
-The parts are styled through the same `classNames` as the web: `stage`, `bar` and `rate`. With `empty` (the `ChartContainer` format), an empty list or a zero sum shows the empty state in place of the bars.
+As partes vestem pelo mesmo `classNames` do web: `stage`, `bar` e `rate`. Com `empty` (o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar das barras.

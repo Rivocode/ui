@@ -1,7 +1,7 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # InputAction
 
-A button attached to the field, with no border of its own and taking the full height. Use it to search, copy, show the password.
+Botão colado no campo, sem borda própria e ocupando a altura toda. Serve para buscar, copiar, mostrar a senha.

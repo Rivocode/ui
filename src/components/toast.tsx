@@ -160,19 +160,19 @@ function List({
 }
 
 export type ToastViewportProps = ComponentProps<typeof BaseToast.Viewport> & {
-  /** Where the portal anchors. RivoProvider passes the container that carries the theme. */
+  /** Onde o portal ancora. O RivoProvider passa o container que leva o tema. */
   container: HTMLElement | null;
   /**
-   * Where the notices appear. Default `bottom-right`, which is the corner that competes least
-   * with the content: header, title and main action live at the top.
+   * Onde os avisos aparecem. Padrao `bottom-right`, que e o canto que menos
+   * disputa com o conteudo: cabecalho, titulo e acao principal moram em cima.
    *
-   * It is worth changing when the notice answers an action that happens far from there, or
-   * when that corner is already taken by something else fixed.
+   * Vale mudar quando o aviso responde a uma acao que acontece longe dali, ou
+   * quando o proprio canto ja esta ocupado por outra coisa fixa.
    */
   position?: ToastPosition;
   /**
-   * The piece's texts, to change the language: `dismiss` is the name of each notice's
-   * x, "Fechar aviso" without it. Through `RivoProvider`, it is `toastLabels`.
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis de cada
+   * aviso, "Fechar aviso" sem ele. Pelo `RivoProvider`, e o `toastLabels`.
    */
   labels?: Partial<ToastLabels>;
 };

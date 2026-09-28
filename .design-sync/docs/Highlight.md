@@ -1,12 +1,12 @@
 ---
-category: Typography
+category: Tipografia
 ---
 
 # Highlight
 
-Marks, inside a text, the part the person searched for. It is what makes a
-results list say **why** each row showed up: whoever typed "sao" sees the "São"
-of "Clínica São Lucas" painted.
+Marca, dentro de um texto, o trecho que a pessoa buscou. É o que faz a lista de
+resultados dizer **por que** cada linha apareceu: quem digitou "sao" vê o "São"
+de "Clínica São Lucas" pintado.
 
 ```tsx
 const [query, setQuery] = useState('')
@@ -18,25 +18,25 @@ const found = customers.filter((name) => matchesSearch(name, query))
 ))}
 ```
 
-The text comes in as a child, and it has to be a `string`: the highlight is
-computed over it. `query` is the term, or a list of terms.
+O texto entra como filho, e tem que ser `string`: o destaque é calculado sobre
+ele. `query` é o termo, ou uma lista de termos.
 
-## Accents do not matter
+## Sem acento importar
 
-Case and accents do not matter, both ways: "sao" finds "São", "JOÃO" finds
-"joao", and "acao" finds "Ação". What comes out painted is always the
-**original** text, with the accent it had. An accent written in two parts (the
-letter and the mark separate, as some databases produce) stays inside the
-highlight, and not loose after it.
+Caixa e acento não importam, nos dois sentidos: "sao" acha "São", "JOÃO" acha
+"joao", e "acao" acha "Ação". O que sai pintado é sempre o texto **original**,
+com o acento que ele tinha. Acento escrito em duas partes (a letra e o sinal
+separados, como sai de alguns bancos) fica dentro do destaque, e não solto
+depois dele.
 
-`matchesSearch(texto, termo)` is the same rule, to filter the list before
-highlighting: what the filter finds is what `Highlight` paints.
+`matchesSearch(texto, termo)` é a mesma regra, para filtrar a lista antes de
+destacar: o que o filtro acha é o que o `Highlight` pinta.
 
-## Several terms
+## Vários termos
 
-With a list, each term is highlighted wherever it appears. Two terms that touch
-or overlap become a single span, and an empty or whitespace-only term is
-ignored: `query=""` returns the whole text, with no mark at all.
+Com uma lista, cada termo é destacado onde aparecer. Dois termos que se
+encostam ou se sobrepõem viram um trecho só, e termo vazio ou só de espaço é
+ignorado: `query=""` devolve o texto inteiro, sem marca nenhuma.
 
 ```tsx
 <Highlight query={['nota', 'cancelada']}>
@@ -44,39 +44,37 @@ ignored: `query=""` returns the whole text, with no mark at all.
 </Highlight>
 ```
 
-## The color
+## A cor
 
-Each span renders in a `<mark>` with the solid `warning` background, the
-`warning-fg` ink and semibold weight. They are two pairs measured in
-`src/lib/contrast.ts`, in both themes: the background against the three house
-backgrounds (`bg`, `surface` and `surface-raised`) exceeds 3:1, so the span
-stands out by color and not only by weight; and the ink over the background
-exceeds 4.5:1. The subtle `warning-subtle` background was discarded for that
-reason: it measured 1.14:1 against the background in light and 1.27:1 in dark,
-and the highlight lived on bold alone. The span's ink does not follow the
-surrounding paragraph, not even when it is `fg-muted`.
+Cada trecho sai num `<mark>` com o fundo cheio `warning`, a tinta
+`warning-fg` e peso semibold. São dois pares medidos em `src/lib/contrast.ts`,
+nos dois temas: o fundo contra os três fundos da casa (`bg`, `surface` e
+`surface-raised`) passa dos 3:1, então o trecho se destaca pela cor e não só
+pelo peso; e a tinta sobre o fundo passa dos 4,5:1. O fundo sutil
+`warning-subtle` foi descartado por isso: ele media 1,14:1 contra o fundo no
+claro e 1,27:1 no escuro, e o destaque vivia só do negrito. A tinta do trecho
+não segue o parágrafo em volta, nem quando ele é `fg-muted`.
 
-`<mark>` is not announced by most screen readers, and it does not need to be:
-the listener already knows what they searched for.
+O `<mark>` não é anunciado pela maioria dos leitores de tela, e não precisa:
+quem ouve já sabe o que buscou.
 
-## Parts
+## Partes
 
-`className` goes on the outer `<span>`. `classNames.mark` reaches each matched
-span.
+O `className` vai no `<span>` de fora. `classNames.mark` alcança cada trecho
+achado.
 
-## When not to use
+## Quando não usar
 
-- **Emphasized text that does not come from a search** is `<strong>` inside
-  `Text`. `Highlight` says "this is what you looked for", and used as emphasis
-  it misleads.
-- **Cutting long text** is `Text` with `truncate` or `lineClamp`, and showing
-  more on demand is `Spoiler`. `Highlight` does not touch the text's length.
-- **Marking the current item of a list** is the list's own `aria-selected`
-  (`Select`, `Combobox`, `Command`). The search highlight is something else, and
-  paints over the selected one.
+- **Texto com ênfase que não vem de busca** é `<strong>` dentro do `Text`. O
+  `Highlight` diz "foi isto que você procurou", e usado como ênfase ele engana.
+- **Cortar texto longo** é `Text` com `truncate` ou `lineClamp`, e mostrar
+  mais sob demanda é `Spoiler`. O `Highlight` não mexe no tamanho do texto.
+- **Marcar o item atual de uma lista** é o `aria-selected` da própria lista
+  (`Select`, `Combobox`, `Command`). O destaque de busca é outra coisa, e pinta
+  por cima do selecionado.
 
-## In React Native
+## No React Native
 
-Translates, on top of the package's `Text`, with the same `query` and the same accent-insensitive rule. Each match is a nested `Text` with the same solid `warning` background, the `warning-fg` ink and the semibold weight, and the outer one accepts all the `Text` props (`size`, `tone`, `weight`, `lineClamp`).
+Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada trecho achado é um `Text` aninhado com o mesmo fundo cheio `warning`, a tinta `warning-fg` e o peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, `lineClamp`).
 
-Each match's class goes in `classNames.mark`, as on the web. `matchesSearch` also comes from the native package, so the filter and the highlight use the same rule.
+A classe de cada trecho vai em `classNames.mark`, como no web. O `matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma regra.

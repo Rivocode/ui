@@ -26,9 +26,9 @@ export const avatarVariants = cva(
 export type AvatarProps = ComponentProps<typeof BaseAvatar.Root> &
   VariantProps<typeof avatarVariants> & {
     src?: string;
-    /** Description of the photo. Empty when the name already appears beside it. */
+    /** Descricao da foto. Vazio quando o nome ja aparece do lado. */
     alt?: string;
-    /** What appears with no photo, or while it loads. Usually the initial. */
+    /** O que aparece sem foto, ou enquanto ela carrega. Costuma ser a inicial. */
     fallback?: string;
   };
 

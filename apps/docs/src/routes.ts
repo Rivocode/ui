@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * The router
+ * O roteador
  *
- * Three shapes of address: the cover, the foundation, a component. A routing
- * library brings a route graph, per-route loading and a context: worth it with
- * dozens of screens, expensive with three.
+ * Tres formas de endereco: a capa, a fundacao, um componente. Uma biblioteca de
+ * rotas traz grafo de rota, carregamento por rota e um contexto: vale a pena
+ * com dezenas de telas, sai caro com tres.
  * ------------------------------------------------------------------------- */
 
 export type Route =
@@ -19,12 +19,12 @@ export type Route =
   | { kind: 'component'; slug: string }
 
 /**
- * The path the router reads when nobody says which.
+ * O caminho que o roteador le quando ninguem diz qual.
  *
- * In the browser it is the address bar. In the prerender there is no
- * `window`: the route comes from whoever is generating the page, through
- * `setRenderedPath`. Without this the first render outside the browser blows
- * up on `window`, and no page comes out with content inside `#root`.
+ * No navegador e a barra de enderecos. No prerender nao ha `window`: a rota vem
+ * de quem esta gerando a pagina, por `setRenderedPath`. Sem isto o primeiro
+ * render fora do navegador estoura em `window`, e nenhuma pagina sai com
+ * conteudo dentro do `#root`.
  */
 let renderedPath = '/'
 
@@ -37,7 +37,7 @@ const currentPath = () =>
 
 export function readRoute(path = currentPath()): Route {
   if (path === '/fundacao' || path === '/fundacao/') return { kind: 'foundation' }
-  // Before the guide pattern further down, which would otherwise swallow this one.
+  // Antes do padrao de guia la embaixo, que senao engoliria este.
   if (path === '/demonstracao' || path === '/demonstracao/') return { kind: 'demo' }
 
   if (path === '/componentes' || path === '/componentes/') return { kind: 'catalog' }
@@ -79,13 +79,13 @@ export function useRoute() {
 
     window.history.pushState(null, '', href)
     setRoute(target)
-    // Changing pages while keeping the old scroll opens the next component
-    // halfway down. The browser only takes care of this on its own navigations.
+    // Trocar de pagina mantendo a rolagem velha abre o proximo componente pela
+    // metade. O navegador so cuida disso nas navegacoes dele.
     //
-    // `instant` on purpose. The stylesheet sets `scroll-behavior: smooth`, and
-    // without saying anything here the page change inherited that smoothness:
-    // whoever clicked a name in the sidebar at the end of a long page watched
-    // the old page scroll up to the top before the new one appeared.
+    // `instant` a proposito. A folha define `scroll-behavior: smooth`, e sem
+    // dizer nada aqui a troca de pagina herdava esse suave: quem clicava num
+    // nome da lateral no fim de uma pagina longa via a pagina velha subir
+    // rolando ate o topo antes da nova aparecer.
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
 
@@ -93,11 +93,11 @@ export function useRoute() {
 }
 
 /**
- * A real link: middle click, "open in new tab" and the keyboard keep working,
- * and a plain click navigates without reloading.
+ * Um link de verdade: clique do meio, "abrir em nova aba" e o teclado
+ * continuam funcionando, e o clique comum navega sem recarregar.
  *
- * Not a hook. It is called inside lists, and the `use` prefix would forbid
- * that without buying anything - there is no state here.
+ * Nao e hook. Ela e chamada dentro de listas, e o prefixo `use` proibiria isso
+ * sem comprar nada - nao ha estado aqui.
  */
 export function linkTo(target: Route, navigate: (route: Route) => void) {
   return {

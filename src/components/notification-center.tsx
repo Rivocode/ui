@@ -32,23 +32,21 @@ import { Toggle, ToggleGroup } from "./toggle";
 export type { NotificationCenterLabels, NotificationFilter, NotificationTone };
 
 export type NotificationItem = {
-  /** Identifies the notification in the callbacks. */
+  /** Identifica a notificacao nos callbacks. */
   id: string;
-  /** The sentence that says what happened. Bold while it has not been read. */
+  /** A frase que diz o que aconteceu. Vai em negrito enquanto nao foi lida. */
   title: ReactNode;
-  /** The detail, below the title, in up to two lines. */
+  /** O detalhe, embaixo do titulo, em ate duas linhas. */
   description?: ReactNode;
-  /**
-   * When it happened. Rendered as `RelativeTime`: "ha 5 minutos", with the exact date in `title`.
-   */
+  /** Quando aconteceu. Sai como `RelativeTime`: "ha 5 minutos", com a data exata no `title`. */
   time: Date | string | number;
-  /** Already read. An unread one gets the dot, the bold and "Nao lida" for the screen reader. */
+  /** Ja foi lida. A nao lida ganha o ponto, o negrito e o "Nao lida" para o leitor de tela. */
   read: boolean;
-  /** Where the notification leads. With it, the row is a link. */
+  /** Para onde a notificacao leva. Com ele, a linha e um link. */
   href?: string;
-  /** The symbol on the left. Without it, the bell. Rendered `aria-hidden`. */
+  /** O simbolo a esquerda. Sem ele, o sino. Sai `aria-hidden`. */
   icon?: ReactNode;
-  /** Paints the symbol in the status tone. Default `neutral`. */
+  /** Pinta o simbolo no tom de estado. Padrao `neutral`. */
   tone?: NotificationTone;
 };
 
@@ -61,54 +59,51 @@ const TONE_TEXT: Record<NotificationTone, string> = {
 };
 
 export type NotificationCenterProps = Omit<ComponentPropsWithoutRef<"span">, "children"> & {
-  /** The notifications already loaded, from newest to oldest. The piece fetches nothing. */
+  /** As notificacoes ja carregadas, da mais nova para a mais antiga. A peca nao busca nada. */
   items: NotificationItem[];
   /**
-   * How many unread ones exist, when the server knows more than the loaded
-   * page. Without it, counts the unread ones in `items`. It is the bell's number.
+   * Quantas nao lidas existem, quando o servidor sabe mais do que a pagina
+   * carregada. Sem ele, conta as nao lidas de `items`. E o numero do sininho.
    */
   unreadCount?: number;
-  /** The panel open, controlled. Use with `onOpenChange`. */
+  /** O painel aberto, controlado. Use com `onOpenChange`. */
   open?: boolean;
-  /** The panel open on mount, when nobody controls it. */
+  /** O painel aberto ao montar, quando ninguem controla. */
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   /**
-   * Called when the person picks a notification. Opening counts as reading:
-   * if it was unread, `onMarkRead` is called along with it. The panel closes.
+   * Chamado quando a pessoa escolhe uma notificacao. Abrir conta como ler:
+   * se ela nao estava lida, `onMarkRead` e chamado junto. O painel fecha.
    */
   onItemClick?: (item: NotificationItem) => void;
-  /** Turns on the mark-as-read button on each unread one. Whoever called it keeps `read`. */
+  /** Liga o botao de marcar como lida em cada nao lida. Quem guarda o `read` e quem chamou. */
   onMarkRead?: (id: string) => void;
-  /** Turns on "Marcar todas como lidas" at the top of the panel. */
+  /** Liga o "Marcar todas como lidas" no topo do painel. */
   onMarkAllRead?: () => void;
-  /** The filter, controlled: `all` or `unread`. Use with `onFilterChange`. */
+  /** O filtro, controlado: `all` ou `unread`. Use com `onFilterChange`. */
   filter?: NotificationFilter;
-  /** The filter on mount, when nobody controls it. Default `all`. */
+  /** O filtro ao montar, quando ninguem controla. Padrao `all`. */
   defaultFilter?: NotificationFilter;
   /**
-   * Called when the person changes the filter. The piece already filters `items` by itself;
-   * the callback serves those who want to fetch the unread ones from the server.
+   * Chamado quando a pessoa troca o filtro. A peca ja filtra `items` sozinha;
+   * o callback serve a quem quer buscar as nao lidas no servidor.
    */
   onFilterChange?: (filter: NotificationFilter) => void;
-  /** There is more to load: turns on "Carregar mais" at the end of the list. */
+  /** Ha mais para carregar: liga o "Carregar mais" no fim da lista. */
   hasMore?: boolean;
-  /** Called by "Carregar mais". Whoever called it fetches and appends to `items`. */
+  /** Chamado pelo "Carregar mais". Quem busca e acrescenta em `items` e quem chamou. */
   onLoadMore?: () => void;
-  /** The next page is arriving: the button spins and does not accept clicks. */
+  /** A proxima pagina esta chegando: o botao gira e nao aceita clique. */
   isLoadingMore?: boolean;
-  /**
-   * The first load has not come back yet: the list becomes placeholders, and the reader hears
-   * "Carregando".
-   */
+  /** A primeira carga ainda nao voltou: a lista vira marca de lugar, e o leitor ouve "Carregando". */
   isLoading?: boolean;
-  /** The cap of the bell's number: above it "99+" is shown. */
+  /** O teto do numero no sininho: acima dele sai "99+". */
   max?: number;
-  /** The "now" of the relative dates, for tests and for server rendering. */
+  /** O agora das datas relativas, para teste e para renderizacao no servidor. */
   now?: Date;
-  /** Which side of the bell the panel aligns to, on desktop. Default `end`. */
+  /** De que lado do sininho o painel se alinha, na mesa. Padrao `end`. */
   align?: "start" | "end";
-  /** The piece's texts, to change the language or the term. */
+  /** Os textos da peca, para trocar o idioma ou o termo. */
   labels?: Partial<NotificationCenterLabels>;
   classNames?: Slots<
     "trigger" | "panel" | "header" | "filters" | "list" | "item" | "footer" | "empty"

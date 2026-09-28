@@ -1,9 +1,9 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # TableBody
 
-The `<tbody>`: the data rows.
+O `<tbody>`: as linhas de dado.
 
-It draws nothing on its own. The row's look lives in `TableRow`.
+Não desenha nada por conta própria. O visual da linha mora no `TableRow`.

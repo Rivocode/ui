@@ -21,32 +21,32 @@ import { Text } from "./text";
 export type ComboboxItem = { label: string; value: string; description?: string };
 
 export type ComboboxItemGroup = {
-  /** The family header in the sheet, announced as a header: "Pernambuco". */
+  /** O cabecalho da familia na folha, anunciado como cabecalho: "Pernambuco". */
   label: string;
   items: ComboboxItem[];
 };
 
 type ComboboxBaseProps = {
   /**
-   * A flat list, or `{ label, items }` groups - the same shape the web `items`
-   * accepts. With groups, the search filters within each family and hides a
-   * family that became empty.
+   * Lista rasa, ou grupos `{ label, items }` - a mesma forma que o `items` do
+   * web aceita. Com grupos, a busca filtra dentro de cada familia e some com a
+   * familia que ficou vazia.
    */
   items: ComboboxItem[] | ComboboxItemGroup[];
   label: string;
   placeholder?: string;
   searchPlaceholder?: string;
-  /** What to say when the search finds nothing - with the why, as always. */
+  /** O que dizer quando a busca nao acha nada - com o porque, como sempre. */
   emptyMessage?: string;
   disabled?: boolean;
-  /** Forces the error border of the trigger, or clears it with `false`, over the `Field` error. */
+  /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
-  /** Styles the trigger; the search sheet belongs to the platform. */
+  /** Veste o gatilho; a folha de busca e da plataforma. */
   className?: string;
   /**
-   * The component's texts, to change the language: `selected` is the trigger
-   * summary with more than one choice, and `done` the button that closes the
-   * sheet in `multiple`. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho
+   * com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`.
+   * Passe so os que mudam.
    */
   labels?: Partial<ComboboxLabels>;
 };

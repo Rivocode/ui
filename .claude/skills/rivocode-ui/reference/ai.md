@@ -1,19 +1,19 @@
-# AI interface: `@rivocode/ui/ai`
+# Interface de IA: `@rivocode/ui/ai`
 
-It does not come in the main package. It has no dependency to install: it is a
-separate path because of **weight**, since only the screen that talks to a model
-needs these five pieces.
+Não vem no pacote principal. Não tem dependência nenhuma a instalar: é caminho
+próprio pelo **peso**, porque só a tela que conversa com um modelo precisa
+destas cinco peças.
 
-**None of them knows an AI SDK.** The message comes in by prop, and what the
-person does comes out by event: `onSubmit`, `onStop`, `onRetry`, `onApprove`,
-`onReject`, `onSuggestion`. Whoever talks to the model is your screen, with the
-SDK it already uses. Do not install or import an SDK because of these pieces.
+**Nenhuma delas conhece SDK de IA.** A mensagem entra por prop, e o que a
+pessoa faz sai por evento: `onSubmit`, `onStop`, `onRetry`, `onApprove`,
+`onReject`, `onSuggestion`. Quem fala com o modelo é a sua tela, com o SDK que
+ela já usa. Não instale nem importe SDK por causa destas peças.
 
 ```tsx
 import { Conversation, Message, PromptInput, ToolCall, AILabel } from '@rivocode/ui/ai'
 ```
 
-## The conversation screen
+## A tela de conversa
 
 ```tsx
 <div className="flex h-[32rem] flex-col gap-3">
@@ -42,29 +42,29 @@ import { Conversation, Message, PromptInput, ToolCall, AILabel } from '@rivocode
 </div>
 ```
 
-- **The `Conversation` height is yours, by class.** Without it the conversation
-  grows and pushes the page. It sticks to the end while the text arrives, lets
-  go when the person scrolls up and shows "Ir para o fim".
-- **`streaming` goes in both places**: on the `Message` that is arriving (it
-  announces `aria-busy`, shows the indicator, hides the actions) and on
-  `PromptInput` (it swaps send for stop and holds Enter).
-- **The `Message` `children` is yours.** Render the markdown with the library
-  the project already has; `copyValue` receives the raw text.
-- `role` is `user` (bubble on the right), `assistant` (running text on the
-  left) or `system` (a discreet line in the center).
+- **A altura da `Conversation` é sua, por classe.** Sem ela a conversa cresce e
+  empurra a página. Ela gruda no fim enquanto o texto chega, solta quando a
+  pessoa rola para cima e mostra "Ir para o fim".
+- **`streaming` vai nos dois lugares**: na `Message` que está chegando (anuncia
+  `aria-busy`, mostra o indicador, esconde as ações) e no `PromptInput` (troca
+  enviar por parar e segura o Enter).
+- **`children` da `Message` é seu.** Renderize o markdown com a biblioteca que
+  o projeto já tem; `copyValue` recebe o texto cru.
+- `role` é `user` (balão à direita), `assistant` (texto corrido à esquerda) ou
+  `system` (linha discreta no centro).
 
-## The field
+## O campo
 
-`PromptInput`: Enter sends, Shift+Enter breaks the line, and Enter in the middle
-of a keyboard composition does not send. Without `value`, it clears itself after
-sending; with `value` and `onValueChange`, you do the clearing. `attachments` and
-`actions` are slots: the piece does not pick files. `maxLength` with
-`showCount` shows `120/4000`.
+`PromptInput`: Enter envia, Shift+Enter quebra a linha, e Enter no meio de uma
+composição de teclado não envia. Sem `value`, ele se limpa depois de enviar;
+com `value` e `onValueChange`, quem limpa é você. `attachments` e `actions` são
+lugares: a peça não escolhe arquivo. `maxLength` com `showCount` mostra
+`120/4000`.
 
-Do not use `Textarea` for a conversation, nor `PromptInput` for a form note:
-one sends on every Enter, the other goes along with the form.
+Não use `Textarea` para conversa, nem `PromptInput` para observação de
+formulário: um envia a cada Enter, o outro vai junto com o formulário.
 
-## Tool and approval
+## Ferramenta e aprovação
 
 ```tsx
 <ToolCall
@@ -79,14 +79,13 @@ one sends on every Enter, the other goes along with the form.
 />
 ```
 
-`status` is `pending`, `running`, `done`, `error` or `approval`, each with an
-icon and text. In `approval` the buttons appear outside the panel and the panel
-opens by itself; the piece does not keep the decision, so you change the
-`status`.
+`status` é `pending`, `running`, `done`, `error` ou `approval`, cada um com
+ícone e texto. Em `approval` os botões aparecem fora do painel e o painel abre
+sozinho; a peça não guarda a decisão, então mude o `status` você.
 
-## Content generated outside the conversation
+## Conteúdo gerado fora da conversa
 
-The summary that will live in an ordinary card carries the `AILabel`:
+O resumo que vai morar num cartão comum leva o `AILabel`:
 
 ```tsx
 <div className="flex items-center gap-2">
@@ -95,15 +94,15 @@ The summary that will live in an ordinary card carries the `AILabel`:
 </div>
 ```
 
-Write the explanation with the origin, the limit and what to check. Record
-status is still a `Badge`; `AILabel` says only the origin. `aiLabelVariants`
-comes along, for whoever needs the badge class on an element of their own.
+Escreva a explicação com a origem, o limite e o que conferir. Estado de
+registro continua sendo `Badge`; o `AILabel` diz só a origem. `aiLabelVariants`
+sai junto, para quem precisa da classe do selo num elemento próprio.
 
-## In React Native
+## No React Native
 
-The same five pieces in `@rivocode/ui-native/ai`, the only native path without
-a peer. What changes: `Conversation` comes through `items`, `renderItem` and
-`keyExtractor` over an inverted `FlatList`; `PromptInput` is controlled and
-sends only through the button; `Message` has `onCopy` instead of `copyValue`;
-and the `AILabel` explanation opens in a `Sheet`. Details in
+Mesmas cinco peças em `@rivocode/ui-native/ai`, o único caminho do nativo sem
+peer. O que muda: a `Conversation` vem por `items`, `renderItem` e
+`keyExtractor` sobre uma `FlatList` invertida; o `PromptInput` é controlado e
+envia só pelo botão; a `Message` tem `onCopy` no lugar do `copyValue`; e a
+explicação do `AILabel` abre numa `Sheet`. Detalhe em
 [native.md](native.md).

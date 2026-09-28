@@ -1,6 +1,6 @@
 import { Avatar, Badge, Button, Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@rivocode/ui'
 
-/** List row */
+/** Linha de lista */
 export function ListRow() {
   return (
     <div className="flex w-96 flex-col">
@@ -32,7 +32,7 @@ export function ListRow() {
   )
 }
 
-/** With frame */
+/** Com moldura */
 export function WithFrame() {
   return (
     <Item variant="outline" interactive className="w-96">

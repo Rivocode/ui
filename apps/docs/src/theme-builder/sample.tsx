@@ -39,17 +39,13 @@ import {
 } from '@rivocode/ui/chart'
 
 /* ---------------------------------------------------------------------------
- * The sample the builder dresses
+ * A amostra que o montador veste
  *
- * Real pieces, not rectangles painted in the chosen color: what you see here
- * is exactly what the client's screen will show, because they are the same
- * classes reading the same roles. Each block was chosen for the pair it
- * exposes - the primary button shows `accent-fg` on `accent`, the field with
- * an error shows `danger-text`, the badge shows the four tones, the chart the
- * series.
- *
- * The screen content stays in Portuguese: it is the Brazilian app the client
- * theme is going to dress.
+ * Pecas de verdade, e nao retangulos pintados com a cor escolhida: o que se ve
+ * aqui e exatamente o que a tela do cliente vai mostrar, porque sao as mesmas
+ * classes lendo os mesmos papeis. Cada bloco foi escolhido pelo par que ele
+ * expoe - o botao primario mostra `accent-fg` sobre `accent`, o campo com erro
+ * mostra `danger-text`, o selo mostra os quatro tons, o grafico as series.
  * ------------------------------------------------------------------------- */
 
 const CONFIG: ChartConfig = {

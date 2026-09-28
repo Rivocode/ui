@@ -1,19 +1,19 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # ComboboxSeparator
 
-The line between two `ComboboxGroup` in the list.
+A linha entre dois `ComboboxGroup` da lista.
 
-It is the sibling of `SelectSeparator`, and closes the parity with
-`MenuSeparator`: the library's three lists divide the same way. As in `Select`,
-it renders with `role="presentation"`: a node with a role of its own among the
-options would break the "option 3 of 12" that the screen reader announces.
+É a irmã do `SelectSeparator`, e fecha a paridade com o `MenuSeparator`: as três
+listas da biblioteca cortam do mesmo jeito. Como no `Select`, ela sai com
+`role="presentation"`: um nó com papel próprio no meio das opções quebraria o
+"opção 3 de 12" que o leitor de tela anuncia.
 
-## When not to use
+## Quando não usar
 
-While search is the main path, the line decorates and does not orient: whoever
-types three letters never sees the divider, because the filtered list drops it.
-It serves a list at rest, open and short enough to be read at once, and even
-then only between groups that have a name.
+Enquanto a busca é o caminho principal, a linha decora e não orienta: quem digita
+três letras nunca vê o corte, porque a lista filtrada some com ele. Ela serve à
+lista parada, aberta e curta o bastante para ser lida de uma vez, e aí só entre
+grupos que têm nome.

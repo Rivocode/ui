@@ -8,26 +8,26 @@ import { Presence } from "./motion";
 import { Text } from "./text";
 
 export type EditableProps = {
-  /** The current text. Controlled, like everything else in the native package. */
+  /** O texto de agora. Controlado, como todo o resto do pacote nativo. */
   value: string;
-  /** Notified on confirmation, and never on Cancelar. */
+  /** Avisado na confirmacao, e nunca no Cancelar. */
   onValueChange: (value: string) => void;
-  /** What the screen reader calls the field, open or closed. */
+  /** O que o leitor de tela chama o campo, aberto ou fechado. */
   label: string;
-  /** What appears in place of the empty value. */
+  /** O que aparece no lugar do valor vazio. */
   placeholder?: string;
   disabled?: boolean;
   className?: string;
   /**
-   * Class per part: `preview` (the value as read, the area you hold to edit)
-   * and `input` (the open field).
+   * Classe por parte: `preview` (o valor lido, a area que se segura para
+   * editar) e `input` (o campo aberto).
    */
   classNames?: Slots<"preview" | "input">;
   /**
-   * The component's texts, to change the language: `edit` is the name of the
-   * action that opens the field, `hint` the hint on how to open it, `empty`
-   * what the screen reader hears in place of the empty value and `cancel` the
-   * button that closes without saving. Pass only the ones that change.
+   * Os textos da peca, para trocar o idioma: `edit` e o nome da acao que abre
+   * o campo, `hint` a dica de como abrir, `empty` o que o leitor de tela ouve
+   * no lugar do valor vazio e `cancel` o botao que fecha sem salvar. Passe so
+   * os que mudam.
    */
   labels?: Partial<EditableLabels>;
 };

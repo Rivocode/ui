@@ -17,35 +17,35 @@ const SAFE_REL = ["noopener", "noreferrer"];
 
 export type LinkProps = ComponentPropsWithoutRef<"a"> & {
   /**
-   * The color role. `accent` is the standalone link on the page; `neutral` and `muted`
-   * serve a list of links and the footer; `inherit` takes the sentence's color, and is
-   * what goes inside an `Alert`, where the tone's color was already measured against
-   * its background.
+   * O papel de cor. `accent` e o link solto na pagina; `neutral` e `muted`
+   * servem a lista de links e ao rodape; `inherit` pega a cor da frase, e e o
+   * que vai dentro de um `Alert`, onde a cor do tom ja foi medida contra o
+   * fundo dele.
    */
   tone?: LinkTone;
   /**
-   * `always` always underlines, and is what the page needs when the link lives
-   * in the middle of a sentence: color alone is not enough for someone who cannot tell the
-   * color apart. `hover` only underlines on hover, and only applies outside running text, in a
-   * list in which the position already says that it is a link.
+   * `always` sublinha sempre, e e o que a pagina precisa quando o link mora
+   * no meio de uma frase: a cor sozinha nao basta para quem nao distingue a
+   * cor. `hover` so sublinha ao passar, e so vale fora do texto corrido, numa
+   * lista em que a posicao ja diz que aquilo e link.
    */
   underline?: "always" | "hover";
   /**
-   * Opens in another tab, with `rel="noopener noreferrer"`, draws the exit
-   * arrow and tells the screen reader with `labels.external`.
+   * Abre em outra aba, com `rel="noopener noreferrer"`, desenha a seta de
+   * saida e avisa o leitor de tela com o `labels.external`.
    */
   external?: boolean;
   /**
-   * Swaps the element while keeping the look, for the router's link:
-   * `<Link render={<RouterLink to="/notas" />}>`. The `href`, the focus and the
-   * navigation become the router's; the drawing stays this piece's.
+   * Troca o elemento mantendo a aparencia, para o link do router:
+   * `<Link render={<RouterLink to="/notas" />}>`. O `href`, o foco e a
+   * navegacao passam a ser do router; o desenho continua sendo daqui.
    */
   render?: ReactElement;
   ref?: Ref<HTMLAnchorElement>;
   /**
-   * The piece's texts, to change the language: `external` is the notice the screen
-   * reader hears after the text of an `external` link, "(abre em nova aba)"
-   * without it.
+   * Os textos da peca, para trocar o idioma: `external` e o aviso que o leitor
+   * de tela ouve depois do texto de um link `external`, "(abre em nova aba)"
+   * sem ele.
    */
   labels?: Partial<LinkLabels>;
 };

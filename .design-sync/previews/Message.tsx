@@ -4,7 +4,7 @@ import { Message } from '@rivocode/ui/ai'
 const ANSWER =
   'Em agosto foram emitidas 42 notas, somando R$ 48.200,00. Três ainda estão em aberto, e a maior delas vence na sexta.'
 
-/** The three roles */
+/** Os três papéis */
 export function Roles() {
   return (
     <div className="flex w-full max-w-xl flex-col gap-6">
@@ -22,7 +22,7 @@ export function Roles() {
   )
 }
 
-/** Streaming in */
+/** Chegando */
 export function Streaming() {
   return (
     <div className="flex w-full max-w-xl flex-col gap-6">
@@ -34,7 +34,7 @@ export function Streaming() {
   )
 }
 
-/** With error */
+/** Com erro */
 export function WithError() {
   return (
     <div className="w-full max-w-xl">

@@ -7,23 +7,17 @@ const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 export type ChartBarProps = {
-  /** The left edge, in px of the frame the container measured. */
+  /** A borda esquerda, em px do quadro que a moldura mediu. */
   x: number;
-  /**
-   * The top of the bar, in px. On entry it rises from the base; when the value
-   * changes, it is what moves.
-   */
+  /** O topo da barra, em px. Na entrada ele sobe da base; quando o valor muda, e ele que anda. */
   y: number;
-  /** The width, in px. */
+  /** A largura, em px. */
   width: number;
-  /**
-   * The height, in px. On entry it grows from zero; it moves together with `y`,
-   * and the base stays still.
-   */
+  /** A altura, em px. Na entrada cresce do zero; anda junto com o `y`, e a base fica parada. */
   height: number;
-  /** The final color, as the frame's `colors` delivers it: `colors.receita`. */
+  /** A cor final, como o `colors` do quadro entrega: `colors.receita`. */
   fill: string;
-  /** The corner radius, in px. */
+  /** O raio do canto, em px. */
   radius?: number;
 };
 
@@ -46,18 +40,18 @@ export type ChartPoint = { x: number; y: number };
 
 export type ChartLineProps = {
   /**
-   * The points, already in frame px, in axis order. With the same count as
-   * before, each point moves to its new place; with a different count, the line
-   * switches at once, because there is no pair to interpolate.
+   * Os pontos, ja em px do quadro, na ordem do eixo. Com a mesma quantidade de
+   * antes, cada ponto anda ate o novo lugar; com quantidade diferente, a linha
+   * troca de uma vez, porque nao ha par para interpolar.
    */
   points: readonly ChartPoint[];
-  /** The final stroke color: `colors.receita`. */
+  /** A cor final do traco: `colors.receita`. */
   stroke: string;
-  /** The stroke thickness, in px. */
+  /** A espessura do traco, em px. */
   strokeWidth?: number;
   /**
-   * The `y` the line rises from on entry, in frame px: the axis base. Without
-   * it, the line is born lying on the lowest point.
+   * O `y` de onde a linha sobe na entrada, em px do quadro: a base do eixo.
+   * Sem ele, a linha nasce deitada no ponto mais baixo.
    */
   baseline?: number;
 };

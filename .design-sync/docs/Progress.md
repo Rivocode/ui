@@ -4,31 +4,30 @@ category: Feedback
 
 # Progress
 
-A progress bar for a task with a known end: sending a file, generating a
-report.
+Barra de progresso de tarefa com fim conhecido: enviar arquivo, gerar relatório.
 
-Without `value` it becomes indeterminate; in that case prefer the `Spinner`,
-which takes less space and does not promise an end nobody can measure.
+Sem `value` ela vira indeterminada; nesse caso prefira o `Spinner`, que ocupa
+menos e não promete um fim que ninguém sabe medir.
 
-`format` writes the `showValue` number: the name of a house formatter, or a
-function of yours. It receives the value clamped to `min` and `max`, the same
-one the bar draws, and is not called when the bar is indeterminate.
+`format` escreve o número do `showValue`: o nome de um formatador da casa, ou
+uma função sua. Ele recebe o valor limitado a `min` e `max`, o mesmo que a
+barra desenha, e não é chamado quando a barra está indeterminada.
 
-## Motion
+## Movimento
 
-The bar fills from zero on mount, scaling horizontally from the left (`animate-fill`, `--rc-duration-slow`), and then moves to each new value along its width. The indeterminate state swaps the entrance for its back-and-forth. With "reduce motion", the bar starts at the value.
+A barra enche do zero na montagem, pela escala horizontal a partir da esquerda (`animate-fill`, `--rc-duration-slow`), e depois anda até cada valor novo pela largura. O indeterminado troca a entrada pelo vaivem dele. Com "reduzir movimento", a barra nasce no valor.
 
-## When not to use
+## Quando não usar
 
-For how much of a capacity is in use (disk space, the month's invoice quota,
-credit limit), use `Meter`. The difference is not in looks, it is in what the
-number does: progress moves toward the end and finishes, a meter stays put and
-can go up and down.
+Para quanto de uma capacidade está em uso (espaço em disco, cota de notas do
+mês, limite de crédito), use `Meter`. A diferença não é de aparência, é do que
+o número faz: o progresso anda para o fim e termina, a medida fica parada e pode
+subir e descer.
 
-Swapping one for the other reaches the screen reader: the progress bar is
-announced as something loading, and "loading 72%" for a disk that is not
-loading anything makes the listener wait for an end that never comes.
+Trocar um pelo outro chega ao leitor de tela: a barra de progresso é anunciada
+como algo que carrega, e "carregando 72%" para um disco que não está carregando
+nada faz quem ouve esperar por um fim que nunca vem.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Progress` - `value` from 0 to 100 and `label`; `showValue` and `format` as on the web; the bar moves to the new value; `classNames` with the web's four parts. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Progress` - `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo; `classNames` com as quatro partes do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

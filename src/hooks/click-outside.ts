@@ -5,11 +5,11 @@ import { useEffect, useRef, type RefObject } from "react";
 import { useLatest } from "./common/latest";
 
 export type UseClickOutsideOptions = {
-  /** The events that count as a click. `pointerdown` covers mouse, pen and touch. */
+  /** Os eventos que contam como clique. `pointerdown` cobre mouse, caneta e toque. */
   events?: string[];
-  /** Other elements that count as inside, like the trigger that opened the panel. */
+  /** Outros elementos que contam como dentro, como o gatilho que abriu o painel. */
   nodes?: Array<HTMLElement | null>;
-  /** Turns off listening without unmounting, for example with the panel closed. */
+  /** Desliga a escuta sem desmontar, por exemplo com o painel fechado. */
   enabled?: boolean;
 };
 

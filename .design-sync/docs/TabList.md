@@ -1,13 +1,13 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # TabList
 
-The row of tabs.
+A fila de abas.
 
-It scrolls sideways when it does not fit, instead of squeezing or wrapping: a
-tab on two lines becomes a disguised menu, and on the phone almost no row of
-tabs fits whole. The scrollbar is hidden on purpose, the gesture still works,
-and on the desktop the active tab brings itself into view through keyboard
-focus.
+Rola de lado quando não cabe, em vez de espremer ou quebrar linha: aba em duas
+linhas vira menu disfarçado, e no celular quase nenhuma fila de aba cabe
+inteira. A barra de rolagem fica escondida de propósito, o gesto continua
+valendo, e no desktop a aba ativa se traz para a vista sozinha pelo foco do
+teclado.

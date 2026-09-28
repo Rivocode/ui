@@ -23,17 +23,16 @@ const CONTENT_TYPES: Record<string, string> = {
 }
 
 /**
- * Serves the raw documentation.
+ * Serve a documentacao crua.
  *
- * The whole site exists for people; the agent reading `/componentes/button.md`
- * does not want the HTML around it. They are the same files the pages render,
- * so nothing is duplicated and nothing goes stale on its own. The whole list
- * comes from `agentFiles`, the same in `vite dev`, in the build and in the
- * test.
+ * O site inteiro existe para gente; o agente que le `/componentes/button.md`
+ * nao quer o HTML em volta. Sao os mesmos arquivos que as paginas renderizam,
+ * entao nada e duplicado e nada envelhece por conta propria. A lista inteira
+ * sai de `agentFiles`, a mesma no `vite dev`, no build e no teste.
  */
 function rawDocs(): Plugin {
   return {
-    name: 'rivocode-raw-docs',
+    name: 'rivocode-documentacao-crua',
 
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
@@ -58,18 +57,17 @@ function rawDocs(): Plugin {
 }
 
 /**
- * The same cleanup, for the module that actually runs on the page.
- * `sliceSource` already cleans the code the reader reads; this cleans the
- * code React mounts.
+ * A mesma limpeza, para o modulo que roda de fato na pagina. O `sliceSource` ja
+ * limpa o codigo que o leitor le; isto limpa o codigo que o React monta.
  *
- * `pre`, and only `pre`: after the JSX is compiled the flag stops looking like
- * an attribute and becomes `defaultOpen: true` inside a props object, and
- * cutting the name out of there leaves `{ : true }` - a syntax error, and
- * every example on the page replaced by a red box.
+ * `pre`, e so `pre`: depois de o JSX ser compilado a flag deixa de parecer
+ * atributo e vira `defaultOpen: true` dentro de um objeto de props, e cortar o
+ * nome dali deixa `{ : true }` - erro de sintaxe, e todo exemplo da pagina
+ * substituido por uma caixa vermelha.
  */
 function previewsClosed(): Plugin {
   return {
-    name: 'rivocode-closed-previews',
+    name: 'rivocode-previews-fechadas',
     enforce: 'pre',
 
     transform(code, id) {
@@ -81,26 +79,25 @@ function previewsClosed(): Plugin {
 }
 
 /**
- * The catalog index, as a virtual module.
+ * O indice do catalogo, como modulo virtual.
  *
- * The sidebar needs the name, family and lede of a hundred and fifty-seven
- * documents before the first piece is opened - and only that. While
- * `catalog.ts` read the `.md` files with `eager: true`, the WHOLE body of each
- * one, plus the source of each preview, went into the entry chunk: 1.1 MB of
- * text became 1.77 MB of escaped string the browser had to download and parse
- * before painting the first pixel of the cover. Lighthouse measured 4.6s of
- * FCP, LCP and Speed Index - all three equal, which is the signature of a page
- * that only appears when the JS finishes.
+ * A lista lateral precisa do nome, da familia e da lede de cento e cinquenta e
+ * sete documentos antes de a primeira peca ser aberta - e so disso. Enquanto o
+ * `catalog.ts` lia os `.md` com `eager: true`, o corpo INTEIRO de cada um, mais
+ * a fonte de cada preview, entrava no chunk de entrada: 1,1 MB de texto virava
+ * 1,77 MB de string escapada que o navegador tinha que baixar e parsear antes
+ * de pintar o primeiro pixel da capa. O Lighthouse media 4,6s de FCP, LCP e
+ * Speed Index - os tres iguais, que e a assinatura de pagina que so aparece
+ * quando o JS termina.
  *
- * The body still comes from the same files, now on demand, on the page that
- * shows it. If someone puts `eager: true` back there, the cost comes back in
- * full here.
+ * O corpo continua vindo dos mesmos arquivos, agora sob demanda, na pagina que
+ * o mostra. Se alguem devolver o `eager: true` la, o custo volta inteiro aqui.
  */
 function catalogIndex(): Plugin {
   const VIRTUAL = 'virtual:catalog-index'
 
   return {
-    name: 'rivocode-catalog-index',
+    name: 'rivocode-indice-do-catalogo',
 
     resolveId(id) {
       return id === VIRTUAL ? `\0${VIRTUAL}` : undefined
@@ -116,12 +113,11 @@ function catalogIndex(): Plugin {
       }))
 
       /*
-       * Both ways of being present count: `traduz` is the piece with the same
-       * name, `vira` is the one that arrived under another. The count comes
-       * from the parity table, which `scripts/native-parity.ts` generates and
-       * `check:parity` holds - a number derived from it is born honest. It
-       * used to be done in the browser, and only because of that the whole
-       * guide had to be loaded.
+       * As duas formas de estar presente contam: `traduz` e a peca com o mesmo
+       * nome, `vira` e a que chegou com outro. A conta sai da tabela de
+       * paridade, que `scripts/paridade-nativo.ts` gera e `check:paridade`
+       * segura - numero derivado dela nasce honesto. Ela era feita no
+       * navegador, e so por isso o guia inteiro precisava estar carregado.
        */
       const parity = readFileSync(`${GUIDES_DIR}/react-native.md`, 'utf8')
       const native = (parity.match(/^\| `[^`]+` \| ✔/gm) ?? []).length
@@ -135,8 +131,8 @@ export const NATIVE_PIECES = ${native}
       if (!file.endsWith('.md')) return
       const found = server.moduleGraph.getModuleById(`\0${VIRTUAL}`)
       if (!found) return
-      // A new document or a rewritten lede touches the whole sidebar, and the
-      // virtual module cannot update piecemeal.
+      // Documento novo ou lede reescrita mexe na lista lateral inteira, e o
+      // modulo virtual nao tem como se atualizar em pedaco.
       server.moduleGraph.invalidateModule(found)
       server.ws.send({ type: 'full-reload' })
     },
@@ -144,19 +140,18 @@ export const NATIVE_PIECES = ${native}
 }
 
 /**
- * The catalog props, one page per chunk.
+ * As props do catalogo, uma pagina por chunk.
  *
- * `component-props.json` is 534 KB (58 KB compressed) - every prop of every
- * piece -, and a piece page only reads its own tables and its parts'.
- * Imported whole, it was the largest chunk on the site and the last to arrive
- * on the piece page: on Lighthouse's network, half a second of download and
- * the parse of half a megabyte before the table existed. The file stays the
- * same, generated by `gen:props` and guarded by `check:props`; only the
- * delivery is sliced here.
+ * O `component-props.json` tem 534 KB (58 KB comprimido) - toda prop de toda
+ * peca -, e a pagina de uma peca le so as tabelas dela e das partes dela.
+ * Importado inteiro, ele era o maior chunk do site e o ultimo a chegar na
+ * pagina de peca: na rede do Lighthouse, meio segundo de download e o parse de
+ * meio megabyte antes de a tabela existir. O arquivo continua o mesmo, gerado
+ * pelo `gen:props` e guardado pelo `check:props`; so a entrega e fatiada aqui.
  *
- * The slice is per PAGE, not per piece: a part lives on the page of whoever
- * composes it, so Select takes the tables of its seven parts in a single
- * request, not in eight.
+ * A fatia e a da PAGINA, e nao a da peca: a parte mora na pagina de quem a
+ * compoe, entao o Select leva as tabelas das sete partes num pedido so, e nao
+ * em oito.
  */
 function propsByPage(): Plugin {
   const INDEX = 'virtual:component-props'
@@ -177,7 +172,7 @@ function propsByPage(): Plugin {
   }
 
   return {
-    name: 'rivocode-props-by-page',
+    name: 'rivocode-props-por-pagina',
 
     resolveId(id) {
       return id === INDEX || id.startsWith(PAGE) ? `\0${id}` : undefined
@@ -202,17 +197,17 @@ function propsByPage(): Plugin {
 }
 
 /**
- * The icon gallery collection, as a virtual module: each icon's vector data
- * comes from lucide-react's own modules at build time, and becomes its own
- * chunk that only the /icones page imports - importing the package's `icons`
- * object would put the ~1500 shapes in the bundle of every page.
+ * O acervo da galeria de icones, como modulo virtual: os dados vetoriais de
+ * cada icone saem dos proprios modulos do lucide-react no build, e viram um
+ * chunk proprio que so a pagina /icones importa - importar o objeto `icons`
+ * do pacote poria as ~1500 formas no bundle de toda pagina.
  */
 function iconGallery(): Plugin {
   const VIRTUAL = 'virtual:icon-gallery'
   const ICONS_DIR = here('./node_modules/lucide-react/dist/esm/icons')
 
   return {
-    name: 'rivocode-icon-gallery',
+    name: 'rivocode-galeria-de-icones',
     resolveId(id) {
       return id === VIRTUAL ? `\0${VIRTUAL}` : undefined
     },
@@ -223,10 +218,10 @@ function iconGallery(): Plugin {
       for (const file of readdirSync(ICONS_DIR)) {
         if (!file.endsWith('.mjs')) continue
         const source = readFileSync(`${ICONS_DIR}/${file}`, 'utf8')
-        // Only the files with the drawing: the alias ones re-export another module.
+        // So os arquivos com o desenho: os de alias reexportam outro modulo.
         const match = /const __iconNode = (\[[\s\S]*?\]);\n/.exec(source)
         if (!match) continue
-        // Trusted because it is this build's node_modules, not external input.
+        // Confiavel porque e o node_modules deste build, nao entrada externa.
         icons[file.replace(/\.mjs$/, '')] = new Function(`return ${match[1]}`)()
       }
       return `export default ${JSON.stringify(icons)}`
@@ -235,12 +230,12 @@ function iconGallery(): Plugin {
 }
 
 /**
- * The house tokens as DTCG JSON, at `/tokens/<file>`.
+ * Os tokens da casa em JSON DTCG, em `/tokens/<arquivo>`.
  *
- * They come from the same function that `rivocode-ui tokens` and the
- * package's `build:tokens` call, reading the same `src/preset.css`: the site
- * keeps no committed copy, so there is no copy that can go stale. The address
- * is what the tokens guide teaches to paste into Tokens Studio.
+ * Saem da mesma funcao que o `rivocode-ui tokens` e o `build:tokens` do pacote
+ * chamam, lendo o mesmo `src/preset.css`: o site nao guarda copia comitada, e
+ * por isso nao ha copia que possa envelhecer. O endereco e o que o guia de
+ * tokens ensina a colar no Tokens Studio.
  */
 function designTokens(): Plugin {
   const build = () => exportDtcg(readCssTree(here('../../src/preset.css'))).files
@@ -268,21 +263,20 @@ function designTokens(): Plugin {
 }
 
 /**
- * The whole house CSS - palette, scale, shape, contract and both themes -, as
- * a string, for the theme builder.
+ * O CSS da casa inteiro - paleta, escala, forma, contrato e os dois temas -,
+ * como uma string, para o montador de tema.
  *
- * The builder exports the DTCG JSON in the browser, with the same
- * `exportDtcg` that `rivocode-ui tokens` calls, and it needs the house to
- * resolve the palette and the scale. Reading the file is a Node thing, so the
- * read happens here, at build time, and only the `/tema` page chunk loads the
- * result.
+ * O montador exporta o JSON DTCG no navegador, com a mesma `exportDtcg` que o
+ * `rivocode-ui tokens` chama, e ela precisa da casa para resolver a paleta e a
+ * escala. Ler o arquivo e coisa do Node, entao a leitura acontece aqui, no
+ * build, e so o chunk da pagina `/tema` carrega o resultado.
  */
 function houseCss(): Plugin {
   const VIRTUAL = 'virtual:house-css'
   const PRESET = here('../../src/preset.css')
 
   return {
-    name: 'rivocode-house-css',
+    name: 'rivocode-css-da-casa',
     resolveId(id) {
       return id === VIRTUAL ? `\0${VIRTUAL}` : undefined
     },
@@ -306,9 +300,9 @@ export default defineConfig({
     houseCss(),
   ],
   resolve: {
-    // The library resolves to source, not to `dist`: the docs reflect what is
-    // written right now, with no build first, and HMR reaches the components
-    // while they are being edited.
+    // A biblioteca resolve para a fonte, e nao para `dist`: a doc passa a
+    // refletir o que esta escrito agora, sem build antes, e o HMR alcanca os
+    // componentes enquanto eles sao editados.
     alias: {
       '@rivocode/ui/form': here('../../src/form/index.ts'),
       '@rivocode/ui/chart': here('../../src/chart/index.ts'),
@@ -321,8 +315,8 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   server: {
-    // The library source and the docs live above this folder, and Vite blocks
-    // by default everything outside the project root.
+    // A fonte da biblioteca e a doc moram acima desta pasta, e a Vite bloqueia
+    // por padrao tudo que esta fora da raiz do projeto.
     fs: { allow: [here('../..')] },
   },
 })

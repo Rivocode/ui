@@ -84,24 +84,23 @@ export function describeRelative(
 }
 
 export type RelativeTimeProps = Omit<TextProps, "children" | "className"> & {
-  /** The instant being described. */
+  /** O instante que se descreve. */
   value: Date | string | number;
   /**
-   * From which unit to stop counting and show the date. "há 412 dias" says
-   * nothing; the date does.
+   * A partir de qual unidade parar de contar e mostrar a data. "há 412 dias"
+   * não diz nada; a data diz.
    */
   cutoff?: RelativeUnit;
   /**
-   * The "now", for tests and frozen screens. Passing it, the text stops
-   * updating on its own - whoever pinned "now" does not want a clock.
+   * O agora, para teste e para tela congelada. Passando isto, o texto para de
+   * se atualizar sozinho - quem fixou o agora não quer relógio.
    */
   now?: Date;
   className?: string;
   /**
-   * The component's texts, to change the language: `now` is what shows in the
-   * first minute, and `past` and `future` write the distance, with the number
-   * and the unit (`minute`, `hour`, `day`, `week`, `month`, `year`). Pass only
-   * the ones that change.
+   * Os textos da peca, para trocar o idioma: `now` e o que sai no primeiro
+   * minuto, e `past` e `future` escrevem a distancia, com o numero e a unidade
+   * (`minute`, `hour`, `day`, `week`, `month`, `year`). Passe so os que mudam.
    */
   labels?: Partial<RelativeTimeLabels>;
 };

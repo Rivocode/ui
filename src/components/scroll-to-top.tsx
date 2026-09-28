@@ -11,33 +11,30 @@ import { Affix, type AffixProps } from "./affix";
 import { IconButton, type IconButtonProps } from "./icon-button";
 
 export type ScrollToTopProps = Omit<AffixProps, "children" | "onClick"> & {
-  /**
-   * How many pixels the person needs to scroll down for the button to appear. Before that it does
-   * not even exist.
-   */
+  /** Quantos pixels a pessoa precisa descer para o botao aparecer. Acima disso ele nem existe. */
   threshold?: number;
   /**
-   * The scrolling box, when it is not the window. Pass the element, not the ref:
+   * A caixa que rola, quando nao e a janela. Passe o elemento, e nao o ref:
    * `const [caixa, setCaixa] = useState<HTMLElement | null>(null)`.
    */
   target?: HTMLElement | null;
   /**
-   * Where focus goes after scrolling up. Without it, the `target` box; without
-   * `target`, the page's `<main>`, and without `<main>`, the `<body>`. Focus cannot
-   * stay on the button, which disappears as soon as the page reaches the top.
+   * Para onde o foco vai depois de subir. Sem ele, a caixa de `target`; sem
+   * `target`, o `<main>` da pagina, e sem `<main>`, o `<body>`. O foco nao
+   * pode ficar no botao, que some assim que a pagina chega ao topo.
    */
   focusTarget?: HTMLElement | null;
-  /** The button's name, which the screen reader announces and the tooltip shows. */
+  /** O nome do botao, que o leitor de tela anuncia e a dica mostra. */
   label?: string;
-  /** The icon. Without it, the up arrow. */
+  /** O icone. Sem ele, a seta para cima. */
   icon?: ReactNode;
-  /** Shows `label` in a tooltip on pointer hover or keyboard focus. */
+  /** Mostra o `label` numa dica ao pousar o ponteiro ou focar pelo teclado. */
   tooltip?: boolean;
-  /** The side of the button's square, read from `--rc-control-*`. */
+  /** O lado do quadrado do botao, lido de `--rc-control-*`. */
   size?: IconButtonProps["size"];
-  /** The `Button` variant underneath. `secondary` reads over any background. */
+  /** A variante do `Button` por baixo. `secondary` le sobre qualquer fundo. */
   variant?: IconButtonProps["variant"];
-  /** Called after the scroll up has started and focus has already moved. */
+  /** Chamado depois que a subida comecou e o foco ja foi movido. */
   onScrollToTop?: () => void;
   classNames?: Slots<"button">;
 };

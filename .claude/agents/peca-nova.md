@@ -1,74 +1,69 @@
 ---
 name: peca-nova
-description: Creates a complete new @rivocode/ui piece: wrapper, types, preview, doc, test, index and checks. Use when adding any component to the catalog, and before saying a piece is done.
+description: Cria uma peça nova do @rivocode/ui completa: wrapper, tipos, preview, doc, teste, índice e verificações. Use ao adicionar qualquer componente ao catálogo, e antes de dizer que uma peça está pronta.
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
-A piece of this catalog has nine artifacts, and it does not exist while the
-nine do not exist. `FileUpload` was published with the documentation page
-ready and the component missing: whoever followed the docs broke at build
-time, and an agent reading the index proposed the piece with confidence. That
-is what happens when one of the nine falls out of sync.
+Uma peça deste catálogo tem nove artefatos, e ela não existe enquanto os nove
+não existirem. O `FileUpload` foi publicado com a página de documentação
+pronta e o componente ausente: quem seguia a doc quebrava em tempo de build, e
+um agente lendo o índice propunha a peça com confiança. É o que acontece
+quando um dos nove sai de sincronia.
 
-## The order, and no step is optional
+## A ordem, e nenhuma etapa é opcional
 
-1. **Check that the piece does not exist under another name.** The skill's
-   `reference/components.md` lists the choices between similar pieces:
-   `PreviewCard` is the HoverCard, `Tree` is the TreeView, `MaskedInput` is the
-   MaskInput, `Alert` is the Callout, `Slider` with two values is the
-   RangeSlider.
+1. **Confira que a peça não existe com outro nome.** `reference/components.md`
+   da skill lista as escolhas entre peças parecidas: `PreviewCard` é o
+   HoverCard, `Tree` é o TreeView, `MaskedInput` é o MaskInput, `Alert` é o
+   Callout, `Slider` com dois valores é o RangeSlider.
 
-2. **A wrapper over Base UI when there is a primitive; from scratch when there
-   is not.** No literal color, no numeric `z-index`, no hardcoded height: all
-   three have a guard in `check`, and the color one fails the build. Control
-   height comes from `--rc-control-*`, corner from `--rc-radius-*`, stacking
-   from `--rc-z-*`.
+2. **Wrapper sobre a Base UI quando houver primitivo; do zero quando não.**
+   Sem cor literal, sem `z-index` numérico, sem altura cravada: as três têm
+   guarda no `check`, e a de cor falha o build. Altura de controle sai de
+   `--rc-control-*`, canto de `--rc-radius-*`, empilhamento de `--rc-z-*`.
 
-3. **`classNames` per part, if the piece has more than one node.** The type is
-   `Slots<"track" | "indicator">`, from `src/lib/slots.ts`, and the names are
-   the same ones the page's "Parts" section will use. Without it, the consumer
-   reaches the inner node through `[&_div]` and couples the screen to the
-   piece's tree.
+3. **`classNames` por parte, se a peça tiver mais de um nó.** O tipo é
+   `Slots<"track" | "indicator">`, de `src/lib/slots.ts`, e os nomes são os
+   mesmos que a seção "Partes" da página vai usar. Sem isso, quem consome
+   alcança o nó interno por `[&_div]` e acopla a tela à árvore da peça.
 
-4. **Preview in `.design-sync/previews/<Piece>.tsx`.** It is the file that
-   becomes the example in the docs and on the site. Publish the whole file,
-   with the supporting constants: a cut that drops the constant produces an
-   example that does not run, and `check:previews` does not catch that because
-   the file compiles.
+4. **Preview em `.design-sync/previews/<Peça>.tsx`.** É o arquivo que vira
+   exemplo na doc e no site. Publique o arquivo inteiro, com as constantes de
+   apoio: o recorte que corta a constante produz um exemplo que não roda, e
+   `check:previews` não pega isso porque o arquivo compila.
 
-5. **Page in `.design-sync/docs/<Piece>.md`.** Frontmatter with `category`, the
-   prose of what the piece does, and (required) the "When not to use" section,
-   with the neighboring piece named: `Progress` moves and finishes, `Meter`
-   stays still; `Toast` goes away, `Alert` stays; `Steps` looks forward,
-   `Timeline` looks back; `Dialog` dismisses by clicking outside, `AlertDialog`
-   does not. The props table you do **not** write: it comes from the compiler.
+5. **Página em `.design-sync/docs/<Peça>.md`.** Frontmatter com `category`, a
+   prosa do que a peça faz, e (obrigatória) a seção "quando não usar", com a
+   peça vizinha nomeada: `Progress` anda e termina, `Meter` fica parado;
+   `Toast` passa, `Alert` fica; `Steps` olha para frente, `Timeline` olha para
+   trás; `Dialog` dispensa clicando fora, `AlertDialog` não. A tabela de props
+   você **não escreve**: ela sai do compilador.
 
-6. **Test in `test/`, with `@testing-library`.** What is tested is the behavior
-   the prose promises, including the states that lie when wrong: empty,
-   loading, error, disabled, indeterminate.
+6. **Teste em `test/`, com `@testing-library`.** O que se testa é o
+   comportamento que a prosa promete, incluindo os estados que mentem quando
+   errados: vazio, carregando, erro, desabilitado, indeterminado.
 
-7. **Run `bun run gen:props`** so the tables come out, and check that the piece
-   shows up with the props you expect, callbacks included.
+7. **Rode `bun run gen:props`** para as tabelas saírem, e confira que a peça
+   aparece com as props que você espera, inclusive os callbacks.
 
-8. **New contrast pairs in `scripts/check-contrast.ts`**, if the piece
-   introduced a color combination that is not measured yet. A control boundary
-   needs 3:1; text on a state background needs 4.5:1 with composited alpha.
+8. **Pares de contraste novos em `scripts/check-contrast.ts`**, se a peça
+   estreou combinação de cor que ainda não é medida. Fronteira de controle
+   pede 3:1; texto sobre fundo de estado pede 4,5:1 com o alfa composto.
 
-9. **The native side, on the same day.** Write the piece's row in
-   `scripts/native-parity.ts` before saying you are done: `check:parity`
-   refuses a page without a row. If the piece ports, build the pair in
-   `native/src/` in the same batch: the API is not the same (on native
-   everything is controlled and the list comes through `items`), but the choice
-   of piece and the class vocabulary are. If it does not port, say why in the
-   row. And `fila` is only for a gesture decision not yet made (never for lack
-   of time), and requires an entry in `FILA_DECLARADA`.
+9. **O lado nativo, no mesmo dia.** Escreva a linha da peça em
+   `scripts/paridade-nativo.ts` antes de dizer que terminou: `check:paridade`
+   recusa página sem linha. Se a peça porta, construa o par em `native/src/` na
+   mesma leva: a API não é a mesma (no nativo tudo é controlado e a lista vem
+   por `items`), mas a escolha da peça e o vocabulário de classes são. Se não
+   porta, diga o motivo na linha. E `fila` é só para decisão de gesto ainda não
+   tomada (nunca para falta de tempo), e exige entrada em `FILA_DECLARADA`.
 
-## Before saying you are done
+## Antes de dizer que terminou
 
-The whole `bun run check`, which is lint, types, previews, props, literal
-color, contrast, themes, contract, native and tests. Then `bun run build`,
-which is where what only breaks when packaging shows up.
+`bun run check` inteiro, que é lint, tipos, previews, props, cor literal,
+contraste, temas, contrato, nativo e testes. Depois `bun run build`, que é
+onde aparece o que só quebra ao empacotar.
 
-And the test nobody automates: render it in `demo/` and look in both themes
-and both densities. An indeterminate state and a loading state are invisible
-to `tsc` and glaring in a capture.
+E o teste que ninguém automatiza: renderize no `demo/` e olhe nos dois temas e
+nas duas densidades. Estado indeterminado e estado carregando são invisíveis
+para o `tsc` e gritantes numa captura.

@@ -12,7 +12,7 @@ const PERMISSIONS: TransferListItem[] = [
   { value: 'conta.excluir', label: 'Excluir a conta', disabled: true },
 ]
 
-/** The permissions of a role */
+/** As permissões de um papel */
 export function Permissions() {
   const [granted, setGranted] = useState<string[]>(['relatorios.ver'])
 
@@ -40,7 +40,7 @@ const CITIES: TransferListItem[] = [
   { value: 'bel', label: 'Belém' },
 ]
 
-/** Delivery cities, with accent-insensitive search */
+/** Cidades de entrega, com busca sem acento */
 export function Cities() {
   const [cities, setCities] = useState<string[]>([])
 
@@ -49,7 +49,7 @@ export function Cities() {
   )
 }
 
-/** Disabled */
+/** Desabilitada */
 export function Disabled() {
   return (
     <TransferList

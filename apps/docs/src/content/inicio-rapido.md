@@ -1,10 +1,10 @@
-A real screen, from scratch, with the pieces almost every application screen
-has: a form that validates, a listing that knows how to load and fail, and a
-notice at the end.
+Uma tela de verdade, do zero, com os pedaços que quase toda tela de aplicação
+tem: um formulário que valida, uma listagem que sabe carregar e falhar, e um
+aviso no fim.
 
-If you have not installed yet, start with [Installation](/instalacao).
+Se ainda não instalou, comece pela [Instalação](/instalacao).
 
-## The skeleton
+## O esqueleto
 
 ```tsx
 import { RivoProvider } from '@rivocode/ui'
@@ -19,14 +19,14 @@ export function App() {
 }
 ```
 
-`density="compact"` shrinks the height of every control at once. It is worth it
-for an operations screen, where more rows fit in the same height; see
-[Density](/densidade).
+`density="compact"` encolhe a altura de todo controle de uma vez. Vale para tela
+de operação, onde cabe mais linha na mesma altura, veja
+[Densidade](/densidade).
 
-## A form that validates
+## Um formulário que valida
 
-The `@rivocode/ui/form` subpath brings React Hook Form and Zod together. The
-schema is the source of truth: it validates and also gives the form its type.
+O subcaminho `@rivocode/ui/form` junta React Hook Form e Zod. O schema é a
+fonte da verdade: ele valida e ainda dá o tipo do formulário.
 
 ```tsx
 import { Button, Input } from '@rivocode/ui'
@@ -60,15 +60,15 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 }
 ```
 
-`FormField` does not invent an `id`. It assembles label, control, help and
-error inside the `Field`, and Base UI wires `aria-describedby` and
-`aria-invalid` on its own for any of its controls that are inside.
+O `FormField` não inventa `id`. Ele monta rótulo, controle, ajuda e erro dentro
+do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha para
+qualquer controle dela que esteja lá dentro.
 
-## A listing that knows the three states
+## Uma listagem que conhece os três estados
 
-Every query has four end states: loading, succeeded, failed, and came back
-empty. `DataTable` takes all four and draws each one, without the library
-knowing what React Query is.
+Toda consulta tem quatro finais: carregando, deu certo, deu errado, e veio
+vazia. O `DataTable` recebe os quatro e desenha cada um, sem a biblioteca saber
+o que é React Query.
 
 ```tsx
 import { Badge, DataTable } from '@rivocode/ui'
@@ -101,14 +101,13 @@ function InvoiceList({ query }) {
 }
 ```
 
-It works the same with a hand-written `fetch`, with SWR or with a server
-component: what the table wants are the three signals, not the library that
-produced them.
+Funciona igual com `fetch` na mão, com SWR ou com server component: o que a
+tabela quer são os três sinais, não a biblioteca que os produziu.
 
-`hideOnMobile` on a column hides it on a narrow screen; use it for what can be
-found out some other way.
+`hideOnMobile` numa coluna some com ela na tela estreita, use para o que dá
+para descobrir de outro jeito.
 
-## Notify without mounting a portal
+## Avisar sem montar portal
 
 ```tsx
 import { useToast } from '@rivocode/ui'
@@ -132,11 +131,11 @@ function IssueButton() {
 }
 ```
 
-The toast viewport is already mounted by the Provider. You call `add` and the
-notice shows up in the corner.
+O viewport de avisos já está montado pelo Provider. Você chama `add` e o aviso
+aparece no canto.
 
-## What to read next
+## O que ler depois
 
-- [Themes and customization](/temas): dressing the library in the client's color
-- [Density](/densidade): the same screen at two heights
-- [For agents](/para-agents): the documentation in raw markdown
+- [Temas e personalização](/temas): vestir a biblioteca com a cor do cliente
+- [Densidade](/densidade): a mesma tela em duas alturas
+- [Para agents](/para-agents): a documentação em markdown cru

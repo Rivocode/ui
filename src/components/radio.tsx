@@ -15,14 +15,13 @@ export function RadioGroup({ className, ...props }: RadioGroupProps) {
 
 export type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, "children"> & {
   /**
-   * The text beside it. With it, the circle is rendered inside a `<label>`, so
-   * clicking the text also checks it.
+   * O texto ao lado. Com ele, o circulo sai dentro de um `<label>`, entao
+   * clicar no texto tambem marca.
    *
-   * Without it, only the circle is rendered, and the arrangement is up to whoever builds the
-   * screen.
+   * Sem ele, sai so o circulo, e o arranjo fica com quem monta a tela.
    */
   children?: ReactNode;
-  /** Class per part: `circle`, `indicator`, `label`. */
+  /** Classe por parte: `circle`, `indicator`, `label`. */
   classNames?: Slots<"circle" | "indicator" | "label">;
 };
 

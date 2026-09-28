@@ -1,12 +1,12 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # TableOfContents
 
-The page's table of contents: the list of headings of a long text, with the
-section the person is reading marked as they scroll. It is the "Nesta página"
-column of a guide, a policy, a report with several parts.
+O índice da página: a lista de títulos de um texto longo, com a seção que a
+pessoa está lendo marcada enquanto ela rola. É a coluna "Nesta página" de um
+guia, de uma política, de um relatório com várias partes.
 
 ```tsx
 <div className="grid gap-8 lg:grid-cols-[1fr_14rem]">
@@ -15,55 +15,52 @@ column of a guide, a policy, a report with several parts.
 </div>
 ```
 
-With nothing else, the piece reads the document's `h2`s and `h3`s, in the
-order they appear, and an `h3` goes nested in the `h2` before it. The level
-comes from the tag; any other element matching the `selector` goes in at its
-`aria-level`, or at level 2 without it.
+Sem mais nada, a peça lê os `h2` e `h3` do documento, na ordem em que aparecem,
+e o `h3` entra aninhado no `h2` que o antecede. O nível sai da tag; qualquer
+outro elemento que case com o `selector` entra no nível do `aria-level`, ou no
+nível 2 sem ele.
 
-## The marked section
+## A seção marcada
 
-An imaginary line at 30% from the top of the window decides which section is
-being read: the marked one is that of the last heading that has already passed
-it. An `IntersectionObserver` reports when a heading crosses the top band, and
-scrolling measures again at most once per frame. Before the first heading, no
-row is marked: the introduction is not a section.
+Uma linha imaginária a 30% do alto da janela decide qual seção está sendo
+lida: a marcada é a do último título que já passou dela. Um
+`IntersectionObserver` avisa quando um título cruza a faixa de cima, e a
+rolagem mede de novo no máximo uma vez por quadro. Antes do primeiro título,
+nenhuma linha fica marcada: a introdução não é seção.
 
-**At the end of the scroll, the last visible section is marked**, even if its
-heading never reaches the line: the last section of a short page does not rise
-to 30%, and without this it would never be marked.
+**No fim da rolagem, a última seção visível fica marcada**, mesmo que o título
+dela nunca chegue à linha: a última seção de uma página curta não sobe até os
+30%, e sem isso ela nunca seria marcada.
 
-The marked row carries `aria-current="location"`, which the screen reader
-announces as "current location", and the highlight-color stroke on the border.
-`onActiveChange` receives the `id` on each change, for whoever wants to show the
-section somewhere else.
+A linha marcada leva `aria-current="location"`, que o leitor de tela anuncia
+como "local atual", e o risco da cor de destaque na borda. `onActiveChange`
+recebe o `id` a cada troca, para quem quer mostrar a seção em outro lugar.
 
-## The click
+## O clique
 
-The click scrolls to the heading and **moves focus to it**, as an anchor link
-does: the next Tab starts from there, not from the table of contents. The
-heading gets `tabindex="-1"` only while it has focus, and loses it on leaving.
-Scrolling is smooth, and **becomes a jump** when the system asks to reduce
-motion.
+O clique rola até o título e **leva o foco para ele**, como um link de âncora
+faz: o próximo Tab parte dali, e não do índice. O título ganha
+`tabindex="-1"` só enquanto tem o foco, e o perde ao sair. A rolagem é suave,
+e **vira salto** quando o sistema pede para reduzir movimento.
 
-After the click, the marking stays locked on the clicked row until the person
-scrolls on their own (mouse wheel, touch, key or scrollbar). Without this, the
-smooth scroll would flash through every section on the way, and the reduced
-motion jump would mark the section above when the clicked heading cannot rise
-to the line.
+Depois do clique, a marcação fica presa na linha clicada até a pessoa rolar
+por conta própria (roda do mouse, toque, tecla ou barra de rolagem). Sem isso,
+a rolagem suave passaria piscando por todas as seções do caminho, e o salto do
+movimento reduzido marcaria a seção de cima quando o título clicado não
+consegue subir até a linha.
 
-The `href` is still there, so Ctrl+click, middle click and "copy link address"
-work as with any link. `updateHash` writes the `#id` to the address bar with
-`history.replaceState`, without stacking history; it comes off because a
-router with `#` in the path would fight with it. `onItemClick` runs before
-everything, and `event.preventDefault()` there hands the link back to the
-browser.
+O `href` continua lá, então Ctrl+clique, clique do meio e "copiar endereço do
+link" funcionam como em qualquer link. `updateHash` escreve o `#id` na barra de
+endereço com `history.replaceState`, sem empilhar histórico; ele vem desligado
+porque router com `#` no caminho brigaria com ele. `onItemClick` roda antes de
+tudo, e `event.preventDefault()` ali devolve o link ao navegador.
 
-## Fixed header
+## Cabeçalho fixo
 
-With a header that sticks to the top, pass its height in `offset`, in pixels:
-the heading stops just below it on click, and only counts as visible below it.
-For a link that comes from outside (`/guia#impostos` pasted in a chat), it is
-CSS, not the piece, that discounts the header:
+Com um cabeçalho que gruda no topo, passe a altura dele em `offset`, em
+pixels: o título para logo abaixo dele ao clicar, e só conta como visível
+abaixo dele. Para o link que chega de fora (`/guia#impostos` colado numa
+conversa), quem desconta o cabeçalho é o CSS, e não a peça:
 
 ```css
 html {
@@ -71,17 +68,17 @@ html {
 }
 ```
 
-## Where to read
+## Onde ler
 
-`container` limits reading to one element, and it is what an example inside a
-larger page needs. A heading that arrives later (a section loaded on demand, an
-example that mounts late) joins the table of contents on its own: the piece
-observes the `container` and reads again when it changes. A heading without an
-`id` gets one, taken from the text without accents: "Nota de crédito" becomes
-`#nota-de-credito`, and a repeated one becomes `#nota-de-credito-2`.
+`container` limita a leitura a um elemento, e é o que um exemplo dentro de uma
+página maior precisa. Título que chega depois (seção carregada sob demanda,
+exemplo que monta tarde) entra sozinho no índice: a peça observa o
+`container` e lê de novo quando ele muda. Título sem `id` ganha um, tirado do
+texto sem acento: "Nota de crédito" vira `#nota-de-credito`, e o repetido vira
+`#nota-de-credito-2`.
 
-`root` is the box that scrolls, when it is not the window. It is where the band
-is measured and it is what scrolls on click.
+`root` é a caixa que rola, quando não é a janela. É nela que a faixa é medida e
+é ela que rola no clique.
 
 ```tsx
 const [caixa, setCaixa] = useState<HTMLDivElement | null>(null)
@@ -90,38 +87,38 @@ const [caixa, setCaixa] = useState<HTMLDivElement | null>(null)
 <TableOfContents container={caixa} root={caixa} selector="h3, h4" />
 ```
 
-`items` skips the reading: the list comes ready, with `id`, `label` and
-`level`, and it serves when the table of contents text is shorter than the
-heading, or when the headings live in a component that cannot be read.
+`items` dispensa a leitura: a lista vem pronta, com `id`, `label` e `level`, e
+serve quando o texto do índice é mais curto que o título, ou quando os títulos
+moram num componente que não deixa ler.
 
-## Name and title
+## Nome e título
 
-The table of contents comes out in a named `<nav>`, "Nesta página" by default,
-and that name also appears as a visible title above the list. `label` changes
-both. `hideLabel` takes the title off the screen and leaves the name for the
-screen reader. A page with no headings at all draws no table of contents: an
-empty navigation is an announced region that leads nowhere.
+O índice sai num `<nav>` com nome, "Nesta página" por padrão, e esse nome
+aparece também como título visível acima da lista. `label` troca os dois.
+`hideLabel` tira o título da tela e deixa o nome para o leitor de tela. Uma
+página sem título nenhum não desenha o índice: navegação vazia é uma região
+anunciada que não leva a lugar nenhum.
 
-## Parts
+## Partes
 
-`classNames` reaches each node by name: `label` (the visible title), `list`
-(the outer list, which draws the rail), `item` (each `<li>`) and `link` (each
-clickable row).
+`classNames` alcança cada nó pelo nome: `label` (o título visível), `list` (a
+lista de fora, que desenha o trilho), `item` (cada `<li>`) e `link` (cada
+linha clicável).
 
-## When not to use
+## Quando não usar
 
-- **Navigating between the application's pages** is `Sidebar`. The table of
-  contents moves within a single page; the sidebar changes route.
-- **The trail of where the page lives** is `Breadcrumb`. It looks up, to the
-  root of the site; the table of contents looks into the text.
-- **Content the person chooses to see, one at a time** is `Tabs`. With tabs,
-  what is not open is not on the page; with the table of contents, everything
-  is and the person jumps.
-- **Steps of a process** are `Steps`. The table of contents has no required
-  order and no completed step.
+- **Navegar entre páginas da aplicação** é `Sidebar`. O índice anda dentro de
+  uma página só; a barra lateral troca de rota.
+- **A trilha de onde a página mora** é `Breadcrumb`. Ela olha para cima, até a
+  raiz do site; o índice olha para dentro do texto.
+- **Conteúdo que a pessoa escolhe ver, um de cada vez** é `Tabs`. Com abas, o
+  que não está aberto não está na página; com o índice, tudo está e a pessoa
+  pula.
+- **Etapas de um processo** são `Steps`. O índice não tem ordem obrigatória nem
+  etapa concluída.
 
-## In React Native
+## No React Native
 
-Does not port, by decision. The page index is a desktop idiom: it lives in a column beside the text, and on the phone there is no column beside it. Long text on an app screen is split before it reaches an index: each section becomes a router screen opened from a list, or a `Tabs` tab, and the screen's title says where the person is.
+Não porta, por decisão. O índice da página é idioma de mesa: ele mora numa coluna ao lado do texto, e no celular não há coluna ao lado. Texto longo numa tela de app se divide antes de chegar ao índice: cada seção vira uma tela do router aberta a partir de uma lista, ou uma aba do `Tabs`, e o título da tela diz onde a pessoa está.
 
-The screen reader also already has its own index: the VoiceOver rotor and TalkBack's reading controls jump from heading to heading in any `Text` with `accessibilityRole="header"`, which is what the native package's `Heading` writes.
+O leitor de tela também já tem o próprio índice: o rotor do VoiceOver e os controles de leitura do TalkBack pulam de título em título em qualquer `Text` com `accessibilityRole="header"`, que é o que o `Heading` do pacote nativo escreve.

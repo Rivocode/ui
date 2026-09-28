@@ -1,12 +1,13 @@
 ---
-category: AI
+category: IA
 ---
 
 # ToolCall
 
-The collapsible card of a tool call made by an assistant: the tool's name,
-where it stands, the input and the output. When the call needs permission, it
-brings the approve and decline buttons. It lives in `@rivocode/ui/ai`.
+O cartão recolhível de uma chamada de ferramenta feita por um assistente: o
+nome da ferramenta, em que pé ela está, a entrada e a saída. Quando a chamada
+precisa de permissão, ele traz os botões de aprovar e recusar. Vive em
+`@rivocode/ui/ai`.
 
 ```tsx
 import { ToolCall } from '@rivocode/ui/ai'
@@ -20,45 +21,44 @@ import { ToolCall } from '@rivocode/ui/ai'
 />
 ```
 
-## The five states
+## Os cinco estados
 
-| `status` | What the person sees |
+| `status` | O que a pessoa vê |
 | --- | --- |
-| `pending` | clock and "Pendente", in neutral |
-| `running` | spinning circle and "Rodando", in info; the card announces `aria-busy` |
-| `done` | check and "Concluída", in success |
-| `error` | x and "Erro", in danger; the panel opens on its own and shows the `error` |
-| `approval` | hand and "Aguardando aprovação", in warning; the panel opens on its own |
+| `pending` | relógio e "Pendente", em neutro |
+| `running` | círculo girando e "Rodando", em informação; o cartão anuncia `aria-busy` |
+| `done` | visto e "Concluída", em sucesso |
+| `error` | xis e "Erro", em perigo; o painel abre sozinho e mostra o `error` |
+| `approval` | mão e "Aguardando aprovação", em atenção; o painel abre sozinho |
 
-**Color is never the only signal.** Each state comes out with an icon AND text,
-and the text goes into the trigger's name: the screen reader hears
-"buscar_notas, Consultando as notas de agosto, Rodando". `labels` changes the
-texts, for another language.
+**Cor nunca é o único sinal.** Cada estado sai com ícone E texto, e o texto
+entra no nome do gatilho: o leitor de tela ouve "buscar_notas, Consultando as
+notas de agosto, Rodando". `labels` troca os textos, para outra língua.
 
-## Input and output
+## Entrada e saída
 
-`input` and `output` come out in the house `CodeBlock`. An object comes out as
-indented JSON; text comes out as it came. The panel starts closed, because
-whoever reads the conversation wants the answer and not the plumbing, and it
-opens on a tap of the trigger. **With no input, output or error, there is no
-trigger**: the header comes out as text, and not as a button that opens
-nothing, announced as expanded and pointing to a panel that does not exist.
+`input` e `output` saem no `CodeBlock` da casa. Objeto sai como JSON indentado;
+texto sai como veio. O painel começa fechado, porque quem lê a conversa quer a
+resposta e não o encanamento, e abre no toque do gatilho. **Sem entrada, saída
+nem erro, não há gatilho**: o cabeçalho sai como texto, e não como um botão
+que não abre nada, anunciado expandido e apontando para um painel que não
+existe.
 
-Long names and titles wrap to up to two lines, instead of being cut on one line;
-the tool's full name stays in `title`, for whoever rests the pointer on it.
+Nome e título longos quebram em até duas linhas, em vez de cortar numa linha
+só; o nome inteiro da ferramenta fica no `title`, para quem pousa o ponteiro.
 
-`defaultOpen` changes the starting point, and `open` with `onOpenChange`
-controls it. Without `open`, the panel also opens on its own when `status`
-**changes** to `error` or `approval`: a call born `running` that fails halfway
-shows the error without waiting for a tap. Closed by hand, it only opens again
-on the next state change.
+`defaultOpen` troca o ponto de partida, e `open` com `onOpenChange` controla.
+Sem `open`, o painel abre sozinho também quando o `status` **muda** para
+`error` ou `approval`: a chamada que nasce `running` e falha no meio do caminho
+mostra o erro sem esperar um toque. Fechado à mão, ele só abre de novo na
+próxima troca de estado.
 
-## Approving before running
+## Aprovar antes de rodar
 
-In `approval`, `onApprove` and `onReject` wire the two buttons. They sit
-**outside the collapsible panel**, at the bottom of the card: a decision that
-waits on the person does not hide behind a tap. The panel opens on its own, so
-the person reads the arguments before deciding.
+Em `approval`, `onApprove` e `onReject` ligam os dois botões. Eles ficam **fora
+do painel recolhível**, na base do cartão: decisão que espera a pessoa não se
+esconde atrás de um toque. O painel abre sozinho, para que a pessoa leia os
+argumentos antes de decidir.
 
 ```tsx
 <ToolCall
@@ -71,31 +71,30 @@ the person reads the arguments before deciding.
 />
 ```
 
-Long text in `labels.approve` or `labels.reject` wraps inside the button, and
-does not spill out of the card.
+Texto longo em `labels.approve` ou `labels.reject` quebra a linha dentro do
+botão, e não vaza do cartão.
 
-The piece does not keep the decision: whoever approved changes `status` to
-`running`, and whoever declined changes it to `error` with the reason's
-sentence.
+A peça não guarda a decisão: quem aprovou muda o `status` para `running`, e
+quem recusou muda para `error` com a frase do motivo.
 
-## Parts
+## Partes
 
-`classNames` reaches `trigger` (the header, whether the button or the text with
-no panel), `name`, `status`, `panel`, `error` and `actions`.
+`classNames` alcança `trigger` (o cabeçalho, seja o botão ou o texto sem
+painel), `name`, `status`, `panel`, `error` e `actions`.
 
-## When not to use
+## Quando não usar
 
-- **Content sections that open** are `Accordion`. `Accordion` organizes text
-  that already exists; `ToolCall` is an event with state, and the state is what
-  the person reads first.
-- **A single block that hides detail** is `Collapsible`. If there is no tool,
-  state or approval (it is just "see more"), `Collapsible` does the same without
-  the frame.
+- **Seções de conteúdo que se abrem** são `Accordion`. O `Accordion` organiza
+  texto que já existe; o `ToolCall` é um acontecimento com estado, e o estado é
+  o que a pessoa lê primeiro.
+- **Um bloco só que esconde detalhe** é `Collapsible`. Se não há ferramenta,
+  estado nem aprovação (é só "ver mais"), o `Collapsible` faz o mesmo sem a
+  moldura.
 
-## In React Native
+## No React Native
 
-Translates, on its own path `@rivocode/ui-native/ai`, with the same `name`, `status`, `input`, `output`, `error`, `onApprove`, `onReject`, `labels`, `defaultOpen`, `open` and `onOpenChange`. `title` and `error` are `string`, because text on native lives inside a `Text`.
+Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `name`, `status`, `input`, `output`, `error`, `onApprove`, `onReject`, `labels`, `defaultOpen`, `open` e `onOpenChange`. `title` e `error` são `string`, porque texto no nativo mora dentro de um `Text`.
 
-**Color is still not the only signal.** The package ships no icons, so each state comes out with a text mark (○, ✓, ✕, !) before the name, and `running` gets the spinner. The trigger tells the screen reader the tool's name and the state.
+**Cor continua não sendo o único sinal.** O pacote não traz ícone, então cada estado sai com uma marca de texto (○, ✓, ✕, !) antes do nome, e `running` ganha o giro. O gatilho diz o nome da ferramenta e o estado ao leitor de tela.
 
-The parts are styled through the same `classNames` as the web, all six: `trigger`, `name`, `status`, `panel`, `error` and `actions`.
+As partes vestem pelo mesmo `classNames` do web, as seis: `trigger`, `name`, `status`, `panel`, `error` e `actions`.

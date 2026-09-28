@@ -17,25 +17,20 @@ import { Link } from "./link";
 import { Switch } from "./switch";
 
 export type CookieCategory = {
-  /** The key that comes back in `choice.categories`: `analytics`, `marketing`. */
+  /** A chave que volta em `choice.categories`: `analytics`, `marketing`. */
   id: string;
-  /** The category's name, on screen. */
+  /** O nome da categoria, na tela. */
   label: ReactNode;
-  /** What it does, in one sentence: what it is for and what it stores. */
+  /** O que ela faz, em uma frase: para que serve e o que guarda. */
   description?: ReactNode;
-  /** Always on and with no switch to turn it off: what the site needs to work. */
+  /** Sempre ligada e sem chave de desligar: o que o site precisa para funcionar. */
   required?: boolean;
 };
 
 export type CookieChoice = {
-  /**
-   * Which button decided: `acceptAll`, `rejectOptional` or `save`, the one for choices made by
-   * hand.
-   */
+  /** Qual botao decidiu: `acceptAll`, `rejectOptional` ou `save`, o das escolhas feitas a mao. */
   action: "acceptAll" | "rejectOptional" | "save";
-  /**
-   * One key per category, with `true` for what was accepted. The required ones always come `true`.
-   */
+  /** Uma chave por categoria, com `true` para o que foi aceito. As obrigatorias vem sempre `true`. */
   categories: Record<string, boolean>;
 };
 
@@ -77,43 +72,40 @@ export type CookieConsentProps = Omit<
   "title" | "children" | "defaultValue"
 > & {
   /**
-   * Whether the notice is on screen. The consumer controls it: open it when there is no
-   * stored choice, or when the person asks to review theirs.
+   * Se o aviso esta na tela. Quem controla e quem usa: abra quando nao ha
+   * escolha guardada, ou quando a pessoa pede para rever a dela.
    */
   open: boolean;
   /**
-   * Called with the choice, on any of the three buttons. The piece writes no
-   * cookie at all: storing the choice, loading the accepted scripts and closing the
-   * notice (`open={false}`) is the consumer's job.
+   * Chamado com a escolha, em qualquer um dos tres botoes. A peca nao grava
+   * cookie nenhum: guardar a escolha, carregar os scripts aceitos e fechar o
+   * aviso (`open={false}`) e trabalho de quem usa.
    */
   onDecision: (choice: CookieChoice) => void;
-  /** The privacy policy URL. The link appears at the end of the text. */
+  /** O endereco da politica de privacidade. O link sai no fim do texto. */
   policyHref: string;
   /**
-   * The categories of "Personalizar". Without them, necessary (required),
-   * analytics and marketing - `defaultCookieCategories`.
+   * As categorias do "Personalizar". Sem elas, necessarios (obrigatorio),
+   * analise e marketing - `defaultCookieCategories`.
    */
   categories?: CookieCategory[];
   /**
-   * How each "Personalizar" switch starts. Without it, only the required ones
-   * on: the LGPD requires active consent, and a switch that starts on is not a
-   * choice. Pass the stored choice when the person reopens it to review.
+   * Como cada chave do "Personalizar" comeca. Sem ele, so as obrigatorias
+   * ligadas: a LGPD pede consentimento ativo, e chave que nasce ligada nao e
+   * escolha. Passe a escolha guardada quando a pessoa reabre para rever.
    */
   defaultValue?: Record<string, boolean>;
-  /** The notice's title. Without it, "Cookies e privacidade". */
+  /** O titulo do aviso. Sem ele, "Cookies e privacidade". */
   title?: ReactNode;
-  /** The notice's text, before the policy link. */
+  /** O texto do aviso, antes do link da politica. */
   description?: ReactNode;
   /**
-   * The texts of the buttons and the link: `policy`, `acceptAll`, `rejectOptional`,
-   * `customize`, `save`, `required` (what goes with the required category)
-   * and `categories`, the name of the "Personalizar" list.
+   * Os textos dos botoes e do link: `policy`, `acceptAll`, `rejectOptional`,
+   * `customize`, `save`, `required` (o que acompanha a categoria obrigatoria)
+   * e `categories`, o nome da lista do "Personalizar".
    */
   labels?: Partial<Omit<typeof LABELS, "title" | "description">>;
-  /**
-   * Class per part: `panel`, `title`, `description`, `policy`, `categories`, `category` and
-   * `actions`.
-   */
+  /** Classe por parte: `panel`, `title`, `description`, `policy`, `categories`, `category` e `actions`. */
   classNames?: Slots<
     "panel" | "title" | "description" | "policy" | "categories" | "category" | "actions"
   >;

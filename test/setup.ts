@@ -1,4 +1,4 @@
-// Registers a DOM in bun test, which runs without a browser by default.
+// Registra um DOM no bun test, que roda sem navegador por padrao.
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { mock } from "bun:test";
 import * as reactNativeMock from "./react-native-mock";
@@ -9,22 +9,22 @@ import * as keyboardMock from "./keyboard-controller-mock";
 GlobalRegistrator.register();
 (globalThis as { BASE_UI_ANIMATIONS_DISABLED?: boolean }).BASE_UI_ANIMATIONS_DISABLED = true;
 
-// `__DEV__` is a metro global, and the native components read it to warn only
-// in development. Outside metro it does not exist, and reading a missing global is a
-// ReferenceError, not undefined.
+// O `__DEV__` e global do metro, e as pecas nativas leem dele para so avisar
+// em desenvolvimento. Fora do metro ele nao existe, e ler um global ausente e
+// ReferenceError, nao undefined.
 (globalThis as { __DEV__?: boolean }).__DEV__ = true;
 
-// The native components import "react-native", which does not run outside metro. Their
-// tests (native/test) receive this double; the web tests never import
-// react-native, so the mock does not touch them.
+// As pecas nativas importam "react-native", que nao roda fora do metro. Os
+// testes delas (native/test) recebem este dublê; os testes web nunca importam
+// react-native, entao o mock nao os toca.
 mock.module("react-native", () => reactNativeMock);
 mock.module("react-native-reanimated", () => reanimatedMock);
 mock.module("react-native-keyboard-controller", () => keyboardMock);
 
-// nativewind only exists in the example app, and the provider imports
-// useCssElement from it, which reads each role's color from the compiled CSS. The double resolves
-// through the same CSS, and the scheme is injected because the react-native here
-// is also a double and only takes effect on the line above.
+// O nativewind so existe no app de exemplo, e o provider importa dele o
+// useCssElement, que le a cor de cada papel no CSS compilado. O duble resolve
+// pelo mesmo CSS, e o esquema entra por injecao porque o react-native daqui
+// tambem e duble e so passa a valer na linha de cima.
 nativewindMock.connectColorScheme({
   get: () => reactNativeMock.Appearance.getColorScheme(),
   subscribe: (listener: () => void) => {
@@ -35,8 +35,8 @@ nativewindMock.connectColorScheme({
 
 mock.module("nativewind", () => nativewindMock);
 
-// Unmounts what each test mounted. Without this, a Provider leaves attributes and
-// portal containers behind, and the next test measures the previous one's leftovers.
+// Desmonta o que cada teste montou. Sem isto, um Provider deixa atributo e
+// container de portal para tras, e o teste seguinte mede sujeira do anterior.
 const { cleanup } = await import("@testing-library/react");
 const { afterEach } = await import("bun:test");
 

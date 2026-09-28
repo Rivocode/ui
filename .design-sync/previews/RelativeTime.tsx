@@ -8,7 +8,7 @@ const EVENTOS = [
   { label: 'Certificado renovado', at: new Date('2026-02-11T10:00:00Z') },
 ]
 
-/** Event queue */
+/** Fila de eventos */
 export function EventFeed() {
   return (
     <ul className="flex w-80 flex-col gap-2">

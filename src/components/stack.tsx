@@ -35,25 +35,25 @@ const justifyClass: Record<StackJustify, string> = {
 };
 
 export type StackProps = ComponentProps<"div"> & {
-  /** The children's axis. `column` stacks one below the other; `row` places them side by side. */
+  /** O eixo dos filhos. `column` empilha um embaixo do outro; `row` poe lado a lado. */
   direction?: "column" | "row";
   /**
-   * The gap between children, on the house scale: `xs` 4, `sm` 8, `md` 12, `lg` 16
-   * and `xl` 24 pixels in the comfortable density. In the compact one the scale shrinks
-   * along with the controls (`sm` 6, `md` 8, `lg` 12, `xl` 16); `xs` stays at 4.
+   * O vao entre os filhos, na escala da casa: `xs` 4, `sm` 8, `md` 12, `lg` 16
+   * e `xl` 24 pixels na densidade confortavel. Na compacta a escala encolhe
+   * junto com os controles (`sm` 6, `md` 8, `lg` 12, `xl` 16); `xs` fica em 4.
    */
   gap?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
   /**
-   * Alignment on the cross axis. Without a value, the CSS one applies: the children stretch.
-   * In a row with a button beside text, `center` is almost always what you want.
+   * O alinhamento no eixo cruzado. Sem valor, vale o do CSS: os filhos esticam.
+   * Numa linha de botao ao lado de texto, `center` e quase sempre o que se quer.
    */
   align?: "start" | "center" | "end" | "stretch" | "baseline";
-  /** Distribution on the main axis. `between` pushes the first and the last to the ends. */
+  /** A distribuicao no eixo principal. `between` empurra o primeiro e o ultimo para as pontas. */
   justify?: "start" | "center" | "end" | "between";
-  /** Lets the children wrap when they do not fit. Makes sense with `direction="row"`. */
+  /** Deixa os filhos quebrarem linha quando nao cabem. Faz sentido com `direction="row"`. */
   wrap?: boolean;
   /**
-   * Swaps the rendered element while keeping the arrangement:
+   * Troca o elemento renderizado mantendo o arranjo:
    * `<Stack render={<ul />}>`, `<Stack render={<nav />}>`.
    */
   render?: ReactElement;

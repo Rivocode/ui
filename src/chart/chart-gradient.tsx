@@ -4,15 +4,15 @@ import { seriesId, seriesVar } from "./series-var";
 
 export type ChartAreaGradientProps = {
   /**
-   * The name of this set of gradients, unique on the page. Usually the chart's
-   * subject: `"faturamento"`, `"emissao"`.
+   * O nome deste conjunto de gradientes, unico na pagina. Costuma ser o assunto
+   * do grafico: `"faturamento"`, `"emissao"`.
    */
   id: string;
-  /** The series that get a gradient. The names are the same as in `config`. */
+  /** As series que ganham gradiente. Os nomes sao os mesmos do `config`. */
   series: readonly string[];
-  /** Opacity at the top of the area. */
+  /** Opacidade no topo da area. */
   from?: number;
-  /** Opacity at the bottom, where it meets the axis. */
+  /** Opacidade embaixo, onde ela encontra o eixo. */
   to?: number;
 };
 

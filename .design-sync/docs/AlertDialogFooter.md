@@ -1,12 +1,11 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # AlertDialogFooter
 
-The row with cancel and confirm.
+A fila com cancelar e confirmar.
 
-The confirming one goes last in the markup and is usually `variant="danger"`, so
-the color agrees with the text. On a phone the two stack and take the full
-width, with the confirming one at the top of the stack and cancel close to the
-thumb.
+O que confirma vai por último na marcação e costuma ser `variant="danger"`, para
+a cor concordar com o texto. No celular os dois empilham e ocupam a largura
+toda, com o que confirma no alto da pilha e o cancelar rente ao polegar.

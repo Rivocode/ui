@@ -5,25 +5,25 @@ import { cn } from "./cn";
 import { Text } from "./text";
 
 export type ItemProps = {
-  /** The text that names the row. Truncates with an ellipsis, never wraps into two lines. */
+  /** O texto que nomeia a linha. Corta com reticências, nunca quebra em duas. */
   title: string;
-  /** The second, smaller line: the complement that fits. It also truncates. */
+  /** A segunda linha, menor: o complemento que cabe. Também corta. */
   description?: string;
-  /** The left corner: `Avatar`, icon, thumbnail. */
+  /** O canto da esquerda: `Avatar`, ícone, miniatura. */
   media?: ReactNode;
-  /** The right corner: value, `Badge`, `Button`, `Indicator`. */
+  /** O canto da direita: valor, `Badge`, `Button`, `Indicator`. */
   actions?: ReactNode;
-  /** `plain` for a list inside a card or sheet; `outline` for a grid of choices. */
+  /** `plain` para lista dentro de card ou folha; `outline` para grade de escolhas. */
   variant?: "plain" | "outline";
   /**
-   * Tap and go. Inside a `DataList` with `onRowPress`, do NOT pass this:
-   * `DataList` already wraps each row, and a `Pressable` inside another holds
-   * the touch in the inner one - the row would respond here and never there.
+   * Toca e vai. Dentro de um `DataList` com `onRowPress`, NÃO passe isto: o
+   * `DataList` já embrulha cada linha, e um `Pressable` dentro do outro
+   * segura o toque no de dentro - a linha responderia aqui e nunca lá.
    */
   onPress?: () => void;
   /**
-   * What the screen reader announces on the row. By default, the title and
-   * description in one sentence.
+   * O que o leitor de tela anuncia na linha. Por padrão, o título e a
+   * descrição na mesma frase.
    */
   accessibilityLabel?: string;
   className?: string;

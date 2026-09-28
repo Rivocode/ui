@@ -1,17 +1,17 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # MenuCheckboxItem
 
-A menu item that toggles an option on and off, without closing the menu.
+Um item do menu que liga e desliga uma opção, sem fechar o menu.
 
-It is the "Columns" menu of a listing: which columns of the invoice table show
-up. Each item holds its own state with `defaultChecked`, or responds to
-`checked` and `onCheckedChange` when the screen is in charge.
+É o menu de "Colunas" de uma listagem: quais colunas da tabela de notas
+aparecem. Cada item guarda o próprio estado com `defaultChecked`, ou responde a
+`checked` e `onCheckedChange` quando quem manda é a tela.
 
-Checking does **not close** the menu (`closeOnClick` starts as `false`, as in
-Base UI), because whoever picks columns picks several at once.
+Marcar **não fecha** o menu (`closeOnClick` nasce `false`, como na Base UI),
+porque quem escolhe colunas escolhe várias de uma vez.
 
 ```tsx
 <MenuContent>
@@ -23,26 +23,26 @@ Base UI), because whoever picks columns picks several at once.
 </MenuContent>
 ```
 
-## Parts
+## Partes
 
-`classNames` reaches the `indicator`, which is the checkmark column. It exists
-even on an unchecked item, on purpose: Base UI's indicator only mounts when the
-item is on, and without a fixed column the text of every row shifted sideways
-on each click. The width is the same as `SelectItem` and `ComboboxItem`, so the
-three lists align their text in the same column.
+`classNames` alcança o `indicator`, que é a coluna da marca. Ela existe mesmo no
+item desmarcado de propósito: o indicador da Base UI só monta quando o item está
+ligado, e sem uma coluna fixa o texto de todas as linhas andava para o lado a
+cada clique. A largura é a mesma do `SelectItem` e do `ComboboxItem`, para as
+três listas alinharem o texto na mesma coluna.
 
-## When not to use
+## Quando não usar
 
-For a choice between mutually exclusive alternatives (sort by date **or** by
-amount), use `MenuRadioItem` inside a `MenuRadioGroup`: the dot says that
-choosing this one unchooses the one above, which the checkmark does not say.
+Para uma escolha entre alternativas que se excluem (ordenar por data **ou** por
+valor), use `MenuRadioItem` dentro de um `MenuRadioGroup`: o ponto diz que
+escolher esta desescolhe a de cima, o que a marca de certo não diz.
 
-And do not swap it for a loose `Checkbox` inside a `Popover`, which was the
-path left before this piece. It costs the two things only the menu gives: the
-menu item `aria-checked`, which is how the screen reader announces the row, and
-the navigation by arrow and by first letter that the menu list already brings.
-A `Popover` is a panel with arbitrary content; nobody moves through it with the
-keyboard the way they move through a menu.
+E não troque por um `Checkbox` solto dentro de um `Popover`, que era o caminho
+que sobrava antes desta peça. Ele custa as duas coisas que só o menu dá: o
+`aria-checked` de item de menu, que é como o leitor de tela anuncia a linha, e a
+navegação por seta e por primeira letra que a lista de menu já traz. Um `Popover`
+é um painel com conteúdo qualquer; ninguém anda nele com o teclado como se anda
+num menu.
 
-When the options are many and call for search, the menu is not the place: the
-list with a text field is `Combobox` with `multiple`.
+Quando as opções são muitas e pedem busca, o menu não é o lugar: a lista com
+campo de digitar é `Combobox` com `multiple`.

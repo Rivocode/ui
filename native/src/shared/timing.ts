@@ -1,4 +1,4 @@
-/* Generated from src/shared/timing.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/timing.ts por bun run gen:compartilhado. Nao editar. */
 
 export type Scheduled<Args extends unknown[]> = {
   run: (...args: Args) => void;

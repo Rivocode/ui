@@ -11,32 +11,31 @@ export type SliderProps = {
   min?: number;
   max?: number;
   step?: number;
-  /** The name the screen reader announces: "Volume do alerta". */
+  /** O nome que o leitor de tela anuncia: "Volume do alerta". */
   label: string;
   /**
-   * Writes the label above the control and the value next to it. The same name
-   * as the web; without it, the label exists only for the screen reader.
+   * Escreve o rotulo acima do controle e o valor ao lado dele. O mesmo nome do
+   * web; sem ele, o rotulo so existe para o leitor de tela.
    */
   showValue?: boolean;
   /**
-   * How the number is written: the name of a house formatter or your own
-   * function, the same vocabulary as the web. The text applies on screen and in
-   * the announcement.
+   * Como o numero e escrito: nome de formatador da casa ou funcao propria, o
+   * mesmo vocabulario do web. O texto vale na tela e no anuncio.
    */
   format?: Format;
   disabled?: boolean;
-  /** Styles the root: without `showValue`, the control, the same node as `classNames.control`. */
+  /** Veste a raiz: sem `showValue`, o controle, o mesmo no de `classNames.control`. */
   className?: string;
   /**
-   * Class per part: `control` (the area that receives the drag), `track` (the
-   * track), `indicator` (the fill), `thumb` (the thumb), and `label` and
-   * `value` (the two texts, only with `showValue`).
+   * Classe por parte: `control` (a area que recebe o arrasto), `track` (o
+   * trilho), `indicator` (o preenchimento), `thumb` (o polegar), e `label` e
+   * `value` (os dois textos, so com `showValue`).
    */
   classNames?: Slots<"control" | "track" | "indicator" | "thumb" | "label" | "value">;
   /**
-   * The component's texts, to change the language: `increment` and `decrement`
-   * are the names of the two adjust actions the screen reader offers. Pass only
-   * the ones that change.
+   * Os textos da peca, para trocar o idioma: `increment` e `decrement` sao os
+   * nomes das duas acoes de ajuste que o leitor de tela oferece. Passe so os
+   * que mudam.
    */
   labels?: Partial<SliderLabels>;
 };

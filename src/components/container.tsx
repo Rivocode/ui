@@ -17,14 +17,14 @@ const sizeClass: Record<ContainerSize, string> = {
 
 export type ContainerProps = ComponentProps<"div"> & {
   /**
-   * The max width. `sm` (36rem) for a short form and a sign-in screen;
-   * `md` (48rem) for registration, settings and running text; `lg` (72rem) for a
-   * page with columns; `xl` (80rem) for a wide dashboard; `full` only gives the
-   * side padding, with no cap.
+   * A largura maxima. `sm` (36rem) para formulario curto e tela de entrada;
+   * `md` (48rem) para cadastro, configuracao e texto corrido; `lg` (72rem) para
+   * pagina com colunas; `xl` (80rem) para painel largo; `full` so da o respiro
+   * lateral, sem teto.
    */
   size?: "sm" | "md" | "lg" | "xl" | "full";
   /**
-   * Swaps the rendered element while keeping the width:
+   * Troca o elemento renderizado mantendo a largura:
    * `<Container render={<main />}>`, `<Container render={<section />}>`.
    */
   render?: ReactElement;

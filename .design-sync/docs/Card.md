@@ -1,18 +1,17 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Card
 
-A surface that groups related content.
+Superfície que agrupa conteúdo relacionado.
 
-Composes with `CardHeader`, `CardTitle`, `CardDescription`, `CardContent` and
-`CardFooter`. The title renders as `<h3>`, so it respects the page hierarchy.
+Compõe com `CardHeader`, `CardTitle`, `CardDescription`, `CardContent` e
+`CardFooter`. O título sai como `<h3>`, então respeita a hierarquia da página.
 
-`elevation="flat"` (default) sits on the background. `raised` gets a shadow,
-for what needs to stand out. Do not stack elevations: if everything stands out,
-nothing does.
+`elevation="flat"` (padrão) fica sobre o fundo. `raised` ganha sombra, para o que
+precisa saltar. Não empilhe elevacoes: se tudo salta, nada salta.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Card` - with `CardHeader`, `CardTitle`, `CardDescription` and `CardContent` (no `CardFooter`). The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Card` - com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` (sem `CardFooter`). A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

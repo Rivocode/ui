@@ -2,7 +2,7 @@ import { Checkbox, CheckboxGroup } from '@rivocode/ui'
 
 const METHODS = ['pix', 'boleto', 'cartao']
 
-/** Accepted methods */
+/** Formas aceitas */
 export function AcceptedMethods() {
   return (
     <CheckboxGroup defaultValue={['pix', 'boleto']} aria-label="Formas aceitas">
@@ -19,7 +19,7 @@ export function AcceptedMethods() {
   )
 }
 
-/** With the select-all box */
+/** Com a caixa de todas */
 export function WithSelectAll() {
   return (
     <CheckboxGroup allValues={METHODS} defaultValue={['pix']} aria-label="Formas aceitas">

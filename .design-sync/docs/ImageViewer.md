@@ -1,13 +1,13 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # ImageViewer
 
-A grid of thumbnails that opens the photo in full screen: photos of a
-property, receipts attached to an expense, a vehicle inspection. In full screen
-the person navigates between the images, zooms in to read the detail and
-closes returning exactly to where they were.
+Uma grade de miniaturas que abre a foto em tela cheia: fotos de um imóvel,
+comprovantes anexados a uma despesa, a vistoria de um veículo. Na tela cheia a
+pessoa navega entre as imagens, aproxima para ler o detalhe e fecha voltando
+exatamente para onde estava.
 
 ```tsx
 <ImageViewer
@@ -18,92 +18,87 @@ closes returning exactly to where they were.
 />
 ```
 
-It is built on the house `Dialog`: focus stays trapped inside, `Esc` closes,
-the background becomes inert for the screen reader and the theme follows the
-portal.
+É montada sobre o `Dialog` da casa: o foco fica preso dentro, `Esc` fecha, o
+fundo fica inerte para o leitor de tela e o tema acompanha o portal.
 
-## The stage is always dark
+## O palco é sempre escuro
 
-Full screen opens on a dark stage in both themes, like the phone's gallery and
-the market's photo viewers: a light background around the photo fights with it
-and blows out the brightness. The background, the caption, the counter and the
-controls (close, arrows and zoom) read the fixed `media-*` roles
-(`bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`,
-`border-media-border` and `media-disabled` for the disabled control), and not
-the theme's roles.
+A tela cheia abre num palco escuro nos dois temas, como a galeria do celular e
+os visualizadores de foto de mercado: fundo claro em volta da foto briga com
+ela e estoura o brilho. O fundo, a legenda, o contador e os controles (fechar,
+setas e zoom) leem os papéis fixos `media-*` (`bg-media-stage`,
+`bg-media-control`, `text-media-fg`, `text-media-fg-muted`,
+`border-media-border` e `media-disabled` para o controle desabilitado), e não
+os papéis do tema.
 
-They live in `scales.css`, outside the themes, for the same reason as the
-`QRCode` pair: the stage stays dark in the light theme and in every client
-theme, without the client declaring anything. `check:contrast` measures the
-pairs: the dark stage, caption and counter at 4.5:1, icon, outline and focus
-ring at 3:1, and the disabled control visible and weaker than the live one.
-The thumbnail grid stays on the page, with the theme's colors.
+Eles moram em `scales.css`, fora dos temas, pelo mesmo motivo do par do
+`QRCode`: o palco continua escuro no tema claro e em todo tema de cliente, sem
+o cliente declarar nada. O `check:contrast` mede os pares: o palco escuro,
+legenda e contador a 4,5:1, ícone, contorno e anel de foco a 3:1, e o controle
+desabilitado visível e mais fraco que o vivo. A grade de miniaturas continua na
+página, e com as cores do tema.
 
-The theme does not declare `--rc-media-*`. To change the stage in a product,
-dress the parts through `classNames` (`viewer`, `counter`, `caption`), with a
-token.
+O tema não declara `--rc-media-*`. Para mudar o palco num produto, vista as
+partes pelo `classNames` (`viewer`, `counter`, `caption`), com token.
 
-## The images
+## As imagens
 
-`images` is the list, in navigation order. Each image has `src`, a required
-`alt`, an optional `caption` and `thumbnail`, the small version the grid uses
-(without it, the grid loads `src`).
+`images` é a lista, na ordem da navegação. Cada imagem tem `src`, `alt`
+obrigatório, `caption` opcional e `thumbnail`, a versão pequena que a grade usa
+(sem ela, a grade carrega o `src`).
 
-**`alt` is required in the type**, and not on a whim: it is the name of the
-thumbnail button, and it is what the screen reader hears at each image change,
-together with the position ("3 de 8: Recepção com balcão de madeira"). A
-gallery without `alt` is, for someone who cannot see, a row of nameless
-buttons.
+**O `alt` é obrigatório no tipo**, e não por capricho: ele é o nome do botão da
+miniatura, e é o que o leitor de tela ouve a cada troca de imagem, junto com a
+posição ("3 de 8: Recepção com balcão de madeira"). Uma galeria sem `alt` é,
+para quem não enxerga, uma fileira de botões sem nome.
 
-The `caption` appears below the open image, and is for what the `alt` does not
-say: when it was taken, who sent it, what the person should notice.
+A `caption` aparece embaixo da imagem aberta, e vale para o que o `alt` não
+diz: quando foi tirada, quem enviou, o que a pessoa deve reparar.
 
-## Navigating
+## Navegar
 
-The side arrows, the keyboard arrows, `PageUp` and `PageDown` and swiping
-sideways move between images. The "3 de 8" counter sits at the top left. On the
-first and the last, the arrow on that side disables; with `loop`, navigation
-wraps around.
+As setas na lateral, as setas do teclado, `PageUp` e `PageDown` e o deslizar de
+lado passam de imagem. O contador "3 de 8" fica no alto, à esquerda. Na primeira
+e na última, a seta daquele lado desabilita; com `loop`, a navegação dá a volta.
 
-If the arrow disables with focus on it, focus drops to the image area, and does
-not get lost on the page: the viewer's keys keep working. The same goes for the
-zoom plus and minus, at the maximum and at the fit size.
+Se a seta desabilita com o foco nela, o foco desce para a área da imagem, e não
+se perde na página: as teclas do visualizador continuam valendo. O mesmo vale
+para o mais e o menos do zoom, no máximo e no tamanho que cabe.
 
-The neighbor on each side is loaded before the person asks, so switching
-images does not wait on the network. While the open image loads, a spinner
-takes its place; if it does not load, the screen says so instead of spinning
-forever.
+A vizinha de cada lado é carregada antes de a pessoa pedir, então a troca de
+imagem não espera a rede. Enquanto a imagem aberta carrega, um giro ocupa o
+lugar dela; se ela não carrega, a tela diz isso em vez de girar para sempre.
 
 ## Zoom
 
-The plus and minus buttons zoom by one and a half times at each step, up to
-`maxZoom` (4 by default). Double-click doubles the zoom at the clicked point,
-and the second goes back to the fit size. The mouse wheel zooms with `Ctrl`
-held, which is the same event the trackpad's pinch gesture sends; on touch, the
-two-finger pinch zooms directly.
+Os botões de mais e menos aproximam de uma vez e meia em uma vez e meia, até
+`maxZoom` (4 por padrão). O duplo clique dobra o zoom no ponto clicado, e o
+segundo volta ao tamanho que cabe. A roda do mouse aproxima com `Ctrl` apertado,
+que é o mesmo evento que o gesto de pinça do trackpad manda; no toque, a pinça
+de dois dedos aproxima direto.
 
-Zoomed in, the image can be dragged to see the rest, and swiping stops
-switching images: the finger dragging the zoomed photo cannot suddenly change
-photos. On the keyboard, `+` and `-` zoom in and out, and `0` goes back to the
-fit size.
+Aproximada, a imagem se arrasta para ver o resto, e o deslizar deixa de trocar
+de imagem: o dedo que arrasta a foto aproximada não pode, de repente, mudar de
+foto. No teclado, `+` e `-` aproximam e afastam, e `0` volta ao tamanho que
+cabe.
 
-**When zoomed, the four arrows pan across the photo**, 40 pixels at a time,
-without going past the edge, and they are the dragging of whoever does not use
-a pointer. Switching images stays with `PageUp`, `PageDown` and the side
-buttons. Switching images always resets the zoom.
+**Com zoom, as quatro setas percorrem a foto**, de 40 em 40 pixels, sem passar
+da borda, e são o arrastar de quem não usa ponteiro. A troca de imagem fica com
+`PageUp`, `PageDown` e os botões da lateral. Trocar de imagem sempre volta o
+zoom ao começo.
 
-## Closing and going back
+## Fechar e voltar
 
-`Esc`, the X at the top or `onIndexChange(null)` close it. **Focus returns to
-the thumbnail of the image that was open**, and not necessarily to the one that
-opened it: whoever opened the second photo, went to the fifth and closed it
-continues from the fifth in the grid, with the page scrolled to it.
+`Esc`, o xis no alto ou o `onIndexChange(null)` fecham. **O foco volta para a
+miniatura da imagem que estava aberta**, e não necessariamente para a que abriu:
+quem abriu a segunda foto, andou até a quinta e fechou, continua a partir da
+quinta na grade, com a página rolada até ela.
 
-## Controlled
+## Controlado
 
-`index` and `onIndexChange`: the index of the open image, counting from zero,
-or `null` with the viewer closed. With `thumbnails={false}` the grid
-disappears, and what opens it is `index`, from any button on the screen:
+`index` e `onIndexChange`: o índice da imagem aberta, contando de zero, ou
+`null` com o visualizador fechado. Com `thumbnails={false}` a grade some, e quem
+abre é o `index`, a partir de qualquer botão da tela:
 
 ```tsx
 const [index, setIndex] = useState<number | null>(null)
@@ -112,35 +107,36 @@ const [index, setIndex] = useState<number | null>(null)
 <ImageViewer images={fotos} thumbnails={false} index={index} onIndexChange={setIndex} />
 ```
 
-## Parts
+## Partes
 
-`classNames` reaches each node by name: `thumbnails` (the grid), `thumbnail`
-(each grid button), `viewer` (the full screen), `toolbar` (the top bar),
-`counter`, `stage` (the image area), `image` and `caption`.
+`classNames` alcança cada nó pelo nome: `thumbnails` (a grade), `thumbnail`
+(cada botão da grade), `viewer` (a tela cheia), `toolbar` (a barra do alto),
+`counter`, `stage` (a área da imagem), `image` e `caption`.
 
-`labels` swaps the texts: `title` (the dialog's name, only for the screen
-reader), `counter` (a function of the position and the total), `previous`,
-`next`, `close`, `zoomIn`, `zoomOut`, `loading` and `error`.
+`labels` troca os textos: `title` (o nome do diálogo, só para o leitor de tela),
+`counter` (função da posição e do total), `previous`, `next`, `close`, `zoomIn`,
+`zoomOut`, `loading` e `error`.
 
-## When not to use
+## Quando não usar
 
-- **Content that is not an image** is `Dialog`. The viewer exists for the photo
-  to take up the whole screen; a form or a text inside it loses what `Dialog`
-  gives (the visible title, the actions footer, a size that fits the content).
-- **An image that only needs a frame on the page** is `AspectRatio`. If the
-  person does not need to enlarge or navigate, the photo stays in the card
-  itself, with the ratio reserved before loading, and nothing opens on top.
-- **A row of images you browse without enlarging** is `Carousel`. The two
-  combine: the carousel shows, and the viewer enlarges when the person asks.
+- **Conteúdo que não é imagem** é `Dialog`. O visualizador existe para a foto
+  ocupar a tela inteira; um formulário ou um texto dentro dele perde o que o
+  `Dialog` dá (o título visível, o rodapé de ações, o tamanho que cabe no
+  conteúdo).
+- **Imagem que só precisa de moldura na página** é `AspectRatio`. Se a pessoa
+  não precisa ampliar nem navegar, a foto fica no próprio card, com a proporção
+  reservada antes de carregar, e nada abre por cima.
+- **Fileira de imagens que se percorre sem ampliar** é `Carousel`. Os dois
+  combinam: o carrossel mostra, e o visualizador amplia quando a pessoa pede.
 
-## In React Native
+## No React Native
 
-Translates on top of the core's `Modal`, with the images in a horizontal `FlatList` with `pagingEnabled`: swiping changes the image, and Android's back closes it. The thumbnail grid is the same, built on the native `Grid`, and each thumbnail is an `imagebutton` with the `alt` as its name. The `index` is controlled, as in the whole native package: `onIndexChange` receives the index on opening and on navigating, and `null` on closing.
+Traduz sobre o `Modal` do core, com as imagens numa `FlatList` horizontal com `pagingEnabled`: deslizar troca de imagem, e o voltar do Android fecha. A grade de miniaturas é a mesma, montada no `Grid` nativo, e cada miniatura é um `imagebutton` com o `alt` como nome. O `index` é controlado, como em todo o pacote nativo: `onIndexChange` recebe o índice ao abrir e ao navegar, e `null` ao fechar.
 
-**Pinch comes from the core's `PanResponder`, not from react-native-gesture-handler.** The package already requires reanimated, but not gesture-handler, and an image viewer does not justify one more required peer for every app. Two fingers zoom in up to `maxZoom`, one finger drags the zoomed photo, and a double tap doubles and undoes the zoom. While zoomed, the row stops scrolling: the finger dragging the photo does not change the photo. The plus, minus, previous and next buttons are still there, because the screen reader does not pinch.
+**A pinça sai do `PanResponder` do core, e não do react-native-gesture-handler.** O pacote já exige o reanimated, mas não o gesture-handler, e um visualizador de imagem não justifica um peer obrigatório a mais para todo app. Dois dedos aproximam até `maxZoom`, um dedo arrasta a foto aproximada, e o toque duplo dobra e desfaz o zoom. Com zoom, a fileira para de rolar: o dedo que arrasta a foto não troca de foto. Os botões de mais, menos, anterior e próximo continuam lá, porque o leitor de tela não faz pinça.
 
-`caption` is a `string`, the neighbor on each side is requested ahead of time through `Image.prefetch`, and the "3 de 8" counter sits in a live region that also says the new image's `alt`.
+`caption` é `string`, a vizinha de cada lado é pedida antes por `Image.prefetch`, e o contador "3 de 8" fica numa região viva que diz também o `alt` da imagem nova.
 
-The stage is dark in both schemes, as on the web: the colors come from `tokens.media`, not from the theme, so the `Modal` does not lighten in the light theme or in a client theme. A disabled control follows the package rule, the whole layer at 50%.
+O palco é escuro nos dois esquemas, como no web: as cores saem de `tokens.media`, e não do tema, então o `Modal` não clareia no tema claro nem no tema de cliente. O controle desabilitado segue a regra do pacote, a camada inteira a 50%.
 
-The parts are styled through the same `classNames` as the web, all eight: `thumbnails`, `thumbnail`, `viewer`, `toolbar`, `counter`, `stage`, `image` and `caption`. `className` styles the thumbnail grid, the same node as `thumbnails`, because the piece has no root: the grid and the `Modal` are siblings.
+As partes vestem pelo mesmo `classNames` do web, as oito: `thumbnails`, `thumbnail`, `viewer`, `toolbar`, `counter`, `stage`, `image` e `caption`. O `className` veste a grade de miniaturas, o mesmo nó de `thumbnails`, porque a peça não tem raiz: a grade e o `Modal` são irmãos.

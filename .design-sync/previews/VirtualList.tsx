@@ -25,7 +25,7 @@ const EVENTS: Event[] = Array.from({ length: 4000 }, (_, index) => ({
   message: `Nota ${9000 + index} enviada para a prefeitura`,
 }))
 
-/** Four thousand items */
+/** Quatro mil itens */
 export function Long() {
   return (
     <VirtualList
@@ -67,7 +67,7 @@ const NOTES: Note[] = Array.from({ length: 2000 }, (_, index) => ({
   reason: REASONS[index % REASONS.length]!,
 }))
 
-/** Text that wraps onto two lines */
+/** Texto que quebra em duas linhas */
 export function Measured() {
   return (
     <VirtualList
@@ -86,7 +86,7 @@ export function Measured() {
   )
 }
 
-/** Fixed height, without measuring */
+/** Altura cravada, sem medir */
 export function FixedHeight() {
   return (
     <VirtualList
@@ -106,7 +106,7 @@ export function FixedHeight() {
   )
 }
 
-/** With spacing between items */
+/** Com respiro entre os itens */
 export function Spaced() {
   return (
     <VirtualList
@@ -130,7 +130,7 @@ export function Spaced() {
   )
 }
 
-/** Go to an item that is not on screen */
+/** Ir até um item que não está na tela */
 export function ScrollToItem() {
   const list = useRef<VirtualListHandle>(null)
 
@@ -165,7 +165,7 @@ export function ScrollToItem() {
   )
 }
 
-/** Loading */
+/** Carregando */
 export function Loading() {
   return (
     <VirtualList<Event>
@@ -179,7 +179,7 @@ export function Loading() {
   )
 }
 
-/** Error */
+/** Erro */
 export function Error() {
   return (
     <VirtualList<Event>
@@ -195,7 +195,7 @@ export function Error() {
   )
 }
 
-/** Empty */
+/** Vazio */
 export function Empty() {
   return (
     <VirtualList<Event>

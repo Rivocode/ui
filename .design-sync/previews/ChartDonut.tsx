@@ -17,7 +17,7 @@ const NATURE: ChartConfig = {
 
 const TOTAL = BY_KIND.reduce((sum, row) => sum + row.total, 0)
 
-/** In a dashboard card */
+/** Num cartão de painel */
 export function InADashboard() {
   return (
     <Card className="w-80">
@@ -40,7 +40,7 @@ export function InADashboard() {
   )
 }
 
-/** Without the list below */
+/** Sem a lista embaixo */
 export function WithoutLegend() {
   return (
     <div className="w-64">
@@ -57,7 +57,7 @@ export function WithoutLegend() {
   )
 }
 
-/** Thin ring */
+/** Anel fino */
 export function ThinRing() {
   return (
     <div className="w-64">
@@ -75,7 +75,7 @@ export function ThinRing() {
   )
 }
 
-/** A month without invoices, with an empty state that explains */
+/** Mês sem nota, com o vazio que explica */
 export function EmptyMonth() {
   return (
     <div className="w-80">
@@ -93,7 +93,7 @@ export function EmptyMonth() {
   )
 }
 
-/** All zero, without empty: the background ring with the center */
+/** Tudo zerado, sem empty: o anel de fundo com o miolo */
 export function AllZero() {
   return (
     <div className="w-64">

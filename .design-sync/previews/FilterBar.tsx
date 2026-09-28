@@ -12,7 +12,7 @@ const WITH_SCOPE: AppliedFilter[] = [
   { id: 'status', label: 'Situação', value: 'Vencidas' },
 ]
 
-/** Default */
+/** Padrão */
 export function Default() {
   const [filters, setFilters] = useState(APPLIED)
 
@@ -23,7 +23,7 @@ export function Default() {
   )
 }
 
-/** The saved row */
+/** A linha guardada */
 export function Reserved() {
   return (
     <div className="w-full max-w-xl">
@@ -32,7 +32,7 @@ export function Reserved() {
   )
 }
 
-/** A filter the app locks */
+/** Filtro que o app trava */
 export function Locked() {
   const [filters, setFilters] = useState(WITH_SCOPE)
 
@@ -43,7 +43,7 @@ export function Locked() {
   )
 }
 
-/** Narrow, with scrolling */
+/** Estreito, com rolagem */
 export function Narrow() {
   const [filters, setFilters] = useState(APPLIED)
 
@@ -54,7 +54,7 @@ export function Narrow() {
   )
 }
 
-/** While the query reruns */
+/** Enquanto a consulta refaz */
 export function Busy() {
   return (
     <div className="w-full max-w-xl">

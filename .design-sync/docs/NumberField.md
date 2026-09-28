@@ -1,18 +1,18 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # NumberField
 
-A number field with plus and minus.
+Campo de número com mais e menos.
 
-Use it when the value has a known step and limit: quantity, installments, days
-of term. For money, `MaskedInput` with a currency mask says more, because there
-what matters is the punctuation and not the step.
+Use quando o valor tem passo e limite conhecidos: quantidade, parcelas, dias de
+prazo. Para dinheiro, o `MaskedInput` com molde de moeda diz mais, porque ali o
+que importa e a pontuacao e não o passo.
 
-The bare `Input` still serves for a loose number. The difference here is that
-the keyboard arrows, scrolling and the buttons respect `min`, `max` and
-`step`; the field never reaches a value the form rejects later.
+O `Input` cru continua servindo para número solto. A diferença aqui e que seta
+do teclado, rolagem e os botões respeitam `min`, `max` e `step`, o campo nunca
+chega num valor que o formulário rejeita depois.
 
 ```tsx
 <Field>
@@ -22,8 +22,8 @@ the keyboard arrows, scrolling and the buttons respect `min`, `max` and
 </Field>
 ```
 
-## In React Native
+## No React Native
 
-Translates, and becomes a stepper: minus, value, plus, which is the touch idiom. **`min` starts at 0**, and on the web it starts unbounded. It is not an oversight: the iPhone's numeric keyboard (`number-pad`) has no minus sign, so a negative number could only arrive through the minus button, and a field that goes below zero by tapping but does not let you type the same value is worse than a field that stops at zero. To accept negatives, pass a negative `min`: the stepper goes down to it, the field accepts a typed minus sign and switches to a keyboard that has the sign.
+Traduz, e vira stepper: menos, valor, mais, que é o idioma do toque. **O `min` nasce em 0**, e no web ele nasce sem piso. Não é descuido: o teclado numérico do iPhone (`number-pad`) não tem sinal de menos, então o número negativo só chegaria pelo botão de menos, e um campo que desce abaixo de zero por toque e não deixa digitar o mesmo valor é pior do que um campo que para no zero. Para aceitar negativo, passe `min` negativo: o stepper desce até ele, o campo aceita o sinal de menos digitado e troca para um teclado que tem o sinal.
 
-While typing, `max` applies on each key and `min` only on leaving the field: with `min={10}`, typing 25 passes through 2 without becoming 10. With a fractional `step` the keyboard becomes `decimal-pad`, comma and period both work as the separator, as on the web, and the step keeps its decimal places: 0,2 plus 0,1 gives 0,3. Plus and minus start from what is typed, and a value that arrives from outside in the middle of typing appears at once. The rest of the API also changes (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Digitando, o `max` vale a cada tecla e o `min` só na saída do campo: com `min={10}`, digitar 25 passa pelo 2 sem virar 10. Com `step` fracionário o teclado vira `decimal-pad`, vírgula e ponto valem como separador, como no web, e o passo sai com as casas dele: 0,2 mais 0,1 dá 0,3. O mais e o menos partem do que está digitado, e um valor que chega de fora no meio da digitação aparece na hora. O resto da API também muda (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

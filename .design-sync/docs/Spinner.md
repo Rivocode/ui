@@ -4,15 +4,14 @@ category: Feedback
 
 # Spinner
 
-A waiting spin with no foreseeable end.
+Giro de espera sem fim previsto.
 
-When it can be measured, `Progress` says more. When the wait is going to fill a
-whole screen, `Skeleton` shows the shape of what is coming, which is less
-alarming.
+Quando da para medir, `Progress` diz mais. Quando a espera vai preencher uma tela
+inteira, o `Skeleton` mostra o formato do que vem, que assusta menos.
 
-It stops spinning when the system asks for less motion, and stays in place:
-removing the notice would leave the screen looking frozen.
+Ele para de girar quando o sistema pede menos movimento, e continua no lugar:
+sumir com o aviso deixaria a tela parecendo travada.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Spinner` - `sm`, `md` and `lg` and the same `label`; `sm` and `md` are the small spin of the `ActivityIndicator`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Spinner` - `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

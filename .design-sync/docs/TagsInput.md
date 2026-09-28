@@ -1,41 +1,41 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # TagsInput
 
-A list of tags the person writes: an invoice's labels, a filter's words, the
-emails of an invitation.
+Lista de marcadores que a pessoa escreve: etiquetas de uma nota, palavras de um
+filtro, emails de um convite.
 
-Three gestures the piece solves once, so they are not solved five different
-ways: Enter closes the chip, Backspace with the field empty removes the last one
-(it is the gesture everyone tries first) and a repeated one does not go in
-twice, because tagging the same thing twice is never what was meant. Leaving
-the field also closes what was being written: text typed and not closed
-disappears on submitting the form, and nobody understands why.
+Três gestos que a peça resolve de uma vez, para não serem resolvidos cinco
+vezes diferentes: o Enter fecha a ficha, o Backspace com o campo vazio tira a
+última (é o gesto que todo mundo tenta primeiro) e a repetida não entra duas
+vezes, porque marcar duas vezes a mesma coisa nunca é o que se quis. Sair do
+campo também fecha o que estava escrito: texto digitado e não fechado some ao
+enviar o formulário, e ninguém entende por quê.
 
-Pasting a list separated by the `separators`, or by line breaks, becomes one
-chip per item. With `max`, the field stops accepting new chips at the ceiling,
-but stays focused: Backspace still removes the last one. With `name`, the native
-form receives each chip under that name, and never the half-written text.
+Colar uma lista separada pelos `separators`, ou por quebra de linha, vira uma
+ficha para cada item. Com `max`, o campo para de aceitar ficha nova no teto,
+mas continua focado: o Backspace ainda tira a última. Com `name`, o formulário
+nativo recebe cada ficha com esse nome, e nunca o texto pela metade.
 
-It keeps its own list when it receives only `defaultValue`, and obeys the
-outside one when it receives `value`, the same pair as the other form pieces.
-In a form that submits, control it: the app holds the list, because it is the
-one that sends it. In a screen filter, which submits nothing, `defaultValue`
-saves the `useState`.
+Guarda a própria lista quando recebe só `defaultValue`, e obedece à de fora
+quando recebe `value`, o mesmo par das outras peças de formulário. Num
+formulário que envia, controle: quem guarda a lista é o app, porque é ele que a
+manda. Num filtro de tela, que não envia nada, `defaultValue` poupa o
+`useState`.
 
 ```tsx
 <TagsInput defaultValue={['nf-e']} aria-label="Palavras do filtro" />
 ```
 
-## The label
+## O rótulo
 
-Wrap it in a `Field` with `FieldLabel`, like any house field. The writing field
-goes through `Field.Control`: it is the one, not the chips' frame, that
-receives the label's `id`, the `aria-describedby` of the help and the error,
-and `aria-invalid`. Clicking the label focuses the field, and the frame turns
-red when the `Field` is invalid.
+Embrulhe num `Field` com `FieldLabel`, como qualquer campo da casa. O campo de
+escrever passa pelo `Field.Control`: é ele, e não a moldura das fichas, que
+recebe o `id` do rótulo, o `aria-describedby` da ajuda e do erro, e o
+`aria-invalid`. Clicar no rótulo foca o campo, e a moldura fica vermelha
+quando o `Field` está inválido.
 
 ```tsx
 <Field>
@@ -45,23 +45,22 @@ red when the `Field` is invalid.
 </Field>
 ```
 
-`placeholder` is not a label: it disappears the moment the person types, and
-several screen readers do not announce it. Outside a `Field`, give it
-`aria-label`.
+O `placeholder` não é rótulo: ele some no instante em que a pessoa digita, e
+vários leitores de tela não o anunciam. Fora de um `Field`, dê `aria-label`.
 
-The focus ring belongs to the writing field, not the frame. Each chip's x has
-its own ring, and the two never light up together.
+O anel de foco é do campo de escrever, e não da moldura. O xis de cada ficha
+tem anel próprio, e os dois nunca acendem juntos.
 
-Removing a chip through its x does not throw focus to the start of the page: it
-goes to the next chip's x, or the previous one's when it was the last, and to
-the writing field when none is left.
+Tirar uma ficha pelo xis não joga o foco para o começo da página: ele vai para
+o xis da ficha seguinte, ou da anterior quando era a última, e para o campo de
+escrever quando não sobra nenhuma.
 
-## The x's name
+## O nome do xis
 
-Each chip says what is being removed: `labels.remove` receives its text and
-returns the name the screen reader hears. Without it, a row of chips announces
-itself "Remover, Remover, Remover", and whoever depends on the reader does not
-know which button is which.
+Cada ficha diz o que se remove: `labels.remove` recebe o texto dela e devolve o
+nome que o leitor de tela ouve. Sem isso, uma fila de fichas se anuncia
+"Remover, Remover, Remover", e quem depende do leitor não sabe qual botão é
+qual.
 
 ```tsx
 <TagsInput
@@ -71,18 +70,18 @@ know which button is which.
 />
 ```
 
-## Motion
+## Movimento
 
-Only a chip added later grows as it enters (`animate-pop`, `--rc-duration-fast`). The ones already in the value are born still: they are the form, not something that just happened.
+Só a ficha que chega depois cresce ao entrar (`animate-pop`, `--rc-duration-fast`). As que já vinham no valor nascem paradas: elas são o formulário, e não algo que acabou de acontecer.
 
-## When not to use
+## Quando não usar
 
-When the options already exist, use `Combobox` with `multiple` and the chips: it
-shows the catalog before letting you choose. `TagsInput` is for when the list
-is born from what is typed and there is nothing to suggest.
+Quando as opções já existem, use `Combobox` com `multiple` e as fichas: ele
+mostra o catálogo antes de deixar escolher. O `TagsInput` é para quando a lista
+nasce do que se digita e não há o que sugerir.
 
-## In React Native
+## No React Native
 
-Translates, with one gesture fewer. Enter closes the chip and so does the typed separator, but it is read from the text, not from the key, because Android's `onKeyPress` does not arrive for the system keyboard. It is that same event that was missing for Backspace on an empty field to remove the last chip, and so it does not port: on the phone a chip is removed by its x, which already needed to exist for the finger. The rest is the same: the piece is controlled, a repeated one does not go in twice and leaving the field closes whatever was half written. The x's name comes through `labels.remove`, as on the web.
+Traduz, com um gesto a menos. O Enter fecha a ficha e o separador digitado também, mas ele é lido no texto, e não na tecla, porque o `onKeyPress` do Android não chega para o teclado do sistema. É esse mesmo evento que faltava para o Backspace com o campo vazio tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que já precisava existir para o dedo. O resto é igual: a peça é controlada, a repetida não entra duas vezes e sair do campo fecha o que estava meio escrito. O nome do xis vem por `labels.remove`, como no web.
 
-The parts are styled through the same `classNames` as the web: `field`, `tag`, `remove` and `input`.
+As partes vestem pelo mesmo `classNames` do web: `field`, `tag`, `remove` e `input`.

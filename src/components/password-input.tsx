@@ -9,9 +9,9 @@ import { Input, useFieldDisabled, type InputProps } from "./field";
 import { InputAction, InputGroup } from "./input-group";
 
 export type PasswordInputProps = Omit<InputProps, "type"> & {
-  /** What the screen reader hears on the button, before and after revealing. */
+  /** O que o leitor de tela ouve no botao, antes e depois de revelar. */
   labels?: { show?: string; hide?: string };
-  /** Class per part: `wrapper`, `input`, `action`. */
+  /** Classe por parte: `wrapper`, `input`, `action`. */
   classNames?: Slots<"wrapper" | "input" | "action">;
   size?: ComponentProps<typeof InputGroup>["size"];
 };

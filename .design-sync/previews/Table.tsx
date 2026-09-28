@@ -12,7 +12,7 @@ import {
 } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
 
-/** Listing */
+/** Listagem */
 export function Listing() {
   return (
     <Table>
@@ -54,7 +54,7 @@ export function Listing() {
   )
 }
 
-/** With a totals row */
+/** Com linha de totais */
 export function WithTotals() {
   const invoices = [
     { number: '4812', customer: 'Prefeitura de João Pessoa', amount: 12_400 },
@@ -82,8 +82,8 @@ export function WithTotals() {
           </TableRow>
         ))}
       </TableBody>
-      {/* In a <tfoot>, not a <div> below: the cell shares its width with the
-          column, so the total sits under the value it sums. */}
+      {/* Num <tfoot>, e nao numa <div> embaixo: a célula divide a largura com
+          a coluna, então o total fica debaixo do valor que ele soma. */}
       <TableFooter>
         <TableRow>
           <TableCell colSpan={2}>Total</TableCell>
@@ -94,7 +94,7 @@ export function WithTotals() {
   )
 }
 
-/** With legend */
+/** Com legenda */
 export function WithCaption() {
   const payments = [
     { id: 'PIX-9021', method: 'Pix', amount: 4200 },
@@ -104,9 +104,9 @@ export function WithCaption() {
 
   return (
     <Table>
-      {/* First child of the <table>, not a <p> above it: a neighboring title
-          names no element, and the screen reader announces only "table, 3
-          columns". */}
+      {/* Primeiro filho da <table>, e não uma <p> acima dela: o título vizinho
+          não nomeia elemento nenhum, e o leitor de tela anuncia só "tabela, 3
+          colunas". */}
       <TableCaption>Pagamentos recebidos em junho de 2025</TableCaption>
       <TableHeader>
         <TableRow>

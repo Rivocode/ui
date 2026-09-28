@@ -1,4 +1,4 @@
-/* Generated from src/lib/contrast.ts by bun run gen:native:contrast. Do not edit. */
+/* Gerado de src/lib/contrast.ts por bun run gen:native:contrast. Nao editar. */
 
 export const MIN_BODY = 7;
 export const MIN_TEXT = 4.5;
@@ -549,17 +549,17 @@ export function checkCodePair(name, ink, paper) {
 ${name}` }];
   const say = (ok, line) => findings.push({ ok, line: `  ${line}` });
   if (!ink || !paper) {
-    say(false, "MISSING ink or paper of the machine-read code");
+    say(false, "FALTA  tinta ou papel do código lido por máquina");
     return findings;
   }
   if (!toHex(ink) || !toHex(paper)) {
-    say(false, "FAIL  ink or paper of the machine-read code did not resolve to an opaque color");
+    say(false, "FALHA  tinta ou papel do código lido por máquina não resolveu para uma cor opaca");
     return findings;
   }
   const ratio = contrastRatio(ink, paper);
   const dark = luminance(ink) < luminance(paper);
   const ok = ratio >= MIN_CODE && dark;
-  say(ok, `${ok ? "ok   " : "FAIL "} ink on paper of the machine-read code  ${ratio.toFixed(2)}:1` + ` (min ${MIN_CODE}, and the ink ${dark ? "darker" : "LIGHTER"} than the paper` + `${dark ? "" : ": the code comes out inverted, and a bank reader cannot read it"})`);
+  say(ok, `${ok ? "ok   " : "FALHA"} tinta sobre papel do código lido por máquina  ${ratio.toFixed(2)}:1` + ` (min ${MIN_CODE}, e a tinta ${dark ? "mais escura" : "MAIS CLARA"} que o papel` + `${dark ? "" : ": o código sai invertido, e leitor de banco não lê"})`);
   return findings;
 }
 export const MAX_STAGE_OVER_BLACK = 1.2;
@@ -580,12 +580,12 @@ export const MAP_MEDIA = {
   disabled: "media-disabled"
 };
 const MEDIA_PAIRS = [
-  ["fg", "stage", MIN_TEXT, "caption on the stage"],
-  ["fgMuted", "stage", MIN_TEXT, "counter, error and wait on the stage"],
-  ["fg", "control", MIN_TEXT, "control icon on its background"],
-  ["fg", "stage", MIN_NON_TEXTUAL, "focus ring on the stage"],
-  ["border", "stage", MIN_NON_TEXTUAL, "control outline on the stage"],
-  ["border", "control", MIN_NON_TEXTUAL, "control outline on its background"]
+  ["fg", "stage", MIN_TEXT, "legenda sobre o palco"],
+  ["fgMuted", "stage", MIN_TEXT, "contador, erro e espera sobre o palco"],
+  ["fg", "control", MIN_TEXT, "ícone do controle sobre o fundo dele"],
+  ["fg", "stage", MIN_NON_TEXTUAL, "anel de foco sobre o palco"],
+  ["border", "stage", MIN_NON_TEXTUAL, "contorno do controle sobre o palco"],
+  ["border", "control", MIN_NON_TEXTUAL, "contorno do controle sobre o fundo dele"]
 ];
 export function checkMediaStage(name, colors) {
   const findings = [{ ok: true, line: `
@@ -593,25 +593,25 @@ ${name}` }];
   const say = (ok, line) => findings.push({ ok, line: `  ${line}` });
   const missing = Object.keys(CSS_MEDIA).filter((role) => !colors[role] || !toHex(colors[role]));
   if (missing.length > 0) {
-    say(false, `MISSING media stage role without an opaque color: ${missing.join(", ")}`);
+    say(false, `FALTA  papel do palco de mídia sem cor opaca: ${missing.join(", ")}`);
     return findings;
   }
   const color = (role) => colors[role];
   const black = (luminance(color("stage")) + 0.05) / 0.05;
   const dark = black <= MAX_STAGE_OVER_BLACK;
-  say(dark, `${dark ? "ok   " : "FAIL "} dark media stage  ${black.toFixed(2)}:1 over black` + ` (max ${MAX_STAGE_OVER_BLACK}${dark ? "" : ": the photo no longer sits on a dark stage"})`);
+  say(dark, `${dark ? "ok   " : "FALHA"} palco de mídia escuro  ${black.toFixed(2)}:1 sobre o preto` + ` (max ${MAX_STAGE_OVER_BLACK}${dark ? "" : ": a foto deixa de sair num palco escuro"})`);
   for (const [front, back, min, what] of MEDIA_PAIRS) {
     const ratio = contrastRatio(color(front), color(back));
     const ok = ratio >= min && luminance(color(front)) > luminance(color(back));
-    say(ok, `${ok ? "ok   " : "FAIL "} ${what}  ${ratio.toFixed(2)}:1 (min ${min}, light on dark)`);
+    say(ok, `${ok ? "ok   " : "FALHA"} ${what}  ${ratio.toFixed(2)}:1 (min ${min}, claro sobre escuro)`);
   }
-  const where = { stage: "the stage", control: "the control background" };
+  const where = { stage: "o palco", control: "o fundo do controle" };
   for (const back of ["stage", "control"]) {
     const ratio = contrastRatio(color("disabled"), color(back));
     const live = contrastRatio(color("border"), color(back));
     const visible = ratio >= MIN_DISABLED;
     const weaker = live / ratio >= LIVE_OVER_DISABLED;
-    say(visible && weaker, `${visible && weaker ? "ok   " : "FAIL "} inactive control on ${where[back]}  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, and the live one weighs ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
+    say(visible && weaker, `${visible && weaker ? "ok   " : "FALHA"} controle inativo sobre ${where[back]}  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, e o vivo pesa ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
   }
   return findings;
 }
@@ -630,9 +630,9 @@ export const MAP_SIGNATURE = {
   disabled: "signature-disabled"
 };
 const SIGNATURE_PAIRS = [
-  ["ink", MIN_TEXT, "signature ink on the paper"],
-  ["guide", MIN_TEXT, "signing hint on the paper"],
-  ["guide", MIN_NON_TEXTUAL, "baseline on the paper"]
+  ["ink", MIN_TEXT, "tinta da assinatura sobre o papel"],
+  ["guide", MIN_TEXT, '"Assine aqui" sobre o papel'],
+  ["guide", MIN_NON_TEXTUAL, "linha de base sobre o papel"]
 ];
 export function checkSignaturePaper(name, colors) {
   const findings = [{ ok: true, line: `
@@ -640,7 +640,7 @@ ${name}` }];
   const say = (ok, line) => findings.push({ ok, line: `  ${line}` });
   const missing = Object.keys(CSS_SIGNATURE).filter((role) => !colors[role] || !toHex(colors[role]));
   if (missing.length > 0) {
-    say(false, `MISSING signature role without an opaque color: ${missing.join(", ")}`);
+    say(false, `FALTA  papel da assinatura sem cor opaca: ${missing.join(", ")}`);
     return findings;
   }
   const color = (role) => colors[role];
@@ -649,13 +649,13 @@ ${name}` }];
     const ratio = contrastRatio(color(front), paper);
     const dark = luminance(color(front)) < luminance(paper);
     const ok = ratio >= min && dark;
-    say(ok, `${ok ? "ok   " : "FAIL "} ${what}  ${ratio.toFixed(2)}:1 (min ${min}, dark on light` + `${dark ? "" : ": the signature comes out inverted, and the printed document loses it"})`);
+    say(ok, `${ok ? "ok   " : "FALHA"} ${what}  ${ratio.toFixed(2)}:1 (min ${min}, escuro sobre claro` + `${dark ? "" : ": a assinatura sai invertida, e o documento impresso a perde"})`);
   }
   const ratio = contrastRatio(color("disabled"), paper);
   const live = contrastRatio(color("guide"), paper);
   const visible = ratio >= MIN_DISABLED;
   const weaker = live / ratio >= LIVE_OVER_DISABLED;
-  say(visible && weaker, `${visible && weaker ? "ok   " : "FAIL "} inactive guide on the paper  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, and the live one weighs ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
+  say(visible && weaker, `${visible && weaker ? "ok   " : "FALHA"} guia inativa sobre o papel  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, e a viva pesa ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
   return findings;
 }
 function clippedHex(value) {
@@ -668,7 +668,7 @@ function wideGamutNote(colors, strip) {
     return;
   return {
     ok: true,
-    line: `  note   ${wide.length} ${wide.length === 1 ? "role describes a tone" : "roles describe tones"}` + ` outside sRGB. The screen clips the excess channel by channel, and the clipped value is` + ` what was measured - the same pixel the browser paints: ${wide.join(", ")}`
+    line: `  nota   ${wide.length} ${wide.length === 1 ? "papel descreve" : "papéis descrevem"} tom` + ` fora do sRGB. A tela corta o excedente canal por canal, e é o valor cortado que foi` + ` medido — o mesmo pixel que o navegador pinta: ${wide.join(", ")}`
   };
 }
 export function checkThemeCss(name, tokens) {
@@ -686,57 +686,57 @@ ${name}` }];
     const a = tokens[front];
     const b = tokens[over];
     if (!a || !b) {
-      say(false, `MISSING ${front} on ${over}`);
+      say(false, `FALTA  ${front} sobre ${over}`);
       continue;
     }
     if (!toHex(a) || !toHex(b)) {
-      say(false, `FAIL  ${front} or ${over} did not resolve to an opaque color the math can read`);
+      say(false, `FALHA  ${front} ou ${over} não resolveu para uma cor opaca que a conta lê`);
       continue;
     }
     const ratio = contrastRatio(a, b);
     const ok = ratio >= min;
-    say(ok, `${ok ? "ok   " : "FAIL "} ${front} on ${over}  ${ratio.toFixed(2)}:1 (min ${min})`);
+    say(ok, `${ok ? "ok   " : "FALHA"} ${front} sobre ${over}  ${ratio.toFixed(2)}:1 (min ${min})`);
   }
   for (const [line, over, min] of CSS_BOUNDARIES) {
     const layers = Array.isArray(over) ? over : [over];
-    const where = layers.join(" over ");
+    const where = layers.join(" em ");
     const color = tokens[line];
     const background = stack(tokens, layers);
     if (!color || !background) {
-      say(false, `MISSING ${line} on ${where}`);
+      say(false, `FALTA  ${line} sobre ${where}`);
       continue;
     }
     const ratio = contrastRatio(compose(color, background), background);
     const ok = ratio >= min;
-    say(ok, `${ok ? "ok   " : "FAIL "} ${line} on ${where}  ${ratio.toFixed(2)}:1 (min ${min}, 1.4.11)`);
+    say(ok, `${ok ? "ok   " : "FALHA"} ${line} sobre ${where}  ${ratio.toFixed(2)}:1 (min ${min}, 1.4.11)`);
   }
   for (const over of CSS_DISABLED_OVER) {
     const disabled = tokens["--rc-border-disabled"];
     const live = tokens["--rc-border-strong"];
     const background = tokens[over];
     if (!disabled || !live || !background) {
-      say(false, `MISSING --rc-border-disabled on ${over}`);
+      say(false, `FALTA  --rc-border-disabled sobre ${over}`);
       continue;
     }
     const ratio = contrastRatio(compose(disabled, background), background);
     const liveRatio = contrastRatio(compose(live, background), background);
     const visible = ratio >= MIN_DISABLED;
     const weaker = liveRatio / ratio >= LIVE_OVER_DISABLED;
-    say(visible && weaker, `${visible && weaker ? "ok   " : "FAIL "} --rc-border-disabled on ${over}` + `  ${ratio.toFixed(2)}:1 (min ${MIN_DISABLED}, and the live one weighs` + ` ${(liveRatio / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
+    say(visible && weaker, `${visible && weaker ? "ok   " : "FALHA"} --rc-border-disabled sobre ${over}` + `  ${ratio.toFixed(2)}:1 (min ${MIN_DISABLED}, e a viva pesa` + ` ${(liveRatio / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
   }
   for (const over of CSS_CHECKED_OVER) {
     const on = tokens[CSS_CHECKED];
     const off = tokens[CSS_UNCHECKED];
     const background = tokens[over];
     if (!on || !off || !background) {
-      say(false, `MISSING ${CSS_CHECKED} on ${over}`);
+      say(false, `FALTA  ${CSS_CHECKED} sobre ${over}`);
       continue;
     }
     const onRatio = contrastRatio(compose(on, background), background);
     const offRatio = contrastRatio(compose(off, background), background);
     const visible = onRatio >= MIN_NON_TEXTUAL;
     const notWeaker = onRatio >= offRatio;
-    say(visible && notWeaker, `${visible && notWeaker ? "ok   " : "FAIL "} ${CSS_CHECKED} on ${over}` + `  ${onRatio.toFixed(2)}:1 (min ${MIN_NON_TEXTUAL}, 1.4.11, and the checked control does not` + ` weigh less than the unchecked one, at ${offRatio.toFixed(2)}:1)`);
+    say(visible && notWeaker, `${visible && notWeaker ? "ok   " : "FALHA"} ${CSS_CHECKED} sobre ${over}` + `  ${onRatio.toFixed(2)}:1 (min ${MIN_NON_TEXTUAL}, 1.4.11, e o controle marcado não` + ` pesa menos que o desmarcado, a ${offRatio.toFixed(2)}:1)`);
   }
   for (const [front, tintName, alpha, underName, min] of CSS_TINTED_PAIRS) {
     const text = tokens[front];
@@ -744,25 +744,25 @@ ${name}` }];
     const under = tokens[underName];
     const background = tinted && under ? faded(tinted, alpha, under) : undefined;
     if (!text || !background) {
-      say(false, `MISSING ${front} on ${tintName} at ${alpha * 100}% over ${underName}`);
+      say(false, `FALTA  ${front} sobre ${tintName} a ${alpha * 100}% em ${underName}`);
       continue;
     }
     const ratio = contrastRatio(text, background);
     const ok = ratio >= min;
-    say(ok, `${ok ? "ok   " : "FAIL "} ${front} on ${tintName} at ${alpha * 100}% over ${underName}` + `  ${ratio.toFixed(2)}:1 (min ${min})`);
+    say(ok, `${ok ? "ok   " : "FALHA"} ${front} sobre ${tintName} a ${alpha * 100}% em ${underName}` + `  ${ratio.toFixed(2)}:1 (min ${min})`);
   }
   for (const [front, subtle, underName, min] of CSS_COMPOSED_PAIRS) {
     const text = tokens[front];
     const alphaBackground = tokens[subtle];
     const under = tokens[underName];
     if (!text || !alphaBackground || !under) {
-      say(false, `MISSING ${front} on ${subtle}`);
+      say(false, `FALTA  ${front} sobre ${subtle}`);
       continue;
     }
     const background = compose(alphaBackground, under);
     const ratio = contrastRatio(text, background);
     const ok = ratio >= min;
-    say(ok, `${ok ? "ok   " : "FAIL "} ${front} on ${subtle} over ${underName}` + `  ${ratio.toFixed(2)}:1 (min ${min})`);
+    say(ok, `${ok ? "ok   " : "FALHA"} ${front} sobre ${subtle} em ${underName}` + `  ${ratio.toFixed(2)}:1 (min ${min})`);
   }
   return findings;
 }
@@ -784,18 +784,18 @@ for (const background of BACKGROUNDS) {
     pair(`${state}-text`, [`${state}-subtle`, background], MIN_TEXT);
   if (background !== "surface-raised") {
     for (const state of STATES)
-      pair("fg", [`${state}-subtle`, background], MIN_BODY, "Banner strip");
+      pair("fg", [`${state}-subtle`, background], MIN_BODY, "faixa do Banner");
   }
 }
 pair("accent-fg", ["accent"], MIN_TEXT);
 for (const state of STATES)
   pair(`${state}-fg`, [state], MIN_TEXT);
-pair("accent-fg", ["accent-active"], MIN_TEXT, "primary button under the finger");
+pair("accent-fg", ["accent-active"], MIN_TEXT, "botão primário sob o dedo");
 for (const background of ["bg", "surface"]) {
-  pair("fg-muted", ["accent-subtle", background], MIN_TEXT, "ghost and outline button under the finger");
-  pair("success-text", ["accent-subtle", background], MIN_NON_TEXTUAL, "ghost and outline Clipboard check mark under the finger");
+  pair("fg-muted", ["accent-subtle", background], MIN_TEXT, "botão ghost e outline sob o dedo");
+  pair("success-text", ["accent-subtle", background], MIN_NON_TEXTUAL, "visto do Clipboard ghost e outline sob o dedo");
 }
-pair("fg", ["selected", "selected", "surface"], MIN_BODY, "range day under the finger");
+pair("fg", ["selected", "selected", "surface"], MIN_BODY, "dia do intervalo sob o dedo");
 export const MAP_BOUNDARIES = [];
 for (const background of BACKGROUNDS) {
   MAP_BOUNDARIES.push({ front: "border-strong", layers: [background], min: MIN_NON_TEXTUAL });
@@ -815,58 +815,58 @@ for (const state of STATES) {
     front: "border-strong",
     layers: [`${state}-subtle`, "bg"],
     min: MIN_NON_TEXTUAL,
-    note: "secondary button inside the Banner"
+    note: "botão secundário dentro do Banner"
   });
 }
 MAP_BOUNDARIES.push({
   front: "warning",
   layers: ["surface-raised"],
   min: MIN_NON_TEXTUAL,
-  note: "background of the Highlight match"
+  note: "fundo do trecho achado do Highlight"
 });
 MAP_BOUNDARIES.push({
   front: "border-strong",
   layers: ["selected", "surface"],
   min: MIN_NON_TEXTUAL,
-  note: "today inside the range"
+  note: "hoje dentro do intervalo"
 });
 MAP_BOUNDARIES.push({
   front: "accent-text",
   layers: ["selected", "surface"],
   min: MIN_NON_TEXTUAL,
-  note: "checked box on the selected TransferList row"
+  note: "caixa marcada na linha escolhida da TransferList"
 });
 MAP_BOUNDARIES.push({
   front: "surface-raised",
   layers: ["accent-text"],
   min: MIN_NON_TEXTUAL,
-  note: "tick and dot inside the checked fill"
+  note: "tique e ponto dentro do preenchimento marcado"
 });
 for (const background of ["bg", "surface"]) {
   MAP_BOUNDARIES.push({
     front: "fg",
     layers: ["skeleton", background],
     min: MIN_NON_TEXTUAL,
-    note: "Slider thumb inside the empty track"
+    note: "pino do Slider dentro do trilho vazio"
   });
   MAP_BOUNDARIES.push({
     front: "border-strong",
     layers: ["skeleton", background],
     min: MIN_NON_TEXTUAL,
-    note: "Slider thumb border inside the empty track"
+    note: "borda do pino do Slider dentro do trilho vazio"
   });
   MAP_BOUNDARIES.push({
     front: "accent-text",
     layers: ["skeleton", background],
     min: MIN_NON_TEXTUAL,
-    note: "filled bar of the Meter and the Progress inside the track"
+    note: "barra cheia do Meter e do Progress dentro do trilho"
   });
   for (const state of ["success", "warning", "danger"]) {
     MAP_BOUNDARIES.push({
       front: `${state}-text`,
       layers: ["skeleton", background],
       min: MIN_NON_TEXTUAL,
-      note: "ChartGauge arc inside the track"
+      note: "arco do ChartGauge dentro do trilho"
     });
   }
 }
@@ -879,7 +879,7 @@ for (let index = 1;index <= 8; index++) {
       alpha: CHART_TINT,
       over,
       min: MIN_TEXT,
-      note: "ChartTreemap label on the category tint"
+      note: "rótulo do ChartTreemap sobre a tinta da categoria"
     });
   }
 }
@@ -889,20 +889,20 @@ export const MAP_LAYER_PAIRS = [
     fill: "danger",
     alpha: 0.9,
     min: MIN_TEXT,
-    note: "destructive button under the finger (active:opacity-90)"
+    note: "botão destrutivo sob o dedo (active:opacity-90)"
   }
 ];
 export const MAP_CHECKED = "accent-text";
 export const MAP_UNCHECKED = "border-strong";
 export const MAP_CHECKED_OVER = ["bg", "surface", "surface-raised"];
 export const WITHOUT_PAIR = {
-  overlay: "Scrim behind the sheet and the dialog. No piece writes on it: the content lands on `surface`, which is already measured.",
-  border: "Faint, decorative divider. The boundary that has to be perceived is `border-strong`, measured above.",
-  "fg-disabled": "Disabled text, which WCAG exempts.",
-  "border-disabled": "Unused in `native/src`: disabled on touch is `opacity-50` on the whole layer, and not a color role. The web pair with a floor and a ceiling has nothing to measure here.",
-  ring: "There is no keyboard focus on touch, and the class does not appear in `native/src` a single time.",
-  "accent-hover": "There is no pointer on touch. The state that exists is the pressed one, measured in `accent-active`.",
-  "line-hover": "Same reason as `accent-hover`."
+  overlay: "Tarja atrás da folha e do diálogo. Nenhuma peça escreve nela: o conteúdo pousa em `surface`, que já é medido.",
+  border: "Divisória fraca, decorativa. A fronteira que precisa ser percebida é `border-strong`, medida acima.",
+  "fg-disabled": "Texto desabilitado, que a WCAG isenta.",
+  "border-disabled": "Sem uso em `native/src`: o desabilitado no toque é `opacity-50` na camada inteira, e não um papel de cor. O par com piso e teto do web não tem o que medir aqui.",
+  ring: "Não há foco de teclado no toque, e a classe não aparece em `native/src` uma vez sequer.",
+  "accent-hover": "Não há ponteiro no toque. O estado que existe é o pressionado, medido em `accent-active`.",
+  "line-hover": "Mesmo motivo do `accent-hover`."
 };
 export const MEASURED_ROLES = (() => {
   const roles = new Set;
@@ -986,20 +986,20 @@ ${name} / ${scheme}` });
       findings.push(wide);
     const missing = roles.filter((role) => !colors[role]);
     if (missing.length > 0) {
-      say(false, `MISSING ${missing.length} ${missing.length === 1 ? "role" : "roles"} without a value: ` + missing.join(", "));
+      say(false, `FALTA  ${missing.length} ${missing.length === 1 ? "papel" : "papéis"} sem valor: ` + missing.join(", "));
     }
     for (const item of [...MAP_PAIRS, ...MAP_BOUNDARIES]) {
       const ratio = ratioOf(colors, item);
       const ok = ratio >= item.min;
-      const where = item.layers.join(" over ");
+      const where = item.layers.join(" em ");
       const norm = item.min === MIN_NON_TEXTUAL ? ", 1.4.11" : "";
       const why = item.note ? `  ${item.note}` : "";
-      say(ok, `${ok ? "ok   " : "FAIL "} ${item.front} on ${where}  ` + `${Number.isNaN(ratio) ? "unmeasured" : `${ratio.toFixed(2)}:1`}` + ` (min ${item.min}${norm})${why}`);
+      say(ok, `${ok ? "ok   " : "FALHA"} ${item.front} sobre ${where}  ` + `${Number.isNaN(ratio) ? "sem medida" : `${ratio.toFixed(2)}:1`}` + ` (min ${item.min}${norm})${why}`);
     }
     for (const item of MAP_LAYER_PAIRS) {
       const worst = layerRatio(colors, item);
       const ok = worst >= item.min;
-      say(ok, `${ok ? "ok   " : "FAIL "} ${item.front} on ${item.fill} at ${item.alpha * 100}%` + ` of the layer  ${Number.isNaN(worst) ? "unmeasured" : `${worst.toFixed(2)}:1`}` + ` (min ${item.min})  ${item.note}`);
+      say(ok, `${ok ? "ok   " : "FALHA"} ${item.front} sobre ${item.fill} a ${item.alpha * 100}%` + ` da camada  ${Number.isNaN(worst) ? "sem medida" : `${worst.toFixed(2)}:1`}` + ` (min ${item.min})  ${item.note}`);
     }
     for (const item of MAP_TINTED_PAIRS) {
       const under = stack(colors, [item.over]);
@@ -1007,13 +1007,13 @@ ${name} / ${scheme}` });
       const front = background ? solid(colors[item.front], background) : undefined;
       const ratio = front && background ? contrastRatio(front, background) : Number.NaN;
       const ok = ratio >= item.min;
-      say(ok, `${ok ? "ok   " : "FAIL "} ${item.front} on ${item.tint} at ${item.alpha * 100}% over ${item.over}` + `  ${Number.isNaN(ratio) ? "unmeasured" : `${ratio.toFixed(2)}:1`}` + ` (min ${item.min})  ${item.note}`);
+      say(ok, `${ok ? "ok   " : "FALHA"} ${item.front} sobre ${item.tint} a ${item.alpha * 100}% em ${item.over}` + `  ${Number.isNaN(ratio) ? "sem medida" : `${ratio.toFixed(2)}:1`}` + ` (min ${item.min})  ${item.note}`);
     }
     for (const over of MAP_CHECKED_OVER) {
       const on = ratioOf(colors, { front: MAP_CHECKED, layers: [over], min: MIN_NON_TEXTUAL });
       const off = ratioOf(colors, { front: MAP_UNCHECKED, layers: [over], min: MIN_NON_TEXTUAL });
       const ok = on >= MIN_NON_TEXTUAL && on >= off;
-      say(ok, `${ok ? "ok   " : "FAIL "} ${MAP_CHECKED} on ${over}  ` + `${Number.isNaN(on) ? "unmeasured" : `${on.toFixed(2)}:1`}` + ` (min ${MIN_NON_TEXTUAL}, 1.4.11)  checked track, box and circle, which do not` + ` weigh less than the unchecked one, at ${Number.isNaN(off) ? "unmeasured" : `${off.toFixed(2)}:1`}`);
+      say(ok, `${ok ? "ok   " : "FALHA"} ${MAP_CHECKED} sobre ${over}  ` + `${Number.isNaN(on) ? "sem medida" : `${on.toFixed(2)}:1`}` + ` (min ${MIN_NON_TEXTUAL}, 1.4.11)  trilho, caixa e círculo marcados, e eles não` + ` pesam menos que o desmarcado, a ${Number.isNaN(off) ? "sem medida" : `${off.toFixed(2)}:1`}`);
     }
   }
   return findings;

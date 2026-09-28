@@ -12,12 +12,12 @@ const tree = (
 )
 
 /*
- * The build writes the whole page inside `#root`, so here it already exists,
- * painted: React only needs to attach to what is on screen. `vite dev` and a
- * `dist` built without the prerender step deliver an empty `#root`, and then
- * the mount is the usual one. Swapping `hydrateRoot` for `createRoot` in the
- * prerendered case would erase the HTML and repaint it - the flicker the
- * prerender exists to remove.
+ * O build escreve a pagina inteira dentro do `#root`, entao aqui ela ja existe
+ * pintada: o React so precisa se prender ao que esta na tela. O `vite dev` e um
+ * `dist` gerado sem o passo de prerender entregam o `#root` vazio, e ai a
+ * montagem e a de sempre. Trocar `hydrateRoot` por `createRoot` no caso
+ * prerenderizado apagaria o HTML e o repintaria - o pisco que o prerender
+ * existe para eliminar.
  */
 if (root.firstChild) hydrateRoot(root, tree)
 else createRoot(root).render(tree)

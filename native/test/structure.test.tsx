@@ -30,8 +30,8 @@ const touchHeight = (node: { props: Record<string, unknown> }, room: number) => 
   return Number(token!.slice(2)) * 4 + top + bottom;
 };
 
-describe("Toggle and ToggleGroup", () => {
-  test("the toggle announces pressed and toggles", () => {
+describe("Toggle e ToggleGroup", () => {
+  test("o toggle anuncia apertado e alterna", () => {
     const onPressedChange = mock(() => {});
     const screen = render(
       <Toggle pressed onPressedChange={onPressedChange}>
@@ -44,7 +44,7 @@ describe("Toggle and ToggleGroup", () => {
     expect(onPressedChange).toHaveBeenCalledWith(false);
   });
 
-  test("the toggle reaches the 44pt touch target, alone and in the group", () => {
+  test("o toggle alcanca os 44pt de toque, sozinho e no grupo", () => {
     const alone = render(
       <Toggle pressed={false} onPressedChange={() => {}}>
         Negrito
@@ -65,13 +65,13 @@ describe("Toggle and ToggleGroup", () => {
     for (const toggle of toggles) expect(touchHeight(toggle, 0)).toBeGreaterThanOrEqual(44);
   });
 
-  test("in the group, the default unpresses the previous one; multiple accumulates", () => {
+  test("no grupo, o padrao desaperta o anterior; multiple acumula", () => {
     const items = [
       { label: "Paga", value: "paga" },
       { label: "Vencida", value: "vencida" },
     ];
 
-    // The default is the same as the web: without `multiple`, only one stays pressed.
+    // O padrao e o mesmo do web: sem `multiple`, so um fica apertado.
     const single = mock(() => {});
     const one = render(<ToggleGroup items={items} value={["paga"]} onValueChange={single} />);
     act(() => byRole(one, "togglebutton")[1].props.onPress());
@@ -86,8 +86,8 @@ describe("Toggle and ToggleGroup", () => {
   });
 });
 
-describe("Accordion and Collapsible", () => {
-  test("the closed item hides the body and announces expanded on opening", () => {
+describe("Accordion e Collapsible", () => {
+  test("o item fechado esconde o corpo e anuncia expanded ao abrir", () => {
     const screen = render(
       <Accordion>
         <AccordionItem title="Como emitir?">
@@ -104,7 +104,7 @@ describe("Accordion and Collapsible", () => {
     expect(textOf(screen)).toContain("Pelo botão Emitir nota.");
   });
 
-  test("the collapsible shows and hides with the same contract", () => {
+  test("o collapsible mostra-esconde com o mesmo contrato", () => {
     const screen = render(
       <Collapsible label="Ver o detalhe" defaultOpen>
         <Text>O detalhe inteiro.</Text>
@@ -117,7 +117,7 @@ describe("Accordion and Collapsible", () => {
 });
 
 describe("PageHeader", () => {
-  test("title, context, tag and actions in the same header", () => {
+  test("titulo, contexto, etiqueta e acoes no mesmo topo", () => {
     const screen = render(
       <PageHeader
         title="Notas fiscais"
@@ -133,7 +133,7 @@ describe("PageHeader", () => {
 });
 
 describe("DescriptionList", () => {
-  test("each row is a label-value pair, text or node", () => {
+  test("cada linha e um par rotulo-valor, texto ou no", () => {
     const screen = render(
       <DescriptionList>
         <DescriptionItem label="Número">4813</DescriptionItem>
@@ -149,7 +149,7 @@ describe("DescriptionList", () => {
 });
 
 describe("AspectRatio", () => {
-  test("the box reserves the requested ratio", () => {
+  test("a caixa reserva a proporcao pedida", () => {
     const screen = render(
       <AspectRatio ratio={16 / 9}>
         <Text>mapa</Text>
@@ -163,7 +163,7 @@ describe("AspectRatio", () => {
 });
 
 describe("Item", () => {
-  test("arranges media, text and action; only the text is cut, and by prop", () => {
+  test("arranja midia, texto e acao; so o texto corta, e por prop", () => {
     const screen = render(
       <Item
         media={<Badge>NF</Badge>}
@@ -178,17 +178,16 @@ describe("Item", () => {
     expect(texto).toContain("Nota 4471");
     expect(texto).toContain("R$ 1,2K");
 
-    // The cut is `numberOfLines`, which in React Native is a prop and not a
-    // class - and it belongs to the title and the description, never to the
-    // media nor the action.
+    // O corte e `numberOfLines`, que no React Native e prop e nao classe -
+    // e ele e do titulo e da descricao, nunca da midia nem da acao.
     const cortados = byType(screen, "Text").filter((node) => node.props.numberOfLines === 1);
     expect(cortados.length).toBe(2);
 
-    // Without onPress the row is not a button: a role only where there is an action, as in DataList.
+    // Sem onPress a linha nao e botao: papel so onde ha acao, como no DataList.
     expect(byRole(screen, "button").length).toBe(0);
   });
 
-  test("with onPress the whole row is the target, and says title and description together", () => {
+  test("com onPress a linha inteira e o alvo, e diz titulo e descricao juntos", () => {
     const onPress = mock(() => {});
     const screen = render(
       <Item title="Transportes Cabo Branco" description="3 notas em aberto" onPress={onPress} />,
@@ -196,14 +195,14 @@ describe("Item", () => {
 
     const [linha] = byRole(screen, "button");
     expect(linha.props.accessibilityLabel).toBe("Transportes Cabo Branco, 3 notas em aberto");
-    // A single title line draws 37px; the finger asks for 44.
+    // Uma linha de titulo desenha 37px; o dedo pede 44.
     expect(linha.props.className).toContain("min-h-11");
 
     act(() => linha.props.onPress());
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  test("with an action on the right, the target is the text and the button stays its own stop", () => {
+  test("com acao a direita, o alvo e o texto e o botao continua parada propria", () => {
     const abrir = mock(() => {});
     const remover = mock(() => {});
     const screen = render(
@@ -221,8 +220,8 @@ describe("Item", () => {
     const botoes = byRole(screen, "button");
     expect(botoes.length).toBe(2);
 
-    // The row target does NOT wrap the button: a Pressable inside another
-    // would hold the touch in the inner one, and the row would never open.
+    // O alvo da linha NAO embrulha o botao: um Pressable dentro do outro
+    // seguraria o toque no de dentro, e a linha nunca abriria.
     const [linha] = botoes;
     expect(linha.findAll((node) => node.props?.accessibilityRole === "button").length).toBe(1);
 
@@ -231,7 +230,7 @@ describe("Item", () => {
     expect(abrir).not.toHaveBeenCalled();
   });
 
-  test("outline puts its own frame; plain stays loose", () => {
+  test("outline poe moldura propria; plain fica solto", () => {
     const outline = render(<Item title="Pix" variant="outline" />);
     expect(byClass(outline, /rounded-lg border border-border bg-surface/).length).toBe(1);
 
@@ -247,23 +246,23 @@ const STEPS = [
 ];
 
 describe("Steps", () => {
-  test("ports the web's narrow mode: where you are, the title, and the moving bar", () => {
+  test("porta o modo estreito do web: onde esta, o titulo, e a barra andando", () => {
     const screen = render(<Steps steps={STEPS} step={1} />);
 
     const texto = textOf(screen);
     expect(texto).toContain("Passo 2 de 3");
     expect(texto).toContain("Itens");
-    // The description, which the web's narrow mode hides for lack of width.
+    // A descricao, que o modo estreito do web esconde por falta de largura.
     expect(texto).toContain("O que entra na nota");
 
-    // The dot rail does NOT port: with no clickable step, there is no button at all.
+    // A regua de bolinhas NAO porta: sem passo clicavel, nao ha botao nenhum.
     expect(byRole(screen, "button").length).toBe(0);
 
     const [barra] = byClass(screen, /bg-accent/);
     expect(barra.props.style.width).toBe(`${(2 / 3) * 100}%`);
   });
 
-  test("a single screen reader stop, with the whole sentence", () => {
+  test("uma parada so do leitor de tela, com a frase inteira", () => {
     const screen = render(<Steps steps={STEPS} step={0} />);
 
     const [regua] = byRole(screen, "progressbar");
@@ -272,16 +271,16 @@ describe("Steps", () => {
     expect(regua.props.accessibilityValue).toEqual({ min: 1, max: 3, now: 1 });
   });
 
-  test("an index outside the list does not break the screen, and an empty list draws nothing", () => {
+  test("indice fora da lista nao quebra a tela, e lista vazia nao desenha nada", () => {
     expect(textOf(render(<Steps steps={STEPS} step={9} />))).toContain("Passo 3 de 3");
     expect(textOf(render(<Steps steps={STEPS} step={-2} />))).toContain("Passo 1 de 3");
-    // An empty list draws no rail at all - only the provider background is left.
+    // Lista vazia nao desenha regua nenhuma - so o fundo do provider sobra.
     expect(textOf(render(<Steps steps={[]} step={0} />)).trim()).toBe("");
   });
 });
 
 describe("useWizard", () => {
-  /** The state without a drawing: a host that only returns what the hook says. */
+  /** O estado sem desenho: um host que so devolve o que o hook diz. */
   function Wizard({ onState }: { onState: (state: ReturnType<typeof useWizard>) => void }) {
     const wizard = useWizard(STEPS);
     onState(wizard);
@@ -294,7 +293,7 @@ describe("useWizard", () => {
     return { screen, get: () => state };
   };
 
-  test("moves forward, back, and stops at both ends", async () => {
+  test("anda, volta, e para nas duas pontas", async () => {
     const { screen, get } = mount();
 
     expect(get().isFirst).toBe(true);
@@ -306,7 +305,7 @@ describe("useWizard", () => {
 
     await act(async () => void (await get().next()));
     await act(async () => void (await get().next()));
-    // The last step does not go past the end.
+    // O ultimo passo nao passa do fim.
     expect(get().step).toBe(2);
     expect(get().isLast).toBe(true);
 
@@ -316,7 +315,7 @@ describe("useWizard", () => {
     expect(get().step).toBe(0);
   });
 
-  test("the check rules: `false` holds the step, and it can be asynchronous", async () => {
+  test("a checagem manda: `false` segura o passo, e ela pode ser assincrona", async () => {
     const { get } = mount();
 
     let andou = true;
@@ -333,7 +332,7 @@ describe("useWizard", () => {
     expect(get().step).toBe(1);
   });
 
-  test("two taps on next during the async check move a single step", async () => {
+  test("dois toques em proximo durante a checagem assincrona andam um passo so", async () => {
     const { get } = mount();
     let release!: (ok: boolean) => void;
     const validate = mock(
@@ -358,7 +357,7 @@ describe("useWizard", () => {
     expect(get().step).toBe(1);
   });
 
-  test("goTo accepts the router's index, and clamps it inside the list", () => {
+  test("goTo aceita o indice do router, e o prende dentro da lista", () => {
     const { get } = mount();
 
     act(() => get().goTo(2));
@@ -371,7 +370,7 @@ describe("useWizard", () => {
 });
 
 describe("WizardFooter", () => {
-  test("stacks in the written order: what advances stays at the bottom, where the thumb is", () => {
+  test("empilha na ordem escrita: o que avanca fica embaixo, onde o polegar esta", () => {
     const screen = render(
       <WizardFooter>
         <Button variant="ghost" onPress={() => {}}>
@@ -381,7 +380,7 @@ describe("WizardFooter", () => {
       </WizardFooter>,
     );
 
-    // A column, not a row: no flex-row, and no order reversal.
+    // Coluna, e nao linha: nada de flex-row, e nenhuma inversao de ordem.
     const [rodape] = byClass(screen, /mt-6 gap-3/);
     expect(rodape.props.className).not.toContain("flex-row");
 

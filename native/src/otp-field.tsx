@@ -6,16 +6,16 @@ import { Presence } from "./motion";
 import { TextInput, Text } from "./text";
 
 export type OTPFieldProps = {
-  /** How many digits the code has. */
+  /** Quantos digitos o codigo tem. */
   length?: number;
   value: string;
   onValueChange: (value: string) => void;
-  /** Called once, when the last digit is entered. Same name as the web. */
+  /** Chamado uma vez, quando o ultimo digito entra. Mesmo nome do web. */
   onValueComplete?: (value: string) => void;
   /**
-   * The name the screen reader hears on the field: "Codigo enviado por SMS".
-   * Without it, the reader says how many digits the code has. Inside
-   * `FormField`, it arrives on its own via `forValue`.
+   * O nome que o leitor de tela ouve no campo: "Codigo enviado por SMS".
+   * Sem ele, o leitor diz quantos digitos o codigo tem. Dentro do `FormField`, chega sozinho pelo
+   * `forValue`.
    */
   label?: string;
   className?: string;

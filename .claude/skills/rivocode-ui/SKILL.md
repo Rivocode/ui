@@ -1,73 +1,71 @@
 ---
 name: rivocode-ui
-description: Builds React screens with RivoCode's @rivocode/ui design system. Use when creating or changing any interface in this project - laying out a page, choosing between similar components, applying a theme, density or client color, writing a form, table or chart. Carries the library contract, the design decisions the tokens encode and the documentation address of each piece.
+description: Constrói telas React com o design system @rivocode/ui da RivoCode. Use ao criar ou alterar qualquer interface deste projeto - montar layout de página, escolher entre componentes parecidos, aplicar tema, densidade ou cor de cliente, escrever formulário, tabela ou gráfico. Traz o contrato da biblioteca, as decisões de design que os tokens carregam e o endereço da documentação de cada peça.
 ---
 
-# Building UI with @rivocode/ui
+# Construir UI com o @rivocode/ui
 
-RivoCode's white-label library, built on Base UI. **No component knows the
-brand color**: it asks for a semantic role and the theme answers. That is what
-lets the same piece serve RivoCode in one project and another client in the
-next.
+Biblioteca white-label da RivoCode, sobre a Base UI. **Nenhum componente conhece
+a cor da marca**: ele pede um papel semântico e o tema responde. É isso que
+deixa a mesma peça servir a RivoCode num projeto e outro cliente no seguinte.
 
-## Where to look for what
+## Onde procurar o quê
 
-Read the file the work calls for, and only that one.
+Leia o arquivo que o trabalho pedir, e só ele.
 
-| Work | File |
+| Trabalho | Arquivo |
 |---|---|
-| Start a new project: folders, shell, data, agent | <https://ds.rivocode.com.br/arquitetura.md> |
-| Build a screen from scratch, from the request to the checked screen | [reference/method.md](reference/method.md) |
-| Decide the flow: one screen or several, confirm or undo, error | [reference/fluxo.md](reference/fluxo.md) |
-| Write the text: label, button, error message, empty state | [reference/texto.md](reference/texto.md) |
-| Lay out the page, decide columns, spacing, responsive | [reference/layout.md](reference/layout.md) |
-| Choose color, text tone, typography, depth, focus, icon | [reference/design.md](reference/design.md) |
-| Choose between two similar pieces | [reference/components.md](reference/components.md) |
-| Accessible name, target, focus, keyboard, heading order | [reference/a11y.md](reference/a11y.md) |
-| Form with validation | [reference/forms.md](reference/forms.md) |
-| Open and close, wait for typing, remember between visits, shortcut, infinite list | [reference/hooks.md](reference/hooks.md) |
-| Chart and dashboard number | [reference/charts.md](reference/charts.md) |
-| Conversation with an assistant, tool call, AI badge | [reference/ai.md](reference/ai.md) |
-| Dress it in another client's color | [reference/theming.md](reference/theming.md) |
-| React Native screen with ui-native | [reference/native.md](reference/native.md) |
+| Começar um projeto novo: pastas, casca, dados, agente | <https://ds.rivocode.com.br/arquitetura.md> |
+| Montar uma tela do zero, do pedido até a tela conferida | [reference/method.md](reference/method.md) |
+| Decidir o fluxo: uma tela ou várias, confirmar ou desfazer, erro | [reference/fluxo.md](reference/fluxo.md) |
+| Escrever o texto: rótulo, botão, mensagem de erro, vazio | [reference/texto.md](reference/texto.md) |
+| Montar a página, decidir colunas, espaçamento, responsivo | [reference/layout.md](reference/layout.md) |
+| Escolher cor, tom de texto, tipografia, profundidade, foco, ícone | [reference/design.md](reference/design.md) |
+| Escolher entre duas peças parecidas | [reference/components.md](reference/components.md) |
+| Nome acessível, alvo, foco, teclado, ordem de títulos | [reference/a11y.md](reference/a11y.md) |
+| Formulário com validação | [reference/forms.md](reference/forms.md) |
+| Abrir e fechar, esperar a digitação, lembrar entre visitas, atalho, lista infinita | [reference/hooks.md](reference/hooks.md) |
+| Gráfico e número de painel | [reference/charts.md](reference/charts.md) |
+| Conversa com assistente, chamada de ferramenta, selo de IA | [reference/ai.md](reference/ai.md) |
+| Vestir com a cor de outro cliente | [reference/theming.md](reference/theming.md) |
+| Tela React Native com o ui-native | [reference/native.md](reference/native.md) |
 
-## Before writing the first line
+## Antes de escrever a primeira linha
 
-A new screen follows the loop in [reference/method.md](reference/method.md):
-six steps, in order, and the check at the end. The four points below hold in
-all of them.
+Tela nova segue o laço de [reference/method.md](reference/method.md): seis
+passos, na ordem, e a conferência do fim. Os quatro pontos abaixo valem em
+todos eles.
 
-1. **Check whether the piece already exists.** There are 134, and the catalog
-   covers almost everything a product screen asks for. Writing a `<div>` with a
-   border instead of a `Card`, or a native `<select>` instead of `Select`,
-   breaks the theme and accessibility at once. Index at
+1. **Confira se a peça já existe.** São 134, e o catálogo cobre quase tudo que
+   uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
+   `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
+   acessibilidade de uma vez. Índice em
    <https://ds.rivocode.com.br/llms.txt>.
 
-2. **Read the piece's document before using it**, at
-   `https://ds.rivocode.com.br/componentes/<kebab-name>.md`. It has the import,
-   examples that run, the props table and the parts that make it up.
-   `ToggleGroup` lives at `/componentes/toggle-group.md`.
+2. **Leia o documento da peça antes de usá-la**, em
+   `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`. Traz a
+   importação, exemplos que rodam, a tabela de props e as partes que a compõem.
+   `ToggleGroup` mora em `/componentes/toggle-group.md`.
 
-3. **Never invent a prop.** If the document does not list it, it does not
-   exist. A guess fails in `tsc` at best, and slips by unnoticed as a loose
-   attribute in the DOM at worst. The table comes from the compiler, so it is
-   the whole API, callbacks included: `onValueChange`, `onOpenChange`,
-   `onCheckedChange`.
+3. **Nunca invente prop.** Se o documento não a lista, ela não existe. Um chute
+   falha no `tsc` na melhor das hipóteses, e passa despercebido como atributo
+   solto no DOM na pior. A tabela sai do compilador, então ela é a API inteira,
+   callbacks incluídos: `onValueChange`, `onOpenChange`, `onCheckedChange`.
 
-4. **Every listing has four endings**: data, loading, error and empty. `DataTable`
-   and `ChartContainer` take all four by prop, and delivering only the happy
-   path is delivering half the screen.
-   [reference/components.md](reference/components.md) has the right order.
+4. **Toda listagem tem quatro finais**: dados, carregando, erro e vazio. O
+   `DataTable` e o `ChartContainer` recebem os quatro por prop, e entregar só
+   o caminho feliz é entregar metade da tela.
+   [reference/components.md](reference/components.md) tem a ordem certa.
 
-5. **Write the text, do not fill it in.** "Erro ao carregar", "Confirmar" and
-   "Nenhum resultado" pass `tsc`, contrast and the tests, and help nobody.
-   [reference/texto.md](reference/texto.md) has the shape of the three
-   sentences every screen writes.
+5. **Escreva o texto, não o preencha.** "Erro ao carregar", "Confirmar" e
+   "Nenhum resultado" passam no `tsc`, no contraste e nos testes, e não ajudam
+   ninguém. [reference/texto.md](reference/texto.md) tem a forma das três
+   frases que toda tela escreve.
 
-## The Provider, once, at the root
+## O Provider, uma vez, na raiz
 
-Without it nothing has style, and `Dialog`, `Menu`, `Select`, `Tooltip` and the
-toasts throw, because they read its context.
+Sem ele nada tem estilo, e `Dialog`, `Menu`, `Select`, `Tooltip` e os avisos
+lançam erro, porque leem o contexto dele.
 
 ```tsx
 import { RivoProvider } from '@rivocode/ui'
@@ -81,19 +79,18 @@ export function App() {
 }
 ```
 
-- `theme`: `rivocode-dark` (default), `rivocode-light` or `system`.
-- `density`: `comfortable` (default) or `compact`, for operations screens.
-- `scope`: `global` dresses the page; `local` dresses only that tree and paints
-  its background. In a preview or an isolated card use `local`, or the content
-  comes out light on light.
-- `toastPosition`: which of the six corners the toast appears in. Default
+- `theme`: `rivocode-dark` (padrão), `rivocode-light` ou `system`.
+- `density`: `comfortable` (padrão) ou `compact`, para tela de operação.
+- `scope`: `global` veste a página; `local` veste só aquela árvore e pinta o
+  fundo dela. Em preview e cartão isolado use `local`, senão o conteúdo sai
+  claro sobre claro.
+- `toastPosition`: em qual dos seis cantos o aviso aparece. Padrão
   `bottom-right`.
 
-The Provider already mounts inside it the tooltip provider, the toast wiring and
-a portal container that carries the theme along. **Do not mount any of them by
-hand.**
+O Provider já monta por dentro o provedor de dica, a fiação de aviso e um
+container de portal que leva o tema junto. **Não monte nenhum deles à mão.**
 
-The CSS goes in once, in the project's style file:
+O CSS entra uma vez, no arquivo de estilo do projeto:
 
 ```css
 @import "tailwindcss";
@@ -102,58 +99,58 @@ The CSS goes in once, in the project's style file:
 @source '../node_modules/@rivocode/ui/dist';
 ```
 
-The `@source` line is not optional: without it Tailwind does not scan the
-library's components, does not generate the classes they use, and the screen
-shows up unstyled, with no error and no clue. The Tailwind plugin also has to
-be in the plugin list of `vite.config.ts`, or the result is the same silence.
+A linha `@source` não é opcional: sem ela o Tailwind não varre os componentes
+da biblioteca, não gera as classes que eles usam, e a tela aparece sem estilo,
+sem erro e sem pista. O plugin do Tailwind também precisa estar na lista de
+plugins do `vite.config.ts`, ou o resultado é o mesmo silêncio.
 
-**The brand fonts are a separate import.** Manrope, Poppins and JetBrains Mono
-no longer come inside the library CSS: whoever wants RivoCode's faces adds one
-line, and whoever dresses another client simply does not write it, and then
-none of our `.woff2` files is downloaded.
+**As fontes da marca são um import à parte.** Manrope, Poppins e JetBrains Mono
+não vêm mais dentro do CSS da biblioteca: quem quer as faces da RivoCode
+acrescenta uma linha, e quem veste outro cliente simplesmente não a escreve, e
+aí nenhum `.woff2` nosso é baixado.
 
 ```css
-@import "@rivocode/ui/fonts.css";   /* optional: RivoCode's faces */
+@import "@rivocode/ui/fonts.css";   /* opcional: as faces da RivoCode */
 ```
 
-For the client's font, install their family and declare the three tokens in the
-theme selector, together with the colors. `theming.md` has the whole recipe.
+Para a fonte do cliente, instale a família dele e declare os três tokens no
+seletor do tema, junto com as cores. `theming.md` traz a receita inteira.
 
-## The class vocabulary
+## O vocabulário de classes
 
-Write layout with the same classes the components use.
+Escreva layout com as mesmas classes que os componentes usam.
 
-**Never write a literal color or a numeric `z-index`.** The library
-repository's `check` fails on it, and in your project the effect is worse: the
-piece stops responding to the client's theme.
+**Nunca escreva cor literal nem `z-index` numérico.** O `check` do repositório
+da biblioteca falha nisso, e no seu projeto o efeito é pior: a peça para de
+responder ao tema do cliente.
 
-| Family | Classes |
+| Família | Classes |
 |---|---|
-| Surface | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay` |
-| Text | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled` |
-| Accent | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle` |
-| Line and focus | `border-border`, `border-border-strong`, `ring-ring` |
-| State | `bg-success`, `text-success-text`, `bg-danger-subtle`, and the same for `warning` and `info` |
-| Selection and loading | `bg-selected`, `bg-skeleton` |
-| Machine-read code | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: dark on light with the same value in every theme, and they are not theme roles |
-| Media stage | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: dark in both themes with the same value, and they are not theme roles. They belong to the full-screen `ImageViewer` |
-| Signature paper | `bg-signature-paper`, `fill-signature-ink`, `text-signature-guide`, `stroke-signature-guide`, `text-signature-disabled`: dark ink on light paper in both themes, and they are not theme roles. They belong to `SignaturePad` |
-| Shape | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
-| Typography | `text-xs` to `text-3xl`, `font-sans`, `font-display`, `font-mono` |
-| Weight | `font-rc-regular`, `font-rc-medium`, `font-rc-strong`, `font-rc-bold`, `font-rc-display`: the intent, and the number comes from the theme |
-| Shadow | `shadow-1`, `shadow-2`, `shadow-3` |
-| Stacking | `z-[var(--rc-z-sticky)]`, and the peers `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
+| Superfície | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay` |
+| Texto | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled` |
+| Acento | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle` |
+| Linha e foco | `border-border`, `border-border-strong`, `ring-ring` |
+| Estado | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
+| Seleção e carga | `bg-selected`, `bg-skeleton` |
+| Código lido por máquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e não são papel de tema |
+| Palco de mídia | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: escuro nos dois temas com o mesmo valor, e não são papel de tema. São do `ImageViewer` em tela cheia |
+| Papel da assinatura | `bg-signature-paper`, `fill-signature-ink`, `text-signature-guide`, `stroke-signature-guide`, `text-signature-disabled`: tinta escura sobre papel claro nos dois temas, e não são papel de tema. São do `SignaturePad` |
+| Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
+| Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
+| Peso | `font-rc-regular`, `font-rc-medium`, `font-rc-strong`, `font-rc-bold`, `font-rc-display`: a intenção, e o número vem do tema |
+| Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
+| Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
 
-**Every piece accepts `className` on the root, and the consumer's class beats
-the piece's** (merge by group: `h-14` knocks out the Button's `h-10`). It is the
-path for the client wrapper (a file in their project, with tokens and never a
-literal color), instead of a fork. In layered pieces, the prop's documentation
-says what it dresses. The same contract holds in `@rivocode/ui-native`.
+**Toda peça aceita `className` na raiz, e a classe de quem usa vence a da
+peça** (merge por grupo: `h-14` derruba o `h-10` do Button). É o caminho para
+o wrapper de cliente (um arquivo no projeto dele, com token e nunca cor
+literal), em vez de fork. Nas peças em camadas, a documentação da prop diz o
+que ela veste. O mesmo contrato vale no `@rivocode/ui-native`.
 
-**Below the root, dress the part by name, with `classNames`.** The `Progress`
-track, the `Slider` thumb, the `Checkbox` mark, the `DataTable` row and the
-`DialogContent` backdrop have outside names, the same ones as the page's
-"Parts" section:
+**Abaixo da raiz, vista a parte pelo nome, com `classNames`.** A trilha do
+`Progress`, o pino do `Slider`, a marca do `Checkbox`, a linha do `DataTable`
+e a tarja do `DialogContent` têm nome de fora, os mesmos da seção "Partes" da
+página:
 
 ```tsx
 <Slider classNames={{ track: 'bg-accent-subtle', thumb: 'shadow-glow' }} />
@@ -161,31 +158,30 @@ track, the `Slider` thumb, the `Checkbox` mark, the `DataTable` row and the
 <DataTable classNames={{ row: 'hover:bg-accent-subtle' }} />
 ```
 
-Never reach the part through a descendant variant (`[&_tbody_tr]`): that
-couples the screen to the piece's inner tree, and a `div` that becomes a `span`
-inside the library breaks the screen with no warning and no error. The color
-rule is the same as for `className`: token, never a literal color.
+Nunca alcance a parte por variante de descendente (`[&_tbody_tr]`): isso
+acopla a tela à árvore interna da peça, e uma `div` que vira `span` dentro da
+biblioteca quebra a tela sem aviso e sem erro. A regra da cor é a mesma do
+`className`: token, nunca cor literal.
 
-**Filling and writing text are different tokens.** `bg-danger` fills and takes
-`text-danger-fg` on top; `text-danger-text` is the red that reads on the page
-background. No color serves both jobs.
+**Preencher e escrever texto são tokens diferentes.** `bg-danger` preenche e
+recebe `text-danger-fg` por cima; `text-danger-text` é o vermelho que se lê
+sobre o fundo da página. Nenhuma cor serve para as duas funções.
 
-**Control height comes from the density**, never hardcoded:
-`h-[var(--rc-control-md)]`, with `sm` and `lg` available. Hardcoding `h-10`
-breaks the compact density.
+**Altura de controle vem da densidade**, nunca cravada:
+`h-[var(--rc-control-md)]`, com `sm` e `lg` disponíveis. Cravar `h-10` quebra a
+densidade compacta.
 
-## Narrow first
+## Estreito primeiro
 
-Every component decides the narrow behavior before the wide one, and your
-layout should do the same. `Sheet` docks at the bottom on a phone, the column
-with `hideOnMobile` disappears, the tab row scrolls sideways instead of
-wrapping.
+Todo componente decide o comportamento estreito antes do largo, e o seu layout
+deve fazer o mesmo. O `Sheet` encosta embaixo no celular, a coluna com
+`hideOnMobile` some, a fila de abas rola de lado em vez de quebrar linha.
 
-Write the narrow version and add `sm:` and `lg:` on top, never the other way
-around.
+Escreva a versão estreita e acrescente `sm:` e `lg:` por cima, nunca o
+contrário.
 
-When the decision does not fit in a utility class, read the same breakpoint the
-components read, instead of writing `640` again:
+Quando a decisão não couber em classe utilitária, leia o mesmo corte que os
+componentes leem, em vez de escrever `640` de novo:
 
 ```tsx
 import { useMobile } from '@rivocode/ui'
@@ -193,78 +189,75 @@ import { useMobile } from '@rivocode/ui'
 const isMobile = useMobile()
 ```
 
-Inside a `SidebarProvider`, use `useSidebar().isMobile`, which is the same value
-without a second media query subscriber. Both return `false` on the server.
+Dentro de um `SidebarProvider`, use `useSidebar().isMobile`, que é o mesmo valor
+sem um segundo assinante da media query. Os dois devolvem `false` no servidor.
 
-Do not wire the `Sidebar`'s phone behavior by hand: below 640px it already
-becomes a sheet, already starts closed and already closes when an item is
-chosen.
+Não ligue o comportamento de celular da `Sidebar` na mão: abaixo de 640px ela já
+vira folha, já começa fechada e já se fecha ao escolher um item.
 
-## Money comes out abbreviated
+## Dinheiro sai abreviado
 
-`currencyShort` in indicators, tables, axes, legends and tooltips: `R$ 12,4K`.
-`currency`, spelled out, is for where the cent is the subject, like the amount
-the person confirms before issuing and the receipt afterwards.
+`currencyShort` em indicador, tabela, eixo, legenda e dica: `R$ 12,4K`. O
+`currency`, por extenso, fica para onde o centavo é o assunto, como o valor que
+a pessoa confirma antes de emitir e o comprovante depois.
 
-Never type the already-abbreviated amount as text. Writing `R$ 12,4K` by hand
-shows the result and hides the mechanism, and breaks on the first data change.
+Nunca digite o valor já abreviado como texto. Escrever `R$ 12,4K` na mão mostra
+o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 
-## The field comes from the data
+## O campo sai do dado
 
-Before writing an `Input`, ask what data it receives. CPF, CNPJ, phone, CEP,
-license plate, boleto and card have a ready mask in `MaskedInput`; a date is
-`DatePicker`, a time is `TimeField`, money is `CurrencyInput`, a verification
-code is `OTPField` and a CEP that fills in an address is `PostalCodeField`. The
-whole table, with the validator and what is stored for each, is in
+Antes de escrever um `Input`, pergunte que dado ele recebe. CPF, CNPJ,
+telefone, CEP, placa, boleto e cartão têm máscara pronta no `MaskedInput`;
+data é `DatePicker`, hora é `TimeField`, dinheiro é `CurrencyInput`, código de
+verificação é `OTPField` e CEP que preenche endereço é `PostalCodeField`. A
+tabela inteira, com o validador e o que se guarda de cada um, está em
 [reference/components.md](reference/components.md).
 
-Three rules hold for all of them:
+Três regras valem para todos:
 
-- **The mask punctuates; the validator says whether the number exists**:
-  `isValidCpf`, `isValidCnpj`, `isValidPlate`, `isValidBoletoLine`, in the
-  schema, checked when leaving the field and not on every keystroke.
-- **Store the raw value, not what the screen shows.** `MaskedInput`'s
-  `onValueChange` delivers both, and the server understands the second; money
-  goes in integer cents.
-- **The right `autoComplete` and `inputMode`** let the phone autofill and open
-  the number keyboard: `tel-national`, `email`, `cc-number`, `one-time-code`.
+- **A máscara pontua; quem diz se o número existe é o validador**:
+  `isValidCpf`, `isValidCnpj`, `isValidPlate`, `isValidBoletoLine`, no schema,
+  conferidos ao sair do campo e não a cada tecla.
+- **Guarde o cru, não o que a tela mostra.** O `onValueChange` do
+  `MaskedInput` entrega os dois, e o servidor entende o segundo; dinheiro vai
+  em centavos inteiros.
+- **`autoComplete` e `inputMode` certos** deixam o celular preencher e abrir o
+  teclado de números: `tel-national`, `email`, `cc-number`, `one-time-code`.
 
-## What never to do
+## O que nunca fazer
 
-- A literal color in `className` or in `style`. Always a token.
-- A numeric `z-index`. Always `z-[var(--rc-z-…)]`. There are eight steps, and
-  the ones your screen writes are the ends: `--rc-z-sticky` for a header, a
-  frozen column and a bar that sticks on scroll, `--rc-z-base` to go back to
-  the content plane. The six in the middle belong to the pieces, which already
-  rise on their own - and what opens from inside a layer (`Select` in a
-  `Dialog`, `AlertDialog` in a `Popover`) rises above it, as long as it is
-  mounted inside its content.
-- A hardcoded control height. Always `var(--rc-control-…)`.
-- Mounting `TooltipProvider`, `ToastViewport` or a portal container by hand.
-  The Provider already did.
-- Using `Toast` for what needs to stay visible, or `Dialog` for what must not
-  be dismissable by clicking outside.
-- Inventing a prop without checking the piece's `.md`.
-- Writing the label of a `Checkbox`, `Radio` or `Switch` in a `<span>` beside
-  it. Pass it as a child and they wrap themselves in a `<label>`.
-- Repeating the same `ChartAreaGradient` `id` in two charts on the same page:
-  an SVG `id` is global, and one paints with the other's gradient.
-- Leaving a grid or flex item without `min-w-0` when there is wide content
-  inside.
-- `outline-none` without restoring `focus-visible:ring-2 focus-visible:ring-ring`.
-- Using `placeholder` as if it were a label. It disappears on typing, and
-  several screen readers do not announce it: the field ends up without a name.
-- An icon-only button with no name. Use `IconButton`, which requires `label`.
-- Interface text in English. **Code in English, content in PT-BR.** Ecosystem
-  terms are not translated: it is "agents", not "agentes".
+- Cor literal em `className` ou em `style`. Sempre token.
+- `z-index` numérico. Sempre `z-[var(--rc-z-…)]`. São oito degraus, e os que a
+  sua tela escreve são os das pontas: `--rc-z-sticky` para cabeçalho, coluna
+  congelada e barra que gruda ao rolar, `--rc-z-base` para voltar ao plano do
+  conteúdo. Os seis do meio são das peças, que já sobem sozinhas - e o que
+  abre de dentro de uma camada (o `Select` no `Dialog`, o `AlertDialog` no
+  `Popover`) sobe acima dela, desde que seja montado dentro do conteúdo dela.
+- Altura cravada em controle. Sempre `var(--rc-control-…)`.
+- Montar `TooltipProvider`, `ToastViewport` ou container de portal à mão. O
+  Provider já fez.
+- Usar `Toast` para o que precisa continuar visível, ou `Dialog` para o que não
+  pode ser dispensado clicando fora.
+- Inventar prop sem conferir o `.md` da peça.
+- Escrever o rótulo de `Checkbox`, `Radio` ou `Switch` num `<span>` ao lado.
+  Passe como filho e eles se embrulham num `<label>` sozinhos.
+- Repetir o mesmo `id` de `ChartAreaGradient` em dois gráficos da mesma página:
+  `id` de SVG é global, e um pinta com o gradiente do outro.
+- Deixar item de grid ou de flex sem `min-w-0` quando há conteúdo largo dentro.
+- `outline-none` sem repor `focus-visible:ring-2 focus-visible:ring-ring`.
+- Usar `placeholder` como se fosse rótulo. Ele some ao digitar, e vários
+  leitores de tela não o anunciam: o campo fica sem nome.
+- Botão só com ícone sem nome. Use `IconButton`, que exige `label`.
+- Texto de interface em inglês. **Código em inglês, conteúdo em PT-BR.** Termo
+  do ecossistema não se traduz: é "agents", não "agentes".
 
-## Addresses
+## Endereços
 
-| What | Where |
+| O quê | Onde |
 |---|---|
-| Index of everything | <https://ds.rivocode.com.br/llms.txt> |
-| Everything in a single file | <https://ds.rivocode.com.br/llms-full.txt> |
-| Full contract | <https://ds.rivocode.com.br/convencoes.md> |
-| One piece | `https://ds.rivocode.com.br/componentes/<kebab-name>.md` |
-| One guide | `https://ds.rivocode.com.br/<slug>.md`, like `/temas.md` |
-| A whole system, assembled | <https://ds.rivocode.com.br/demonstracao> |
+| Índice de tudo | <https://ds.rivocode.com.br/llms.txt> |
+| Tudo num arquivo só | <https://ds.rivocode.com.br/llms-full.txt> |
+| Contrato completo | <https://ds.rivocode.com.br/convencoes.md> |
+| Uma peça | `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md` |
+| Um guia | `https://ds.rivocode.com.br/<slug>.md`, como `/temas.md` |
+| Um sistema inteiro, montado | <https://ds.rivocode.com.br/demonstracao> |

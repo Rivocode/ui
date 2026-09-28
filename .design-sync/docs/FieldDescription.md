@@ -1,10 +1,10 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # FieldDescription
 
-The help below the field: expected format, what it is for, what will happen.
+A ajuda abaixo do campo: formato esperado, para que serve, o que vai acontecer.
 
-It goes into the control's `aria-describedby`, so it is read together with the
-field instead of being invisible to screen reader users.
+Entra no `aria-describedby` do controle, então é lida junto com o campo em vez
+de ficar invisível para quem usa leitor de tela.

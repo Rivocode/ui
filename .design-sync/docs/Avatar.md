@@ -1,14 +1,14 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # Avatar
 
-A person's photo, with the initial behind it.
+Foto de pessoa, com a inicial por trás.
 
-The initial does not show up right away: Base UI waits a moment, so a photo
-that loads quickly does not flash the letter first.
+A inicial não aparece de imediato: a Base UI espera um instante, para a foto que
+carrega rápido não piscar a letra antes.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Avatar` - remote `src` through the core's `Image`; `fallback` is required, because it is what shows while the photo downloads and if it fails. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Avatar` - `src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

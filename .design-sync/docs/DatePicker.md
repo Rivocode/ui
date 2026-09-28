@@ -1,29 +1,28 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # DatePicker
 
-A date field: you can type it and you can pick it on the calendar.
+Campo de data: da para digitar e da para escolher no calendário.
 
-Typing comes first on purpose. Someone who fills in forms all day types
-`03032026` faster than they navigate three months back.
+Digitar vem primeiro de propósito. Quem preenche formulário o dia inteiro digita
+`03032026` mais rápido do que navega três meses para trás.
 
-Half-typed text does not become a date, and on leaving the field whatever did
-not become a date goes back to the last valid one. `31/02` does not become
-March 3rd.
+Texto pela metade não vira data, e ao sair do campo o que não virou data volta
+para a última valida. `31/02` não vira 3 de marco.
 
-With `confirm`, clicking a day becomes a draft and only Apply writes the value.
-It starts off here and on in `DateRangePicker`, and the difference is on
-purpose: a single date is picked in one click, and a range takes two, which
-would make a filter without a footer reload twice. On a phone the panel becomes
-a bottom sheet, through `CalendarPanel`.
+Com `confirm`, o clique no dia vira rascunho e só o Aplicar escreve o valor. Ele
+nasce desligado aqui e ligado no `DateRangePicker`, e a diferença é de propósito:
+data única se escolhe num clique só, e período pede dois, o que faria um filtro
+sem rodapé recarregar duas vezes. No celular o painel vira folha de baixo, pelo
+`CalendarPanel`.
 
-## Value
+## Valor
 
-`value` and `defaultValue` accept a `Date` or `yyyy-mm-dd` text, and
-`onValueChange` answers in the format it received. In text, the call is the
-same as in `@rivocode/ui-native`:
+`value` e `defaultValue` aceitam `Date` ou texto `aaaa-mm-dd`, e o
+`onValueChange` responde no formato que recebeu. Em texto, a chamada é a mesma
+do `@rivocode/ui-native`:
 
 ```tsx
 const [vencimento, setVencimento] = useState<string | null>(null)
@@ -36,40 +35,39 @@ const [vencimento, setVencimento] = useState<string | null>(null)
 />
 ```
 
-In text, a field that is emptied answers `""`, like `TimeField`. With `Date`,
-it answers `undefined`, which is what the piece always did. To start empty
-without controlling the state, `defaultValue=""` picks the text format.
+Em texto, o campo que esvazia responde `""`, como o `TimeField`. Com `Date`,
+responde `undefined`, que é o que a peça sempre fez. Para começar vazio sem
+controlar o estado, `defaultValue=""` escolhe o formato de texto.
 
-The text is read as a calendar day, not as an instant: `"2026-09-25"` is
-September 25 in any time zone. JavaScript's `new Date("2026-09-25")` reads
-midnight in UTC, which in Brasília is still the 24th, and that is why the piece
-never passes the text through it.
+O texto é lido como dia do calendário, e não como instante: `"2026-09-25"` é
+25 de setembro em qualquer fuso. O `new Date("2026-09-25")` do JavaScript lê
+meia-noite em UTC, que em Brasília ainda é dia 24, e é por isso que a peça
+nunca passa o texto por ele.
 
-`min` and `max` are inclusive. They apply to the calendar, which disables the
-days outside and stops navigation at the month of each end, and to what is
-typed: a date outside the window does not reach `onValueChange`, and on
-leaving the field the text goes back to the last valid date. `disabledDays` is
-for a one-off blocked day, such as a holiday, and applies the same way to what
-is typed.
+`min` e `max` são inclusivos. Valem para o calendário, que desabilita os dias de
+fora e para a navegação no mês de cada ponta, e para o que se digita: data fora
+da janela não chega ao `onValueChange`, e ao sair do campo o texto volta para a
+última data válida. `disabledDays` fica para o dia bloqueado avulso, como
+feriado, e vale do mesmo jeito para o que se digita.
 
-## Date and text
+## Data e texto
 
-The three functions that bridge to `Date` ship with the package, because a
-screen that shows a date outside a field needs the same rules:
+As três funções que fazem a ponte com o `Date` saem pelo pacote, porque a tela
+que mostra data fora de um campo precisa das mesmas regras:
 
-| Function | What it does |
+| Função | O que faz |
 |---|---|
-| `formatDate(data)` | `Date` to `dd/mm/aaaa`, and an empty string when there is no date |
-| `parseDate(texto)` | `dd/mm/aaaa` to `Date`, and `undefined` for what is not a date |
-| `applyDateMask(texto)` | The mask while typing: adds the slashes and stops at eight digits |
+| `formatDate(data)` | `Date` para `dd/mm/aaaa`, e string vazia quando não há data |
+| `parseDate(texto)` | `dd/mm/aaaa` para `Date`, e `undefined` para o que não é data |
+| `applyDateMask(texto)` | A máscara enquanto se digita: põe as barras e para em oito dígitos |
 
-`parseDate` returns `undefined` for a date that does not exist. `31/02/2026`
-does not become March 3rd, which is what `new Date` would do on its own and is
-the source of half the wrong due dates in an invoicing system.
+`parseDate` devolve `undefined` para data que não existe. `31/02/2026` não vira
+3 de março, que é o que o `new Date` faria sozinho e é a origem de metade dos
+vencimentos errados de um sistema de nota fiscal.
 
-Everything here works in the browser's local date on purpose: the person chose
-"March 3rd" on the calendar on their screen, not an instant in UTC.
+Tudo aqui trabalha na data local do navegador de propósito: a pessoa escolheu
+"3 de março" no calendário da tela dela, e não um instante em UTC.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `DatePicker` - opens the sheet with the month; stores ISO `yyyy-mm-dd`, which the web also accepts, and displays `dd/mm/yyyy`. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `DatePicker` - abre a folha com o mês; guarda ISO `aaaa-mm-dd`, que o web também aceita, e exibe `dd/mm/aaaa`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

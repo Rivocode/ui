@@ -10,45 +10,52 @@ import { useSilentMisuse } from "./silent-misuse";
 
 export type QueryBoundaryProps<Data> = {
   /**
-   * The query response. `undefined` means "not here yet": without `isLoading`,
-   * it is what turns loading on - and, with a function child, it turns it on
-   * even with `isLoading={false}`, because there is nothing to hand to the
-   * function. An empty array and `null` count as empty, and that is how the
-   * component decides on its own. For any other shape - `{ items: [], total: 0
-   * }` - `isEmpty` answers.
+   * A resposta da consulta. `undefined` e "ainda nao chegou": sem `isLoading`,
+   * e ela quem liga o carregando - e, com filho em funcao, ela liga mesmo com
+   * `isLoading={false}`, porque nao ha o que entregar a funcao.
+   *
+   * Array vazio e `null` contam como vazio, e e assim que a peca decide
+   * sozinha. Para qualquer outra forma - `{ items: [], total: 0 }` - quem
+   * responde e o `isEmpty`.
    */
   data?: Data;
 
   isLoading?: boolean;
   isError?: boolean;
-  /** Without it, the error offers no retry. */
+  /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
   /**
-   * The title of the error notice. Without it, "Nao foi possivel carregar". The
-   * same name and the same role as the `errorTitle` of `DataList` and
-   * `ChartContainer`: a screen that loads three blocks needs to say which one
-   * failed, and a product that does not speak Portuguese needs to say it in
-   * another language. Here it HAS a default, unlike `DataList`, because the
-   * notice is born with two lines, as on the web. `string`, and not `ReactNode`
-   * as on the web: the native `Alert` title is a `Text`, and a React node would
-   * have nowhere to fit there.
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar".
+   *
+   * O mesmo nome e o mesmo papel do `errorTitle` do `DataList` e do
+   * `ChartContainer`: uma tela que carrega tres blocos precisa dizer qual
+   * deles falhou, e um produto que nao fala portugues precisa dizer isso em
+   * outra lingua. Aqui ele TEM padrao, ao contrario do `DataList`, porque o
+   * aviso nasce com duas linhas, como no web.
+   *
+   * `string`, e nao `ReactNode` como no web: o titulo do `Alert` nativo e um
+   * `Text`, e um no de React ali nao teria onde caber.
    */
   errorTitle?: string;
   /**
-   * The bottom line of the notice. Without it, "Tente de novo em alguns
-   * minutos". `string` for the same reason as `errorTitle`: the native `Alert`
-   * body is also a `Text`.
+   * A linha de baixo do aviso. Sem ela, "Tente de novo em alguns minutos".
+   *
+   * `string` pelo mesmo motivo do `errorTitle`: o corpo do `Alert` nativo
+   * tambem e um `Text`.
    */
   errorMessage?: string;
 
   /**
-   * What appears when the query comes back empty. The same shape as the web,
-   * with the title and description as `string`, which is what fits inside a
-   * `Text`, and `icon` also accepting the function that receives color and
-   * size, as in the native `EmptyState`. The description is required because
-   * "nenhum resultado" shifts to the person the work of finding out why, and
-   * they almost never do. Without it there is no empty state: the children draw
-   * the empty response their own way.
+   * O que aparece quando a consulta volta vazia. O mesmo formato do web, com o
+   * titulo e a descricao em `string`, que e o que cabe dentro de um `Text`, e
+   * o `icon` aceitando tambem a funcao que recebe cor e tamanho, como no
+   * `EmptyState` nativo.
+   *
+   * A descricao e obrigatoria porque "nenhum resultado" transfere para a
+   * pessoa o trabalho de descobrir por que, e ela quase nunca descobre.
+   *
+   * Sem ela nao ha estado vazio: os filhos desenham a resposta vazia do jeito
+   * deles.
    */
   empty?: {
     title: string;
@@ -58,48 +65,51 @@ export type QueryBoundaryProps<Data> = {
   };
 
   /**
-   * States emptiness instead of `data`, for a response that is not a list:
-   * `isEmpty={page.total === 0}`. When present, it wins over the `data` count.
+   * Diz o vazio no lugar do `data`, para a resposta que nao e uma lista:
+   * `isEmpty={page.total === 0}`. Quando vem, vence a contagem do `data`.
    */
   isEmpty?: boolean;
 
   /**
-   * The waiting drawing, in the shape of what comes next - the three-row list,
-   * the card, the sheet of fields. Without it, generic rows go in, which hold
-   * height but promise no shape. With a custom mold the frame stops announcing
-   * itself as a single screen reader stop: the text you put inside the mold
-   * does the talking, and a label up here would swallow it.
+   * O desenho da espera, no formato do que vem depois - a lista de tres
+   * linhas, o cartao, a folha de campos. Sem ele entram linhas genericas, que
+   * seguram altura mas nao prometem forma nenhuma.
+   *
+   * Com molde proprio a moldura para de se anunciar como uma parada so do
+   * leitor de tela: o texto que voce puser dentro do molde e quem fala, e um
+   * rotulo aqui em cima o engoliria.
    */
   skeleton?: ReactNode;
-  /** How many fake rows the generic wait shows. Ignored with `skeleton`. */
+  /** Quantas linhas falsas a espera generica mostra. Ignorado com `skeleton`. */
   skeletonRows?: number;
 
   /**
-   * The response on screen. As a function, it is called only after the data has
-   * arrived, and receives `data` without `undefined` - which is the `!` every
-   * screen used to write here. The children render with no wrapper at all: an
-   * invisible `View` around them would break the `flex-1` or `gap` of whoever
-   * is outside, and the defect would only show up on the device.
+   * A resposta na tela. Como funcao, ela so e chamada depois que o dado
+   * chegou, e recebe o `data` sem o `undefined` - que e o `!` que toda tela
+   * escrevia aqui.
+   *
+   * Os filhos saem sem embrulho nenhum: uma `View` invisivel em volta
+   * quebraria o `flex-1` ou o `gap` de quem esta por fora, e o defeito so
+   * apareceria no aparelho.
    */
   children: ReactNode | ((data: NonNullable<Data>) => ReactNode);
 
   /**
-   * Styles the three endings, not the children: the frame that reserves the
-   * height applies equally to the skeleton, the error notice and the empty
-   * state.
+   * Veste os tres finais, e nao os filhos: a moldura que reserva a altura vale
+   * igual para o esqueleto, para o aviso de erro e para o vazio.
    */
   className?: string;
   /**
-   * The component's texts, to change the language: `retry` is the button that
-   * runs `onRetry`, "Tentar de novo" without it - the same key as the web and
-   * as the query components here -, and `loading` what the screen reader hears
-   * during the generic wait, "Carregando" without it.
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave do web e das pecas de
+   * consulta daqui -, e `loading` o que o leitor de tela ouve na espera
+   * generica, "Carregando" sem ele.
    */
   labels?: Partial<QueryBoundaryLabels>;
   /**
-   * Class per part: `loading` (the skeleton frame), `error` (the notice with
-   * the button) and `empty` (the empty state). Each one styles only its own
-   * ending, on the same node as `className`.
+   * Classe por parte: `loading` (a moldura do esqueleto), `error` (a do aviso
+   * com o botao) e `empty` (o estado vazio). Cada uma veste so o seu final, no
+   * mesmo no que o `className`.
    */
   classNames?: Slots<"loading" | "error" | "empty">;
 };
@@ -198,7 +208,7 @@ function blankOf(data: unknown): boolean | undefined {
 }
 
 const UNDECIDABLE_EMPTY =
-  "[rivocode/ui-native] <QueryBoundary empty={...}> with no list to count: the `data` that " +
-  "arrived is neither an array nor `null`, so the empty state will never appear and the children " +
-  "draw over nothing. State emptiness with `isEmpty={response.total === 0}`, or pass in " +
-  "`data` the list inside the response.";
+  "[rivocode/ui-native] <QueryBoundary empty={...}> sem lista para contar: o `data` que " +
+  "chegou não é array nem `null`, então o estado vazio nunca vai aparecer e os filhos " +
+  "desenham sobre o nada. Diga o vazio com `isEmpty={resposta.total === 0}`, ou passe em " +
+  "`data` a lista de dentro da resposta.";

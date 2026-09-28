@@ -1,90 +1,87 @@
 ---
-category: Navigation
+category: Navegação
 ---
 
 # Sidebar
 
-The side bar of an operations screen. It is not just a menu: it is a state
-provider, bar, search, groups, items, submenu, footer, trigger and the page area
-beside it.
+A barra lateral de uma tela de operação. Não é só um menu: é provedor de estado,
+barra, busca, grupos, itens, submenu, rodapé, gatilho e a área da página ao
+lado.
 
-Closed means different things at each width. On the desktop, shrunk down to the
-icon column, with each item's name becoming a tooltip on hover. On the phone,
-off the screen, and the bar becomes the side sheet.
+Fechada quer dizer coisas diferentes em cada largura. Na mesa, encolhida até a
+coluna de ícones, com o nome de cada item virando dica ao passar o mouse. No
+celular, fora da tela, e a barra vira a folha da lateral.
 
-The shortcut is Ctrl+B, or Cmd+B on the Mac, the same as the editor's. Whoever
-works all day on an operations screen opens and closes it dozens of times.
-Inside a text field or `RichTextEditor` it does not fire, because there Ctrl+B
-is bold; and `shortcut` ignores case, so `"B"` and `"b"` are the same shortcut.
+O atalho é Ctrl+B, ou Cmd+B no Mac, o mesmo do editor. Quem trabalha o dia
+inteiro numa tela de operação abre e fecha isso dezenas de vezes. Dentro de um
+campo de texto ou do `RichTextEditor` ele não dispara, porque ali o Ctrl+B é
+negrito; e `shortcut` ignora maiúscula, então `"B"` e `"b"` são o mesmo atalho.
 
-## Collapsed, nothing disappears
+## Encolhida, nada some
 
-This is where almost every sidebar fails. Shrinking to 3.5rem usually hides the
-search, cuts the group title in the middle of a word and makes the submenus
-vanish, leaving part of the system with no path while the bar is closed.
+É onde quase toda barra lateral falha. Encolher para 3,5rem costuma esconder a
+busca, cortar o título do grupo no meio da palavra e sumir com os submenus,
+deixando parte do sistema sem caminho enquanto a barra estiver fechada.
 
-Here each piece knows what to do at that width:
+Aqui cada peça sabe o que fazer nessa largura:
 
-- `SidebarInput` becomes the magnifying glass icon, which opens the bar again.
-  A 3.5rem text field does not take even one word.
-- `SidebarMenuSub` becomes a menu that pops out to the side, with the same
-  children. Indenting does not fit; hiding would be worse.
-- `SidebarGroup` hides the title. Vanishing says less; lying about the group's
-  name says something wrong.
-- `SidebarMenuItem` shows only the icon, with the name in the tooltip. Without
-  the tooltip, the icon column turns into guesswork, and that is why so many
-  collapsed bars only serve whoever already memorized the system.
+- `SidebarInput` vira o ícone da lupa, que abre a barra de volta. Um campo de
+  texto de 3,5rem não aceita nem uma palavra.
+- `SidebarMenuSub` vira um menu que salta ao lado, com os mesmos filhos.
+  Indentar não cabe; esconder seria pior.
+- `SidebarGroup` esconde o título. Sumir diz menos, mentir sobre o nome do
+  grupo diz errado.
+- `SidebarMenuItem` mostra só o ícone, com o nome na dica. Sem a dica, a coluna
+  de ícones vira adivinhação, e é por isso que tanta barra encolhida só serve
+  para quem já decorou o sistema.
 
-## The pieces
+## As peças
 
-`SidebarProvider` holds the state and the shortcut. `Sidebar` is the column,
-with `side="left"` or `"right"`. Inside it: `SidebarHeader`, `SidebarInput`,
+`SidebarProvider` guarda o estado e o atalho. `Sidebar` é a coluna, com
+`side="left"` ou `"right"`. Dentro dela: `SidebarHeader`, `SidebarInput`,
 `SidebarContent`, `SidebarGroup`, `SidebarMenu`, `SidebarMenuItem`,
 `SidebarMenuSub`, `SidebarSeparator`, `SidebarFooter`.
 
-`SidebarMenuRow` with `SidebarMenuAction` inside gives a row the secondary
-button that shows on hover. `SidebarMenuSkeleton` holds the place while the
-navigation comes from the server. `SidebarRail` is the thin strip on the edge
-that opens and closes when clicked, and `SidebarTrigger` is the button that does
-the same from the keyboard. Its name follows what it does there: on the
-desktop, "Recolher barra lateral" and "Expandir barra lateral", because the bar
-becomes the icon column and does not vanish; on the phone, "Abrir menu" and
-"Fechar menu", because there it is a sheet.
+`SidebarMenuRow` com `SidebarMenuAction` dentro dá a uma linha o botão
+secundário que aparece ao passar o mouse. `SidebarMenuSkeleton` ocupa o lugar
+enquanto a navegação vem do servidor. `SidebarRail` é a faixa fina na borda que
+abre e fecha ao ser clicada, e `SidebarTrigger` é o botão que faz o mesmo pelo
+teclado. O nome dele acompanha o que ele faz ali: na mesa, "Recolher barra
+lateral" e "Expandir barra lateral", porque a barra vira a coluna de ícones e
+não some; no celular, "Abrir menu" e "Fechar menu", porque ali ela é uma folha.
 
-`SidebarMenuItem` is a list item inside `SidebarMenu`, and a loose link outside
-it. In `SidebarFooter`, wrap the items in a `SidebarMenu` when there is more
-than one; a single item can stay loose, without becoming an `li` outside a list.
+`SidebarMenuItem` é item de lista dentro de `SidebarMenu`, e link solto fora
+dele. No `SidebarFooter`, embrulhe os itens num `SidebarMenu` quando forem mais
+de um; um item só pode ficar solto, sem virar `li` fora de lista.
 
-`SidebarInset` is the page area, beside the bar.
-`SidebarBrand` is the brand at the top, and it shrinks along with the bar: open
-it shows the name next to the symbol, in the icon column it shows only the
-symbol.
+`SidebarInset` é a área da página, ao lado da barra.
+`SidebarBrand` é a marca no topo, e encolhe junto com a barra: aberta mostra o
+nome ao lado do símbolo, na coluna de ícones mostra só o símbolo.
 
-### `title` and `label` say different things
+### `title` e `label` dizem coisas diferentes
 
-Four pieces of the family receive a text, and two prop names cover all four
-because there are four roles:
+Quatro peças da família recebem um texto, e dois nomes de prop dão conta dos
+quatro porque são quatro papéis:
 
-- `Sidebar` has `title`: the title only the screen reader hears, on the phone,
-  where the bar becomes a sheet and loses its context. It is the same role (and
-  the same name) as in `CalendarPanel` and `Command`.
-- `SidebarGroup` has `label`: the visible header of a group of items, as in
-  `MenuGroup` and in `Command`'s groups.
-- `SidebarInput` has `label`: the accessible name of a field with no visible
-  label, as in `Editable`, `Splitter` and `Progress`.
-- `SidebarMenuSub` has `label`: the text of the row itself, as in `Tree` and in
-  `Command`'s items.
+- `Sidebar` tem `title`: o título que só o leitor de tela ouve, no celular,
+  onde a barra vira folha e perde o contexto. É o mesmo papel (e o mesmo nome)
+  de `CalendarPanel` e `Command`.
+- `SidebarGroup` tem `label`: o cabeçalho visível de um grupo de itens, como em
+  `MenuGroup` e nos grupos do `Command`.
+- `SidebarInput` tem `label`: o nome acessível de um campo sem rótulo visível,
+  como em `Editable`, `Splitter` e `Progress`.
+- `SidebarMenuSub` tem `label`: o texto da própria linha, como em `Tree` e nos
+  itens do `Command`.
 
-It is worth knowing this when looking for the prop: the name follows the role,
-not the piece.
+Vale a pena saber disso ao procurar a prop: o nome segue o papel, e não a peça.
 
 
-## With the router's link
+## Com o link do router
 
-`SidebarMenuItem` is an `<a href>` by default. In an app with a router, the
-click would reload the whole page: pass the router's link through `render`, and
-the item keeps the design, the `aria-current` from `active` and the closing of
-the sheet on the phone.
+O `SidebarMenuItem` é um `<a href>` por padrão. Num app com router, o clique
+recarregaria a página inteira: passe o link do router pelo `render`, e o item
+continua com o desenho, o `aria-current` do `active` e o fechar da folha no
+celular.
 
 ```tsx
 import { NavLink } from 'react-router'
@@ -94,40 +91,38 @@ import { NavLink } from 'react-router'
 </SidebarMenuItem>
 ```
 
-TanStack Router's `Link` goes in the same way, and in Next it is the `Link` from
+O `Link` do TanStack Router entra do mesmo jeito, e no Next é o `Link` de
 `next/link`: `render={<Link href="/notas" />}`.
 
-## The phone comes already solved
+## O celular já vem resolvido
 
-None of this needs to be wired by hand. Below 640px the bar becomes a sheet, and
-the sheet starts **closed**: `defaultOpen` refers to the desktop column, where
-open is the useful state and the page stays whole beside it. On the phone the
-same bar covers everything, and opening on its own at load covers exactly the
-screen the person came to see.
+Nada disso precisa ser ligado na mão. Abaixo de 640px a barra vira folha, e a
+folha começa **fechada**: `defaultOpen` fala da coluna do desktop, onde aberta
+é o estado útil e a página continua inteira ao lado. No celular a mesma barra
+cobre tudo, e abrir sozinha ao carregar tapa justamente a tela que a pessoa
+veio ver.
 
-The same goes for the controlled mode. `open` and `onOpenChange` are the desktop
-state, and on the phone they neither open the sheet nor are called by it:
-saving `open` as open in a cookie does not cover the phone screen on load, and
-closing the sheet does not write closed into the desktop state. The sheet has
-its own state, and whoever needs to control it uses `openMobile` and
-`onOpenMobileChange`.
+O mesmo vale para o controlado. `open` e `onOpenChange` são o estado da mesa, e
+no celular não abrem a folha nem são chamados por ela: guardar `open` aberto
+num cookie não cobre a tela do celular ao carregar, e fechar a folha não grava
+fechado no estado da mesa. A folha tem estado próprio, e quem precisa
+controlá-la usa `openMobile` e `onOpenMobileChange`.
 
-On the phone, the `Sidebar`'s `className` goes to the sheet, and the other
-attributes (`role`, `data-*`, `aria-*`) to the block inside it, without erasing
-the sheet's dialog role.
+No celular, o `className` da `Sidebar` vai para a folha, e os outros atributos
+(`role`, `data-*`, `aria-*`) para o bloco dentro dela, sem apagar o papel de
+diálogo da folha.
 
-Choosing an item also closes the sheet, which there is the moment to get out of
-the way. On the desktop it covers nothing, so it stays open. `SidebarRail`
-disappears on the phone, because dragging a 1px edge with a finger is no
-target.
+Escolher um item também fecha a folha, que ali é a hora de sair da frente. Na
+mesa ela não cobre nada, então continua aberta. `SidebarRail` some no celular,
+porque arrastar uma borda de 1px com o dedo não é alvo.
 
-When the application needs the same answer, it reads it from the same place:
+Quando a aplicação precisa da mesma resposta, ela lê do mesmo lugar:
 
 ```tsx
 const { isMobile, open, collapsed, toggle, close } = useSidebar()
 ```
 
-Outside a `SidebarProvider`, the same breakpoint comes from `useMobile()`:
+Fora de um `SidebarProvider`, o mesmo corte vem do `useMobile()`:
 
 ```tsx
 import { useMobile } from '@rivocode/ui'
@@ -135,21 +130,21 @@ import { useMobile } from '@rivocode/ui'
 const isMobile = useMobile()
 ```
 
-Both answer through the same media query the bar and the calendar use. Writing
-`640` again in some corner of the application is how the two halves of the
-screen end up disagreeing about what a phone is. Inside the provider prefer
-`useSidebar().isMobile`, which avoids a second subscriber to the same query.
+Os dois respondem pela mesma media query que a barra e o calendário usam.
+Escrever `640` de novo num canto da aplicação é como as duas metades da tela
+acabam discordando sobre o que é celular. Dentro do provider prefira
+`useSidebar().isMobile`, que evita um segundo assinante da mesma consulta.
 
-On the server both return `false`, and not a guess: the first paint comes out
-the same as the desktop's and corrects itself on the first effect, because
-erring toward narrow breaks the wide layout, and the opposite does not.
+No servidor os dois devolvem `false`, e não um palpite: a primeira pintura sai
+igual à do desktop e se corrige no primeiro efeito, porque errar para o lado
+estreito quebra o layout largo, e o contrário não.
 
-## When not to use
+## Quando não usar
 
-Fewer than five destinations fit in a `Menubar` or a `NavigationMenu` at the
-top, and the whole width is left for the content. The sidebar pays for itself
-when the list grows, gains groups and needs submenus.
+Menos de cinco destinos cabem numa `Menubar` ou num `NavigationMenu` no topo, e
+sobra a largura inteira para o conteúdo. A barra lateral paga por si quando a
+lista cresce, ganha grupos e precisa de submenu.
 
-## In React Native
+## No React Native
 
-Does not port. The sidebar is the navigation skeleton of a wide screen; on the phone that role is played by the router's tab bar and drawer (Expo Router, React Navigation), which bring edge gesture, history and tab state for free. A hand-drawn drawer on top of that loses all three.
+Não porta. A barra lateral é o esqueleto de navegação de uma tela larga; no celular quem faz esse papel é a tab bar e o drawer do router (Expo Router, React Navigation), que trazem gesto de borda, histórico e estado de aba de graça. Uma gaveta desenhada à mão por cima disso perde os três.

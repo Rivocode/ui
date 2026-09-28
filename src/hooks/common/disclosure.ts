@@ -5,9 +5,9 @@ import { useMemo, useRef, useState } from "react";
 import { useLatest } from "./latest";
 
 export type UseDisclosureOptions = {
-  /** Called only on the transition from closed to open, and not on every `open()`. */
+  /** Chamado so na passagem de fechado para aberto, e nao a cada `open()`. */
   onOpen?: () => void;
-  /** Called only on the transition from open to closed, and not on every `close()`. */
+  /** Chamado so na passagem de aberto para fechado, e nao a cada `close()`. */
   onClose?: () => void;
 };
 

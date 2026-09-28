@@ -1,4 +1,4 @@
-/* Generated from src/shared/highlight.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/highlight.ts por bun run gen:compartilhado. Nao editar. */
 
 export type HighlightChunk = { text: string; match: boolean };
 

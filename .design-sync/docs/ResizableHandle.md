@@ -1,12 +1,12 @@
 ---
-category: Structure
+category: Estrutura
 ---
 
 # ResizableHandle
 
-The divider between two panels of a `ResizablePanelGroup`: a `separator` that
-moves with the arrow keys, with the size of the panel before it in
-`aria-valuetext` and the 24px target that WCAG 2.5.8 asks for.
+A divisória entre dois painéis de um `ResizablePanelGroup`: um `separator` que
+anda pelas setas, com a medida do painel de antes em `aria-valuetext` e o alvo
+de 24px que a WCAG 2.5.8 pede.
 
-`withHandle` draws the little grip in the middle of the line. Name each divider
-with `aria-label` when there is more than one on the screen.
+`withHandle` desenha a pegadinha no meio da linha. Nomeie cada divisória por
+`aria-label` quando houver mais de uma na tela.

@@ -8,7 +8,7 @@ const EMISSOES = Array.from({ length: 30 }, (_, index) => {
   return { tone: 'success' as const, label: `Dia ${dia}: todas autorizadas` }
 })
 
-/** Last 30 days */
+/** Últimos 30 dias */
 export function LastThirtyDays() {
   return (
     <div className="w-96">

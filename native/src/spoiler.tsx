@@ -12,29 +12,28 @@ const FADE = 40;
 const BANDS = 8;
 
 export type SpoilerProps = {
-  /** The long content. */
+  /** O conteudo longo. */
   children: ReactNode;
   /**
-   * The collapsed height, in points. Below it the button does not even appear;
-   * above it, the content is cut here and the last 40 points fade out.
+   * A altura do recolhido, em pontos. Abaixo dela o botao nem aparece; acima,
+   * o conteudo corta aqui e os ultimos 40 pontos somem em degrade.
    */
   maxHeight?: number;
-  /** Open, for controlled use. Without it, the component keeps its own state. */
+  /** Aberto, para quem controla. Sem ele, a peca guarda o proprio estado. */
   open?: boolean;
-  /** Open on first paint, uncontrolled. The same name as the web. */
+  /** Aberto na primeira pintura, sem controlar. O mesmo nome do web. */
   defaultOpen?: boolean;
-  /** Receives the new state on every tap on "Ler mais" and "Ler menos". */
+  /** Recebe o estado novo a cada toque no "Ler mais" e no "Ler menos". */
   onOpenChange?: (open: boolean) => void;
-  /** The button texts, the same as the web. */
+  /** Os textos do botao, os mesmos do web. */
   labels?: { more?: string; less?: string };
   /**
-   * The background the block sits on, for the fade to blend into it: on the
-   * phone there is no mask, and the fade is painted in the background color.
-   * Default: `bg`.
+   * O fundo em que o bloco pousa, para o degrade sumir nele: no celular nao
+   * ha mascara, e o degrade e pintado na cor do fundo. Padrao: `bg`.
    */
   fadeOver?: "bg" | "surface" | "surface-raised";
   className?: string;
-  /** Class per part: `content` (the clipping box) and `trigger` (the button). */
+  /** Classe por parte: `content` (a caixa que corta) e `trigger` (o botao). */
   classNames?: Slots<"content" | "trigger">;
 };
 

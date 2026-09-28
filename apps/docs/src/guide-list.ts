@@ -1,76 +1,76 @@
 /* ---------------------------------------------------------------------------
- * The list of guides, once.
+ * A lista de guias, uma vez.
  *
- * The site (guides.ts) and llms.txt (vite.config.ts) read separate lists, and
- * the Icons guide was born in one and not the other: it existed in the
- * navigation and was missing from the raw markdown. This is the only source;
- * whoever needs the bodies joins the slug to the content in `content/`.
+ * O site (guides.ts) e o llms.txt (vite.config.ts) liam listas separadas, e
+ * o guia de Ícones nasceu numa e não na outra: existia na navegação e faltava
+ * no markdown cru. Aqui é a única fonte; quem precisar dos corpos junta o
+ * slug ao conteúdo em `content/`.
  * ------------------------------------------------------------------------- */
 
 export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }> = [
   {
     slug: 'instalacao',
-    title: 'Installation',
-    summary: 'One command, the two lines of CSS and the Provider.',
+    title: 'Instalação',
+    summary: 'Um comando, as duas linhas de CSS e o Provider.',
   },
   {
     slug: 'inicio-rapido',
-    title: 'Quick start',
-    summary: 'A real screen: a form that validates and a listing with its states.',
+    title: 'Início rápido',
+    summary: 'Uma tela de verdade: formulário que valida e listagem com os estados.',
   },
   {
     slug: 'temas',
-    title: 'Themes and customization',
-    summary: 'The three token layers, and a client theme from start to finish.',
+    title: 'Temas e personalização',
+    summary: 'As três camadas de token, e um tema de cliente do começo ao fim.',
   },
   {
     slug: 'tokens',
-    title: 'Tokens in Figma',
-    summary: 'The three layers as DTCG JSON, for Tokens Studio and Figma variables.',
+    title: 'Tokens no Figma',
+    summary: 'As três camadas em JSON DTCG, para o Tokens Studio e as variáveis do Figma.',
   },
   {
     slug: 'densidade',
-    title: 'Density',
-    summary: 'The same screen at two heights, without two catalogs.',
+    title: 'Densidade',
+    summary: 'A mesma tela em duas alturas, sem dois catálogos.',
   },
   {
     slug: 'icones',
-    title: 'Icons',
-    summary: 'One set, one concept per icon, and the size for each context.',
+    title: 'Ícones',
+    summary: 'Um conjunto, um conceito por ícone, e o tamanho de cada contexto.',
   },
   {
     slug: 'hooks',
     title: 'Hooks',
-    summary: 'Open and close, wait for typing, remember between visits: the hooks every screen rewrites.',
+    summary: 'Abrir e fechar, esperar a digitação, lembrar entre visitas: os hooks que toda tela reescreve.',
   },
   {
     slug: 'tanstack',
-    title: 'With TanStack',
-    summary: 'The Router link with the house design, and the Query request in its four end states.',
+    title: 'Com TanStack',
+    summary: 'O link do Router com o desenho da casa, e a consulta do Query nos quatro finais.',
   },
   {
     slug: 'arquitetura',
-    title: 'Recommended architecture',
-    summary: 'The roadmap for a new project: folders by feature, the shell, the data and the agent, in Vite or Next.',
+    title: 'Arquitetura recomendada',
+    summary: 'O roteiro para um projeto novo: pastas por funcionalidade, a casca, os dados e o agente, no Vite ou no Next.',
   },
   {
     slug: 'documentos-brasileiros',
-    title: 'Brazilian documents',
-    summary: 'CPF, CNPJ, CNH, título de eleitor, PIS, RENAVAM, license plate and boleto: the math for each.',
+    title: 'Documentos brasileiros',
+    summary: 'CPF, CNPJ, CNH, título, PIS, RENAVAM, placa e boleto: a conta de cada um.',
   },
   {
     slug: 'react-native',
     title: 'React Native',
-    summary: 'The same vocabulary on mobile, with a theme that switches at runtime.',
+    summary: 'O mesmo vocabulário no celular, com tema que troca em runtime.',
   },
   {
     slug: 'para-agents',
-    title: 'For agents',
-    summary: 'Raw markdown, llms.txt, the MCP server and how to ask in the prompt.',
+    title: 'Para agents',
+    summary: 'Markdown cru, llms.txt, o servidor MCP e como pedir no prompt.',
   },
   {
     slug: 'skill',
     title: 'Skill',
-    summary: 'One command, and the agent learns the whole library.',
+    summary: 'Um comando, e o agente aprende a biblioteca inteira.',
   },
 ]

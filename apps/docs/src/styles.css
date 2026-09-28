@@ -17,12 +17,11 @@
 
 html {
   scroll-behavior: smooth;
-  /* The header is 56px tall and sits over the page. Without this slack the
-     heading the table of contents points to touches it, and the one above
-     even disappears under it. Here, and not as a per-heading scroll-mt: the
-     scroll-padding applies to the click in the table of contents, to a `#`
-     pasted in the address bar, to the focus the keyboard moves and to the
-     table of contents' own scrollIntoView. */
+  /* O cabecalho tem 56px e fica por cima da pagina. Sem esta folga o titulo
+     que o indice aponta encosta nele, e o de cima chega a sumir por baixo.
+     Aqui, e nao num scroll-mt por titulo: o scroll-padding vale para o
+     clique no indice, para o `#` colado na barra de endereco, para o foco
+     que o teclado leva e para o scrollIntoView do proprio indice. */
   scroll-padding-top: 5rem;
 }
 
@@ -38,9 +37,9 @@ html {
    the list: a track that is always visible competes with the names, and the
    names are the reason the list exists. */
 .rc-scroll {
-  /* The scroll stops at the list, instead of continuing on the page behind
-     it. Reaching the end of the sixty-six names and watching the text walk
-     off on its own is the same gesture producing two different things. */
+  /* A rolagem para na lista, em vez de continuar na pagina atras dela.
+     Chegar ao fim dos sessenta e seis nomes e ver o texto sair andando
+     sozinho e o mesmo gesto produzindo duas coisas diferentes. */
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;

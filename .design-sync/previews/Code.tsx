@@ -6,7 +6,7 @@ const RETORNO = `{
   "chave": "35240612345678000199550010000048131234567890"
 }`
 
-/** Code in a sentence */
+/** Código na frase */
 export function InlineCode() {
   return (
     <p className="max-w-96 text-base text-fg-muted">
@@ -16,7 +16,7 @@ export function InlineCode() {
   )
 }
 
-/** API response */
+/** Retorno da API */
 export function ApiResponse() {
   return (
     <div className="w-96">

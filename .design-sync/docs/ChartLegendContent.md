@@ -1,14 +1,14 @@
 ---
-category: Charts
+category: Gráfico
 ---
 
 # ChartLegendContent
 
-The legend, with the name the `config` gave each series. It goes in the
-`content` of `ChartLegend`.
+A legenda, com o nome que o `config` deu a cada serie. Entra no `content` do
+`ChartLegend`.
 
-Without it Recharts shows the raw data key, `qtd_emitidas` instead of
-"Emitidas": a field name is not screen text.
+Sem ela a Recharts mostra a chave crua do dado, `qtd_emitidas` em vez de
+"Emitidas": nome de campo não é texto de tela.
 
-In a pie every slice shares the same `dataKey`, and what tells one from another
-is the `name`. The legend looks at both, in that order.
+Na pizza todas as fatias dividem o mesmo `dataKey`, e quem separa uma da outra
+e o `name`. A legenda olha os dois, nessa ordem.

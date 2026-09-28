@@ -1,7 +1,7 @@
 import { CurrencyInput, Field, FieldDescription, FieldLabel, currency } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** Charge amount */
+/** Valor da cobrança */
 export function Charge() {
   const [cents, setCents] = useState<number | null>(248_000)
 
@@ -20,7 +20,7 @@ export function Charge() {
 
 const LIMIT = { min: 1_000, max: 500_000 }
 
-/** With a limit */
+/** Com limite */
 export function WithLimit() {
   const [cents, setCents] = useState<number | null>(750_000)
   const outside = cents !== null && (cents < LIMIT.min || cents > LIMIT.max)
@@ -38,7 +38,7 @@ export function WithLimit() {
   )
 }
 
-/** Signed adjustment */
+/** Ajuste com sinal */
 export function Adjustment() {
   const [cents, setCents] = useState<number | null>(-1_590)
 
@@ -53,7 +53,7 @@ export function Adjustment() {
   )
 }
 
-/** Sizes and states */
+/** Tamanhos e estados */
 export function States() {
   return (
     <div className="flex w-80 flex-col gap-3">

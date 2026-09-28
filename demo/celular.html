@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
-    <title>@rivocode/ui on a phone</title>
+    <title>@rivocode/ui no celular</title>
     <style>
-      /* Chrome on macOS does not open a window below 500px, so the phone width
-         comes from an iframe, not from the window size. Without this the
-         portrait comes out cropped at 390 but with a 500 layout, and lies. */
+      /* O Chrome no macOS nao abre janela abaixo de 500px, entao a largura de
+         celular vem de um iframe, e nao do tamanho da janela. Sem isto o
+         retrato sai cortado em 390 mas com layout de 500, e mente. */
       html,
       body {
         margin: 0;
@@ -22,9 +22,9 @@
     </style>
   </head>
   <body>
-    <iframe id="stage" title="Showcase at phone width"></iframe>
+    <iframe id="tela" title="Vitrine em largura de celular"></iframe>
     <script>
-      document.getElementById("stage").src = location.hash.slice(1) || "./index.html";
+      document.getElementById("tela").src = location.hash.slice(1) || "./index.html";
     </script>
   </body>
 </html>

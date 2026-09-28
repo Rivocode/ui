@@ -13,7 +13,7 @@ function Example() {
   );
 }
 
-test("the tooltip shows and says what the icon button does", () => {
+test("a dica aparece e diz o que o botao de icone faz", () => {
   render(
     <RivoProvider>
       <Example />
@@ -22,7 +22,7 @@ test("the tooltip shows and says what the icon button does", () => {
   expect(screen.getByText("Excluir nota")).toBeDefined();
 });
 
-test("the tooltip needs no provider of its own, RivoProvider already carries one", () => {
+test("a dica nao precisa de provedor proprio, o RivoProvider ja carrega", () => {
   expect(() =>
     render(
       <RivoProvider>
@@ -32,7 +32,7 @@ test("the tooltip needs no provider of its own, RivoProvider already carries one
   ).not.toThrow();
 });
 
-test("the tooltip opens inside the container that carries the theme", () => {
+test("a dica abre dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <Example />
@@ -43,24 +43,23 @@ test("the tooltip opens inside the container that carries the theme", () => {
 });
 
 /* ---------------------------------------------------------------------------
- * The tooltip is for people who cannot see, too
+ * A dica tambem para quem nao ve
  *
- * Measured with the tooltip open in the browser: `aria-describedby` on the
- * trigger was `null` and there was no `[role=tooltip]` in the document - the
- * popup existed, with the text inside, and without a role. Base UI 1.7.0 does
- * not do this wiring by its own decision: its documentation treats the tooltip
- * as a visual element and says to label the trigger. But the reach of that is
- * larger than the component: the `Stat` `hint` is a tooltip and exists only to
- * explain the number, and the collapsed sidebar uses the same mechanism to say
- * the name of each destination.
+ * Medido com a dica aberta no navegador: `aria-describedby` no gatilho era
+ * `null` e nao havia nenhum `[role=tooltip]` no documento - o popup existia,
+ * com o texto dentro, e sem papel. A Base UI 1.7.0 nao faz essa fiacao por
+ * decisao propria: a documentacao dela trata a dica como elemento visual e
+ * manda rotular o gatilho. So que o alcance disso e maior do que a peca: o
+ * `hint` do `Stat` e uma dica e existe so para explicar o numero, e a barra
+ * lateral encolhida usa o mesmo mecanismo para dizer o nome de cada destino.
  *
- * What these tests do not reach: happy-dom has no accessibility tree, so here
- * the DOM wiring is proven - the role on the popup and the trigger's
- * `aria-describedby` pointing at its `id` - and not that the screen reader
- * reads the description together with the name.
+ * O que estes testes nao alcancam: o happy-dom nao tem arvore de
+ * acessibilidade, entao aqui se prova a fiacao no DOM - o papel no popup e o
+ * `aria-describedby` do gatilho apontando para o `id` dele - e nao que o
+ * leitor de tela leia a descricao junto com o nome.
  * ------------------------------------------------------------------------- */
 
-test("the open tooltip presents itself as a tooltip and the trigger points at it", () => {
+test("a dica aberta se apresenta como dica e o gatilho aponta para ela", () => {
   render(
     <RivoProvider>
       <Example />
@@ -76,7 +75,7 @@ test("the open tooltip presents itself as a tooltip and the trigger points at it
   expect(trigger.getAttribute("aria-describedby")).toBe(tip!.id);
 });
 
-test("closed, the trigger does not point at an id that no longer exists", () => {
+test("fechada, o gatilho nao aponta para um id que nao existe mais", () => {
   render(
     <RivoProvider>
       <Tooltip>
@@ -90,7 +89,7 @@ test("closed, the trigger does not point at an id that no longer exists", () => 
   expect(trigger.getAttribute("aria-describedby")).toBeNull();
 });
 
-test("the caller's aria-describedby still applies alongside ours", () => {
+test("o aria-describedby de quem chama continua valendo junto com o nosso", () => {
   render(
     <RivoProvider>
       <p id="ajuda">A nota some da listagem.</p>

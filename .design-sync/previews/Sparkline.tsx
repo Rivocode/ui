@@ -4,7 +4,7 @@ import { Sparkline, currencyShort } from '@rivocode/ui/chart'
 const BILLED = [128, 155, 142, 189, 205, 247]
 const OVERDUE = [9, 8, 8, 6, 5, 3]
 
-/** Inside an indicator */
+/** Dentro de um indicador */
 export function InsideAKpi() {
   return (
     <div className="grid w-full max-w-lg gap-3 sm:grid-cols-2">
@@ -31,7 +31,7 @@ export function InsideAKpi() {
   )
 }
 
-/** Line and area */
+/** Linha e área */
 export function LineAndArea() {
   return (
     <div className="flex items-center gap-8">

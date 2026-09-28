@@ -6,30 +6,30 @@ import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
 
 export type PageHeaderProps = Omit<ComponentProps<"header">, "title"> & {
-  /** The screen's name. Rendered in an `<h1>` by default, because a page header is its top. */
+  /** O nome da tela. Sai num `<h1>` por padrao, porque cabecalho de pagina e o topo dela. */
   title: ReactNode;
   /**
-   * The level the title is rendered at. Default `h1`: a page header is its top.
+   * Em que nivel o titulo sai. Padrao `h1`: cabecalho de pagina e o topo dela.
    *
-   * Lower it to `h2` when the `PageHeader` is not the top - an application that already
-   * has an `h1` in the shell, a panel inside a region, an example inside
-   * a documentation page. Two `h1`s on the same page do not error
-   * anywhere: whoever navigates by level-1 headings is the one who lands in the wrong place.
+   * Baixe para `h2` quando o `PageHeader` nao e o topo - uma aplicacao que ja
+   * tem `h1` no shell, um painel dentro de uma regiao, um exemplo dentro de
+   * uma pagina de documentacao. Dois `h1` na mesma pagina nao dao erro em
+   * lugar nenhum: quem navega por titulo de nivel 1 e que cai no lugar errado.
    */
   titleAs?: "h1" | "h2" | "h3";
-  /** A sentence about what the screen shows. */
+  /** Uma frase sobre o que a tela mostra. */
   description?: ReactNode;
-  /** The trail up to here: the house `Breadcrumb`. */
+  /** A trilha ate aqui: o `Breadcrumb` da casa. */
   breadcrumb?: ReactNode;
-  /** What can be done from here: create, export, filter buttons. */
+  /** O que da para fazer daqui: botao de criar, exportar, filtrar. */
   actions?: ReactNode;
   /**
-   * Class per part: `row`, `heading`, `title`, `description`, `actions`.
+   * Classe por parte: `row`, `heading`, `title`, `description`, `actions`.
    *
-   * The `actions` box starts as `shrink-0`, so the button is not squeezed by the
-   * title. When what goes there is wide - a search field, a filter
-   * bar -, this is where it gets `min-w-0 shrink`, or it pushes the
-   * whole row out of the page.
+   * A caixa de `actions` nasce `shrink-0`, para o botao nao ser espremido pelo
+   * titulo. Quando o que vai ali e largo - um campo de busca, uma barra de
+   * filtros -, e por aqui que ela ganha `min-w-0 shrink`, senao ela empurra a
+   * linha inteira para fora da pagina.
    */
   classNames?: Slots<"row" | "heading" | "title" | "description" | "actions">;
 };

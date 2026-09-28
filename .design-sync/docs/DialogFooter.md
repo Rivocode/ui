@@ -1,16 +1,15 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # DialogFooter
 
-The dialog's row of actions, aligned to the right.
+A fila de ações do diálogo, alinhada à direita.
 
-The confirming action goes last in the markup, against the edge: it is the one
-the eye finds last on desktop.
+A ação que confirma vai por último na marcação, encostada na borda: é a que o
+olho encontra por último no desktop.
 
-**On a phone the two buttons stack and take the full width**, because the
-panel already sits at the bottom and two actions side by side on a narrow
-screen come out too cramped. In the stack the order flips: the one that
-confirms moves to the top and the one that cancels stays right by the thumb.
-It is the same behavior as `AlertDialogFooter`.
+**No celular os dois botões empilham e ocupam a largura toda**, porque o painel
+já encosta embaixo e duas ações lado a lado numa tela estreita saem apertadas
+demais. Na pilha a ordem se inverte: quem confirma sobe para o alto e quem
+cancela fica rente ao polegar. É o mesmo comportamento do `AlertDialogFooter`.

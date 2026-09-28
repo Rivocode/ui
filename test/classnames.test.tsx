@@ -15,37 +15,36 @@ import { Combobox, ComboboxInput } from "../src/components/combobox";
 import { DataTable, type Column } from "../src/components/data-table";
 
 /*
- * The per-part style hook.
+ * O gancho de estilo por parte.
  *
- * Below the root, each piece was a sealed node: the Progress track, the Slider
- * thumb, the Checkbox indicator, the table row and the dialog backdrop - which
- * is a sibling of the panel inside the portal, so neither className nor a
- * descendant variant reached it. The workaround left was [&_tbody_tr], which
- * couples the consumer's screen to the piece's internal tree: a div that
- * becomes a span inside the library breaks someone's screen with no warning
- * and no error.
+ * Abaixo da raiz, cada peca era no selado: a trilha do Progress, o pino do
+ * Slider, a marca do Checkbox, a linha da tabela e a tarja do dialogo - que e
+ * irma do painel dentro do portal, e por isso nem className nem variante de
+ * descendente alcancavam. O contorno que sobrava era [&_tbody_tr], que acopla
+ * a tela de quem usa a arvore interna da peca: uma div que vira span dentro da
+ * biblioteca quebra a tela de alguem sem aviso e sem erro.
  *
- * The part names are the same as the "Parts" section of each page.
+ * Os nomes das partes sao os mesmos da secao "Partes" de cada pagina.
  *
- * The root is not proven here. This file handles what sits **below** it, which
- * is case by case by nature - each piece has its own parts. The root
- * `className`, which holds for the whole catalog, is swept export by export in
- * `root-class.test.tsx`: the lack of that sweep is what let `ToastViewport`
- * and `SidebarMenuSkeleton` through without accepting `className`.
+ * A raiz nao se prova aqui. Este arquivo cuida do que fica **abaixo** dela, que
+ * e caso a caso por natureza - cada peca tem as suas partes. O `className` da
+ * raiz, que vale para o catalogo inteiro, e varrido export a export em
+ * `classe-da-raiz.test.tsx`: foi a falta dessa varredura que deixou
+ * `ToastViewport` e `SidebarMenuSkeleton` passarem sem aceitar `className`.
  */
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/** The dressed part, checking the class landed on the right node and not on the root. */
+/** A parte vestida, conferindo que a classe caiu no no certo e nao na raiz. */
 function wears(container: HTMLElement, marker: string, base: string) {
   const target = container.ownerDocument.querySelector(`.${marker}`);
   expect(target).not.toBeNull();
   expect(target!.className.split(" ")).toContain(base);
 }
 
-test("the progress bar lets you dress track and indicator", () => {
+test("a barra deixa vestir trilha e indicador", () => {
   const { container } = withTheme(
     <Progress
       value={40}
@@ -58,7 +57,7 @@ test("the progress bar lets you dress track and indicator", () => {
   wears(container, "indicador-x", "bg-accent-text");
 });
 
-test("the meter lets you dress the same parts as the progress bar", () => {
+test("a medida deixa vestir as mesmas partes que a barra", () => {
   const { container } = withTheme(
     <Meter value={62} aria-label="Cota" classNames={{ track: "trilha-y", indicator: "ind-y" }} />,
   );
@@ -67,7 +66,7 @@ test("the meter lets you dress the same parts as the progress bar", () => {
   wears(container, "ind-y", "bg-accent-text");
 });
 
-test("the slider lets you dress track, indicator and thumb", () => {
+test("a faixa deixa vestir trilha, indicador e pino", () => {
   const { container } = withTheme(
     <Slider
       defaultValue={30}
@@ -81,7 +80,7 @@ test("the slider lets you dress track, indicator and thumb", () => {
   wears(container, "pino-z", "rounded-pill");
 });
 
-test("the checkbox lets you dress the square and the label", () => {
+test("a caixa deixa vestir o quadrado e o rotulo", () => {
   const { container } = withTheme(
     <Checkbox classNames={{ box: "caixa-x", label: "rotulo-x" }}>ISS retido</Checkbox>,
   );
@@ -90,7 +89,7 @@ test("the checkbox lets you dress the square and the label", () => {
   wears(container, "rotulo-x", "text-fg");
 });
 
-test("the switch and the radio dress the label through the same classNames.label as the checkbox", () => {
+test("a chave e o circulo vestem o rotulo pelo mesmo classNames.label da caixa", () => {
   const { container } = withTheme(
     <>
       <Switch classNames={{ label: "rotulo-s" }}>Avisar</Switch>
@@ -106,13 +105,13 @@ test("the switch and the radio dress the label through the same classNames.label
   wears(container, "rotulo-r", "text-fg");
 });
 
-test("the switch lets you dress the thumb", () => {
+test("a chave deixa vestir o pino", () => {
   const { container } = withTheme(<Switch aria-label="Avisar" classNames={{ thumb: "pino-s" }} />);
 
   wears(container, "pino-s", "rounded-pill");
 });
 
-test("the radio lets you dress the inner indicator", () => {
+test("o circulo deixa vestir a marca de dentro", () => {
   const { container } = withTheme(
     <RadioGroup defaultValue="pix">
       <Radio value="pix" classNames={{ indicator: "marca-r" }}>
@@ -124,9 +123,9 @@ test("the radio lets you dress the inner indicator", () => {
   wears(container, "marca-r", "rounded-pill");
 });
 
-test("the dialog lets you dress the backdrop, which is a sibling of the panel in the portal", () => {
-  // Level 6: neither className nor [&_x] reach it, because the backdrop is not
-  // inside the panel - both are children of the portal.
+test("o dialogo deixa vestir a tarja, que e irma do painel no portal", () => {
+  // O nivel 6: nem className nem [&_x] alcancam, porque a tarja nao esta
+  // dentro do painel - as duas sao filhas do portal.
   const { container } = withTheme(
     <Dialog open>
       <DialogContent classNames={{ backdrop: "tarja-d" }}>Corpo</DialogContent>
@@ -136,11 +135,11 @@ test("the dialog lets you dress the backdrop, which is a sibling of the panel in
   wears(container, "tarja-d", "bg-overlay");
 });
 
-test("the alert dialog lets you dress the backdrop, as its two siblings already did", () => {
-  // AlertDialogContent only accepted `children`: its backdrop was the only one
-  // of the three unreachable from outside, and it is the piece where people
-  // most want to touch it - the destructive confirmation is where a
-  // `backdrop-blur` or a deeper dark is usually requested.
+test("a confirmacao deixa vestir a tarja, como as duas irmas ja deixavam", () => {
+  // O AlertDialogContent so aceitava `children`: a tarja dele era a unica das
+  // tres inalcancavel de fora, e a peca em que mais se quer mexer nela - a
+  // confirmacao destrutiva e onde um `backdrop-blur` ou um escuro mais fundo
+  // costuma ser pedido.
   const { container } = withTheme(
     <AlertDialog open>
       <AlertDialogContent classNames={{ backdrop: "tarja-a" }}>Corpo</AlertDialogContent>
@@ -150,7 +149,7 @@ test("the alert dialog lets you dress the backdrop, as its two siblings already 
   wears(container, "tarja-a", "bg-overlay");
 });
 
-test("the sheet lets you dress the backdrop too", () => {
+test("a folha lateral deixa vestir a tarja tambem", () => {
   const { container } = withTheme(
     <Sheet open>
       <SheetContent classNames={{ backdrop: "tarja-f" }}>Corpo</SheetContent>
@@ -164,9 +163,9 @@ type Invoice = { id: string; number: string };
 const COLUMNS: Column<Invoice>[] = [{ key: "number", header: "Numero" }];
 const INVOICES: Invoice[] = [{ id: "1", number: "4813" }];
 
-test("the table lets you dress row, cell and header", () => {
-  // Today's workaround is [&_tbody_tr:hover]:bg-accent-subtle, which only works
-  // while the internal tree does not change.
+test("a tabela deixa vestir linha, celula e cabecalho", () => {
+  // O contorno de hoje e [&_tbody_tr:hover]:bg-accent-subtle, que so funciona
+  // enquanto a arvore interna nao mudar.
   const { container } = withTheme(
     <DataTable
       data={INVOICES}
@@ -184,11 +183,11 @@ test("the table lets you dress row, cell and header", () => {
 
 const CUSTOMERS = ["Clinica Sao Lucas"];
 
-test("the search field separates the frame from the input itself", () => {
-  // The ComboboxInput `className` always landed on the frame, and the inner
-  // `<input>` had no target at all - while AutocompleteInput, which the doc
-  // presents as the sibling piece, dresses the input directly. Whoever wrote
-  // both screens with the same class saw one work and the other not.
+test("o campo de busca separa a moldura do proprio input", () => {
+  // O `className` do ComboboxInput sempre caiu na moldura, e o `<input>` de
+  // dentro nao tinha alvo nenhum - enquanto o AutocompleteInput, que a doc
+  // apresenta como a peca irma, veste o input direto. Quem escrevia as duas
+  // telas com a mesma classe via uma funcionar e a outra nao.
   const { container } = withTheme(
     <Combobox items={CUSTOMERS}>
       <ComboboxInput
@@ -202,12 +201,12 @@ test("the search field separates the frame from the input itself", () => {
   wears(container, "moldura-c", "relative");
   wears(container, "campo-c", "h-[var(--rc-control-md)]");
   expect(container.ownerDocument.querySelector(".campo-c")!.tagName).toBe("INPUT");
-  // The old contract still stands: `className` dresses the root, which here is
-  // the frame, and not the input.
+  // O contrato antigo continua de pe: `className` veste a raiz, que aqui e a
+  // moldura, e nao o input.
   expect(container.ownerDocument.querySelector("input")!.className).not.toContain("moldura-c");
 });
 
-test("the frame has its own name, besides the root className", () => {
+test("a moldura tem nome proprio, alem do className da raiz", () => {
   const { container } = withTheme(
     <Combobox items={CUSTOMERS}>
       <ComboboxInput placeholder="Buscar cliente" classNames={{ wrapper: "moldura-w" }} />

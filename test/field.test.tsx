@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 
 import { Field, FieldDescription, FieldError, FieldLabel, Input } from "../src/components/field";
 
-test("the label is tied to the control, so a query by label finds the field", () => {
+test("o rotulo fica ligado ao controle, entao a busca por rotulo acha o campo", () => {
   render(
     <Field name="email">
       <FieldLabel>Email</FieldLabel>
@@ -13,7 +13,7 @@ test("the label is tied to the control, so a query by label finds the field", ()
   expect(screen.getByLabelText("Email").tagName).toBe("INPUT");
 });
 
-test("the description goes with the field for the screen reader", () => {
+test("a descricao acompanha o campo para o leitor de tela", () => {
   render(
     <Field name="cnpj">
       <FieldLabel>CNPJ</FieldLabel>
@@ -22,14 +22,14 @@ test("the description goes with the field for the screen reader", () => {
     </Field>,
   );
   const field = screen.getByLabelText("CNPJ");
-  const describedBy = field.getAttribute("aria-describedby");
-  expect(describedBy).toBeTruthy();
-  expect(document.getElementById(describedBy!.split(" ")[0]!)?.textContent).toContain(
+  const descrito = field.getAttribute("aria-describedby");
+  expect(descrito).toBeTruthy();
+  expect(document.getElementById(descrito!.split(" ")[0]!)?.textContent).toContain(
     "Somente numeros",
   );
 });
 
-test("an invalid field announces the error and shows the message", () => {
+test("campo invalido anuncia o erro e mostra a mensagem", () => {
   render(
     <Field name="email" invalid>
       <FieldLabel>Email</FieldLabel>
@@ -41,7 +41,7 @@ test("an invalid field announces the error and shows the message", () => {
   expect(screen.getByText("Email obrigatorio")).toBeDefined();
 });
 
-test("the error message uses the danger token", () => {
+test("a mensagem de erro usa o token de perigo", () => {
   render(
     <Field name="email" invalid>
       <FieldLabel>Email</FieldLabel>
@@ -52,7 +52,7 @@ test("the error message uses the danger token", () => {
   expect(screen.getByText("Email obrigatorio").className.split(" ")).toContain("text-danger-text");
 });
 
-test("the field height comes from the density token", () => {
+test("a altura do campo vem do token de densidade", () => {
   render(
     <Field name="x">
       <FieldLabel>X</FieldLabel>
@@ -62,7 +62,7 @@ test("the field height comes from the density token", () => {
   expect(screen.getByLabelText("X").className).toContain("--rc-control-sm");
 });
 
-test("the field has a declared focus ring, because the keyboard is not optional", () => {
+test("o campo tem anel de foco declarado, porque teclado nao e opcional", () => {
   render(
     <Field name="x">
       <FieldLabel>X</FieldLabel>

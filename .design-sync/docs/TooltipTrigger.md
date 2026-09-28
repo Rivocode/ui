@@ -1,10 +1,10 @@
 ---
-category: Overlays
+category: Sobreposição
 ---
 
 # TooltipTrigger
 
-What shows the tooltip on receiving focus or the pointer.
+O que mostra a dica ao receber foco ou o ponteiro.
 
-It wraps the element through `render`. **A tooltip does not replace a label**:
-on the phone there is no hover, and whoever navigates by touch never sees it.
+Envolve o elemento por `render`. **Dica não substitui rótulo**: no celular não
+existe hover, e quem navega por toque nunca a vê.

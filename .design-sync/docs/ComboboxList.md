@@ -1,7 +1,7 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # ComboboxList
 
-The list. It takes a function that draws each item, not loose children: that is how Base UI filters without redrawing everything.
+A lista. Recebe uma funcao que desenha cada item, e não filhos soltos: é assim que a Base UI filtra sem redesenhar tudo.

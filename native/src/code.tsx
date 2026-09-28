@@ -4,15 +4,17 @@ import { cn } from "./cn";
 import { Text } from "./text";
 
 export type CodeProps = Omit<TextProps, "children" | "className" | "selectable"> & {
-  /** The raw snippet: `app.json`, `--frozen-lockfile`, `emitida_em`. */
+  /** O trecho, cru: `app.json`, `--frozen-lockfile`, `emitida_em`. */
   children: string;
   /**
-   * A long press selects and the system offers to copy. On, because it is the
-   * native gesture for what exists to be copied, and because on a phone there
-   * is no way to drag the cursor over half a sentence. One platform caveat: on
-   * Android the whole text block is what gets selected, and a `Code` inside a
-   * larger `Text` is a piece of it. There, `selectable` must be on the outer
-   * `Text`, and the long press selects the whole sentence.
+   * O toque longo seleciona e o sistema oferece copiar. Ligado, porque é o
+   * gesto nativo para o que existe para ser copiado, e porque no celular
+   * não há como arrastar o cursor sobre meia frase.
+   *
+   * Uma ressalva de plataforma: no Android quem seleciona é o bloco de texto
+   * inteiro, e um `Code` dentro de um `Text` maior é um pedaço dele. Ali o
+   * `selectable` precisa estar no `Text` de fora, e o toque longo seleciona a
+   * frase toda.
    */
   selectable?: boolean;
   className?: string;

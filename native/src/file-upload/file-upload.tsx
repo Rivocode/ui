@@ -8,14 +8,13 @@ import { Entrance } from "../motion";
 import { Text } from "../text";
 
 export type PickedFile = {
-  /** The file's local address. It is what the app uses to upload the content. */
+  /** O endereço local do arquivo. É com ele que o app sobe o conteúdo. */
   uri: string;
-  /** The original name, as it was on the device. */
+  /** O nome de origem, como estava no aparelho. */
   name: string;
   /**
-   * In bytes. **It may be missing**: not every Android file provider reports
-   * the size, and that is why `maxSize` only rejects what it managed to
-   * measure.
+   * Em bytes. **Pode faltar**: nem todo provedor de arquivo do Android
+   * informa o tamanho, e por isso `maxSize` só recusa o que conseguiu medir.
    */
   size?: number;
   mimeType?: string;
@@ -23,7 +22,7 @@ export type PickedFile = {
 
 export type Rejection = {
   file: PickedFile;
-  /** Ready for a notice: "maior que 5 MB", "tipo não aceito". */
+  /** Pronto para um aviso: "maior que 5 MB", "tipo não aceito". */
   reason: string;
 };
 
@@ -55,33 +54,31 @@ function matchesAccept(file: PickedFile, tokens: string[]) {
 }
 
 export type FileUploadProps = {
-  /** What the button says: "Escolher o XML da nota". */
+  /** O que o botão diz: "Escolher o XML da nota". */
   label: string;
-  /** The fine print: formats and limit, so the person does not find out on rejection. */
+  /** A letra miúda: formatos e limite, para a pessoa não descobrir na recusa. */
   hint?: string;
   /**
-   * The accepted types. **Only MIME reaches the system picker**
-   * (`application/pdf`, `text/xml`, `image/*`), because that is what
-   * `expo-document-picker` can filter. A dotted extension (`.xml`) still
-   * applies in the validation on the way back, against the file name, but does
-   * not go to the dialog: sending it there would filter everything and the
-   * picker would open empty.
+   * Os tipos aceitos. **Só MIME chega ao seletor do sistema**
+   * (`application/pdf`, `text/xml`, `image/*`), porque é o que o
+   * `expo-document-picker` sabe filtrar. Extensão com ponto (`.xml`) continua
+   * valendo na validação de volta, contra o nome do arquivo, mas não vai para
+   * o diálogo: mandá-la para lá filtraria tudo e o seletor abriria vazio.
    */
   accept?: string | string[];
   multiple?: boolean;
-  /** In bytes. A larger file does not get in: it becomes a rejection with the reason. */
+  /** Em bytes. Arquivo maior não entra: vira recusa com o motivo. */
   maxSize?: number;
   disabled?: boolean;
-  /** The ones that passed validation. Uploading is the app's job, since it knows the network. */
+  /** Os que passaram na validação. Subir é trabalho do app, que conhece a rede. */
   onSelect?: (files: PickedFile[]) => void;
-  /** The ones that did not pass, each with a readable reason. */
+  /** Os que não passaram, cada um com o motivo legível. */
   onReject?: (rejections: Rejection[]) => void;
   className?: string;
   /**
-   * The rejection reasons, to change the language: `invalidType` is the one for
-   * a type outside `accept`, and `tooLarge` receives the limit already written
-   * ("5 MB") and returns the one for a file that is too large. Pass only the
-   * ones that change.
+   * Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora
+   * do `accept`, e `tooLarge` recebe o limite ja escrito ("5 MB") e devolve o
+   * do arquivo grande demais. Passe so os que mudam.
    */
   labels?: Partial<FileUploadLabels>;
 };
@@ -209,20 +206,21 @@ export function FileUploadList({ children, className }: FileUploadListProps) {
 
 export type FileUploadItemProps = {
   name: string;
-  /** In bytes. The formatting ("48,2 KB") is the component's. */
+  /** Em bytes. A formatação ("48,2 KB") é da peça. */
   size: number;
-  /** 0 to 100 becomes a bar. Omitted, the file is ready. */
+  /** 0 a 100 vira barra. Omitido, o arquivo está pronto. */
   progress?: number;
-  /** Wins over progress: shows the text and offers a retry. */
+  /** Vence o progresso: mostra o texto e oferece nova tentativa. */
   error?: string;
   onRetry?: () => void;
   onRemove: () => void;
   className?: string;
   /**
-   * The row's texts, to change the language: `retry` is the retry button, and
-   * `remove` and `uploading` receive the file name and return the name of the
-   * remove button and of the progress bar. `retryFile` is the name the screen
-   * reader hears on the retry button. Pass only the ones that change.
+   * Os textos da linha, para trocar o idioma: `retry` e o botao de nova
+   * tentativa, e `remove` e `uploading` recebem o nome do arquivo e devolvem o
+   * nome do botao de remover e o da barra de progresso. `retryFile` e o
+   * nome que o leitor de tela ouve no botao de nova tentativa. Passe so os
+   * que mudam.
    */
   labels?: Partial<FileUploadItemLabels>;
 };

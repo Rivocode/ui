@@ -17,6 +17,6 @@ const server = createServer(content, { version: manifest.version });
 await server.connect(new StdioServerTransport());
 
 console.error(
-  `@rivocode/ui-mcp ${manifest.version} on stdio, with the documentation of @rivocode/ui ` +
-    `${content.generatedFrom.web} and @rivocode/ui-native ${content.generatedFrom.native}.`,
+  `@rivocode/ui-mcp ${manifest.version} no stdio, com a documentação de @rivocode/ui ` +
+    `${content.generatedFrom.web} e @rivocode/ui-native ${content.generatedFrom.native}.`,
 );

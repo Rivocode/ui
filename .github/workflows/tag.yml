@@ -1,74 +1,72 @@
 name: tag
 
-# Creates the tag when a manifest's version changes on `main`, and calls the release.
+# Cria a tag quando a versao de um manifesto muda na `main`, e chama o release.
 #
-# Before this, the tag was a person's action. The owner decided to automate it,
-# aware of what was being traded: it was the human finger on `git tag` that
-# guaranteed a merge of half-done work would publish nothing. The four guards
-# below exist to give that guarantee back by machine - especially the CHANGELOG
-# one, which is what separates "the version went up" from "the version is ready".
+# Antes disso a tag era acao de uma pessoa. O dono decidiu automatizar, ciente
+# do que estava trocando: era o dedo humano no `git tag` que garantia que merge
+# de trabalho pela metade nao publicasse nada. As quatro guardas abaixo existem
+# para devolver essa garantia por maquina - em especial a do CHANGELOG, que e a
+# que separa "a versao subiu" de "a versao esta pronta".
 #
-# The trigger is the `ci` `workflow_run`, and not `push`. The difference
-# matters: this way no tag is born before the whole gate has passed over that
-# commit. An `on: push` would run in parallel with `ci` and could tag code the
-# gate is still going to reject - and an npm publication cannot be undone.
+# O gatilho e o `workflow_run` do `ci`, e nao o `push`. A diferenca importa:
+# assim nenhuma tag nasce antes de o gate inteiro ter passado sobre aquele
+# commit. Um `on: push` correria em paralelo com o `ci` e poderia tagear codigo
+# que o gate ainda vai reprovar - e publicacao no npm nao se desfaz.
 on:
   workflow_run:
     workflows: [ci]
     types: [completed]
     branches: [main]
-  # The dry run, for the same reason as the release workflows: this path only
-  # really runs on a release day, and there is no way to exercise it without
-  # spending a version. With the box checked, everything runs the same -
-  # decision, guards and summary - and the tag is NOT born.
+  # O ensaio, pelo mesmo motivo dos workflows de release: este caminho so
+  # roda de verdade num dia de release, e nao da para exercita-lo sem gastar
+  # uma versao. Com a caixa marcada, tudo roda igual - decisao, guardas e
+  # resumo - e a tag NAO nasce.
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: "Dry run: decides and reports, and creates NO tag"
+      ensaio:
+        description: "Ensaio: decide e relata, e NAO cria tag nenhuma"
         type: boolean
         default: true
 
 jobs:
-  decide:
-    # `workflow_run` fires on any conclusion, including `failure` and
-    # `cancelled`. Without this line, a red gate would become a tag.
+  decidir:
+    # `workflow_run` dispara em qualquer conclusao, inclusive `failure` e
+    # `cancelled`. Sem esta linha, um gate vermelho viraria uma tag.
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     runs-on: ubuntu-latest
 
     permissions:
-      # Create and push the tag.
+      # Criar e empurrar a tag.
       contents: write
-      # Call the release through `workflow_dispatch`. Without this, `gh workflow
-      # run` returns 403, and the tag would stay in the history pointing to a
-      # version that never went up - exactly the state the release workflows
-      # spend a whole step to avoid.
+      # Chamar o release por `workflow_dispatch`. Sem isto o `gh workflow run`
+      # devolve 403, e a tag ficaria no historico apontando para uma versao que
+      # nunca subiu - exatamente o estado que os workflows de release gastam
+      # um passo inteiro para evitar.
       actions: write
 
     strategy:
-      # One package does not decide for another: they move at different
-      # speeds, and a stalled web package must not silence native or mcp.
+      # Um pacote nao decide pelo outro: eles andam em velocidades diferentes,
+      # e o web parado nao pode calar o nativo nem o mcp.
       fail-fast: false
-      # In series, not in parallel: the three legs push tags to the same
-      # `origin`, and two ref updates at once yield nothing but a race to
-      # debug later.
+      # Em serie, e nao em paralelo: as tres pernas empurram tag para o mesmo
+      # `origin`, e duas atualizacoes de ref ao mesmo tempo nao rendem nada
+      # alem de uma corrida para depurar depois.
       max-parallel: 1
       matrix:
-        # Each package's table - manifest, prefix, CHANGELOG and workflow -
-        # lives in `TARGETS`, inside `scripts/release-decision.ts`, so it does
-        # not exist in two places. Only the key stays here.
+        # A tabela de cada pacote - manifesto, prefixo, CHANGELOG e workflow -
+        # mora em `TARGETS`, dentro de `scripts/decisao-de-release.ts`, para
+        # nao existir em dois lugares. Aqui fica so a chave.
         package: [web, native, mcp]
 
     steps:
-      # The commit `ci` approved, and not the tip of `main` right now. In a
-      # `workflow_run`, `GITHUB_SHA` points to the tip of the default branch,
-      # which may have moved already: tagging it would be tagging code nobody
-      # measured.
+      # O commit que o `ci` aprovou, e nao o topo da `main` de agora. Num
+      # `workflow_run` o `GITHUB_SHA` aponta para o topo do branch padrao, que
+      # pode ja ter andado: tagear ele seria tagear codigo que ninguem mediu.
       #
-      # `fetch-depth: 0` brings the history and the tags. The tags are also
-      # read from `origin` through `git ls-remote`, which is the authoritative
-      # answer, but a shallow clone would leave `git tag --list` empty and the
-      # local read would lie.
+      # `fetch-depth: 0` traz o historico e as tags. As tags tambem sao lidas
+      # do `origin` por `git ls-remote`, que e a resposta autoritativa, mas o
+      # clone raso deixaria `git tag --list` vazio e a leitura local mentiria.
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
@@ -78,102 +76,101 @@ jobs:
         with:
           bun-version: latest
 
-      # Node is here only for `npm view`: it answers whether the number is
-      # already in the registry, and that is the only one of the four guards
-      # that needs the network.
+      # O Node entra so pelo `npm view`: e ele quem responde se o numero ja
+      # esta no registro, e essa e a unica das quatro guardas que precisa de
+      # rede.
       #
-      # No `registry-url` on purpose, as in the releases. It is what writes the
-      # `.npmrc` that expects `NODE_AUTH_TOKEN`, and querying the registry
-      # needs no credential: without the file, there is no empty token for npm
-      # to read and complain about authentication instead of answering the
-      # question. This workflow publishes nothing, so it does not see the secret.
+      # Sem `registry-url` de proposito, como nos releases. Ele e
+      # que escreve o `.npmrc` que espera `NODE_AUTH_TOKEN`, e consultar o
+      # registro nao precisa de credencial: sem o arquivo, nao ha token vazio
+      # para o npm ler e reclamar de autenticacao em vez de responder a
+      # pergunta. Este workflow nao publica nada, entao nao ve o segredo.
       - uses: actions/setup-node@v7
         with:
           node-version: 22
 
-      # The decision lives in a pure function, not here: `decideRelease`
-      # receives the version, the existing tags, the registry versions, the
-      # CHANGELOG text and the commit message, and returns the verdict with the
-      # reason. `test/release-decision.test.ts` covers the four reasons to block
-      # and the happy path, for the three packages - which could not be proven
-      # if the decision were a shell `if` written in this file.
+      # A decisao mora numa funcao pura, e nao aqui: `decideRelease` recebe a
+      # versao, as tags que existem, as versoes do registro, o texto do
+      # CHANGELOG e a mensagem do commit, e devolve o veredito com o motivo.
+      # `test/decisao-de-release.test.ts` cobre os quatro motivos de barrar e o
+      # caminho feliz, nos tres pacotes - o que nao daria para provar se a
+      # decisao fosse um `if` de shell escrito neste arquivo.
       #
-      # This step does NOT fail when a guard blocks. A guard that turns CI red
-      # on every push that is not a release gets turned off in the second week,
-      # and then the release it protected stops being protected. It reports in
-      # the run summary and moves on.
+      # Este passo NAO falha quando uma guarda barra. Guarda que deixa a CI
+      # vermelha em todo push que nao e release e desligada na segunda semana,
+      # e ai o release que ela protegia deixa de ser protegido. Ela relata no
+      # resumo da execucao e segue.
       #
-      # No `bun install` before it: the script imports nothing from
-      # `node_modules`, and installing the whole tree to read two manifests
-      # would cost more than everything this workflow does.
-      - name: Decide
-        id: decide
-        run: bun run scripts/release-decision.ts ${{ matrix.package }}
+      # Sem `bun install` antes: o script nao importa nada do `node_modules`, e
+      # instalar a arvore inteira para ler dois manifestos custaria mais que
+      # tudo o que este workflow faz.
+      - name: Decidir
+        id: decidir
+        run: bun run scripts/decisao-de-release.ts ${{ matrix.package }}
 
-      # The tag points to the commit `ci` approved, which is what is at HEAD
-      # after the checkout above.
-      - name: Create the tag
-        if: ${{ steps.decide.outputs.release == 'true' && inputs.dry_run != true }}
+      # A tag aponta para o commit que o `ci` aprovou, que e o que esta
+      # em HEAD depois do checkout acima.
+      - name: Criar a tag
+        if: ${{ steps.decidir.outputs.release == 'true' && inputs.ensaio != true }}
         env:
-          TAG: ${{ steps.decide.outputs.tag }}
+          TAG: ${{ steps.decidir.outputs.tag }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" -m "$TAG"
           git push origin "$TAG"
 
-      # The trap that decides the design of this file.
+      # A armadilha que decide o desenho deste arquivo.
       #
-      # A tag pushed with the default `GITHUB_TOKEN` does NOT fire
-      # `on: push: tags`. GitHub blocks it on purpose, to avoid recursion:
-      # "events triggered by the GITHUB_TOKEN will not create a new workflow
-      # run". If this workflow only created the tag, `release.yml` would never
-      # wake up, and all that would be left is a tag in the history with no
-      # version on npm.
+      # Tag empurrada com o `GITHUB_TOKEN` padrao NAO dispara `on: push: tags`.
+      # O GitHub bloqueia de proposito, para evitar recursao: "events triggered
+      # by the GITHUB_TOKEN will not create a new workflow run". Se este
+      # workflow apenas criasse a tag, o `release.yml` nunca acordaria, e a
+      # unica coisa que sobraria seria uma tag no historico sem versao no npm.
       #
-      # `workflow_dispatch` is one of the exceptions written into that same
-      # rule - it fires even when coming from the `GITHUB_TOKEN`. That is why
-      # the call is explicit, and why the job asks for `actions: write`. The
-      # three releases accept the `tag` field, and it is what ties the
-      # publication to the freshly created tag instead of the tip of `main`.
+      # `workflow_dispatch` e uma das excecoes escritas nessa mesma regra - ele
+      # dispara mesmo vindo do `GITHUB_TOKEN`. Por isso a chamada e explicita, e
+      # por isso o job pede `actions: write`. Os tres releases aceitam o
+      # campo `tag`, e e ele que amarra a publicacao a tag recem-criada em vez
+      # de ao topo da `main`.
       #
-      # `--ref` points to the tag so that the version of the workflow that runs
-      # is the one the tag froze. The tag just went up, and `gh` sometimes
-      # arrives before the ref is visible to the API: hence the attempts.
-      - name: Call the release
-        if: ${{ steps.decide.outputs.release == 'true' && inputs.dry_run != true }}
+      # `--ref` aponta para a tag para que a versao do workflow que roda seja a
+      # que a tag congelou. A tag acabou de subir, e o `gh` as vezes chega
+      # antes de a referencia estar visivel para a API: por isso as tentativas.
+      - name: Chamar o release
+        if: ${{ steps.decidir.outputs.release == 'true' && inputs.ensaio != true }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.decide.outputs.tag }}
-          WORKFLOW: ${{ steps.decide.outputs.workflow }}
+          TAG: ${{ steps.decidir.outputs.tag }}
+          WORKFLOW: ${{ steps.decidir.outputs.workflow }}
         run: |
           for attempt in 1 2 3; do
             if gh workflow run "$WORKFLOW" --ref "$TAG" --field tag="$TAG"; then
-              echo "$WORKFLOW was called for $TAG."
+              echo "O $WORKFLOW foi chamado para $TAG."
               exit 0
             fi
-            echo "Attempt $attempt failed; the tag may not be visible yet."
+            echo "Tentativa $attempt falhou; a tag pode nao estar visivel ainda."
             sleep 5
           done
 
-          echo "::error::Tag $TAG went up and $WORKFLOW did not answer."
-          echo "The tag exists and the version was NOT published. Call the release by hand:"
+          echo "::error::A tag $TAG subiu e o $WORKFLOW nao atendeu."
+          echo "A tag existe e a versao NAO foi publicada. Chame o release a mao:"
           echo "  gh workflow run $WORKFLOW --ref $TAG --field tag=$TAG"
           exit 1
 
-      # A green dry run looks like a green publication. The note goes to the
-      # run summary, which is the first thing the page shows, next to what the
-      # decision wrote there.
-      - name: Say it was a dry run
-        if: ${{ inputs.dry_run == true }}
+      # Um ensaio verde parece uma publicacao verde. O recado vai para o resumo
+      # da execucao, que e a primeira coisa que a pagina mostra, ao lado do que
+      # a decisao escreveu la.
+      - name: Dizer que foi ensaio
+        if: ${{ inputs.ensaio == true }}
         env:
-          TAG: ${{ steps.decide.outputs.tag }}
-          VERDICT: ${{ steps.decide.outputs.verdict }}
+          TAG: ${{ steps.decidir.outputs.tag }}
+          VERDICT: ${{ steps.decidir.outputs.verdict }}
         run: |
           {
-            echo "Dry run - NO tag was created and nothing was published."
+            echo "Ensaio - NENHUMA tag foi criada e nada foi publicado."
             echo
-            echo "The decision above ran in full over the current tree, with the"
-            echo "four guards really measured. The verdict was \`$VERDICT\`,"
-            echo "and the tag in question would be \`$TAG\`."
+            echo "A decisao acima rodou inteira sobre a arvore de agora, com as"
+            echo "quatro guardas medidas de verdade. O veredito foi \`$VERDICT\`,"
+            echo "e a tag em questao seria \`$TAG\`."
           } | tee -a "$GITHUB_STEP_SUMMARY"

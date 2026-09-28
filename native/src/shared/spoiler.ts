@@ -1,4 +1,4 @@
-/* Generated from src/shared/spoiler.ts by bun run gen:shared. Do not edit. */
+/* Gerado de src/shared/spoiler.ts por bun run gen:compartilhado. Nao editar. */
 
 export const SPOILER_MORE = "Ler mais";
 

@@ -1,55 +1,55 @@
 import { useEffect, useRef, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * On this page
+ * Nesta pagina
  *
- * The right-hand column. It reads the headings of the already-drawn page
- * instead of receiving a ready list, because half of what a piece page shows
- * arrives late: the examples load on demand, and the parts section is built
- * from the catalog. A list written in advance would miss exactly those.
+ * A coluna da direita. Ela le os titulos da pagina ja desenhada em vez de
+ * receber uma lista pronta, porque metade do que uma pagina de peca mostra
+ * chega atrasada: os exemplos carregam sob demanda, e a secao de partes e
+ * montada a partir do catalogo. Uma lista escrita de antemao ficaria sem
+ * exatamente esses.
  *
- * The column does not scroll inside, and does not leave the screen. These are
- * the two sides of one defect, and each was seen alone before: pinned to the
- * top at the window's height, it got its own scrollbar and a long table of
- * contents appeared cut at both ends; loose, it vanishes as soon as the
- * reading goes down, and the Icons page - three lines - stopped saying where
- * the person was.
+ * A coluna nao rola por dentro, e nao sai da tela. Sao os dois lados de um
+ * mesmo defeito, e cada um foi visto sozinho antes: presa no topo com a
+ * altura da janela, ela ganhava barra propria e um indice longo aparecia
+ * cortado nas duas pontas; solta, ela some assim que a leitura desce, e a
+ * pagina de Icones - tres linhas - deixava de dizer onde a pessoa estava.
  *
- * What holds both is the list height, measured in `useRail`. If it fits on
- * screen, it stays still. If it does not, it slides along with the page:
- * going down it reaches the end of the list, going up it returns to the
- * start. There is only one scroll, and it is the page's.
+ * O que sustenta os dois e a altura da lista, medida em `useRail`. Cabendo na
+ * tela, ela fica imovel. Nao cabendo, desliza junto com a pagina: descendo
+ * chega ao fim da lista, subindo volta ao comeco. Rolagem so existe uma, e e
+ * a da pagina.
  * ------------------------------------------------------------------------- */
 
 /**
- * The page on which the person last scrolled on their own.
+ * A pagina em que a pessoa mexeu na rolagem por conta propria pela ultima vez.
  *
- * Module scope, because this has to be listening before the component mounts:
- * the realignment further down happens in the first moments, and a scroll in
- * that window has to win.
+ * Escopo de modulo, porque isto precisa estar escutando antes de o componente
+ * montar: o realinhamento la embaixo acontece nos primeiros instantes, e uma
+ * rolagem nessa janela tem que ganhar.
  *
- * It keeps the address, not the moment. Comparing timestamps seemed enough
- * and was not: a scroll that happens before this module loads carries a mark
- * older than the mount, and passed as "nobody touched it". The address
- * answers the question that matters, which is whether it happened on THIS
- * page, and still lets a new navigation start clean.
+ * Ele guarda o endereco, e nao o momento. Comparar carimbo de tempo parecia
+ * bastar e nao bastava: uma rolagem que acontece antes de este modulo carregar
+ * leva uma marca mais velha que a montagem, e passava por "ninguem mexeu". O
+ * endereco responde a pergunta que importa, que e se aquilo aconteceu NESTA
+ * pagina, e ainda deixa uma navegacao nova comecar limpa.
  *
- * `wheel`, touch and keyboard are the reader's intent. The `scroll` event is
- * not: it also fires for the scrolling we cause ourselves.
+ * `wheel`, toque e teclado sao a intencao de quem le. O evento `scroll` nao e:
+ * ele dispara tambem para a rolagem que nos mesmos causamos.
  */
 let readerMovedOn: string | null = null
 if (typeof window !== 'undefined') {
   const mark = () => {
     readerMovedOn = window.location.pathname
   }
-  for (const event of ['wheel', 'touchstart', 'keydown'] as const) {
-    window.addEventListener(event, mark, { passive: true })
+  for (const evento of ['wheel', 'touchstart', 'keydown'] as const) {
+    window.addEventListener(evento, mark, { passive: true })
   }
 }
 
 type Item = { id: string; text: string; level: number }
 
-/** Waits for the page's async parts before reading its shape. */
+/** Espera as partes assincronas da pagina antes de ler a forma dela. */
 function useHeadings(watch: string) {
   const [items, setItems] = useState<Item[]>([])
 
@@ -58,14 +58,14 @@ function useHeadings(watch: string) {
     if (!main) return
 
     /*
-     * The examples mount after their module resolves, and the page grows
-     * under the anchor: the browser already scrolled to where the `#` pointed
-     * before the content arrived, so whoever opened `#api` lands in a section
-     * they did not ask for.
+     * Os exemplos montam depois que o modulo deles resolve, e a pagina cresce
+     * por baixo da ancora: o navegador ja rolou ate onde o `#` apontava antes
+     * de o conteudo chegar, entao quem abriu `#api` cai numa secao que nao
+     * pediu.
      *
-     * They arrive in waves, and each wave pushes the anchor further down, so
-     * we wait for the changes to go quiet and correct once. Realigning on
-     * every wave also works, but the page jumps several times on the way.
+     * Eles chegam em ondas, e cada onda empurra a ancora mais para baixo, entao
+     * esperamos as mudancas silenciarem e corrigimos uma vez so. Realinhar a
+     * cada onda tambem funciona, mas a pagina pula varias vezes no caminho.
      */
     let pending: ReturnType<typeof setTimeout> | undefined
 
@@ -73,16 +73,16 @@ function useHeadings(watch: string) {
       if (!window.location.hash) return
       clearTimeout(pending)
       pending = setTimeout(() => {
-        // The check lives in here, not at scheduling time: what matters is
-        // whether the person scrolled up to the moment we scroll, not up to
-        // the moment we queued.
+        // A conferencia mora aqui dentro, e nao na hora de agendar: o que
+        // importa e se a pessoa mexeu ate o instante em que rolamos, e nao ate
+        // o instante em que enfileiramos.
         if (readerMovedOn === window.location.pathname) return
         const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
-        // `instant` on purpose. The stylesheet sets `scroll-behavior: smooth`
-        // for everyone, which turned this correction into half a second of
-        // animation: whoever scrolled during it watched the page crawl back,
-        // as if arguing. This is not navigation, it is a position fix, and a
-        // fix you can watch happening reads as a defect.
+        // `instant` de proposito. A folha poe `scroll-behavior: smooth` para
+        // todo mundo, o que transformava esta correcao em meio segundo de
+        // animacao: quem rolava durante ela via a pagina rastejando de volta,
+        // como se discutisse. Isto nao e navegacao, e conserto de posicao, e
+        // conserto que da para ver acontecendo le como defeito.
         target?.scrollIntoView({ behavior: 'instant' })
       }, 200)
     }
@@ -105,8 +105,8 @@ function useHeadings(watch: string) {
 
     read()
 
-    // The examples mount after their module resolves, and each one adds a
-    // heading.
+    // Os exemplos montam depois que o modulo deles resolve, e cada um soma um
+    // titulo.
     const observer = new MutationObserver(read)
     observer.observe(main, { childList: true, subtree: true })
 
@@ -119,7 +119,7 @@ function useHeadings(watch: string) {
   return items
 }
 
-/** Which heading the person is at, by the last one still above the fold. */
+/** Em que titulo a pessoa esta, pelo ultimo que ainda ficou acima da dobra. */
 function useActive(items: Item[]) {
   const [active, setActive] = useState<string | null>(null)
 
@@ -128,16 +128,16 @@ function useActive(items: Item[]) {
 
     const onScroll = () => {
       /*
-       * At the end the scroll has run out, so the last headings never reach
-       * the 96px line and tracking by position stops telling them apart.
+       * No fim a rolagem acabou, entao os ultimos titulos nunca alcancam a
+       * linha dos 96px e acompanhar por posicao para de distinguir um do outro.
        *
-       * Marking the first one still visible fixed the jump to an anchor near
-       * the end, and broke on the short page: with every heading on screen the
-       * first always won, and asking for `#api` lit up "The search".
+       * Marcar o primeiro ainda visivel resolvia o salto para uma ancora perto
+       * do fim, e quebrava na pagina curta: com todos os titulos na tela o
+       * primeiro ganhava sempre, e pedir `#api` acendia "A busca".
        *
-       * Down there the anchor the person asked for decides, as long as it is
-       * in view. With no anchor, or one left behind, the last heading wins,
-       * which is where the page actually ended.
+       * La embaixo quem decide e a ancora que a pessoa pediu, desde que ela
+       * esteja a vista. Sem ancora, ou com uma que ficou para tras, ganha o
+       * ultimo titulo, que e onde a pagina de fato terminou.
        */
       const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
 
@@ -160,8 +160,8 @@ function useActive(items: Item[]) {
       for (const item of items) {
         const node = document.getElementById(item.id)
         if (!node) continue
-        // 96px below the top: the sticky header covers the first 56, and a
-        // heading touching it does not yet read as "where I am".
+        // 96px abaixo do topo: o cabecalho grudado cobre os primeiros 56, e um
+        // titulo encostado nele ainda nao le como "onde eu estou".
         if (node.getBoundingClientRect().top <= 96) current = item.id
       }
 
@@ -170,9 +170,8 @@ function useActive(items: Item[]) {
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    // Already at the end of the page, clicking a table of contents item does
-    // not scroll anything, so the scroll event never comes and the mark would
-    // stay where it was.
+    // Ja no fim da pagina, clicar num item do indice nao rola nada, entao o
+    // evento de rolagem nunca vem e a marca ficaria onde estava.
     window.addEventListener('hashchange', onScroll)
 
     return () => {
@@ -184,73 +183,72 @@ function useActive(items: Item[]) {
   return active
 }
 
-/** The height of the sticky header, which is where the table of contents may rest. */
-const TOP = 56
+/** A altura do cabecalho grudado, que e onde o indice pode encostar. */
+const TOPO = 56
 
 /**
- * Keeps the table of contents in view without giving it its own scroll.
+ * Mantem o indice a vista sem dar rolagem propria a ele.
  *
- * `position: sticky` alone solves the short list and abandons the long one:
- * it sticks at the top, and whatever goes past the window height stays below
- * the fold, out of reach forever. Giving it `overflow` would be a second
- * scroll inside the first, which is exactly what we do not want.
+ * `position: sticky` sozinho resolve a lista curta e abandona a longa: ela
+ * gruda pelo topo, e o que passa da altura da janela fica embaixo da dobra,
+ * fora de alcance para sempre. Dar `overflow` a ela seria uma segunda rolagem
+ * dentro da primeira, que e justamente o que nao se quer.
  *
- * So the list stays sticky and moves on top of that, in PROPORTION to what
- * has been read: at the start of the text it shows its start, at the end its
- * end, and in the middle its middle. That way the marked row always falls
- * inside the window, which is the only thing the table of contents needs to
- * guarantee.
+ * Entao a lista continua grudada e anda por cima disso, na PROPORCAO do que
+ * ja se leu: no comeco do texto ela mostra o comeco dela, no fim mostra o fim,
+ * e no meio o meio. Assim a linha marcada cai sempre dentro da janela, que e a
+ * unica coisa que o indice precisa garantir.
  *
- * The first version added up how far the wheel had turned, and that seemed
- * the same thing - it is not. The overflow is usually around 140px on a
- * ten-thousand-pixel article: the first two gestures used up the whole
- * travel, the list stopped at its end, and the rest of the reading happened
- * with the first rows - the only ones that mattered there - off screen.
- * Twenty-one of the hundred and twenty scroll positions had the marked row
- * invisible, and they were the first twenty-one.
+ * A primeira versao somava o quanto a roda tinha girado, e isso parecia a
+ * mesma coisa - nao e. O excedente costuma ser de uns 140px num artigo de dez
+ * mil: os primeiros dois gestos gastavam o curso inteiro, a lista parava no
+ * fim dela, e o resto da leitura acontecia com as linhas do comeco - as unicas
+ * que interessavam ali - fora da tela. Vinte e uma das cento e vinte posicoes
+ * de rolagem tinham a linha marcada invisivel, e eram as vinte e uma
+ * primeiras.
  */
 function useRail(count: number) {
   const rail = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    // By the number of rows, not just once: on the first render the list is
-    // still empty and the `nav` does not even exist, so an effect without a
-    // dependency left without finding anything and never came back.
+    // Pela quantidade de linhas, e nao uma vez so: no primeiro render a lista
+    // ainda esta vazia e o `nav` nem existe, entao um efeito sem dependencia
+    // saia sem achar nada e nunca mais voltava.
     const nav = rail.current
     if (!nav) return
 
-    const align = () => {
-      // What the list has beyond what the window shows. Zero or less, it fits
-      // entirely and there is nothing to shift.
-      const overflow = nav.offsetHeight - (window.innerHeight - TOP)
+    const acertar = () => {
+      // O que a lista tem alem do que a janela mostra. Zero ou menos, ela
+      // cabe inteira e nao ha o que deslocar.
+      const excedente = nav.offsetHeight - (window.innerHeight - TOPO)
 
-      if (overflow <= 0) {
+      if (excedente <= 0) {
         nav.style.transform = ''
         return
       }
 
-      // How much of the text has gone by, from 0 to 1. It is the same number
-      // the window scrollbar draws, so the list moves at the pace the person
-      // sees moving.
-      const scrollRange = document.documentElement.scrollHeight - window.innerHeight
-      const read = scrollRange > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollRange)) : 0
+      // Quanto do texto ja passou, de 0 a 1. E o mesmo numero que a barra de
+      // rolagem da janela desenha, entao a lista anda no compasso que a pessoa
+      // ve andar.
+      const percurso = document.documentElement.scrollHeight - window.innerHeight
+      const lido = percurso > 0 ? Math.min(1, Math.max(0, window.scrollY / percurso)) : 0
 
-      const shift = Math.round(overflow * read)
-      // `transform`, not `top`: moving a sticky element's `top` makes it jump
-      // on the frame the value changes, because it re-anchors all at once.
+      const shift = Math.round(excedente * lido)
+      // `transform`, e nao `top`: mexer no `top` de um elemento grudado o faz
+      // saltar no quadro em que o valor muda, porque ele reancora de uma vez.
       nav.style.transform = shift ? `translateY(${-shift}px)` : ''
     }
 
-    align()
-    window.addEventListener('scroll', align, { passive: true })
-    window.addEventListener('resize', align)
-    // The list grows when the examples arrive, and what fit stops fitting.
-    const observer = new ResizeObserver(align)
+    acertar()
+    window.addEventListener('scroll', acertar, { passive: true })
+    window.addEventListener('resize', acertar)
+    // A lista cresce quando os exemplos chegam, e o que cabia deixa de caber.
+    const observer = new ResizeObserver(acertar)
     observer.observe(nav)
 
     return () => {
-      window.removeEventListener('scroll', align)
-      window.removeEventListener('resize', align)
+      window.removeEventListener('scroll', acertar)
+      window.removeEventListener('resize', acertar)
       observer.disconnect()
     }
   }, [count])
@@ -263,33 +261,33 @@ export function Toc({ watch }: { watch: string }) {
   const active = useActive(items)
   const rail = useRail(items.length)
 
-  // A single heading is not a table of contents of anything.
+  // Um titulo so nao e indice de nada.
   if (items.length < 2) return null
 
   return (
     <nav
       ref={rail}
-      aria-label="On this page"
-      // `self-start` so the column has the list's height, not the whole row's:
-      // stretched, it would have nowhere to stick, and the rail's border would
-      // run down to the footer of the text like a line that belongs to nothing.
+      aria-label="Nesta página"
+      // `self-start` para a coluna ter a altura da lista, e nao a da linha
+      // inteira: esticada, ela nao teria onde grudar, e a borda do trilho
+      // desceria ate o rodape do texto como uma linha que nao pertence a nada.
       className="sticky top-14 hidden w-56 shrink-0 self-start py-10 pl-6 xl:block"
     >
       <p className="mb-3 font-mono text-[0.7rem] tracking-widest text-fg-subtle uppercase">
-        On this page
+        Nesta página
       </p>
 
       <ul className="border-l border-border">
         {/*
-          The key is the position, not the id.
+          A chave e a posicao, e nao o id.
 
-          This list is read from the document, and a document can write the
-          same id twice - that is what the `Button` page did. Two equal keys
-          keep React from reconciling the list: it started abandoning rows in
-          here, which survived navigation and added up with the next piece's,
-          until the page was reloaded. The source is fixed, but the table of
-          contents cannot guarantee what it reads, and the damage was too big
-          to depend on that.
+          Esta lista e lida do documento, e um documento pode escrever o mesmo
+          id duas vezes - foi o que a pagina de `Button` fez. Duas chaves iguais
+          nao deixam o React reconciliar a lista: ele passou a abandonar linhas
+          aqui dentro, que sobreviviam a navegacao e se somavam as da proxima
+          peca, ate a pagina ser recarregada. A origem esta corrigida, mas o
+          indice nao tem como garantir o que le, e o estrago era grande demais
+          para depender disso.
         */}
         {items.map((item, index) => (
           <li key={`${index}-${item.id}`}>

@@ -1,7 +1,7 @@
 import { Field, FieldDescription, FieldLabel, TimePicker } from '@rivocode/ui'
 import { useState } from 'react'
 
-/** With label */
+/** Com rótulo */
 export function WithLabel() {
   return (
     <Field className="w-48">
@@ -11,7 +11,7 @@ export function WithLabel() {
   )
 }
 
-/** Delivery window */
+/** Janela de entrega */
 export function DeliveryWindow() {
   const [at, setAt] = useState('09:00')
 
@@ -24,7 +24,7 @@ export function DeliveryWindow() {
   )
 }
 
-/** Five-minute step */
+/** Passo de cinco minutos */
 export function FineStep() {
   return (
     <Field className="w-48">
@@ -34,12 +34,12 @@ export function FineStep() {
   )
 }
 
-/** Empty */
+/** Vazio */
 export function Empty() {
   return <TimePicker aria-label="Horário" className="w-48" />
 }
 
-/** Disabled */
+/** Desabilitado */
 export function Disabled() {
   return <TimePicker aria-label="Horário" defaultValue="14:30" className="w-48" disabled />
 }

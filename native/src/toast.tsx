@@ -16,21 +16,21 @@ import { useMotion } from "./motion";
 import { Text } from "./text";
 
 export type ToastOptions = {
-  /** Reusing an `id` still on screen rewrites that notice and restarts the countdown. */
+  /** Reusar um `id` que ainda esta na tela reescreve aquele aviso e reinicia a contagem. */
   id?: string;
   title?: string;
   description?: string;
   /**
-   * The tone, in the `Alert` vocabulary: `info`, `success`, `warning` and
-   * `danger` (`error` counts as `danger`). Without it the notice is neutral.
-   * `loading` stays on screen until an `update` changes the type.
+   * O tom, no vocabulario do `Alert`: `info`, `success`, `warning` e `danger`
+   * (`error` vale como `danger`). Sem ele o aviso sai neutro. `loading` fica
+   * na tela ate um `update` trocar o tipo.
    */
   type?: string;
-  /** How long the notice stays, in ms. `0` keeps it on screen until a `close`. Without it, 4000. */
+  /** Quanto tempo o aviso fica, em ms. `0` deixa na tela ate um `close`. Sem ele, 4000. */
   timeout?: number;
-  /** `high` announces with urgency. */
+  /** `high` anuncia com urgencia. */
   priority?: "low" | "high";
-  /** Called when the notice leaves, by countdown or by `close`. */
+  /** Chamado quando o aviso sai, pela contagem ou por `close`. */
   onClose?: () => void;
 };
 
@@ -74,7 +74,7 @@ const ToastContext = createContext<ToastApi | null>(null);
 
 export function useToast(): ToastApi {
   const value = useContext(ToastContext);
-  if (!value) throw new Error("useToast needs a RivoProvider above it.");
+  if (!value) throw new Error("useToast precisa de um RivoProvider acima.");
   return value;
 }
 

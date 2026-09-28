@@ -1,15 +1,14 @@
 ---
-category: Forms
+category: Formulário
 ---
 
 # Fieldset
 
-Groups fields that answer the same question: address, customer details,
-payment.
+Agrupa campos que respondem a mesma pergunta: endereco, dados do cliente,
+pagamento.
 
-The legend is not just a title: the screen reader announces it together with
-the label of each field inside. "Número" alone says nothing; "Endereco,
-número" does.
+A legenda não é só título: o leitor de tela anuncia ela junto com o rótulo de
+cada campo dentro. "Número" sozinho não diz nada; "Endereco, número" diz.
 
 ```tsx
 <Fieldset>
@@ -27,9 +26,9 @@ número" does.
 </Fieldset>
 ```
 
-The spacing between groups is larger than the spacing between fields, on
-purpose: it is what shows where one subject ends.
+O respiro entre grupos e maior que o respiro entre campos, de propósito: e ele
+que mostra onde um assunto termina.
 
-## In React Native
+## No React Native
 
-Translates: `@rivocode/ui-native` exports `Fieldset` - `legend` as a prop. The API is not the same as the web's (on native everything is controlled), and the [parity table](/react-native) says what changes piece by piece.
+Traduz: o `@rivocode/ui-native` exporta `Fieldset` - `legend` como prop. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

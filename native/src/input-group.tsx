@@ -8,34 +8,34 @@ import { Text, TextInput } from "./text";
 
 export type InputGroupAction = {
   /**
-   * The name the screen reader announces. Say the ACTION and never the state:
-   * "Copiar" works, "copiado" does not say what happens on tap.
+   * O nome que o leitor de tela anuncia. Diga a AÇÃO e nunca o estado:
+   * "Copiar" resolve, "copiado" não diz o que acontece ao tocar.
    */
   label: string;
   onPress: () => void;
-  /** The button's drawing: short text goes in as a string, an icon as a node. */
+  /** O desenho do botão: texto curto entra como string, ícone como nó. */
   children?: ReactNode;
   disabled?: boolean;
-  /** Styles the button, the touch box attached to the field. */
+  /** Veste o botao, a caixa de toque colada no campo. */
   className?: string;
 };
 
 export type InputGroupProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
   value: string;
   onValueChange: (value: string) => void;
-  /** The addon before the field: `R$`, an acronym, an icon. */
+  /** O encosto antes do campo: `R$`, uma sigla, um ícone. */
   prefix?: ReactNode;
-  /** The addon after the field: `,00`, `kg`, `@empresa.com.br`. */
+  /** O encosto depois do campo: `,00`, `kg`, `@empresa.com.br`. */
   suffix?: ReactNode;
-  /** The buttons attached to the field, after the suffix. */
+  /** Os botões colados no campo, depois do sufixo. */
   actions?: InputGroupAction[];
   invalid?: boolean;
-  /** Styles the frame. */
+  /** Veste a moldura. */
   className?: string;
   /**
-   * Class per part, with the names of the web components: `input` (the field),
-   * `prefix`, `suffix` and `action` (each button attached to the field, before
-   * the action's own `className`).
+   * Classe por parte, com os nomes das pecas do web: `input` (o campo),
+   * `prefix`, `suffix` e `action` (cada botao colado no campo, antes do
+   * `className` da propria acao).
    */
   classNames?: Slots<"input" | "prefix" | "suffix" | "action">;
 };

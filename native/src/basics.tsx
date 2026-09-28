@@ -15,11 +15,11 @@ const SPINNER_SIZE = { sm: "small", md: "small", lg: "large" } as const;
 
 export type SpinnerProps = {
   /**
-   * The web names. `ActivityIndicator` has only two spinners, so `sm` and `md`
-   * draw the small one and `lg` the large one.
+   * Os nomes do web. O `ActivityIndicator` so tem dois giros, entao `sm` e `md`
+   * desenham o pequeno e `lg` o grande.
    */
   size?: "sm" | "md" | "lg";
-  /** What the screen reader announces. Empty hides the spinner from reading. */
+  /** O que o leitor de tela anuncia. Vazio esconde o giro da leitura. */
   label?: string;
 };
 
@@ -38,26 +38,26 @@ export function Spinner({ size = "md", label = "Carregando" }: SpinnerProps) {
 }
 
 export type ProgressProps = {
-  /** 0 to 100. Progress moves toward the end and finishes; how-much-of-capacity is Meter. */
+  /** 0 a 100. O Progress anda para o fim e termina; quanto-de-capacidade e Meter. */
   value: number;
   label: string;
   /**
-   * Writes the label above the bar and the percentage next to it. The same name
-   * as the web; without it, the label exists only for the screen reader.
+   * Escreve o rotulo acima da barra e a porcentagem ao lado dele. O mesmo nome
+   * do web; sem ele, o rotulo so existe para o leitor de tela.
    */
   showValue?: boolean;
   /**
-   * How the number is written: the name of a house formatter (`percent`,
-   * `currencyShort`, `integer`...) or your own function, the same vocabulary as
-   * the web. Receives `value` already clamped between 0 and 100, and the text
-   * applies on screen and in the announcement.
+   * Como o numero e escrito: nome de formatador da casa (`percent`,
+   * `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do
+   * web. Recebe o `value` ja preso entre 0 e 100, e o texto vale na tela e no
+   * anuncio.
    */
   format?: Format;
-  /** Styles the root: without `showValue`, the track, the same node as `classNames.track`. */
+  /** Veste a raiz: sem `showValue`, o trilho, o mesmo no de `classNames.track`. */
   className?: string;
   /**
-   * Class per part: `label` and `value` (the two texts, only with `showValue`),
-   * `track` (the track) and `indicator` (the fill).
+   * Classe por parte: `label` e `value` (os dois textos, so com `showValue`),
+   * `track` (o trilho) e `indicator` (o preenchimento).
    */
   classNames?: Slots<"label" | "value" | "track" | "indicator">;
 };
@@ -128,18 +128,18 @@ export function Progress({
 
 export type AvatarProps = {
   /**
-   * The initials that hold the place while the photo downloads, and that come
-   * back if it fails - which is why they remain required even with `src`.
+   * As iniciais que ocupam o lugar enquanto a foto baixa, e que voltam se ela
+   * falhar - por isso continuam obrigatorias mesmo com `src`.
    */
   fallback: string;
   /**
-   * The photo, by address: `https://` from the network, `file://` from the
-   * device, embedded `data:`. The same name as the web.
+   * A foto, por endereco: `https://` da rede, `file://` do aparelho, `data:`
+   * embutida. O mesmo nome do web.
    */
   src?: string;
   /**
-   * Description of the photo for the screen reader, empty when the name already
-   * appears beside it - otherwise it reads the person twice.
+   * Descricao da foto para o leitor de tela, vazia quando o nome ja aparece do
+   * lado - senao ele fala a pessoa duas vezes.
    */
   alt?: string;
   size?: "sm" | "md" | "lg";
@@ -210,21 +210,17 @@ export type AlertProps = {
   title: string;
   children?: ReactNode;
   /**
-   * The symbol to the left of the text, hidden from the screen reader. The
-   * package ships no icon: the form that paints in the tone color is the
-   * function - `icon={({ color, size }) => <TriangleAlert color={color}
-   * size={size} />}`.
+   * O simbolo a esquerda do texto, escondido do leitor de tela. O pacote nao
+   * traz icone: a forma que pinta na cor do tom e a funcao -
+   * `icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`.
    */
   icon?: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
-  /**
-   * Turns on the X that closes the notice, in the right corner. The caller is
-   * the one who makes the notice go away.
-   */
+  /** Liga o xis que fecha o aviso, no canto direito. Quem some com o aviso e quem chamou. */
   onDismiss?: () => void;
   className?: string;
   /**
-   * The component's texts, to change the language: `dismiss` is the name of the
-   * X, "Fechar aviso" without it.
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, "Fechar
+   * aviso" sem ele.
    */
   labels?: Partial<AlertLabels>;
 };

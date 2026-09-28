@@ -2,7 +2,7 @@ import { Alert, AlertDescription, AlertTitle } from '@rivocode/ui'
 import { CheckCircle2, CircleX, Info, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 
-/** Tones */
+/** Tons */
 export function Tones() {
   return (
     <div className="flex max-w-lg flex-col gap-3">
@@ -26,13 +26,12 @@ export function Tones() {
   )
 }
 
-/** With icon */
+/** Com ícone */
 export function WithIcon() {
   /*
-   * Color is never the only signal: someone who cannot tell red from green
-   * reads four identical boxes, and black-and-white printing has the same
-   * problem. The slot guarantees the position: before the text, aligned with
-   * the first line.
+   * Cor nunca é o único sinal: quem não distingue vermelho de verde lê quatro
+   * caixas iguais, e a impressão em preto e branco tem o mesmo problema. O
+   * slot garante a posição: antes do texto, alinhado com a primeira linha.
    */
   return (
     <div className="flex max-w-lg flex-col gap-3">
@@ -56,7 +55,7 @@ export function WithIcon() {
   )
 }
 
-/** Dismissible by the person */
+/** Que a pessoa dispensa */
 export function Dismissible() {
   const [open, setOpen] = useState(true)
 
