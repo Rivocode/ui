@@ -100,7 +100,7 @@ jobs:
       # Retrato que mudou se olha, e nao se le em numero: os PNG dos dois lados
       # sobem quando a bancada fica vermelha.
       - if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: retratos
           path: |
