@@ -1,4 +1,4 @@
-export const version = "1.2.1";
+export const version = "1.2.2";
 
 export { cn } from "./lib/cn";
 export { useMediaQuery, useMobile } from "./lib/screen";

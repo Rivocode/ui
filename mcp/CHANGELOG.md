@@ -1,5 +1,10 @@
 # Mudanças
 
+## 0.9.2
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.2 e
+`@rivocode/ui-native` 1.1.0. As oito ferramentas continuam as mesmas.
+
 ## 0.9.1
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.1 e
