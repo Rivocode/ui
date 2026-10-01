@@ -1,5 +1,11 @@
 # Mudancas
 
+## 1.2.1
+
+- `CardTitle` ganha `render`, para trocar o nivel do heading: `render={<h2 />}`
+  quando o cartao vem logo abaixo do `h1` da pagina. A pagina da peca ja
+  ensinava isso, e a peca nao aceitava. Sem ele, continua `<h3>`.
+
 ## 1.2.0
 
 - `SidebarMenuItem` ganha `render`, para o link do router: com o TanStack

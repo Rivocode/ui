@@ -1,5 +1,8 @@
+"use client";
+
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -23,16 +26,25 @@ export function CardHeader({ className, ...props }: ComponentPropsWithoutRef<"di
   return <div {...props} className={cn("flex flex-col gap-1 p-[var(--rc-pad-panel)] pb-3", className)} />;
 }
 
-export function CardTitle({ className, ...props }: ComponentPropsWithoutRef<"h3">) {
-  return (
-    <h3
-      {...props}
-      className={cn(
+export type CardTitleProps = ComponentPropsWithoutRef<"h3"> & {
+  /**
+   * Troca o nivel do heading mantendo o desenho: `render={<h2 />}` quando o
+   * cartao vem logo abaixo do `h1` da pagina. Sem ele, sai `<h3>`.
+   */
+  render?: ReactElement;
+};
+
+export function CardTitle({ className, render, ...props }: CardTitleProps) {
+  return useRender({
+    render: render ?? <h3 />,
+    props: {
+      ...props,
+      className: cn(
         "font-display font-rc-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
         className,
-      )}
-    />
-  );
+      ),
+    },
+  });
 }
 
 export function CardDescription({ className, ...props }: ComponentPropsWithoutRef<"p">) {

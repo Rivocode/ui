@@ -44,6 +44,13 @@ test("o titulo sai como cabecalho de verdade, nao como div estilizada", () => {
   expect(screen.getByText("Agosto de 2026").className).toContain("text-fg-muted");
 });
 
+test("o titulo troca o nivel do heading com render, e mantem o desenho", () => {
+  render(<CardTitle render={<h2 />}>Resumo do mes</CardTitle>);
+  const title = screen.getByRole("heading", { name: "Resumo do mes", level: 2 });
+  expect(title.tagName).toBe("H2");
+  expect(title.className).toContain("font-display");
+});
+
 test("a classe passada por quem usa sobrescreve a do componente", () => {
   render(<Card data-testid="cartao" className="rounded-xl" />);
   const classes = screen.getByTestId("cartao").className;
