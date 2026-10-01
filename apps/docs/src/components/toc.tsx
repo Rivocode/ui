@@ -261,8 +261,12 @@ export function Toc({ watch }: { watch: string }) {
   const active = useActive(items)
   const rail = useRail(items.length)
 
-  // Um titulo so nao e indice de nada.
-  if (items.length < 2) return null
+  // Um titulo so nao e indice de nada. Mas o lugar da coluna fica: os titulos
+  // so sao lidos depois da hidratacao, e o prerender nao tem a lista. Sem a
+  // reserva, a coluna nascia depois do primeiro quadro, e o texto, centrado no
+  // que sobra, pulava 112px para o lado - 0,15 de CLS no Lighthouse do desktop.
+  if (items.length < 2) return <div aria-hidden className="hidden w-56 shrink-0 xl:block" />
+
 
   return (
     <nav

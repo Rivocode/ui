@@ -42,6 +42,16 @@ export async function renderPage(path: string) {
   const failures: string[] = []
 
   const { prelude } = await prerenderToNodeStream(<App />, {
+    /*
+     * Tudo em linha, sem fronteira separada. Mesmo no `prerender`, o React
+     * tira do lugar a fronteira de Suspense que passa de ~12 KB: o conteudo
+     * vai num `<div hidden>` no fim e um `<script>` ($RC) o troca pelo
+     * fallback. Na hidratacao o React nao adotava essa troca: punha o
+     * fallback (`min-h-dvh`, vazio) e redesenhava a pagina inteira - no
+     * celular lento do Lighthouse o texto sumia por 1,3s e o LCP so contava
+     * depois. Num arquivo estatico nao ha o que transmitir aos poucos.
+     */
+    progressiveChunkSize: Number.POSITIVE_INFINITY,
     onError(error: unknown) {
       failures.push(error instanceof Error ? error.message : String(error))
     },

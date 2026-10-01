@@ -29,18 +29,20 @@ const DIST = join(here, 'dist')
 const MARKER = '<div id="root"></div>'
 
 /*
- * As tres familias latinas, prontas para o preload.
+ * As familias latinas, com preload so na tela larga.
  *
  * Elas sao descobertas em profundidade 3 - o HTML pede o CSS, o CSS pede a
- * fonte -, e chegavam por volta de 1.100ms. O `font-display: swap` ja impede
- * que o texto espere por elas, entao isto nao mexe no LCP: mexe no pulo de
- * fonte, que com o prerender passou a ser visivel, porque agora ha texto na
- * tela desde o primeiro quadro.
+ * fonte. No celular, com a rede lenta do Lighthouse, o preload fazia as quatro
+ * disputarem a banda com o HTML: o LCP ia de 3,2s para 3,8s, sem mudar o CLS.
+ * No desktop e o contrario: a banda sobra, e sem o preload a fonte chega depois
+ * do primeiro quadro e o texto refluxa, 0,1 de CLS na pagina de Instalacao. O
+ * `media` do `<link rel="preload">` deixa cada tela com o que lhe serve.
  *
  * Os nomes carregam hash de build, entao a lista sai do proprio `dist`. Um
- * `latin-ext` nao entra: o portugues cabe no `latin`, e preload de arquivo que
- * o navegador nao vai usar e banda jogada fora.
+ * `latin-ext` nao entra: o portugues cabe no `latin`.
  */
+const WIDE = '(min-width: 1024px)'
+
 function latinFonts(): string[] {
   return readdirSync(join(DIST, 'assets'))
     .filter((file) => file.endsWith('.woff2') && /-latin-/.test(file) && !file.includes('latin-ext'))
@@ -50,7 +52,7 @@ function latinFonts(): string[] {
 
 function withFontPreload(html: string, fonts: string[]): string {
   const links = fonts
-    .map((href) => `    <link rel="preload" as="font" type="font/woff2" href="${href}" crossorigin>`)
+    .map((href) => `    <link rel="preload" as="font" type="font/woff2" href="${href}" media="${WIDE}" crossorigin>`)
     .join('\n')
 
   return html.replace('</head>', `${links}\n  </head>`)
@@ -106,7 +108,7 @@ async function main() {
   const template = withInlineCss(
     withFontPreload(
       readFileSync(join(DIST, 'index.html'), 'utf8')
-        .replace(/(<div id="root">)[\s\S]*(<\/div>)(?=\s*<script)/, '$1$2')
+        .replace(/(<div id="root">)[\s\S]*(<\/div>)(?=\s*<\/body>)/, '$1$2')
         .replace(/^[ \t]*<link rel="preload" as="font"[^>]*>\n/gm, '')
         .replace(INLINED, '<link rel="stylesheet" crossorigin href="$1">'),
       fonts,

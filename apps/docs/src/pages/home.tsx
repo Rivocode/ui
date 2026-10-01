@@ -1,4 +1,4 @@
-import { Badge, Button } from '@rivocode/ui'
+import { Badge, Button, useIntersection } from '@rivocode/ui'
 import { ArrowRight, Bot, Check, Copy, Layers, Palette, Ruler, Smartphone, Sparkles } from 'lucide-react'
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { CodeRiver } from '@/components/code-river'
@@ -20,6 +20,39 @@ import { version } from '../../../../package.json'
  */
 const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ default: mod.Showcase })))
 
+/*
+ * E o `lazy` sozinho nao bastava: ele tira a vitrine do chunk de entrada, mas
+ * o pedido sai na montagem, e no celular do Lighthouse o Recharts chegava
+ * durante a primeira carga - 41 KB de JS marcados como nao usado, para uma
+ * secao que fica abaixo da dobra. Agora ela e pedida na primeira rolagem, ou
+ * quando o lugar dela aparece sem rolagem nenhuma (tela alta). Folga do
+ * `IntersectionObserver` nao servia: no celular do Lighthouse o lugar ja cai
+ * dentro de 400px, e a vitrine voltava para a primeira carga. O prerender e a
+ * hidratacao veem o mesmo lugar vazio, entao nada diverge.
+ */
+function ShowcaseWhenNear() {
+  const { ref, entry } = useIntersection<HTMLDivElement>()
+  const [near, setNear] = useState(false)
+
+  useEffect(() => {
+    if (entry?.isIntersecting) setNear(true)
+  }, [entry])
+
+  useEffect(() => {
+    const load = () => setNear(true)
+    window.addEventListener('scroll', load, { once: true, passive: true })
+    return () => window.removeEventListener('scroll', load)
+  }, [])
+
+  const slot = <div ref={ref} className="min-h-[34rem] rounded-lg border border-border bg-surface" />
+  if (!near) return slot
+  return (
+    <Suspense fallback={slot}>
+      <Showcase />
+    </Suspense>
+  )
+}
+
 /* ---------------------------------------------------------------------------
  * A capa
  *
@@ -27,6 +60,12 @@ const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ def
  * lendo. Por isso a tela que roda vem antes da prosa, cada uma das tres ideias
  * que fazem a biblioteca diferente ganha figura, e o catalogo fica no fim, e
  * nao no comeco.
+ *
+ * O topo nao tem animacao de entrada. O `animate-rise` comeca em `opacity: 0`, e
+ * o titulo, que e o maior texto da primeira tela, so contava como pintado
+ * depois dela: no celular do Lighthouse, 2,8s de atraso de renderizacao no LCP,
+ * com o HTML ja pronto pelo prerender. Abaixo da dobra a animacao nao custa
+ * nada, porque ninguem mede o que ainda nao esta na tela.
  * ------------------------------------------------------------------------- */
 
 /*
@@ -331,18 +370,18 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           </span>
         </div>
 
-        <h1 className="animate-rise mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
+        <h1 className="mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
           O design system da <span className="text-accent-text">RivoCode</span>, documentado por
           dentro.
         </h1>
 
-        <p className="animate-rise mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted [animation-delay:80ms]">
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted">
           {ENTRIES.length} peças sobre a Base UI, com tokens em três camadas, dois temas e duas
           densidades. Nenhum componente conhece a cor da marca: ele pede um papel, e o tema
           responde.
         </p>
 
-        <div className="animate-rise mt-8 flex flex-wrap items-center gap-3 [animation-delay:160ms]">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
           {/* O único glow da página: o CTA é o que a lanterna existe para
               iluminar. Um segundo brilho já seria feira. */}
           <Button size="lg" shape="pill" className="shadow-glow" {...toInstall} render={<a />}>
@@ -354,11 +393,11 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           </Button>
         </div>
 
-        <div className="animate-rise mt-8 max-w-md [animation-delay:240ms]">
+        <div className="mt-8 max-w-md">
           <CopyLine text={INSTALL} />
         </div>
 
-        <div className="animate-fade mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 [animation-delay:320ms]">
+        <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4">
           <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
           <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
           <Stat value={String(TESTS)} label="testes verdes, web e nativo" />
@@ -367,9 +406,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
       </section>
 
       <section className="relative mx-auto max-w-6xl px-6 pb-24">
-        <Suspense fallback={<div className="min-h-[34rem] rounded-lg border border-border bg-surface" />}>
-          <Showcase />
-        </Suspense>
+        <ShowcaseWhenNear />
       </section>
 
       <section className="relative mx-auto max-w-6xl space-y-24 px-6 pb-24">
