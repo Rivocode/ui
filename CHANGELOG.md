@@ -1,5 +1,19 @@
 # Mudancas
 
+## 1.2.2
+
+- `RivoProvider` deixa de derrubar a pagina prerenderizada na hidratacao. O
+  conteiner dos portais nascia num efeito depois de montar, e a troca do
+  contexto chegava a fronteira de Suspense que ainda hidratava: o React
+  desistia do HTML do servidor, mostrava o fallback e redesenhava a pagina.
+  Agora o conteiner nasce no primeiro render do cliente e entra no documento
+  num efeito de layout, entao o contexto nao muda depois de montar, e o que
+  abre logo na montagem continua achando o conteiner na hora. Medido no
+  Chrome com o site da documentacao: a pagina do `Button`, num celular lento,
+  sumia por 2,4s depois do JavaScript e deixou de sumir. Afeta quem usa a
+  biblioteca com SSR ou prerender (Next, Vite com prerender); app so de
+  cliente nao muda.
+
 ## 1.2.1
 
 - `CardTitle` ganha `render`, para trocar o nivel do heading: `render={<h2 />}`

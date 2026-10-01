@@ -12,6 +12,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -131,18 +132,20 @@ export function RivoProvider({
     root.dir = dir;
   }, [scope, resolved, density, dir]);
 
-  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const doc = probe.current?.ownerDocument ?? document;
-    const node = doc.createElement("div");
+  const [portalContainer] = useState<HTMLElement | null>(() => {
+    if (typeof document === "undefined") return null;
+    const node = document.createElement("div");
     node.dataset.rcPortal = "";
-    doc.body.appendChild(node);
-    setPortalContainer(node);
+    return node;
+  });
+
+  useLayoutEffect(() => {
+    if (!portalContainer) return;
+    (probe.current?.ownerDocument ?? document).body.appendChild(portalContainer);
     return () => {
-      node.remove();
+      portalContainer.remove();
     };
-  }, []);
+  }, [portalContainer]);
 
   useEffect(() => {
     if (!portalContainer) return;
