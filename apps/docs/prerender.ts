@@ -56,6 +56,33 @@ function withFontPreload(html: string, fonts: string[]): string {
   return html.replace('</head>', `${links}\n  </head>`)
 }
 
+/*
+ * O CSS dentro do HTML.
+ *
+ * Com o prerender, o documento ja chega com a pagina pronta, e a unica coisa
+ * entre ele e o primeiro quadro era o pedido do CSS: o Lighthouse marcava
+ * `index-*.css` como solicitacao que bloqueia a renderizacao, 150ms no FCP e no
+ * LCP. Dentro de um `<style>`, ele chega no mesmo pedido do HTML. Custa ~28 KB
+ * comprimidos em cada pagina, e so na primeira: dali em diante o site navega
+ * como SPA e nao pede HTML de novo.
+ *
+ * Nenhum chunk lazy cita o CSS (o Vite pediria o arquivo de novo se citasse,
+ * por nao achar o `<link>`), e as fontes dentro dele ja tem endereco absoluto.
+ * O `data-inline-css` guarda o endereco original, para a segunda passada sobre
+ * o mesmo `dist` devolver o `<link>` ao molde em vez de perder o CSS.
+ */
+const STYLESHEET = /<link rel="stylesheet" crossorigin href="(\/assets\/[^"]+\.css)">/
+const INLINED = /<style data-inline-css="([^"]+)">[\s\S]*?<\/style>/
+
+function withInlineCss(html: string): string {
+  const href = STYLESHEET.exec(html)?.[1]
+  if (!href) {
+    throw new Error('O <link> do CSS nao esta no dist/index.html: a pagina sairia sem estilo nenhum.')
+  }
+  const css = readFileSync(join(DIST, href.slice(1)), 'utf8')
+  return html.replace(STYLESHEET, () => `<style data-inline-css="${href}">${css}</style>`)
+}
+
 /** Onde o HTML de um endereco mora dentro do `dist`. */
 function fileOf(path: string) {
   return path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1), 'index.html')
@@ -76,11 +103,14 @@ async function main() {
     throw new Error('Nenhuma fonte latina em dist/assets: o preload sairia vazio sem ninguem ver.')
   }
 
-  const template = withFontPreload(
-    readFileSync(join(DIST, 'index.html'), 'utf8')
-      .replace(/(<div id="root">)[\s\S]*(<\/div>)(?=\s*<script)/, '$1$2')
-      .replace(/^[ \t]*<link rel="preload" as="font"[^>]*>\n/gm, ''),
-    fonts,
+  const template = withInlineCss(
+    withFontPreload(
+      readFileSync(join(DIST, 'index.html'), 'utf8')
+        .replace(/(<div id="root">)[\s\S]*(<\/div>)(?=\s*<script)/, '$1$2')
+        .replace(/^[ \t]*<link rel="preload" as="font"[^>]*>\n/gm, '')
+        .replace(INLINED, '<link rel="stylesheet" crossorigin href="$1">'),
+      fonts,
+    ),
   )
 
   if (!template.includes(MARKER)) {
