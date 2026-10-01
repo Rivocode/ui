@@ -1,5 +1,13 @@
 # Mudanças
 
+## 0.9.1
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.1 e
+`@rivocode/ui-native` 1.1.0. As oito ferramentas continuam as mesmas.
+
+- A página do `CardTitle` ensina o `render` para trocar o nível do heading,
+  com o exemplo do painel: o cartão logo abaixo do `h1` sai como `h2`.
+
 ## 0.9.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.0 e
