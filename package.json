@@ -172,7 +172,7 @@
     "@types/react-test-renderer": "^19.3.0",
     "axe-core": "^4.13.0",
     "jsqr": "^1.4.0",
-    "oxfmt": "^0.70.0",
+    "oxfmt": "^0.71.0",
     "oxlint": "^1.85.0",
     "react-hook-form": "^7.88.0",
     "react-test-renderer": "^19",
