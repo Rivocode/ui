@@ -14,6 +14,11 @@ name: bancada
 # sobra e o commit. O porque inteiro, e as alternativas que perderam, esta no
 # cabecalho de `scripts/comparacao-da-bancada.ts`.
 #
+# No push da `main`, a base NAO e o commit anterior: e o da ultima bancada
+# verde da `main`, escolhido por `scripts/base-da-bancada.ts`. Com o anterior,
+# o vermelho de 01/10 sumiu no commit seguinte, porque a base ja tinha a
+# mudanca que ninguem aceitou, e a assinatura ficou velha seis dias.
+#
 # Workflow proprio, e nao job do `ci.yml`, de proposito: o `tag.yml` escuta o
 # `ci`, e uma bancada de navegador que demora ou tropeca nao pode segurar uma
 # publicacao que o gate ja aprovou.
@@ -31,6 +36,10 @@ concurrency:
 
 permissions:
   contents: read
+  # `actions` para listar as bancadas verdes da main, e `pull-requests` para
+  # ler a etiqueta `retrato-aceito` do PR que trouxe a cabeca do push.
+  actions: read
+  pull-requests: read
 
 jobs:
   bancada:
@@ -42,10 +51,12 @@ jobs:
       # abre - a pagina aberta e a nossa propria vitrine, servida em 127.0.0.1.
       RC_CHROME: /usr/bin/google-chrome
       RC_CHROME_FLAGS: --no-sandbox
-      # No PR, a base e a ponta da main de quando o PR foi atualizado. No push,
-      # e o que a main era antes dele.
-      BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-      ACCEPTED: ${{ contains(github.event.pull_request.labels.*.name, 'retrato-aceito') }}
+      # `BASE_SHA` e `ACCEPTED` nascem no passo "Escolher a base", pelo
+      # `GITHUB_ENV`, e nao aqui: `env` do job venceria o que o passo escreve.
+      PR_BASE: ${{ github.event.pull_request.base.sha }}
+      PR_ACCEPTED: ${{ contains(github.event.pull_request.labels.*.name, 'retrato-aceito') }}
+      PUSH_BEFORE: ${{ github.event.before }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -55,6 +66,19 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+
+      # No PR, a base e a ponta da main de quando o PR foi atualizado, e o
+      # aceite e a etiqueta. No push, a base e a ultima bancada verde da main,
+      # e o aceite e a etiqueta do PR que trouxe a cabeca ou a marca
+      # `[retrato-aceito]` no assunto dela.
+      - name: Escolher a base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "BASE_SHA=$PR_BASE" >> "$GITHUB_ENV"
+            echo "ACCEPTED=$PR_ACCEPTED" >> "$GITHUB_ENV"
+          else
+            bun run scripts/base-da-bancada.ts
+          fi
 
       - name: Chrome do runner
         run: |

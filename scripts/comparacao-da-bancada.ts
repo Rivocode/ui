@@ -36,7 +36,14 @@
  * cabeca e a prova de que alguem olhou - e retrato que mudou no linux sem a
  * entrada ter mudado e mudanca que ninguem viu. A etiqueta `retrato-aceito` no
  * PR e a valvula para o caso que a regra nao cobre: diferenca que so aparece
- * no linux.
+ * no linux. No push da `main` vale a etiqueta do PR que trouxe a cabeca, ou a
+ * marca `[retrato-aceito]` no assunto do commit.
+ *
+ * ## Contra que base
+ *
+ * No PR, a ponta da `main`. No push da `main`, o commit da ULTIMA bancada
+ * verde, e nao o anterior - quem escolhe e `scripts/base-da-bancada.ts`, e o
+ * cabecalho dele conta o vermelho de 01/10 que sumiu no commit seguinte.
  *
  * Acessibilidade nao tem aceite: problema que a cabeca tem a mais que a base e
  * regressao, e o conserto e na peca. Problema que a cabeca tem a MENOS so e
@@ -237,12 +244,17 @@ if (import.meta.main) {
   const unacceptedCount = shots.unaccepted.length + shots.lost.length;
   if (unacceptedCount > 0) {
     if (labelAccepts) {
-      lines.push("", "A etiqueta `retrato-aceito` do PR aceita as mudancas acima.");
+      lines.push(
+        "",
+        "A etiqueta `retrato-aceito` do PR, ou a marca `[retrato-aceito]` no assunto do commit, aceita as mudancas acima.",
+      );
     } else {
       failures.push(
         `${unacceptedCount} retrato(s) mudaram sem a assinatura comitada mudar junto.` +
           " Olhe na maquina e aceite: bun run shot && bun run visual --aceitar, e comite o" +
-          " demo/assinaturas.json. Diferenca que so aparece no linux: etiqueta `retrato-aceito` no PR.",
+          " demo/assinaturas.json. Diferenca que so aparece no linux: etiqueta `retrato-aceito` no PR," +
+          " ou commit na main com `[retrato-aceito]` no assunto. Ate um dos dois, toda bancada da main" +
+          " mede contra a ultima verde e continua acusando.",
       );
     }
   }

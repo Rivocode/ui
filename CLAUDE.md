@@ -289,6 +289,20 @@ a entrada dele em `demo/assinaturas.json` mudar junto - aceitar continua sendo
 com piso: menos de 15 paginas auditadas ou 30 retratos comparados reprova. E
 workflow proprio, e nao job do `ci.yml`, porque o `tag.yml` escuta o `ci`.
 
+No PR a base e a ponta da `main`. **No push da `main` a base e o commit da
+ULTIMA bancada verde da `main`, e nao o commit anterior** - quem escolhe e
+`chooseBase`, funcao pura em `scripts/base-da-bancada.ts`, provada por
+`test/base-da-bancada.test.ts`. Nasceu porque o vermelho sumia sozinho: em
+01/10/2026 o 233193e subiu junto com o d3d619a, a bancada acusou os
+`flutuantes`, e o eeace31 seguinte saiu verde porque a base dele ja tinha a
+mudanca - o `demo/assinaturas.json` ficou velho seis dias. Agora toda bancada
+da `main` mede contra o mesmo ponto verde e continua vermelha ate alguem
+aceitar. No push, aceita a etiqueta `retrato-aceito` do PR que trouxe a cabeca,
+ou `[retrato-aceito]` no ASSUNTO do commit da cabeca (um commit vazio com a
+marca aceita depois do fato). Se a lista de bancadas verdes nao vier, a escolha
+morre com codigo 1 em vez de cair no commit anterior; so a lista VAZIA - a
+bancada nunca ficou verde - usa o anterior.
+
 `bun run build` depois, porque ha quebra que so aparece ao empacotar. Ele
 constroi tambem o `mcp/dist`, e `bun run fumaca:mcp` sobe esse servidor com
 `node` pelo stdio e confere as oito ferramentas - a CI roda os dois, nessa
