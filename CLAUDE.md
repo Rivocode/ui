@@ -237,14 +237,20 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   subcaminhos ALCANCAM, e nao o `dist/index.js` sozinho: desde o `unbundle` ele
   e so reexportacao, e procurar a frase nele passaria sem ler peca nenhuma.
 - `check:tamanho` - o gzip de cada entrada do `exports` (a raiz, os cinco
-  subcaminhos e a `styles.css`) e do `Button` importado sozinho, contra
+  subcaminhos e a `styles.css`) e de cinco pecas importadas sozinhas com as
+  dependencias de terceiro DENTRO (`Button`, `Calendar`, `DatePicker`,
+  `DataTable`, `EventCalendar`), contra
   `scripts/orcamento-de-tamanho.ts`, onde cada limite tem o motivo escrito.
   Nasceu porque `import { Button } from "@rivocode/ui"` levava 129 KB em gzip
   de 307 KB possiveis: o `tsdown` juntava as pecas num `index.js` so, e o
   `"sideEffects": ["*.css"]` do package.json - que ja dizia a coisa certa - so
   descarta ARQUIVO inteiro. Com `unbundle` o mesmo `Button` custa 12,3 KB, e as
-  duas metades sao necessarias: sem o `sideEffects` ele volta a 144 KB. Ela
-  constroi numa pasta propria em vez de ler o `dist/`, porque o gate roda antes
+  duas metades sao necessarias: sem o `sideEffects` ele volta a 144 KB. As
+  outras quatro pecas sozinhas entraram em 07/10/2026, porque as entradas do
+  `exports` contam so o codigo PROPRIO: o `Calendar` passou a abrir o Select da
+  Base UI no mes e no ano e foi de 32,3 para 83,4 KB em gzip com as
+  dependencias, e o `.` acusou 384 B. Peca com dependencia pesada nova merece
+  linha ali tambem. Ela constroi numa pasta propria em vez de ler o `dist/`, porque o gate roda antes
   do build e o `dist/` que estiver ali e de outro codigo; custa menos de um
   segundo. Tem teto e piso: acima do limite reprova, e abaixo de 80% dele
   tambem - o limite desce no commit que encolheu. Subir e decisao: no mesmo

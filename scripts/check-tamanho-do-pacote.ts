@@ -42,9 +42,15 @@
  *   que a entrada alcanca por import relativo - desde o `unbundle` o
  *   `index.js` e so reexportacao, e medir so ele seria medir uma lista de nomes.
  * - A `styles.css`, que todo mundo importa inteira.
- * - O `Button` sozinho, empacotado pelo bun com as dependencias DENTRO e so os
- *   peers de fora - e a pergunta de quem instala, e e a linha que fica vermelha
- *   no dia em que o tree-shaking quebrar de novo.
+ * - Algumas pecas sozinhas (`ALONE` no orcamento), cada uma empacotada pelo bun
+ *   com as dependencias de terceiro DENTRO e so os peers de fora - e a pergunta
+ *   de quem instala. O `Button` e a linha que fica vermelha no dia em que o
+ *   tree-shaking quebrar de novo. As outras sao as pecas de dependencia pesada,
+ *   e existem porque as entradas do `exports` NAO veem dependencia: em
+ *   07/10/2026 achou-se que o `Calendar` tinha passado de 32,3 para 83,4 KB em
+ *   gzip desde que o mes e o ano dele abrem o Select da Base UI (de019bc), e o
+ *   `.` tinha acusado 384 B. O DatePicker e o EventCalendar cresceram 12 KB
+ *   cada pelo mesmo import, e nada ficou vermelho.
  *
  * O orcamento mora em `scripts/orcamento-de-tamanho.ts`. Ele tem piso tambem:
  * medida abaixo de 80% do limite e erro, pelo mesmo motivo das listas que so
@@ -57,7 +63,7 @@ import { dirname, join, normalize } from "node:path";
 import { gzipSync } from "node:zlib";
 
 import { compactCss } from "./compactar-css";
-import { BUDGET, BUTTON_ALONE } from "./orcamento-de-tamanho";
+import { ALONE, BUDGET, type AlonePiece } from "./orcamento-de-tamanho";
 import { report } from "./medida";
 
 const OUT = "node_modules/.cache/check-tamanho";
@@ -146,47 +152,58 @@ for (const [key, target] of Object.entries(manifest.exports)) {
   measures.push({ name: key, bytes: await gzipOf(files), detail: `${files.length} arquivo(s)` });
 }
 
-const probe = join(OUT, "so-o-button.js");
-// O Button vai para o `globalThis`, e nao para um `export { Button }`: o bun
+const peers = Object.keys(manifest.peerDependencies).flatMap((name) => [name, `${name}/*`]);
+
+// A peca vai para o `globalThis`, e nao para um `export { Button }`: o bun
 // 1.3 esvazia a reexportacao de modulo marcado sem efeito colateral e devolve
 // `export{t as Button}` sem o `t` - medido, 21 bytes. A `mark` abaixo pegou.
-await Bun.write(probe, 'import { Button } from "./index.js";\nglobalThis.rcButton = Button;\n');
-
-const peers = Object.keys(manifest.peerDependencies).flatMap((name) => [name, `${name}/*`]);
-const bundled = await Bun.build({
-  entrypoints: [probe],
-  minify: true,
-  target: "browser",
-  external: peers,
-});
-if (!bundled.success) {
-  console.error("O empacotamento do Button sozinho falhou:");
-  for (const log of bundled.logs) console.error(log);
-  process.exit(1);
-}
-
-const buttonCode = await bundled.outputs[0]!.text();
-
-if (!buttonCode.includes(BUTTON_ALONE.mark)) {
-  console.error(
-    `O pacote do Button sozinho nao contem "${BUTTON_ALONE.mark}".\n` +
-      "A frase e a prova de que o Button entrou no pacote medido: sem ela, o numero\n" +
-      "abaixo seria de um arquivo vazio, e passaria com folga. Aponte `mark` em\n" +
-      "scripts/orcamento-de-tamanho.ts para uma classe que o Button ainda tenha.",
+async function alone(probe: AlonePiece) {
+  const file = join(OUT, `sozinho-${probe.piece}.js`);
+  await Bun.write(
+    file,
+    `import { ${probe.piece} } from "./index.js";\nglobalThis.rc${probe.piece} = ${probe.piece};\n`,
   );
-  process.exit(1);
+
+  const bundled = await Bun.build({
+    entrypoints: [file],
+    minify: true,
+    target: "browser",
+    external: peers,
+  });
+  if (!bundled.success) {
+    console.error(`O empacotamento de ${probe.name} falhou:`);
+    for (const log of bundled.logs) console.error(log);
+    process.exit(1);
+  }
+
+  const code = await bundled.outputs[0]!.text();
+
+  if (!code.includes(probe.mark)) {
+    console.error(
+      `O pacote de ${probe.name} nao contem "${probe.mark}".\n` +
+        `A frase e a prova de que o ${probe.piece} entrou no pacote medido: sem ela, o numero\n` +
+        "seria de um arquivo vazio, e passaria com folga. Aponte `mark` em\n" +
+        `scripts/orcamento-de-tamanho.ts para um texto que so o ${probe.piece} ainda escreva.`,
+    );
+    process.exit(1);
+  }
+
+  return {
+    name: probe.name,
+    bytes: gzipSync(code, { level: 9 }).length,
+    detail: `${(code.length / 1024).toFixed(1)} KB minificado`,
+  };
 }
 
-measures.push({
-  name: BUTTON_ALONE.name,
-  bytes: gzipSync(buttonCode, { level: 9 }).length,
-  detail: `${(buttonCode.length / 1024).toFixed(1)} KB minificado`,
-});
+for (const probe of ALONE) measures.push(await alone(probe));
 
 rmSync(OUT, { recursive: true, force: true });
 
 const kb = (bytes: number) => `${(bytes / 1024).toFixed(1)} KB`;
-const suggested = (bytes: number) => Math.ceil((bytes * HEADROOM) / 100) * 100;
+const headroomOf = (name: string) =>
+  ALONE.find((probe) => probe.name === name)?.headroom ?? HEADROOM;
+const suggested = (measure: Measure) =>
+  Math.ceil((measure.bytes * headroomOf(measure.name)) / 100) * 100;
 
 const problems: string[] = [];
 
@@ -195,7 +212,7 @@ for (const measure of measures) {
   if (!budget) {
     problems.push(
       `  ${measure.name} (${kb(measure.bytes)} em gzip, ${measure.detail}) nao tem orcamento.\n` +
-        `    Escreva a linha em scripts/orcamento-de-tamanho.ts com limite ${suggested(measure.bytes)}\n` +
+        `    Escreva a linha em scripts/orcamento-de-tamanho.ts com limite ${suggested(measure)}\n` +
         "    e o motivo do numero.",
     );
     continue;
@@ -209,7 +226,7 @@ for (const measure of measures) {
   } else if (measure.bytes < budget.limit * FLOOR) {
     problems.push(
       `  ${measure.name} pesa ${kb(measure.bytes)} em gzip, abaixo de ${FLOOR * 100}% do limite de ${kb(budget.limit)}.\n` +
-        `    Desca o limite para ${suggested(measure.bytes)} e reescreva o motivo. Se nada\n` +
+        `    Desca o limite para ${suggested(measure)} e reescreva o motivo. Se nada\n` +
         "    encolheu de verdade, a leitura se perdeu - e isso e a guarda acusando a si mesma.",
     );
   }
@@ -227,7 +244,7 @@ const table = measures
   .map((measure) => {
     const limit = BUDGET[measure.name]?.limit;
     const share = limit ? ` de ${kb(limit)} (${Math.round((measure.bytes / limit) * 100)}%)` : "";
-    return `  ${measure.name.padEnd(16)} ${kb(measure.bytes).padStart(9)}${share}  - ${measure.detail}`;
+    return `  ${measure.name.padEnd(22)} ${kb(measure.bytes).padStart(9)}${share}  - ${measure.detail}`;
   })
   .join("\n");
 
@@ -235,7 +252,7 @@ if (problems.length > 0) {
   console.error(`${table}\n\n${problems.length} problema(s) de tamanho:\n\n${problems.join("\n\n")}`);
   console.error(
     "\nSubir o limite e decisao, e se faz no mesmo commit que cresceu: troque o `limit`" +
-      "\nem scripts/orcamento-de-tamanho.ts pelo numero sugerido - o medido mais 10% -" +
+      "\nem scripts/orcamento-de-tamanho.ts pelo numero sugerido - o medido mais a folga -" +
       "\ne reescreva o `why` dizendo o que entrou e por que vale o peso. Um limite" +
       "\nsem motivo novo e o mesmo que nao ter limite.",
   );

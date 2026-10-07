@@ -183,30 +183,30 @@ plataforma:
 
 A suite: **3384 testes em 249 arquivos**, a mesma conta que a home exibe (`TESTS` em `apps/docs/src/pages/home.tsx`, cobrado por `check:testes`).
 
-| Guarda                  | O que ela mede                                                                                               |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check:props`           | 308 entradas (pecas e partes), 4419 props; prop propria que colide com atributo herdado reprova              |
-| `check:colors`          | 196 arquivos sem cor literal fora de `src/tokens/`                                                           |
-| `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                             |
-| `check:contrast`        | 142 pares por tema, nos 2 temas, mais 14 de `scales.css`                                                     |
-| `check:contrast:nativo` | por esquema: 64 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par |
-| `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 281 linhas medidas iguais                                      |
-| `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                            |
-| `check:doc`             | 222 paginas, todas com codigo                                                                                |
-| `check:exemplos`        | nomes dos blocos `tsx` contra 806 nomes publicados por 14 entradas                                           |
-| `check:readme`          | 134 de 134 pecas citadas, nenhuma declarada fora                                                             |
-| `check:classes`         | 385 arquivos, toda classe gera regra, sem lista de excecao                                                   |
-| `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
-| `check:cli`             | 4 arquivos de mesa (`contrast`, `theme-check`, `dtcg`, `theme-roles`) fora do grafo da biblioteca            |
-| `check:tamanho`         | raiz 152,1 de 156,2 KB gzip; `Button` sozinho 12,3 de 13,6 KB; todas as entradas entre 90% e 98% do limite   |
-| `check:skill`           | 142 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
-| `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
-| `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
-| `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
-| `check:pecas`           | 134, igual ao README, ao `package.json` e a meta do site                                                     |
-| `check:demo`            | 133 de 134 na vitrine, 1 declarada fora (`ToastViewport`), em 21 paginas                                     |
-| `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 91 marcadores no demo                                   |
-| `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
+| Guarda                  | O que ela mede                                                                                                                                            |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check:props`           | 308 entradas (pecas e partes), 4419 props; prop propria que colide com atributo herdado reprova                                                           |
+| `check:colors`          | 196 arquivos sem cor literal fora de `src/tokens/`                                                                                                        |
+| `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                                                                          |
+| `check:contrast`        | 142 pares por tema, nos 2 temas, mais 14 de `scales.css`                                                                                                  |
+| `check:contrast:nativo` | por esquema: 64 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par                                              |
+| `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 281 linhas medidas iguais                                                                                   |
+| `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                                                                         |
+| `check:doc`             | 222 paginas, todas com codigo                                                                                                                             |
+| `check:exemplos`        | nomes dos blocos `tsx` contra 806 nomes publicados por 14 entradas                                                                                        |
+| `check:readme`          | 134 de 134 pecas citadas, nenhuma declarada fora                                                                                                          |
+| `check:classes`         | 385 arquivos, toda classe gera regra, sem lista de excecao                                                                                                |
+| `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova                                                           |
+| `check:cli`             | 4 arquivos de mesa (`contrast`, `theme-check`, `dtcg`, `theme-roles`) fora do grafo da biblioteca                                                         |
+| `check:tamanho`         | raiz 152,1 de 156,2 KB gzip; 5 pecas sozinhas com as dependencias, a maior `EventCalendar` 122,4 de 128,6 KB; todas as entradas entre 90% e 98% do limite |
+| `check:skill`           | 142 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo                                                |
+| `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                                                             |
+| `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                                                                  |
+| `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                                                                            |
+| `check:pecas`           | 134, igual ao README, ao `package.json` e a meta do site                                                                                                  |
+| `check:demo`            | 133 de 134 na vitrine, 1 declarada fora (`ToastViewport`), em 21 paginas                                                                                  |
+| `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 91 marcadores no demo                                                                                |
+| `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                                                                          |
 
 As entradas mais perto do teto do `check:tamanho`: `./editor` em 98%, `.` em 97%, `./chart` em 95%.
 <!-- /gerado -->

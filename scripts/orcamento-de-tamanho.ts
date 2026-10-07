@@ -17,13 +17,26 @@
 export type Budget = { limit: number; why: string };
 
 /**
- * A linha do tree-shaking. `mark` e uma classe que so o `Button` escreve: o
- * pacote medido tem que conte-la, senao o numero e de um arquivo vazio.
+ * Uma peca importada sozinha da raiz, empacotada com as dependencias de
+ * terceiro DENTRO e so os peers de fora. `mark` e um texto que so a peca
+ * escreve, e que nenhum modulo que ela importa escreve: o pacote medido tem
+ * que conte-lo, senao o numero e de um arquivo vazio.
+ *
+ * As pecas de dependencia pesada tem folga de 5%, e nao de 10%: o numero
+ * delas e grande, e 10% de 120 KB sao 12 KB - uma Combobox inteira entrou no
+ * Calendar, medido, e coube nos 10% sem acusar. O que ninguem decide (versao
+ * do minificador, ajuste de classe) mexe em centenas de bytes, e as
+ * dependencias estao presas pelo bun.lock.
  */
-export const BUTTON_ALONE = {
-  name: "Button sozinho",
-  mark: "motion-safe:active:scale-[0.985]",
-};
+export type AlonePiece = { name: string; piece: string; mark: string; headroom?: number };
+
+export const ALONE: AlonePiece[] = [
+  { name: "Button sozinho", piece: "Button", mark: "motion-safe:active:scale-[0.985]" },
+  { name: "Calendar sozinho", piece: "Calendar", mark: "calc((100vw_-_3.5rem)/7)", headroom: 1.05 },
+  { name: "DatePicker sozinho", piece: "DatePicker", mark: "Escolher data", headroom: 1.05 },
+  { name: "DataTable sozinho", piece: "DataTable", mark: "[data-rc-keep-row]", headroom: 1.05 },
+  { name: "EventCalendar sozinho", piece: "EventCalendar", mark: "bg-surface px-3 py-2", headroom: 1.05 },
+];
 
 export const BUDGET: Record<string, Budget> = {
   ".": {
@@ -57,5 +70,21 @@ export const BUDGET: Record<string, Budget> = {
   "Button sozinho": {
     limit: 13_900,
     why: "12,3 KB, e 36,9 KB minificados, com as dependencias DENTRO e so os peers de fora: o Button, o `cn` com o tailwind-merge (a maior parte), o `useRender` da Base UI e o cva. Antes do `unbundle` no tsdown.config.ts este numero era 129 KB, porque o indice unico arrastava a Base UI inteira. Se ele pular para a casa das centenas, o tree-shaking quebrou de novo - e o `sideEffects` do package.json e o primeiro lugar a olhar.",
+  },
+  "Calendar sozinho": {
+    limit: 89_700,
+    why: "83,4 KB, e 257,9 KB minificados, com as dependencias DENTRO e so os peers de fora. Medido em 07/10/2026, quando a linha nasceu: o react-day-picker com o date-fns e o @date-fns/tz, e o Select da Base UI com o posicionamento do floating-ui, que o mes e o ano do cabecalho abrem desde o de019bc (26/09/2026). Antes desse commit este numero era 32,3 KB (109,1 KB minificados): o Select sozinho custou 51 KB em gzip, +158%, e o `.` acusou so 384 B, porque as entradas do exports contam o codigo proprio e deixam as dependencias de fora. Esta linha existe para o proximo peso assim ficar vermelho no commit que o traz. O bundler e o do bun, que poda a Base UI menos que o do Vite: o numero e para comparar consigo mesmo, e nao com o que um app real mede.",
+  },
+  "DatePicker sozinho": {
+    limit: 115_500,
+    why: "107,4 KB, e 330,6 KB minificados, com as dependencias DENTRO e so os peers de fora. Medido em 07/10/2026: o Calendar inteiro (react-day-picker, date-fns e o Select da Base UI do mes e do ano) mais o CalendarPanel, que abre em Popover na mesa e em Drawer no toque - e os dois trazem o Dialog e o posicionamento da Base UI. Antes do de019bc era 95,5 KB: o Select do Calendar custou 12 KB aqui, menos que no Calendar porque o floating-ui ja vinha pelo Popover.",
+  },
+  "DataTable sozinho": {
+    limit: 52_900,
+    why: "49,2 KB, e 157,6 KB minificados, com as dependencias DENTRO e so os peers de fora. Medido em 07/10/2026: a @tanstack/react-table (o core e o store, a maior parte), a @tanstack/react-virtual da rolagem virtual, o Checkbox da Base UI da selecao de linha, e a Pagination, o Alert, o EmptyState e o Skeleton da casa. Sem Popover nem Select: se o floating-ui aparecer aqui, alguma parte da tabela passou a abrir camada.",
+  },
+  "EventCalendar sozinho": {
+    limit: 131_700,
+    why: "122,4 KB, e 379,3 KB minificados, com as dependencias DENTRO e so os peers de fora. Medido em 07/10/2026, e e a peca mais pesada da raiz: o Calendar inteiro (react-day-picker, date-fns e o Select da Base UI do mes e do ano), o CalendarPanel com Popover e Drawer, o Tooltip, o ToggleGroup da troca de vista, e as vistas de mes, semana e dia. Antes do de019bc era 110,7 KB: o Select do Calendar custou 12 KB aqui.",
   },
 };

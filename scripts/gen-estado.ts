@@ -330,7 +330,8 @@ const BLOCKS: Record<string, (m: Measures) => string> = {
     const share = (entry: { bytes: number; limit: number }) =>
       Math.round((entry.bytes / entry.limit) * 100);
     const root = size.entries.find((entry) => entry.name === ".")!;
-    const button = size.entries.find((entry) => entry.name.startsWith("Button"))!;
+    const alone = size.entries.filter((entry) => entry.name.endsWith(" sozinho"));
+    const heaviest = [...alone].sort((a, b) => b.bytes - a.bytes)[0]!;
     const shares = size.entries.map(share);
     const closest = [...size.entries]
       .sort((a, b) => share(b) - share(a))
@@ -390,7 +391,8 @@ const BLOCKS: Record<string, (m: Measures) => string> = {
       ],
       [
         "check:tamanho",
-        `raiz ${kb(root.bytes)} de ${kb(root.limit)} KB gzip; \`Button\` sozinho ${kb(button.bytes)} de ${kb(button.limit)} KB; ` +
+        `raiz ${kb(root.bytes)} de ${kb(root.limit)} KB gzip; ${alone.length} pecas sozinhas com as dependencias, ` +
+          `a maior ${code(heaviest.name.replace(/ sozinho$/, ""))} ${kb(heaviest.bytes)} de ${kb(heaviest.limit)} KB; ` +
           `todas as entradas entre ${Math.min(...shares)}% e ${Math.max(...shares)}% do limite`,
       ],
       [
