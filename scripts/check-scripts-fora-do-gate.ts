@@ -54,6 +54,8 @@ const OUT: Record<string, string> = {
     "Servidor estatico da vitrine: nao confere nada, so serve `demo/` para o Chrome do `shot`.",
   "scripts/props-do-catalogo-nativo.ts":
     "Le os tipos do pacote nativo, e react e react-native so estao instalados em `examples/native`, que nao e workspace: `bun install --frozen-lockfile` na raiz nunca os traz. Pior do que falhar, ele PASSARIA mentindo - sem os peers, `Omit<TextInputProps, ...> & {...}` colapsa e dez pecas saem sem props. Por isso a tabela e artefato comitado: quem gera precisa do app instalado, e o `--check` roda no job `nativo` da CI, ao lado do `check:native:types`. O que o gate alcanca dela e o `check:assinatura`, que le o JSON.",
+  "scripts/receita-do-zero.ts":
+    "Faz o que uma pessoa de fora faria: `npm pack` do `native/`, `create-expo-app@latest`, os comandos do bloco de Instalacao do `native/README.md`, o init, o CSS, `tsc` e `expo export` de iOS e web. Precisa de rede (registro do npm, template do Expo) e de minutos, e mede o que o mundo publicou hoje, nao o commit - no gate, uma versao nova de terceiro deixaria o `check` vermelho sem ninguem tocar no repo. Roda toda segunda em `.github/workflows/receita-do-zero.yml`, e na maquina com `bun run scripts/receita-do-zero.ts <pasta fora do repo>`. O que o gate alcanca da receita e o `check:receita`, que compara o init com o `examples/native` sem rede.",
   "scripts/fumaca-do-mcp.ts":
     "Sobe o `mcp/dist/cli.js` com `node` pelo stdio, e o `mcp/dist` so existe depois do `bun run build`. Roda no `ci.yml` logo depois do build, e no `release-mcp.yml` antes do `npm publish`. O que o gate alcanca do servidor e o `test/servidor-mcp.test.ts`, que o sobe em memoria.",
 };

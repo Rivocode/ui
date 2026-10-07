@@ -1,0 +1,34 @@
+name: receita-do-zero
+
+# A receita de instalacao do pacote nativo, do zero, como uma pessoa de fora:
+# `npm pack` do `native/`, `create-expo-app@latest`, os comandos do bloco de
+# Instalacao do `native/README.md`, o init, o CSS, uma tela minima, `tsc` e
+# `expo export` de iOS e web. A logica mora em `scripts/receita-do-zero.ts`.
+#
+# Nasceu em 07/10/2026: num Expo novo com npm a receita morria em ERESOLVE
+# (`nativewind@preview` pede `react-native-css@3.1.0-rc.0` exato) e, passado
+# isso, o bundle de iOS morria com "Specifier, found ()" (lightningcss da 1.31
+# em diante). Nada acusou, porque o `check:receita` compara o init com o
+# `examples/native` - os dois nossos - e ninguem instalava do zero.
+#
+# Agendado, e nao em PR: mede o que o registro e o template do Expo sao HOJE,
+# e eles mudam sem commit nosso. Vermelho aqui e o mundo que andou.
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+jobs:
+  receita:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun run scripts/receita-do-zero.ts "$RUNNER_TEMP/receita-do-zero"
