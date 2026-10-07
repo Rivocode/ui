@@ -192,6 +192,12 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   proposito. O `babel.config.js` e o unico fato pela AUSENCIA, e ele foi
   medido: escrever um com `presets: ["babel-preset-expo"]` derruba um app do
   Expo 57 inteiro, porque nesse SDK o preset nao resolve da raiz.
+  Ela cobra tambem os dois guias (`native/README.md` e o
+  `react-native.md` do site): o que neles e FATO da receita - a linha de
+  instalacao, a saida do comando, o conteudo de cada arquivo, as chaves de
+  JSON - mora entre marcadores `<!-- receita:<id> -->` e e escrito por
+  `bun run scripts/receita-nos-guias.ts` a partir do `init.mjs`. Bloco velho
+  reprova, e valor da receita copiado a mao para fora de um bloco tambem.
 - `check:scripts` - todo `scripts/*.ts` tem que ser alcancavel a partir do
   `check`, ou ter linha em `OUT` dizendo o que o impede. Nasceu porque o
   `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres

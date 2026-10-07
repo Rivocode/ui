@@ -12,12 +12,14 @@ nativo em <https://ds.rivocode.com.br/react-native.md>.
 
 ## Instalação
 
+<!-- receita:install -->
 ```sh
 npx expo install nativewind@preview react-native-css@rc react-native-reanimated react-native-keyboard-controller
 npm install -D tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
 npx rivocode-ui-native-init
 ```
+<!-- /receita:install -->
 
 **É `nativewind@preview`, e não `nativewind`.** A tag `latest` do NativeWind
 ainda aponta para a `4.2.6`, e o peer deste pacote é `>=5.0.0-preview.1`: `npx
@@ -61,8 +63,10 @@ teclado uma segunda vez.
 
 ### Os sete arquivos, e o que cada um segura
 
-O `npx rivocode-ui-native-init` escreve a receita inteira e imprime o que fez:
+O `npx rivocode-ui-native-init` escreve a receita inteira e imprime o que fez.
+Num app recém-criado pelo `create-expo-app`, a saída é esta:
 
+<!-- receita:transcript -->
 ```
 Receita do @rivocode/ui-native em meu-app/:
 
@@ -77,6 +81,7 @@ Receita do @rivocode/ui-native em meu-app/:
 
   = peers obrigatorios    os 5 estao no package.json
 ```
+<!-- /receita:transcript -->
 
 `+` é arquivo novo, `~` é uma chave de JSON trocada com o valor antigo à vista,
 `=` é o que já estava certo, e `!` é o que ele **não** tocou. Arquivo que nasce
@@ -93,7 +98,9 @@ Depois dos arquivos ele confere os peers obrigatórios no `package.json` do app
 `npx expo install` com os nomes que faltam e termina com código 1: sem o
 `react-native-keyboard-controller` o `RivoProvider` não monta.
 
-São sete, e cada um por um motivo que morde:
+São sete, e cada um por um motivo que morde. Os blocos abaixo são o que o
+comando escreve, tirados do próprio `native/scripts/init.mjs`: não há segunda
+cópia para envelhecer.
 
 1. **`babel.config.js`**. **O certo é não existir.** Sem arquivo de Babel
    nenhum, o `@expo/metro-config` cai no `babel-preset-expo` por conta própria
@@ -112,25 +119,71 @@ São sete, e cada um por um motivo que morde:
    bundle, com as variáveis do tema e **nenhum utilitário gerado**, e a tela
    renderiza sem estilo, sem erro e sem pista — o mesmo silêncio do `@source`
    esquecido no web.
+
+   <!-- receita:postcss.config.mjs -->
+   ```js
+   export default {
+     plugins: {
+       "@tailwindcss/postcss": {},
+     },
+   };
+   ```
+   <!-- /receita:postcss.config.mjs -->
+
 3. **`metro.config.js`**. `withNativewind(config)`, que troca o transformador
    do metro pelo do `react-native-css`.
-4. **`app.json`**. `"userInterfaceStyle": "automatic"`, senão o iOS prende a
-   aparência no claro e o tema escuro nunca chega. O template do Expo nasce em
-   `"light"`, então esta é a chave que o comando quase sempre troca.
-5. **`package.json`**. `"browserslist": ["chrome 130", "safari 18",
-   "firefox 130"]`. Sem isso o passe web que o Expo roda antes do compilador
-   nativo reescreve o `light-dark()` dos tokens num polyfill de vars órfãs, e a
-   compilação morre com "Specifier, found ()". É esse arquivo que sustenta a
-   troca entre os dois temas de casa em runtime.
 
-   Na mesma passada ele fixa o `lightningcss` em `1.30.1` — em `overrides`
-   no npm e no bun, `resolutions` no yarn, `pnpm.overrides` no pnpm, conforme o
-   lockfile que achar. Da 1.31 em diante o compilador do `react-native-css`
-   quebra com o mesmo "Specifier, found ()", e não por causa do seu CSS: uma
-   borda tracejada já basta. O override só vale depois de instalar de novo, e
-   o comando lembra disso no fim.
+   <!-- receita:metro.config.js -->
+   ```js
+   const { getDefaultConfig } = require("expo/metro-config");
+   const { withNativewind } = require("nativewind/metro");
+
+   module.exports = withNativewind(getDefaultConfig(__dirname));
+   ```
+   <!-- /receita:metro.config.js -->
+
+4. **`app.json`**. Uma chave só, senão o iOS prende a aparência no claro e o
+   tema escuro nunca chega. O template do Expo nasce em `"light"`, então esta é
+   a chave que o comando quase sempre troca.
+
+   <!-- receita:app.json -->
+   ```json
+   "expo": { "userInterfaceStyle": "automatic" }
+   ```
+   <!-- /receita:app.json -->
+
+5. **`package.json`**. Duas chaves, e as duas morrem com o mesmo "Specifier,
+   found ()":
+
+   <!-- receita:package.json -->
+   ```json
+   "browserslist": ["chrome 130", "safari 18", "firefox 130"],
+   "overrides": { "lightningcss": "1.30.1" }
+   ```
+   <!-- /receita:package.json -->
+
+   O `browserslist` cravado em navegadores modernos não é sobre navegador
+   nenhum: sem ele o passe web que o Expo roda antes do compilador nativo
+   reescreve o `light-dark()` dos tokens num polyfill de vars órfãs, e a
+   compilação morre. É esse campo que sustenta a troca entre os dois temas de
+   casa em runtime.
+
+   O `lightningcss` fixo é o que fecha o bundle de iOS e Android: da 1.31 em
+   diante o compilador do `react-native-css` quebra, e não por causa do seu
+   CSS — uma borda tracejada já basta. A chave depende do gerenciador, e o
+   comando escolhe pelo lockfile que achar:
+
+   <!-- receita:override -->
+   - npm e bun: `overrides.lightningcss`
+   - yarn: `resolutions.lightningcss`
+   - pnpm: `pnpm.overrides.lightningcss`
+   <!-- /receita:override -->
+
+   O override só vale depois de instalar de novo, e o comando lembra disso no
+   fim.
 6. **`global.css`**. A fonte do CSS:
 
+   <!-- receita:global.css -->
    ```css
    @import "tailwindcss/theme.css" layer(theme);
    @import "@rivocode/ui-native/theme.css";
@@ -144,6 +197,7 @@ São sete, e cada um por um motivo que morde:
    @source not inline("filter");
    @source not inline("transform");
    ```
+   <!-- /receita:global.css -->
 
    As quatro últimas linhas não são higiene: o scanner do Tailwind lê o código
    como texto, e `shadow`, `invert`, `filter` e `transform` aparecem no
@@ -154,11 +208,13 @@ São sete, e cada um por um motivo que morde:
 7. **`nativewind-env.d.ts`**. Duas linhas, e a primeira é a que o `tsc` do seu
    app cobra:
 
+   <!-- receita:nativewind-env.d.ts -->
    ```ts
    /// <reference types="nativewind/types" />
 
    declare module "*.css";
    ```
+   <!-- /receita:nativewind-env.d.ts -->
 
    Este pacote publica **fonte**, e não `dist`: o `tsc` do seu app compila as
    nossas peças junto com o seu código. Sem essa referência, `className` não

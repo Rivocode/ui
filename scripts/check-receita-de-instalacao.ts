@@ -54,8 +54,17 @@
  * `bun.lock` do exemplo, que diz o que de fato foi resolvido: todo
  * `lightningcss` tem que ser o que o comando fixa, e o `react-native-css` tem
  * que ser o que o `nativewind` resolvido pede.
+ *
+ * Esse mesmo conserto teve de ser escrito a mao em TRES lugares: no comando,
+ * no `native/README.md` e no guia do site - e os dois textos ja nao concordavam
+ * entre si (um contava sete arquivos, o outro cinco, e o `global.css` do site
+ * vinha sem as quatro linhas `@source not inline(...)`). Por isso a guarda
+ * cobra tambem os guias: o que neles e FATO da receita sai do comando, entre
+ * marcadores, por `scripts/receita-nos-guias.ts`, e aqui fica vermelho o bloco
+ * desatualizado e o valor da receita copiado a mao para fora de um bloco.
  */
 import { existsSync } from "node:fs";
+import { GUIDES, guideProblems } from "./receita-nos-guias";
 import { countAtLeast } from "./varredura";
 
 const EXAMPLE = "examples/native";
@@ -295,6 +304,8 @@ if (recipe.BABEL_V4.length === 0) {
   );
 }
 
+const guides = guideProblems();
+
 if (problems.length > 0) {
   console.error(
     `${problems.length} divergencia(s) entre a receita do \`rivocode-ui-native-init\` e o ${EXAMPLE}:\n`,
@@ -302,10 +313,16 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`  ${problem}\n`);
   console.error(
     `  O ${EXAMPLE} e a fonte, porque e o unico dos dois que roda. Conserte o\n` +
-      `  ${RECIPE} para dizer o mesmo, e o \`native/README.md\` junto.`,
+      `  ${RECIPE} para dizer o mesmo, e rode \`bun run scripts/receita-nos-guias.ts\`.`,
   );
-  process.exit(1);
 }
+
+if (guides.length > 0) {
+  console.error(`${guides.length} divergencia(s) entre a receita do \`rivocode-ui-native-init\` e os guias:\n`);
+  for (const problem of guides) console.error(`  ${problem}\n`);
+}
+
+if (problems.length + guides.length > 0) process.exit(1);
 
 console.log(
   `A receita de ${new Set(recipe.RECIPE.map((item) => item.name)).size} arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ` +
@@ -315,5 +332,6 @@ console.log(
     `${recipe.CSS_ENGINE} ${engineFound} como o nativewind pede, ${mineTyping.length} fatos de tipagem, ` +
     `${recipe.REQUIRED_PEERS.length} peers obrigatorios instalados, ` +
     `e nenhum arquivo de Babel nos dois ` +
-    `(${recipe.BABEL_V4.length} marca da v4 recusada em ${recipe.BABEL_NAMES.length} nomes).`,
+    `(${recipe.BABEL_V4.length} marca da v4 recusada em ${recipe.BABEL_NAMES.length} nomes); ` +
+    `${GUIDES.join(" e ")} com os blocos em dia.`,
 );

@@ -302,14 +302,44 @@ recusa o que conseguiu medir.
 
 Num app Expo:
 
+<!-- receita:install -->
 ```sh
-npx expo install nativewind@preview react-native-css@rc react-native-reanimated react-native-keyboard-controller tailwindcss @tailwindcss/postcss postcss
+npx expo install nativewind@preview react-native-css@rc react-native-reanimated react-native-keyboard-controller
+npm install -D tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
 npx rivocode-ui-native-init
 ```
+<!-- /receita:install -->
 
-O `npx rivocode-ui-native-init` escreve os arquivos abaixo e confere as versões;
-esta página explica o que cada um segura.
+A última linha é a que importa: o `npx rivocode-ui-native-init` escreve os
+arquivos de configuração que o pacote exige, confere os peers e a versão do
+motor de CSS, e imprime o que fez. **Não escreva esses arquivos à mão** — cada
+um tem um detalhe que só aparece quebrando, e o comando é a cópia que o
+repositório confere contra o app de exemplo que de fato roda. Num app
+recém-criado pelo `create-expo-app`, a saída é esta:
+
+<!-- receita:transcript -->
+```
+Receita do @rivocode/ui-native em meu-app/:
+
+  = babel.config.js       nao existe, e e assim que tem que ser
+  + postcss.config.mjs    criado
+  + metro.config.js       criado
+  + global.css            criado
+  + nativewind-env.d.ts   criado
+  ~ app.json              expo.userInterfaceStyle: "light" -> "automatic"
+  + package.json          browserslist adicionado
+  + package.json          overrides.lightningcss adicionado
+
+  = peers obrigatorios    os 5 estao no package.json
+```
+<!-- /receita:transcript -->
+
+`+` é arquivo novo, `~` é uma chave de JSON trocada com o valor antigo à vista,
+`=` é o que já estava certo, e `!` é o que ele **não** tocou: arquivo que já
+existe com outro conteúdo nunca é reescrito calado, o comando termina com
+código 1, e só `--force` faz a receita vencer. `--dry-run` mostra o plano sem
+escrever nada.
 
 O `react-native-keyboard-controller` é o que impede o teclado de cobrir o
 campo, e ele vem incluído no Expo Go do SDK 57. O `KeyboardProvider` que ele
@@ -320,52 +350,96 @@ sobe com o teclado; o `Sheet` e o `Dialog` sobem sozinhos.
 
 O `@preview` não é enfeite: no npm a tag `latest` do NativeWind ainda é a
 4.2.6, e este pacote pede a 5 (`nativewind: ">=5.0.0-preview.1"` no peer).
-Sem a tag você instala a v4, e aí o `metro.config.js` logo abaixo nem carrega:
-a v5 exporta `withNativewind`, a v4 exporta `withNativeWind`, com W
-maiúsculo, e o erro que sai é um `undefined is not a function` que não conta
-de onde veio. Saiba antes de começar: **a NativeWind 5 ainda é pré-lançamento**
-e é o único caminho que o `@rivocode/ui-native` conhece hoje, então ir para
-produção com ele é ir para produção sobre um preview.
+Sem a tag você instala a v4, e aí o `metro.config.js` nem carrega: a v5
+exporta `withNativewind`, a v4 exporta `withNativeWind`, com W maiúsculo, e o
+erro que sai é um `undefined is not a function` que não conta de onde veio.
+Saiba antes de começar: **a NativeWind 5 ainda é pré-lançamento** e é o único
+caminho que o `@rivocode/ui-native` conhece hoje, então ir para produção com
+ele é ir para produção sobre um preview.
 
 O `react-native-css@rc` anda junto: o `nativewind@preview` pede a versão
 exata da linha `rc` do `react-native-css`, e sem a tag o npm instala a
 `latest`, que fica atrás. O `expo install` não reclama, e o `npm install`
-seguinte morre em `ERESOLVE`.
+seguinte morre em `ERESOLVE`. O comando confere a versão instalada contra a
+que o NativeWind pede e imprime o `npx expo install` certo quando elas
+divergem.
 
-Cinco arquivos do app participam, cada um por um motivo que morde:
+### O que o comando escreve, e por quê
 
-**1. `metro.config.js`**. O NativeWind entra no build:
+Os blocos abaixo saem do próprio comando, e não de uma cópia: é isto que ele
+escreve no seu app.
 
+**`babel.config.js`: o certo é não existir.** Sem arquivo de Babel, o Expo cai
+no `babel-preset-expo` sozinho e liga o plugin de worklets junto. Escrever um à
+mão com `presets: ["babel-preset-expo"]` derruba o app no SDK 57, com
+`MODULE_NOT_FOUND` antes do primeiro módulo. Se o seu já tem um, o comando o
+mantém e acusa pelo nome as duas linhas da receita v4 do NativeWind que não
+valem mais: `jsxImportSource: "nativewind"` e o preset `nativewind/babel`.
+
+**`postcss.config.mjs`**. É ele que faz o Tailwind rodar no passe de CSS do
+metro; sem ele a tela renderiza sem estilo, sem erro e sem pista:
+
+<!-- receita:postcss.config.mjs -->
+```js
+export default {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+```
+<!-- /receita:postcss.config.mjs -->
+
+**`metro.config.js`**. O NativeWind entra no build:
+
+<!-- receita:metro.config.js -->
 ```js
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativewind } = require("nativewind/metro");
 
 module.exports = withNativewind(getDefaultConfig(__dirname));
 ```
+<!-- /receita:metro.config.js -->
 
-**2. `package.json`**. Navegadores modernos, cravados:
+**`app.json`**. Sem esta chave o iOS prende a aparência no claro e o tema
+escuro nunca chega. O template do Expo nasce em `"light"`, então é a chave que
+o comando quase sempre troca:
 
+<!-- receita:app.json -->
+```json
+"expo": { "userInterfaceStyle": "automatic" }
+```
+<!-- /receita:app.json -->
+
+**`package.json`**. Duas chaves:
+
+<!-- receita:package.json -->
 ```json
 "browserslist": ["chrome 130", "safari 18", "firefox 130"],
 "overrides": { "lightningcss": "1.30.1" }
 ```
+<!-- /receita:package.json -->
 
-Não é sobre navegador nenhum: o Expo roda um passe web no CSS antes do
-compilador nativo, e sem esse campo ele reescreve o `light-dark()` dos tokens
-num polyfill de vars órfãs que mata a compilação. É esta linha que sustenta a
-troca entre os dois temas de casa em runtime.
+O `browserslist` não é sobre navegador nenhum: o Expo roda um passe web no CSS
+antes do compilador nativo, e sem esse campo ele reescreve o `light-dark()` dos
+tokens num polyfill de vars órfãs que mata a compilação. É esta linha que
+sustenta a troca entre os dois temas de casa em runtime.
 
-O `overrides` fixa o `lightningcss`, e é o que fecha o bundle de iOS e Android:
+O override fixa o `lightningcss`, e é o que fecha o bundle de iOS e Android:
 da 1.31 em diante o compilador do `react-native-css` quebra com "expected an
-object-like struct named Specifier, found ()" já numa borda tracejada. Ele só
-vale depois de instalar de novo. No yarn a chave é `resolutions`; no pnpm,
-`pnpm.overrides`.
+object-like struct named Specifier, found ()" já numa borda tracejada. A chave
+depende do gerenciador, e o comando escolhe pelo lockfile que achar:
 
-**3. `app.json`**. `"userInterfaceStyle": "automatic"`, senão o iOS prende a
-aparência no claro e o tema escuro nunca chega.
+<!-- receita:override -->
+- npm e bun: `overrides.lightningcss`
+- yarn: `resolutions.lightningcss`
+- pnpm: `pnpm.overrides.lightningcss`
+<!-- /receita:override -->
 
-**4. `global.css`**. A fonte do CSS:
+Ele só vale depois de instalar de novo, e o comando lembra disso no fim.
 
+**`global.css`**. A fonte do CSS:
+
+<!-- receita:global.css -->
 ```css
 @import "tailwindcss/theme.css" layer(theme);
 @import "@rivocode/ui-native/theme.css";
@@ -373,9 +447,22 @@ aparência no claro e o tema escuro nunca chega.
 
 @source "./App.tsx";
 @source "./node_modules/@rivocode/ui-native/src";
-```
 
-O app **não importa o `global.css`**: importa o pré-compilado.
+@source not inline("shadow");
+@source not inline("invert");
+@source not inline("filter");
+@source not inline("transform");
+```
+<!-- /receita:global.css -->
+
+As quatro últimas linhas não são higiene: o scanner do Tailwind lê o código
+como texto, e `shadow`, `invert`, `filter` e `transform` aparecem no
+TypeScript das peças como chave e nome de prop, nunca como `className`.
+`.shadow` redeclara `--tw-shadow`, e var declarada duas vezes derruba o
+compilador nativo.
+
+O app **não importa o `global.css`**: importa o pré-compilado, que não sai do
+`init` porque depende do seu código.
 
 ```sh
 npx rivocode-ui-native-css   # lê global.css, escreve generated.css
@@ -385,26 +472,28 @@ O pipeline do metro tropeça em `@import` e `@property` dentro do compilador
 nativo; o comando entrega um arquivo já resolvido, e falha **com o nome da
 var** quando algo não traduziria. Usou uma classe nova, rode de novo.
 
-**5. `nativewind-env.d.ts`**. O TypeScript aprende o `className`:
+**`nativewind-env.d.ts`**. O TypeScript aprende o `className`:
 
+<!-- receita:nativewind-env.d.ts -->
 ```ts
 /// <reference types="nativewind/types" />
-```
 
-O sintoma é o projeto novo abrir com uma parede de erro: *Property
+declare module "*.css";
+```
+<!-- /receita:nativewind-env.d.ts -->
+
+O sintoma, sem ele, é o projeto novo abrir com uma parede de erro: *Property
 `className` does not exist on type ...* em toda `View`, `Text` e `Pressable`
 que você escreveu, e nas do `@rivocode/ui-native` junto (foram 167 num app
 recém-criado). A causa é que `className` não existe no React Native: quem o
 acrescenta às props é uma declaração de módulo que mora na NativeWind, e ela
 só entra no programa se este arquivo a referenciar. Nada disso aparece em
 runtime (o app roda e as cores estão certas), então é fácil ler os erros
-como culpa da biblioteca.
+como culpa da biblioteca. A segunda linha é do `generated.css`, que o arquivo
+de entrada importa no topo.
 
-O `withNativewind` do passo 1 gera o arquivo na primeira vez que o metro
-sobe, com este nome exato (a opção `typescriptEnvPath` muda o caminho).
-Escreva-o à mão quando o `tsc` roda antes do app (CI, ou o editor num clone
-recém-baixado), e **não o coloque no `.gitignore`**: sem ele versionado, o
-erro volta a cada clone.
+**Não o coloque no `.gitignore`**: sem ele versionado, o erro volta a cada
+clone, no `tsc` da CI ou no editor de quem acabou de baixar o projeto.
 
 ## O Provider, uma vez, na raiz
 

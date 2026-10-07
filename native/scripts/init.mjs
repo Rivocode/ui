@@ -66,6 +66,13 @@ export const LIGHTNINGCSS = "1.30.1";
 
 export const CSS_ENGINE = "react-native-css";
 
+export const INSTALL = [
+  `npx expo install nativewind@preview ${CSS_ENGINE}@rc react-native-reanimated react-native-keyboard-controller`,
+  `npm install -D tailwindcss ${POSTCSS_PLUGINS.join(" ")} postcss`,
+  `npm install ${SPEC}`,
+  "npx rivocode-ui-native-init",
+];
+
 export function overridePath(root) {
   if (existsSync(resolve(root, "pnpm-lock.yaml"))) return ["pnpm", "overrides", "lightningcss"];
   if (existsSync(resolve(root, "yarn.lock"))) return ["resolutions", "lightningcss"];
@@ -338,6 +345,18 @@ const WHY = {
 
 const MARKS = { escreve: "+", sobrescreve: "~", mantem: "=", conflito: "!" };
 
+export function headline(root) {
+  return `Receita do ${SPEC} em ${basename(root)}/:`;
+}
+
+export function stepLine(step) {
+  return `  ${MARKS[step.action]} ${step.name.padEnd(21)} ${step.note}`;
+}
+
+export function peersLine() {
+  return `  = peers obrigatorios    os ${REQUIRED_PEERS.length} estao no package.json`;
+}
+
 function main() {
   const argv = process.argv.slice(2);
   const force = argv.includes("--force");
@@ -351,11 +370,11 @@ function main() {
 
   const steps = plan(root, { force });
 
-  console.log(`Receita do ${SPEC} em ${basename(root)}/:\n`);
+  console.log(`${headline(root)}\n`);
 
   for (const step of steps) {
     if (step.body !== undefined && !dry) writeFileSync(resolve(root, step.name), step.body);
-    console.log(`  ${MARKS[step.action]} ${step.name.padEnd(21)} ${step.note}`);
+    console.log(stepLine(step));
   }
 
   const stale = steps.filter((step) => step.babel);
@@ -402,7 +421,7 @@ function main() {
         "\n    KeyboardProvider que o provider traz dentro.",
     );
   } else {
-    console.log(`\n  = peers obrigatorios    os ${REQUIRED_PEERS.length} estao no package.json`);
+    console.log(`\n${peersLine()}`);
   }
 
   const engine = engineMismatch(root);
