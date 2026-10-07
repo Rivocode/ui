@@ -534,6 +534,7 @@ export const CSS_COMPOSED_PAIRS: Array<[string, string, string, number]> = [
   ["--rc-fg", "--rc-accent-subtle", "--rc-surface-raised", MIN_BODY],
   ["--rc-accent-text", "--rc-accent-subtle", "--rc-surface-raised", MIN_TEXT],
   ["--rc-danger-text", "--rc-danger-subtle", "--rc-surface-raised", MIN_TEXT],
+  ["--rc-warning-text", "--rc-warning-subtle", "--rc-surface-raised", MIN_TEXT],
   ["--rc-fg", "--rc-accent-subtle", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-accent-subtle", "--rc-surface", MIN_BODY],
   ["--rc-accent-text", "--rc-selected", "--rc-surface", MIN_TEXT],

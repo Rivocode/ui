@@ -84,6 +84,8 @@ const query = useQuery({ queryKey: ['notas'], queryFn: fetchInvoices })
   data={query.data}
   isLoading={query.isLoading}
   isError={query.isError}
+  isFetching={query.isFetching}
+  isRefetchError={query.isRefetchError}
   onRetry={() => query.refetch()}
   empty={{
     title: 'Nenhuma nota por aqui',
@@ -94,10 +96,14 @@ const query = useQuery({ queryKey: ['notas'], queryFn: fetchInvoices })
 </QueryBoundary>
 ```
 
-Use `isLoading`, e não `isFetching`. O `isLoading` só é verdadeiro na
-primeira busca, quando ainda não há nada para mostrar. O `isFetching` também é
-verdadeiro quando a consulta busca de novo em segundo plano, e passá-lo
-trocaria pelo esqueleto o que a pessoa já estava lendo.
+Em `isLoading` vai o `isLoading`, e não o `isFetching`. O `isLoading` só é
+verdadeiro na primeira busca, quando ainda não há nada para mostrar. O
+`isFetching` também é verdadeiro quando a consulta busca de novo em segundo
+plano, e por isso tem prop própria: com ele, o dado fica na tela, a região ganha
+`aria-busy` e uma barra fina corre no topo, em vez de o esqueleto cobrir o que a
+pessoa já estava lendo. O `isRefetchError` faz o mesmo pela falha: a busca que
+revalida falhou, o dado anterior fica, e um aviso acima dele oferece nova
+tentativa.
 
 ### Tabela e gráfico
 

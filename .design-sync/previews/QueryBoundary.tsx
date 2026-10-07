@@ -137,6 +137,45 @@ export function Empty() {
   )
 }
 
+/** Revalidando com o dado na tela */
+export function Refetching() {
+  return (
+    <Card className="max-w-lg">
+      <CardHeader>
+        <CardTitle>Últimas notas</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <QueryBoundary data={INVOICES} isFetching className="min-h-40">
+          {(invoices) => <Invoices invoices={invoices} />}
+        </QueryBoundary>
+      </CardContent>
+    </Card>
+  )
+}
+
+/** A revalidação falhou, e o dado fica */
+export function StaleAfterError() {
+  return (
+    <Card className="max-w-lg">
+      <CardHeader>
+        <CardTitle>Últimas notas</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <QueryBoundary
+          data={INVOICES}
+          isFetching={false}
+          isError
+          isRefetchError
+          onRetry={() => {}}
+          className="min-h-40"
+        >
+          {(invoices) => <Invoices invoices={invoices} />}
+        </QueryBoundary>
+      </CardContent>
+    </Card>
+  )
+}
+
 type Page = { items: Invoice[]; total: number }
 
 const PAGE: Page = { items: [], total: 0 }

@@ -95,6 +95,11 @@ type Invoice = {
   status: "Paga" | "Aberta";
 };
 
+const SHOWN_INVOICES: Invoice[] = [
+  { id: "1", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", status: "Paga" },
+  { id: "2", cliente: "Otica Central", value: "R$ 940,00", status: "Aberta" },
+];
+
 const ONE_FILTER: AppliedFilter[] = [{ id: "status", label: "Situacao", value: "Em aberto" }];
 
 const SIX_FILTERS: AppliedFilter[] = [
@@ -227,6 +232,35 @@ function Boundaries() {
               description: "Quando voce emitir a primeira, ela aparece nesta lista.",
               action: <Button size="sm">Emitir nota</Button>,
             }}
+          >
+            {(invoices) => <Invoices invoices={invoices} />}
+          </QueryBoundary>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Revalidando</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <QueryBoundary data={SHOWN_INVOICES} isFetching className="min-h-36">
+            {(invoices) => <Invoices invoices={invoices} />}
+          </QueryBoundary>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Dado velho com erro</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <QueryBoundary
+            data={SHOWN_INVOICES}
+            isFetching={false}
+            isError
+            isRefetchError
+            onRetry={() => {}}
+            className="min-h-36"
           >
             {(invoices) => <Invoices invoices={invoices} />}
           </QueryBoundary>

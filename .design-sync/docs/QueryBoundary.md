@@ -96,28 +96,56 @@ tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região
 volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
 estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
-## O que ela nao trata: dado velho enquanto revalida
+## Dado velho enquanto revalida
 
-`isLoading` e `isError` descrevem duas situacoes, e o caso mais comum de tela
-real e uma terceira: **ja ha dado na tela e uma nova busca esta correndo.** Se
-voce passar `isFetching` em `isLoading`, o esqueleto cobre o que a pessoa
-estava lendo; se nao passar nada, a atualizacao acontece sem sinal nenhum.
-
-A peca nao resolve isso hoje, e a escolha e sua:
+`isLoading` e `isError` descrevem a primeira busca, e o caso mais comum de tela
+real é outro: **já há dado na tela e uma nova busca está correndo**, porque a
+janela voltou ao foco, a chave foi invalidada ou o intervalo venceu. Para ele
+existem duas props, com os nomes do TanStack Query:
 
 ```tsx
-<QueryBoundary isLoading={query.isLoading} isError={query.isError} data={query.data}>
-  {(rows) => (
-    <div aria-busy={query.isFetching}>
-      <DataTable rows={rows} />
-    </div>
-  )}
+<QueryBoundary
+  data={query.data}
+  isLoading={query.isLoading}
+  isError={query.isError}
+  isFetching={query.isFetching}
+  isRefetchError={query.isRefetchError}
+  onRetry={() => query.refetch()}
+>
+  {(invoices) => <Invoices invoices={invoices} />}
 </QueryBoundary>
 ```
 
-`isLoading` do TanStack Query e verdadeiro so na primeira busca, que e o que a
-peca espera. `isFetching` e verdadeiro em toda busca, inclusive a que revalida
-- entao ele nao serve para `isLoading`, e serve para `aria-busy`.
+**`isFetching` não troca nada do que a pessoa está lendo.** Com dado na mão, os
+filhos ficam, a região que os envolve ganha `aria-busy="true"` e uma barra fina
+corre no topo dela, com o nome "Atualizando…" para o leitor de tela. Não há
+esqueleto por cima do dado, e a região viva que diz "Carregando…" fica calada:
+revalidação acontece a cada volta de foco, e anunciá-la toda vez seria ruído.
+Sem dado, `isFetching` é a primeira busca, e quem desenha é o carregando de
+sempre. Por isso ele pode receber o `isFetching` do TanStack Query direto, sem
+conta, e serve igual para o `isValidating` do SWR.
+
+Passar `isFetching`, verdadeiro ou falso, põe os filhos numa caixa: é ela que
+leva o `aria-busy` e segura a barra. A caixa é a mesma do começo ao fim, para os
+filhos não remontarem a cada busca, e sem a prop ela não existe: quem não
+revalida continua sem embrulho nenhum. Se o filho era item de `grid` ou
+`flex-1`, vista a caixa por `classNames.content`.
+
+**`isRefetchError` mantém o dado e avisa acima dele.** Quando a busca que
+revalida falha, o que estava na tela continua sendo a melhor informação que
+existe: apagá-lo para mostrar o erro tira da pessoa o que ela estava usando e
+não lhe dá nada no lugar. Com dado na mão, `isRefetchError` vence o `isError`:
+os filhos ficam, e um aviso em tom de atenção (`warning`, e não `danger`, porque
+a tela segue utilizável) diz "Não foi possível atualizar" e que os dados abaixo
+são da última busca que deu certo, com o botão do `onRetry`. Sem dado, ele vira
+o erro de sempre, que ocupa o lugar dos filhos.
+
+Sem `isRefetchError`, nada mudou: `isError` continua vencendo tudo e apagando a
+tela, inclusive com dado. É o que faz da prop uma escolha, e não uma quebra.
+
+`labels.refreshing` (padrão "Atualizando…") é o nome da barra, e
+`labels.refetchError` e `labels.stale` são o título e a linha do aviso de dado
+velho.
 
 ## Quem decide o vazio
 
@@ -172,6 +200,10 @@ O `Alert` do erro e o `EmptyState` do vazio entram pelo movimento deles. O conte
 os três de uma vez, que é onde mora a moldura que reserva a altura
 (`className="min-h-40"`). E não veste os filhos, que são seus.
 
+As três partes da revalidação têm nome próprio: `content` é a caixa dos filhos,
+que só existe com `isFetching`; `refreshing`, a barra fina do topo; e `stale`,
+o aviso de dado velho. O `className` não chega a nenhuma delas.
+
 ## Quando não usar
 
 **Não embrulhe `DataTable` nem `ChartContainer`.** As duas já recebem os quatro
@@ -196,6 +228,8 @@ Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e
 
 Quatro diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor e o tamanho. É a mesma nota que o `ChartContainer` já carrega.
 
-**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único jeito de vestir um final sem vestir os outros.
+A revalidação também porta: `isFetching` deixa os filhos na tela, diz `busy` ao leitor de tela e pulsa uma barra fina no topo, e `isRefetchError` mantém o dado com o aviso de atenção acima dele. A caixa dos filhos é uma `View`, que só existe com `isFetching`: o filho que era `flex-1` pede `classNames={{ content: "flex-1" }}`.
+
+**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`, e as três da revalidação, `content`, `refreshing` e `stale`. O `className` continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único jeito de vestir um final sem vestir os outros.
 
 O esqueleto genérico fica na peça, e não vem de quem chama: sem ele, `isLoading` sem `skeleton` colapsaria a tela para altura zero e ela pularia quando o dado chegasse. No celular isso dói mais, porque não há barra de rolagem nem indicador de rede para explicar a espera.

@@ -909,6 +909,26 @@ const CASES: Case[] = [
     parts: { empty: holds(says("Nenhuma nota")) },
   },
   {
+    name: "QueryBoundary revalidando com dado velho",
+    mount: (classNames) =>
+      render(
+        <QueryBoundary
+          data={["4813"]}
+          isFetching
+          isRefetchError
+          onRetry={noop}
+          classNames={classNames}
+        >
+          <Text>Lista</Text>
+        </QueryBoundary>,
+      ),
+    parts: {
+      content: both((node) => node.props.accessibilityState?.busy === true, holds(says("Lista"))),
+      refreshing: (node) => node.props.accessibilityRole === "progressbar",
+      stale: both("items-start", holds(says("Não foi possível atualizar"))),
+    },
+  },
+  {
     name: "Calendar",
     mount: (classNames) =>
       render(

@@ -1,8 +1,9 @@
 import { describe, expect, spyOn, test } from "bun:test";
+import { useEffect } from "react";
 import { Text, View } from "react-native";
 import type { ReactTestRenderer } from "react-test-renderer";
 
-import { QueryBoundary } from "../src";
+import { QueryBoundary, RivoProvider } from "../src";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 type Invoice = { id: string; customer: string };
@@ -338,5 +339,137 @@ describe("a moldura", () => {
       </QueryBoundary>,
     );
     expect(byClass(drawn, /min-h-40/)).toHaveLength(0);
+  });
+});
+
+describe("a revalidacao, com o dado ja na tela", () => {
+  test("isFetching deixa os filhos, diz busy ao leitor e pulsa a barra, sem esqueleto de espera", () => {
+    const screen = render(
+      <QueryBoundary data={INVOICES} isFetching>
+        {list}
+      </QueryBoundary>,
+    );
+
+    expect(textOf(screen)).toContain("Clínica São Lucas");
+    expect(byLabel(screen, "Carregando")).toHaveLength(0);
+    expect(busy(screen)).toHaveLength(1);
+
+    const bar = byRole(screen, "progressbar");
+    expect(bar).toHaveLength(1);
+    expect(bar[0]!.props.accessibilityLabel).toBe("Atualizando…");
+    expect(skeletons(screen)).toHaveLength(0);
+    expect(byClass(screen, /bg-accent-text/)).toHaveLength(1);
+  });
+
+  test("sem dado, isFetching e a primeira busca, e quem desenha e o esqueleto", () => {
+    const screen = render(
+      <QueryBoundary<Invoice[]> isLoading isFetching>
+        {list}
+      </QueryBoundary>,
+    );
+
+    expect(skeletons(screen)).toHaveLength(3);
+    expect(byRole(screen, "progressbar")).toHaveLength(0);
+  });
+
+  test("quando a busca termina, a barra sai e os filhos nao remontam", () => {
+    let mounts = 0;
+    function Row() {
+      useEffect(() => {
+        mounts += 1;
+      }, []);
+      return <Text>Clínica São Lucas</Text>;
+    }
+    const view = (fetching: boolean) => (
+      <RivoProvider>
+        <QueryBoundary data={INVOICES} isFetching={fetching}>
+          {() => <Row />}
+        </QueryBoundary>
+      </RivoProvider>
+    );
+
+    const screen = render(
+      <QueryBoundary data={INVOICES} isFetching>
+        {() => <Row />}
+      </QueryBoundary>,
+    );
+    act(() => screen.update(view(false)));
+
+    expect(byRole(screen, "progressbar")).toHaveLength(0);
+    expect(busy(screen)).toHaveLength(0);
+    expect(mounts).toBe(1);
+  });
+
+  test("labels.refreshing da o nome da barra, e classNames veste a caixa e a barra", () => {
+    const screen = render(
+      <QueryBoundary
+        data={INVOICES}
+        isFetching
+        labels={{ refreshing: "Refreshing" }}
+        classNames={{ content: "flex-1", refreshing: "h-1" }}
+      >
+        {list}
+      </QueryBoundary>,
+    );
+
+    const bar = byLabel(screen, "Refreshing");
+    expect(bar).toHaveLength(1);
+    expect(bar[0]!.props.className.split(" ")).toContain("h-1");
+    expect(bar[0]!.props.className.split(" ")).not.toContain("h-0.5");
+    expect(busy(screen)[0]!.props.className.split(" ")).toContain("flex-1");
+  });
+});
+
+describe("o erro com dado velho", () => {
+  test("isRefetchError deixa o dado e avisa acima dele, mesmo com isError ligado", () => {
+    let retries = 0;
+    const screen = render(
+      <QueryBoundary
+        data={INVOICES}
+        isError
+        isRefetchError
+        onRetry={() => (retries += 1)}
+        classNames={{ stale: "border-b" }}
+      >
+        {list}
+      </QueryBoundary>,
+    );
+
+    const text = textOf(screen);
+    expect(text).toContain("Clínica São Lucas");
+    expect(text).toContain("Não foi possível atualizar");
+    expect(text).toContain("Os dados abaixo são da última busca que deu certo.");
+    expect(text).not.toContain("Não foi possível carregar");
+    expect(byRole(screen, "alert")).toHaveLength(1);
+    expect(byClass(screen, /(^|\s)border-b(\s|$)/)).toHaveLength(1);
+
+    act(() => byRole(screen, "button")[0]!.props.onPress());
+    expect(retries).toBe(1);
+  });
+
+  test("sem dado, isRefetchError e o erro de sempre, que apaga a tela", () => {
+    const screen = render(
+      <QueryBoundary<Invoice[]> isRefetchError errorTitle="Não foi possível carregar as notas">
+        {list}
+      </QueryBoundary>,
+    );
+
+    expect(textOf(screen)).toContain("Não foi possível carregar as notas");
+    expect(textOf(screen)).not.toContain("Não foi possível atualizar");
+  });
+
+  test("os textos do aviso de dado velho moram em labels", () => {
+    const screen = render(
+      <QueryBoundary
+        data={INVOICES}
+        isRefetchError
+        labels={{ refetchError: "Could not refresh", stale: "Showing the last good data." }}
+      >
+        {list}
+      </QueryBoundary>,
+    );
+
+    expect(textOf(screen)).toContain("Could not refresh");
+    expect(textOf(screen)).toContain("Showing the last good data.");
   });
 });

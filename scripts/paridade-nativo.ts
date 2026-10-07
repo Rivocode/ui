@@ -749,7 +749,7 @@ const PARITY: Record<string, Row> = {
   },
   QueryBoundary: {
     state: "traduz",
-    note: "mesmos nomes e mesma ordem; texto vira `string`, e `classNames` com `loading`, `error` e `empty`",
+    note: "mesmos nomes e mesma ordem, `isFetching` e `isRefetchError` inclusive; texto vira `string`, e `classNames` com as seis partes do web",
     page:
       "Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio " +
       "só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o " +
@@ -759,7 +759,12 @@ const PARITY: Record<string, Row> = {
       "`errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`. " +
       "O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor " +
       "e o tamanho. É a mesma nota que o `ChartContainer` já carrega.\n\n" +
-      "**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` " +
+      "A revalidação também porta: `isFetching` deixa os filhos na tela, diz `busy` ao leitor " +
+      "de tela e pulsa uma barra fina no topo, e `isRefetchError` mantém o dado com o aviso de " +
+      "atenção acima dele. A caixa dos filhos é uma `View`, que só existe com `isFetching`: o " +
+      "filho que era `flex-1` pede `classNames={{ content: \"flex-1\" }}`.\n\n" +
+      "**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`, e as três da " +
+      "revalidação, `content`, `refreshing` e `stale`. O `className` " +
       "continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que " +
       "reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a " +
       "borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único " +

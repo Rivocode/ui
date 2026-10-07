@@ -8,6 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { cn } from "./cn";
 import { useMotion } from "./motion";
 
 export function Skeleton({ className }: { className?: string }) {
@@ -32,5 +33,5 @@ export function Skeleton({ className }: { className?: string }) {
     return { opacity: glow.value };
   });
 
-  return <Animated.View className={`rounded-sm bg-skeleton ${className ?? ""}`} style={style} />;
+  return <Animated.View className={cn("rounded-sm bg-skeleton", className)} style={style} />;
 }

@@ -1,4 +1,4 @@
-import { expect, spyOn, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
@@ -285,4 +285,132 @@ test("classNames veste cada final pelo nome, sem `[&_div]`", () => {
     </QueryBoundary>,
   );
   expect(empty.querySelector(".vazio")).not.toBeNull();
+});
+
+describe("a revalidacao, com o dado ja na tela", () => {
+  test("isFetching deixa os filhos, marca a regiao ocupada e corre a barra, sem esqueleto", () => {
+    const { container } = withTheme(
+      <QueryBoundary data={INVOICES} isFetching>
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
+    expect(container.querySelectorAll(".animate-pulse").length).toBe(0);
+
+    const region = container.querySelector("[aria-busy='true']");
+    expect(region).not.toBeNull();
+    expect(region!.contains(screen.getByText("Clinica Sao Lucas"))).toBe(true);
+    expect(screen.getByRole("progressbar", { name: "Atualizando…" })).toBeDefined();
+  });
+
+  test("a revalidacao nao fala no anuncio: ele continua dizendo que o conteudo chegou", () => {
+    const { container } = withTheme(
+      <QueryBoundary data={INVOICES} isFetching>
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    expect(container.querySelector("[data-rc-status]")!.textContent).toBe("Conteúdo carregado");
+  });
+
+  test("sem dado, isFetching e a primeira busca, e quem desenha e o esqueleto", () => {
+    const { container } = withTheme(
+      <QueryBoundary<Invoice[]> isLoading isFetching>
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    expect(container.querySelectorAll(".animate-pulse").length).toBe(3);
+    expect(screen.queryByRole("progressbar")).toBeNull();
+  });
+
+  test("quando a busca termina, a barra sai e os filhos nao remontam", () => {
+    const view = (fetching: boolean) => (
+      <RivoProvider scope="local">
+        <QueryBoundary data={INVOICES} isFetching={fetching}>
+          {(invoices) => list(invoices)}
+        </QueryBoundary>
+      </RivoProvider>
+    );
+    const { container, rerender } = render(view(true));
+    const before = screen.getByText("Clinica Sao Lucas");
+
+    rerender(view(false));
+
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(container.querySelector("[aria-busy='true']")).toBeNull();
+    expect(screen.getByText("Clinica Sao Lucas")).toBe(before);
+  });
+
+  test("labels.refreshing da o nome da barra, e classNames veste a caixa e a barra", () => {
+    const { container } = withTheme(
+      <QueryBoundary
+        data={INVOICES}
+        isFetching
+        labels={{ refreshing: "Refreshing" }}
+        classNames={{ content: "caixa", refreshing: "barra" }}
+      >
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    const bar = screen.getByRole("progressbar", { name: "Refreshing" });
+    expect(bar.className.split(" ")).toContain("barra");
+    expect(container.querySelector("[aria-busy]")!.className.split(" ")).toContain("caixa");
+  });
+});
+
+describe("o erro com dado velho", () => {
+  test("isRefetchError deixa o dado e avisa acima dele, mesmo com isError ligado", () => {
+    let retries = 0;
+
+    withTheme(
+      <QueryBoundary
+        data={INVOICES}
+        isError
+        isRefetchError
+        onRetry={() => (retries += 1)}
+        classNames={{ stale: "velho" }}
+      >
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
+    const warning = screen.getByRole("alert");
+    expect(warning.textContent).toContain("Não foi possível atualizar");
+    expect(warning.textContent).toContain("Os dados abaixo são da última busca que deu certo.");
+    expect(warning.className.split(" ")).toContain("velho");
+    expect(screen.queryByText("Não foi possível carregar")).toBeNull();
+
+    fireEvent.click(screen.getByText("Tentar de novo"));
+    expect(retries).toBe(1);
+  });
+
+  test("sem dado, isRefetchError e o erro de sempre, que apaga a tela", () => {
+    withTheme(
+      <QueryBoundary<Invoice[]> isRefetchError errorTitle="Nao foi possivel carregar as notas">
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    expect(screen.getByText("Nao foi possivel carregar as notas")).toBeDefined();
+    expect(screen.queryByText("Não foi possível atualizar")).toBeNull();
+  });
+
+  test("os textos do aviso de dado velho moram em labels", () => {
+    withTheme(
+      <QueryBoundary
+        data={INVOICES}
+        isRefetchError
+        labels={{ refetchError: "Could not refresh", stale: "Showing the last good data." }}
+      >
+        {(invoices) => list(invoices)}
+      </QueryBoundary>,
+    );
+
+    expect(screen.getByText("Could not refresh")).toBeDefined();
+    expect(screen.getByText("Showing the last good data.")).toBeDefined();
+  });
 });

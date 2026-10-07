@@ -19601,9 +19601,9 @@
     "props": [
       {
         "name": "classNames",
-        "type": "Partial<Record<\"empty\" | \"error\" | \"loading\", string>>",
+        "type": "Partial<Record<\"content\" | \"empty\" | \"error\" | \"loading\" | \"refreshing\" | \"stale\", string>>",
         "required": false,
-        "note": "Classe por parte: `loading`, `error`, `empty`."
+        "note": "Classe por parte: `loading`, `error`, `empty`, e as tres da revalidacao - `content` (a caixa dos filhos, so com `isFetching`), `refreshing` (a barra) e `stale` (o aviso de dado velho)."
       },
       {
         "name": "data",
@@ -19640,9 +19640,21 @@
         "required": false
       },
       {
+        "name": "isFetching",
+        "type": "boolean",
+        "required": false,
+        "note": "Ha uma busca correndo, inclusive a que revalida o dado que ja esta na tela - o `isFetching` do TanStack Query, o `isValidating` do SWR."
+      },
+      {
         "name": "isLoading",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "isRefetchError",
+        "type": "boolean",
+        "required": false,
+        "note": "A ultima busca falhou, mas o dado anterior continua valido - o `isRefetchError` do TanStack Query."
       },
       {
         "name": "labels",

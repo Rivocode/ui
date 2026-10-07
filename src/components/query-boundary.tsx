@@ -1,4 +1,4 @@
-import { CircleX } from "lucide-react";
+import { CircleX, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "../lib/cn";
@@ -7,6 +7,7 @@ import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
 import { EmptyState } from "./empty-state";
+import { Progress } from "./progress";
 import { Skeleton } from "./skeleton";
 
 export type QueryBoundaryProps<Data> = {
@@ -23,6 +24,24 @@ export type QueryBoundaryProps<Data> = {
 
   isLoading?: boolean;
   isError?: boolean;
+  /**
+   * Ha uma busca correndo, inclusive a que revalida o dado que ja esta na
+   * tela - o `isFetching` do TanStack Query, o `isValidating` do SWR. Com
+   * dado na mao, os filhos ficam, a regiao ganha `aria-busy` e uma barra fina
+   * corre no topo; sem dado, quem manda continua sendo o carregando.
+   *
+   * Passar a prop, verdadeira ou falsa, poe os filhos numa caixa (a
+   * `classNames.content`), a mesma do comeco ao fim para eles nao remontarem a
+   * cada busca.
+   */
+  isFetching?: boolean;
+  /**
+   * A ultima busca falhou, mas o dado anterior continua valido - o
+   * `isRefetchError` do TanStack Query. Com dado na mao ele vence o
+   * `isError`: os filhos ficam, e um aviso acima deles diz que a tela esta
+   * desatualizada, com o botao do `onRetry`. Sem dado, vira o erro de sempre.
+   */
+  isRefetchError?: boolean;
   /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
   /**
@@ -78,26 +97,34 @@ export type QueryBoundaryProps<Data> = {
    * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
    * resolvem os quatro finais.
    * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
-   * sai e quando ela volta.
+   * sai e quando ela volta. `refreshing` nomeia a barra da revalidacao, e
+   * `refetchError` e `stale` sao o titulo e a linha do aviso de dado velho.
    */
   labels?: Partial<QueryBoundaryLabels>;
   /**
-   * Classe por parte: `loading`, `error`, `empty`. Evita o `[&_div]`, que
-   * acopla a tela de quem usa a arvore interna da peca.
+   * Classe por parte: `loading`, `error`, `empty`, e as tres da revalidacao -
+   * `content` (a caixa dos filhos, so com `isFetching`), `refreshing` (a
+   * barra) e `stale` (o aviso de dado velho). Evita o `[&_div]`, que acopla a
+   * tela de quem usa a arvore interna da peca.
    */
-  classNames?: Slots<"loading" | "error" | "empty">;
+  classNames?: Slots<"loading" | "error" | "empty" | "content" | "refreshing" | "stale">;
 };
 
 export type QueryBoundaryLabels = {
   retry: string;
   loading: string;
   loaded: string;
+  refreshing: string;
+  refetchError: string;
+  stale: string;
 };
 
 export function QueryBoundary<Data>({
   data,
   isLoading,
   isError,
+  isFetching,
+  isRefetchError,
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Tente de novo em alguns minutos.",
@@ -111,7 +138,9 @@ export function QueryBoundary<Data>({
   classNames,
 }: QueryBoundaryProps<Data>) {
   const retryLabel = labels?.retry ?? "Tentar de novo";
-  if (isError) {
+  const stale = isRefetchError === true && data !== undefined;
+
+  if ((isError || isRefetchError) && !stale) {
     return (
       <Alert tone="danger" icon={<CircleX />} className={cn(className, classNames?.error)}>
         <AlertTitle>{errorTitle}</AlertTitle>
@@ -132,16 +161,45 @@ export function QueryBoundary<Data>({
   }
 
   const needsData = typeof children === "function";
-  const loading = needsData ? isLoading || data === undefined : (isLoading ?? data === undefined);
+  const loading =
+    !stale &&
+    (needsData ? isLoading || data === undefined : (isLoading ?? data === undefined));
 
   const blank = isEmpty ?? blankOf(data);
 
   if (!loading && empty && blank === undefined) warnAboutUndecidableEmpty();
 
-  // Os tres finais viraram um `return` so por causa da regiao viva: ela tem que
-  // ser o MESMO no do primeiro ao ultimo estado. Cada estado devolvendo a
-  // propria raiz remontava a regiao junto com o conteudo, e regiao que nasce
-  // com o texto dentro nao anuncia nada.
+  const body =
+    empty && blank ? (
+      <EmptyState
+        className={cn(className, classNames?.empty)}
+        icon={empty.icon}
+        title={empty.title}
+        description={empty.description}
+        action={empty.action}
+      />
+    ) : needsData ? (
+      data === undefined || data === null ? null : (
+        (children as (data: NonNullable<Data>) => ReactNode)(data as NonNullable<Data>)
+      )
+    ) : (
+      children
+    );
+
+  const warning = stale && (
+    <Alert tone="warning" icon={<TriangleAlert />} className={cn("mb-3", classNames?.stale)}>
+      <AlertTitle>{labels?.refetchError ?? "Não foi possível atualizar"}</AlertTitle>
+      <AlertDescription>
+        {labels?.stale ?? "Os dados abaixo são da última busca que deu certo."}
+      </AlertDescription>
+      {onRetry && (
+        <Button type="button" variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
+          {retryLabel}
+        </Button>
+      )}
+    </Alert>
+  );
+
   return (
     <>
       <LoadingAnnouncement loading={loading} labels={labels} />
@@ -156,20 +214,28 @@ export function QueryBoundary<Data>({
               />
             ))}
         </div>
-      ) : empty && blank ? (
-        <EmptyState
-          className={cn(className, classNames?.empty)}
-          icon={empty.icon}
-          title={empty.title}
-          description={empty.description}
-          action={empty.action}
-        />
-      ) : needsData ? (
-        data === undefined || data === null ? null : (
-          (children as (data: NonNullable<Data>) => ReactNode)(data as NonNullable<Data>)
-        )
+      ) : isFetching === undefined ? (
+        <>
+          {warning}
+          {body}
+        </>
       ) : (
-        children
+        <div
+          aria-busy={isFetching}
+          data-rc-refreshing={isFetching ? "" : undefined}
+          className={cn("relative", classNames?.content)}
+        >
+          {isFetching && (
+            <Progress
+              value={null}
+              aria-label={labels?.refreshing ?? "Atualizando…"}
+              className={cn("absolute inset-x-0 top-0 gap-0", classNames?.refreshing)}
+              classNames={{ track: "h-0.5" }}
+            />
+          )}
+          {warning}
+          {body}
+        </div>
       )}
     </>
   );

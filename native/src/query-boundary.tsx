@@ -22,6 +22,26 @@ export type QueryBoundaryProps<Data> = {
 
   isLoading?: boolean;
   isError?: boolean;
+  /**
+   * Ha uma busca correndo, inclusive a que revalida o dado que ja esta na
+   * tela - o `isFetching` do TanStack Query, o `isValidating` do SWR. Com
+   * dado na mao, os filhos ficam, a regiao diz `busy` ao leitor de tela e uma
+   * barra fina pulsa no topo; sem dado, quem manda continua sendo o
+   * carregando.
+   *
+   * Passar a prop, verdadeira ou falsa, poe os filhos numa `View` (a
+   * `classNames.content`), a mesma do comeco ao fim para eles nao remontarem
+   * a cada busca. O filho que era `flex-1` pede `classNames={{ content:
+   * "flex-1" }}`.
+   */
+  isFetching?: boolean;
+  /**
+   * A ultima busca falhou, mas o dado anterior continua valido - o
+   * `isRefetchError` do TanStack Query. Com dado na mao ele vence o
+   * `isError`: os filhos ficam, e um aviso acima deles diz que a tela esta
+   * desatualizada, com o botao do `onRetry`. Sem dado, vira o erro de sempre.
+   */
+  isRefetchError?: boolean;
   /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
   /**
@@ -103,26 +123,35 @@ export type QueryBoundaryProps<Data> = {
    * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
    * `onRetry`, "Tentar de novo" sem ele - a mesma chave do web e das pecas de
    * consulta daqui -, e `loading` o que o leitor de tela ouve na espera
-   * generica, "Carregando" sem ele.
+   * generica, "Carregando" sem ele. `refreshing` nomeia a barra da
+   * revalidacao, e `refetchError` e `stale` sao o titulo e a linha do aviso de
+   * dado velho.
    */
   labels?: Partial<QueryBoundaryLabels>;
   /**
    * Classe por parte: `loading` (a moldura do esqueleto), `error` (a do aviso
-   * com o botao) e `empty` (o estado vazio). Cada uma veste so o seu final, no
-   * mesmo no que o `className`.
+   * com o botao) e `empty` (o estado vazio), cada uma no mesmo no que o
+   * `className`; e as tres da revalidacao, `content` (a `View` dos filhos, so
+   * com `isFetching`), `refreshing` (a barra) e `stale` (o aviso de dado
+   * velho com o botao).
    */
-  classNames?: Slots<"loading" | "error" | "empty">;
+  classNames?: Slots<"loading" | "error" | "empty" | "content" | "refreshing" | "stale">;
 };
 
 export type QueryBoundaryLabels = {
   retry: string;
   loading: string;
+  refreshing: string;
+  refetchError: string;
+  stale: string;
 };
 
 export function QueryBoundary<Data>({
   data,
   isLoading,
   isError,
+  isFetching,
+  isRefetchError,
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Tente de novo em alguns minutos.",
@@ -136,16 +165,20 @@ export function QueryBoundary<Data>({
   classNames,
 }: QueryBoundaryProps<Data>) {
   const retryLabel = labels?.retry ?? "Tentar de novo";
+  const stale = isRefetchError === true && data !== undefined;
+  const failed = (isError === true || isRefetchError === true) && !stale;
   const needsData = typeof children === "function";
-  const loading = needsData ? isLoading || data === undefined : (isLoading ?? data === undefined);
+  const loading =
+    !stale &&
+    (needsData ? isLoading || data === undefined : (isLoading ?? data === undefined));
   const blank = isEmpty ?? blankOf(data);
 
   useSilentMisuse(
-    !isError && !loading && empty !== undefined && blank === undefined,
+    !failed && !loading && empty !== undefined && blank === undefined,
     UNDECIDABLE_EMPTY,
   );
 
-  if (isError) {
+  if (failed) {
     return (
       <View className={cn("items-start gap-3", className, classNames?.error)}>
         <Alert tone="danger" title={errorTitle} className="w-full">
@@ -181,8 +214,8 @@ export function QueryBoundary<Data>({
     );
   }
 
-  if (empty && blank) {
-    return (
+  const body =
+    empty && blank ? (
       <EmptyState
         className={cn(className, classNames?.empty)}
         title={empty.title}
@@ -190,15 +223,57 @@ export function QueryBoundary<Data>({
         action={empty.action}
         icon={empty.icon}
       />
+    ) : needsData ? (
+      data === undefined || data === null ? null : (
+        (children as (data: NonNullable<Data>) => ReactNode)(data as NonNullable<Data>)
+      )
+    ) : (
+      children
+    );
+
+  const warning = stale && (
+    <View className={cn("mb-3 items-start gap-3", classNames?.stale)}>
+      <Alert
+        tone="warning"
+        title={labels?.refetchError ?? "Não foi possível atualizar"}
+        className="w-full"
+      >
+        {labels?.stale ?? "Os dados abaixo são da última busca que deu certo."}
+      </Alert>
+      {onRetry && (
+        <Button size="sm" variant="secondary" onPress={onRetry}>
+          {retryLabel}
+        </Button>
+      )}
+    </View>
+  );
+
+  if (isFetching === undefined) {
+    return (
+      <>
+        {warning}
+        {body}
+      </>
     );
   }
 
-  if (needsData) {
-    if (data === undefined || data === null) return null;
-    return <>{(children as (data: NonNullable<Data>) => ReactNode)(data as NonNullable<Data>)}</>;
-  }
-
-  return <>{children}</>;
+  return (
+    <View accessibilityState={{ busy: isFetching }} className={cn("relative", classNames?.content)}>
+      {warning}
+      {body}
+      {isFetching && (
+        <View
+          accessible
+          accessibilityRole="progressbar"
+          accessibilityLabel={labels?.refreshing ?? "Atualizando…"}
+          pointerEvents="none"
+          className={cn("absolute inset-x-0 top-0 h-0.5", classNames?.refreshing)}
+        >
+          <Skeleton className="h-full w-full rounded-pill bg-accent-text" />
+        </View>
+      )}
+    </View>
+  );
 }
 
 function blankOf(data: unknown): boolean | undefined {

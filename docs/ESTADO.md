@@ -161,7 +161,7 @@ reaproveita e o vocabulario de classes, o token e a escolha da peca; o JSX se
 reescreve.
 
 <!-- gerado: signature -->
-`check:assinatura` confere **195 divergencias de assinatura em 88 pecas** contra os dois catalogos de props - o do nativo, `apps/docs/src/native-props.json` (118 pecas, 870 props), e artefato comitado.
+`check:assinatura` confere **195 divergencias de assinatura em 88 pecas** contra os dois catalogos de props - o do nativo, `apps/docs/src/native-props.json` (118 pecas, 872 props), e artefato comitado.
 <!-- /gerado -->
 
 O catalogo do nativo e comitado porque gerar exige `examples/native`
@@ -181,14 +181,14 @@ plataforma:
 <!-- gerado: gate -->
 `bun run check` sao **39 passos** - 38 verificacoes mais `bun test` -, em sequencia, parando no primeiro que falhar.
 
-A suite: **3384 testes em 249 arquivos**, a mesma conta que a home exibe (`TESTS` em `apps/docs/src/pages/home.tsx`, cobrado por `check:testes`).
+A suite: **3400 testes em 249 arquivos**, a mesma conta que a home exibe (`TESTS` em `apps/docs/src/pages/home.tsx`, cobrado por `check:testes`).
 
 | Guarda                  | O que ela mede                                                                                                |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `check:props`           | 308 entradas (pecas e partes), 4419 props; prop propria que colide com atributo herdado reprova               |
+| `check:props`           | 308 entradas (pecas e partes), 4421 props; prop propria que colide com atributo herdado reprova               |
 | `check:colors`          | 196 arquivos sem cor literal fora de `src/tokens/`                                                            |
 | `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                              |
-| `check:contrast`        | 142 pares por tema, nos 2 temas, mais 14 de `scales.css`                                                      |
+| `check:contrast`        | 143 pares por tema, nos 2 temas, mais 14 de `scales.css`                                                      |
 | `check:contrast:nativo` | por esquema: 64 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par  |
 | `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 281 linhas medidas iguais                                       |
 | `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                             |
@@ -198,7 +198,7 @@ A suite: **3384 testes em 249 arquivos**, a mesma conta que a home exibe (`TESTS
 | `check:classes`         | 385 arquivos, toda classe gera regra, sem lista de excecao                                                    |
 | `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova               |
 | `check:cli`             | 4 arquivos de mesa (`contrast`, `theme-check`, `dtcg`, `theme-roles`) fora do grafo da biblioteca             |
-| `check:tamanho`         | raiz 152,1 de 156,2 KB gzip; entradas entre 93% e 98% do limite; 5 pecas sozinhas com terceiros, so na guarda |
+| `check:tamanho`         | raiz 152,5 de 156,2 KB gzip; entradas entre 93% e 98% do limite; 5 pecas sozinhas com terceiros, so na guarda |
 | `check:skill`           | 142 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo    |
 | `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                 |
 | `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                      |
@@ -208,7 +208,7 @@ A suite: **3384 testes em 249 arquivos**, a mesma conta que a home exibe (`TESTS
 | `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 91 marcadores no demo                                    |
 | `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                              |
 
-As entradas de codigo proprio mais perto do teto do `check:tamanho`: `./editor` em 98%, `.` em 97%, `./chart` em 95%.
+As entradas de codigo proprio mais perto do teto do `check:tamanho`: `.` em 98%, `./editor` em 98%, `./chart` em 95%.
 <!-- /gerado -->
 
 Em 07/10 o gate saiu verde, e a suite fez 25325 `expect` - numero que nenhuma
@@ -306,9 +306,14 @@ Nenhum destes tem codigo a escrever aqui.
 
 ### Divida de codigo, conferida contra a arvore
 
-- **`QueryBoundary` nao trata dado velho enquanto revalida.** O limite esta
-  escrito na pagina da peca ("O que ela nao trata"), com o contorno por
-  `isFetching`; o comportamento continua o mesmo.
+- **O `QueryBoundary` trata dado velho na arvore, e nao no npm.** Ganhou, nos
+  dois pacotes, `isFetching` (os filhos ficam, a regiao diz ocupada, uma barra
+  fina no topo, sem esqueleto e sem anuncio) e `isRefetchError` (com dado, o
+  dado fica e um aviso `warning` com o `onRetry` entra acima dele; sem dado, e
+  o erro de sempre). As duas sao opcionais e sem elas nada muda: e versao
+  menor nos dois pacotes, que ainda nao foi aberta no CHANGELOG. A caixa dos
+  filhos so existe com `isFetching`, e o filho `flex-1` do nativo pede
+  `classNames.content`.
 
 - **A receita do nativo esta consertada na arvore, e nao no npm.** Em 07/10 a
   receita, seguida num Expo recem-criado com npm (SDK 57,
