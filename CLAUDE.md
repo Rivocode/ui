@@ -97,7 +97,12 @@ falha por lista de palavras conhecidas e por sufixo (`-acao`, `-mento`,
 (`bun run gen:props`), `apps/docs/src/native-props.json`
 (`bun run gen:props:nativo`), `examples/native/generated.css`
 (`bun run build:css` do app). Todos carregam cabecalho dizendo isso, e o `check`
-falha se o comitado divergir da fonte. Em `docs/ESTADO.md`, o que esta entre
+falha se o comitado divergir da fonte - menos os dois de `examples/native`
+(`native-props.json` e `generated.css`), que pedem o exemplo instalado e por
+isso sao cobrados pelo job `nativo` da CI, e nao pelo `check` local. Peca
+nativa que usa classe nova precisa do `bun run build:css` do app no mesmo
+commit: em 07/10/2026 o `mb-3` do `QueryBoundary` entrou sem ele, o gate local
+passou, e a `main` ficou vermelha no job `nativo`. Em `docs/ESTADO.md`, o que esta entre
 `<!-- gerado: ... -->` e `<!-- /gerado -->` (`bun run gen:estado`): o resto do
 arquivo continua a mao.
 

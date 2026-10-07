@@ -57,6 +57,11 @@ quando um dos nove sai de sincronia.
    por `items`), mas a escolha da peça e o vocabulário de classes são. Se não
    porta, diga o motivo na linha. E `fila` é só para decisão de gesto ainda não
    tomada (nunca para falta de tempo), e exige entrada em `FILA_DECLARADA`.
+   Se a peça nativa usa classe que o app de exemplo ainda não tinha, instale
+   o `examples/native` (`bun install --frozen-lockfile` lá, nunca em
+   `native/`), rode `bun run build:css` e `bun run gen:props:nativo`, e comite
+   os dois gerados junto: o `check` local não os cobra, e o job `nativo` da CI
+   cobra.
 
 ## Antes de dizer que terminou
 
