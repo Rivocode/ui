@@ -1,5 +1,29 @@
 # Mudancas
 
+## 1.1.1
+
+Correcao da receita de instalacao, sem mudanca em peca nenhuma. Seguida num
+Expo recem-criado com npm (SDK 57), a 1.1.0 nao chegava ao fim: o terceiro
+comando morria em `ERESOLVE`, e o bundle de iOS e Android morria com "expected
+an object-like struct named Specifier, found ()". O proprio `examples/native`
+do repositorio tinha o segundo defeito.
+
+- A instalacao pede `react-native-css@rc`. O `nativewind@preview` exige a versao
+  exata da linha `rc` do `react-native-css`, e sem a tag o npm instala a
+  `latest`, que fica atras: o `expo install` nao reclama, e o `npm install`
+  seguinte morre.
+- `rivocode-ui-native-init` fixa o `lightningcss` em `1.30.1` no `package.json`
+  do app - `overrides` no npm e no bun, `resolutions` no yarn,
+  `pnpm.overrides` no pnpm, pelo lockfile que achar - e lembra de instalar de
+  novo. Da 1.31 em diante o compilador do `react-native-css` quebra ja numa
+  borda tracejada, e nao por causa do CSS do app.
+- `rivocode-ui-native-init` confere o `react-native-css` instalado contra o que
+  o `nativewind` pede, e termina com codigo 1 e o comando certo quando nao bate.
+- `rivocode-ui-native-css --help` responde, opcao desconhecida e entrada que nao
+  existe saem com mensagem, e nao com a pilha do Node.
+- A doc diz onde vai o `import "./generated.css"` e o `RivoProvider` com o
+  expo-router, que e o template padrao do Expo: no `app/_layout.tsx`.
+
 ## 1.1.0
 
 Versao menor, junto com a 1.1.0 do `@rivocode/ui`, e na maior parte conserto:

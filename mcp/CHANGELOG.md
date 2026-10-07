@@ -1,5 +1,16 @@
 # Mudanças
 
+## 0.9.3
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.2 e
+`@rivocode/ui-native` 1.1.1. As oito ferramentas continuam as mesmas.
+
+- O guia de React Native ensina a receita que fecha num Expo novo com npm: o
+  `react-native-css@rc` e o `lightningcss` fixo em 1.30.1, e onde vai o import
+  com o expo-router.
+- As convenções dizem o que o `ref` de uma peça recebe, e quando ela entrega um
+  handle com métodos em vez do nó.
+
 ## 0.9.2
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.2 e

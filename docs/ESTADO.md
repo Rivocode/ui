@@ -15,8 +15,8 @@ CHANGELOGs, e nao e repetida aqui.
 | Pacote                | Onde      | Manifesto | No npm em 07/10                    | Tag              |
 | --------------------- | --------- | --------- | ---------------------------------- | ---------------- |
 | `@rivocode/ui`        | `src/`    | 1.2.2     | **1.2.2**, com procedencia         | `v1.2.2`         |
-| `@rivocode/ui-native` | `native/` | 1.1.0     | **1.1.0**, com procedencia         | `native-v1.1.0`  |
-| `@rivocode/ui-mcp`    | `mcp/`    | 0.9.2     | **0.9.2**, com procedencia         | `mcp-v0.9.2`     |
+| `@rivocode/ui-native` | `native/` | 1.1.1     | **1.1.0**, com procedencia         | `native-v1.1.0`  |
+| `@rivocode/ui-mcp`    | `mcp/`    | 0.9.3     | **0.9.2**, com procedencia         | `mcp-v0.9.2`     |
 
 O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
 (`docs.yml`), e esta em dia com `eeace31`. O `origin` tem 59 tags; `gh release
@@ -285,7 +285,8 @@ Nenhum destes tem codigo a escrever aqui.
   `lightningcss` em 1.30.1 e confere o motor contra o que o NativeWind pede, o
   exemplo saiu do patch, e o `check:receita` le o `bun.lock`. Medido de ponta
   a ponta com o pacote empacotado: `tsc`, export de iOS (4,5 MB) e de web. Quem
-  instala do npm so recebe isso no proximo release do `@rivocode/ui-native`.
+  instala do npm recebe isso na 1.1.1, que o manifesto ja diz e o `tag.yml`
+  publica quando o branch entrar na `main`.
 
 ### O que nao foi medido
 
