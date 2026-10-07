@@ -726,6 +726,38 @@ Não existe `expanded`, `visible` nem `current` para essas ideias. O
 abertos, e não se um está; com `multiple` ele deixa vários ao mesmo tempo, e
 sem ela abre um por vez, nos dois pacotes.
 
+### O que o `ref` recebe
+
+Por padrão, o `ref` de uma peça aponta para o nó de verdade da raiz dela: o
+`<button>` do `Button`, o `<a>` do `Link`, o `<input>` do campo, e no nativo o
+componente do React Native por baixo. É para medir, dar foco e ligar biblioteca
+de terceiro, e nunca para mudar o que a peça mostra.
+
+Ref imperativo, que entrega um objeto com métodos no lugar do nó, é exceção, e
+só existe quando a ação **não é um estado que a tela possa guardar**. Hoje são
+duas peças, as duas só no web:
+
+| Peça | O handle | Por que não é prop |
+|---|---|---|
+| `VirtualList` | `VirtualListHandle`: `scrollToIndex(index, { align })` | rolar é um evento, e não um valor: o item fora da janela não está no DOM, e não há nó para o `scrollIntoView` alcançar |
+| `ResizablePanel` | `ResizablePanelHandle`: `collapse()`, `expand()`, `resize(size)`, `getSize()`, `isCollapsed()` | a medida pertence ao arrasto, e muda a cada quadro; controlá-la por prop faria a tela renderizar junto com o ponteiro |
+
+Peça nova só ganha handle se passar pelas três perguntas, nesta ordem:
+
+1. **Cabe no trio de estado?** Abrir, escolher, mudar de passo ou de página é
+   prop controlada (`open`, `value`, `step`, `page`), e nunca método. Um
+   `dialogRef.current.open()` esconde da tela o que ela está mostrando.
+2. **O nó da raiz resolve?** Foco, medida e rolagem até um elemento que existe
+   se fazem pelo nó, com a API do navegador.
+3. **A ação é um evento que não deixa estado?** Rolar até um item que ainda não
+   existe, ou mexer num valor contínuo que é do gesto. Só então vale o handle.
+
+Quando existe, o handle segue a mesma forma: o tipo se chama
+`<Peça>Handle` e sai exportado do pacote, os métodos são verbos
+(`scrollToIndex`, `collapse`), a leitura é `get…` ou `is…`, e o JSDoc da prop
+`ref` lista os métodos. O handle não substitui o trio: o `ResizablePanel`
+continua avisando por `onResize`, `onCollapse` e `onExpand`.
+
 ### Rotulo de controle vem como filho
 
 `Checkbox`, `Radio` e `Switch` aceitam o texto como filho e se embrulham num

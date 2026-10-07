@@ -239,6 +239,10 @@ Três regras valem para todos:
 - Usar `Toast` para o que precisa continuar visível, ou `Dialog` para o que não
   pode ser dispensado clicando fora.
 - Inventar prop sem conferir o `.md` da peça.
+- Pedir ao `ref` o que é estado. O `ref` aponta para o nó da raiz; abrir,
+  escolher e mudar de passo são props controladas. Só o `VirtualList`
+  (`scrollToIndex`) e o `ResizablePanel` (`collapse`, `expand`, `resize`)
+  entregam handle com métodos.
 - Escrever o rótulo de `Checkbox`, `Radio` ou `Switch` num `<span>` ao lado.
   Passe como filho e eles se embrulham num `<label>` sozinhos.
 - Repetir o mesmo `id` de `ChartAreaGradient` em dois gráficos da mesma página:
