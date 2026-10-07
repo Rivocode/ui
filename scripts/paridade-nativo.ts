@@ -577,7 +577,7 @@ const PARITY: Record<string, Row> = {
   },
   EventCalendar: {
     state: "nao",
-    note: "grade de tempo e idioma de mesa; no telefone a resposta e a lista, e o mes e o `Calendar`",
+    note: "grade de tempo é idioma de mesa; no telefone a resposta é a lista, e o mês é o `Calendar`",
     page:
       "Na fila, e a fila e por DESENHO de gesto, nao por tempo. Tres das quatro vistas portam: a " +
       "`agenda` vira `SectionList` (virtualizacao de fabrica, o mesmo argumento que tirou a " +
@@ -1490,7 +1490,7 @@ const PARITY: Record<string, Row> = {
   },
   VirtualList: {
     state: "nao",
-    note: "a plataforma ja virtualiza: `FlatList` e `FlashList` fazem isto de fabrica",
+    note: "a plataforma já virtualiza: `FlatList` e `FlashList` fazem isto de fábrica",
     page:
       "Não porta, e não é fila: **a plataforma já resolve**. A `FlatList` do React Native " +
       "virtualiza de fábrica, e o `DataList` daqui já a usa por baixo. Uma peça nossa por cima " +
