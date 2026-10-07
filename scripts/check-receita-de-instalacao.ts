@@ -42,6 +42,18 @@
  * monta a primeira tela. O comando le a lista do proprio `native/package.json`
  * (todo peer que nao e `optional`) e cobra do app; a guarda cobra a mesma lista
  * do exemplo, que e onde ela e medida.
+ *
+ * Em 07/10/2026 a receita foi seguida num Expo recem-criado, com npm, e nao
+ * chegou ao fim - e o proprio `examples/native` tambem nao fechava o bundle de
+ * iOS. Os dois defeitos eram de VERSAO, e esta guarda so comparava arquivo:
+ * o `nativewind@preview` pede `react-native-css` exato numa rc, o pacote sem
+ * tag instala a `latest`, e o npm morre em ERESOLVE - o bun do exemplo nao
+ * barra peer, e um patch local escondia a diferenca. E o compilador do
+ * `react-native-css` quebra com `lightningcss` 1.31 ou mais novo, com o mesmo
+ * "Specifier, found ()" que a doc atribuia a outra causa. Por isso ela le o
+ * `bun.lock` do exemplo, que diz o que de fato foi resolvido: todo
+ * `lightningcss` tem que ser o que o comando fixa, e o `react-native-css` tem
+ * que ser o que o `nativewind` resolvido pede.
  */
 import { existsSync } from "node:fs";
 import { countAtLeast } from "./varredura";
@@ -55,6 +67,9 @@ const recipe = (await import(`${import.meta.dir}/../${RECIPE}`)) as {
   BABEL_V4: { mark: RegExp; why: string }[];
   POSTCSS_PLUGINS: string[];
   BROWSERSLIST: string[];
+  LIGHTNINGCSS: string;
+  CSS_ENGINE: string;
+  overridePath: (root: string) => string[];
   USER_INTERFACE_STYLE: string;
   METRO_WRAPPER: string;
   RECIPE: { name: string }[];
@@ -198,6 +213,54 @@ compare(
     '\n    "Specifier, found ()".',
 );
 
+const exampleOverride = recipe
+  .overridePath(EXAMPLE)
+  .reduce<unknown>((node, key) => (node as Record<string, unknown> | undefined)?.[key], examplePkg);
+
+compare(
+  "package.json: o lightningcss fixo nao bate.",
+  recipe.LIGHTNINGCSS,
+  exampleOverride,
+  "Com o lightningcss 1.31 ou mais novo o compilador do react-native-css" +
+    '\n    quebra no bundle de iOS e Android com "Specifier, found ()".',
+);
+
+const lock = await Bun.file(`${EXAMPLE}/bun.lock`).text();
+
+const resolvedLightning = [
+  ...new Set([...lock.matchAll(/\["lightningcss@([^"]+)"/g)].map((one) => one[1]!)),
+];
+
+countAtLeast(`lightningcss resolvido em \`${EXAMPLE}/bun.lock\``, resolvedLightning.length, 1);
+
+compare(
+  "bun.lock: o lightningcss resolvido no exemplo nao e o que a receita fixa.",
+  [recipe.LIGHTNINGCSS],
+  resolvedLightning,
+  "O override no package.json so vale depois de `bun install`; versao a mais" +
+    "\n    na lista e dependencia que escapou dele.",
+);
+
+const engineWanted = /"nativewind": \["nativewind@[^"]+",[^\n]*?"peerDependencies": \{[^}]*"react-native-css": "([^"]+)"/.exec(
+  lock,
+)?.[1];
+const engineFound = /"react-native-css": \["react-native-css@([^"]+)"/.exec(lock)?.[1];
+
+if (!engineWanted || !engineFound) {
+  problems.push(
+    `bun.lock: nao achei o nativewind e o ${recipe.CSS_ENGINE} resolvidos em ${EXAMPLE}/bun.lock.\n` +
+      "    Sem os dois a guarda nao mede a versao do motor de CSS, e passaria calada.",
+  );
+} else {
+  compare(
+    `bun.lock: o ${recipe.CSS_ENGINE} resolvido nao e o que o nativewind pede.`,
+    engineWanted,
+    engineFound,
+    "O bun nao barra peer, mas o npm de quem instala de fora barra: o proximo" +
+      "\n    `npm install` morre em ERESOLVE. Instale a versao exata que o nativewind pede.",
+  );
+}
+
 countAtLeast("peer obrigatorio da receita", recipe.REQUIRED_PEERS.length, 5);
 
 compare(
@@ -245,10 +308,11 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `A receita de ${recipe.RECIPE.length} arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ` +
+  `A receita de ${new Set(recipe.RECIPE.map((item) => item.name)).size} arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ` +
     `${EXAMPLE}: ${mineDirectives.length} diretivas de CSS, ${recipe.POSTCSS_PLUGINS.length} plugin de PostCSS, ` +
     `${recipe.METRO_WRAPPER}, userInterfaceStyle ${recipe.USER_INTERFACE_STYLE}, ` +
-    `browserslist com ${recipe.BROWSERSLIST.length}, ${mineTyping.length} fatos de tipagem, ` +
+    `browserslist com ${recipe.BROWSERSLIST.length}, lightningcss ${recipe.LIGHTNINGCSS} fixo e resolvido, ` +
+    `${recipe.CSS_ENGINE} ${engineFound} como o nativewind pede, ${mineTyping.length} fatos de tipagem, ` +
     `${recipe.REQUIRED_PEERS.length} peers obrigatorios instalados, ` +
     `e nenhum arquivo de Babel nos dois ` +
     `(${recipe.BABEL_V4.length} marca da v4 recusada em ${recipe.BABEL_NAMES.length} nomes).`,

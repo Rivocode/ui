@@ -62,6 +62,30 @@ export const POSTCSS_PLUGINS = ["@tailwindcss/postcss"];
 
 export const BROWSERSLIST = ["chrome 130", "safari 18", "firefox 130"];
 
+export const LIGHTNINGCSS = "1.30.1";
+
+export const CSS_ENGINE = "react-native-css";
+
+export function overridePath(root) {
+  if (existsSync(resolve(root, "pnpm-lock.yaml"))) return ["pnpm", "overrides", "lightningcss"];
+  if (existsSync(resolve(root, "yarn.lock"))) return ["resolutions", "lightningcss"];
+  return ["overrides", "lightningcss"];
+}
+
+function installedVersion(root, name) {
+  const file = resolve(root, "node_modules", name, "package.json");
+  return existsSync(file) ? readJson(file).version : undefined;
+}
+
+export function engineMismatch(root) {
+  const nativewind = resolve(root, "node_modules", "nativewind", "package.json");
+  if (!existsSync(nativewind)) return undefined;
+  const wanted = readJson(nativewind).peerDependencies?.[CSS_ENGINE];
+  if (!wanted || !/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(wanted)) return undefined;
+  const found = installedVersion(root, CSS_ENGINE);
+  return found === wanted ? undefined : { wanted, found };
+}
+
 export const USER_INTERFACE_STYLE = "automatic";
 
 export const METRO_WRAPPER = "withNativewind";
@@ -144,6 +168,7 @@ export const RECIPE = [
   { name: "nativewind-env.d.ts", kind: "file", body: nativewindEnv },
   { name: "app.json", kind: "json", path: ["expo", "userInterfaceStyle"], value: USER_INTERFACE_STYLE },
   { name: "package.json", kind: "json", path: ["browserslist"], value: BROWSERSLIST },
+  { name: "package.json", kind: "json", path: overridePath, value: LIGHTNINGCSS },
 ];
 
 function readJson(file) {
@@ -190,6 +215,7 @@ function indentOf(text) {
  */
 export function plan(root, { force = false, spec = SPEC } = {}) {
   const steps = [];
+  const pending = new Map();
 
   for (const item of RECIPE) {
     const file = resolve(root, item.name);
@@ -256,32 +282,37 @@ export function plan(root, { force = false, spec = SPEC } = {}) {
     }
 
     if (!existsSync(file)) {
-      steps.push({
-        name: item.name,
-        action: "conflito",
-        note: "nao existe: rode o comando na raiz de um app do Expo",
-      });
+      if (!steps.some((step) => step.name === item.name)) {
+        steps.push({
+          name: item.name,
+          action: "conflito",
+          note: "nao existe: rode o comando na raiz de um app do Expo",
+        });
+      }
       continue;
     }
 
-    const text = readFileSync(file, "utf8");
-    const json = readJson(file);
-    const current = at(json, item.path);
-    const key = item.path.join(".");
+    const text = pending.get(item.name) ?? readFileSync(file, "utf8");
+    const json = JSON.parse(text);
+    const path = typeof item.path === "function" ? item.path(root) : item.path;
+    const current = at(json, path);
+    const key = path.join(".");
 
     if (same(current, item.value)) {
-      steps.push({ name: item.name, action: "mantem", note: `${key} ja esta na receita` });
+      steps.push({ name: item.name, key, action: "mantem", note: `${key} ja esta na receita` });
       continue;
     }
 
-    put(json, item.path, item.value);
+    put(json, path, item.value);
     const body = `${JSON.stringify(json, null, indentOf(text))}\n`;
+    pending.set(item.name, body);
 
     if (current === undefined) {
-      steps.push({ name: item.name, action: "escreve", body, note: `${key} adicionado` });
+      steps.push({ name: item.name, key, action: "escreve", body, note: `${key} adicionado` });
     } else {
       steps.push({
         name: item.name,
+        key,
         action: "sobrescreve",
         body,
         note: `${key}: ${JSON.stringify(current)} -> ${JSON.stringify(item.value)}`,
@@ -302,7 +333,7 @@ const WHY = {
     '`/// <reference types="nativewind/types" />`, senao `className` nao existe nas props de View, Text e Pressable e o tsc do app reprova a nossa fonte inteira - e o skipLibCheck dele nao salva, porque so pula .d.ts.',
   "app.json": "`userInterfaceStyle` em `automatic`, senao o iOS prende a aparencia no claro e o tema escuro nunca chega.",
   "package.json":
-    "`browserslist` moderno, senao o passe web do Expo reescreve o `light-dark()` dos tokens num polyfill de vars orfas e a compilacao morre com \"Specifier, found ()\".",
+    "`browserslist` moderno e o lightningcss fixo: sem o primeiro o passe web do Expo reescreve o `light-dark()` dos tokens num polyfill de vars orfas, e com o lightningcss 1.31 ou mais novo o compilador do react-native-css quebra - os dois morrem com \"Specifier, found ()\".",
 };
 
 const MARKS = { escreve: "+", sobrescreve: "~", mantem: "=", conflito: "!" };
@@ -374,17 +405,37 @@ function main() {
     console.log(`\n  = peers obrigatorios    os ${REQUIRED_PEERS.length} estao no package.json`);
   }
 
-  if (clashes.length + stale.length + missing.length > 0) process.exit(1);
+  const engine = engineMismatch(root);
+
+  if (engine) {
+    console.error(
+      `\nO ${CSS_ENGINE} instalado e ${engine.found ?? "nenhum"}, e o nativewind pede ${engine.wanted}:\n` +
+        `\n    npx expo install ${CSS_ENGINE}@${engine.wanted}\n` +
+        "\n    Sem tag, o npm instala a linha `latest`, que fica atras da `preview` do" +
+        "\n    nativewind, e o proximo `npm install` morre em ERESOLVE.",
+    );
+  }
+
+  if (clashes.length + stale.length + missing.length + (engine ? 1 : 0) > 0) process.exit(1);
 
   if (dry) {
     console.log("\n`--dry-run`: nada foi escrito.");
     return;
   }
 
+  if (steps.some((step) => step.action !== "mantem" && step.key?.endsWith("lightningcss"))) {
+    console.log(
+      `\nO ${overridePath(root).join(".")} fixa o lightningcss em ${LIGHTNINGCSS}, e so vale depois de\n` +
+        "instalar de novo: rode o `npm install` (ou o do seu gerenciador). Com a 1.31\n" +
+        "ou mais nova o bundle de iOS e Android morre com \"Specifier, found ()\".",
+    );
+  }
+
   console.log(
     "\nFalta o CSS pre-compilado, e ele nao sai daqui porque depende do seu\n" +
       "codigo: rode `npx rivocode-ui-native-css` e importe o `generated.css`\n" +
-      "no topo do App.tsx, acima do provider.",
+      "no topo do arquivo de entrada, acima do provider: o App.tsx, ou o\n" +
+      "app/_layout.tsx (src/app/_layout.tsx no template novo) com o expo-router.",
   );
 }
 

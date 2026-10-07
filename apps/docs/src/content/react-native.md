@@ -303,9 +303,13 @@ recusa o que conseguiu medir.
 Num app Expo:
 
 ```sh
-npx expo install nativewind@preview react-native-css react-native-reanimated react-native-keyboard-controller tailwindcss @tailwindcss/postcss postcss
+npx expo install nativewind@preview react-native-css@rc react-native-reanimated react-native-keyboard-controller tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
+npx rivocode-ui-native-init
 ```
+
+O `npx rivocode-ui-native-init` escreve os arquivos abaixo e confere as versões;
+esta página explica o que cada um segura.
 
 O `react-native-keyboard-controller` é o que impede o teclado de cobrir o
 campo, e ele vem incluído no Expo Go do SDK 57. O `KeyboardProvider` que ele
@@ -323,6 +327,11 @@ de onde veio. Saiba antes de começar: **a NativeWind 5 ainda é pré-lançament
 e é o único caminho que o `@rivocode/ui-native` conhece hoje, então ir para
 produção com ele é ir para produção sobre um preview.
 
+O `react-native-css@rc` anda junto: o `nativewind@preview` pede a versão
+exata da linha `rc` do `react-native-css`, e sem a tag o npm instala a
+`latest`, que fica atrás. O `expo install` não reclama, e o `npm install`
+seguinte morre em `ERESOLVE`.
+
 Cinco arquivos do app participam, cada um por um motivo que morde:
 
 **1. `metro.config.js`**. O NativeWind entra no build:
@@ -337,13 +346,20 @@ module.exports = withNativewind(getDefaultConfig(__dirname));
 **2. `package.json`**. Navegadores modernos, cravados:
 
 ```json
-"browserslist": ["chrome 130", "safari 18", "firefox 130"]
+"browserslist": ["chrome 130", "safari 18", "firefox 130"],
+"overrides": { "lightningcss": "1.30.1" }
 ```
 
 Não é sobre navegador nenhum: o Expo roda um passe web no CSS antes do
 compilador nativo, e sem esse campo ele reescreve o `light-dark()` dos tokens
 num polyfill de vars órfãs que mata a compilação. É esta linha que sustenta a
 troca entre os dois temas de casa em runtime.
+
+O `overrides` fixa o `lightningcss`, e é o que fecha o bundle de iOS e Android:
+da 1.31 em diante o compilador do `react-native-css` quebra com "expected an
+object-like struct named Specifier, found ()" já numa borda tracejada. Ele só
+vale depois de instalar de novo. No yarn a chave é `resolutions`; no pnpm,
+`pnpm.overrides`.
 
 **3. `app.json`**. `"userInterfaceStyle": "automatic"`, senão o iOS prende a
 aparência no claro e o tema escuro nunca chega.
@@ -404,6 +420,10 @@ export default function App() {
   );
 }
 ```
+
+Com o expo-router não existe `App.tsx`: o import e o `RivoProvider` vão no
+`app/_layout.tsx`, em volta do `<Stack />`, e o caminho sobe até a raiz do app
+(`import "../../generated.css"` no `src/app/_layout.tsx` do template novo).
 
 - `theme`: `rivocode-dark` (padrão), `rivocode-light` ou `system`, que segue o
   aparelho. **Entre os dois temas de casa, trocar a prop troca a tela inteira em

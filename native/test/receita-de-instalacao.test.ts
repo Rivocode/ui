@@ -6,8 +6,10 @@ import { join } from "node:path";
 import {
   BABEL_NAMES,
   BABEL_V4,
+  LIGHTNINGCSS,
   RECIPE,
   REQUIRED_PEERS,
+  engineMismatch,
   globalCss,
   missingPeers,
   nativewindEnv,
@@ -41,12 +43,11 @@ function byName(steps: ReturnType<typeof plan>, name: string) {
 }
 
 describe("a receita de instalacao", () => {
-  test("cobre sete arquivos, e nenhum deles duas vezes", () => {
+  test("cobre sete arquivos, e so o package.json recebe duas chaves", () => {
     const names = RECIPE.map((item) => item.name);
 
-    expect(names.length).toBe(7);
-    expect(new Set(names).size).toBe(7);
-    expect(names).toEqual([
+    expect(names.length).toBe(8);
+    expect([...new Set(names)]).toEqual([
       "babel.config.js",
       "postcss.config.mjs",
       "metro.config.js",
@@ -61,7 +62,7 @@ describe("a receita de instalacao", () => {
     const root = app();
     try {
       const steps = apply(root);
-      expect(steps.length).toBe(7);
+      expect(steps.length).toBe(8);
 
       expect(existsSync(join(root, "babel.config.js"))).toBe(false);
 
@@ -77,11 +78,10 @@ describe("a receita de instalacao", () => {
       expect(JSON.parse(readFileSync(join(root, "app.json"), "utf8")).expo.userInterfaceStyle).toBe(
         "automatic",
       );
-      expect(JSON.parse(readFileSync(join(root, "package.json"), "utf8")).browserslist).toEqual([
-        "chrome 130",
-        "safari 18",
-        "firefox 130",
-      ]);
+      const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+      expect(pkg.browserslist).toEqual(["chrome 130", "safari 18", "firefox 130"]);
+      expect(pkg.overrides).toEqual({ lightningcss: LIGHTNINGCSS });
+      expect(pkg.name).toBe("app");
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -271,6 +271,91 @@ describe("a receita de instalacao", () => {
       const clashes = steps.filter((step) => step.action === "conflito");
 
       expect(clashes.map((step) => step.name)).toEqual(["app.json", "package.json"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("o lightningcss fixo", () => {
+  test("e anterior a 1.31, a primeira que quebra o compilador do react-native-css", () => {
+    const [major, minor] = LIGHTNINGCSS.split(".").map(Number);
+    expect(major).toBe(1);
+    expect(minor).toBeLessThan(31);
+  });
+
+  test("vai na chave de override do gerenciador que o app usa", () => {
+    const cases: [string | undefined, (pkg: any) => unknown][] = [
+      [undefined, (pkg) => pkg.overrides?.lightningcss],
+      ["yarn.lock", (pkg) => pkg.resolutions?.lightningcss],
+      ["pnpm-lock.yaml", (pkg) => pkg.pnpm?.overrides?.lightningcss],
+    ];
+    for (const [lockfile, read] of cases) {
+      const root = app(lockfile ? { [lockfile]: "" } : {});
+      try {
+        apply(root);
+        const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+        expect(read(pkg)).toBe(LIGHTNINGCSS);
+        expect(pkg.browserslist.length).toBe(3);
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    }
+  });
+
+  test("valor antigo no override sai no relatorio, e o resto do override fica", () => {
+    const root = app();
+    writeFileSync(
+      join(root, "package.json"),
+      `${JSON.stringify({ name: "app", overrides: { lightningcss: "1.33.0", outro: "1.0.0" } }, null, 2)}\n`,
+    );
+    try {
+      const steps = apply(root);
+      const step = steps.find((one) => one.key === "overrides.lightningcss")!;
+
+      expect(step.action).toBe("sobrescreve");
+      expect(step.note).toContain('"1.33.0"');
+      const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+      expect(pkg.overrides).toEqual({ lightningcss: LIGHTNINGCSS, outro: "1.0.0" });
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("o react-native-css que o nativewind pede", () => {
+  function installed(root: string, name: string, manifest: Record<string, unknown>) {
+    mkdirSync(join(root, "node_modules", name), { recursive: true });
+    writeFileSync(join(root, "node_modules", name, "package.json"), JSON.stringify(manifest));
+  }
+
+  test("a latest no lugar da rc sai com as duas versoes, e a exata nao sai", () => {
+    const root = app();
+    try {
+      expect(engineMismatch(root)).toBeUndefined();
+
+      installed(root, "nativewind", {
+        version: "5.0.0-rc.0",
+        peerDependencies: { "react-native-css": "3.1.0-rc.0" },
+      });
+      expect(engineMismatch(root)).toEqual({ wanted: "3.1.0-rc.0", found: undefined });
+
+      installed(root, "react-native-css", { version: "3.0.7" });
+      expect(engineMismatch(root)).toEqual({ wanted: "3.1.0-rc.0", found: "3.0.7" });
+
+      installed(root, "react-native-css", { version: "3.1.0-rc.0" });
+      expect(engineMismatch(root)).toBeUndefined();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("peer em faixa nao e julgado, porque a conta seria de semver", () => {
+    const root = app();
+    try {
+      installed(root, "nativewind", { peerDependencies: { "react-native-css": "^3.1.0" } });
+      installed(root, "react-native-css", { version: "3.0.7" });
+      expect(engineMismatch(root)).toBeUndefined();
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

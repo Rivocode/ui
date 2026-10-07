@@ -1,13 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-
-// O postcss e o tailwind sao os DO APP que roda o comando, nao os vizinhos
-// deste script: e o CSS do app que esta sendo compilado, com a versao de
-// Tailwind que ele declarou.
-const requireFromApp = createRequire(`${process.cwd()}/`);
-const postcss = requireFromApp("postcss");
-const tailwind = requireFromApp("@tailwindcss/postcss");
 
 /**
  * Pré-compila o CSS que o app importa. Roda na raiz do app, onde vivem o
@@ -25,8 +18,37 @@ const tailwind = requireFromApp("@tailwindcss/postcss");
  *    object-like struct named Specifier". Aqui cada @property vira uma
  *    declaração em :root, que o inliner dele entende.
  */
-const input = process.argv[2] ?? "global.css";
-const output = process.argv[3] ?? "generated.css";
+const args = process.argv.slice(2);
+
+if (args.includes("--help") || args.includes("-h")) {
+  console.log(
+    "rivocode-ui-native-css [entrada] [saida]\n\n" +
+      "Compila o global.css do app no generated.css que ele importa. Roda na raiz\n" +
+      "do app; sem argumentos, le global.css e escreve generated.css.",
+  );
+  process.exit(0);
+}
+
+const unknown = args.find((arg) => arg.startsWith("-"));
+if (unknown) {
+  console.error(`opcao desconhecida: ${unknown}. Veja rivocode-ui-native-css --help.`);
+  process.exit(1);
+}
+
+const input = args[0] ?? "global.css";
+const output = args[1] ?? "generated.css";
+
+if (!existsSync(input)) {
+  console.error(`${input} nao existe. Rode na raiz do app, ou passe o caminho: rivocode-ui-native-css <entrada> <saida>.`);
+  process.exit(1);
+}
+
+// O postcss e o tailwind sao os DO APP que roda o comando, nao os vizinhos
+// deste script: e o CSS do app que esta sendo compilado, com a versao de
+// Tailwind que ele declarou.
+const requireFromApp = createRequire(`${process.cwd()}/`);
+const postcss = requireFromApp("postcss");
+const tailwind = requireFromApp("@tailwindcss/postcss");
 
 const css = readFileSync(input, "utf8");
 const out = await postcss([tailwind({ base: process.cwd() })]).process(css, {

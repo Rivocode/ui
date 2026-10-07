@@ -13,7 +13,7 @@ nativo em <https://ds.rivocode.com.br/react-native.md>.
 ## Instalação
 
 ```sh
-npx expo install nativewind@preview react-native-css react-native-reanimated react-native-keyboard-controller
+npx expo install nativewind@preview react-native-css@rc react-native-reanimated react-native-keyboard-controller
 npm install -D tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
 npx rivocode-ui-native-init
@@ -25,6 +25,12 @@ expo install nativewind` instala a v4, o aviso de peer rola para fora da tela
 junto com o resto da saída do `npm`, e o que aparece depois é a v4 tentando
 compilar um CSS escrito para a v5. A tag `preview` é a que o NativeWind publica
 para a linha 5.
+
+**É `react-native-css@rc`, pelo mesmo motivo.** O `nativewind@preview` pede a
+versão exata da linha `rc` do `react-native-css`, e sem a tag o npm instala a
+`latest`, que fica atrás. O `expo install` não reclama, e o `npm install`
+seguinte morre em `ERESOLVE`. O `rivocode-ui-native-init` confere a versão
+instalada contra a que o NativeWind pede e diz o comando quando elas divergem.
 
 O `react-native-reanimated` não é enfeite nem peer opcional: o
 `react-native-css` o exige em tempo de bundle, e sem ele o metro para em
@@ -67,6 +73,7 @@ Receita do @rivocode/ui-native em meu-app/:
   + nativewind-env.d.ts   criado
   ~ app.json              expo.userInterfaceStyle: "light" -> "automatic"
   + package.json          browserslist adicionado
+  + package.json          overrides.lightningcss adicionado
 
   = peers obrigatorios    os 5 estao no package.json
 ```
@@ -115,6 +122,13 @@ São sete, e cada um por um motivo que morde:
    nativo reescreve o `light-dark()` dos tokens num polyfill de vars órfãs, e a
    compilação morre com "Specifier, found ()". É esse arquivo que sustenta a
    troca entre os dois temas de casa em runtime.
+
+   Na mesma passada ele fixa o `lightningcss` em `1.30.1` — em `overrides`
+   no npm e no bun, `resolutions` no yarn, `pnpm.overrides` no pnpm, conforme o
+   lockfile que achar. Da 1.31 em diante o compilador do `react-native-css`
+   quebra com o mesmo "Specifier, found ()", e não por causa do seu CSS: uma
+   borda tracejada já basta. O override só vale depois de instalar de novo, e
+   o comando lembra disso no fim.
 6. **`global.css`**. A fonte do CSS:
 
    ```css
@@ -153,7 +167,8 @@ São sete, e cada um por um motivo que morde:
    `skipLibCheck: true` **não salva**, porque ele só pula `.d.ts`, e o que está
    sendo compilado aqui é `.tsx`. É exigência do NativeWind, e vale para
    qualquer biblioteca que publique fonte com `className`. A segunda linha é do
-   `generated.css` que o `App.tsx` importa no topo. O arquivo precisa estar no
+   `generated.css` que o arquivo de entrada importa no topo: o `App.tsx`, ou o
+   `app/_layout.tsx` do expo-router (`src/app/_layout.tsx` no template novo). O arquivo precisa estar no
    `include` do seu `tsconfig.json`; o template do Expo já alcança `**/*.ts`.
 
    Do nosso lado a outra metade é medida: o `native/tsconfig.check.json` compila
@@ -188,6 +203,10 @@ export default function App() {
   );
 }
 ```
+
+Com o expo-router não existe `App.tsx`: o import e o `RivoProvider` vão no
+`app/_layout.tsx`, em volta do `<Stack />`, e o caminho sobe até a raiz do app
+(`import "../../generated.css"` no `src/app/_layout.tsx` do template novo).
 
 ## Tokens derivados, nunca editados
 
