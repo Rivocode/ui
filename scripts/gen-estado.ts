@@ -331,9 +331,9 @@ const BLOCKS: Record<string, (m: Measures) => string> = {
       Math.round((entry.bytes / entry.limit) * 100);
     const root = size.entries.find((entry) => entry.name === ".")!;
     const alone = size.entries.filter((entry) => entry.name.endsWith(" sozinho"));
-    const heaviest = [...alone].sort((a, b) => b.bytes - a.bytes)[0]!;
-    const shares = size.entries.map(share);
-    const closest = [...size.entries]
+    const own = size.entries.filter((entry) => !entry.name.endsWith(" sozinho"));
+    const shares = own.map(share);
+    const closest = [...own]
       .sort((a, b) => share(b) - share(a))
       .slice(0, 3)
       .map((entry) => `${code(entry.name === "." ? "." : entry.name)} em ${share(entry)}%`)
@@ -391,9 +391,8 @@ const BLOCKS: Record<string, (m: Measures) => string> = {
       ],
       [
         "check:tamanho",
-        `raiz ${kb(root.bytes)} de ${kb(root.limit)} KB gzip; ${alone.length} pecas sozinhas com as dependencias, ` +
-          `a maior ${code(heaviest.name.replace(/ sozinho$/, ""))} ${kb(heaviest.bytes)} de ${kb(heaviest.limit)} KB; ` +
-          `todas as entradas entre ${Math.min(...shares)}% e ${Math.max(...shares)}% do limite`,
+        `raiz ${kb(root.bytes)} de ${kb(root.limit)} KB gzip; entradas entre ${Math.min(...shares)}% e ` +
+          `${Math.max(...shares)}% do limite; ${alone.length} pecas sozinhas com terceiros, so na guarda`,
       ],
       [
         "check:skill",
@@ -435,7 +434,7 @@ const BLOCKS: Record<string, (m: Measures) => string> = {
         ["Guarda", "O que ela mede"],
         rows.map(([guard, said]) => [code(guard), said]),
       ) +
-      `\n\nAs entradas mais perto do teto do \`check:tamanho\`: ${closest}.`
+      `\n\nAs entradas de codigo proprio mais perto do teto do \`check:tamanho\`: ${closest}.`
     );
   },
 
