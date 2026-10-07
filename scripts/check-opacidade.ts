@@ -36,6 +36,7 @@
  */
 import { compose, contrastRatio, readTokens } from "../src/lib/contrast";
 import { countAtLeast, scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 type Declarada = {
   /** Sufixo do arquivo, sem `src/`. */
@@ -189,6 +190,12 @@ if (problems.length > 0) {
 }
 
 countAtLeast("medida de alfa em DECLARADAS", medidas, 1);
+
+report({
+  uses: achadas.length,
+  alphaMeasures: medidas,
+  declared: DECLARADAS.map((item) => `${item.file} ${item.alpha}`),
+});
 
 console.log(
   `${achadas.length} usos de opacidade parcial em src/, todos declarados, e ${medidas} medida(s) de alfa nos temas.`,

@@ -37,6 +37,7 @@
 import { readdirSync } from "node:fs";
 
 import { findParent } from "../apps/docs/src/parts";
+import { report } from "./medida";
 
 const DOCS = ".design-sync/docs";
 const DEMO = "demo";
@@ -252,6 +253,8 @@ if (problems.length > 0) {
   );
   process.exit(1);
 }
+
+report({ onStage: onStage.length, pieces: pieces.length, declared, pages: pages.length });
 
 console.log(
   `${onStage.length} de ${pieces.length} pecas na vitrine, e ${declared.length} declaradas fora, ` +

@@ -15,6 +15,8 @@
  * no MCP deixa esta guarda vermelha no mesmo commit - e a secao nova, com o
  * `version` do `mcp/package.json`, e o que faz o `tag.yml` publicar o MCP.
  */
+import { report } from "./medida";
+
 const web = (await Bun.file("package.json").json()) as { version: string };
 const native = (await Bun.file("native/package.json").json()) as { version: string };
 const mcp = (await Bun.file("mcp/package.json").json()) as { version: string };
@@ -57,6 +59,6 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-console.log(`MCP ${mcp.version} leva a documentacao de @rivocode/ui ${web.version} e @rivocode/ui-native ${native.version}.`);
+report({ web: web.version, native: native.version, mcp: mcp.version });
 
-export {};
+console.log(`MCP ${mcp.version} leva a documentacao de @rivocode/ui ${web.version} e @rivocode/ui-native ${native.version}.`);

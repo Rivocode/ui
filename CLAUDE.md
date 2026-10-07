@@ -97,7 +97,9 @@ falha por lista de palavras conhecidas e por sufixo (`-acao`, `-mento`,
 (`bun run gen:props`), `apps/docs/src/native-props.json`
 (`bun run gen:props:nativo`), `examples/native/generated.css`
 (`bun run build:css` do app). Todos carregam cabecalho dizendo isso, e o `check`
-falha se o comitado divergir da fonte.
+falha se o comitado divergir da fonte. Em `docs/ESTADO.md`, o que esta entre
+`<!-- gerado: ... -->` e `<!-- /gerado -->` (`bun run gen:estado`): o resto do
+arquivo continua a mao.
 
 **Nao rode `bun install` dentro de `native/`.** Ela nao e workspace: o comando
 cria um segundo React e derruba dezenas de testes com "Invalid hook call". A CI
@@ -114,7 +116,7 @@ documentacao da arvore em que foi construido.
 
 ## O gate
 
-`bun run check` roda TRINTA E OITO passos em sequencia e para no primeiro que
+`bun run check` roda TRINTA E NOVE passos em sequencia e para no primeiro que
 falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
 literal, alfa sobre cor, contraste do web, contraste do mapa nativo, espelho do contraste,
 temas, contrato, doc, exemplo da doc, cobertura do README, classe sem regra,
@@ -122,7 +124,7 @@ grupos de classe, fronteira do chart, fronteira do CLI, tamanho do pacote,
 skill, lista da skill, tokens nativos, gerador de tema nativo, codigo
 compartilhado, paridade, assinatura nativa, contagem de pecas, vitrine,
 retratos declarados, receita de instalacao, script fora do gate, piso de
-varredura, contagem de testes, MCP em dia, e por fim `bun test`.
+varredura, contagem de testes, MCP em dia, ESTADO em dia, e por fim `bun test`.
 
 O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 `package.json`, o gate cresceu e esta pagina nao acompanhou.
@@ -265,6 +267,13 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   versoes seguidas sem MCP novo, e quem usava o MCP ficou com a documentacao
   velha sem nada acusar. Todo release de um dos dois pacotes abre uma secao
   nova no MCP, com a versao dele subida junto.
+- `check:estado` - os numeros de `docs/ESTADO.md` entre marcadores sao o que
+  as guardas mediram agora. Nasceu porque o ESTADO de 25/09 estava quase todo
+  errado em 07/10 - 37 passos em vez de 38, `@rivocode/ui` 1.0.0 em vez de
+  1.2.2 - enquanto cada numero ja saia de uma guarda no terminal. Cada guarda
+  entrega o que mediu por `report` (`scripts/medida.ts`), rodada pelo mesmo
+  comando do `scripts.check`, e a guarda nova que tiver numero no ESTADO
+  chama `report` tambem. O que precisa de rede fica fora dos marcadores.
 - `check:retratos` - secao declarada em `SECTIONS` tem que ter marcador na
   vitrine e assinatura comitada, e assinatura orfa tem que sair. Roda em
   milissegundos e sem navegador, porque o retrato em si vive fora do gate.

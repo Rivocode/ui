@@ -27,6 +27,7 @@
  * `reference/` que nao deve ser instalado nao deve estar em `reference/`.
  */
 import { readdirSync } from "node:fs";
+import { report } from "./medida";
 
 const REFERENCE = ".claude/skills/rivocode-ui/reference";
 const SKILL = ".claude/skills/rivocode-ui/SKILL.md";
@@ -112,6 +113,8 @@ if (problems.length > 0) {
   );
   process.exit(1);
 }
+
+report({ files: files.length });
 
 console.log(
   `${files.length} arquivos em ${REFERENCE}, todos no indice do SKILL.md e no laco do site: ` +

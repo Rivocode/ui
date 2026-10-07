@@ -53,6 +53,7 @@
 import { readdirSync } from "node:fs";
 
 import { findParent } from "../apps/docs/src/parts";
+import { report } from "./medida";
 
 const DOCS = ".design-sync/docs";
 const README = "README.md";
@@ -170,6 +171,8 @@ if (problems.length > 0) {
   );
   process.exit(1);
 }
+
+report({ cited: cited.length, pieces: pieces.length, declared });
 
 console.log(
   `${cited.length} de ${pieces.length} pecas citadas no ${README}, e ${declared.length} ` +

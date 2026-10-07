@@ -39,6 +39,7 @@
  * guarda ruidosa comeca, e guarda ruidosa e desligada na segunda vez.
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const SCAN = /new Glob\(|\breaddirSync\(/g;
 const FLOOR = /toBeGreaterThan(?:OrEqual)?\(|\bscanAtLeast\(|\bcountAtLeast\(/;
@@ -175,6 +176,8 @@ if (problems.length > 0) {
 const excused = Object.keys(OUT)
   .map((file) => file.replace(/^scripts\/|\.ts$/g, ""))
   .join(", ");
+
+report({ out: Object.keys(OUT).map((file) => file.replace(/^scripts\/|\.ts$/g, "")) });
 
 console.log(
   "Toda varredura de `scripts/`, `test/` e `native/test/` declara quanto espera achar." +

@@ -32,6 +32,7 @@
  * ele custa o embrulho acima.
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const SKILL_DIR = ".claude/skills/rivocode-ui";
 const CATALOG = "apps/docs/src/component-props.json";
@@ -253,6 +254,8 @@ if (invented.length > 0) {
   );
   process.exit(1);
 }
+
+report({ props: checked, nativeFiles: [...NATIVE_FILES] });
 
 console.log(
   `${checked} props citadas nos exemplos da skill, todas existentes, ${nativeFiles} arquivo(s) contra a tabela do nativo.`,

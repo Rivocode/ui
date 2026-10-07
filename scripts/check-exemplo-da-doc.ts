@@ -56,6 +56,7 @@
  * mediu, e o jeito de saber e quebrar de proposito o que ela deveria pegar.
  */
 import { countAtLeast, scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 /**
  * O que vem de biblioteca de terceiro e a pagina cita de propria vontade.
@@ -229,6 +230,7 @@ async function main() {
     process.exit(1);
   }
 
+  report({ names: exported.size, entries: entries.length });
   console.log(
     `Exemplos de .design-sync/docs conferidos contra ${exported.size} nomes publicados por ${entries.length} entradas dos dois pacotes.`,
   );

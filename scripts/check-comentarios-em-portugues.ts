@@ -34,6 +34,7 @@
  * ingles de verdade, nenhum falso positivo.
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 /** As mesmas areas do `check:nomes`: tudo que e codigo nosso. */
 const AREAS: [area: string, floor: number][] = [
@@ -148,6 +149,8 @@ if (stale.length > 0) {
   );
   process.exit(1);
 }
+
+report({ debt: [...DEBT] });
 
 console.log(
   DEBT.size === 0

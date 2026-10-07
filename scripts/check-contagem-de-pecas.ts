@@ -29,9 +29,11 @@
  * calado. Se voltar a cravar um digito, ele volta a apodrecer, e este e o
  * ultimo lugar do repositorio que pode se dar a esse luxo.
  */
-import { readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 
+import { splitFrontmatter } from "../apps/docs/src/doc-text";
 import { findParent } from "../apps/docs/src/parts";
+import { report } from "./medida";
 
 const README = "README.md";
 const PACKAGE = "package.json";
@@ -101,5 +103,14 @@ if (problems.length) {
   );
   process.exit(1);
 }
+
+const families: Record<string, string[]> = {};
+for (const name of names) {
+  if (findParent(name, names)) continue;
+  const { family } = splitFrontmatter(readFileSync(`.design-sync/docs/${name}.md`, "utf8"));
+  (families[family] ??= []).push(name);
+}
+
+report({ pieces, documents: names.length, families });
 
 console.log(`${pieces} pecas, e e o que o README, o package.json e a meta do site anunciam.`);

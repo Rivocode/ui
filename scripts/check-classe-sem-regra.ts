@@ -97,6 +97,7 @@
 import { scanAtLeast } from "./varredura";
 import { __unstable__loadDesignSystem } from "tailwindcss";
 import { dirname, isAbsolute, join, resolve } from "node:path";
+import { report } from "./medida";
 
 /** Toda string do codigo: aspas duplas, simples e crase. */
 const LITERAL =
@@ -224,6 +225,8 @@ if (problems.length > 0) {
   );
   process.exit(1);
 }
+
+report({ files: scanned });
 
 console.log(
   `Toda classe de ${scanned} arquivos gera regra, nos dois pacotes, e sem lista de excecao.`,

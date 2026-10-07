@@ -35,6 +35,7 @@ import { Glob } from "bun";
 import { scanAtLeast } from "./varredura";
 import { existsSync } from "node:fs";
 import { rm } from "node:fs/promises";
+import { report } from "./medida";
 
 const SOURCE = "src/shared";
 const MIRROR = "native/src/shared";
@@ -378,6 +379,8 @@ if (process.argv.includes("--check")) {
     for (const problem of problems) console.error(`${problem}\n`);
     process.exit(1);
   }
+
+  report({ mirrored: wanted.size, copies: Object.keys(COPIA_DECLARADA) });
 
   console.log(
     `${wanted.size} arquivo(s) espelhado(s) de ${PAIRS.map(({ source }) => `${source}/`).join(" e ")}` +

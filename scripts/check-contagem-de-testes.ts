@@ -20,6 +20,7 @@
  * rotulo na home fala das duas metades.
  */
 import { $ } from "bun";
+import { report } from "./medida";
 
 /**
  * As duas pastas da suite, e so elas.
@@ -118,5 +119,7 @@ if (written !== counted.tests) {
   );
   process.exit(1);
 }
+
+report({ tests: counted.tests, files: counted.files });
 
 console.log(`${counted.tests} testes em ${counted.files} arquivos, e e o numero que a home exibe.`);

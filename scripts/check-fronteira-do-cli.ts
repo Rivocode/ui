@@ -45,6 +45,8 @@
  * de verdade, que nao e "quem importa quem" e sim "o que o cliente baixa".
  * Sem `dist/`, ela diz que nao rodou em vez de calar.
  */
+import { report } from "./medida";
+
 /**
  * O modulo de ferramenta, por que ele e ferramenta, e a frase que o denuncia
  * dentro do artefato.
@@ -247,5 +249,7 @@ const names = TOOL_ONLY.map((item) => item.file).join(", ");
 const measured = bundle
   ? `e nenhuma frase deles esta nos ${bundle.files} arquivo(s) do dist/ que as entradas da biblioteca alcancam`
   : "e dist/index.js nao existe agora, entao a medida do artefato nao rodou - a leitura do grafo acima ja responde o mesmo pelo fonte";
+
+report({ files: TOOL_ONLY.map((item) => item.file) });
 
 console.log(`Fora do bundle da biblioteca, e dentro do ${TOOL}: ${names} - ${measured}.`);

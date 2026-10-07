@@ -70,6 +70,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
 import { countAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const WEB_CATALOG = "apps/docs/src/component-props.json";
 const NATIVE_CATALOG = "apps/docs/src/native-props.json";
@@ -1715,6 +1716,12 @@ if (import.meta.main) {
       console.error("Rode `bun run gen:assinatura` e comite o resultado.");
       process.exit(1);
     }
+    report({
+      rows,
+      pieces: Object.keys(SIGNATURES).length,
+      nativePieces: Object.keys(native).length,
+      nativeProps: Object.values(native).reduce((sum, piece) => sum + piece.props.length, 0),
+    });
     console.log(
       `${rows} divergencias de assinatura conferidas contra os dois catalogos, ` +
         `em ${Object.keys(SIGNATURES).length} pecas.`,

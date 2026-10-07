@@ -20,6 +20,7 @@
  * outra ponta, e e o nome que o proximo consumidor vai achar e usar errado.
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const AREAS: [area: string, floor: number][] = [
   ["src/**/*.{ts,tsx}", 80],
@@ -90,6 +91,8 @@ if (unused.length > 0) {
 }
 
 if (orphans.length > 0 || unused.length > 0) process.exit(1);
+
+report({ groups: declared.size });
 
 console.log(
   `${declared.size} grupo(s) declarado(s), e cada um com quem consome e cada consumo com` +

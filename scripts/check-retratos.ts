@@ -58,6 +58,7 @@
  * envelheceram em silencio antes do `check:scripts`.
  */
 import { SECTIONS, SIGNATURES, isSection, markers, shotName, slug } from "./retratos";
+import { report } from "./medida";
 
 const problems: string[] = [];
 
@@ -123,9 +124,18 @@ if (problems.length > 0) {
 
 const cells = SECTIONS.reduce((sum, section) => sum + (stored[shotName(section)]?.length ?? 0), 0);
 const pieces = [...new Set(SECTIONS.map((section) => `${section.page}/${slug(section.name)}`))];
+const marked = [...found.values()].reduce((sum, set) => sum + set.size, 0);
+
+report({
+  sections: SECTIONS.length,
+  areas: pieces.length,
+  cells,
+  markers: marked,
+  shots: Object.keys(stored).length,
+});
 
 console.log(
   `${SECTIONS.length} retratos de secao sobre ${pieces.length} area(s), ${cells} quadrados` +
-    ` guardados. Marcadores no demo: ${[...found.values()].reduce((sum, set) => sum + set.size, 0)}` +
+    ` guardados. Marcadores no demo: ${marked}` +
     " - qualquer um deles vira retrato com uma linha em scripts/retratos.ts.",
 );

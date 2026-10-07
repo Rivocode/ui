@@ -40,6 +40,7 @@ import {
   checkSignaturePaper,
   checkThemeMap,
 } from "../src/lib/contrast";
+import { report } from "./medida";
 
 const SOURCE = "src/lib/contrast.ts";
 const MIRROR = "native/scripts/contrast.mjs";
@@ -145,6 +146,7 @@ if (process.argv.includes("--check")) {
     process.exit(1);
   }
 
+  report({ lines: here.length });
   console.log(`${MIRROR} em dia com ${SOURCE}, e mede igual: ${here.length} linha(s).`);
   process.exit(0);
 }

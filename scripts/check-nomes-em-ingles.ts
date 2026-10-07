@@ -37,6 +37,7 @@
  * primeira vez que aparecem.
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 /** Onde vale a regra: tudo que e codigo nosso. */
 const AREAS: [area: string, floor: number][] = [
@@ -424,6 +425,8 @@ if (stale.length > 0) {
   );
   process.exit(1);
 }
+
+report({ debt: [...DEBT] });
 
 console.log(
   DEBT.size === 0

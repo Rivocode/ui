@@ -66,6 +66,7 @@
 import { existsSync } from "node:fs";
 import { GUIDES, guideProblems } from "./receita-nos-guias";
 import { countAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const EXAMPLE = "examples/native";
 const RECIPE = "native/scripts/init.mjs";
@@ -323,6 +324,12 @@ if (guides.length > 0) {
 }
 
 if (problems.length + guides.length > 0) process.exit(1);
+
+report({
+  files: new Set(recipe.RECIPE.map((item) => item.name)).size,
+  directives: mineDirectives.length,
+  peers: recipe.REQUIRED_PEERS.length,
+});
 
 console.log(
   `A receita de ${new Set(recipe.RECIPE.map((item) => item.name)).size} arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ` +

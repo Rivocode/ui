@@ -58,6 +58,7 @@ import { gzipSync } from "node:zlib";
 
 import { compactCss } from "./compactar-css";
 import { BUDGET, BUTTON_ALONE } from "./orcamento-de-tamanho";
+import { report } from "./medida";
 
 const OUT = "node_modules/.cache/check-tamanho";
 const CSS_ENTRY = "src/styles.css";
@@ -240,5 +241,13 @@ if (problems.length > 0) {
   );
   process.exit(1);
 }
+
+report({
+  entries: measures.map((measure) => ({
+    name: measure.name,
+    bytes: measure.bytes,
+    limit: BUDGET[measure.name]!.limit,
+  })),
+});
 
 console.log(`Tamanho em gzip, dentro do orcamento:\n${table}`);

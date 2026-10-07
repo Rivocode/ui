@@ -51,6 +51,7 @@
 import { readFileSync } from "node:fs";
 
 import { ARRIVED, OPTIONAL, effectOf, requiredRoles } from "../src/lib/theme-check";
+import { report } from "./medida";
 
 const THEME_FILE = "src/tokens/themes/rivocode-dark.css";
 const SHAPE_FILE = "src/tokens/forma.css";
@@ -168,6 +169,8 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`${problem}\n`);
   process.exit(1);
 }
+
+report({ tokens: roles.length, required: requiredRoles(themeRoles).length });
 
 console.log(
   `${roles.length} tokens de tema e forma, todos citados no guia. ` +

@@ -211,6 +211,7 @@ import {
   checkSignaturePaper,
 } from "../src/lib/contrast";
 import { tokens } from "../native/tokens";
+import { report } from "./medida";
 
 /** Os 45 papeis do mapa, na ordem em que o gerador os emite. */
 const ROLES = Object.keys(tokens.themes["rivocode-dark"]);
@@ -355,6 +356,16 @@ if (failed > 0) {
   console.error(`\n${failed} problema(s) de contraste no tema de mapa.`);
   process.exit(1);
 }
+report({
+  maps: maps.length,
+  text: MAP_PAIRS.length,
+  boundaries: MAP_BOUNDARIES.length,
+  layers: MAP_LAYER_PAIRS.length,
+  tinted: MAP_TINTED_PAIRS.length,
+  checked: MAP_CHECKED_OVER.length,
+  withoutPair: Object.keys(WITHOUT_PAIR),
+  debt: DEBT.map((item) => item.id),
+});
 console.log(
   `\nContraste ok em ${maps.length} mapa(s), claro e escuro: ${MAP_PAIRS.length} pares de texto,` +
     ` ${MAP_BOUNDARIES.length} de 1.4.11, ${MAP_LAYER_PAIRS.length} de camada, ${MAP_TINTED_PAIRS.length} sobre tinta de serie e` +

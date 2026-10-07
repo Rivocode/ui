@@ -53,6 +53,7 @@
  * subcaminho que precisou disto".
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 type Frontier = {
   /** O nome publicado, para a mensagem dizer de quem se fala. */
@@ -263,6 +264,8 @@ if (breaches.length > 0) {
   );
   process.exit(1);
 }
+
+report({ frontiers: FRONTIERS.length });
 
 console.log(
   FRONTIERS.map((frontier) =>

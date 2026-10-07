@@ -487,11 +487,15 @@ import {
   readTokens,
 } from "../src/lib/contrast";
 import { countAtLeast, scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const palette = await Bun.file("src/tokens/palette.css").text();
 const files = await scanAtLeast("src/tokens/themes/*.css", 2);
 let failed = 0;
 let measured = 0;
+const pairsPerTheme: number[] = [];
+let fixedPairs = 0;
+const isPair = (line: string) => line.startsWith("  ");
 
 for (const file of files) {
   const tokens = readTokens(palette + "\n" + (await Bun.file(file).text()));
@@ -500,7 +504,9 @@ for (const file of files) {
   if (!tokens["--rc-bg"]) continue;
   measured += 1;
 
-  for (const finding of checkThemeCss(file, tokens)) {
+  const findings = checkThemeCss(file, tokens);
+  pairsPerTheme.push(findings.filter((finding) => isPair(finding.line)).length);
+  for (const finding of findings) {
     if (!finding.ok) failed++;
     console.log(finding.line);
   }
@@ -512,6 +518,7 @@ for (const finding of checkCodePair(
   fixed[CSS_CODE.ink],
   fixed[CSS_CODE.paper],
 )) {
+  if (isPair(finding.line)) fixedPairs++;
   if (!finding.ok) failed++;
   console.log(finding.line);
 }
@@ -520,6 +527,7 @@ const media = Object.fromEntries(
   Object.entries(CSS_MEDIA).map(([role, token]) => [role, fixed[token]]),
 );
 for (const finding of checkMediaStage("src/tokens/scales.css: palco de midia", media)) {
+  if (isPair(finding.line)) fixedPairs++;
   if (!finding.ok) failed++;
   console.log(finding.line);
 }
@@ -528,6 +536,7 @@ const signature = Object.fromEntries(
   Object.entries(CSS_SIGNATURE).map(([role, token]) => [role, fixed[token]]),
 );
 for (const finding of checkSignaturePaper("src/tokens/scales.css: papel da assinatura", signature)) {
+  if (isPair(finding.line)) fixedPairs++;
   if (!finding.ok) failed++;
   console.log(finding.line);
 }
@@ -572,5 +581,7 @@ if (failed > 0) {
 }
 
 countAtLeast("tema com `--rc-bg` declarado em `src/tokens/themes/`", measured, 2);
+
+report({ themes: measured, pairsPerTheme, fixedPairs });
 
 console.log(`\nContraste ok nos ${measured} temas de src/tokens/themes/.`);

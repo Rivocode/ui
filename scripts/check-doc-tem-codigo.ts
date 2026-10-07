@@ -14,6 +14,7 @@
  * peca e documentada na pagina dela.
  */
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const DOCS = ".design-sync/docs";
 const ENTRY_POINTS = [
@@ -103,4 +104,5 @@ if (silent.length > 0) {
   process.exit(1);
 }
 
+report({ pages: documented.length });
 console.log(`${documented.length} paginas, todas com codigo por tras, e nenhuma peca muda.`);

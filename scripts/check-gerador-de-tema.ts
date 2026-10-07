@@ -46,6 +46,7 @@
 import { mkdtempSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { report } from "./medida";
 
 const GENERATOR = "native/scripts/build-theme.mjs";
 const COMMAND = "rivocode-ui-native-theme";
@@ -198,6 +199,8 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`${problem}\n`);
   process.exit(1);
 }
+
+report({ seeds: SEEDS.length, derived: DERIVED.length, theme: ROLES.length });
 
 console.log(
   `\`${COMMAND}\` em dia: ${SEEDS.length} sementes, ${DERIVED.length} papeis derivados,` +

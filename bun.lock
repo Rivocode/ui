@@ -97,7 +97,7 @@
     },
     "mcp": {
       "name": "@rivocode/ui-mcp",
-      "version": "0.9.2",
+      "version": "0.9.3",
       "bin": {
         "rivocode-ui-mcp": "dist/cli.js",
       },

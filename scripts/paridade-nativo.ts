@@ -38,6 +38,7 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { scanAtLeast } from "./varredura";
+import { report } from "./medida";
 
 const DOCS = ".design-sync/docs";
 /**
@@ -2416,6 +2417,15 @@ if (checking) {
     console.error("\nRode `bun run scripts/paridade-nativo.ts` e comite o resultado.");
     process.exit(1);
   }
+  report({
+    pieces: pieces.map((piece) => ({
+      piece,
+      state: PARITY[piece]!.state,
+      native: nativeName(piece, PARITY[piece]!),
+      note: PARITY[piece]!.note,
+    })),
+    queue: Object.keys(FILA_DECLARADA),
+  });
   console.log(`${pieces.length} pecas conferidas: a tabela e as paginas dizem a mesma coisa.`);
 } else {
   console.log(

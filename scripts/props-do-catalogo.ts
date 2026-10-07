@@ -18,6 +18,7 @@
  * entra no `bun run check`: assim a doc nao pode mais divergir em silencio.
  */
 import { API, SignatureKind, SymbolFlags } from "typescript/unstable/async";
+import { report } from "./medida";
 
 const RAIZ = process.cwd();
 const TARGET = "apps/docs/src/component-props.json";
@@ -288,6 +289,7 @@ if (import.meta.main) {
     }
 
     const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
+    report({ entries: Object.keys(catalog).length, props: total });
     console.log(`props em dia: ${Object.keys(catalog).length} pecas, ${total} props.`);
   } else {
     await Bun.write(TARGET, text);

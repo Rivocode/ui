@@ -33,6 +33,7 @@
 import { Glob } from "bun";
 import { scanAtLeast } from "./varredura";
 import { dirname, join, normalize } from "node:path";
+import { report } from "./medida";
 
 const PACKAGE = "package.json";
 const GATE = "check";
@@ -166,6 +167,8 @@ if (problems.length > 0) {
 }
 
 const names = Object.keys(OUT).map((file) => file.replace(/^scripts\/|\.ts$/g, ""));
+
+report({ out: names });
 
 console.log(
   `Todo script de \`scripts/\` esta no gate. Fora dele, por declaracao: ${names.join(", ")}` +
