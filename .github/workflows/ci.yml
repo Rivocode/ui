@@ -55,3 +55,15 @@ jobs:
       # diz agora. Sem ele o `check:assinatura` do gate conferiria a assinatura
       # contra uma foto antiga do pacote nativo.
       - run: bun run check:props:nativo
+
+      # O bundle de verdade, pelo compilador do react-native-css. Em 07/10/2026
+      # o app nao fechava o bundle de iOS ("generated.css: failed to
+      # deserialize; expected an object-like struct named Specifier, found ()",
+      # o lightningcss da 1.31 em diante) e nada acusou, porque nenhum job
+      # gerava bundle nativo. Medido: com o lightningcss do app forcado a
+      # 1.33.0, este passo falha no Android com essa mesma frase.
+      - run: bun run build:css
+        working-directory: examples/native
+      - run: git diff --exit-code -- examples/native/generated.css
+      - run: npx expo export --platform ios --platform android --output-dir "$RUNNER_TEMP/expo-export"
+        working-directory: examples/native
