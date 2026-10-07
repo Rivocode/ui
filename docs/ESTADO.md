@@ -1,6 +1,6 @@
 # Onde paramos
 
-Retrato do repositorio em **25/09/2026**, reescrito do zero. Todo numero daqui
+Retrato do repositorio em **07/10/2026**, medido de novo sobre o de 25/09. Todo numero daqui
 foi medido nesta arvore, nesse dia, e a secao **Como conferir cada numero** diz
 o comando de cada um: quem chegar depois mede de novo em vez de acreditar.
 
@@ -12,14 +12,14 @@ CHANGELOGs, e nao e repetida aqui.
 
 ## Os pacotes
 
-| Pacote                | Onde      | Manifesto | No npm em 25/09                    | Tag              |
+| Pacote                | Onde      | Manifesto | No npm em 07/10                    | Tag              |
 | --------------------- | --------- | --------- | ---------------------------------- | ---------------- |
-| `@rivocode/ui`        | `src/`    | 1.0.0     | **1.0.0**, com procedencia         | `v1.0.0`         |
-| `@rivocode/ui-native` | `native/` | 1.0.0     | **1.0.0**, com procedencia         | `native-v1.0.0`  |
-| `@rivocode/ui-mcp`    | `mcp/`    | 0.6.0     | **0.6.0**, com procedencia         | `mcp-v0.6.0`     |
+| `@rivocode/ui`        | `src/`    | 1.2.2     | **1.2.2**, com procedencia         | `v1.2.2`         |
+| `@rivocode/ui-native` | `native/` | 1.1.0     | **1.1.0**, com procedencia         | `native-v1.1.0`  |
+| `@rivocode/ui-mcp`    | `mcp/`    | 0.9.2     | **0.9.2**, com procedencia         | `mcp-v0.9.2`     |
 
 O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
-(`docs.yml`), e esta em dia com `db0fad9`. O `origin` tem 36 tags; `gh release
+(`docs.yml`), e esta em dia com `eeace31`. O `origin` tem 59 tags; `gh release
 list` continua vazio, porque tag nao vira release no GitHub e isso nunca foi
 automatizado.
 
@@ -38,11 +38,10 @@ um instala o npm mais novo (a publicacao confiavel exige 11.5.1 ou mais) e
 falha cedo se o token OIDC nao estiver la. `--provenance` e `id-token: write`
 andam juntos, e o `--dry-run` nao exercita nenhum dos dois.
 
-A 0.18.1 do web e a 0.14.0 do nativo sairam por esse caminho, assinadas. O
-`@rivocode/ui-mcp` ainda nao publicou por ele: so a proxima versao dele prova a
-configuracao do publicador confiavel dele. O segredo `NPM_TOKEN` **continua cadastrado** no
-repositorio (`gh secret list`, criado em 04/09) e nenhum workflow o le mais:
-ele deve ser apagado no GitHub e revogado no npm pelo dono.
+Os tres pacotes ja publicaram por esse caminho, assinados: o web desde a
+0.18.1, o nativo desde a 0.14.0 e o mcp desde a 0.7.0. O segredo `NPM_TOKEN`
+saiu do repositorio em 07/10 (`gh secret list`); falta o dono revogar o token
+no npmjs.com.
 
 Versoes sem procedencia, e assim ficam porque publicacao nao se desfaz: ate
 `v0.8.0` e `native-v0.3.1`, quando o repositorio era privado.
@@ -95,8 +94,8 @@ export de subcaminho esteja no `conventions.md` E na skill.
 
 ## O React Native
 
-Das 134 pecas: **103 traduzem** com o mesmo nome, **5 viram** outra
-(`Autocomplete` -> `Combobox`, `DataTable` -> `DataList`, `ToastViewport` ->
+Das 134 pecas: **104 traduzem** com o mesmo nome, **4 viram** outra
+(`DataTable` -> `DataList`, `ToastViewport` ->
 `useToast`, `Popconfirm` -> `AlertDialog`, `ContextMenu` -> `Menu`), **26 nao
 portam** por decisao escrita, e **0 estao na fila**. `FILA_DECLARADA` esta
 vazia e o acordo e que continue: peca web nova nasce nos dois pacotes no mesmo
@@ -136,55 +135,53 @@ As 26 que nao portam, com a nota de cada uma em `scripts/paridade-nativo.ts`:
 **Nome igual nao e API igual.** No nativo tudo e controlado (sem
 `defaultValue`) e a lista vem por `items`, nao por composicao. O que se
 reaproveita e o vocabulario de classes, o token e a escolha da peca; o JSX se
-reescreve. `check:assinatura` confere **222 divergencias de assinatura em 91
+reescreve. `check:assinatura` confere **195 divergencias de assinatura em 88
 pecas** contra os dois catalogos de props - o do nativo,
-`apps/docs/src/native-props.json` (117 pecas, 773 props), e artefato comitado,
+`apps/docs/src/native-props.json` (118 pecas, 870 props), e artefato comitado,
 porque gerar exige `examples/native` instalado; `check:props:nativo` o mantem
 em dia no job `nativo` da CI, ao lado do `check:native:types`.
 
 Codigo puro atravessa por `src/shared/` e `src/hooks/common/`, espelhados em
-`native/`: **38 arquivos**, com `check:compartilhado` cobrando que o espelho
+`native/`: **43 arquivos**, com `check:compartilhado` cobrando que o espelho
 nao tenha global nem import de plataforma, e 16 copias declaradas.
 
 ## O gate
 
-`bun run check` sao **37 passos** - 36 verificacoes mais `bun test` -, em
-sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 25/09
+`bun run check` sao **38 passos** - 37 verificacoes mais `bun test` -, em
+sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 07/10
 saiu verde.
 
-A suite: **3096 testes em 227 arquivos, 23255 `expect`**, 0 falhas. Do nativo
-sao 971 testes em 75 arquivos; do web, 2125 em 152. A home do site exibe o
+A suite: **3373 testes em 248 arquivos, 25302 `expect`**, 0 falhas. A home do site exibe o
 mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
 falha se divergir.
 
-| Guarda                  | O que ela diz em 25/09                                                                                       |
+| Guarda                  | O que ela diz em 07/10                                                                                       |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check:props`           | 308 entradas (pecas e partes), 4380 props; prop propria que colide com atributo herdado reprova              |
-| `check:colors`          | 188 arquivos sem cor literal fora de `src/tokens/`                                                           |
+| `check:props`           | 308 entradas (pecas e partes), 4419 props; prop propria que colide com atributo herdado reprova              |
+| `check:colors`          | 196 arquivos sem cor literal fora de `src/tokens/`                                                           |
 | `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                             |
-| `check:contrast`        | 138 pares por tema, nos dois temas, mais 14 de `scales.css`                                                  |
-| `check:contrast:nativo` | por esquema: 60 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par |
-| `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 273 linhas medidas iguais                                      |
+| `check:contrast`        | 142 pares por tema, nos dois temas, mais 14 de `scales.css`                                                  |
+| `check:contrast:nativo` | por esquema: 64 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par |
+| `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 281 linhas medidas iguais                                      |
 | `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                            |
 | `check:doc`             | 222 paginas, todas com codigo                                                                                |
-| `check:exemplos`        | nomes dos blocos `tsx` contra 752 nomes publicados por 14 entradas                                           |
+| `check:exemplos`        | nomes dos blocos `tsx` contra 806 nomes publicados por 14 entradas                                           |
 | `check:readme`          | 134 de 134 pecas citadas, nenhuma declarada fora                                                             |
-| `check:classes`         | 369 arquivos, toda classe gera regra, sem lista de excecao                                                   |
+| `check:classes`         | 385 arquivos, toda classe gera regra, sem lista de excecao                                                   |
 | `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
-| `check:cli`             | 4 arquivos de mesa fora dos 205 arquivos que a biblioteca alcanca no `dist/`                                 |
-| `check:tamanho`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 97% do limite   |
-| `check:skill`           | 128 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
+| `check:cli`             | 4 arquivos de mesa (`contrast`, `theme-check`, `dtcg`, `theme-roles`) fora do grafo da biblioteca                                 |
+| `check:tamanho`         | raiz 152,1 de 156,2 KB gzip; `Button` sozinho 12,3 de 13,6 KB; todas as entradas entre 90% e 98% do limite   |
+| `check:skill`           | 142 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
 | `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
 | `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
 | `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
 | `check:pecas`           | 134, igual ao README, ao `package.json` e a meta do site                                                     |
 | `check:demo`            | 133 de 134 na vitrine, 1 declarada fora (`ToastViewport`), em 21 paginas                                     |
-| `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 90 marcadores no demo                                   |
+| `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 91 marcadores no demo                                   |
 | `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
 
-O `check:tamanho` esta perto do teto em todas as entradas (o `/ai` em 97%; a
-`styles.css` desceu de 98% para 92% em 25/09, sem espaco em branco e sem as
-catorze regras que o scanner gerava de palavra que nao era classe): a proxima peca que crescer o pacote sobe o limite no mesmo commit, com o
+O `check:tamanho` esta perto do teto em todas as entradas (o `/editor` em 98%,
+a raiz em 97%, a `styles.css` em 94%): a proxima peca que crescer o pacote sobe o limite no mesmo commit, com o
 motivo no `why` de `scripts/orcamento-de-tamanho.ts`.
 
 ### Fora do gate: `a11y`, `shot`, `visual` e a bancada
@@ -202,9 +199,15 @@ por `scripts/comparacao-da-bancada.ts`. Ela reprova problema de acessibilidade
 que a base nao tinha e retrato que mudou sem a assinatura mudar junto; a
 etiqueta `retrato-aceito` e a valvula para diferenca que so existe no linux.
 
-**A bancada esta verde na `main` desde `946d594`**, a primeira corrida com a
-captura deterministica, e de novo em `d5f98c2`; as corridas de antes saiam
-vermelhas sem mudanca de tela. O retrato agora sai igual duas vezes seguidas, no mac e no linux:
+**A bancada e diferencial, e isso tem um custo.** Ela saiu vermelha em
+`d3d619a`: o `233193e`, empurrado junto, criou o conteiner dos portais no
+primeiro render, e `flutuantes` e `flutuantes-celular` mudaram sem a assinatura
+mudar junto. O commit seguinte, `eeace31`, saiu verde porque comparou contra
+`d3d619a`, que ja tinha a mudanca - e a assinatura comitada ficou velha na
+`main` por seis dias. Em 07/10 o retrato foi olhado contra o da base (antes, a
+pagina saia rolada ~290px pelo portal tardio; agora comeca no topo) e aceito.
+Vermelho na bancada da `main` nao some no commit seguinte: aceita-se ou
+conserta-se. O retrato agora sai igual duas vezes seguidas, no mac e no linux:
 provado com o Chrome 154 em tres corridas num ubuntu 24.04 e duas no mac, os
 56 PNG iguais pixel a pixel. As quatro causas que o `shot.ts` passou a
 controlar, e que valem para quem mexer nele:
@@ -256,29 +259,39 @@ excecao e continua sem.
 
 Nenhum destes tem codigo a escrever aqui.
 
-1. **Apagar o segredo `NPM_TOKEN`** do GitHub e revogar o token no npm.
-2. O publicador confiavel do `@rivocode/ui-mcp` foi conferido pelo dono em
-   25/09; a proxima versao do mcp e a primeira a sair por ele.
-3. **Testar no iPhone** o que teste e `react-native-web` nao alcancam: colar
+1. **Revogar o token antigo no npmjs.com.** O segredo `NPM_TOKEN` ja saiu do
+   GitHub em 07/10; o token em si continua valido no npm ate o dono revoga-lo.
+2. **Testar no iPhone** o que teste e `react-native-web` nao alcancam: colar
    valor no `CurrencyInput`; meia estrela do `Rating`, inclusive em RTL; o
    `Tour` nativo; e o anuncio de limite do `PromptInput` com o VoiceOver, que
    pode ser cortado pela ultima letra digitada.
-4. **Importar os tokens DTCG no Figma** (`rivocode-ui tokens --out <pasta>`).
+3. **Importar os tokens DTCG no Figma** (`rivocode-ui tokens --out <pasta>`).
 
 ### Divida de codigo, conferida contra a arvore
 
-- **Ref imperativo sem regra escrita.** `useImperativeHandle` aparece em dois
-  lugares do web, `VirtualList` (`scrollToIndex`) e `ResizablePanelGroup`, e
-  nem `conventions.md` nem a skill dizem quando expor ref imperativo.
 - **`QueryBoundary` nao trata dado velho enquanto revalida.** O limite esta
   escrito na pagina da peca ("O que ela nao trata"), com o contorno por
   `isFetching`; o comportamento continua o mesmo.
 
+- **A receita do nativo esta consertada na arvore, e nao no npm.** Em 07/10 a
+  receita, seguida num Expo recem-criado com npm (SDK 57,
+  `@rivocode/ui-native` 1.1.0), nao chegava ao fim, e o proprio
+  `examples/native` nao fechava o bundle de iOS. Eram dois defeitos de versao:
+  o `nativewind@preview` pede `react-native-css@3.1.0-rc.0` exato e o pacote
+  sem tag instala a 3.0.7 (o npm morre em `ERESOLVE`; o bun do exemplo nao
+  barra peer, e um patch local escondia a diferenca), e o compilador do
+  `react-native-css` quebra com `lightningcss` 1.31 ou mais novo ("Specifier,
+  found ()"). A doc passou a pedir `react-native-css@rc`, o init fixa o
+  `lightningcss` em 1.30.1 e confere o motor contra o que o NativeWind pede, o
+  exemplo saiu do patch, e o `check:receita` le o `bun.lock`. Medido de ponta
+  a ponta com o pacote empacotado: `tsc`, export de iOS (4,5 MB) e de web. Quem
+  instala do npm so recebe isso no proximo release do `@rivocode/ui-native`.
+
 ### O que nao foi medido
 
 - As pecas nativas em aparelho de verdade, alem dos itens do iPhone acima.
-- O `npx rivocode-ui-native-init` num Expo recem-criado: `check:receita` so
-  compara com o `examples/native`, onde a receita ja funciona.
+- O aparelho de verdade com o app do zero: em 07/10 a receita foi seguida num
+  Expo recem-criado (SDK 57, npm), e o resultado esta na divida acima.
 - A landing (repo `rivocode.com`): nao esta nesta maquina nem na organizacao do
   GitHub visivel daqui. A ultima medida era `^0.7.0`.
 - O sync com o claude.ai/design, parado desde 24/08 (`.design-sync/NOTES.md`).
@@ -315,7 +328,7 @@ Nenhum destes tem codigo a escrever aqui.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install                  # na raiz, nunca dentro de native/
-bun run check                # 37 passos, termina nos 3096 testes
+bun run check                # 38 passos, termina nos 3373 testes
 bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
 bun run fumaca:mcp           # o servidor MCP pelo stdio
 bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
@@ -330,32 +343,31 @@ ensaio=true` (idem `release-native` e `release-mcp`).
 ## Como conferir cada numero
 
 ```sh
-npm view @rivocode/ui version                       # 1.0.0
-npm view @rivocode/ui-native version                # 1.0.0
-npm view @rivocode/ui-mcp version                   # 0.6.0
+npm view @rivocode/ui version                       # 1.2.2
+npm view @rivocode/ui-native version                # 1.1.0
+npm view @rivocode/ui-mcp version                   # 0.9.2
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.18.1 | head -c 80   # assinada
 gh run list --workflow=release-native --limit 3     # native-v0.14.0: failure (ENEEDAUTH), depois success
-gh secret list                                      # NPM_TOKEN ainda cadastrado
+gh secret list                                      # so os tres da Vercel: o NPM_TOKEN saiu em 07/10
 grep -rn NPM_TOKEN .github/workflows                # nada: nenhum workflow o le
-git ls-remote --tags origin | grep -vc '\^{}'       # 36 tags
+git ls-remote --tags origin | grep -vc '\^{}'       # 59 tags
 ls .design-sync/docs/*.md | wc -l                   # 222 documentos
 bun run check:pecas                                 # 134 pecas (222 - 88 partes)
-grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
+grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 104 traduz, 4 vira, 26 nao
 grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
-node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:testes                                # 3096 testes em 227 arquivos
-bun test native/test                                # 762 em 63 arquivos
-bun run check:assinatura                            # 222 divergencias em 91 pecas
-node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117
-bun run check:compartilhado                         # 38 espelhados, 16 copias
-bun run check:contrast | grep -cE '^ +ok'          # 290: 138 por tema mais 14 de scales.css
-bun run check:contrast:nativo                       # 60 + 47 + 1 + 16 + 3 por esquema
+node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 38
+bun run check:testes                                # 3373 testes em 248 arquivos
+bun run check:assinatura                            # 195 divergencias em 88 pecas
+node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 118
+bun run check:compartilhado                         # 43 espelhados, 16 copias
+bun run check:contrast | grep -cE '^ +ok'          # 298: 142 por tema mais 14 de scales.css
+bun run check:contrast:nativo                       # 64 + 47 + 1 + 16 + 3 por esquema
 bun run check:tamanho                               # a tabela do orcamento
 bun run check:demo                                  # 133 de 134, 1 fora
 bun run check:readme                                # 134 de 134, 0 fora
 bun run check:scripts                               # 6 fora do gate
 node -e 'console.log(Object.keys(require("./demo/assinaturas.json")).length)'   # 56 retratos
-gh run list --workflow=bancada --limit 5            # verde em 946d594 e d5f98c2
+gh run list --workflow=bancada --limit 5            # eeace31 verde; d3d619a vermelha (dois retratos de flutuantes)
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false: a divida das props
 ```
 
